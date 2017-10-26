@@ -1,0 +1,12 @@
+#Ceci est un fichier test
+#Voici quelques lignes de commentaires
+gk1 = 14
+[G1]
+keyBool1 = TRUE
+keyBool0 = FALSE
+keyInt = 14
+keyString = "une chaine"  
+[/G1]
+
+0keybool = TRUE
+#Fin de fichier

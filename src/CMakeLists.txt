@@ -1,0 +1,106 @@
+#----------------------------------------------------------
+# build
+#----------------------------------------------------------
+
+file(GLOB_RECURSE CORE_CXX *.cpp core)
+file(GLOB_RECURSE GEOM_CXX *.cpp geom)
+file(GLOB_RECURSE PHYSIC_CXX *.cpp physic)
+file(GLOB_RECURSE IMAGE_CXX *.cpp image)
+file(GLOB_RECURSE ENGINE_CXX *.cpp engine)
+file(GLOB_RECURSE GUI_CXX *.cpp gui)
+file(GLOB_RECURSE AUDIO_CXX *.cpp audio)
+
+set(tinyxml
+	../third/tinyxml/tinystr.cpp
+	../third/tinyxml/tinyxml.cpp
+	../third/tinyxml/tinyxmlerror.cpp
+	../third/tinyxml/tinyxmlparser.cpp)
+
+set(tristripper
+	../third/TriStripper/Src/connectivity_graph.cpp
+	../third/TriStripper/Src/policy.cpp
+	../third/TriStripper/Src/tri_stripper.cpp)
+
+set(nvtristrip
+	../third/nvTriStrip/NvTriStrip.cpp
+	../third/nvTriStrip/NvTriStripObjects.cpp)
+
+link_directories(${SDL2_LIBDIR})
+
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+	set(O3D_LIB_NAME objective3d-dbg)
+elseif(${CMAKE_BUILD_TYPE} MATCHES "RelWithDebInfo")
+	set(O3D_LIB_NAME objective3d-odbg)
+elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
+	set(O3D_LIB_NAME objective3d)
+endif()
+
+add_library(${O3D_LIB_NAME} SHARED
+			${tinyxml}
+			${tristripper}
+			${nvtristrip}
+			${CORE_CXX} ../third/MD5/_MD5.cpp
+			${GEOM_CXX}
+			${PHYSIC_CXX}
+			${IMAGE_CXX}
+			${ENGINE_CXX}
+			${GUI_CXX}
+			${AUDIO_CXX})		
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	target_link_libraries(${O3D_LIB_NAME}
+			pthread
+			z
+			jpeg
+			rt
+			Xrandr	
+			png
+			vorbis
+			vorbisfile
+			openal
+			${SDL2_LIBRARIES}
+			${FREETYPE_LIBRARIES})
+ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	target_link_libraries(${O3D_LIB_NAME}
+			pthread
+			z
+			jpeg
+			rt
+			Xrandr	
+			png
+			vorbis
+			vorbisfile
+			openal
+			${SDL2_LIBRARIES}
+			${FREETYPE_LIBRARIES})
+ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	target_link_libraries(${O3D_LIB_NAME}
+	#		pthread
+			z
+			jpeg
+			png
+			ogg
+			vorbis
+			vorbisfile
+			OpenAL32.dll
+	#		${SDL2_LIBRARIES}
+			freetype.dll
+	#		${FREETYPE_LIBRARIES}
+			opengl32)
+ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	#	target_link_libraries({O3D_LIB_NAME}
+	#		${OPENGL_gl_LIBRARY}
+	#		zlib
+	#		libjpeg
+	#		libpng
+	#		libogg
+	#		libvorbis
+	#		libvorbisfile
+	#		freetype235MT
+	#		OpenAL32)
+ENDIF()
+
+# Install
+
+install (TARGETS ${O3D_LIB_NAME} DESTINATION lib)
+

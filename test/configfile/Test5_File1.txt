@@ -1,0 +1,7 @@
+#Ceci est un fichier test
+#Voici quelques lignes de commentaires
+unbool = TRUE #coucou c'est un commentaire
+chaine1 = "coucou #" ca va #faux commentaire"
+chaine2 = "#" ca va #faux commentaire" #commentaire
+chaine3 = "#" ca va #faux commentaire" #commentaire "test
+#Fin de fichier

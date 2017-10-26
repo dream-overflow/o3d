@@ -1,0 +1,1433 @@
+/**
+ * @file shader.cpp
+ * @brief Implementation of Shader.h
+ * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author  Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
+ * @date 2005-10-19
+ * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
+ * @details 
+ */
+
+#include "o3d/engine/precompiled.h"
+#include "o3d/engine/glextdefines.h"
+#include "o3d/engine/shader/shader.h"
+
+#include "o3d/engine/shader/shadermanager.h"
+#include "o3d/core/filemanager.h"
+#include "o3d/core/stringtokenizer.h"
+#include "o3d/engine/texture/texture.h"
+#include "o3d/engine/context.h"
+#include "o3d/engine/renderer.h"
+#include "o3d/engine/scene/scene.h"
+
+using namespace o3d;
+
+O3D_IMPLEMENT_DYNAMIC_CLASS1(Shader, ENGINE_SHADER, SceneEntity)
+
+Shader::T_ProgramInfo::T_ProgramInfo() :
+	programName(),
+	programType(TYPE_UNDEFINED),
+	programSource()
+{
+}
+/*
+Bool hader::T_ProgramInfo::isNull()
+{
+	return (programName.isNull() && (programType == TYPE_UNDEFINED));
+}
+
+void Shader::T_ProgramInfo::reset()
+{
+	programName.destroy();
+	programType = TYPE_UNDEFINED;
+	programSource.destroy();
+	programs.clear();
+}
+*/
+Shader::T_ProgramInfo::T_Program::T_Program() :
+	programId(0),
+	programState(PROGRAM_UNDEFINED)
+{
+}
+
+Shader::Shader(BaseObject *parent) :
+	SceneEntity(parent),
+	m_vertexProgramArray(),
+	m_fragmentProgramArray(),
+	m_geometryProgramArray(),
+	m_programName(),
+	m_instances()
+{
+}
+
+Shader::~Shader()
+{
+	destroy();
+}
+
+void Shader::compileInstance(T_InstanceInfo & _instance)
+{
+	O3D_ASSERT((_instance.shaderState & SHADER_COMPILED) != SHADER_COMPILED);
+
+	const Int32 & lVertexId = _instance.vertexProgramId;
+	const Int32 & lFragmentId = _instance.fragmentProgramId;
+	const Int32 & lGeometryId = _instance.geometryProgramId;
+
+	const String & lOptions = _instance.options;
+
+ 	if ((lVertexId != -1) && (m_vertexProgramArray[lVertexId].programs[lOptions].programState == PROGRAM_UNDEFINED))
+		compileProgram(TYPE_VERTEX_PROGRAM, lVertexId, lOptions);
+
+	if ((lFragmentId != -1) && (m_fragmentProgramArray[lFragmentId].programs[lOptions].programState == PROGRAM_UNDEFINED))
+		compileProgram(TYPE_FRAGMENT_PROGRAM, lFragmentId, lOptions);
+
+	if ((lGeometryId != -1) && (m_geometryProgramArray[lGeometryId].programs[lOptions].programState == PROGRAM_UNDEFINED))
+		compileProgram(TYPE_GEOMETRY_PROGRAM, lGeometryId, lOptions);
+
+	if (    (lVertexId != -1) &&
+			(lFragmentId != -1) &&
+			(m_vertexProgramArray[lVertexId].programs[lOptions].programState == PROGRAM_COMPILED) &&
+			(m_fragmentProgramArray[lFragmentId].programs[lOptions].programState == PROGRAM_COMPILED))
+	{
+		if (lGeometryId != -1)
+		{
+			if (m_geometryProgramArray[lGeometryId].programs[lOptions].programState == PROGRAM_COMPILED)
+				_instance.shaderState |= SHADER_COMPILED;
+		}
+		else
+			_instance.shaderState |= SHADER_COMPILED;
+	}
+}
+
+void Shader::linkInstance(T_InstanceInfo & _instance)
+{
+	O3D_ASSERT((_instance.shaderState & SHADER_COMPILED) == SHADER_COMPILED);
+	O3D_ASSERT((_instance.shaderState & SHADER_LINKED) != SHADER_LINKED);
+
+	const Int32 & lVertexId = _instance.vertexProgramId;
+	const Int32 & lFragmentId = _instance.fragmentProgramId;
+	const Int32 & lGeometryId = _instance.geometryProgramId;
+
+	const String & lOptions = _instance.options;
+
+	const T_ProgramInfo & lVertexProgram = m_vertexProgramArray[lVertexId];
+	const T_ProgramInfo & lFragmentProgram = m_fragmentProgramArray[lFragmentId];
+
+	if (_instance.shaderId == 0)
+		_instance.shaderId = glCreateProgram();
+
+	// Bind the attribute's slots
+	glBindAttribLocation(_instance.shaderId, V_VERTICES_ARRAY, "a_vertex");
+	glBindAttribLocation(_instance.shaderId, V_NORMALS_ARRAY, "a_normal");
+	glBindAttribLocation(_instance.shaderId, V_TANGENT_ARRAY, "a_tangent");
+	glBindAttribLocation(_instance.shaderId, V_BITANGENT_ARRAY, "a_bitangent");
+	glBindAttribLocation(_instance.shaderId, V_COLOR_ARRAY, "a_color");
+	glBindAttribLocation(_instance.shaderId, V_RIGGING_ARRAY, "a_rigging");
+	glBindAttribLocation(_instance.shaderId, V_SKINNING_ARRAY, "a_skinning");
+	glBindAttribLocation(_instance.shaderId, V_WEIGHTING_ARRAY, "a_weighting");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_1_ARRAY, "a_texCoords1");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_1_ARRAY, "a_tex3D_1");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_2_ARRAY, "a_tex2D_2");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_2_ARRAY, "a_tex3D_2");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_3_ARRAY, "a_tex2D_3");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_3_ARRAY, "a_tex3D_3");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_4_ARRAY, "a_tex2D_4");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_4_ARRAY, "a_tex3D_4");
+/*	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_5_ARRAY, "a_tex2D_5");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_5_ARRAY, "a_tex3D_5");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_6_ARRAY, "a_tex2D_6");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_6_ARRAY, "a_tex3D_6");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_7_ARRAY, "a_tex2D_7");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_7_ARRAY, "a_tex3D_7");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_8_ARRAY, "a_tex2D_8");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_8_ARRAY, "a_tex3D_8");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_9_ARRAY, "a_tex2D_9");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_9_ARRAY, "a_tex3D_9");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_10_ARRAY, "a_tex2D_10");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_10_ARRAY, "a_tex3D_10");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_11_ARRAY, "a_tex2D_11");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_11_ARRAY, "a_tex3D_11");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_12_ARRAY, "a_tex2D_12");
+	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_12_ARRAY, "a_tex3D_12");
+*/
+	// for OpenGL 3 context only, bind out fragments
+	if (getScene()->getRenderer()->isGL3())
+	{
+		glBindFragDataLocation(_instance.shaderId, 0, "o_finalColor");
+        glBindFragDataLocation(_instance.shaderId, 0, "o_fragData");
+        glBindFragDataLocation(_instance.shaderId, 0, "o_ambient");
+        glBindFragDataLocation(_instance.shaderId, 1, "o_normal");
+        glBindFragDataLocation(_instance.shaderId, 2, "o_position");
+        glBindFragDataLocation(_instance.shaderId, 3, "o_diffuse");
+        glBindFragDataLocation(_instance.shaderId, 4, "o_specular");
+	}
+
+	T_ProgramInfo::CIT_ProgramMap lVpCit = lVertexProgram.programs.find(lOptions);
+	T_ProgramInfo::CIT_ProgramMap lFpCit = lFragmentProgram.programs.find(lOptions);
+
+	glAttachShader(_instance.shaderId, lVpCit->second.programId);
+	glAttachShader(_instance.shaderId, lFpCit->second.programId);
+
+	// optional geometry program
+	if (lGeometryId != -1)
+	{
+		const T_ProgramInfo & lGeometryProgram = m_geometryProgramArray[lGeometryId];
+		T_ProgramInfo::CIT_ProgramMap lGpCit = lGeometryProgram.programs.find(lOptions);
+
+		glAttachShader(_instance.shaderId, lGpCit->second.programId);
+	}
+
+	glLinkProgram(_instance.shaderId);
+
+	GLint lResult = 0;
+	glGetProgramiv(_instance.shaderId,GL_LINK_STATUS,(GLint*)&lResult);
+
+	if (lResult == GL_FALSE)
+	{
+		GLint lLogSize = 0;
+		glGetProgramiv(_instance.shaderId, GL_INFO_LOG_LENGTH, &lLogSize);
+
+		ArrayChar lLogMessage(lLogSize);
+		glGetProgramInfoLog(_instance.shaderId, lLogSize, NULL, lLogMessage.getData());
+
+		glDeleteProgram(_instance.shaderId);
+		_instance.shaderId = 0;
+
+		_instance.shaderState &= ~SHADER_LINKED;
+
+		// optional geometry program
+		if (lGeometryId != -1)
+		{
+			const T_ProgramInfo & lGeometryProgram = m_geometryProgramArray[lGeometryId];
+
+			O3D_ERROR(E_InvalidOperation(String("Shader : Unable to link the program <") << m_name
+					<< "> with VP <" << lVertexProgram.programName
+					<< "> ... FP <" << lFragmentProgram.programName
+					<< "> and GP <" << lGeometryProgram.programName << "> to the object <"
+					<< m_name << "> contained in the file : <" << m_programName << "> : " << lLogMessage.getData()));
+		}
+		else
+		{
+			O3D_ERROR(E_InvalidOperation(String("Shader : Unable to link the program <") << m_name
+					<< "> with VP <" << lVertexProgram.programName
+					<< "> and FP <" << lFragmentProgram.programName << "> to the object <"
+					<< m_name << "> contained in the file : <" << m_programName << "> : " << lLogMessage.getData()));
+		}
+	}
+	else
+	{
+		GLint lLogSize = 0;
+		glGetProgramiv(_instance.shaderId, GL_INFO_LOG_LENGTH, &lLogSize);
+
+		if (lLogSize > 1)
+		{
+			ArrayChar lLogMessage('\0', lLogSize+1, 0);
+			glGetProgramInfoLog(_instance.shaderId, lLogSize, NULL, lLogMessage.getData());
+
+			// optional geometry program
+			if (lGeometryId != -1)
+			{
+				const T_ProgramInfo & lGeometryProgram = m_geometryProgramArray[lGeometryId];
+
+				O3D_MESSAGE(String("Shader : Warning when link the program <") << m_name
+						<< "> with VP <" << lVertexProgram.programName
+						<< "> ... FP <" << lFragmentProgram.programName
+						<< "> and GP <" << lGeometryProgram.programName << "> to the object <"
+						<< m_name << "> contained in the file : <" << m_programName << "> : " << lLogMessage.getData());
+			}
+			else
+			{
+				O3D_MESSAGE(String("Shader : Warning when link the program <") << m_name
+						<< "> with VP <" << lVertexProgram.programName
+						<< "> and FP <" << lFragmentProgram.programName << "> to the object <"
+						<< m_name << "> contained in the file : <" << m_programName << "> : " << lLogMessage.getData());
+			}
+		}
+
+		_instance.shaderState |= SHADER_LINKED;
+	}
+}
+
+void Shader::refreshInstanceState()
+{
+	for (IT_InstanceArray it = m_instances.begin(); it != m_instances.end(); it++)
+	{
+		String lOptions = (*it)->options;
+
+		// optional geometry program
+		if ((*it)->geometryProgramId != -1)
+		{
+			if (	((*it)->vertexProgramId != -1) && ((m_vertexProgramArray[(*it)->vertexProgramId].programs[lOptions].programState & PROGRAM_COMPILED) == PROGRAM_COMPILED)
+					&&	((*it)->fragmentProgramId != -1) && ((m_fragmentProgramArray[(*it)->fragmentProgramId].programs[lOptions].programState & PROGRAM_COMPILED) == PROGRAM_COMPILED)
+					&&	((*it)->geometryProgramId != -1) && ((m_geometryProgramArray[(*it)->geometryProgramId].programs[lOptions].programState & PROGRAM_COMPILED) == PROGRAM_COMPILED))
+				(*it)->shaderState |= SHADER_COMPILED;
+		}
+		else
+		{
+			if (	((*it)->vertexProgramId != -1) && ((m_vertexProgramArray[(*it)->vertexProgramId].programs[lOptions].programState & PROGRAM_COMPILED) == PROGRAM_COMPILED)
+					&&	((*it)->fragmentProgramId != -1) && ((m_fragmentProgramArray[(*it)->fragmentProgramId].programs[lOptions].programState & PROGRAM_COMPILED) == PROGRAM_COMPILED))
+				(*it)->shaderState |= SHADER_COMPILED;
+		}
+	}
+}
+
+/*---------------------------------------------------------------------------------------
+  load a shader
+---------------------------------------------------------------------------------------*/
+void Shader::load(
+        ProgramType programType,
+        const String &programName,
+        InStream &is)
+{
+	if (programName.isEmpty())
+		O3D_ERROR(E_InvalidParameter("Shader : Program name is missing"));
+
+	ArrayChar data;
+    Int32 count = is.getAvailable();
+
+	data.setSize(count);
+
+    is.read(data.getData(), count);
+
+	addProgram(programType, programName, data.getData(), count);
+}
+
+void Shader::load(
+		ProgramType programType,
+		const String &programName,
+		const String &filename)
+{
+	if (programName.isEmpty())
+		O3D_ERROR(E_InvalidParameter("Shader : Program name is missing"));
+
+    AutoPtr<InStream> lis(FileManager::instance()->openInStream(filename));
+
+    load(programType, programName, *lis);
+}
+
+void Shader::compileProgram(
+		ProgramType _programType,
+		Int32 _programIndex,
+		const String & _options)
+{
+	if (!isLoaded())
+		O3D_ERROR(E_InvalidOperation(String("Shader : Attempt to compile an unloaded program.")));
+
+	if (_programIndex < 0)
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : _programIndex < 0")));
+
+	GLint lResult = 0;
+
+	// transform the options string into multiple defines lines
+	String options;
+
+	if (_options.isValid())
+	{
+		StringTokenizer optionsTokenizer(_options, ";");
+
+		while (optionsTokenizer.hasMoreElements())
+		{
+			String define = optionsTokenizer.nextElement();
+
+			Int32 pos = define.find('=');
+			if (pos != -1)
+			{
+				// define with value
+				options += String("#define ") + define.sub(0, pos) + ' ' + define.sub(pos+1) + '\n';
+			}
+			else
+			{
+				// simple define without value
+				options += String("#define ") + define + '\n';
+			}
+		}
+	}
+
+	T_ProgramArray *programArray = NULL;
+	GLuint programType = 0;
+	String message;
+
+	switch(_programType)
+	{
+		case TYPE_VERTEX_PROGRAM:
+			programArray = &m_vertexProgramArray;
+			programType = GL_VERTEX_SHADER;
+			message = "VERTEX";
+			break;
+		case TYPE_FRAGMENT_PROGRAM:
+			programArray = &m_fragmentProgramArray;
+			programType = GL_FRAGMENT_SHADER;
+			message = "FRAGMENT";
+			break;
+		case TYPE_GEOMETRY_PROGRAM:
+			programArray = &m_geometryProgramArray;
+			programType = GL_GEOMETRY_SHADER;
+			message = "GEOMETRY";
+			break;
+		default:
+			O3D_ERROR(E_InvalidParameter(
+					String("Shader : Invalid program type <") << UInt32(_programType) << '>'));
+			break;
+	}
+
+	if (_programIndex >= Int32(programArray->size()))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : _index (") << _programIndex << ") > " << Int32(programArray->size())));
+
+	T_ProgramInfo & lProgramInfo = (*programArray)[_programIndex];
+	T_ProgramInfo::T_Program & lProgram = lProgramInfo.programs[_options];
+
+	if (lProgram.programState != PROGRAM_UNDEFINED)
+		O3D_ERROR(E_InvalidOperation(String("Shader : Trying to compile an already compiled or invalid program")));
+
+	O3D_ASSERT(lProgram.programId == 0);
+
+	String programStr = lProgramInfo.programSource.getData();
+	Int32 versionPos = programStr.sub("#version", 0);
+	if (versionPos != -1)
+	{
+		versionPos = programStr.find('\n', versionPos);
+		programStr.insert(options, versionPos+1);
+	}
+	else
+	{
+		programStr.insert(options, 0);
+	}
+
+	CString program = programStr.toAscii();
+
+	const Char *lBufferSource = program.getData();
+	const GLint lBufferSize = program.length();
+
+	lProgram.programId = glCreateShader(programType);
+	glShaderSource(lProgram.programId, 1, &lBufferSource, &lBufferSize);
+	glCompileShader(lProgram.programId);
+	glGetShaderiv(lProgram.programId, GL_COMPILE_STATUS, &lResult);
+
+	// If the compilation failed
+	if(lResult == GL_FALSE)
+	{
+		GLint lLogSize = 0;
+		glGetShaderiv(lProgram.programId, GL_INFO_LOG_LENGTH, &lLogSize);
+
+		ArrayChar lLogMessage(lLogSize);
+		glGetShaderInfoLog(lProgram.programId, lLogSize, NULL, lLogMessage.getData());
+
+		glDeleteShader(lProgram.programId);
+		lProgram.programId = 0;
+		lProgram.programState = PROGRAM_INVALID;
+
+		O3D_ERROR(E_InvalidOperation(String("Shader : Unable to compile the ") << message << " program <"
+			<< lProgramInfo.programName << "> of the object <"
+			<< m_name << "> contained in the file <" << m_programName << "> : " << lLogMessage.getData()));
+	}
+	else
+	{
+		GLint lLogSize = 0;
+		glGetShaderiv(lProgram.programId, GL_INFO_LOG_LENGTH, &lLogSize);
+
+		if (lLogSize > 1)
+		{
+			ArrayChar lLogMessage('\0', lLogSize+1, 0);
+			glGetShaderInfoLog(lProgram.programId, lLogSize, NULL, lLogMessage.getData());
+
+			O3D_WARNING(String("Shader : Warning when compile the ") << message << " program <"
+					<< lProgramInfo.programName << "> of the object <"
+					<< m_name << "> contained in the file <" << m_programName << "> : " << lLogMessage.getData());
+		}
+
+		lProgram.programState = PROGRAM_COMPILED;
+	}
+
+	refreshInstanceState();
+}
+/*
+Bool O3DShader::CompileAllPrograms(
+		T_ProgramIndexArray * _vProgramArray,
+		T_ProgramIndexArray * _fProgramArray,
+		T_ProgramIndexArray * _gProgramArray)
+{
+	if (!IsLoaded())
+		O3D_ERROR(O3D_E_InvalidOperation(O3DString("Shader : Attempt to compile an unloaded object.")));
+
+	Bool lRet = True;
+
+	// vertex
+	for (UInt32 k = 0 ; k < UInt32(m_vertexProgramArray.size()) ; ++k)
+		if (m_vertexProgramArray[k].programState == PROGRAM_UNDEFINED)
+		{
+			try
+			{
+				CompileProgram(TYPE_VERTEX_PROGRAM, k, "");
+			}
+			catch(const O3D_E_InvalidOperation &)
+			{
+				if (_vProgramArray != NULL)
+				{
+					_vProgramArray->push_back(k);
+					lRet = False;
+				}
+			}
+		}
+		else if ((m_vertexProgramArray[k].programState == PROGRAM_INVALID) && (_vProgramArray != NULL))
+		{
+			_vProgramArray->push_back(k);
+			lRet = False;
+		}
+
+	// fragment
+	for (UInt32 k = 0 ; k < UInt32(m_fragmentProgramArray.size()) ; ++k)
+		if (m_fragmentProgramArray[k].programState == PROGRAM_UNDEFINED)
+		{
+			try
+			{
+				CompileProgram(TYPE_FRAGMENT_PROGRAM, k, "");
+			}
+			catch(const O3D_E_InvalidOperation &)
+			{
+				if (_fProgramArray != NULL)
+				{
+					_fProgramArray->push_back(k);
+					lRet = False;
+				}
+			}
+		}
+		else if ((m_fragmentProgramArray[k].programState == PROGRAM_INVALID) && (_fProgramArray != NULL))
+		{
+			_fProgramArray->push_back(k);
+			lRet = False;
+		}
+
+	// geometry
+	for (UInt32 k = 0 ; k < UInt32(m_geometryProgramArray.size()) ; ++k)
+		if (m_geometryProgramArray[k].programState == PROGRAM_UNDEFINED)
+		{
+			try
+			{
+				CompileProgram(TYPE_GEOMETRY_PROGRAM, k, "");
+			}
+			catch(const O3D_E_InvalidOperation &)
+			{
+				if (_gProgramArray != NULL)
+				{
+					_gProgramArray->push_back(k);
+					lRet = False;
+				}
+			}
+		}
+		else if ((m_geometryProgramArray[k].programState == PROGRAM_INVALID) && (_gProgramArray != NULL))
+		{
+			_gProgramArray->push_back(k);
+			lRet = False;
+		}
+
+	RefreshInstanceState();
+
+	return lRet;
+}
+*/
+void Shader::addProgram(
+		ProgramType _programType,
+		const String & _programName,
+		const Char * _pBuffer,
+		UInt32 _bufferSize)
+{
+	O3D_ASSERT(_pBuffer != NULL);
+
+	T_ProgramInfo lProgramInfo;
+	lProgramInfo.programName = _programName;
+	lProgramInfo.programType = _programType;
+
+	if (_bufferSize == 0)
+		lProgramInfo.programSource = CString(_pBuffer);
+	else if (_pBuffer != NULL)
+		lProgramInfo.programSource = CString(_pBuffer, _bufferSize-1);
+
+	switch(_programType)
+	{
+	case TYPE_VERTEX_PROGRAM:
+			if (findVertexProgram(_programName) != -1)
+				O3D_ERROR(E_InvalidOperation(String("Shader : Attempt to add a program <") << _programName << "> whose name is already used"));
+			else
+				m_vertexProgramArray.push_back(lProgramInfo);
+		break;
+	case TYPE_FRAGMENT_PROGRAM:
+			if (findFragmentProgram(_programName) != -1)
+				O3D_ERROR(E_InvalidOperation(String("Shader : Attempt to add a program <") << _programName << "> whose name is already used"));
+			else
+				m_fragmentProgramArray.push_back(lProgramInfo);
+		break;
+	case TYPE_GEOMETRY_PROGRAM:
+			if (findGeometryProgram(_programName) != -1)
+				O3D_ERROR(E_InvalidOperation(String("Shader : Attempt to add a program <") << _programName << "> whose name is already used"));
+			else
+				m_geometryProgramArray.push_back(lProgramInfo);
+		break;
+	default:
+		break;
+	}
+}
+
+void Shader::removeProgram(ProgramType _programType, const String & _programName)
+{
+	Int32 lProgramId = -1;
+
+	switch(_programType)
+	{
+	case TYPE_VERTEX_PROGRAM:
+			if ((lProgramId = findVertexProgram(_programName)) == -1)
+				O3D_ERROR(E_InvalidOperation(String("Shader : Attempt to remove a unknown program <") << _programName << ">"));
+			else
+			{
+				T_ReferenceArray lToDetach;
+
+				for (IT_ReferenceArray it = m_references.begin(); it != m_references.end(); it++)
+					if ((*it)->getVertexProgramIndex() == lProgramId)
+						lToDetach.push_back(*it);
+
+				for (IT_ReferenceArray it = lToDetach.begin() ; it != lToDetach.end() ; it++)
+					(*it)->detach();
+
+				IT_ProgramArray programIt = m_vertexProgramArray.begin() + lProgramId;
+
+				// delete any shader
+				for (T_ProgramInfo::IT_ProgramMap it = programIt->programs.begin(); it != programIt->programs.end(); it++)
+					if (it->second.programId != 0)
+						glDeleteShader(it->second.programId);
+
+				// and the structure of the program
+				m_vertexProgramArray.erase(programIt);
+			}
+		break;
+	case TYPE_FRAGMENT_PROGRAM:
+			if ((lProgramId = findFragmentProgram(_programName)) == -1)
+				O3D_ERROR(E_InvalidOperation(String("Shader : Attempt to remove a unknown program <") << _programName << ">"));
+			else
+			{
+				T_ReferenceArray lToDetach;
+
+				for (IT_ReferenceArray it = m_references.begin(); it != m_references.end(); it++)
+					if ((*it)->getFragmentProgramIndex() == lProgramId)
+						lToDetach.push_back(*it);
+
+				for (IT_ReferenceArray it = lToDetach.begin() ; it != lToDetach.end() ; it++)
+					(*it)->detach();
+
+				IT_ProgramArray programIt = m_fragmentProgramArray.begin() + lProgramId;
+
+				// delete any shader
+				for (T_ProgramInfo::IT_ProgramMap it = programIt->programs.begin(); it != programIt->programs.end(); it++)
+					if (it->second.programId != 0)
+						glDeleteShader(it->second.programId);
+
+				// and the structure of the program
+				m_fragmentProgramArray.erase(programIt);
+			}
+		break;
+	case TYPE_GEOMETRY_PROGRAM:
+			if ((lProgramId = findGeometryProgram(_programName)) == -1)
+				O3D_ERROR(E_InvalidOperation(String("Shader : Attempt to remove a unknown program <") << _programName << ">"));
+			else
+			{
+				T_ReferenceArray lToDetach;
+
+				for (IT_ReferenceArray it = m_references.begin(); it != m_references.end(); it++)
+					if ((*it)->getGeometryProgramIndex() == lProgramId)
+						lToDetach.push_back(*it);
+
+				for (IT_ReferenceArray it = lToDetach.begin() ; it != lToDetach.end() ; it++)
+					(*it)->detach();
+
+				IT_ProgramArray programIt = m_geometryProgramArray.begin() + lProgramId;
+
+				// delete any shader
+				for (T_ProgramInfo::IT_ProgramMap it = programIt->programs.begin(); it != programIt->programs.end(); it++)
+					if (it->second.programId != 0)
+						glDeleteShader(it->second.programId);
+
+				// and the structure of the program
+				m_geometryProgramArray.erase(programIt);
+			}
+		break;
+	default:
+		{
+			O3D_ASSERT(0);
+			break;
+		}
+	}
+
+}
+
+/*---------------------------------------------------------------------------------------
+  unload the shader
+---------------------------------------------------------------------------------------*/
+void Shader::destroy()
+{
+	m_programName.destroy();
+	m_name.destroy();
+
+	for (IT_ProgramArray it = m_vertexProgramArray.begin(); it != m_vertexProgramArray.end(); it++)
+	{
+		for (T_ProgramInfo::IT_ProgramMap it2 = it->programs.begin(); it2 != it->programs.end(); it2++)
+			if (it2->second.programId != 0)
+				glDeleteShader(it2->second.programId);
+	}
+
+	for (IT_ProgramArray it = m_fragmentProgramArray.begin() ; it != m_fragmentProgramArray.end() ; it++)
+	{
+		for (T_ProgramInfo::IT_ProgramMap it2 = it->programs.begin(); it2 != it->programs.end(); it2++)
+			if (it2->second.programId != 0)
+				glDeleteShader(it2->second.programId);
+	}
+
+	for (IT_ProgramArray it = m_geometryProgramArray.begin() ; it != m_geometryProgramArray.end() ; it++)
+	{
+		for (T_ProgramInfo::IT_ProgramMap it2 = it->programs.begin(); it2 != it->programs.end(); it2++)
+			if (it2->second.programId != 0)
+				glDeleteShader(it2->second.programId);
+	}
+
+	m_vertexProgramArray.clear();
+	m_fragmentProgramArray.clear();
+	m_geometryProgramArray.clear();
+
+	T_ReferenceArray lArray = m_references;
+
+	for (std::vector<ShaderInstance*>::iterator itInstance = lArray.begin(); itInstance != lArray.end(); itInstance++)
+		((*itInstance)->detach());
+
+	O3D_ASSERT(m_instances.empty());
+}
+
+void Shader::buildInstance(ShaderInstance & _instance) const
+{
+	_instance.attach(const_cast<Shader*>(this));
+}
+
+//! Return the name of a given vertex program
+const String& Shader::getVertexProgramName(Int32 _vertexIndex) const
+{
+	if ((_vertexIndex < 0) || (_vertexIndex >= Int32(m_vertexProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid vertex index")));
+
+	return m_vertexProgramArray[_vertexIndex].programName;
+}
+
+//! Return the name of a given fragment program
+const String& Shader::getFragmentProgramName(Int32 _fragmentIndex) const
+{
+	if ((_fragmentIndex < 0) || (_fragmentIndex >= Int32(m_fragmentProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid fragment index")));
+
+	return m_fragmentProgramArray[_fragmentIndex].programName;
+}
+
+//! Return the name of a given geometry program
+const String& Shader::getGeometryProgramName(Int32 _geometryIndex) const
+{
+	if ((_geometryIndex < 0) || (_geometryIndex >= Int32(m_geometryProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid geometry index")));
+
+	return m_geometryProgramArray[_geometryIndex].programName;
+}
+
+//! Return the source of a given vertex program
+const CString& Shader::getVertexProgramSource(Int32 _vertexIndex) const
+{
+	if ((_vertexIndex < 0) || (_vertexIndex >= Int32(m_vertexProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid vertex index")));
+
+	return m_vertexProgramArray[_vertexIndex].programSource;
+}
+
+//! Return the source of a given fragment program
+const CString& Shader::getFragmentProgramSource(Int32 _fragmentIndex) const
+{
+	if ((_fragmentIndex < 0) || (_fragmentIndex >= Int32(m_fragmentProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid fragment index")));
+
+	return m_fragmentProgramArray[_fragmentIndex].programSource;
+}
+
+//! Return the source of a given geometry program
+const CString& Shader::getGeometryProgramSource(Int32 _geometryIndex) const
+{
+	if ((_geometryIndex < 0) || (_geometryIndex >= Int32(m_geometryProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid geometry index")));
+
+	return m_geometryProgramArray[_geometryIndex].programSource;
+}
+
+//! Return the state of a given vertex program
+Shader::ProgramState Shader::getVertexProgramState(
+		Int32 _vertexIndex,
+		const String & _options) const
+{
+	if ((_vertexIndex < 0) || (_vertexIndex >= Int32(m_vertexProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid vertex index")));
+
+	T_ProgramInfo::CIT_ProgramMap cit = m_vertexProgramArray[_vertexIndex].programs.find(_options);
+
+	if (cit == m_vertexProgramArray[_vertexIndex].programs.end())
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid vertex options")));
+
+	return cit->second.programState;
+}
+
+//! Return the state of a given fragment program
+Shader::ProgramState Shader::getFragmentProgramState(
+		Int32 _fragmentIndex,
+		const String & _options) const
+{
+	if ((_fragmentIndex < 0) || (_fragmentIndex >= Int32(m_fragmentProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid fragment index")));
+
+	T_ProgramInfo::CIT_ProgramMap cit = m_fragmentProgramArray[_fragmentIndex].programs.find(_options);
+
+	if (cit == m_fragmentProgramArray[_fragmentIndex].programs.end())
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid fragment options")));
+
+	return cit->second.programState;
+}
+
+//! Return the state of a given geometry program
+Shader::ProgramState Shader::getGeometryProgramState(
+		Int32 _geometryIndex,
+		const String & _options) const
+{
+	if ((_geometryIndex < 0) || (_geometryIndex >= Int32(m_geometryProgramArray.size())))
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid geometry index")));
+
+	T_ProgramInfo::CIT_ProgramMap cit = m_geometryProgramArray[_geometryIndex].programs.find(_options);
+
+	if (cit == m_geometryProgramArray[_geometryIndex].programs.end())
+		O3D_ERROR(E_IndexOutOfRange(String("Shader : Invalid geometry options")));
+
+	return cit->second.programState;
+}
+
+//! Find a vertex program
+Int32 Shader::findVertexProgram(const String & _programName) const
+{
+	Int32 lIndex = 0;
+
+	for (CIT_ProgramArray it = m_vertexProgramArray.begin() ; it != m_vertexProgramArray.end() ; it++, ++lIndex)
+	{
+		if (it->programName.compare(_programName, String::CASE_INSENSITIVE) == 0)
+			return lIndex;
+	}
+
+	return -1;
+}
+
+//! Find a fragment program
+Int32 Shader::findFragmentProgram(const String & _programName) const
+{
+	Int32 lIndex = 0;
+
+	for (CIT_ProgramArray it = m_fragmentProgramArray.begin() ; it != m_fragmentProgramArray.end() ; it++, ++lIndex)
+	{
+		if (it->programName.compare(_programName, String::CASE_INSENSITIVE) == 0)
+			return lIndex;
+	}
+
+	return -1;
+}
+
+
+//! Find a geometry program
+Int32 Shader::findGeometryProgram(const String & _programName) const
+{
+	Int32 lIndex = 0;
+
+	for (CIT_ProgramArray it = m_geometryProgramArray.begin() ; it != m_geometryProgramArray.end() ; it++, ++lIndex)
+	{
+		if (it->programName.compare(_programName, String::CASE_INSENSITIVE) == 0)
+			return lIndex;
+	}
+
+	return -1;
+}
+
+
+//---------------------------------------------------------------------------------------
+// ShaderInstance
+//---------------------------------------------------------------------------------------
+
+ShaderInstance::ShaderInstance():
+	m_shader(NULL),
+	m_pInstance(NULL),
+	m_uniformLocations(),
+	m_attribLocations()
+{
+}
+
+ShaderInstance::ShaderInstance(const ShaderInstance & _which):
+	m_shader(NULL),
+	m_pInstance(NULL),
+	m_uniformLocations(_which.m_uniformLocations),
+	m_attribLocations(_which.m_attribLocations)
+{
+	attach(_which.m_shader);
+
+	if ((m_pInstance = _which.m_pInstance) != NULL)
+		++(m_pInstance->refCounter);
+}
+
+ShaderInstance::~ShaderInstance()
+{
+	detach();
+}
+
+ShaderInstance & ShaderInstance::operator = (const ShaderInstance & _which)
+{
+	if (this == &_which)
+		return *this;
+
+	detach();
+
+	m_shader = _which.m_shader;
+	m_pInstance = _which.m_pInstance;
+
+	if (m_shader != NULL)
+	{
+		//m_pShader->useIt();
+		m_shader->m_references.push_back(this);
+	}
+
+	if (m_pInstance != NULL)
+		++m_pInstance->refCounter;
+
+	m_uniformLocations = _which.m_uniformLocations;
+	m_attribLocations = _which.m_attribLocations;
+
+	return *this;
+}
+
+void ShaderInstance::attach(Shader* _pShading)
+{
+	if (m_shader != _pShading)
+	{
+		detach();
+
+		m_shader = _pShading;
+
+		if (m_shader != NULL)
+		{
+			//m_pShader->useIt();
+			m_shader->m_references.push_back(this);
+		}
+	}
+}
+
+void ShaderInstance::detach()
+{
+	if (m_pInstance != NULL)
+	{
+		if (m_pInstance->pOwner == this) // It means this instance has bound the program
+		{
+			O3D_ASSERT(isInUse());
+
+			O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Attempt to detach a currently used shader")));
+
+			unbindShader();
+		}
+
+		if (--(m_pInstance->refCounter) == 0)
+		{
+			Shader::IT_InstanceArray itInstance =  std::find(m_shader->m_instances.begin(), m_shader->m_instances.end(), m_pInstance);
+			O3D_ASSERT(itInstance != m_shader->m_instances.end());
+
+			if (m_pInstance->shaderId != 0)
+				glDeleteProgram(m_pInstance->shaderId);
+
+			deletePtr(*itInstance);
+			m_shader->m_instances.erase(itInstance);
+		}
+
+		m_pInstance = NULL;
+	}
+
+	if (m_shader != NULL)
+	{
+		std::vector<ShaderInstance*>::iterator it = std::find(m_shader->m_references.begin(), m_shader->m_references.end(), this);
+		O3D_ASSERT(it != m_shader->m_references.end());
+
+		m_shader->m_references.erase(it);
+		//m_pShader->releaseIt();
+		m_shader = NULL;
+	}
+}
+
+//! bind the shader program
+void ShaderInstance::bindShader()
+{
+	if (!isLoaded())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Object not loaded")));
+	else if (!isDefined())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Attempt to bind a shader, but you need to select a vertex/fragment program first")));
+	else if (isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Attempt to bind twice the same shader")));
+	else
+	{
+		if (!isCompiled())
+			m_shader->compileInstance(*m_pInstance);
+
+		if (!isLinked())
+			m_shader->linkInstance(*m_pInstance);
+
+		#ifdef _DEBUG
+			if (m_shader->getScene()->getContext()->getCurrentShader() != 0)
+				O3D_ERROR(E_InvalidOperation(String("ShaderInstance : You must first unbound the current shader")));
+		#endif
+
+		O3D_ASSERT(m_pInstance->pOwner == NULL);
+		
+		m_shader->getScene()->getContext()->bindShader(m_pInstance->shaderId);
+
+		m_pInstance->shaderState |= Shader::SHADER_INUSE;
+		m_pInstance->pOwner = this;
+	}
+}
+
+//! unbound the shader program
+void ShaderInstance::unbindShader()
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Attempt to unbound a shader which is not currently running")));
+	else
+	{
+		#ifdef _DEBUG
+			if (m_shader->getScene()->getContext()->getCurrentShader() != m_pInstance->shaderId)
+				O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Shader's state is not synchronized with GLContext")));
+		#endif
+
+		O3D_ASSERT(m_pInstance->pOwner == this);
+
+		m_shader->getScene()->getContext()->bindShader(0);
+
+		m_pInstance->shaderState &= ~Shader::SHADER_INUSE;
+		m_pInstance->pOwner = NULL;
+	}
+}
+
+void ShaderInstance::assign(
+		Int32 _vertexIndex,
+		Int32 _fragmentIndex,
+		Int32 _geometryIndex,
+		const String & _options,
+		Shader::BuildType _type)
+{
+	if (!isLoaded())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Object not loaded")));
+
+	if ((_vertexIndex >= Int32(m_shader->m_vertexProgramArray.size())) || (_vertexIndex < 0))
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid vertex program index")));
+
+	if ((_fragmentIndex >= Int32(m_shader->m_fragmentProgramArray.size())) || (_fragmentIndex < 0))
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid fragment program index")));
+
+	if (_geometryIndex >= Int32(m_shader->m_geometryProgramArray.size()))
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid geometry program index")));
+
+	if (isDefined())
+	{
+		if (--(m_pInstance->refCounter) == 0)
+		{
+			Shader::IT_InstanceArray itInstance =  std::find(m_shader->m_instances.begin(), m_shader->m_instances.end(), m_pInstance);
+			O3D_ASSERT(itInstance != m_shader->m_instances.end());
+
+			if (m_pInstance->shaderId != 0)
+				glDeleteProgram(m_pInstance->shaderId);
+
+			deletePtr(*itInstance);
+			m_shader->m_instances.erase(itInstance);
+		}
+
+		m_pInstance = NULL;
+	}
+
+	for (Shader::IT_InstanceArray it = m_shader->m_instances.begin() ; it != m_shader->m_instances.end() ; it++)
+		if (((*it)->vertexProgramId == _vertexIndex) && ((*it)->fragmentProgramId == _fragmentIndex) &&
+			((*it)->geometryProgramId == _geometryIndex) && ((*it)->options == _options))
+		{
+			m_pInstance = (*it);
+			++(m_pInstance->refCounter);
+		}
+
+	if (m_pInstance == NULL)
+	{
+		Shader::T_InstanceInfo * lInfo = new Shader::T_InstanceInfo;
+		lInfo->vertexProgramId = _vertexIndex;
+		lInfo->fragmentProgramId = _fragmentIndex;
+		lInfo->geometryProgramId = _geometryIndex;
+		lInfo->options = _options;
+		lInfo->shaderId = 0;
+		lInfo->shaderState = Shader::SHADER_DEFINED | Shader::SHADER_LOADED;
+		lInfo->refCounter = 0;
+		lInfo->pOwner = NULL;
+
+		m_shader->m_instances.push_back(lInfo);
+
+		m_pInstance = m_shader->m_instances.back();
+		m_pInstance->refCounter++;
+	}
+
+	if (_type != Shader::BUILD_DEFINE)
+		build(_type);
+}
+
+void ShaderInstance::assign(
+		const String & _vertexProgram,
+		const String & _fragmentProgram,
+		const String & _geometryProgram,
+		const String & _options,
+		Shader::BuildType _type)
+{
+	if (!isLoaded())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Object not loaded")));
+
+	if (_vertexProgram.isEmpty())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid vertex program name")));
+
+	if (_fragmentProgram.isEmpty())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid fragment program name")));
+
+	Int32 lVertexIndex = m_shader->findVertexProgram(_vertexProgram);
+
+	if (lVertexIndex == -1)
+		O3D_ERROR(E_InvalidParameter(String("ShaderInstance : Unknown vertex program name <") << _vertexProgram << '>'));
+
+	Int32 lFragmentIndex = m_shader->findFragmentProgram(_fragmentProgram);
+
+	if (lFragmentIndex == -1)
+		O3D_ERROR(E_InvalidParameter(String("ShaderInstance : Unknown fragment program name <") << _fragmentProgram << '>'));
+
+	// optional geometry program
+	Int32 lGeometryIndex = -1;
+
+	if (_geometryProgram.isValid())
+	{
+		lGeometryIndex = m_shader->findGeometryProgram(_geometryProgram);
+
+		if (lGeometryIndex == -1)
+			O3D_ERROR(E_InvalidParameter(String("ShaderInstance : Unknown geometry program name <") << _geometryProgram << '>'));
+	}
+
+	assign(lVertexIndex, lFragmentIndex, lGeometryIndex, _options, _type);
+}
+
+void ShaderInstance::build(Shader::BuildType _type)
+{
+	if (!isLoaded())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Object not loaded")));
+
+	if (!isDefined())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Object not defined")));
+
+	if ((_type == Shader::BUILD_COMPILE) && (!isCompiled()))
+		m_shader->compileInstance(*m_pInstance);
+	else if (_type == Shader::BUILD_COMPILE_AND_LINK)
+	{
+		if (!isCompiled())
+			m_shader->compileInstance(*m_pInstance);
+
+		if (!isLinked())
+			m_shader->linkInstance(*m_pInstance);
+	}
+}
+
+//! Define an uniform int constant
+void ShaderInstance::setConstInt(const Char* name,const Int32 constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform1i(location,constant);
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform bool constant
+void ShaderInstance::setConstBool(const Char* name,const Bool constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform1i(location,Int32(constant));
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform float constant
+void ShaderInstance::setConstFloat(const Char* name,const Float constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform1f(location,constant);
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform O3DVector2f constant
+void ShaderInstance::setConstVector2(const Char* name,const Vector2f& constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform2fv(location,1,constant.getData());
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform O3DColor (4f) constant
+void ShaderInstance::setConstColor(const Char* name,const Color& constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform4fv(location,1,constant.getData());
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform O3DVector3 (3f) constant
+void ShaderInstance::setConstVector3(const Char* name,const Vector3& constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform3fv(location,1,constant.getData());
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform O3DVector3 (4f) with w to 1.0 constant
+void ShaderInstance::setConstVector4(const Char* name,const Vector3& constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform4f(location,constant[X],constant[Y],constant[Z],1.0f);
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+void ShaderInstance::setConstVector4(const Char* name,const Vector4& constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniform4fv(location,1,constant.getData());
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform O3DMatrix3 (9f) constant
+void ShaderInstance::setConstMatrix3(
+	const Char* name,
+	const Bool transpose,
+	const Matrix3& constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniformMatrix3fv(location,1,transpose,constant.getData());
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define an uniform O3DMatrix4 (16f) constant
+void ShaderInstance::setConstMatrix4(
+	const Char* name,
+	const Bool transpose,
+	const Matrix4& constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniformMatrix4fv(location,1,transpose,constant.getData());
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+//! Define n uniforms O3DMatrix4 (16f) constant from an array of O3DObject
+void ShaderInstance::setNConstMatrix4(
+	const Char* name,
+	Int32 num,
+	const Bool transpose,
+	const Float* constant)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+	if (location >= 0)
+		glUniformMatrix4fv(location,num,transpose,constant);
+	else
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+}
+
+void ShaderInstance::setConstTexture(const Char* name, Texture* pTexture, Int32 texUnit)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define define a texture if the shader is not bound")));
+
+    if (pTexture != nullptr)
+	{
+		Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+
+		if (location >= 0)
+		{
+			pTexture->getScene()->getContext()->setActiveTextureUnit(texUnit);
+			pTexture->bind();
+			glUniform1i(location,texUnit);
+		}
+		else
+			O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid texture name <") << name << " >"));
+	}
+	else
+		O3D_ERROR(E_InvalidParameter(String("ShaderInstance : Null texture")));
+}
+
+void ShaderInstance::setConstTexture(Int32 Location, Texture* pTexture, Int32 texUnit)
+{
+	if (!isInUse())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+    if (pTexture != nullptr)
+	{
+		if (Location >= 0)
+		{
+			pTexture->getScene()->getContext()->setActiveTextureUnit(texUnit);
+			pTexture->bind();
+			glUniform1i(Location,texUnit);
+		}
+		else
+			O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid texture location <") << pTexture->getName() << " >"));
+	}
+	else
+		O3D_ERROR(E_InvalidParameter(String("ShaderInstance : Null texture")));
+}
+
+Int32 ShaderInstance::getAttributeLocation(const Char * name) const
+{
+	if (!isLinked())
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : The shader must be linked to be able to get uniform variable location")));
+
+	Int32 lLocation = glGetAttribLocation(m_pInstance->shaderId,name);
+
+	if (lLocation == -1)
+		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : There is not attribute called <") << name << "> in the program <" << getProgramName() << ">"));
+	else
+		return lLocation;
+}
+
+//-----------------------------------------------------------------------------------
+// LOCATION CONTAINER
+//-----------------------------------------------------------------------------------
+
+void ShaderInstance::setUniform(Int32 _key, Int32 _value)
+{
+	O3D_ASSERT((_key >= 0) && (_key < 128));
+
+	if ((_key < 0) || (_key >= 128))
+		O3D_ERROR(E_InvalidOperation("Invalid key : must be <= 128"));
+
+	if (UInt32(_key) >= m_uniformLocations.size())
+		m_uniformLocations.resize(1+_key, Int32(O3D_INFINITE));
+
+	m_uniformLocations[_key] = _value;
+}
+
+Int32 ShaderInstance::getUniform(Int32 _key) const
+{
+	O3D_ASSERT((_key >= 0) && (_key < 128));
+
+	if ((_key < 0) || (_key >= 128))
+		O3D_ERROR(E_InvalidOperation("Invalid uniform key : must be <= 128"));
+
+	if ((UInt32(_key) >= m_uniformLocations.size()) || (m_uniformLocations[_key] == Int32(O3D_INFINITE)))
+		O3D_ERROR(E_InvalidOperation(String::print("Uniform key %d is not assigned", _key)));
+
+	return m_uniformLocations[_key];
+}
+
+void ShaderInstance::setAttribute(Int32 _key, UInt32 _value)
+{
+	O3D_ASSERT((_key >= 0) && (_key < 128));
+
+	if ((_key < 0) || (_key >= 128))
+		O3D_ERROR(E_InvalidOperation("Invalid attribute key : must be <= 128"));
+
+	if (UInt32(_key) >= m_attribLocations.size())
+		m_attribLocations.resize(1+_key, UInt32(O3D_INFINITE));
+
+	m_attribLocations[_key] = _value;
+}
+
+UInt32 ShaderInstance::getAttribute(Int32 _key) const
+{
+	O3D_ASSERT((_key >= 0) && (_key < 128));
+
+	if ((_key < 0) || (_key >= 128))
+		O3D_ERROR(E_InvalidOperation("Invalid attribute key : must be <= 128"));
+
+	if ((UInt32(_key) >= m_attribLocations.size()) || (m_attribLocations[_key] == O3D_INFINITE))
+		O3D_ERROR(E_InvalidOperation(String::print("Attribute key %d is not assigned", _key)));
+
+	return m_attribLocations[_key];
+}
+
+void ShaderInstance::removeUniform(Int32 _key)
+{
+	O3D_ASSERT((_key >= 0) && (_key < 128));
+
+	if ((_key < 0) || (_key >= 128))
+		O3D_ERROR(E_InvalidOperation("Invalid uniform key : must be <= 128"));
+
+	if (UInt32(_key) < m_uniformLocations.size())
+		m_uniformLocations[_key] = O3D_INFINITE;
+}
+
+void ShaderInstance::removeUniforms()
+{
+	m_uniformLocations.clear();
+}
+
+void ShaderInstance::removeAttribute(Int32 _key)
+{
+	O3D_ASSERT((_key >= 0) && (_key < 128));
+
+	if ((_key < 0) || (_key >= 128))
+		O3D_ERROR(E_InvalidOperation("Invalid attribute key : must be <= 128"));
+
+	if (UInt32(_key) < m_attribLocations.size())
+		m_attribLocations[_key] = O3D_INFINITE;
+}
+
+void ShaderInstance::removeAttributes()
+{
+	m_attribLocations.clear();
+}
+
