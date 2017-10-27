@@ -208,7 +208,7 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
 endif()
 
 # Config.h and shaders.zip
-install (FILES src/shaders.zip DESTINATION share/o3d)
+install (FILES ${CMAKE_BINARY_DIR}/src/shaders.zip DESTINATION share/o3d)
 
 # Headers
 install (FILES ${CORE_HXX} DESTINATION include/o3d/core)

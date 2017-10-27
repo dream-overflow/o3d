@@ -100,7 +100,29 @@ ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	#		OpenAL32)
 ENDIF()
 
+
+# build shaders
+
+#add_custom_target(create_zip COMMAND
+#    ${CMAKE_COMMAND} -E tar cvzf -r shaders.zip
+#       "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
+
+add_custom_target(copy_shaders 
+	COMMAND	${CMAKE_COMMAND} -E copy_directory
+			"${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+    		"${CMAKE_CURRENT_BINARY_DIR}/shaders/")
+
+add_custom_target(zip_shaders
+	COMMAND	zip -r shaders.zip
+    	"shaders")
+
+#execute_process(
+#    COMMAND
+#        "zip -r shaders.zip"
+#        	"${CMAKE_CURRENT_SOURCE_DIR}/shaders" 
+#    RESULT_VARIABLE _result
+#)
+
 # Install
 
 install (TARGETS ${O3D_LIB_NAME} DESTINATION lib)
-
