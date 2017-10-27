@@ -299,21 +299,24 @@ void SkyBox::processAllFaces(Shadable::ProcessingPass pass)
 
 void SkyBox::attribute(VertexAttributeArray mode, UInt32 location)
 {
-	if (mode == V_VERTICES_ARRAY)
+    if (mode == V_VERTICES_ARRAY) {
 		m_vertices[m_currentSide]->attribute(location, 3, 0, 0);
-	else if (mode == V_TEXCOORDS_2D_1_ARRAY)
+    } else if (mode == V_TEXCOORDS_2D_1_ARRAY) {
 		m_texCoords[m_currentSide]->attribute(location, 2, 0, 0);
+    }
 }
 
 // draw skybox
 void SkyBox::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
     // only drawn in ambient or deferred pass
-    if (drawInfo.pass != DrawInfo::AMBIENT_PASS && drawInfo.pass != DrawInfo::DEFERRED_PASS)
+    if (drawInfo.pass != DrawInfo::AMBIENT_PASS && drawInfo.pass != DrawInfo::DEFERRED_PASS) {
         return;
+    }
 
 	//Float boxSize = m_size * .5f;
 	//Float yBase = boxSize;
@@ -324,10 +327,8 @@ void SkyBox::draw(const DrawInfo &drawInfo)
 	setUpModelView();
 
 	// render the six sides
-	for (m_currentSide = 0; m_currentSide < 6; ++m_currentSide)
-	{
-		if (m_textures[m_currentSide].isValid())
-		{
+	for (m_currentSide = 0; m_currentSide < 6; ++m_currentSide)	{
+        if (m_textures[m_currentSide].isValid()) {
             m_material.getTechnique(0).getPass(0).setDiffuseMap(m_textures[m_currentSide].get());
             m_material.processMaterial(*this, nullptr, nullptr, drawInfo);
 		}
@@ -337,8 +338,9 @@ void SkyBox::draw(const DrawInfo &drawInfo)
 // Serialization
 Bool SkyBox::writeToFile(OutStream &os)
 {
-    if (!SpecialEffects::writeToFile(os))
+    if (!SpecialEffects::writeToFile(os)) {
 		return False;
+    }
 
     os   << m_size
 	     << m_halfHeight
@@ -346,12 +348,12 @@ Bool SkyBox::writeToFile(OutStream &os)
          << m_material.getTechnique(0).getPass(0).getMapFiltering(MaterialPass::DIFFUSE_MAP)
          << m_material.getTechnique(0).getPass(0).getMapAnisotropy(MaterialPass::DIFFUSE_MAP);
 
-	for (Int32 i = 0 ; i < 6 ; ++i)
-	{
-		if (m_textures[i])
+    for (Int32 i = 0 ; i < 6 ; ++i) {
+        if (m_textures[i]) {
             os << m_textures[i]->getResourceName();
-		else
+        } else {
             os << String("");
+        }
 	}
 
 	return True;
@@ -359,8 +361,9 @@ Bool SkyBox::writeToFile(OutStream &os)
 
 Bool SkyBox::readFromFile(InStream &is)
 {
-    if (!SpecialEffects::readFromFile(is))
+    if (!SpecialEffects::readFromFile(is)) {
 		return False;
+    }
 
     Color diffuse;
 	Texture::FilteringMode filtering;
@@ -378,17 +381,16 @@ Bool SkyBox::readFromFile(InStream &is)
 
     String textureResourceName;
 
-	for (Int32 i = 0; i < 6; ++i)
-	{
+    for (Int32 i = 0; i < 6; ++i) {
         is >> textureResourceName;
-        if (textureResourceName.isValid())
+        if (textureResourceName.isValid()) {
 			m_textures[i] = getScene()->getTextureManager()->addTexture2D(
                     textureResourceName,
 					filtering > Texture::LINEAR_FILTERING);
-		else
+        } else {
             m_textures[i] = nullptr;
+        }
 	}
 
 	return True;
 }
-
