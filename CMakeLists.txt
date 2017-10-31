@@ -214,6 +214,9 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
 	install (FILES ${CMAKE_BINARY_DIR}/include/objective3dconfig.h DESTINATION lib/objective3d)
 endif()
 
+# Cmake module
+install (FILES ${PROJECT_SOURCE_DIR}/cmake/Modules/FindObjective3D.cmake DESTINATION share/cmake/Modules)
+
 # Config.h and shaders.zip
 install (FILES ${CMAKE_BINARY_DIR}/src/shaders.zip DESTINATION share/o3d)
 

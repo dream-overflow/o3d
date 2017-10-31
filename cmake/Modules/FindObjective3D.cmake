@@ -1,0 +1,59 @@
+# - Try to find the Objective3D libraries
+# Once done this will define
+#
+#  OBJECTIVE3D_FOUND - System has Objective3D
+#  OBJECTIVE3D_INCLUDE_DIR - The Objective3D include directory
+#  OBJECTIVE3D_INCLUDE_FILE_objective3dconfig - The Objective3D config header
+#  OBJECTIVE3D_INCLUDE_DIR_objective3dconfig - The Objective3D config header include directory
+#  OBJECTIVE3D_LIBRARY - The Objective3D library
+#  OBJECTIVE3D_SHADERS_ZIP - The Objective3D shaders.zip file
+
+# Copyright (c) 2017, DreamOverflow, <frederic.scherma@dreamoverflow.org>
+#
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+
+if (UNIX)
+	include (CheckLibraryExists)
+
+	# @todo is there another way to check Debug Release and how to fallback to one of the two options
+	if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+		find_path(OBJECTIVE3D_INCLUDE_DIR o3d)
+		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig lib/objective3d-dbg/objective3dconfig.h)
+		find_library(OBJECTIVE3D_LIBRARY NAMES objective3d-dbg)
+	else()
+		find_path(OBJECTIVE3D_INCLUDE_DIR o3d)
+		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig lib/objective3d/objective3dconfig.h)
+		find_library(OBJECTIVE3D_LIBRARY NAMES objective3d)
+	endif()
+
+	get_filename_component(OBJECTIVE3D_INCLUDE_DIR_objective3dconfig ${OBJECTIVE3D_INCLUDE_FILE_objective3dconfig} DIRECTORY)
+	get_filename_component(OBJECTIVE3D_LIBRARY_DIR ${OBJECTIVE3D_LIBRARY} DIRECTORY)
+
+	# shaders.zip
+	find_file(OBJECTIVE3D_SHADERS_ZIP share/o3d/shaders.zip)
+
+	mark_as_advanced(OBJECTIVE3D_INCLUDE_DIR OBJECTIVE3D_LIBRARY)
+
+	if (OBJECTIVE3D_INCLUDE_DIR AND OBJECTIVE3D_LIBRARY AND OBJECTIVE3D_INCLUDE_FILE_objective3dconfig AND OBJECTIVE3D_SHADERS_ZIP)
+		set(OBJECTIVE3D_FOUND TRUE)
+	else ()
+		set(OBJECTIVE3D_FOUND FALSE)
+	endif ()
+
+	if (OBJECTIVE3D_FOUND)
+		if (NOT objective3d_FIND_QUIETLY)
+      		message(STATUS "Found Objective3D: ${OBJECTIVE3D_LIBRARY}")
+		endif (NOT objective3d_FIND_QUIETLY)
+	else (OBJECTIVE3D_FOUND)
+		if (objective3d_FIND_REQUIRED)
+			message("*****************************************************")
+			message_color(${TextError} "Error : Objective3D library not found")
+			message("*****************************************************")
+			message(FATAL_ERROR "Could NOT find Objective3D library")
+		endif (objective3d_FIND_REQUIRED)
+		if (NOT objective3d_FIND_QUITELY)
+			message_color(${TextWarning} "Could NOT find Objective3D library")
+		endif (NOT objective3d_FIND_QUITELY)
+	endif (OBJECTIVE3D_FOUND)
+endif (UNIX)
