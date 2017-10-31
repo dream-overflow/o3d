@@ -7,6 +7,11 @@ set (O3D_VERSION_BETA 1)
 set (O3D_VERSION 0x0130)
 set (O3D_VERSION_FILE_MIN 0x0120)
 
+
+set (DREAMOVERFLOW_CMAKE_MODULES $ENV{DREAMOVERFLOW_CMAKE_MODULES})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${DREAMOVERFLOW_CMAKE_MODULES})
+include(dreamoverflow)
+
 include_directories("${PROJECT_SOURCE_DIR}/include")
 include_directories("${PROJECT_SOURCE_DIR}/third")
 
@@ -46,12 +51,14 @@ include(FindOpenGL)
 #include(Bullet)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	include(FindOpenAL)
-	include(FindFreetype)
-	include(FindJPEG)
-	include(FindPNG)
-	include(FindX11)
-	include(FindPkgConfig)
+	find_package(OpenAL REQUIRED)
+	find_package(Freetype REQUIRED)
+	find_package(JPEG REQUIRED)
+	find_package(PNG REQUIRED)
+	find_package(X11 REQUIRED)
+	find_package(PkgConfig REQUIRED)
+	find_package(Xrandr REQUIRED)
+	find_package(OggVorbis REQUIRED)
 	pkg_check_modules(SDL2 sdl2)
 	
 	include_directories(${FREETYPE_INCLUDE_DIR_ft2build})

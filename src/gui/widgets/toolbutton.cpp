@@ -247,11 +247,11 @@ Bool ToolButton::mouseLeftPressed(Int32 x, Int32 y)
 {
     ((Gui*)getScene()->getGui())->getWidgetManager()->lockWidgetMouse();
 
-    if (!isActive())
+    if (!isActive()) {
         return True;
+    }
 
-	if (m_hover)
-	{
+    if (m_hover) {
 		m_pressed = True;
 		setDirty();
 
@@ -268,32 +268,27 @@ Bool ToolButton::mouseLeftReleased(Int32 x, Int32 y)
 {
     ((Gui*)getScene()->getGui())->getWidgetManager()->unlockWidgetMouse();
 
-    if (!isActive())
+    if (!isActive()) {
         return True;
+    }
 
-	if (m_pressed)
-	{
+    if (m_pressed) {
 		m_pressed = m_waspressed = False;
 
-		if (m_ButtonStyle == TWO_STATES_BUTTON)
-		{
+        if (m_ButtonStyle == TWO_STATES_BUTTON) {
 			m_pushed = !m_pushed;
 
 			// signals
 			onToolButtonReleased();
 			onToolButtonStateChanged(m_pushed);
-		}
-		else if (m_ButtonStyle == PUSH_BUTTON)
-		{
+        } else if (m_ButtonStyle == PUSH_BUTTON) {
 			// signals
 			onToolButtonReleased();
 			onToolButtonPushed();
 		}
 
 		setDirty();
-	}
-	else
-	{
+    } else {
 		m_waspressed = False;
 	}
 
@@ -305,25 +300,23 @@ Bool ToolButton::mouseMove(Int32 x, Int32 y)
     x -= m_pos.x();
     y -= m_pos.y();
 
-    if (!isActive())
+    if (!isActive()) {
         return True;
+    }
 
-	if (m_waspressed)
-	{
+    if (m_waspressed) {
 		// no negative part
-		if (x < 0 || y < 0)
+        if (x < 0 || y < 0) {
 			return True;
+        }
 
-        if ((x < m_size.x()) && (y < m_size.y()))
-		{
+        if ((x < m_size.x()) && (y < m_size.y())) {
 			m_waspressed = False;
 			m_hover = m_pressed = True;
 		}
 
 		return True;
-	}
-	else if (m_pressed)
-	{
+    } else if (m_pressed) {
 		// if move out when pressed
         if (x < 0 || y < 0 || x >= m_size.x() || y >= m_size.y())
 		{
