@@ -657,7 +657,7 @@ String AppWindow::copyFromClipboard(Bool primary)
         {
             WCHAR *buffer = (WCHAR*)(GlobalLock(hglb));
             if (buffer) {
-                text = (Wchar*)buffer;
+                text = (WChar*)buffer;
                 text.replace("\r\n", "\n");
 
                 GlobalUnlock(hglb);

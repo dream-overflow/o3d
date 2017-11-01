@@ -16,7 +16,7 @@
 #include "o3d/core/instream.h"
 #include "o3d/core/outstream.h"
 
-#ifdef O3D_VC_COMPILER
+#ifdef O3D_WINDOWS
 #include <time.h>
 #else
 #include <sys/time.h>
@@ -76,8 +76,8 @@ static const WChar * shortDayString[] = {
 // class Date
 //---------------------------------------------------------------------------------------
 
-Date* Date::sm_null = NULL;
-Date* Date::sm_startDate = NULL;
+Date* Date::sm_null = nullptr;
+Date* Date::sm_startDate = nullptr;
 
 void Date::init()
 {
@@ -530,7 +530,7 @@ Bool Date::setFromString(const String & _value, const String & _arg)
 
 void Date::setCurrent()
 {
-#ifdef O3D_VC_COMPILER
+#ifdef O3D_WINDOWS
 	_tzset();
 
 	__time64_t ltime;
@@ -568,6 +568,24 @@ void Date::setCurrent()
 
 void Date::setMsTime(Int64 ms)
 {
+#ifdef O3D_WINDOWS
+    _tzset();
+
+    __time64_t ltime;
+    ltime = ms / 1000;
+
+    tm local;
+    _localtime64_s(&local,&ltime);
+
+    year = UInt16(local.tm_year + 1900);
+    month = Month(local.tm_mon);
+    day = Day(local.tm_wday);
+    hour = UInt8(local.tm_hour);
+    minute = UInt8(local.tm_min);
+    second = UInt8(local.tm_sec);
+    mday = UInt8(local.tm_mday);
+    millisecond = 0;
+#else
     struct timeval ltime;
     ltime.tv_sec = ms / 1000;
     ltime.tv_usec = (ms % 1000) * 1000;
@@ -585,11 +603,12 @@ void Date::setMsTime(Int64 ms)
     second = local->tm_sec;
     mday = local->tm_mday;
     millisecond = ltime.tv_usec / 1000;
+#endif
 }
 
 time_t Date::toTime_t() const
 {
-#ifdef O3D_VC_COMPILER
+#ifdef O3D_WINDOWS
 	tm lObjectTime;
 
 	lObjectTime.tm_sec = second;
@@ -622,7 +641,7 @@ time_t Date::toTime_t() const
 
 Bool Date::isOlderThan(const Date& today, UInt32 days)
 {
-#ifdef O3D_VC_COMPILER
+#ifdef O3D_WINDOWS
 	__time64_t start,end;
 	double elapsed;
 

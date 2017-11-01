@@ -305,4 +305,3 @@ void PCLODMaterial::generateSample(UInt32 _samplePrecision)
 		m_sample[_samplePrecision] = pNewSample;
 	}
 }
-

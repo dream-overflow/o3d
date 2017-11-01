@@ -9,10 +9,10 @@
 
 #include "o3d/audio/precompiled.h"
 
+#include "o3d/core/debug.h"
+
 #include "o3d/audio/albuffer.h"
 #include "o3d/audio/al.h"
-
-#include "o3d/core/debug.h"
 
 using namespace o3d;
 
@@ -77,10 +77,10 @@ void ALBuffer::load(const Sound &snd)
 			sndSize = loadSound(m_bufferId, snd);
 			break;
 
-		default:
+        default:
 			sndSize = 0;
-			O3D_ERROR(E_InvalidFormat("The sound type is not compatible"));
-			break;
+            O3D_ERROR(E_InvalidFormat("The sound type is not compatible"));
+            break;
 	}
 
 	if (realloc)
@@ -146,4 +146,3 @@ UInt32 ALBuffer::loadSound(UInt32 id, const Sound &snd)
 
 	return snd.getSize();
 }
-

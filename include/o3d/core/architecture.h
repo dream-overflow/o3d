@@ -7,13 +7,6 @@
  * @details 
  */
 
-/**
- * @file Architecture.h
- * Include for files that have OS bases dependencies.
- * @date 2002-07-24
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
- */
-
 #ifndef _O3D_ARCHITECTURE_H
 #define _O3D_ARCHITECTURE_H
 
@@ -89,6 +82,8 @@
 
 	#undef min
 	#undef max
+
+    #undef ERROR
 #endif
 
 //! MAX_PATH isn't defined under UNIX
@@ -105,4 +100,3 @@
 #endif
 
 #endif // _O3D_ARCHITECTURE_H
-

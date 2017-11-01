@@ -111,4 +111,3 @@ void Map2dDrawer::drawPicking()
     // camera clear
     camera.clearCameraChanged();
 }
-

@@ -417,4 +417,3 @@ void TextZone::resetHighlight()
     m_highlight[0] = m_highlight[1] = 0;
     setDirty();
 }
-

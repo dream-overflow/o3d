@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8)
 project (O3D)
 
 set (O3D_VERSION_MAJOR 1)
@@ -7,9 +7,9 @@ set (O3D_VERSION_BETA 1)
 set (O3D_VERSION 0x0130)
 set (O3D_VERSION_FILE_MIN 0x0120)
 
-
 set (DREAMOVERFLOW_CMAKE_MODULES $ENV{DREAMOVERFLOW_CMAKE_MODULES})
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${DREAMOVERFLOW_CMAKE_MODULES})
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${DREAMOVERFLOW_CMAKE_MODULES})
+
 include(dreamoverflow)
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
@@ -47,31 +47,48 @@ endif()
 # externals libraries
 #----------------------------------------------------------
 
-include(FindOpenGL)
-#include(Bullet)
+set (CMAKE_FIND_ROOT_PATH ${CMAKE_FIND_ROOT_PATH} $ENV{PREFIX})
+# set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules)
+# message(${CMAKE_MODULE_PATH})
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	set(CMAKE_PREFIX_PATH $ENV{PREFIX} ${CMAKE_PREFIX_PATH})
+	set(CMAKE_INCLUDE_PATH $ENV{PREFIX}/include ${CMAKE_INCLUDE_PATH})
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
+find_package(OpenGL REQUIRED)
+find_package(OpenAL REQUIRED)
+find_package(Freetype REQUIRED)
+find_package(JPEG REQUIRED)
+find_package(PNG REQUIRED)
+find_package(OggVorbis REQUIRED)
+#find_package(Bullet REQUIRED)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	find_package(OpenAL REQUIRED)
-	find_package(Freetype REQUIRED)
-	find_package(JPEG REQUIRED)
-	find_package(PNG REQUIRED)
+	find_package(Threads REQUIRED)
 	find_package(X11 REQUIRED)
 	find_package(PkgConfig REQUIRED)
-	find_package(Xrandr REQUIRED)
-	find_package(OggVorbis REQUIRED)
-	pkg_check_modules(SDL2 sdl2)
+	find_package(Xrandr REQUIRED)	
 	
-	include_directories(${FREETYPE_INCLUDE_DIR_ft2build})
-	include_directories(${FREETYPE_INCLUDE_DIR_freetype2})	
+	pkg_check_modules(SDL2 sdl2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	include(FindX11)
+	find_package(Threads REQUIRED)
+	find_package(X11 REQUIRED)
+	find_package(PkgConfig REQUIRED)
+	find_package(Xrandr REQUIRED)
+
+	pkg_check_modules(SDL2 sdl2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	include(FindPkgConfig)
-	pkg_check_modules(FREETYPE freetype2)
+	find_package(PkgConfig REQUIRED)
+
+	pkg_check_modules(SDL2 sdl2)
+
+	IF(${TOOLCHAIN_PREFIX} MATCHES "x86_64-w64-mingw32")
+	ENDIF()
 
 	#set (O3D_DEPS_PATH $ENV{O3D_DEPS_PATH})
 	#set (OPENAL_PATH $ENV{OPENAL_PATH})
@@ -83,11 +100,11 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	#link_directories("${OPENAL_PATH}/libs/Win32")
 	#link_directories("${OPENAL_PATH}/lib")
 
-	#	set (O3D_DEPS_INCLUDE /home/frederic/dev/mw32/include)
-	#	set (O3D_DEPS_LIB /home/frederic/dev/mw32/lib)
-
 	include_directories(${FREETYPE_INCLUDE_DIRS})
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
+include_directories(${FREETYPE_INCLUDE_DIR_ft2build})
+include_directories(${FREETYPE_INCLUDE_DIR_freetype2})
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
@@ -122,6 +139,7 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
 	include_directories(${LIB_PATH}/lib/objective3d)
 	set(LIB_EXT "")
 endif()
+
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
 	if (O3D_USE_SSE2)
@@ -247,4 +265,3 @@ install (FILES ${PHYSIC_HXX} DESTINATION include/o3d/physic)
 install (FILES ${GUI_HXX} DESTINATION include/o3d/gui)
 install (FILES ${GUI_WIDGETS_HXX} DESTINATION include/o3d/gui/widgets)
 install (FILES ${TINYXML_HXX} DESTINATION include/tinyxml)
-

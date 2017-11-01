@@ -13,17 +13,17 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-if (UNIX)
+if (UNIX OR MINGW)
 	include (CheckLibraryExists)
 
 	# @todo is there another way to check Debug Release and how to fallback to one of the two options
 	if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
 		find_path(OBJECTIVE3D_INCLUDE_DIR o3d)
-		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig lib/objective3d-dbg/objective3dconfig.h)
+		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig objective3dconfig.h HINTS ENV PREFIX PATH_SUFFIXES lib/objective3d-dbg)
 		find_library(OBJECTIVE3D_LIBRARY NAMES objective3d-dbg)
 	else()
 		find_path(OBJECTIVE3D_INCLUDE_DIR o3d)
-		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig lib/objective3d/objective3dconfig.h)
+		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig objective3dconfig.h HINTS ENV PREFIX PATH_SUFFIXES lib/objective3d)
 		find_library(OBJECTIVE3D_LIBRARY NAMES objective3d)
 	endif()
 
@@ -31,7 +31,7 @@ if (UNIX)
 	get_filename_component(OBJECTIVE3D_LIBRARY_DIR ${OBJECTIVE3D_LIBRARY} DIRECTORY)
 
 	# shaders.zip
-	find_file(OBJECTIVE3D_SHADERS_ZIP share/o3d/shaders.zip)
+	find_file(OBJECTIVE3D_SHADERS_ZIP shaders.zip HINTS ENV PREFIX PATH_SUFFIXES share/o3d)
 
 	mark_as_advanced(OBJECTIVE3D_INCLUDE_DIR OBJECTIVE3D_LIBRARY)
 
@@ -56,4 +56,4 @@ if (UNIX)
 			message_color(${TextWarning} "Could NOT find Objective3D library")
 		endif (NOT objective3d_FIND_QUITELY)
 	endif (OBJECTIVE3D_FOUND)
-endif (UNIX)
+endif (UNIX OR MINGW)
