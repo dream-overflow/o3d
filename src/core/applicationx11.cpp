@@ -70,8 +70,9 @@ void Application::apiInit()
 
     ms_display = reinterpret_cast<_DISP>(XOpenDisplay(NULL));
 
-	if (!ms_display)
+    if (!ms_display) {
 		O3D_ERROR(E_InvalidResult("Failed to open a connection on X11 display"));
+    }
 
 	// enable detectable auto repeat
 	Display *display = reinterpret_cast<Display*>(ms_display);
@@ -101,11 +102,12 @@ void Application::apiQuit()
 {
 	// restore detectable auto repeat to its old state
 	Display *display = reinterpret_cast<Display*>(ms_display);
-	Bool supported_rtrn;
-	XkbSetDetectableAutoRepeat(display, setDetectableAutoRepeat, &supported_rtrn);
 
-	if (ms_display)
-        XCloseDisplay(reinterpret_cast<Display*>(ms_display));
+    if (display) {
+        Bool supported_rtrn;
+        XkbSetDetectableAutoRepeat(display, setDetectableAutoRepeat, &supported_rtrn);
+        XCloseDisplay(display);
+    }
 }
 
 static Int32 interpretUserEvent(XEvent &event, void *& data)
@@ -121,8 +123,7 @@ static Int32 pending(Display *display, UInt32 timeout)
 {
 	UInt32 sTime = System::getMsTime();
 
-	for(;;)
-	{
+	for(;;)	{
 		XFlush(display);
 		if (XEventsQueued(display, QueuedAlready)) {
 			return 1;
@@ -142,8 +143,9 @@ static Int32 pending(Display *display, UInt32 timeout)
 			}
 		}
 
-		if (System::getMsTime() - sTime >= timeout)
+        if (System::getMsTime() - sTime >= timeout) {
 			return 0;
+        }
 
         System::waitMs(2);
 	}
@@ -158,21 +160,18 @@ void Application::run()
 	//Bool isEvent = False;
 	AppWindow::EventData eventData;
 
-	while (!quit || EvtManager::instance()->isPendingEvent())
-	{
+    while (!quit || EvtManager::instance()->isPendingEvent()) {
 		//isEvent = False;
         ms_currAppWindow = nullptr;
 
         EvtManager::instance()->processEvent();
 
 	    // handle the events in the queue
-	    while (pending(display, 2)/*XPending(display)*/ > 0)
-	    {
+        while (pending(display, 2)/*XPending(display)*/ > 0) {
             XNextEvent(display, &event);
 
 			//isEvent = True;
-	        switch (event.type)
-	        {
+            switch (event.type) {
 	        	/*case CreateNotify:
 	        		ms_currAppWindow = searchAppWindow(static_cast<_HWND>(event.xcreatewindow.window));
 	        		if (ms_currAppWindow)
@@ -443,10 +442,8 @@ void Application::run()
                     reply.time = request->time;
 
                     // They want to know what we can provide/offer
-                    if (request->target == XA_TARGETS)
-                    {
-                        Atom possibleTargets[] =
-                        {
+                    if (request->target == XA_TARGETS) {
+                        Atom possibleTargets[] = {
                             XA_STRING,
                             XA_UTF8_STRING,
                             XA_COMPOUND_TEXT
@@ -455,12 +452,10 @@ void Application::run()
                         XChangeProperty(display, request->requestor,
                                         request->property, XA_ATOM, 32, PropModeReplace,
                                         (unsigned char *) possibleTargets, 3);
-                    }
-                    // They want a string (all we can provide)
-                    else if (request->target == XA_STRING ||
-                             request->target == XA_UTF8_STRING ||
-                             request->target == XA_COMPOUND_TEXT)
-                    {
+                    } else if (request->target == XA_STRING ||
+                               request->target == XA_UTF8_STRING ||
+                               request->target == XA_COMPOUND_TEXT) {
+                        // They want a string (all we can provide)
                         int len;
                         char *xdata = XFetchBytes(display, &len);
 
@@ -469,9 +464,7 @@ void Application::run()
                                         PropModeReplace, (unsigned char *) xdata,
                                         len);
                         XFree(xdata);
-                    }
-                    else
-                    {
+                    } else {
                         // Did not have what they wanted, so no property set
                         reply.property = None;
                     }
@@ -487,20 +480,20 @@ void Application::run()
 	    }
 
 		// process update/paint event if necessary for each window
-		for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it)
-		{
-			if (it->second->isRunning())
-			{
+        for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it) {
+            if (it->second->isRunning()) {
 				it->second->processEvent(AppWindow::EVT_UPDATE, eventData);
                 it->second->processEvent(AppWindow::EVT_PAINT, eventData);
 			}
 		}
 
-//		if (!isEvent)
+//		if (!isEvent) {
 //			System::waitMs(2);
+//      }
 
-		if (ms_appWindowMap.empty())
+        if (ms_appWindowMap.empty()) {
 			quit = True;
+        }
 	}
 }
 
@@ -508,6 +501,9 @@ void Application::run()
 void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
 {
 	Display *display = reinterpret_cast<Display*>(ms_display);
+    if (display == nullptr) {
+        return;
+    }
 
     XEvent event;
 	memset(&event, 0, sizeof(event));
@@ -530,4 +526,3 @@ void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
 }
 
 #endif // O3D_X11
-

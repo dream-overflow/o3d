@@ -25,8 +25,9 @@ using namespace o3d;
 void Application::apiInit()
 {
 	// SDL init with video and thread modules. You can un-comment the flag on X11 systems
-	if (SDL_Init(SDL_INIT_VIDEO) == -1)
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
 		O3D_ERROR(E_InvalidResult("SDL_Init return -1"));
+    }
 }
 
 void Application::apiQuit()
@@ -41,16 +42,13 @@ void Application::run()
 	SDL_Event event;
 	AppWindow::EventData eventData;
 
-	while (!quit || EvtManager::instance()->isPendingEvent())
-	{
+    while (!quit || EvtManager::instance()->isPendingEvent()) {
         EvtManager::instance()->processEvent();
 
 		ms_currAppWindow = NULL;
 
-		if (SDL_WaitEventTimeout(&event, 2)) do
-		{
-			switch (event.type)
-			{
+        if (SDL_WaitEventTimeout(&event, 2)) do {
+            switch (event.type) {
 				case SDL_QUIT:
 					quit = True;
 					break;
@@ -241,17 +239,14 @@ void Application::run()
 		} while (SDL_PollEvent(&event));
 
 		// process update/paint event if necessary for each window
-		for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it)
-		{
-			if (it->second->isRunning())
-			{
+        for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it) {
+            if (it->second->isRunning()) {
 				it->second->processEvent(AppWindow::EVT_UPDATE, eventData);
 				it->second->processEvent(AppWindow::EVT_PAINT, eventData);
 			}
 		}
 
-		if (ms_appWindowMap.empty())
-		{
+        if (ms_appWindowMap.empty()) {
 			SDL_Event event;
 			event.type = SDL_QUIT;
 			SDL_PushEvent(&event);
@@ -262,6 +257,10 @@ void Application::run()
 // Push a user application event.
 void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
 {
+    if (ms_display == nullptr) {
+        return;
+    }
+
 	SDL_Event event;
 	event.type = SDL_USEREVENT;
 	event.user.windowID = hWnd;
@@ -273,4 +272,3 @@ void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
 }
 
 #endif // O3D_SDL
-

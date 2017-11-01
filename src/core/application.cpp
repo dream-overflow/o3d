@@ -40,8 +40,9 @@ Bool Application::ms_displayError = False;
 // Objective-3D initialization
 void Application::init(AppSettings settings, Int32 argc, Char **argv)
 {
-	if (ms_init)
+    if (ms_init) {
 		return;
+    }
 
     ms_mappedObject = new StringMap<BaseObject*>;
 
@@ -98,8 +99,9 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 // Objective-3D terminate
 void Application::quit()
 {
-	if (!ms_init)
+    if (!ms_init) {
 		return;
+    }
 
     ms_init = False;
 

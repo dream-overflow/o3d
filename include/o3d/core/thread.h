@@ -258,7 +258,7 @@ public:
 	//! constructor
 	Synchronize();
 	//! destructor
-	~Synchronize();
+    ~Synchronize() noexcept(false);
 
 	//! Wait for the main thread
 	//! Return false if timeout
@@ -379,4 +379,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_THREAD_H
-

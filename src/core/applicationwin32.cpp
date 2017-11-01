@@ -224,6 +224,10 @@ void Application::run()
 // Push a user application event.
 void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
 {
+    if (ms_display == nullptr) {
+        return;
+    }
+
 	PostThreadMessageW(
 		ThreadManager::getMainThreadId(),
 		WM_USER,
@@ -232,4 +236,3 @@ void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
 }
 
 #endif // O3D_WIN32
-

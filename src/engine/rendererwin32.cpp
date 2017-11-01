@@ -132,9 +132,9 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	}
 	else if (version && (version[0] > '4'))
 	{
-		// try an OpenGL 4.2 context.
+        // try an OpenGL 4.5 context.
 		queryMajor = 4;
-		queryMinor = 2;
+        queryMinor = 5;
 	}
 
 	// we need at least OpenGL 1.2
@@ -497,4 +497,3 @@ Bool Renderer::isVerticalRefresh() const
 }
 
 #endif // O3D_WIN32 
-

@@ -21,6 +21,7 @@ namespace o3d {
 class Thread;
 class EvtFunctionAsyncBase;
 class EvtHandler;
+class FastMutex;
 
 /**
  * @brief Event singleton manager.
@@ -47,7 +48,7 @@ private:
 	// Members
 	T_PoolMap m_poolMap;
 
-	mutable FastMutex m_mutex;
+    mutable FastMutex m_mutex;
 
 	Bool m_mainMessage;
 	Bool m_isAutoWakeUp;
@@ -162,4 +163,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_EVTMANAGER_H
-

@@ -95,4 +95,3 @@
 #endif // O3D_NO_LIB and not O3D_NO_LIB_FLAG
 
 #endif // _OBJECTIVE3D_H
-

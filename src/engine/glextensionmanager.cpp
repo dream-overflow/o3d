@@ -1124,13 +1124,15 @@ void GLExtensionManager::getExtFunctions()
 // Initialize the extension manager
 void GLExtensionManager::initialize()
 {
-	if (m_valid)
+    if (m_valid) {
 		return;
+    }
 
 	// get extensions functions pointers (only for windows or for non valid OpenGL 2.0 context).
 	const GLubyte *version = glGetString(GL_VERSION);
-	if (!version)
+    if (!version) {
 		O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
+    }
 
 	// get glGetStringi before
 #ifndef O3D_GL_PROTOTYPES
@@ -1148,46 +1150,43 @@ void GLExtensionManager::initialize()
 Bool GLExtensionManager::isExtensionSupported(const String &ext)
 {
 	// check for a valid extension name
-	if ((ext.find(' ') > 0) || (ext.length() == 0))
+    if ((ext.find(' ') > 0) || (ext.length() == 0)) {
 		return False;
+    }
 
 	const GLubyte *version = glGetString(GL_VERSION);
 
-	if (!version)
+    if (!version) {
 		O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
+    }
 
-    if ((version != nullptr) && ((version[0] - 48) >= 3))
-	{
+    if ((version != nullptr) && ((version[0] - 48) >= 3)) {
 		GLint numExts;
 
 		glGetIntegerv(GL_NUM_EXTENSIONS, &numExts);
 
-		for (GLint i = 0; i < numExts; ++i)
-		{
+        for (GLint i = 0; i < numExts; ++i) {
 			const Char *extName = reinterpret_cast<const Char*>(glGetStringi(GL_EXTENSIONS, i));
-			if (extName)
-			{
+            if (extName) {
 				if (ext == extName)
 					return True;
 			}
 		}
 
 		return False;
-	}
-	else
-	{
+    } else {
 		// get the list of extensions
 		const GLubyte *extensions = glGetString(GL_EXTENSIONS);
 
-		if (!extensions)
+        if (!extensions) {
 			O3D_ERROR(E_InvalidResult("glGetString(GL_EXTENSIONS) is null"));
+        }
 
 		String exts = reinterpret_cast<const Char*>(extensions);
 
 		StringTokenizer tokenizer(exts, " ");
 
-		while (tokenizer.hasMoreElements())
-		{
+        while (tokenizer.hasMoreElements()) {
 			if (tokenizer.nextElement() == ext)
 				return True;
 		}
@@ -1200,4 +1199,3 @@ void* GLExtensionManager::getFunctionPtr(const CString &foo)
 {
     return (void*)(O3D_GET_OPENGL_PROC(foo.getData()));
 }
-

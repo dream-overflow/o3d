@@ -44,10 +44,11 @@ UInt32 VertexBufferBuilder::addData(
 	element.numElt = data.getNumElt() / eltSize;
 	element.eltSize = eltSize;
 
-	if (m_interleave)
+    if (m_interleave) {
 		element.offset = m_stride;
-	else
+    } else {
 		element.offset = m_size;
+    }
 
 	m_datas.push_back(element);
 
@@ -70,10 +71,11 @@ UInt32 VertexBufferBuilder::addData(
 	element.numElt = vertexElement->getNumElements();
 	element.eltSize = vertexElement->getElementSize();
 
-	if (m_interleave)
+    if (m_interleave) {
 		element.offset = m_stride;
-	else
+    } else {
 		element.offset = m_size;
+    }
 
 	m_datas.push_back(element);
 
@@ -88,24 +90,21 @@ void VertexBufferBuilder::create(VertexBufferObjf &vbo)
 {
 	vbo.create(m_size, True);
 
-	if (m_interleave)
-	{
+    if (m_interleave) {
 		UInt32 numElt = m_datas.begin()->numElt;
 		UInt32 dstOfs = 0;
 
 		Float *vboData = vbo.lock(0, 0, VertexBuffer::WRITE_ONLY);
 
-		for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it)
-		{
-			if (it->vertexElement)
+        for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+            if (it->vertexElement) {
 				it->lockedData = it->vertexElement->lockArray(0, 0);
+            }
 		}
 
 		// interleave data into the dst VBO
-		for (UInt32 s = 0; s < numElt; ++s)
-		{
-			for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it)
-			{
+        for (UInt32 s = 0; s < numElt; ++s) {
+            for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
 				memcpy(
 						vboData + dstOfs,
 						it->lockedData + it->eltSize * s,
@@ -115,10 +114,8 @@ void VertexBufferBuilder::create(VertexBufferObjf &vbo)
 			}
 		}
 
-		for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it)
-		{
-			if (it->vertexElement)
-			{
+        for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+            if (it->vertexElement) {
 				it->vertexElement->unlockArray();
 
 				it->vertexElement->create(vbo, it->offset, m_stride, it->keepLocalData);
@@ -126,13 +123,9 @@ void VertexBufferBuilder::create(VertexBufferObjf &vbo)
 		}
 
 		vbo.unlock();
-	}
-	else
-	{
-		for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it)
-		{
-			if (it->vertexElement)
-			{
+    } else {
+        for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+            if (it->vertexElement) {
 				const Float *data = it->vertexElement->lockArray(0, 0);
 
 				vbo.update(
@@ -143,9 +136,7 @@ void VertexBufferBuilder::create(VertexBufferObjf &vbo)
 				it->vertexElement->unlockArray();
 
 				it->vertexElement->create(vbo, it->offset, 0, it->keepLocalData);
-			}
-			else
-			{
+            } else {
 				vbo.update(it->data.getData(), it->offset, it->data.getNumElt());
 			}
 		}
@@ -208,18 +199,16 @@ void VertexElement::setElementSize(UInt32 eltSize)
 // Replace the local data array.
 void VertexElement::setData(const SmartArrayFloat &data, UInt32 eltSize)
 {
-	if (m_isValid)
-	{
-		if ((m_numElt*m_eltSize) != data.getNumElt())
+    if (m_isValid) {
+        if ((m_numElt*m_eltSize) != data.getNumElt()) {
 			O3D_ERROR(E_InvalidParameter("Number of elements must be equal"));
+        }
 
 		m_data = data;
 		m_eltSize = eltSize;
 
 		update(m_data.getData(), 0, m_numElt);
-	}
-	else
-	{
+    } else {
 		m_data = data;
 
 		m_eltSize = eltSize;
@@ -243,11 +232,13 @@ void VertexElement::create(
 	UInt32 stride,
 	Bool keepLocalData)
 {
-	if (m_eltSize == 0)
+    if (m_eltSize == 0) {
 		O3D_ERROR(E_InvalidParameter("Element size must be different from zero"));
+    }
 
-	if (!(&vbo) || !vbo.isExist())
+    if (!(&vbo) || !vbo.isExist()) {
 		O3D_ERROR(E_InvalidParameter("VBO must be defined"));
+    }
 
 	O3D_ASSERT(offset < vbo.getCount());
 
@@ -257,8 +248,9 @@ void VertexElement::create(
 	m_stride = stride * sizeof(Float);
 
 	// only if we don't want to keep local data
-	if (!keepLocalData)
+    if (!keepLocalData) {
 		m_data.releaseCheckAndDelete();
+    }
 
 	m_isValid = True;
 	m_isDirty = False;
@@ -268,32 +260,26 @@ void VertexElement::create(
 const Float* VertexElement::lockArray(UInt32 offset, UInt32 numElt)
 {
 	// Locking of local data is faster. But we have to be sure that they are consistent.
-	if (m_isValid)
-	{
-		if (m_data.isValid() && !m_isDirty)
-		{
+    if (m_isValid) {
+        if (m_data.isValid() && !m_isDirty) {
 			m_locked = LOCK_DATA;
 			return m_data.getData() + (offset * m_eltSize);
-		}
-		else if (m_vbo && m_vbo->isExist())
-		{
+        } else if (m_vbo && m_vbo->isExist()) {
 			m_locked = LOCK_VBO;
 
 			return m_vbo->lock(
 					(m_offset / sizeof(Float)) + (offset * m_eltSize),
 					numElt * m_eltSize,
 					VertexBuffer::READ_ONLY);
-		}
-		else
+        } else {
             return nullptr;
-	}
-	else if (m_data.isValid())
-	{
+        }
+    } else if (m_data.isValid()) {
 		m_locked = LOCK_DATA;
 		return m_data.getData() + (offset * m_eltSize);
-	}
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Lock the data array once it is initialized into VBO
@@ -334,12 +320,12 @@ Float* VertexElement::lockArray(
 // Unlock the data array
 void VertexElement::unlockArray()
 {
-	if (m_locked == LOCK_VBO)
-	{
-		if (m_vbo && m_vbo->isExist() && m_vbo->isLocked())
-			m_vbo->unlock();
-		else
+    if (m_locked == LOCK_VBO) {
+        if (m_vbo && m_vbo->isExist() && m_vbo->isLocked()) {
+            m_vbo->unlock();
+        } else {
 			O3D_ERROR(E_InvalidOperation("Inconsistent unlock operation"));
+        }
 	}
 
 	m_locked = LOCK_NONE;
@@ -348,19 +334,17 @@ void VertexElement::unlockArray()
 // Update partially or entirely the content of the VBO.
 void VertexElement::update(const Float *data, UInt32 offset, UInt32 numElt)
 {
-    if (m_locked == LOCK_VBO)
+    if (m_locked == LOCK_VBO) {
 		O3D_ERROR(E_InvalidOperation("Unable to update when data are currently locked"));
+    }
 
-	if (m_data.isValid() && !m_isValid)
-	{
+	if (m_data.isValid() && !m_isValid)	{
 		memcpy(m_data.getData() + (offset * m_eltSize), data, numElt * m_eltSize);
-	}
-	else if (m_vbo && m_vbo->isExist())
-	{
+    } else if (m_vbo && m_vbo->isExist()) {
 		m_vbo->update(data, (m_offset / sizeof(Float)) + (offset * m_eltSize), numElt * m_eltSize);
-	}
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation("Cannot update an invalid array"));
+    }
 }
 
 Bool VertexElement::writeToFile(OutStream &os)
@@ -370,17 +354,14 @@ Bool VertexElement::writeToFile(OutStream &os)
 		 << m_eltSize;
 
 	const Float *data = lockArray(0, 0);
-	if (data)
-	{
+    if (data) {
 		UInt32 count = m_numElt * m_eltSize;
 
         os << count;
         os.write(data, count);
 
 		unlockArray();
-	}
-	else
-	{
+    } else {
         os << UInt32(0);
 	}
 
@@ -422,8 +403,7 @@ VertexBlend::VertexBlend(
 {
     VertexBufferBuilder builder(False);//True); simplest with non interleaved
 
-	if (vertices)
-	{
+    if (vertices) {
 		const Float *data = vertices->lockArray(0, 0);
 		SmartArrayFloat smart(data, vertices->getNumElements()*vertices->getElementSize());
 		vertices->unlockArray();
@@ -432,8 +412,7 @@ VertexBlend::VertexBlend(
 		builder.addData(m_vertices, True);
 	}
 
-	if (normals)
-	{
+    if (normals) {
 		const Float *data = normals->lockArray(0, 0);
 		SmartArrayFloat smart(data, normals->getNumElements()*normals->getElementSize());
 		normals->unlockArray();
@@ -444,4 +423,3 @@ VertexBlend::VertexBlend(
 
 	builder.create(m_vbo);
 }
-

@@ -102,8 +102,9 @@ Thread::Thread(Runnable *runnable) :
 // Start the thread.
 void Thread::start(void *data)
 {
-	if (!m_runnable)
+    if (!m_runnable) {
 		O3D_ERROR(E_InvalidParameter("Runnable must be valid"));
+    }
 
 	create(new CallbackMethod<Runnable> (m_runnable, &Runnable::run), data);
 }
@@ -135,22 +136,25 @@ Synchronize::Synchronize():
 }
 
 // Destructor
-Synchronize::~Synchronize()
+Synchronize::~Synchronize() noexcept(false)
 {
-	if (m_begin.getValue() != 0)
+    if (m_begin.getValue() != 0) {
 		O3D_ERROR(E_InvalidResult("Critical : Synchronize object not released"));
+    }
 
-	if (m_end.getValue() != 0)
+    if (m_end.getValue() != 0) {
 		O3D_ERROR(E_InvalidResult("Critical : Synchronize object still waiting"));
+    }
 }
 
 //  Wait for the main thread
 Bool Synchronize::beginSync(UInt32 timeout)
 {
-	if (m_begin.waitSignal(timeout) == O3D_WAIT_SIGNAL)
+    if (m_begin.waitSignal(timeout) == O3D_WAIT_SIGNAL) {
 		return True;
-	else
+    } else {
 		return False;
+    }
 }
 
 // Call if you want to give back the control to the main thread
@@ -166,13 +170,12 @@ Bool Synchronize::sync()
 {
 	FastMutexLocker locker(m_waiting);
 
-	if (m_begin.postSignal())
-	{
+    if (m_begin.postSignal()) {
 		m_end.waitSignal();
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 
@@ -194,21 +197,23 @@ ReadWriteLocker::ReadWriteLocker(ReadWriteLock & _semaphore, LockerType _type) :
 // Acquire the read lock
 ReadWriteLocker::~ReadWriteLocker()
 {
-	if (isLocked())
+    if (isLocked()) {
 		unlock();
+    }
 }
 
 // Lock the semaphore
 void ReadWriteLocker::lock(LockerType _type)
 {
-	if (isLocked())
+    if (isLocked()) {
 		O3D_ERROR(E_InvalidOperation("Attempt to lock twice the same locker"));
+    }
 
-	if ((_type == WRITE_LOCKER) || (_type == READ_LOCKER))
+    if ((_type == WRITE_LOCKER) || (_type == READ_LOCKER)) {
 		m_type = _type;
+    }
 
-	switch(Int32(m_type))
-	{
+    switch(Int32(m_type)) {
 	case WRITE_LOCKER:
 		m_semaphore.lockWrite();
 		break;
@@ -226,22 +231,21 @@ void ReadWriteLocker::lock(LockerType _type)
 // Unlock the semaphore
 void ReadWriteLocker::unlock()
 {
-	if (!isLocked())
+    if (!isLocked()) {
 		O3D_ERROR(E_InvalidOperation("Attempt to unlock an unlocked locker"));
+    }
 
 	m_locked = False;
 
-	switch(Int32(m_type))
-	{
-	case WRITE_LOCKER:
-		m_semaphore.unlockWrite();
-		break;
-	case READ_LOCKER:
-		m_semaphore.unlockRead();
-		break;
-	default:
-		O3D_ASSERT(0);
-		break;
-	}
+    switch(Int32(m_type)) {
+        case WRITE_LOCKER:
+            m_semaphore.unlockWrite();
+            break;
+        case READ_LOCKER:
+            m_semaphore.unlockRead();
+            break;
+        default:
+            O3D_ASSERT(0);
+            break;
+    }
 }
-

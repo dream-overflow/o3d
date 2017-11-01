@@ -218,8 +218,9 @@ String Renderer::getError() const
 // Attach clear signal to the application window.
 void Renderer::doAttachment(AppWindow *appWindow)
 {
-    if (appWindow)
+    if (appWindow) {
         appWindow->onClear.connect(this, &Renderer::clearAll);
+    }
 }
 
 #include "o3d/engine/glextensionmanager.h"
@@ -470,4 +471,3 @@ void Renderer::disableDebug()
         O3D_MESSAGE("GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB is now disabled");
     }
 }
-

@@ -886,4 +886,3 @@ Bool Scene::screenShot(const String &path, Image::FileFormat format)
 
 	return m_renderer->screenShot(fileName, format);
 }
-

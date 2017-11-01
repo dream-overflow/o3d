@@ -32,12 +32,12 @@ public:
 	SmartCounter() : m_counter(0), m_id(-1) {}
 
 	//! Copy constructor.
-	SmartCounter(const SmartCounter& dup) :
+    SmartCounter(const SmartCounter&) :
 		m_counter(0),
 		m_id(-1) {}
 
 	//! Assign.
-	SmartCounter& operator= (const SmartCounter& dup)
+    SmartCounter& operator= (const SmartCounter&)
 	{
 		m_counter = 0;
 		m_id = -1;
@@ -98,4 +98,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SMARTCOUNTER_H
-

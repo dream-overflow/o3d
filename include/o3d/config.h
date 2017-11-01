@@ -216,11 +216,9 @@
 	#endif
 #endif
 
-
 // EAX sound support FLAG
 #ifdef O3D_BUILD_EAX
 	#define O3D_EAX
 #endif
 
 #endif // _O3D_CONFIG_H
-

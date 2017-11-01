@@ -29,8 +29,7 @@ void Application::message(
 	CString c = content.isValid() ? content.toUtf8() : "<undefined>";
 	CString t = title.isValid() ? title.toUtf8() : "<untitled>";
 
-	switch (icon)
-	{
+    switch (icon) {
 		case ICON_HELP:
 			std::cout << "[HELP] " << t.getData() << ": " << c.getData() << std::endl;
 			return;
@@ -78,11 +77,13 @@ void Application::mapSingleFile(const String &name)
 	String fileName = "/tmp/" + name + ".lock";
 	int fdlock;
 
-	if ((fdlock = open(fileName.toUtf8().getData(), O_WRONLY | O_CREAT, 0666)) == -1)
+    if ((fdlock = open(fileName.toUtf8().getData(), O_WRONLY | O_CREAT, 0666)) == -1) {
 		O3D_ERROR(E_InvalidOperation("Unable to create the file lock (mapped file)"));
+    }
 
-	if (fcntl(fdlock, F_SETLK, &fl) == -1)
+    if (fcntl(fdlock, F_SETLK, &fl) == -1) {
 		O3D_ERROR(E_InvalidOperation("The single file is already mapped by another instance"));
+    }
 }
 
 // Check for a mapped file existence.
@@ -98,11 +99,13 @@ Bool Application::isMappedFileExists(const String &name)
 	String fileName = "/tmp/" + name + ".lock";
 	int fdlock;
 
-	if ((fdlock = open(fileName.toUtf8().getData(), O_WRONLY | O_CREAT, 0666)) == -1)
+    if ((fdlock = open(fileName.toUtf8().getData(), O_WRONLY | O_CREAT, 0666)) == -1) {
 		return True;
+    }
 
-	if (fcntl(fdlock, F_SETLK, &fl) == -1)
+    if (fcntl(fdlock, F_SETLK, &fl) == -1) {
 		return True;
+    }
 
 	return False;
 }
@@ -114,4 +117,3 @@ Int32 Application::getPID()
 }
 
 #endif // O3D_POSIX_SYS
-
