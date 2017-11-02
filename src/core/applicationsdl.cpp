@@ -22,7 +22,7 @@
 
 using namespace o3d;
 
-void Application::apiInit()
+void Application::apiInitPrivate()
 {
 	// SDL init with video and thread modules. You can un-comment the flag on X11 systems
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
@@ -30,13 +30,13 @@ void Application::apiInit()
     }
 }
 
-void Application::apiQuit()
+void Application::apiQuitPrivate()
 {
 	SDL_Quit();
 }
 
 // Run the application main loop.
-void Application::run()
+void Application::runPrivate()
 {
 	Bool quit = False;
 	SDL_Event event;
@@ -45,7 +45,7 @@ void Application::run()
     while (!quit || EvtManager::instance()->isPendingEvent()) {
         EvtManager::instance()->processEvent();
 
-		ms_currAppWindow = NULL;
+        ms_currAppWindow = nullptr;
 
         if (SDL_WaitEventTimeout(&event, 2)) do {
             switch (event.type) {
@@ -57,13 +57,13 @@ void Application::run()
 				{
 					ms_currAppWindow = getAppWindow(event.window.windowID);
 
-					if (!ms_currAppWindow)
+                    if (!ms_currAppWindow) {
 						break;
+                    }
 
 					SDL_Window *window = (SDL_Window*)ms_currAppWindow->getHDC();
 
-					switch (event.window.event)
-					{
+                    switch (event.window.event) {
 						//case SDL_WINDOWEVENT_HIDDEN:
 
 						//	break;
@@ -128,8 +128,7 @@ void Application::run()
 				case SDL_MOUSEBUTTONDOWN:
 
 					ms_currAppWindow = getAppWindow(event.button.windowID);
-					if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						eventData.button = event.button.button;
 						ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_DOWN, eventData);
 					}
@@ -138,8 +137,7 @@ void Application::run()
 				case SDL_MOUSEBUTTONUP:
 
 					ms_currAppWindow = getAppWindow(event.button.windowID);
-					if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						eventData.button = event.button.button;
 						ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_UP, eventData);
 					}
@@ -148,8 +146,7 @@ void Application::run()
 				case SDL_MOUSEMOTION:
 
 					ms_currAppWindow = getAppWindow(event.motion.windowID);
-					if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						eventData.x = event.motion.xrel;
 						eventData.y = event.motion.yrel;
 						ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_MOTION, eventData);
@@ -159,8 +156,7 @@ void Application::run()
 				case SDL_MOUSEWHEEL:
 
 					ms_currAppWindow = getAppWindow(event.wheel.windowID);
-					if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						eventData.x = event.wheel.y;
 						ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_WHEEL, eventData);
 					}
@@ -168,8 +164,7 @@ void Application::run()
 
 				case SDL_KEYDOWN:
 					ms_currAppWindow = getAppWindow(event.key.windowID);
-					if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						eventData.key = event.key.keysym.sym;
 						ms_currAppWindow->processEvent(AppWindow::EVT_KEYDOWN, eventData);
 					}
@@ -177,8 +172,7 @@ void Application::run()
 
 				case SDL_KEYUP:
 					ms_currAppWindow = getAppWindow(event.key.windowID);
-					if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						eventData.key = event.key.keysym.sym;
 						ms_currAppWindow->processEvent(AppWindow::EVT_KEYUP, eventData);
 					}
@@ -186,15 +180,13 @@ void Application::run()
 
 				case SDL_TEXTINPUT:
 					ms_currAppWindow = getAppWindow(event.text.windowID);
-					if (ms_currAppWindow)
-					{
-						if (event.text.text[0] != 0)
-						{
+                    if (ms_currAppWindow) {
+                        if (event.text.text[0] != 0) {
 							String text;
 							text.fromUtf8(event.text.text);
 
                             // we dont have scancode here
-							eventData.unicode = text.toWChar(0);//text[0];
+                            eventData.unicode = text.toWChar(0);  // text[0];
 							ms_currAppWindow->processEvent(AppWindow::EVT_CHARDOWN, eventData);
 						}
 					}
@@ -202,10 +194,8 @@ void Application::run()
 
 				case SDL_TEXTEDITING:
 					ms_currAppWindow = getAppWindow(event.edit.windowID);
-					if (ms_currAppWindow)
-					{
-						if (event.edit.text[0] != 0)
-						{
+                    if (ms_currAppWindow) {
+                        if (event.edit.text[0] != 0) {
 							String text;
 							text.fromUtf8(event.text.text);
 
@@ -217,21 +207,14 @@ void Application::run()
 					break;
 
 				case SDL_USEREVENT:
-					// 0xFFFE mean try quit
-					if (event.user.code == 0xfffe)
-					{
+                    if (event.user.code == EVENT_CLOSE_WINDOW) {
 						removeAppWindow(event.user.windowID);
-					}
-					// 0xFFFF mean event manager events to process
-					else if (event.user.code == 0xffff)
+                    } else if (event.user.code == EVENT_EVT_MANAGER) {
 						EvtManager::instance()->processEvent();
-					// negative mean timer event code
-					else if (event.user.code < 0)
-					{
-						TimerManager::instance()->callTimer(
-								reinterpret_cast<Timer*> (event.user.data1));
+                    } else if (event.user.code == EVENT_STD_TIMER) {
+                        TimerManager::instance()->callTimer(reinterpret_cast<Timer*> (event.user.data1));
 					}
-					break;
+                    break;
 
 				default:
 					break;
@@ -255,7 +238,7 @@ void Application::run()
 }
 
 // Push a user application event.
-void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
+void Application::pushEventPrivate(Int32 type, _HWND hWnd, void *data)
 {
     if (ms_display == nullptr) {
         return;
@@ -266,7 +249,7 @@ void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
 	event.user.windowID = hWnd;
 	event.user.code = type;
 	event.user.data1 = data;
-	event.user.data2 = NULL;
+    event.user.data2 = nullptr;
 
 	SDL_PushEvent(&event);
 }

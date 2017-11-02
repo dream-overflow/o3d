@@ -23,12 +23,13 @@ Timer::~Timer()
 }
 
 // Singleton instantiation
-TimerManager* TimerManager::m_instance = NULL;
+TimerManager* TimerManager::m_instance = nullptr;
 
 TimerManager* TimerManager::instance()
 {
-	if (m_instance == NULL)
+    if (m_instance == nullptr) {
 		m_instance = new TimerManager();
+    }
 
     return m_instance;
 }
@@ -38,8 +39,9 @@ void TimerManager::destroy()
 {
 	// Must be destroyed manually since the destructor of O3DTimer objects needs the
 	// TimerManager to have a valid hash map.
-	if (m_instance != NULL)
+    if (m_instance != nullptr) {
 		m_instance->destroy();
+    }
 
 	deletePtr(m_instance);
 }
@@ -50,7 +52,7 @@ void TimerManager::destroy()
 
 // constructor
 TimerManager::TimerManager() :
-	TemplateManager<Timer>(NULL)
+    TemplateManager<Timer>(nullptr)
 {
 	m_instance = (TimerManager*)this;
 }
@@ -65,8 +67,9 @@ Int32 TimerManager::addTimer(
 	FastMutexLocker locker(m_mutex);
 
 	Timer* pTimer = new Timer(timeout, mode, callback, data);
-	if (pTimer)
+    if (pTimer) {
 		return addElement(pTimer);
+    }
 
 	return -1;
 }
@@ -91,9 +94,9 @@ Timer* TimerManager::getTimerInternal(_Timer handle)
 	FastMutexLocker locker(m_mutex);
 
 	stdext::hash_map<_Timer,Timer*>::iterator it = m_handlesMap.find(handle);
-	if (it != m_handlesMap.end())
+    if (it != m_handlesMap.end()) {
 		return it->second;
-	else
-		return NULL;
+    } else {
+        return nullptr;
+    }
 }
-

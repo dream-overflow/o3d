@@ -40,8 +40,9 @@ Timer::Timer(
 		m_threadId(0),
 		m_thread(this)
 {
- 	if (m_pCallback)
+    if (m_pCallback) {
 		create(m_timeout, m_mode, m_pCallback);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -63,8 +64,9 @@ Bool Timer::create(
 
 	m_threadId = ThreadManager::getThreadId();
 
-	if (m_handle < 0)
+    if (m_handle < 0) {
 		O3D_ERROR(E_InvalidAllocation("Unable to create a non-threaded timer"));
+    }
 
 	m_thread.start();
 
@@ -87,20 +89,18 @@ void Timer::destroy()
 // Timer thread
 Int32 Timer::run(void*)
 {
-	for (;;)
-	{
-		if (m_counter.isTimedOut())
-		{
-			Application::pushEvent(-m_handle, 0, this);
-
+    for (;;) {
+        if (m_counter.isTimedOut()) {
+            Application::pushEvent(Application::EVENT_STD_TIMER, 0, this);
 			m_counter.reset();
 		}
 
-		if (m_mode == TIMER_ONCE)
+        if (m_mode == TIMER_ONCE) {
 			break;
+        }
 
-		// don't waste the CPU
-        //System::waitMs(1);
+        // don't waste the CPU, yeld the thread
+        System::waitMs(0);
 	}
 
 	return 0;
@@ -111,8 +111,9 @@ Int32 Timer::run(void*)
 //---------------------------------------------------------------------------------------
 void Timer::throwTimer(UInt32 timeout)
 {
-	if (!m_handle)
+    if (!m_handle) {
 		m_handle = m_sigManager.getID();
+    }
 
 	m_timeout = timeout;
 	m_counter.set(timeout);
@@ -123,8 +124,7 @@ void Timer::throwTimer(UInt32 timeout)
 //---------------------------------------------------------------------------------------
 void Timer::killTimer()
 {
-	if (m_thread.isThread())
-	{
+    if (m_thread.isThread()) {
 		TimerMode oldMode = m_mode;
 
 		m_mode = Timer::TIMER_ONCE;
@@ -135,8 +135,7 @@ void Timer::killTimer()
 		m_mode = oldMode;
 	}
 
-	if (m_handle)
-	{
+    if (m_handle) {
 		m_counter.reset();
 		m_sigManager.releaseID(m_handle);
 		m_handle = 0;
@@ -144,7 +143,7 @@ void Timer::killTimer()
 }
 
 //---------------------------------------------------------------------------------------
-// O3DTimerManager
+// TimerManager
 //---------------------------------------------------------------------------------------
 
 // Call a non-threaded timer
@@ -152,24 +151,20 @@ void TimerManager::callTimer(Timer *timer)
 {
 	O3D_ASSERT(timer);
 	
-	if (timer->getTimerMode() == Timer::TIMER_ONCE)
-	{
+	if (timer->getTimerMode() == Timer::TIMER_ONCE)	{
 		Int32 timeOut = timer->call();
-		if (timeOut != (Int32)timer->getTimeout())
-		{
+        if (timeOut != (Int32)timer->getTimeout()) {
 			timer->m_counter.set(timeOut);
 			timer->m_timeout = timeOut;
 
 			// and restart it
 			timer->m_thread.start();
 		}
-	}
-	else
-	{
-		if (timer->call() == -1)
+    } else {
+        if (timer->call() == -1) {
 			timer->killTimer();
+        }
 	}
 }
 
 #endif // O3D_STD_TIMER
-

@@ -63,7 +63,7 @@ static int o3dXErrorHandler(Display* display, XErrorEvent* error_event)
     return 0;
 }
 
-void Application::apiInit()
+void Application::apiInitPrivate()
 {
 	// because our app is multi-threaded
 	XInitThreads();
@@ -98,7 +98,7 @@ void Application::apiInit()
     O3D_XEVENT = XInternAtom(display, "O3D_XEVENT", False);
 }
 
-void Application::apiQuit()
+void Application::apiQuitPrivate()
 {
 	// restore detectable auto repeat to its old state
 	Display *display = reinterpret_cast<Display*>(ms_display);
@@ -152,7 +152,7 @@ static Int32 pending(Display *display, UInt32 timeout)
 }
 
 // Run the application main loop.
-void Application::run()
+void Application::runPrivate()
 {
 	Bool quit = False;
 	Display *display = reinterpret_cast<Display*>(ms_display);
@@ -184,8 +184,7 @@ void Application::run()
 
 	        	case DestroyNotify:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xdestroywindow.window));
-	        		if (ms_currAppWindow)
-	        		{
+                    if (ms_currAppWindow) {
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_DESTROY, eventData);
 	        			removeAppWindow(static_cast<_HWND>(event.xdestroywindow.window));
                         ms_currAppWindow = nullptr;
@@ -194,22 +193,24 @@ void Application::run()
 
 	        	case EnterNotify:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xcrossing.window));
-	        		if (ms_currAppWindow)
+                    if (ms_currAppWindow) {
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_GAIN, eventData);
+                    }
 	        		break;
 
 	        	case LeaveNotify:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xcrossing.window));
-	        		if (ms_currAppWindow)
+                    if (ms_currAppWindow) {
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_LOST, eventData);
+                    }
 	        		break;
 
 	        	case Expose:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xexpose.window));
-	        		if (ms_currAppWindow)
-	        		{
-                        if (event.xexpose.count == 0)
+                    if (ms_currAppWindow) {
+                        if (event.xexpose.count == 0) {
 	        				ms_currAppWindow->processEvent(AppWindow::EVT_PAINT, eventData);
+                        }
 	        		}
 	        		break;
 
@@ -220,11 +221,10 @@ void Application::run()
 					// the border. The border_width member is set to the width of the window's border, in pixels.
 
 					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xconfigure.window));
-					if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						if ((ms_currAppWindow->getWidth() != event.xconfigure.width) ||
-							(ms_currAppWindow->getHeight() != event.xconfigure.height))
-						{
+                            (ms_currAppWindow->getHeight() != event.xconfigure.height)) {
+
 							eventData.w = event.xconfigure.width;
 							eventData.h = event.xconfigure.height;
 
@@ -232,8 +232,8 @@ void Application::run()
 						}
 
 						if ((ms_currAppWindow->getPositionX() != event.xconfigure.x) ||
-							(ms_currAppWindow->getPositionY() != event.xconfigure.y))
-						{
+                            (ms_currAppWindow->getPositionY() != event.xconfigure.y)) {
+
 							eventData.x = event.xconfigure.x;
 							eventData.y = event.xconfigure.y;
 
@@ -244,8 +244,7 @@ void Application::run()
 
 	        	case KeyPress:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xkey.window));
-	        		if (ms_currAppWindow)
-					{
+                    if (ms_currAppWindow) {
 						//eventData.key = XLookupKeysym(&event.xkey, 0);
 						{
 							char text[8] = { 0 };
@@ -263,15 +262,12 @@ void Application::run()
 							//XLookupString(&event.xkey, text, sizeof(text), &keysym, NULL);
 							//printf("compose %i %i", res, status);
 
-							if (text[0] != 0)
-							{
+                            if (text[0] != 0) {
 								String utf8;
 								utf8.fromUtf8(text);
 								eventData.unicode = utf8.toWChar();
 								//printf("%C (%s) %i %i\n", eventData.unicode, text, status, keysym);
-							}
-							else
-							{
+                            } else {
 								eventData.unicode = 0;
 							}
 
@@ -285,8 +281,7 @@ void Application::run()
 
 	        	case KeyRelease:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xkey.window));
-	        		if (ms_currAppWindow)
-                    {
+                    if (ms_currAppWindow) {
                         eventData.key = XLookupKeysym(&event.xkey, 0);
                         eventData.character = eventData.key;
                         ms_currAppWindow->processEvent(AppWindow::EVT_KEYUP, eventData);
@@ -295,20 +290,21 @@ void Application::run()
 
 	        	case FocusIn:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xfocus.window));
-	        		if (ms_currAppWindow)
+                    if (ms_currAppWindow) {
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_LOST, eventData);
+                    }
 	        		break;
 
 	        	case FocusOut:
 	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xfocus.window));
-	        		if (ms_currAppWindow)
+                    if (ms_currAppWindow) {
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_GAIN, eventData);
+                    }
 	        		break;
 
 	        	case ButtonPress:
 					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xbutton.window));
-	        		if (ms_currAppWindow)
-	        		{
+                    if (ms_currAppWindow) {
 	        			eventData.button = event.xbutton.button;
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_DOWN, eventData);
 	        		}
@@ -316,8 +312,7 @@ void Application::run()
 
 	        	case ButtonRelease:
 					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xbutton.window));
-	        		if (ms_currAppWindow)
-	        		{
+                    if (ms_currAppWindow) {
 	        			eventData.button = event.xbutton.button;
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_UP, eventData);
 	        		}
@@ -325,8 +320,7 @@ void Application::run()
 
 	        	case MotionNotify:
 					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xmotion.window));
-	        		if (ms_currAppWindow)
-	        		{
+                    if (ms_currAppWindow) {
 	        			eventData.x = event.xmotion.x;
 	        			eventData.y = event.xmotion.y;
 	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_MOTION, eventData);
@@ -336,32 +330,20 @@ void Application::run()
 	            case ClientMessage:
                     {
                         // O3D_XEVENT
-                        if (event.xclient.message_type == O3D_XEVENT)
-                        {
-                            void *data = NULL;
+                        if (event.xclient.message_type == O3D_XEVENT) {
+                            void *data = nullptr;
                             Int32 type = interpretUserEvent(event, data);
 
-                            // 0xFFFE mean remove the window
-                            if (type == 0xfffe)
-                            {
+                            if (type == EVENT_CLOSE_WINDOW) {
                                 //removeAppWindow((_HWND)data);
                                 removeAppWindow(static_cast<_HWND>(event.xclient.window));
-                            }
-                            // 0xFFFF mean event manager events to process
-                            else if (type == 0xffff)
-                            {
+                            } else if (type == EVENT_EVT_MANAGER) {
                                 EvtManager::instance()->processEvent();
+                            } else if (type == EVENT_STD_TIMER) {
+                                TimerManager::instance()->callTimer(reinterpret_cast<Timer*>(data));
                             }
-                            // negative mean timer event code
-                            else if (type < 0)
-                            {
-                                TimerManager::instance()->callTimer(
-                                        reinterpret_cast<Timer*>(data));
-                            }
-                        }
-						// Close window button
-                        else if (event.xclient.message_type == WM_PROTOCOLS)
-						{
+                        } else if (event.xclient.message_type == WM_PROTOCOLS) {
+                            // Close window button
 							ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xclient.window));
 							ms_currAppWindow->processEvent(AppWindow::EVT_CLOSE, eventData);
 						}
@@ -498,7 +480,7 @@ void Application::run()
 }
 
 // Push a user application event.
-void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
+void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 {
 	Display *display = reinterpret_cast<Display*>(ms_display);
     if (display == nullptr) {

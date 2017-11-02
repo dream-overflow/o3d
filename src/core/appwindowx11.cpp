@@ -58,8 +58,9 @@ static void initAtoms(Display *display)
 {
     Bool atomInitialized = False;
 
-    if (atomInitialized)
+    if (atomInitialized) {
         return;
+    }
 
     XA_UTF8_STRING = XInternAtom(display, "UTF8_STRING", True);
     XA_CLIPBOARD = XInternAtom(display, "CLIPBOARD", True);
@@ -86,8 +87,7 @@ static void setWindowState(Display *display, Window window, Bool fullScreen)
 	Atom atoms[3];
 	int numAtoms = 0;
 
-	if (fullScreen)
-	{
+    if (fullScreen) {
 		atoms[0] = _NET_WM_STATE_FULLSCREEN;
         atoms[1] = _NET_WM_STATE_MAXIMIZED_VERT;
         atoms[2] = _NET_WM_STATE_MAXIMIZED_HORZ;
@@ -95,8 +95,7 @@ static void setWindowState(Display *display, Window window, Bool fullScreen)
 		numAtoms = 1;
 	}
 
-	if (numAtoms > 0)
-	{
+    if (numAtoms > 0) {
 		XChangeProperty(
 				display,
 				window,
@@ -106,9 +105,7 @@ static void setWindowState(Display *display, Window window, Bool fullScreen)
 				PropModeReplace,
 				(unsigned char *) atoms,
 				numAtoms);
-	}
-	else
-	{
+    } else {
 		XDeleteProperty(display, window, _NET_WM_STATE);
 	}
 }
@@ -257,8 +254,7 @@ static void setWindowState(Display *display, Window window, Bool fullScreen)
 static void setWMHints(Display *display, Window window, Bool fullScreen)
 {
     // WM Hints
-    if (fullScreen)
-    {
+    if (fullScreen) {
         Bool set;
         Atom WM_HINTS;
 
@@ -267,8 +263,7 @@ static void setWMHints(Display *display, Window window, Bool fullScreen)
 
         // First try to set MWM hints
         WM_HINTS = XInternAtom(display, "_MOTIF_WM_HINTS", True);
-        if (WM_HINTS != None)
-        {
+        if (WM_HINTS != None) {
             // Hints used by Motif compliant window managers
             struct
             {
@@ -293,8 +288,7 @@ static void setWMHints(Display *display, Window window, Bool fullScreen)
         }
         // Now try to set KWM hints
         WM_HINTS = XInternAtom(display, "KWM_WIN_DECORATION", True);
-        if (WM_HINTS != None)
-        {
+        if (WM_HINTS != None) {
             long KWMHints = 0;
 
             XChangeProperty(
@@ -310,8 +304,7 @@ static void setWMHints(Display *display, Window window, Bool fullScreen)
         }
         // Now try to set GNOME hints
         WM_HINTS = XInternAtom(display, "_WIN_HINTS", True);
-        if (WM_HINTS != None)
-        {
+        if (WM_HINTS != None) {
             long GNOMEHints = 0;
 
             XChangeProperty(
@@ -326,13 +319,10 @@ static void setWMHints(Display *display, Window window, Bool fullScreen)
             set = True;
         }
         // Finally set the transient hints if necessary
-        if (!set)
-        {
+        if (!set) {
             XSetTransientForHint(display, window, RootWindow(display, DefaultScreen(display)));
         }
-    }
-    else
-    {
+    } else {
         Bool set;
         Atom WM_HINTS;
 
@@ -341,28 +331,24 @@ static void setWMHints(Display *display, Window window, Bool fullScreen)
 
         // First try to unset MWM hints
         WM_HINTS = XInternAtom(display, "_MOTIF_WM_HINTS", True);
-        if (WM_HINTS != None)
-        {
+        if (WM_HINTS != None) {
             XDeleteProperty(display, window, WM_HINTS);
             set = True;
         }
         // Now try to unset KWM hints
         WM_HINTS = XInternAtom(display, "KWM_WIN_DECORATION", True);
-        if (WM_HINTS != None)
-        {
+        if (WM_HINTS != None) {
             XDeleteProperty(display, window, WM_HINTS);
             set = True;
         }
         // Now try to unset GNOME hints
         WM_HINTS = XInternAtom(display, "_WIN_HINTS", True);
-        if (WM_HINTS != None)
-        {
+        if (WM_HINTS != None) {
             XDeleteProperty(display, window, WM_HINTS);
             set = True;
         }
         // Finally unset the transient hints if necessary
-        if (!set)
-        {
+        if (!set) {
             XDeleteProperty(display, window, XA_WM_TRANSIENT_FOR);
         }
     }
@@ -374,8 +360,7 @@ void AppWindow::setTitle(const String &title)
 	// if window created
 	m_title = title;
 
-	if (m_hWnd)
-	{
+    if (m_hWnd) {
 		CString cstr = m_title.toUtf8();
         Char *title = cstr.getData();
 
@@ -397,15 +382,15 @@ void AppWindow::setTitle(const String &title)
 
 void AppWindow::setIcon(const Image &icon)
 {
-	if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8))
+    if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8)) {
 		O3D_ERROR(E_InvalidFormat("Icon must be RGB888 or RGBA8888"));
+    }
 
 	Display *display = reinterpret_cast<Display*> (Application::getDisplay());
 	Window window = static_cast<Window> (m_hWnd);
 
 	// set for any sizes
-	if (m_hWnd && icon.isValid())
-	{
+    if (m_hWnd && icon.isValid()) {
 		Image localPicture(icon);
 
 		// get the first pixel as color key
@@ -429,8 +414,7 @@ void AppWindow::setIcon(const Image &icon)
 		const UInt8 *data = localPicture.getData();
 
 		// change RGBA to ARGB
-	 	for (i = 0; i < localPicture.getWidth() * localPicture.getHeight(); ++i)
-		{
+        for (i = 0; i < localPicture.getWidth() * localPicture.getHeight(); ++i) {
 			icon[i+2] =  (data[i*4+3] << 24) |
 						((data[i*4+0] << 16) & 0x00FF0000)|
 						((data[i*4+1] << 8) & 0x0000FF00) |
@@ -450,9 +434,7 @@ void AppWindow::setIcon(const Image &icon)
 		XFlush(display);
 
 		deleteArray(newSet);
-	}
-	else if (m_hWnd)
-	{
+    } else if (m_hWnd) {
 		XDeleteProperty(display, window, _NET_WM_ICON);
 		XFlush(display);
 	}
@@ -472,11 +454,9 @@ void AppWindow::setSize(Int32 width, Int32 height)
 // Resize window
 void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 {
-	if (m_hWnd)
-	{
+    if (m_hWnd) {
 		// window is in fullscreen state
-		if (Video::instance()->getAppWindow() == this)
-		{
+        if (Video::instance()->getAppWindow() == this) {
 			VideoMode videoMode;
 			videoMode.width = clientWidth;
 			videoMode.height = clientHeight;
@@ -484,8 +464,9 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 			videoMode.freq = 0;
 
 			CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-			if (cit == Video::instance()->end())
+            if (cit == Video::instance()->end()) {
                 O3D_ERROR(E_InvalidParameter("Cannot resize a fullscreen window with this width/height"));
+            }
 
 			Video::instance()->setDisplayMode(this, cit);
 
@@ -526,9 +507,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 
 			// override_redirect is True so need to manually callback resize
 			callBackResize();
-		}
-        else
-		{
+        } else {
             Display *display = reinterpret_cast<Display*> (Application::getDisplay());
             Window window = static_cast<Window> (m_hWnd);
 
@@ -538,8 +517,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 
             XGetWMNormalHints(display, window, sizeHints, &hints);
 
-            if (!m_resizable)
-            {
+            if (!m_resizable) {
                 sizeHints->flags &= ~(PMaxSize | PMinSize);
             }
 
@@ -560,9 +538,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 			m_clientWidth = clientWidth;
 			m_clientHeight = clientHeight;
 		}
-	}
-	else
-	{
+    } else {
 		m_clientWidth = clientWidth;
 		m_clientHeight = clientHeight;
 	}
@@ -573,8 +549,9 @@ static XIM im = nullptr;
 // Apply window settings
 void AppWindow::applySettings(Bool fullScreen)
 {
-	if (!isSet())
+    if (!isSet()) {
 		O3D_ERROR(E_InvalidPrecondition("Window not set"));
+    }
 
 	Display *display = reinterpret_cast<Display*> (Application::getDisplay());
 
@@ -583,47 +560,46 @@ void AppWindow::applySettings(Bool fullScreen)
 
     int r = 8, g = 8, b = 8, a = 8;
 
-    switch (m_colorFormat)
-    {
-    case COLOR_RGBA4:
-        r = g = b = 4;
-        a = 4;
-        break;
-    case COLOR_RGB5A1:
-        r = g = b = 5;
-        a = 1;
-        break;
-    case COLOR_RGB565:
-        r = b = 5;
-        g = 6;
-        a = 0;
-        break;
-    case COLOR_RGB8:
-        r = g = b = 8;
-        a = 0;
-        break;
-    case COLOR_RGBA8:
-        r = g = b = 8;
-        a = 8;
-        break;
-    case COLOR_RGB16:
-        r = g = b = 16;
-        a = 0;
-        break;
-    case COLOR_RGBA16:
-        r = g = b = 16;
-        a = 16;
-        break;
-    case COLOR_RGB32:
-        r = g = b = 32;
-        a = 0;
-        break;
-    case COLOR_RGBA32:
-        r = g = b = 32;
-        a = 32;
-        break;
-    default:
-        break;
+    switch (m_colorFormat) {
+        case COLOR_RGBA4:
+            r = g = b = 4;
+            a = 4;
+            break;
+        case COLOR_RGB5A1:
+            r = g = b = 5;
+            a = 1;
+            break;
+        case COLOR_RGB565:
+            r = b = 5;
+            g = 6;
+            a = 0;
+            break;
+        case COLOR_RGB8:
+            r = g = b = 8;
+            a = 0;
+            break;
+        case COLOR_RGBA8:
+            r = g = b = 8;
+            a = 8;
+            break;
+        case COLOR_RGB16:
+            r = g = b = 16;
+            a = 0;
+            break;
+        case COLOR_RGBA16:
+            r = g = b = 16;
+            a = 16;
+            break;
+        case COLOR_RGB32:
+            r = g = b = 32;
+            a = 0;
+            break;
+        case COLOR_RGBA32:
+            r = g = b = 32;
+            a = 32;
+            break;
+        default:
+            break;
     }
 
 	// Get a matching FB config
@@ -647,8 +623,8 @@ void AppWindow::applySettings(Bool fullScreen)
 
 	// FBConfigs were added in GLX version 1.3.
 	if (!glXQueryVersion(display, &glxMajor, &glxMinor) ||
-        ((glxMajor == 1) && (glxMinor < 4)) || (glxMajor < 1))
-	{
+        ((glxMajor == 1) && (glxMinor < 4)) || (glxMajor < 1)) {
+
         O3D_ERROR(E_InvalidResult("Invalid GLX version. Need 1.4+"));
 	}
 
@@ -659,17 +635,16 @@ void AppWindow::applySettings(Bool fullScreen)
 			visualAttribs,
 			&fbCount);
 
-	if (!glxFBConfig)
+    if (!glxFBConfig) {
 		O3D_ERROR(E_InvalidResult("Failed to retrieve a frame buffer config"));
+    }
 
 	// Pick the FB config/visual with the most samples per pixel
 	int bestFBC = -1, worstFBC = -1, bestNumSamp = -1, worstNumSamp = 999;
 
-	for (int i = 0; i < fbCount; i++)
-	{
+    for (int i = 0; i < fbCount; i++) {
 		XVisualInfo *vi = glXGetVisualFromFBConfig(display, glxFBConfig[i]);
-		if (vi)
-		{
+        if (vi) {
 			int sampBuf, samples;
 
 			glXGetFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLE_BUFFERS, &sampBuf);
@@ -682,14 +657,12 @@ void AppWindow::applySettings(Bool fullScreen)
 					sampBuf,
 					samples));
 
-			if (((bestFBC < 0) || sampBuf) && (samples > bestNumSamp))
-			{
+            if (((bestFBC < 0) || sampBuf) && (samples > bestNumSamp)) {
 				bestFBC = i;
 				bestNumSamp = samples;
 			}
 
-			if ((worstFBC < 0) || !sampBuf || (samples < worstNumSamp))
-			{
+            if ((worstFBC < 0) || !sampBuf || (samples < worstNumSamp)) {
 				worstFBC = i;
 				worstNumSamp = samples;
 			}
@@ -715,10 +688,11 @@ void AppWindow::applySettings(Bool fullScreen)
 			visualInfo->visual,
 			AllocNone);
 
-	if (fullScreen)
+    if (fullScreen) {
         windowAttr.override_redirect = False;//True; not necessary with modern WM cause issue
-	else
+    } else {
 		windowAttr.override_redirect = False;
+    }
 
 	windowAttr.background_pixel = 0;
 	windowAttr.background_pixmap = None;
@@ -734,12 +708,9 @@ void AppWindow::applySettings(Bool fullScreen)
 	flags = CWCursor | CWBorderPixel | CWColormap | CWOverrideRedirect;// | CWEventMask;//CWBackPixel
 
 	// compute the window position
-    if (fullScreen)
-    {
+    if (fullScreen) {
         m_posX = m_posY = 0;
-    }
-    else
-    {
+    } else {
         CIT_VideoModeList videoMode = Video::instance()->getCurrentDisplayMode();
         m_posX = Int32(videoMode->width - /*m_width*/m_clientWidth) / 2;
         m_posY = Int32(videoMode->height - /*m_height*/m_clientHeight) / 2;
@@ -759,8 +730,9 @@ void AppWindow::applySettings(Bool fullScreen)
 			flags,
 			&windowAttr);
 
-	if (!window)
+    if (!window) {
 		O3D_ERROR(E_InvalidResult("Failed to create window"));
+    }
 
 	// Done with the visual info data
 	XFree(visualInfo);
@@ -784,30 +756,25 @@ void AppWindow::applySettings(Bool fullScreen)
     classHints->res_class = className.getData();
 
     XSizeHints *sizeHints = XAllocSizeHints();
-	if (!m_resizable || fullScreen)
-	{
+	if (!m_resizable || fullScreen)	{
         sizeHints->min_width = sizeHints->max_width = m_clientWidth;
         sizeHints->min_height = sizeHints->max_height = m_clientHeight;
         sizeHints->flags = PMaxSize | PMinSize;
-	}
-    else if (!fullScreen)
-	{
+    } else if (!fullScreen) {
         sizeHints->x = m_posX;
         sizeHints->y = m_posY;
         sizeHints->width  = m_width;
         sizeHints->height = m_height;
         sizeHints->flags = PPosition | PSize;
 
-		if (m_minSize.x() >= 0 && m_minSize.y() >= 0)
-		{
+        if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
             sizeHints->min_width = m_minSize.x();
             sizeHints->min_height = m_minSize.y();
 
             sizeHints->flags |= PMinSize;
 		}
 
-		if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0)
-		{
+        if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
             sizeHints->max_width = m_maxSize.x();
             sizeHints->max_height = m_maxSize.y();
 
@@ -842,8 +809,9 @@ void AppWindow::applySettings(Bool fullScreen)
     	XA_CARDINAL, 32, PropModeReplace, (unsigned char *)&pid, 1);
 
 	// let the window manager delete the window
-	if (WM_DELETE_WINDOW != None)
+    if (WM_DELETE_WINDOW != None) {
 		XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
+    }
 
 	XMapRaised(display, window);
 
@@ -851,12 +819,13 @@ void AppWindow::applySettings(Bool fullScreen)
 	m_HDC = static_cast<_HDC>(window);
 	m_PF = reinterpret_cast<_PF>(bestFbc);
 
-	if (!fullScreen)
+    if (!fullScreen) {
 		XMoveWindow(
 				display,
 				window,
 				m_posX,
 				m_posY);
+    }
 
 	// window size
 	m_width = m_clientWidth;
@@ -867,8 +836,9 @@ void AppWindow::applySettings(Bool fullScreen)
 	// TODO to display
 	XSetLocaleModifiers("");
 
-	if (im == NULL)
+    if (im == NULL) {
 		im = XOpenIM(display, NULL, resName.getData(), className.getData());
+    }
 
 	m_ic = (void*)XCreateIC(
 				im,
@@ -907,16 +877,17 @@ void AppWindow::destroy()
 
 	m_icon.destroy();
 
-	if (m_hWnd != NULL_HWND)
-	{
+    if (m_hWnd != NULL_HWND) {
 		Display *display = reinterpret_cast<Display*> (Application::getDisplay());
 
-		if (isFullScreen())
+        if (isFullScreen()) {
 			Video::instance()->restoreDisplayMode();
+        }
 
 		// TODO to display
-		if (im != NULL)
+        if (im != NULL) {
 			XCloseIM(im);
+        }
 
         //XDestroyIC((XIC)m_ic);
 
@@ -938,12 +909,14 @@ void AppWindow::destroy()
 
 Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
 {
-    if (!m_hWnd)
+    if (!m_hWnd) {
         O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     // nothing to paste
-    if (text.isEmpty())
+    if (text.isEmpty()) {
         return False;
+    }
 
     Display *display = reinterpret_cast<Display*>(Application::getDisplay());
     Window window =	static_cast<Window>(m_hWnd);
@@ -962,12 +935,13 @@ Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
 
     Bool result = False;
 
-    // We got ownership
-    if (selectionOwner == window)
+    if (selectionOwner == window) {
+        // We got ownership
         result = True;
-    // We did not get ownership
-    else
+    } else {
+        // We did not get ownership
         result = False;
+    }
 
     XUnlockDisplay(display);
 
@@ -978,8 +952,7 @@ static Int32 pending(Display *display, UInt32 timeout)
 {
     UInt32 sTime = System::getMsTime();
 
-    for(;;)
-    {
+    for(;;) {
         XFlush(display);
         if (XEventsQueued(display, QueuedAlready)) {
             return 1;
@@ -999,8 +972,9 @@ static Int32 pending(Display *display, UInt32 timeout)
             }
         }
 
-        if (System::getMsTime() - sTime >= timeout)
+        if (System::getMsTime() - sTime >= timeout) {
             return 0;
+        }
 
         System::waitMs(2);
     }
@@ -1013,8 +987,9 @@ static Int32 pending(Display *display, UInt32 timeout)
 
 String AppWindow::copyFromClipboard(Bool primary)
 {
-    if (!m_hWnd)
+    if (!m_hWnd) {
         O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     Display *display = reinterpret_cast<Display*>(Application::getDisplay());
     Window window =	static_cast<Window>(m_hWnd);
@@ -1029,18 +1004,15 @@ String AppWindow::copyFromClipboard(Bool primary)
     String text; // result
 
     // owner is propagator
-    if (selectionOwner == window)
-    {
+    if (selectionOwner == window) {
         int len;
 
         char *xdata = XFetchBytes(display, &len);
         text.fromUtf8(xdata, len-1);
 
         XFree(xdata);
-    }
-    // If there is a selection (and therefore owner) fetch it
-    else if (selectionOwner != None)
-    {
+    } else if (selectionOwner != None) {
+        // If there is a selection (and therefore owner) fetch it
         XEvent event;
         Bool response = False;
 
@@ -1058,15 +1030,14 @@ String AppWindow::copyFromClipboard(Bool primary)
         XUnlockDisplay(display);
 
         // We now need to wait for a response from the window that owns the clipboard.
-        while (!response)
-        {
+        while (!response) {
             // Wait for an event
-            if (pending(display, 2) > 0)
-            //if (XPending(display) > 0)
-            {
+            // if (XPending(display) > 0) {
+            if (pending(display, 2) > 0) {
                 // check and consume if found
-                if (XCheckTypedWindowEvent(display, window, SelectionNotify, &event))
+                if (XCheckTypedWindowEvent(display, window, SelectionNotify, &event)) {
                     response = True;
+                }
 
                 // TODO is better than : ?
 
@@ -1086,15 +1057,13 @@ String AppWindow::copyFromClipboard(Bool primary)
                            &format, &len, &bytesLeft, &data);
 
         // If any 0-length data was returned, free it
-        if (data)
-        {
+        if (data) {
             XFree(data);
             data = nullptr;
         }
 
         // If there is any data
-        if (bytesLeft)
-        {
+        if (bytesLeft) {
             // Fetch the data
             result = XGetWindowProperty(display,
                                         window, selection, 0,
@@ -1102,8 +1071,7 @@ String AppWindow::copyFromClipboard(Bool primary)
                                         &type, &format, &len, &dummy, &data);
 
             // If we got some data, duplicate it
-            if (result == Success)
-            {
+            if (result == Success) {
                 text.fromUtf8((const Char*)data);
                 XFree(data);
             }
@@ -1121,17 +1089,17 @@ String AppWindow::copyFromClipboard(Bool primary)
 // Set to full screen
 void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 {
-	if (!m_hWnd)
+    if (!m_hWnd) {
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     if ((Video::instance()->getAppWindow() != nullptr) &&
-		(Video::instance()->getAppWindow() != this))
-	{
+        (Video::instance()->getAppWindow() != this)) {
+
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
 
-    if (fullScreen && (Video::instance()->getAppWindow() == nullptr))
-	{
+    if (fullScreen && (Video::instance()->getAppWindow() == nullptr)) {
 		VideoMode videoMode;
 		videoMode.width = m_clientWidth;
 		videoMode.height = m_clientHeight;
@@ -1139,10 +1107,11 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		videoMode.freq = 0;
 
         CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-        if (cit != Video::instance()->end())
+        if (cit != Video::instance()->end()) {
             Video::instance()->setDisplayMode(this, cit);
-        else
+        } else {
             O3D_ERROR(E_InvalidParameter("Invalid video mode"));
+        }
 
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window window =	static_cast<Window>(m_hWnd);
@@ -1227,9 +1196,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
         XMapRaised(display, window);
 
         XFlush(display);
-	}
-	else if (!fullScreen && (Video::instance()->getAppWindow() == this))
-	{
+    } else if (!fullScreen && (Video::instance()->getAppWindow() == this)) {
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window window =	static_cast<Window>(m_hWnd);
 
@@ -1261,14 +1228,11 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
         XGetWMNormalHints(display, window, sizeHints, &hints);
 
         // reset to normal min/max size
-        if (m_resizable)
-        {
+        if (m_resizable) {
             sizeHints->min_width = m_minSize.x(); sizeHints->max_width = m_maxSize.x();
             sizeHints->min_height = m_minSize.y(); sizeHints->max_height = m_maxSize.y();
             sizeHints->flags |= PMaxSize | PMinSize;
-        }
-        else
-        {
+        } else {
             // no resize
             sizeHints->min_width = sizeHints->max_width = m_width;
             sizeHints->min_height = sizeHints->max_height = m_height;
@@ -1297,18 +1261,18 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 // Swap buffers
 void AppWindow::swapBuffers()
 {
-	if (m_hWnd)
+    if (m_hWnd) {
 		glXSwapBuffers(
 				reinterpret_cast<Display*> (Application::getDisplay()),
 				static_cast<Window> (m_hWnd));
+    }
 }
 
 void AppWindow::setMinSize(const Vector2i &minSize)
 {
 	m_minSize = minSize;
 
-	if (m_hWnd && m_resizable)
-	{
+    if (m_hWnd && m_resizable) {
         Display *display = reinterpret_cast<Display*>(Application::getDisplay());
         Window window =	static_cast<Window>(m_hWnd);
 
@@ -1317,24 +1281,18 @@ void AppWindow::setMinSize(const Vector2i &minSize)
 
         XGetWMNormalHints(display, window, sizeHints, &hints);
 
-        if (m_minSize.x() >= 0 && m_minSize.y() >= 0)
-        {
+        if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
             sizeHints->min_width = m_minSize.x();
             sizeHints->min_height = m_minSize.y();
-        }
-        else
-        {
+        } else {
             sizeHints->min_width = 0;
             sizeHints->min_height = 0;
         }
 
-        if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0)
-        {
+        if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
             sizeHints->max_width = m_maxSize.x();
             sizeHints->max_height = m_maxSize.y();
-        }
-        else
-        {
+        } else {
             sizeHints->max_width = 32768;
             sizeHints->max_height = 32768;
         }
@@ -1352,8 +1310,7 @@ void AppWindow::setMaxSize(const Vector2i &maxSize)
 {
 	m_maxSize = maxSize;
 
-	if (m_hWnd && m_resizable)
-	{
+    if (m_hWnd && m_resizable) {
         Display *display = reinterpret_cast<Display*>(Application::getDisplay());
         Window window =	static_cast<Window>(m_hWnd);
 
@@ -1362,24 +1319,18 @@ void AppWindow::setMaxSize(const Vector2i &maxSize)
 
         XGetWMNormalHints(display, window, sizeHints, &hints);
 
-		if (m_minSize.x() >= 0 && m_minSize.y() >= 0)
-		{
+        if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
             sizeHints->min_width = m_minSize.x();
             sizeHints->min_height = m_minSize.y();
-		}
-		else
-		{
+        } else {
             sizeHints->min_width = 0;
             sizeHints->min_height = 0;
 		}
 
-		if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0)
-		{
+        if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
             sizeHints->max_width = m_maxSize.x();
             sizeHints->max_height = m_maxSize.y();
-		}
-		else
-		{
+        } else {
             sizeHints->max_width = 32768;
             sizeHints->max_height = 32768;
 		}
@@ -1396,11 +1347,11 @@ void AppWindow::setMaxSize(const Vector2i &maxSize)
 // Process the main loop
 void AppWindow::processEvent(EventType eventType, EventData &eventData)
 {
-	if (!m_running)
+    if (!m_running) {
 		return;
+    }
 
-	switch (eventType)
-	{
+    switch (eventType) {
 		case EVT_CREATE:
 			callBackCreate();
 			break;
@@ -1409,7 +1360,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			break;
 		case EVT_DESTROY:
 			callBackDestroy();
-            Application::pushEvent(0xfffe, m_hWnd, nullptr);
+            Application::pushEvent(Application::EVENT_CLOSE_WINDOW, m_hWnd, nullptr);
 			break;
 
 		case EVT_UPDATE:
@@ -1472,8 +1423,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			{
 				Bool dblClick;
 
-				switch (eventData.button)
-				{
+                switch (eventData.button) {
 					// left button
 					case Button1:
 						dblClick = m_inputManager.getMouse()->setMouseButton(
@@ -1531,8 +1481,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			}
 			break;
 		case EVT_MOUSE_BUTTON_UP:
-			switch (eventData.button)
-			{
+            switch (eventData.button) {
 				// left button
 				case Button1:
 					m_inputManager.getMouse()->setMouseButton(Mouse::LEFT, False);
@@ -1568,8 +1517,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			}
 			break;
 		case EVT_MOUSE_MOTION:
-			if (eventData.x || eventData.y)
-			{
+            if (eventData.x || eventData.y) {
 				//m_inputManager.Mouse()->setMouseDelta(eventData.x, eventData.y);
 				m_inputManager.getMouse()->setMousePos(eventData.x, eventData.y);
 				callBackMouseMotion();
@@ -1592,22 +1540,24 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
                 callBackKey(vkey, character, pressed, !pressed);
 
 				// some characters that are not recognized on text input event
-				/*if (key == KEY_BACKSPACE) OK for \b
+                /*if (key == KEY_BACKSPACE) {  // OK for \b
                     callBackCharacter(key, character, static_cast<WChar>('\b'), !pressed);
-                else*/ if ((vkey == KEY_NUMPAD_ENTER) || (vkey == KEY_RETURN))
+                } else*/ if ((vkey == KEY_NUMPAD_ENTER) || (vkey == KEY_RETURN)) {
                     callBackCharacter(vkey, character, static_cast<WChar>('\n'), !pressed);
-				/*else if (key == KEY_DELETE) OK for delete
+                /*} else if (key == KEY_DELETE) {  // OK for delete
                     callBackCharacter(key, character, static_cast<WChar>(127), !pressed);*/
-                else if (vkey == KEY_TAB)
+                } else if (vkey == KEY_TAB) {
                     callBackCharacter(vkey, character, static_cast<WChar>('\t'), !pressed);
+                }
 
 				// an unicode character is compound
-				if (eventData.unicode != 0)
+                if (eventData.unicode != 0) {
 					callBackCharacter(
                             vkey,
                             character,
 							static_cast<WChar> (eventData.unicode),
 							!pressed);
+                }
 			}
 			break;
 		case EVT_KEYUP:
@@ -1636,4 +1586,3 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 }
 
 #endif // O3D_X11
-

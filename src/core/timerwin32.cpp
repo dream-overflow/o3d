@@ -32,33 +32,29 @@ Timer::Timer(
         m_handle(0),
 		m_threadId(0)
 {
- 	if (m_pCallback)
+    if (m_pCallback) {
 		create(m_timeout, m_mode, m_pCallback);
+    }
 }
 
 // the windows time function
 static void CALLBACK O3D_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-	if (idEvent != 0)
-	{
+    if (idEvent != 0) {
 		Timer *pTimer = TimerManager::instance()->getTimerInternal(idEvent);
 
-		if (pTimer)
-		{
+        if (pTimer) {
 			Timer::TimerMode mode = pTimer->getTimerMode();
-			if (mode == Timer::TIMER_ONCE)
-			{
+            if (mode == Timer::TIMER_ONCE) {
 				Int32 timeOut = pTimer->call();
-				if (timeOut != (Int32)pTimer->getTimeout())
-				{
+                if (timeOut != (Int32)pTimer->getTimeout()) {
 					pTimer->killTimer();
 
-					if (timeOut > 0)
+                    if (timeOut > 0) {
 						pTimer->throwTimer((UInt32)timeOut);
+                    }
 				}
-			}
-			else
-			{
+            } else {
 				if (pTimer->call() == -1)
 					pTimer->killTimer();
 			}
@@ -80,8 +76,9 @@ Bool Timer::create(
 
 	m_threadId = ThreadManager::getThreadId();
 
-	if ((m_handle = (_Timer)SetTimer(NULL, 0, timeout, O3D_TimerProc)) == 0)
+    if ((m_handle = (_Timer)SetTimer(NULL, 0, timeout, O3D_TimerProc)) == 0) {
 		O3D_ERROR(E_InvalidAllocation("Unable to create a system timer"));
+    }
 
 	TimerManager::instance()->addTimerInternal(this);
 	return True;
@@ -90,9 +87,8 @@ Bool Timer::create(
 // delete the time (kill it)
 void Timer::destroy()
 {
-	if (m_handle)
-	{
-		::KillTimer(NULL,m_handle);
+    if (m_handle) {
+        ::KillTimer(NULL, m_handle);
 		TimerManager::instance()->removeTimerInternal(this);
 		m_handle = 0;
 	}
@@ -106,27 +102,27 @@ void Timer::destroy()
 // Throw a timer to process
 void Timer::throwTimer(UInt32 timeout)
 {
-	if (m_handle)
+    if (m_handle) {
 		return;
+    }
 
 	m_timeout = timeout;
 
-	if ((m_handle = (_Timer)SetTimer(NULL,0,m_timeout,O3D_TimerProc)) == 0)
+    if ((m_handle = (_Timer)SetTimer(NULL, 0, m_timeout, O3D_TimerProc)) == 0) {
 		O3D_ERROR(E_InvalidAllocation("Unable to create a system timer"));
-	else
+    } else {
 		TimerManager::instance()->addTimerInternal(this);
+    }
 }
 
 // Kill a timer in process
 void Timer::killTimer()
 {
-	if (m_handle)
-	{
-		::KillTimer(NULL,m_handle);
+    if (m_handle) {
+        ::KillTimer(NULL, m_handle);
 		TimerManager::instance()->removeTimerInternal(this);
 		m_handle = 0;
 	}
 }
 
 #endif // O3D_WIN32
-

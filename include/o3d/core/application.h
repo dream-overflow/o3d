@@ -18,6 +18,7 @@
 namespace o3d {
 
 class AppWindow;
+class Callback;
 
 /**
  * @brief Base application object settings.
@@ -86,6 +87,14 @@ public:
 		ICON_ERROR
 	};
 
+    enum EventType
+    {
+        EVENT_USER = 0xfff0,           //!< Generic user event
+        EVENT_STD_TIMER = 0xfffd,      //!< Std timer callback to process (not for WIN32 native timer)
+        EVENT_CLOSE_WINDOW = 0xfffe,   //!< AppWindow terminaison
+        EVENT_EVT_MANAGER = 0xffff     //!< EvtManger as a new event to process
+    };
+
 	//! Initialize the application.
 	//! For O3D_WIN32 application, argc and argv are ignored.
 	//! @param argc Number of argument in argv or -1 if unknown
@@ -130,12 +139,20 @@ public:
     static Bool isMappedFileExists(const String &name);
 
 	//! Run the application main loop until there is at least one event or one appWindow.
-	//! In the case you are using your own main loop or window manager, you only have to
-	//! implement in your main loop the processing of the EvtManager events.
+    //! In the case you are using your own main loop or window manager, you have to
+    //! setup the two callbacks (setEvtManagerCallback and setStdTimerCallback).
 	static void run();
 
+    //! Called when an event of type EVENT_EVT_MANAGER occurs.
+    //! The pointer given to the called is always null.
+    static void setEvtManagerCallback(Callback *callback);
+
+    //! Called when an event of type EVENT_STD_TIMER occurs.
+    //! The pointer given to the caller is the Timer object.
+    static void setStdTimerCallback(Callback *callback);
+
 	//! Push a user application event.
-    static void pushEvent(Int32 type, _HWND hWnd, void *data);
+    static void pushEvent(EventType type, _HWND hWnd, void *data);
 
 	//! Get the default display server.
 	static _DISP getDisplay();
@@ -169,11 +186,14 @@ public:
     //! Get a registred object, by its name.
     static BaseObject* getObject(const String &name);
 
-protected:
+private:
 
-	static void initTime();
-	static void apiInit();
-	static void apiQuit();
+    static void runPrivate();
+    static void pushEventPrivate(EventType type, _HWND hWnd, void *data);
+    static void apiInitPrivate();
+    static void apiQuitPrivate();
+
+protected:
 
 	typedef std::map<_HWND, AppWindow*> T_AppWindowMap;
 	typedef T_AppWindowMap::iterator IT_AppWindowMap;
@@ -192,6 +212,9 @@ protected:
     static Bool ms_init;
     static Bool ms_displayInit;
 
+    static Callback *m_evtManagerCallback;
+    static Callback *m_stdTimerCallback;
+
 public:
 
     static void throwDisplayError(void *generic_data);
@@ -200,4 +223,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_APPLICATION_H
-

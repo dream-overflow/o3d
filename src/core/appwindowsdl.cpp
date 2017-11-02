@@ -30,19 +30,20 @@ void AppWindow::setTitle(const String &title)
 	// if window created
 	m_title = title;
 
-	if (m_HDC != NULL_HDC)
+    if (m_HDC != NULL_HDC) {
 		SDL_SetWindowTitle(
 				reinterpret_cast<SDL_Window*>(m_HDC),
 				m_title.toUtf8().getData());
+    }
 }
 
 void AppWindow::setIcon(const Image &icon)
 {
-	if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8))
+    if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8)) {
 		O3D_ERROR(E_InvalidFormat("Icon must be PF_RGB_U8 or PF_RGBA_U8"));
+    }
 
-	if ((m_HDC != NULL_HDC) && icon.isValid())
-	{
+    if ((m_HDC != NULL_HDC) && icon.isValid()) {
 		Image localPicture(icon);
 
 		// get the first pixel as color key
@@ -66,8 +67,7 @@ void AppWindow::setIcon(const Image &icon)
 		UInt32 sdlColorkey;
 
 		// Get the first pixel color as transparent code
-		if (icon.getPixelFormat() == PF_RGB_U8)
-		{
+        if (icon.getPixelFormat() == PF_RGB_U8) {
 			//UInt8 r, g, b;
 
 			//SDL_GetRGB(0, surface->format, &r, &g, &b);
@@ -80,16 +80,14 @@ void AppWindow::setIcon(const Image &icon)
 					(UInt8)o3d::blue(colorKey));
 
 			SDL_SetColorKey(surface, 1, sdlColorkey);
-		}
-		else
+        } else {
 			SDL_SetColorKey(surface, 0, 0);
+        }
 
 		// set icon
 		SDL_SetWindowIcon(reinterpret_cast<SDL_Window*>(m_HDC), surface);
 		SDL_FreeSurface(surface);
-	}
-	else if (m_hWnd)
-	{
+    } else if (m_hWnd) {
 		// remove icon
 		SDL_SetWindowIcon(reinterpret_cast<SDL_Window*>(m_HDC), NULL);
 	}
@@ -109,11 +107,9 @@ void AppWindow::setSize(Int32 width, Int32 height)
 // Resize window
 void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 {
-	if (m_HDC != NULL_HDC)
-	{
+    if (m_HDC != NULL_HDC) {
 		// window is in fullscreen state
-		if (Video::instance()->getAppWindow() == this)
-		{
+        if (Video::instance()->getAppWindow() == this) {
 			VideoMode videoMode;
 			videoMode.width = clientWidth;
 			videoMode.height = clientHeight;
@@ -121,8 +117,9 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 			videoMode.freq = 0;
 
 			CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-			if (cit == Video::instance()->end())
+            if (cit == Video::instance()->end()) {
 				O3D_ERROR(E_InvalidParameter("Cannot resize a full screen window with this width/height"));
+            }
 
 			Video::instance()->setDisplayMode(this, cit);
 
@@ -131,9 +128,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 
 			m_width = m_clientWidth = clientWidth;
 			m_height = m_clientHeight = clientHeight;
-		}
-		else
-		{
+        } else {
 			SDL_SetWindowSize(reinterpret_cast<SDL_Window*>(m_HDC), clientWidth, clientHeight);
 			SDL_SetWindowPosition(
 				reinterpret_cast<SDL_Window*>(m_HDC),
@@ -148,9 +143,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 		}
 
 		callBackResize();
-	}
-	else
-	{
+    } else {
 		m_clientWidth = clientWidth;
 		m_clientHeight = clientHeight;
 	}
@@ -161,8 +154,9 @@ void AppWindow::setMinSize(const Vector2i &minSize)
 	m_minSize = minSize;
 
 	// min size hint
-	if ((m_HDC != nullptr) && (m_minSize.x() >= 0) && (m_minSize.y() >= 0))
+    if ((m_HDC != nullptr) && (m_minSize.x() >= 0) && (m_minSize.y() >= 0)) {
 		SDL_SetWindowMinimumSize(reinterpret_cast<SDL_Window*>(m_HDC), m_minSize.x(), m_minSize.y());
+    }
 }
 
 void AppWindow::setMaxSize(const Vector2i &maxSize)
@@ -170,20 +164,21 @@ void AppWindow::setMaxSize(const Vector2i &maxSize)
 	m_maxSize = maxSize;
 
 	// max size hint
-	if ((m_HDC != nullptr) && (m_maxSize.x() >= 0) && (m_maxSize.y() >= 0))
+    if ((m_HDC != nullptr) && (m_maxSize.x() >= 0) && (m_maxSize.y() >= 0)) {
 		SDL_SetWindowMaximumSize(reinterpret_cast<SDL_Window*>(m_HDC), m_maxSize.x(), m_maxSize.y());
+    }
 }
 
 // Apply window settings
 void AppWindow::applySettings(Bool fullScreen)
 {
-	if(!isSet())
+    if(!isSet()) {
 		O3D_ERROR(E_InvalidPrecondition("Window not set"));
+    }
 
     int r = 8, g = 8, b = 8, a = 8;
 
-    switch (m_colorFormat)
-    {
+    switch (m_colorFormat) {
     case COLOR_RGBA4:
         r = g = b = 4;
         a = 4;
@@ -248,11 +243,13 @@ void AppWindow::applySettings(Bool fullScreen)
 
 	Int32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
-	if (fullScreen)
+    if (fullScreen) {
 		flags |= SDL_WINDOW_FULLSCREEN;
+    }
 
-	if (m_resizable && !fullScreen)
+    if (m_resizable && !fullScreen) {
 		flags |= SDL_WINDOW_RESIZABLE;
+    }
 
 	SDL_Window *window = SDL_CreateWindow(
 			m_title.toUtf8().getData(),
@@ -262,16 +259,19 @@ void AppWindow::applySettings(Bool fullScreen)
 	        m_clientHeight,
 	        flags);
 
-	if (!window)
+    if (!window) {
 		O3D_ERROR(E_InvalidResult("Unable to create the window"));
+    }
 
 	// min size hint
-	if (m_minSize.x() >= 0 && m_minSize.y() >= 0)
+    if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
 		SDL_SetWindowMinimumSize(window, m_minSize.x(), m_minSize.y());
+    }
 
 	// max size hint
-	if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0)
+    if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
 		SDL_SetWindowMaximumSize(window, m_maxSize.x(), m_maxSize.y());
+    }
 
 	// get the current window pos
 	SDL_GetWindowPosition(window, &m_posX, &m_posY);
@@ -302,10 +302,10 @@ void AppWindow::destroy()
 
 	m_icon.destroy();
 
-	if (m_HDC != NULL_HDC)
-	{
-		if (isFullScreen())
+    if (m_HDC != NULL_HDC) {
+        if (isFullScreen()) {
 			Video::instance()->restoreDisplayMode();
+        }
 
 		EventData event;
 		processEvent(EVT_DESTROY, event);
@@ -322,12 +322,14 @@ void AppWindow::destroy()
 
 Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
 {
-    if (!m_hWnd)
+    if (!m_hWnd) {
         O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     // nothing to paste
-    if (text.isEmpty())
+    if (text.isEmpty()) {
         return False;
+    }
 
     CString utf8 = text.toUtf8();
     int result = SDL_SetClipboardText(utf8.getData());
@@ -337,16 +339,15 @@ Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
 
 String AppWindow::copyFromClipboard(Bool primary)
 {
-    if (!m_hWnd)
+    if (!m_hWnd) {
         O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     String text;  // result
 
-    if (SDL_HasClipboardText())
-    {
+    if (SDL_HasClipboardText()) {
         char *buffer = SDL_GetClipboardText();
-        if (buffer)
-        {
+        if (buffer) {
             text.fromUtf8(buffer);
             SDL_free(charResult);
         }
@@ -358,17 +359,17 @@ String AppWindow::copyFromClipboard(Bool primary)
 // Set to full screen
 void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 {
-	if (m_hWnd != NULL_HWND)
+    if (m_hWnd != NULL_HWND) {
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
-	if ((Video::instance()->getAppWindow() != NULL) &&
-		(Video::instance()->getAppWindow() != this))
-	{
+    if ((Video::instance()->getAppWindow() != nullptr) &&
+        (Video::instance()->getAppWindow() != this)) {
+
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
 
-	if (fullScreen && (Video::instance()->getAppWindow() == NULL))
-	{
+    if (fullScreen && (Video::instance()->getAppWindow() == nullptr)) {
 		VideoMode videoMode;
 		videoMode.width = m_clientWidth;
 		videoMode.height = m_clientHeight;
@@ -376,18 +377,17 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		videoMode.freq = 0;
 
 		CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-		if (cit != Video::instance()->end())
+        if (cit != Video::instance()->end()) {
 			Video::instance()->setDisplayMode(this, cit);
-		else
+        } else {
 			O3D_ERROR(E_InvalidParameter("Invalid video mode"));
+        }
 
 		SDL_SetWindowSize(reinterpret_cast<SDL_Window*>(m_HDC), m_clientWidth, m_clientHeight);
 		SDL_SetWindowPosition(reinterpret_cast<SDL_Window*>(m_HDC), 0, 0);
 
 		m_posX = m_posY = 0;
-	}
-	else if (!fullScreen && (Video::instance()->getAppWindow() == this))
-	{
+    } else if (!fullScreen && (Video::instance()->getAppWindow() == this)) {
 		Video::instance()->restoreDisplayMode();
 
 		SDL_SetWindowSize(reinterpret_cast<SDL_Window*>(m_HDC), m_clientWidth, m_clientHeight);
@@ -403,18 +403,19 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 // Swap buffers
 void AppWindow::swapBuffers()
 {
-	if (m_running)
+    if (m_running) {
 		SDL_GL_SwapWindow(reinterpret_cast<SDL_Window*>(m_HDC));
+    }
 }
 
 // Process internals deferred events
 void AppWindow::processEvent(EventType eventType, EventData &eventData)
 {
-	if (!m_running)
+    if (!m_running) {
 		return;
+    }
 
-	switch (eventType)
-	{
+    switch (eventType) {
 		case EVT_CREATE:
 			callBackCreate();
 			break;
@@ -423,16 +424,18 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			break;
 		case EVT_DESTROY:
 			callBackDestroy();
-			Application::pushEvent(0xfffe, m_hWnd, NULL);
+            Application::pushEvent(Application::EVENT_CLOSE_WINDOW, m_hWnd, nullptr);
 			break;
 
 		case EVT_UPDATE:
-			if (isUpdateNeeded())
+            if (isUpdateNeeded()) {
 				callBackUpdate(0);
+            }
 			break;
 		case EVT_PAINT:
-			if (isPaintNeeded())
+            if (isPaintNeeded()) {
 				callBackPaint(0);
+            }
 			break;
 
 		case EVT_MOVE:
@@ -484,8 +487,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			{
 				Bool dblClick;
 
-				switch (eventData.button)
-				{
+                switch (eventData.button) {
 					// left button
 					case SDL_BUTTON_LEFT:
 						dblClick = m_inputManager.getMouse()->setMouseButton(Mouse::LEFT, True);
@@ -522,8 +524,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			}
 			break;
 		case EVT_MOUSE_BUTTON_UP:
-			switch (eventData.button)
-			{
+            switch (eventData.button) {
 				// left button
 				case SDL_BUTTON_LEFT:
 					m_inputManager.getMouse()->setMouseButton(Mouse::LEFT, False);
@@ -559,8 +560,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			}
 			break;
 		case EVT_MOUSE_MOTION:
-			if (eventData.x || eventData.y)
-			{
+            if (eventData.x || eventData.y) {
 				m_inputManager.getMouse()->setMouseDelta(eventData.x, eventData.y);
 				callBackMouseMotion();
 			}
@@ -612,4 +612,3 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 }
 
 #endif // O3D_SDL
-

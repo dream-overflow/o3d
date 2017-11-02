@@ -18,8 +18,9 @@ namespace o3d {
 void onExit()
 {
 	// terminate cleanly if the program call exit before an Application::quit().
-	if (Application::isInit())
+    if (Application::isInit()) {
 		Application::quit();
+    }
 }
 
 template <class T_Main, class T_Settings>
@@ -29,12 +30,9 @@ int main(int argc, char *argv[])
 
 	T_Settings settings;
 
-	try
-	{
+    try {
 		o3d::Application::init(settings, argc, argv);
-	}
-	catch (o3d::E_BaseException &ex)
-	{
+    } catch (o3d::E_BaseException &ex) {
 		Application::message(
 			String("Failed to initialize the application: ") + ex.what(),
 			Application::getAppName(),
@@ -45,12 +43,9 @@ int main(int argc, char *argv[])
 
 	int lExitCode = 0;
 
-	try
-	{
+    try {
 		lExitCode = T_Main::main();
-	}
-	catch (E_BaseException &ex)
-	{
+    } catch (E_BaseException &ex) {
 		Application::message(
 			String("Exception not caught during application execution: ") + ex.what(),
 			Application::getAppName(),
@@ -76,12 +71,9 @@ int main(LPSTR lpCmdLine)
 
 	T_Settings settings;
 
-	try
-	{
+    try {
 		o3d::Application::init(settings);//, argc, argv);
-	}
-	catch (o3d::E_BaseException &ex)
-	{
+    } catch (o3d::E_BaseException &ex) {
 		Application::message(
 			String("Failed to initialize the application: ") + ex.what(),
 			Application::getAppName(),
@@ -92,12 +84,9 @@ int main(LPSTR lpCmdLine)
 
 	int lExitCode = 0;
 
-	try
-	{
+    try {
 		lExitCode = T_Main::main();
-	}
-	catch (E_BaseException &ex)
-	{
+    } catch (E_BaseException &ex) {
 		Application::message(
 			String("Exception not caught during application execution: ") + ex.what(),
 			Application::getAppName(),
@@ -137,4 +126,3 @@ int main(LPSTR lpCmdLine)
 } // namespace o3d
 
 #endif // _O3D_MAIN_H_
-

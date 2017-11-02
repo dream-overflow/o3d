@@ -761,51 +761,43 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 
 inline WPARAM translateWmKey(WPARAM wParam, LPARAM lParam)
 {
-	if (wParam == VK_SHIFT)
-	{
+    if (wParam == VK_SHIFT) {
 		return ((lParam >> 16) & 0x7f) == 0x2A ? KEY_LSHIFT : KEY_RSHIFT;
 	}
 
-	if (lParam & (1 << 24))
-	{
-		switch (wParam)
-		{
-		case VK_RETURN:
-			return KEY_NUMPAD_ENTER;
-		//case VK_SHIFT: cannot be distinguished here @see KeyboardWIN32.cpp
-		//	return KEY_RSHIFT;
-		case VK_CONTROL:
-			return KEY_RCONTROL;
-		case VK_MENU:
-			return KEY_RALT;
-		default:
-			return wParam;
+    if (lParam & (1 << 24)) {
+        switch (wParam) {
+            case VK_RETURN:
+                return KEY_NUMPAD_ENTER;
+                //case VK_SHIFT: cannot be distinguished here @see KeyboardWIN32.cpp
+                //	return KEY_RSHIFT;
+            case VK_CONTROL:
+                return KEY_RCONTROL;
+            case VK_MENU:
+                return KEY_RALT;
+            default:
+                return wParam;
 		}
-	}
-	else
-	{
-		switch (wParam)
-		{
-		case VK_RETURN:
-			return KEY_RETURN;
-		//case VK_SHIFT: cannot be distinguished here @see KeyboardWIN32.cpp
-		//	return KEY_LSHIFT;
-		case VK_CONTROL:
-			return KEY_LCONTROL;
-		case VK_MENU:
-            return KEY_LALT;
-		default:
-			return wParam;
+    } else {
+        switch (wParam) {
+            case VK_RETURN:
+                return KEY_RETURN;
+                //case VK_SHIFT: cannot be distinguished here @see KeyboardWIN32.cpp
+                //	return KEY_LSHIFT;
+            case VK_CONTROL:
+                return KEY_LCONTROL;
+            case VK_MENU:
+                return KEY_LALT;
+            default:
+                return wParam;
 		}
 	}
 }
 
 inline USHORT translateRawInputKey(USHORT VKey, USHORT Flags)
 {
-	if (Flags & RI_KEY_E0)
-	{
-		switch (VKey)
-		{
+    if (Flags & RI_KEY_E0) {
+        switch (VKey) {
 		case VK_RETURN:
 			return KEY_NUMPAD_ENTER;
 //		case VK_SHIFT: cannot be distinguished here @see KeyboardWIN32.cpp
@@ -817,11 +809,8 @@ inline USHORT translateRawInputKey(USHORT VKey, USHORT Flags)
 		default:
 			return VKey;
 		}
-	}
-	else
-	{
-		switch (VKey)
-		{
+    } else {
+        switch (VKey) {
 		case VK_RETURN:
 			return KEY_RETURN;
 //		case VK_SHIFT: cannot be distinguished here @see KeyboardWIN32.cpp
@@ -849,11 +838,11 @@ LRESULT CALLBACK AppWindow::wndProc(
 
 	static BYTE rawInputBuf[4096];
 
-	if (!inst)
+    if (!inst) {
 		return DefWindowProcW(hWnd, msg, wParam, lParam);
+    }
 
-	switch(msg)
-	{
+    switch(msg) {
 		case WM_CREATE:
 			inst->m_hasMouse = False;
 			return 0;
@@ -874,7 +863,7 @@ LRESULT CALLBACK AppWindow::wndProc(
 
 		case WM_DESTROY:
 			inst->callBackDestroy();
-			Application::pushEvent(0xfffe, nullptr, inst->getHWND());
+            Application::pushEvent(Application::EVENT_CLOSE_WINDOW, nullptr, inst->getHWND());
 			return 0;
 
 		case WM_SETFOCUS:

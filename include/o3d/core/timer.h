@@ -53,7 +53,7 @@ public:
 	enum TimerType
 	{
 		NON_THREADED,   //!< non-threaded timer (using event pool)
-		THREADED        //!< threaded timer (using O3DThread and O3DTimerThread)
+        THREADED        //!< threaded timer (using Thread)
 	};
 
 	//! The timer behavior
@@ -90,21 +90,22 @@ public:
 	//! Get the timer type
 	inline TimerType getType() const { return m_type; }
 
-        //! Throw a timer to process. Can restart a killed timer but cannot restart it if destroyed.
+    //! Throw a timer to process. Can restart a killed timer but cannot restart it if destroyed.
 	//! @param timeout The new timeout value
 	//! @warning Not supported in SDL mode.
 	void throwTimer(UInt32 timeout);
 
-	//! Kill a timer in process. Can kill a Created or Thrown timer. After that the timer
-	//! can be restarted using ThrowTimer() but not by using Create(...).
+    //! Kill a timer in process. Can kill a created or thrown timer. After that the timer
+    //! can be restarted using throwTimer() but not by using create(...).
 	//! @warning Not supported in SDL mode.
 	void killTimer();
 
 	//! manually call of the callback (used by the manager, musn't be used in other way)
 	inline Int32 call()
 	{
-		if (m_enabled && m_pCallback)
+        if (m_enabled && m_pCallback) {
             return m_pCallback->call(nullptr);
+        }
 		return 0;
 	}
 
@@ -131,15 +132,15 @@ public:
 
 private:
 
-	TimerType m_type;           //!< type of the timer
+    TimerType m_type;        //!< type of the timer
 
-	UInt32 m_timeout;       //!< the time-out
-	TimerMode m_mode;           //!< Timer call mode
+    UInt32 m_timeout;        //!< the time-out
+    TimerMode m_mode;        //!< Timer call mode
 
 	Callback *m_pCallback;   //!< the executed callback at time-out
 
 	_Timer m_handle;         //!< Timer handle.
-	UInt32 m_threadId;      //!< Thread that own this timer.
+    UInt32 m_threadId;       //!< Thread that own this timer.
 
 	static Bool m_enabled;  //!< true mean the timer call are processed, false bypass their call
 
@@ -156,13 +157,10 @@ private:
 
 		inline Bool isTimedOut()
 		{
-			if (lastTime == 0)
-			{
+            if (lastTime == 0) {
 				lastTime = System::getMsTime();
 				return False;
-			}
-			else
-			{
+            } else {
 				UInt32 elapsed = System::getMsTime() - lastTime;
 				return (elapsed >= timeOut);
 			}
@@ -248,4 +246,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_TIMER_H
-

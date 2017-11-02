@@ -124,16 +124,16 @@ Int32 Application::getPID()
 // ONLY IF O3D_WIN32 IS SELECTED
 #ifdef O3D_WIN32
 
-void Application::apiInit()
+void Application::apiInitPrivate()
 {
 }
 
-void Application::apiQuit()
+void Application::apiQuitPrivate()
 {
 }
 
 // Run the application main loop.
-void Application::run()
+void Application::runPrivate()
 {
 	// WIN32 messages peeking
 	MSG message;
@@ -141,78 +141,60 @@ void Application::run()
 
 	AppWindow::EventData eventData;
 
-	while (!quit || EvtManager::instance()->isPendingEvent())
-    {
+    while (!quit || EvtManager::instance()->isPendingEvent()) {
         EvtManager::instance()->processEvent();
 
-		while (!quit && PeekMessageW(&message, NULL, 0, 0, PM_REMOVE))
-		{
+        while (!quit && PeekMessageW(&message, NULL, 0, 0, PM_REMOVE)) {
 			// Retrieve the AppWindow object
 			ms_currAppWindow = getAppWindow(reinterpret_cast<_HWND>(message.hwnd));
 
-			if (message.message == WM_QUIT)
+            if (message.message == WM_QUIT) {
 				quit = True;
+            }
 
-			if ((message.message == WM_USER) && (message.hwnd == NULL))
-			{
-				// Process the O3D event manager pool
-				if (message.wParam == 0xffff)
+            if ((message.message == WM_USER) && (message.hwnd == nullptr)) {
+                if (message.wParam == EVENT_EVT_MANAGER) {
 					EvtManager::instance()->processEvent();
-				// Mean try quit
-				else if (message.wParam == 0xfffe)
-				{
-					ms_currAppWindow = NULL;
-
+                } else if (message.wParam == EVENT_CLOSE_WINDOW) {
+                    ms_currAppWindow = nullptr;
 					removeAppWindow(reinterpret_cast<_HWND>(message.lParam));
 				}
-			}
-			else
-			{
+            } else {
 				TranslateMessage(&message);
 				DispatchMessageW(&message);
 			}
 
-			if (ms_appWindowMap.empty())
+            if (ms_appWindowMap.empty()) {
 				::PostQuitMessage(0);
+            }
 		}
 
 		DWORD result = MsgWaitForMultipleObjectsEx(0, NULL, 2, QS_ALLEVENTS, MWMO_ALERTABLE);
 
 		// process update/paint event if necessary for each window
-		for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it)
-		{
-			if (it->second->isRunning())
-			{
+        for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it) {
+            if (it->second->isRunning()) {
 				it->second->processEvent(AppWindow::EVT_UPDATE, eventData);
 				it->second->processEvent(AppWindow::EVT_PAINT, eventData);
 			}
 		}
 
 		// The result tells us the type of event we have.
-		if (result == WAIT_FAILED)
-		{
+        if (result == WAIT_FAILED) {
 			O3D_ERROR(E_InvalidResult("MsgWaitForMultipleObjectsEx WAIT_FAILED"));
-		}
-		else if (result == (WAIT_OBJECT_0 + 0))
-		{
+        } else if (result == (WAIT_OBJECT_0 + 0)) {
 			// In the case of this message loop, we are not waiting on any
 			// objects, so the return code for new messages is
 			// WAIT_OBJECT_0 + 0.
 
 			// Continue to the top of the while loop to process the messages.
 			continue;
-		}
-		else if (result == WAIT_IO_COMPLETION)
-		{
+        } else if (result == WAIT_IO_COMPLETION) {
 			// Wait was terminated by an APC being queued to the thread.
-		}
-		else if (result == WAIT_TIMEOUT)
-		{
+        } else if (result == WAIT_TIMEOUT) {
 			// Wait timed out. Do nothing in this case. Just continue back
 			// to the top of the while loop.
-		}
-		else
-		{
+        } else {
 			// One of the handles became signaled.
 			// If we were actually waiting on any handles, we would get the
 			// object index using this expression:
@@ -222,7 +204,7 @@ void Application::run()
 }
 
 // Push a user application event.
-void Application::pushEvent(Int32 type, _HWND hWnd, void *data)
+void Application::pushEventPrivate(Int32 type, _HWND hWnd, void *data)
 {
     if (ms_display == nullptr) {
         return;
