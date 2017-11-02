@@ -70,24 +70,24 @@ void ListBox::init()
 	// calc the default listbox size
 	Vector2i defaultSize = getDefaultSize();
 
-    if (m_minSize.x() < 0)
+    if (m_minSize.x() < 0) {
         m_minSize.x() = defaultSize.x();
+    }
 
-    if (m_minSize.y() < 0)
+    if (m_minSize.y() < 0) {
         m_minSize.y() = defaultSize.y();
+    }
 
 	m_size = m_minSize;
 	m_limits = m_size;
 	m_virtualSize.set(0, 0);
 
-	if ((m_listBoxStyle & BORDER_STYLE) != 0)
-	{
+    if ((m_listBoxStyle & BORDER_STYLE) != 0) {
 		m_limits.x() -= drawMode->getLeftMargin() + drawMode->getRightMargin();
 		m_limits.y() -= drawMode->getTopMargin() + drawMode->getBottomMargin();
 	}
 
-	if ((m_listBoxStyle & VERTICALY_SCROLLABLE) != 0)
-	{
+    if ((m_listBoxStyle & VERTICALY_SCROLLABLE) != 0) {
 		Vector2i pos(m_limits.x() - getUsedTheme()->getDefaultWidgetSize(Theme::SCROLL_BAR_BORDER).x(), 0);
 		Vector2i size(-1, m_limits.y());
 
@@ -103,8 +103,7 @@ void ListBox::init()
 		m_vertScrollbar->show(False);
 	}
 
-	if ((m_listBoxStyle & HORIZONTALY_SCROLLABLE) != 0)
-	{
+	if ((m_listBoxStyle & HORIZONTALY_SCROLLABLE) != 0)	{
 		Vector2i pos(0, m_limits.y() - getUsedTheme()->getDefaultWidgetSize(Theme::SCROLL_BAR_BORDER).y());
 		Vector2i size(m_limits.x(), -1);
 

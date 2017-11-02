@@ -1,27 +1,17 @@
-INSTALL
-=======
+# INSTALL #
 
-Here the informations to build the API, dependencies and examples.
+Here the informations to build the API and somees dependencies :
+* tinyXml
+* triStripper
+* nvTriStrip.
 
+# GNU/Linux systems #
 
-GNU/Linux systems :
-===================
+See the CMake toolchain. Builds using GCC 5+ and make.
 
-make [MODE<default|debug|optimized|optimizeddebug>] [DEFINES] [V=0|1]
+If you wish to install the library into your /usr/local type make install,
+or changes the install prefix to set another destination.
 
-  - use V=1 for verbose mode
-  - optimized mode use -O2 optimization
+# Window 7/8/10 systems #
 
-build the API, tinyXml, triStripper, nvTriStrip, and all examples.
-
-If you wish to install the library into your /usr/local/include and /usr/local/lib
-type make install
-
-
-Window XP/Vista/7/8 systems :
-=============================
-
-Visual C++ 9 solutions are contained respectivly in :
-  
-  - build/vc9/ for the API, tinyXml, triStripper and nvTriStrip
-  - examples/ for te examples
+At this time the prefered solution is to uses mingw64 compiler with the CMake toolchain.

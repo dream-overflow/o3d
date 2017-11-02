@@ -1,5 +1,4 @@
-Objective-3D (c) video game SDK
-===============================
+# Objective-3D (c) video game SDK #
 
 Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
 

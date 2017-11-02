@@ -449,14 +449,14 @@ Bool EditBox::mouseLeftPressed(Int32 x, Int32 y)
 
 Bool EditBox::mouseLeftReleased(Int32 x, Int32 y)
 {
-    if (m_editBoxState[STATE_MOUSE_SELECT])
-    {
+    if (m_editBoxState[STATE_MOUSE_SELECT]) {
         m_editBoxState.disable(STATE_MOUSE_SELECT);
         ((Gui*)getScene()->getGui())->getWidgetManager()->unlockWidgetMouse();
     }
 
-    if (m_editBoxState[STATE_SELECTING] && !m_editBoxState[STATE_KEYBOARD_SELECT])
+    if (m_editBoxState[STATE_SELECTING] && !m_editBoxState[STATE_KEYBOARD_SELECT]) {
         m_editBoxState.disable(STATE_SELECTING);
+    }
 
 	return True;
 }

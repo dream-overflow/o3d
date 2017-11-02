@@ -77,11 +77,13 @@ void MenuLabelItem::adjustBestSize()
 
 	textSize += drawMode->getTopLeftMargin() + drawMode->getBottomRightMargin();
 
-    if (m_minSize.x() < 0)
+    if (m_minSize.x() < 0) {
         m_minSize.x() = o3d::max(textSize.x(), defaultSize.x());
+    }
 
-    if (m_minSize.y() < 0)
+    if (m_minSize.y() < 0) {
         m_minSize.y() = o3d::max(textSize.y(), defaultSize.y());
+    }
 
 	m_size = m_minSize;
 	m_text.setPos(drawMode->getTopLeftMargin());
@@ -89,18 +91,20 @@ void MenuLabelItem::adjustBestSize()
 
 void MenuLabelItem::enable(Bool active)
 {
-	if (m_capacities.getBit(STATE_ACTIVITY) == active)
+    if (m_capacities.getBit(STATE_ACTIVITY) == active) {
 		return;
+    }
 
 	m_capacities.setBit(STATE_ACTIVITY, active);
 
 	const Theme *theme = getUsedTheme();
 
 	// text color depend of the state
-	if (active)
+    if (active) {
 		m_text.setColor(theme->getWidgetDrawMode(Theme::MENU_LABEL_ITEM_NORMAL)->getDefaultTextColor());
-	else
+    } else {
 		m_text.setColor(theme->getWidgetDrawMode(Theme::MENU_LABEL_ITEM_DISABLED)->getDefaultTextColor());
+    }
 }
 
 Bool MenuLabelItem::isTargeted(Int32 x, Int32 y, Widget *&pWidget)

@@ -77,11 +77,13 @@ void Button::adjustBestSize()
 
 	textSize += drawMode->getTopLeftMargin() + drawMode->getBottomRightMargin();
 
-    if (m_minSize.x() < 0)
+    if (m_minSize.x() < 0) {
         m_minSize.x() = o3d::max(textSize.x(), defaultSize.x());
+    }
 
-    if (m_minSize.y() < 0)
+    if (m_minSize.y() < 0) {
         m_minSize.y() = o3d::max(textSize.y(), defaultSize.y());
+    }
 
 	m_size = m_minSize;
 	m_textZone.setSize(m_size);

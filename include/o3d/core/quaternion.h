@@ -87,7 +87,7 @@ public:
 	}
 
 	//! Simple constructor which dont identity the Quaternion
-    inline Quaternion(Int32 v) {}
+    inline Quaternion(Int32 /*v*/) {}
 
 	//! initialisation constructor
 	inline Quaternion(Float x,Float y,Float z,Float w)

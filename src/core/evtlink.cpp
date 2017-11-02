@@ -41,4 +41,3 @@ EvtLinkBase::~EvtLinkBase()
 {
     deletePtr(m_function);
 }
-

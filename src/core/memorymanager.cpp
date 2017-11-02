@@ -111,7 +111,7 @@ MemoryManager::MemoryManager() :
 
     m_file << "++ mean central memory allocation (malloc, new, new [])" << std::endl;
 	m_file << "-- mean central memory free (free, delete, delete [])" << std::endl;
-	m_file << "** mean central memory re-allocation (realloc)" << std::endl;
+    m_file << "** mean central memory re-allocation (realloc)" << std::endl << std::endl;
 
 	m_file << "+G mean graphical memory allocation" << std::endl;
 	m_file << "-G mean graphical memory free" << std::endl;

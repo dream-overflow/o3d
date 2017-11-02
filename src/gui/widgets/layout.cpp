@@ -421,11 +421,13 @@ Vector2i Layout::getMinSize()
 {
 	Vector2i minSize(calcMin());
 
-    if (minSize.x() < m_minSize.x())
+    if (minSize.x() < m_minSize.x()) {
         minSize.x() = m_minSize.x();
+    }
 
-    if (minSize.y() < m_minSize.y())
+    if (minSize.y() < m_minSize.y()) {
         minSize.y() = m_minSize.y();
+    }
 
 	return minSize;
 }
@@ -451,8 +453,7 @@ Vector2i Layout::getMaxWindowSize()
 
 Vector2i Layout::fit()
 {
-    if (!m_window || !m_window->isTopLevelWidget())
-    {
+    if (!m_window || !m_window->isTopLevelWidget()) {
         O3D_WARNING("Works only on top-level windows objects");
         return Vector2i(0,0);
     }
@@ -461,16 +462,17 @@ Vector2i Layout::fit()
 	Vector2i size(getMinWindowSize());
 	Vector2i sizeMax(getMaxWindowSize());
 
-    if (m_window->isTopLevelWidget())
-	{
+    if (m_window->isTopLevelWidget()) {
         sizeMax.x() = getGui()->getWidth();
         sizeMax.y() = getGui()->getHeight();
 	}
 
-    if (sizeMax.x() != -1 && size.x() > sizeMax.x())
+    if (sizeMax.x() != -1 && size.x() > sizeMax.x()) {
         size.x() = sizeMax.x();
-    if (sizeMax.y() != -1 && size.y() > sizeMax.y())
+    }
+    if (sizeMax.y() != -1 && size.y() > sizeMax.y()) {
         size.y() = sizeMax.y();
+    }
 
     m_window->setSize(size);
 	return size;
@@ -488,17 +490,16 @@ Vector2i Layout::getMaxClientSize()
 {
     Vector2i maxSize(m_window->maxSize());
 
-	if (maxSize != Widget::DEFAULT_SIZE)
-	{
+    if (maxSize != Widget::DEFAULT_SIZE) {
         Vector2i size(m_window->size());
         Vector2i clientSize(m_window->getClientSize());
 
 		return Vector2i(
                 maxSize.x() + clientSize.x() - size.x(),
                 maxSize.y() + clientSize.y() - size.y());
-	}
-	else
+    } else {
 		return Widget::DEFAULT_SIZE;
+    }
 }
 
 Vector2i Layout::virtualFitSize()
@@ -507,36 +508,37 @@ Vector2i Layout::virtualFitSize()
 	Vector2i sizeMax(getMaxClientSize());
 
 	// Limit the size if sizeMax != DefaultSize
-    if (size.x() > sizeMax.x() && sizeMax.x() != -1)
+    if (size.x() > sizeMax.x() && sizeMax.x() != -1) {
         size.x() = sizeMax.x();
-    if (size.y() > sizeMax.y() && sizeMax.y() != -1)
+    }
+    if (size.y() > sizeMax.y() && sizeMax.y() != -1) {
         size.y() = sizeMax.y();
+    }
 
 	return size;
 }
 
 void Layout::fitInside()
 {
-    if (!m_window)
-	{
+    if (!m_window) {
 		O3D_WARNING("Works only on windows objects");
 		return;
 	}
 
 	Vector2i size;
 
-    if (m_window->isTopLevelWidget())
+    if (m_window->isTopLevelWidget()) {
 		size = virtualFitSize();
-	else
+    } else {
 		size = getMinClientSize();
+    }
 
     m_window->setVirtualSize(size);
 }
 
 void Layout::setSizeHints()
 {
-    if (!m_window || !m_window->isTopLevelWidget())
-	{
+    if (!m_window || !m_window->isTopLevelWidget())	{
 		O3D_WARNING("Works only on top-level windows objects");
 		return;
 	}
@@ -554,8 +556,7 @@ void Layout::setSizeHints()
 
 void Layout::setVirtualSizeHints()
 {
-    if (!m_window)
-	{
+    if (!m_window) {
 		O3D_WARNING("Works only on windows objects");
 		return;
 	}
@@ -612,8 +613,9 @@ void LayoutItem::setWidget(Widget *pWidget)
 	// widget doesn't become smaller than its initial size
 	m_minSize = pWidget->size();
 
-	if (pWidget->isFixedMinSize())
+    if (pWidget->isFixedMinSize()) {
         pWidget->setMinSize(m_minSize);
+    }
 
 	// aspect ratio calculated from initial size
 	setRatio(m_minSize);
@@ -657,31 +659,29 @@ void LayoutItem::setDimension(const Vector2i &_pos, const Vector2i &_size)
 	Vector2i size(_size);
 
 	// aspect ratio
-	if (m_pWidget->isShaped())
-	{
+    if (m_pWidget->isShaped()) {
 		// adjust aspect ratio
         Int32 rwidth = (Int32)(size.y() * m_ratio);
-        if (rwidth > size.x())
-		{
+        if (rwidth > size.x()) {
 			// fit horizontally
             Int32 rheight = (Int32)(size.x() / m_ratio);
 
 			// add vertical space
-			if (m_pWidget->getVerticalAlign() == WidgetProperties::MIDDLE_ALIGN)
+            if (m_pWidget->getVerticalAlign() == WidgetProperties::MIDDLE_ALIGN) {
                 pos.y() += (size.y() - rheight) / 2;
-			else if (m_pWidget->getVerticalAlign() == WidgetProperties::BOTTOM_ALIGN)
+            } else if (m_pWidget->getVerticalAlign() == WidgetProperties::BOTTOM_ALIGN) {
                 pos.y() += (size.y() - rheight);
+            }
 
 			// use reduced dimensions
             size.y() = rheight;
-		}
-        else if (rwidth < size.x())
-		{
+        } else if (rwidth < size.x()) {
 			// add horizontal space
-			if (m_pWidget->getHorizontalAlign() == WidgetProperties::CENTER_ALIGN)
+            if (m_pWidget->getHorizontalAlign() == WidgetProperties::CENTER_ALIGN) {
                 pos.x() += (size.x() - rwidth) / 2;
-			else if (m_pWidget->getHorizontalAlign() == WidgetProperties::RIGHT_ALIGN)
+            } else if (m_pWidget->getHorizontalAlign() == WidgetProperties::RIGHT_ALIGN) {
                 pos.x() += (size.x() - rwidth);
+            }
 
             size.x() = rwidth;
 		}
@@ -691,37 +691,34 @@ void LayoutItem::setDimension(const Vector2i &_pos, const Vector2i &_size)
 	// getPos() will be the top-left corner of the surrounding border
 	m_pos = pos;
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_LEFT)
-	{
+    if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_LEFT) {
         pos.x() += m_pWidget->getBorderSize();
         size.x() -= m_pWidget->getBorderSize();
 	}
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_RIGHT)
-	{
+	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_RIGHT)	{
         size.x() -= m_pWidget->getBorderSize();
 	}
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_TOP)
-	{
+    if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_TOP) {
         pos.y() += m_pWidget->getBorderSize();
         size.y() -= m_pWidget->getBorderSize();
 	}
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_BOTTOM)
-	{
+    if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_BOTTOM) {
         size.y() -= m_pWidget->getBorderSize();
 	}
 
-    if (size.x() < 0)
+    if (size.x() < 0) {
         size.x() = 0;
-    if (size.y() < 0)
+    }
+    if (size.y() < 0) {
         size.y() = 0;
+    }
 
 	m_rect = Box2i(pos,size);
 
-	switch (m_itemType)
-	{
+	switch (m_itemType)	{
 		case ITEM_NONE:
 			O3D_WARNING("Undefined layout item type");
 			break;
@@ -745,17 +742,21 @@ Vector2i LayoutItem::getMinSizeIncludeBorders() const
 	// TODO see for window first layout borders...
 	Vector2i minSize(m_minSize);
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_LEFT)
+    if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_LEFT) {
         minSize.x() += m_pWidget->getBorderSize();
+    }
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_RIGHT)
+    if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_RIGHT) {
         minSize.x() += m_pWidget->getBorderSize();
+    }
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_TOP)
+    if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_TOP) {
         minSize.y() += m_pWidget->getBorderSize();
+    }
 
-	if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_BOTTOM)
+    if (m_pWidget->getBorderElt() & WidgetProperties::BORDER_BOTTOM) {
         minSize.y() += m_pWidget->getBorderSize();
+    }
 
 	return minSize;
 }
@@ -767,17 +768,15 @@ Vector2i LayoutItem::calcMin()
 {
     O3D_ASSERT(m_pWidget != nullptr);
 
-	if (isLayout())
-	{
+	if (isLayout())	{
         m_minSize = m_pLayout->getMinSize();
 
 		// if we have to preserve aspect ratio and this is the first-time calculation,
 		// consider ration to be initial size
-		if (m_pLayout->isShaped() && (m_ratio == 0.f))
+        if (m_pLayout->isShaped() && (m_ratio == 0.f)) {
 			setRatio(m_minSize);
-	}
-	else if (isWidget())
-	{
+        }
+    } else if (isWidget()) {
 		// Since the size of the widget may change during runtime, we should use
 		// the current minimal/best size
 		m_minSize = m_pWidget->getEffectiveMinSize();
@@ -785,4 +784,3 @@ Vector2i LayoutItem::calcMin()
 
 	return getMinSizeIncludeBorders();
 }
-

@@ -68,7 +68,7 @@ public:
 
 protected:
 
-    inline void setReceiverSender(EvtHandler * _pHandler) { m_receiver->setSender(m_sender); }
+    inline void setReceiverSender(EvtHandler * /*_pHandler*/) { m_receiver->setSender(m_sender); }
     inline void resetReceiverSender() { m_receiver->resetSender(); }
 };
 
@@ -122,7 +122,7 @@ public:
 
 protected:
 
-    inline void setReceiverSender(EvtHandler * _pHandler) { m_receiver->setSender(m_sender); }
+    inline void setReceiverSender(EvtHandler * /*_pHandler*/) { m_receiver->setSender(m_sender); }
     inline void resetReceiverSender() { m_receiver->resetSender(); }
 };
 
@@ -834,4 +834,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_EVTFUNCTION_H
-

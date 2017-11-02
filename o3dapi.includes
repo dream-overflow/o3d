@@ -19,6 +19,7 @@ include/o3d/engine/sky
 include/o3d/engine/texture
 include/o3d/engine/utils
 include/o3d/engine/visibility
+include/o3d/engine/world
 include/o3d/geom
 include/o3d/gui
 include/o3d/gui/widgets
@@ -31,12 +32,5 @@ third/nvTriStrip
 third/tinyxml
 third/TriStripper/Include
 third/TriStripper/Include/detail
-hird/TriStripper/TriStripper/Include
+third/TriStripper/TriStripper/Include
 third/TriStripper/TriStripper/Include/detail
-src
-src/core
-src/gui
-include/o3d/src/engine
-src/engine
-include/o3d/engine/world
-src/engine/world

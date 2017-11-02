@@ -85,11 +85,13 @@ void RadioButton::init()
 	// respect margins
 	textSize += drawMode->getTopLeftMargin() + drawMode->getBottomRightMargin();
 
-    if (m_minSize.x() < 0)
+    if (m_minSize.x() < 0) {
         m_minSize.x() = o3d::max(textSize.x(), defaultSize.y());
+    }
 
-    if (m_minSize.y() < 0)
+    if (m_minSize.y() < 0) {
         m_minSize.y() = o3d::max(textSize.y(), defaultSize.y());
+    }
 
 	m_size = m_minSize;
 	m_textZone.setSize(m_size);
@@ -112,10 +114,11 @@ void RadioButton::sizeChanged()
     Theme *theme = getUsedTheme();
     const WidgetDrawMode *drawMode = theme->getWidgetDrawMode(Theme::RADIO_BUTTON_NORMAL);
 
-    if (m_size.x() >= 0)
+    if (m_size.x() >= 0) {
         m_textZone.setWidth(m_size.x() - drawMode->getTopLeftMargin().x());
-	else
+    } else {
 		m_textZone.setWidth(-1);
+    }
 
     m_textZone.setHeight(m_size.y());
     m_textZone.setPos(drawMode->getTopLeftMargin().x(), -drawMode->getTopLeftMargin().y());
@@ -127,16 +130,13 @@ void RadioButton::sizeChanged()
 void RadioButton::setChecked(Bool state)
 {
 	// check if not
-	if (!m_radioButtonState)
-	{
+    if (!m_radioButtonState) {
 		// unckeck the previous radio button
 
 		// search in previous radio buttons...
 		RadioButton *button = m_previousRadioButton;
-		while (button)
-		{
-			if (button->m_radioButtonState)
-			{
+        while (button) {
+            if (button->m_radioButtonState) {
 				button->m_radioButtonState = False;
 				button->onRadioButtonChanged(False);
 
@@ -146,13 +146,10 @@ void RadioButton::setChecked(Bool state)
 			button = button->m_previousRadioButton;
 		}
 		// not found in previous ? then iterate in next one's
-        if (button == nullptr)
-		{
+        if (button == nullptr) {
 			button = m_nextRadioButton;
-			while (button)
-			{
-				if (button->m_radioButtonState)
-				{
+            while (button) {
+                if (button->m_radioButtonState) {
 					button->m_radioButtonState = False;
 					button->onRadioButtonChanged(False);
 
@@ -172,11 +169,11 @@ void RadioButton::setChecked(Bool state)
 Bool RadioButton::isTargeted(Int32 x, Int32 y, Widget *&widget)
 {
 	// no negative part
-	if (x < 0 || y < 0)
+    if (x < 0 || y < 0) {
 		return False;
+    }
 
-    if ((x < m_size.x()) && (y < m_size.y()))
-	{
+    if ((x < m_size.x()) && (y < m_size.y())) {
 		widget = this;
 		return True;
 	}
@@ -189,8 +186,7 @@ Bool RadioButton::mouseLeftPressed(Int32 x, Int32 y)
 {
     ((Gui*)getScene()->getGui())->getWidgetManager()->lockWidgetMouse();
 
-	if (m_hover)
-	{
+    if (m_hover) {
 		m_pressed = True;
 		setDirty();
 
@@ -205,21 +201,17 @@ Bool RadioButton::mouseLeftReleased(Int32 x, Int32 y)
 {
     ((Gui*)getScene()->getGui())->getWidgetManager()->unlockWidgetMouse();
 
-	if (m_pressed)
-	{
+    if (m_pressed) {
 		m_pressed = m_wasPressed = False;
 
 		// check if not
-		if (!m_radioButtonState)
-		{
+        if (!m_radioButtonState) {
 			// unckeck the previous radio button
 
 			// search in previous radio buttons...
 			RadioButton *button = m_previousRadioButton;
-			while (button)
-			{
-				if (button->m_radioButtonState)
-				{
+            while (button) {
+                if (button->m_radioButtonState) {
 					button->m_radioButtonState = False;
                     button->setDirty();
 					button->onRadioButtonChanged(False);
@@ -230,13 +222,10 @@ Bool RadioButton::mouseLeftReleased(Int32 x, Int32 y)
 				button = button->m_previousRadioButton;
 			}
 			// not found in previous ? then iterate in next one's
-            if (button == nullptr)
-			{
+            if (button == nullptr) {
 				button = m_nextRadioButton;
-				while (button)
-				{
-					if (button->m_radioButtonState)
-					{
+                while (button) {
+                    if (button->m_radioButtonState) {
 						button->m_radioButtonState = False;
                         button->setDirty();
 						button->onRadioButtonChanged(False);
@@ -257,9 +246,7 @@ Bool RadioButton::mouseLeftReleased(Int32 x, Int32 y)
 
 			setDirty();
 		}
-	}
-	else
-	{
+    } else {
 		m_wasPressed = False;
 	}
 
@@ -271,25 +258,21 @@ Bool RadioButton::mouseMove(Int32 x, Int32 y)
     x -= m_pos.x();
     y -= m_pos.y();
 
-	if (m_wasPressed)
-	{
+    if (m_wasPressed) {
 		// no negative part
-		if (x < 0 || y < 0)
+        if (x < 0 || y < 0) {
 			return False;
+        }
 
-        if ((x < m_size.x()) && (y < m_size.y()))
-		{
+        if ((x < m_size.x()) && (y < m_size.y())) {
 			m_wasPressed = False;
 			m_hover = m_pressed = True;
 
 			setDirty();
 		}
-	}
-	else if (m_pressed)
-	{
+    } else if (m_pressed) {
 		// if move out when pressed
-        if (x < 0 || y < 0 || x >= m_size.x() || y >= m_size.y())
-		{
+        if (x < 0 || y < 0 || x >= m_size.x() || y >= m_size.y()) {
 			m_hover = m_pressed = False;
 			m_wasPressed = True;
 
