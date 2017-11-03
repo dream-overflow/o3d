@@ -2,7 +2,7 @@
  * @file quaternion.h
  * @brief Quaternion (hyper-complex number) with 3x3 and 4x4 matrix conversion
  * @author Frederic SCHERMA (frederic.scherma@gmail.com)
- * @author  Romain LOCCI
+ * @author Romain LOCCI
  * @date 2003-07-13
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -531,4 +531,3 @@ inline InStream& operator>> (InStream &is, Quaternion &object)
 } // namespace o3d
 
 #endif // _O3D_QUATERNION_H
-

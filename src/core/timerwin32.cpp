@@ -18,25 +18,6 @@
 
 using namespace o3d;
 
-// constructor
-Timer::Timer(
-	UInt32 timeout,
-	TimerMode mode,
-	Callback *callback,
-	void *data) :
-		BaseObject(),
-		m_type(NON_THREADED),
-		m_timeout(timeout),
-		m_mode(mode),
-		m_pCallback(callback),
-        m_handle(0),
-		m_threadId(0)
-{
-    if (m_pCallback) {
-		create(m_timeout, m_mode, m_pCallback);
-    }
-}
-
 // the windows time function
 static void CALLBACK O3D_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
@@ -69,19 +50,25 @@ Bool Timer::create(
 		Callback *pCallback,
 		void *pData)
 {
-	m_type = THREADED;
+    if (getId() < 0 && callback) {
+        m_mode = mode;
+        m_timeout = timeout;
 
-	m_mode = mode;
-	m_timeout = timeout;
+        if (m_pCallback != callback) {
+            deletePtr(m_pCallback);
+            m_pCallback = callback;
+        }
 
-	m_threadId = ThreadManager::getThreadId();
+        if ((m_handle = (_Timer)SetTimer(NULL, 0, timeout, O3D_TimerProc)) == 0) {
+            O3D_ERROR(E_InvalidAllocation("Unable to create a system timer"));
+        }
 
-    if ((m_handle = (_Timer)SetTimer(NULL, 0, timeout, O3D_TimerProc)) == 0) {
-		O3D_ERROR(E_InvalidAllocation("Unable to create a system timer"));
+        TimerManager::instance()->addTimerInternal(this);
+        return True;
+    } else {
+        // already running
+        return False;
     }
-
-	TimerManager::instance()->addTimerInternal(this);
-	return True;
 }
 
 // delete the time (kill it)
@@ -94,15 +81,13 @@ void Timer::destroy()
 	}
 
 	m_timeout = 0;
-	m_threadId = 0;
-
 	deletePtr(m_pCallback);
 }
 
 // Throw a timer to process
 void Timer::throwTimer(UInt32 timeout)
 {
-    if (m_handle) {
+    if (m_handle || !m_pCallback) {
 		return;
     }
 

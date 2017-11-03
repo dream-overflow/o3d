@@ -26,36 +26,30 @@ Closable::~Closable()
 Int32 o3d::log2(UInt32 n)
 {
     Int32 pos = 0;
-	if (n >= 1 << 16)
-	{
+    if (n >= 1 << 16) {
 		n >>= 16;
 		pos += 16;
 	}
-	if (n >= 1 << 8)
-	{
+    if (n >= 1 << 8) {
 		n >>= 8;
 		pos += 8;
 	}
-	if (n >= 1 << 4)
-	{
+    if (n >= 1 << 4) {
 		n >>= 4;
 		pos += 4;
 	}
-	if (n >= 1 << 2)
-	{
+    if (n >= 1 << 2) {
 		n >>= 2;
 		pos += 2;
 	}
-	if (n >= 1 << 1)
-	{
+    if (n >= 1 << 1) {
 		pos += 1;
 	}
 	return ((n == 0) ? (-1) : pos);
 
 //	// or
 //	Int32 r = 0;
-//	while ((n >> r) != 0)
-//	{
+//	while ((n >> r) != 0) {
 //		++r;
 //	}
 //	return r-1; // returns -1 for n==0
@@ -123,4 +117,3 @@ void System::checking()
 
     static_assert(True == true && False == false, "Invalid Bool const values");
 }
-

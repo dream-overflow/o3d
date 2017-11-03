@@ -12,159 +12,168 @@
 #include "o3d/core/thread.h"
 #include "o3d/core/application.h"
 
-// ONLY IF O3D_STD_TIMER
-#ifdef O3D_STD_TIMER
+#ifndef O3D_WIN32
 
 #include "o3d/core/debug.h"
 
 using namespace o3d;
 
-IDManager Timer::m_sigManager(1);
-
-// constructor
-Timer::Timer(
-	UInt32 timeout,
-	TimerMode mode,
-	Callback *callback,
-	void *data) :
-		BaseObject(),
-		m_type(NON_THREADED),
-		m_timeout(timeout),
-		m_mode(mode),
-		m_pCallback(callback),
-#ifdef O3D_POSIX_SYS
-		m_handle(0),
-#else
-		m_handle(NULL),
-#endif
-		m_threadId(0),
-		m_thread(this)
+Bool Timer::create(UInt32 timeout, TimerMode mode, Callback *callback, void *data)
 {
-    if (m_pCallback) {
-		create(m_timeout, m_mode, m_pCallback);
+    if (getId() < 0 && callback) {
+        m_mode = mode;
+        m_timeout = timeout;
+
+        if (m_pCallback != callback) {
+            deletePtr(m_pCallback);
+            m_pCallback = callback;
+        }
+
+        m_counter.set(m_timeout);
+        m_counter.start();
+
+        TimerManager::instance()->addTimerInternal(this);
+        return True;
+    } else {
+        // already running
+        return False;
     }
 }
 
-//---------------------------------------------------------------------------------------
-// create the new timer
-//---------------------------------------------------------------------------------------
-Bool Timer::create(
-		UInt32 timeout,
-		TimerMode mode,
-		Callback *callback,
-		void *data)
-{
-	m_type = NON_THREADED;
-
-	m_mode = mode;
-	m_timeout = timeout;
-
-	m_handle = m_sigManager.getID();
-	m_counter.set(timeout);
-
-	m_threadId = ThreadManager::getThreadId();
-
-    if (m_handle < 0) {
-		O3D_ERROR(E_InvalidAllocation("Unable to create a non-threaded timer"));
-    }
-
-	m_thread.start();
-
-	return True;
-}
-
-//---------------------------------------------------------------------------------------
-// delete the time (kill it)
-//---------------------------------------------------------------------------------------
 void Timer::destroy()
 {
 	killTimer();
      
 	m_timeout = 0;
-	m_threadId = 0;
 
 	deletePtr(m_pCallback);
 }
 
-// Timer thread
-Int32 Timer::run(void*)
-{
-    for (;;) {
-        if (m_counter.isTimedOut()) {
-            Application::pushEvent(Application::EVENT_STD_TIMER, 0, this);
-			m_counter.reset();
-		}
-
-        if (m_mode == TIMER_ONCE) {
-			break;
-        }
-
-        // don't waste the CPU, yeld the thread
-        System::waitMs(0);
-	}
-
-	return 0;
-}
-
-//---------------------------------------------------------------------------------------
-// Throw a timer to process
-//---------------------------------------------------------------------------------------
 void Timer::throwTimer(UInt32 timeout)
 {
-    if (!m_handle) {
-		m_handle = m_sigManager.getID();
-    }
+    if (getId() < 0 && m_pCallback) {
+        m_timeout = timeout;
 
-	m_timeout = timeout;
-	m_counter.set(timeout);
+        m_counter.set(m_timeout);
+        m_counter.start();
+
+        TimerManager::instance()->addTimerInternal(this);
+    }
 }
 
-//---------------------------------------------------------------------------------------
-// Kill a timer in process
-//---------------------------------------------------------------------------------------
 void Timer::killTimer()
 {
-    if (m_thread.isThread()) {
-		TimerMode oldMode = m_mode;
-
-		m_mode = Timer::TIMER_ONCE;
-		m_counter.set(0);
-
-		m_thread.stop();
-
-		m_mode = oldMode;
-	}
-
-    if (m_handle) {
-		m_counter.reset();
-		m_sigManager.releaseID(m_handle);
-		m_handle = 0;
+    if (getId() >= 0) {
+        m_counter.stop();
+        TimerManager::instance()->removeTimerInternal(this);
 	}
 }
 
-//---------------------------------------------------------------------------------------
+//
 // TimerManager
-//---------------------------------------------------------------------------------------
+//
 
 // Call a non-threaded timer
 void TimerManager::callTimer(Timer *timer)
 {
-	O3D_ASSERT(timer);
-	
-	if (timer->getTimerMode() == Timer::TIMER_ONCE)	{
-		Int32 timeOut = timer->call();
-        if (timeOut != (Int32)timer->getTimeout()) {
-			timer->m_counter.set(timeOut);
-			timer->m_timeout = timeOut;
+    O3D_ASSERT(timer);
 
-			// and restart it
-			timer->m_thread.start();
-		}
+    if (!timer) {
+        return;
+    }
+
+    if (timer->getTimerMode() == Timer::TIMER_ONCE)	{
+        Int32 timeOut = timer->call();
+        if (timeOut != (Int32)timer->getTimeout()) {
+            timer->m_counter.set((UInt32)timeOut);
+            timer->m_timeout = timeOut;
+            timer->m_counter.start();
+        }
     } else {
         if (timer->call() == -1) {
-			timer->killTimer();
+            timer->killTimer();
+        } else {
+            // timeout from now
+            timer->m_counter.set((UInt32)timer->m_timeout);
         }
-	}
+    }
 }
 
-#endif // O3D_STD_TIMER
+// Timer thread
+Int32 TimerManager::run(void*)
+{
+    Int32 size = 0;
+    IT_TemplateManager it;
+    Timer *timer = nullptr;
+    Bool running = False;
+    Int32 wait = 10;
+
+    for (;;) {
+        m_mutex.lock();
+        running = m_running;
+        size = getNumElt();
+        m_mutex.unlock();
+
+        // stopped or nothing to process
+        if (!size or !running) {
+            break;
+        }
+
+        // @todo running queue
+        m_mutex.lock();
+        it = begin();
+        while (it != end()) {
+            m_mutex.unlock();
+
+            if (it->second->getTimerType() == Timer::NON_THREADED) {
+                timer = static_cast<Timer*>(it->second);
+            }
+
+            if (!timer) {
+                continue;
+            }
+
+            // killed
+            if (!timer->m_counter.isRunning()) {
+                break;
+            }
+
+            timer->m_counter.update();
+
+            if (timer->m_counter.isTimedOut()) {
+                // wait the caller that will reset the counter once the callback is done
+                // timer->m_counter.reset();
+
+                // push event to the main thread
+                // and become of the responsibility of TimerManager::callTimer and the main loop
+                Application::pushEvent(Application::EVENT_STD_TIMER, 0, timer);
+
+                // once timer processed, break
+                if (timer->getTimerMode() == Timer::TIMER_ONCE) {
+                    break;
+                }
+            }
+
+            wait = o3d::min(wait, timer->m_counter.getRemaining());
+
+            m_mutex.lock();
+            ++it;
+        }
+        m_mutex.unlock();
+
+        // don't waste the CPU, but this can delay of 10 ms a new entry of timer
+        if (wait == 0) {
+            System::waitMs(0);  // simple yeld
+        } else if (wait <= 5) {
+            System::waitMs(1);  // keep precision
+        } else if (wait <= 10) {
+            System::waitMs(2);  // keep precision
+        } else {
+            System::waitMs(10);
+        }
+    }
+
+    return 0;
+}
+
+#endif // !O3D_WIN32

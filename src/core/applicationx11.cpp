@@ -215,7 +215,7 @@ void Application::runPrivate()
 	        		break;
 
 	        	case ConfigureNotify:
-					//The x and y members are set to the coordinates relative to the parent window's
+                    // The x and y members are set to the coordinates relative to the parent window's
 					// origin and indicate the position of the upper-left outside corner of the window.
 					// The width and height members are set to the inside size of the window, not including
 					// the border. The border_width member is set to the width of the window's border, in pixels.

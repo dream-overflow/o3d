@@ -33,18 +33,18 @@ static FastMutex O3D_FileManagerMutex;
 // Singleton instantiation
 FileManager* FileManager::instance()
 {
-	if (!m_instance)
+    if (!m_instance) {
 		m_instance = new FileManager();
+    }
 	return m_instance;
 }
 
 // Singleton destruction
 void FileManager::destroy()
 {
-	if (m_instance)
-	{
+	if (m_instance)	{
 		delete m_instance;
-		m_instance = NULL;
+        m_instance = nullptr;
 	}
 }
 
@@ -72,10 +72,8 @@ IT_ZipList FileManager::findPackFile(const String &packName)
 	String lPackName = getFullFileName(packName);
 
 	O3D_FileManagerMutex.lock();
-	for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it)
-	{
-		if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName)
-		{
+    for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
+        if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName) {
 			O3D_FileManagerMutex.unlock();
 			return it;
 		}

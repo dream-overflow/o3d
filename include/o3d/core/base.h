@@ -200,8 +200,7 @@ namespace o3d
 	template <class T>
 	inline void deletePtr(T *&ptr)
 	{
-		if (ptr)
-		{
+        if (ptr) {
 			delete ptr;
             ptr = nullptr;
 		}
@@ -211,16 +210,16 @@ namespace o3d
 	template<class T>
 	inline void deletePtr(const T *ptr)
 	{
-		if (ptr)
+        if (ptr) {
 			delete ptr;
+        }
 	}
 
 	//! Delete a pointer array if existing and set it to NULL.
 	template <class T>
 	inline void deleteArray(T *&ptr)
 	{
-		if (ptr)
-		{
+        if (ptr) {
 			delete [] ptr;
             ptr = nullptr;
 		}
@@ -230,8 +229,9 @@ namespace o3d
 	template <class T>
 	inline void deleteArray(const T *ptr)
 	{
-		if (ptr)
+        if (ptr) {
 			delete [] ptr;
+        }
 	}
 
 	//! Returns the floor form of binary logarithm for a 32 bit integer.
@@ -540,4 +540,3 @@ inline void System::swapBytes8(void* value)
 } // namespace o3d
 
 #endif // _O3D_BASE_H
-

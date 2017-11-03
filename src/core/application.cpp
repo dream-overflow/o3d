@@ -126,6 +126,9 @@ void Application::quit()
 	// terminate the task manager if running
 	TaskManager::destroy();
 
+    // timer manager before thread
+    TimerManager::destroy();
+
 	// wait all threads terminate
 	ThreadManager::waitEndThreads();
 
@@ -134,8 +137,6 @@ void Application::quit()
 
 	// screen manager
 	Video::destroy();
-	// timer manager
-	TimerManager::destroy();
 
 	// deletion of the main thread
     EvtManager::instance()->unRegisterThread(nullptr);

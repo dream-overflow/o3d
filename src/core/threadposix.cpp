@@ -156,15 +156,16 @@ Int32 Thread::waitFinish()
 	// avoid several WaitFinish methods to be called by concurrent threads simultaneously
 	FastMutexLocker locker(m_mutex);
 
-	if (!m_pThread)
+    if (!m_pThread) {
 		return -1;
+    }
 
 	Int32 result = 0;
 
-	pthread_join(m_pThread, NULL);
+    pthread_join(m_pThread, nullptr);
 
 	m_pThread = 0;
-	m_pData = NULL;
+    m_pData = nullptr;
 	m_running = False;
 
 	return result;
