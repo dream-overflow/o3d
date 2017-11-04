@@ -790,4 +790,3 @@ typedef TemplateArray<Double> ArrayDouble; //!< 64 bits double array.
 #endif
 
 #endif // _O3D_TEMPLATEARRAY_H
-

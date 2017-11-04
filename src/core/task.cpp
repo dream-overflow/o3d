@@ -27,44 +27,42 @@ Task::Task() :
 Task::~Task()
 {
 	// wait if running
-	if (m_thread.isThread())
+    if (m_thread.isThread()) {
 		m_thread.waitFinish();
+    }
 }
 
 // Start the task.
 void Task::start(Bool asynchronous)
 {
-	if (asynchronous)
-	{
-		if (!m_thread.isThread())
-		{
+    if (asynchronous) {
+        if (!m_thread.isThread()) {
 			m_thread.start();
 
 			// thread priority
-			if (m_priority != Thread::PRIORITY_NORMAL)
+            if (m_priority != Thread::PRIORITY_NORMAL) {
 				m_thread.setPriority(m_priority);
+            }
 
 			// thread CPU affinity
-			if (m_cpuAffinity != -1)
-			{
+            if (m_cpuAffinity != -1) {
 				std::list<UInt32> affinity;
 				affinity.push_back(m_cpuAffinity);
 
 				m_thread.setCPUAffinity(affinity);
 			}
 		}
-	}
-	else
-	{
-		run(NULL);
+    } else {
+        run(nullptr);
 	}
 }
 
 // Force to kill the task
 void Task::kill()
 {
-	if (m_thread.isThread())
+    if (m_thread.isThread()) {
 		m_thread.kill();
+    }
 }
 
 // Is the task is currently running.

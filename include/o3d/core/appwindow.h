@@ -10,7 +10,6 @@
 #ifndef _O3D_APPWINDOW_H
 #define _O3D_APPWINDOW_H
 
-#include "timer.h"
 #include "debug.h"
 #include "evt.h"
 #include "inputmanager.h"

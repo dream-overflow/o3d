@@ -87,12 +87,12 @@ void ThreadManager::waitEndThreads()
 Thread::Thread(Runnable *runnable) :
 	m_id(0),
 	m_running(False),
-	m_pData(NULL),
+    m_pData(nullptr),
 	m_runnable(runnable),
 #ifdef O3D_POSIX_SYS
 	m_pThread(0),
 #else
-	m_pThread(NULL),
+    m_pThread(nullptr),
 #endif
 	m_priority(PRIORITY_NORMAL),
 	m_result(-1)

@@ -22,7 +22,7 @@ using namespace o3d;
 static void CALLBACK O3D_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
     if (idEvent != 0) {
-		Timer *pTimer = TimerManager::instance()->getTimerInternal(idEvent);
+        Timer *pTimer = TimerManager::instance()->getTimerByHandleInternal(idEvent);
 
         if (pTimer) {
 			Timer::TimerMode mode = pTimer->getTimerMode();
@@ -50,13 +50,13 @@ Bool Timer::create(
 		Callback *pCallback,
 		void *pData)
 {
-    if (getId() < 0 && callback) {
+    if (getId() < 0 && pCallback) {
         m_mode = mode;
         m_timeout = timeout;
 
-        if (m_pCallback != callback) {
+        if (m_pCallback != pCallback) {
             deletePtr(m_pCallback);
-            m_pCallback = callback;
+            m_pCallback = pCallback;
         }
 
         if ((m_handle = (_Timer)SetTimer(NULL, 0, timeout, O3D_TimerProc)) == 0) {
@@ -108,6 +108,21 @@ void Timer::killTimer()
 		TimerManager::instance()->removeTimerInternal(this);
 		m_handle = 0;
 	}
+}
+
+Timer* TimerManager::getTimerByHandleInternal(_Timer h)
+{
+    auto it = m_handlesMap.find(h);
+    if (it != m_handlesMap.end()) {
+        return it->second;
+    } else {
+        return nullptr;
+    }
+}
+
+Int32 TimerManager::run(void*)
+{
+    return 0;
 }
 
 #endif // O3D_WIN32

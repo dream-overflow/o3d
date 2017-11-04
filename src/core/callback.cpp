@@ -22,19 +22,9 @@ CallbackFunction::~CallbackFunction()
 
 Int32 CallbackFunction::call(void* info)
 {
-	if (m_two)
-		return m_function2(info,m_util);
-	else
+    if (m_two) {
+        return m_function2(info, m_util);
+    } else {
 		return m_function(info);
+    }
 }
-
-/*template <class T>
-
-
-template <class T>
-Int32 CallbackMethod<T>::call(void* info)
-{
-	if (m_two) return (m_object->*m_method2)(info,m_util);
-	else return (m_object->*m_method)(info);
-}*/
-

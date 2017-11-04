@@ -20,7 +20,7 @@ using namespace o3d;
 
 Bool Timer::create(UInt32 timeout, TimerMode mode, Callback *callback, void *data)
 {
-    if (getId() < 0 && callback) {
+    if (callback && getId() < 0 && !m_counter.isRunning()) {
         m_mode = mode;
         m_timeout = timeout;
 
@@ -74,11 +74,21 @@ void Timer::killTimer()
 //
 
 // Call a non-threaded timer
-void TimerManager::callTimer(Timer *timer)
+void TimerManager::timerCall(Int32 id, Timer* timer)
 {
-    O3D_ASSERT(timer);
+    if (!timer || id < 0) {
+        return;
+    }
 
-    if (!timer) {
+    BaseTimer *ltimer = nullptr;
+    Bool wakeup = False;
+
+    m_mutex.lock();
+    ltimer = get(id);
+    m_mutex.unlock();
+
+    // deleted or invalid timer
+    if (!ltimer || ltimer != timer) {
         return;
     }
 
@@ -88,78 +98,87 @@ void TimerManager::callTimer(Timer *timer)
             timer->m_counter.set((UInt32)timeOut);
             timer->m_timeout = timeOut;
             timer->m_counter.start();
+
+            wakeup = True;
         }
     } else {
         if (timer->call() == -1) {
             timer->killTimer();
         } else {
-            // timeout from now
-            timer->m_counter.set((UInt32)timer->m_timeout);
+            // throw again
+            m_mutex.lock();
+            m_queue.insert(std::pair<Int32, Timer*>(Int32(timer->getTimeout() + System::getMsTime()), timer));
+            m_mutex.unlock();
+
+            wakeup = True;
         }
     }
+
+    // wakeup
+    if (!m_thread.isThread() && wakeup) {
+        m_running = True;
+        m_thread.start();
+    }
+}
+
+Bool TimerManager::isRunningTimerInternal(Timer *timer)
+{
+    FastMutexLocker locker(m_mutex);
+    return m_running && timer != nullptr && timer == m_currentTimer;
 }
 
 // Timer thread
 Int32 TimerManager::run(void*)
 {
     Int32 size = 0;
-    IT_TemplateManager it;
-    Timer *timer = nullptr;
+    std::multimap<Int32, Timer*>::iterator head;
     Bool running = False;
     Int32 wait = 10;
 
     for (;;) {
+        wait = 10;
+
         m_mutex.lock();
         running = m_running;
-        size = getNumElt();
+        size = m_queue.size();
         m_mutex.unlock();
 
         // stopped or nothing to process
-        if (!size or !running) {
+        if (!size || !running) {
             break;
         }
 
-        // @todo running queue
         m_mutex.lock();
-        it = begin();
-        while (it != end()) {
-            m_mutex.unlock();
+        head = m_queue.begin();
+        if (head != m_queue.end()) {
+            m_currentTimer = head->second;
+            running = m_currentTimer->m_counter.isRunning();
 
-            if (it->second->getTimerType() == Timer::NON_THREADED) {
-                timer = static_cast<Timer*>(it->second);
+            if (!running) {
+                m_queue.erase(head);
+                m_mutex.unlock();
+            } else if (head->first <= System::getMsTime()) {
+                // process if expired
+                m_queue.erase(head);
+                m_mutex.unlock();
+
+                // signal
+                onTimerCall(m_currentTimer->getId(), m_currentTimer);
+            } else {
+                m_mutex.unlock();
             }
 
-            if (!timer) {
-                continue;
-            }
-
-            // killed
-            if (!timer->m_counter.isRunning()) {
-                break;
-            }
-
-            timer->m_counter.update();
-
-            if (timer->m_counter.isTimedOut()) {
-                // wait the caller that will reset the counter once the callback is done
-                // timer->m_counter.reset();
-
-                // push event to the main thread
-                // and become of the responsibility of TimerManager::callTimer and the main loop
-                Application::pushEvent(Application::EVENT_STD_TIMER, 0, timer);
-
-                // once timer processed, break
-                if (timer->getTimerMode() == Timer::TIMER_ONCE) {
-                    break;
-                }
-            }
-
-            wait = o3d::min(wait, timer->m_counter.getRemaining());
-
+            // compute wait
             m_mutex.lock();
-            ++it;
+            head = m_queue.begin();
+            if (head != m_queue.end()) {
+                wait = o3d::max(0, head->first - System::getMsTime());
+            }
+            m_currentTimer = nullptr;
+            m_mutex.unlock();
+        } else {
+            m_mutex.unlock();
         }
-        m_mutex.unlock();
 
         // don't waste the CPU, but this can delay of 10 ms a new entry of timer
         if (wait == 0) {

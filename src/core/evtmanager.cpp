@@ -10,6 +10,7 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/thread.h"
 #include "o3d/core/evtmanager.h"
+#include "o3d/core/callback.h"
 
 #include "o3d/core/evt.h"
 #include "o3d/core/debug.h"
@@ -24,7 +25,8 @@ EvtManager::EvtManager():
 	m_poolMap(),
 	m_mutex(),
     m_mainMessage(False),
-    m_isAutoWakeUp(True)
+    m_isAutoWakeUp(True),
+    m_callback(nullptr)
 {
 }
 
@@ -67,6 +69,11 @@ void EvtManager::postEvent(EvtFunctionAsyncBase * _pFunction)
         if ((lThread == nullptr) && m_isAutoWakeUp && !m_mainMessage) {
             Application::pushEvent(Application::EVENT_EVT_MANAGER, 0, 0);
             m_mainMessage = True;
+
+            if (m_callback) {
+                m_mutex.unlock();
+                m_callback->call(nullptr);
+            }
 		}
     } else {
 		deletePtr(_pFunction);
@@ -403,7 +410,20 @@ Bool EvtManager::isAutoWakeUp() const
 		FastMutexLocker lLocker(m_mutex);
         ret = m_isAutoWakeUp;
 	}
-	return ret;
+    return ret;
+}
+
+void EvtManager::setWakupCallback(Callback *callback)
+{
+    if (m_callback == callback) {
+        return;
+    }
+
+    if (m_callback) {
+        delete m_callback;
+    }
+
+    m_callback = callback;
 }
 
 EvtPool::EvtPool():

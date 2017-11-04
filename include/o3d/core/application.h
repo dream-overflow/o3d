@@ -18,7 +18,6 @@
 namespace o3d {
 
 class AppWindow;
-class Callback;
 
 /**
  * @brief Base application object settings.
@@ -89,7 +88,6 @@ public:
 
     enum EventType
     {
-        EVENT_USER = 0xfff0,           //!< Generic user event
         EVENT_STD_TIMER = 0xfffd,      //!< Std timer callback to process (not for WIN32 native timer)
         EVENT_CLOSE_WINDOW = 0xfffe,   //!< AppWindow terminaison
         EVENT_EVT_MANAGER = 0xffff     //!< EvtManger as a new event to process
@@ -142,14 +140,6 @@ public:
     //! In the case you are using your own main loop or window manager, you have to
     //! setup the two callbacks (setEvtManagerCallback and setStdTimerCallback).
 	static void run();
-
-    //! Called when an event of type EVENT_EVT_MANAGER occurs.
-    //! The pointer given to the called is always null.
-    static void setEvtManagerCallback(Callback *callback);
-
-    //! Called when an event of type EVENT_STD_TIMER occurs.
-    //! The pointer given to the caller is the Timer object.
-    static void setStdTimerCallback(Callback *callback);
 
 	//! Push a user application event.
     static void pushEvent(EventType type, _HWND hWnd, void *data);
@@ -211,9 +201,6 @@ protected:
 
     static Bool ms_init;
     static Bool ms_displayInit;
-
-    static Callback *m_evtManagerCallback;
-    static Callback *m_stdTimerCallback;
 
 public:
 

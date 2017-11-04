@@ -340,7 +340,7 @@ void Application::runPrivate()
                             } else if (type == EVENT_EVT_MANAGER) {
                                 EvtManager::instance()->processEvent();
                             } else if (type == EVENT_STD_TIMER) {
-                                TimerManager::instance()->callTimer(reinterpret_cast<Timer*>(data));
+                                // TimerManager::instance()->callTimer(data);
                             }
                         } else if (event.xclient.message_type == WM_PROTOCOLS) {
                             // Close window button
@@ -494,9 +494,12 @@ void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
     event.xclient.window = hWnd;
     event.xclient.message_type = O3D_XEVENT;
     event.xclient.format = 32;
+
+    // data
     event.xclient.data.l[0] = static_cast<long>((reinterpret_cast<UInt64>(data) & 0xffff0000) >> 32);
     event.xclient.data.l[1] = static_cast<long>(reinterpret_cast<UInt64>(data) & 0x0000ffff);
     event.xclient.data.l[2] = CurrentTime;
+    event.xclient.data.l[3] = 0;
     event.xclient.data.l[4] = type;
 
 	XSendEvent(

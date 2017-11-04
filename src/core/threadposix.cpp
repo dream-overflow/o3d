@@ -45,7 +45,8 @@ UInt32 ThreadManager::getThreadId()
 // running thread function
 struct O3D_ThreadArgs
 {
-	Int32 *pResult;
+    Int32 *pResult;
+    Bool *pRunning;
 	Callback *pCallBack;
 	void *pData;
 	Semaphore semaphore;
@@ -59,8 +60,7 @@ static void setupThread()
 	// Mask asynchronous signals for this thread
 	sigemptyset(&mask);
 
-	for (Int32 i = 0; sigList[i]; ++i)
-	{
+    for (Int32 i = 0; sigList[i]; ++i) {
 		sigaddset(&mask, sigList[i]);
 	}
 	pthread_sigmask(SIG_BLOCK, &mask, 0);
@@ -79,6 +79,7 @@ static void* O3D_RunThread(void *data)
 	Int32 *pResult;
 	Callback *pCallBack;
 	void *pData;
+    Bool *pRunning;
 
 	// one more thread
 	ThreadManager::addThread();
@@ -86,21 +87,23 @@ static void* O3D_RunThread(void *data)
 	pCallBack = args->pCallBack;
 	pData = args->pData;
 	pResult = args->pResult;
+    pRunning = args->pRunning;
 	*args->threadId = ThreadManager::getThreadId();
 
 	// wake up the parent thread
 	args->semaphore.postSignal();
 
-	*pResult = pCallBack->call(pData);
+    *pResult = pCallBack->call(pData);
+    *pRunning = False;
 
 	// one less thread
 	ThreadManager::removeThread();
 
 	// delete the callback
-	deletePtr(pCallBack);
+    deletePtr(pCallBack);
 
 	pthread_exit(NULL);
-	return NULL;
+    return nullptr;
 }
 
 // create a new thread
@@ -116,7 +119,8 @@ void Thread::create(Callback* pFunc, void *pData)
 	args->pData = pData;
 	args->pCallBack = pFunc;
 	args->pResult = &m_result;
-	args->threadId = &m_id;
+    args->pRunning = &m_running;
+    args->threadId = &m_id;
 
 	pthread_attr_t threadAttr;
 
@@ -145,9 +149,9 @@ void Thread::create(Callback* pFunc, void *pData)
 	// wait for the thread use argument
 	args->semaphore.waitSignal();
 
-	m_running = True;
+    m_running = True;
 
-	deletePtr(args);
+    deletePtr(args);
 }
 
 // wait for the thread finish, and return the returned thread value
@@ -187,7 +191,7 @@ void Thread::kill()
 	ThreadManager::removeThread();
 
 	m_pThread = 0;
-	m_pData = NULL;
+    m_pData = nullptr;
 	m_running = False;
 }
 

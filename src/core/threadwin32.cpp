@@ -38,6 +38,7 @@ UInt32 ThreadManager::getThreadId()
 struct O3D_ThreadArgs
 {
 	Int32 *pResult;
+    Bool *pRunning;
 	Callback *pCallBack;
 	void *pData;
 	Semaphore semaphore;
@@ -50,6 +51,7 @@ static DWORD WINAPI O3D_RunThread(LPVOID data)
 	Int32 *pResult;
 	Callback *pCallBack;
 	void *pData;
+    Bool *pRunning;
 
 	// count one more thread
 	ThreadManager::addThread();
@@ -57,11 +59,13 @@ static DWORD WINAPI O3D_RunThread(LPVOID data)
 	pCallBack = args->pCallBack;
 	pData = args->pData;
 	pResult = args->pResult;
+    pRunning = args->pRunning;
 
 	// wake up the parent thread
 	args->semaphore.postSignal();
 
 	*pResult = pCallBack->call(pData);
+    *pRunning = False;
 
 	// count one less thread
 	ThreadManager::removeThread();
@@ -87,6 +91,7 @@ void Thread::create(Callback* pFunc,void *pData)
 	args->pData = pData;
 	args->pCallBack = pFunc;
 	args->pResult = &m_result;
+    args->pRunning = &m_running;
 
 	// create the new thread
 	if ((m_pThread = CreateThread(NULL,0/*(SIZE_T)stackSize*/,O3D_RunThread,args,0,&id)) == NULL)
@@ -122,8 +127,8 @@ Int32 Thread::waitFinish()
 	CloseHandle(m_pThread);
 
 	m_id = 0;
-	m_pThread = NULL;
-	m_pData = NULL;
+    m_pThread = nullptr;
+    m_pData = nullptr;
 	m_running = False;
 
 	return m_result;
@@ -146,8 +151,8 @@ void Thread::kill()
 	ThreadManager::removeThread();
 
 	m_id = 0;
-	m_pThread = NULL;
-	m_pData = NULL;
+    m_pThread = nullptr;
+    m_pData = nullptr;
 	m_running = False;
 }
 

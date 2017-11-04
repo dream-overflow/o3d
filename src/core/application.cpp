@@ -10,7 +10,6 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/application.h"
 
-#include "o3d/core/callback.h"
 #include "o3d/core/classfactory.h"
 #include "o3d/core/taskmanager.h"
 #include "o3d/core/video.h"
@@ -37,8 +36,6 @@ Bool Application::ms_init = False;
 Bool Application::ms_displayInit = False;
 StringMap<BaseObject*> *ms_mappedObject = nullptr;
 Bool Application::ms_displayError = False;
-Callback *Application::m_evtManagerCallback = nullptr;
-Callback *Application::m_stdTimerCallback = nullptr;
 
 // Objective-3D initialization
 void Application::init(AppSettings settings, Int32 argc, Char **argv)
@@ -278,35 +275,7 @@ void Application::run()
     runPrivate();
 }
 
-void Application::setEvtManagerCallback(Callback *callback)
-{
-    if (m_evtManagerCallback) {
-        delete m_evtManagerCallback;
-    }
-
-    m_evtManagerCallback = callback;
-}
-
-void Application::setStdTimerCallback(Callback *callback)
-{
-    if (m_stdTimerCallback) {
-        delete m_stdTimerCallback;
-    }
-
-    m_stdTimerCallback = callback;
-}
-
 void Application::pushEvent(Application::EventType type, _HWND hWnd, void *data)
 {
     pushEventPrivate(type, hWnd, data);
-
-    if (type == EVENT_EVT_MANAGER) {
-        if (m_evtManagerCallback) {
-            m_evtManagerCallback->call(nullptr);
-        }
-    } else if (type == EVENT_STD_TIMER) {
-        if (m_stdTimerCallback) {
-            m_stdTimerCallback->call(data);
-        }
-    }
 }

@@ -15,11 +15,10 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Callback
-//-------------------------------------------------------------------------------------
-//! Abstract Base class for callback
-//---------------------------------------------------------------------------------------
+/**
+ * @class The Callback class
+ * @brief Abstract Base class for callback
+ */
 class O3D_API Callback
 {
 public:
@@ -29,11 +28,10 @@ public:
 	virtual ~Callback();
 };
 
-//---------------------------------------------------------------------------------------
-//! @class CallbackFunction
-//-------------------------------------------------------------------------------------
-//! Simple callback base class container with one or two argument.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The CallbackFunction class
+ * Generic callback base class container with one or two argument.
+ */
 class O3D_API CallbackFunction : public Callback
 {
 public:
@@ -41,14 +39,14 @@ public:
 	//! Construct with one argument callback
     CallbackFunction(Int32 (*function)(void*)):
         m_function(function),
-		m_function2(NULL),
-        m_util(NULL),
+        m_function2(nullptr),
+        m_util(nullptr),
 		m_two(False) {}
 
 	//! Construct with two arguments callback
 	//! @param util The second argument given to the callback call
-    CallbackFunction(Int32 (*function)(void*,void*), void* util):
-        m_function(NULL),
+    CallbackFunction(Int32 (*function)(void*, void*), void* util):
+        m_function(nullptr),
 		m_function2(function),
         m_util(util),
 		m_two(True) {}
@@ -70,11 +68,10 @@ protected:
     Bool m_two;
 };
 
-//---------------------------------------------------------------------------------------
-//! @class CallbackMethod
-//-------------------------------------------------------------------------------------
-//! Simple callback base class container with one or two argument.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The CallbackMethod class
+ * @brief Generic callback base class container with one or two argument.
+ */
 template<class T>
 class O3D_API_TEMPLATE CallbackMethod : public Callback
 {
@@ -83,15 +80,15 @@ public:
 	//! Construct with one argument callback
     CallbackMethod(T* object, Int32 (T::*method)(void*)):
         m_method(method),
-		m_method2(NULL),
+        m_method2(nullptr),
         m_object(object),
-        m_util(NULL),
+        m_util(nullptr),
 		m_two(False) {}
 
 	//! Construct with two arguments callback
 	//! @param util The second argument given to the callback call
-    CallbackMethod(T* object, Int32 (T::*method)(void*,void*), void* util):
-        m_method(NULL),
+    CallbackMethod(T* object, Int32 (T::*method)(void*, void*), void* util):
+        m_method(nullptr),
 		m_method2(method),
         m_object(object),
         m_util(util),
@@ -104,14 +101,17 @@ public:
 	//! @param info Correspond to the first argument of the callback
     virtual Int32 call(void* info)
 	{
-		if (m_two) return (m_object->*m_method2)(info,m_util);
-		else return (m_object->*m_method)(info);
+        if (m_two) {
+            return (m_object->*m_method2)(info,m_util);
+        } else {
+            return (m_object->*m_method)(info);
+        }
 	}
 
 protected:
 
     Int32 (T::*m_method)(void*);
-    Int32 (T::*m_method2)(void*,void*);
+    Int32 (T::*m_method2)(void*, void*);
 
     T* m_object;
     void* m_util;
@@ -122,4 +122,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_CALLBACK_H
-

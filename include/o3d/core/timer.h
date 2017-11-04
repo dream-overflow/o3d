@@ -15,6 +15,7 @@
 #include "baseobject.h"
 #include "templatemanager.h"
 #include "thread.h"
+#include "templatearray.h"
 
 #include <map>
 
@@ -110,7 +111,7 @@ class TimerCounter
 public:
 
     TimerCounter() :
-        run(True),
+        run(False),
         remaining(0),
         timeOut(0),
         nextTime(0)
@@ -149,14 +150,23 @@ public:
         return remaining;
     }
 
+    /**
+     * @brief stop must be mutex protected
+     */
     inline void stop() {
         run = False;
     }
 
+    /**
+     * @brief stop must be mutex protected
+     */
     inline void start() {
         run = True;
     }
 
+    /**
+     * @brief stop must be mutex protected
+     */
     inline Bool isRunning() const {
         return run;
     }
@@ -202,6 +212,7 @@ private:
 #ifdef O3D_WIN32
 	_Timer m_handle;         //!< Timer handle.
 #else
+    FastMutex m_mutex;
     TimerCounter m_counter;
 #endif
 };
@@ -239,6 +250,7 @@ public:
 
 private:
 
+    FastMutex m_mutex;
     Thread m_thread;
     TimerCounter m_counter;
 
@@ -249,7 +261,7 @@ private:
 /**
  * @brief A singleton manager for timers (threader or not)
  */
-class O3D_API TimerManager : TemplateManager<BaseTimer>, public Runnable
+class O3D_API TimerManager : public TemplateManager<BaseTimer>, public Runnable
 {
 public:
 
@@ -276,10 +288,23 @@ public:
     //! Get the bypass state of calling timer callback
     Bool getActivity() const;
 
-#ifndef O3D_WIN32
+#ifdef O3D_WIN32
+    //! Get timer by its internal WIN32 handler
+    Timer* getTimerByHandleInternal(_Timer h);
+#else
 	//! Call a timer.
-    void callTimer(Timer *timer);
+    void callTimer(void *data);
+
+    //! Is the timer currently performed.
+    Bool isRunningTimerInternal(Timer* timer);
 #endif
+
+public:
+
+    //! Called when a timer as to be processed into the application thread
+    Signal<Int32, Timer*> onTimerCall{this};
+
+    void timerCall(Int32 id, Timer* timer);
 
 private:
 
@@ -289,19 +314,28 @@ private:
     TimerManager(const TimerManager& tim);
     void operator=(const TimerManager& tim);
 
-    std::deque<Timer*> m_queue;
-
     FastMutex m_mutex;
     Bool m_useCallbacks;
 
-#ifndef O3D_WIN32
-    //! Runnable
-    Int32 run(void*);
-
+#ifdef O3D_WIN32
+    stdext::hash_map<_Timer, Timer*> m_handlesMap;
+#else
     //! For non threaded timers
     Thread m_thread;
     Bool m_running;
+
+    std::multimap<Int32, Timer*> m_queue;
+    Timer *m_currentTimer;
+
+    struct TimerEvent
+    {
+        Timer *timer;
+        Int32 id;
+    };
 #endif
+
+    //! Runnable
+    Int32 run(void*);
 };
 
 } // namespace o3d

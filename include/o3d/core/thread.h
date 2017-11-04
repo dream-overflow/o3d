@@ -97,9 +97,9 @@ public:
 
 	//! Start the thread.
 	//! @param data An optional data pointer.
-	void start(void *data = NULL);
+    void start(void *data = nullptr);
 	//! Start thread with a callback passed with a data.
-	void create(Callback* callback, void *data = NULL);
+    void create(Callback* callback, void *data = nullptr);
 
 	//! Kill the thread.
 	void kill();

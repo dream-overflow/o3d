@@ -643,10 +643,8 @@ void PCLODZoneManager::rtUpdate()
 /* Start/Restart the refresh */
 void PCLODZoneManager::run()
 {
-	if (m_thread.isThread())
-	{
-		if (m_threadOrder == THREAD_PAUSE)
-		{
+    if (m_thread.isThread()) {
+        if (m_threadOrder == THREAD_PAUSE) {
 			m_threadOrder = THREAD_RUN;
 			m_pauseMutex.unlock();
 			return;
@@ -665,8 +663,7 @@ void PCLODZoneManager::run()
 /* Stop the refresh thread */
 void PCLODZoneManager::stop()
 {
-	if (!m_thread.isThread())
-	{
+    if (!m_thread.isThread()) {
 		PCLOD_ERROR(String("ZoneManager : Attempt to stop the refresh but it's not running"));
 		return;
 	}
@@ -679,8 +676,7 @@ void PCLODZoneManager::stop()
 /* Pause the refreshment of the terrain. Available for synchrone and asynchroneous refreshment */
 void PCLODZoneManager::pause()
 {
-	if (!m_pauseMutex.tryLock())
-	{
+    if (!m_pauseMutex.tryLock()) {
 		PCLOD_ERROR(String("ZoneManager : Attempt to pause the ZoneManager but it's already paused"));
 		return;
 	}

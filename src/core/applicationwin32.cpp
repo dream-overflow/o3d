@@ -204,7 +204,7 @@ void Application::runPrivate()
 }
 
 // Push a user application event.
-void Application::pushEventPrivate(Int32 type, _HWND hWnd, void *data)
+void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 {
     if (ms_display == nullptr) {
         return;

@@ -109,7 +109,7 @@ Timer::TimerType TimerThread::getTimerType() const
 
 Bool TimerThread::create(UInt32 timeout, TimerMode mode, Callback *callback, void *data)
 {
-    if (getId() < 0 && callback) {
+    if (!m_thread.isThread() && callback && getId() < 0) {
         m_mode = mode;
         m_timeout = timeout;
 
@@ -122,10 +122,7 @@ Bool TimerThread::create(UInt32 timeout, TimerMode mode, Callback *callback, voi
 
         m_counter.set(timeout);
         m_counter.start();
-
-        if (!m_thread.isThread()) {
-            m_thread.start();
-        }
+        m_thread.start();
 
         return True;
     } else {
@@ -145,47 +142,63 @@ void TimerThread::destroy()
 // Timer thread
 Int32 TimerThread::run(void*)
 {
+    Int32 result = 0;
+    Int32 remaining = 0;
+    Bool running = True;
+    Bool timedOut = False;
+
     for (;;) {
+        m_mutex.lock();
+        running = m_counter.isRunning();
+        m_counter.update();
+        timedOut = m_counter.isTimedOut();
+        m_mutex.unlock();
+
         // killed
-        if (!m_counter.isRunning()) {
+        if (!running) {
             break;
         }
 
-        m_counter.update();
-
-        if (m_counter.isTimedOut()) {
+        if (timedOut) {
             // called from the thread
-            if (m_pCallback) {
-                Int32 result = m_pCallback->call(nullptr);
+            result = m_pCallback->call(nullptr);
 
-                // reset once callback done
-                // m_counter.reset();
-                m_counter.set(m_timeout);
-
-                // stop the timer (once or continue)
-                if (result < 0) {
-                    break;
-                }
-
-                // once timer can be throw again if result is different from previous timeout
-                if (m_mode == TIMER_ONCE) {
-                    if (result != (Int32)m_timeout) {
-                        // once again
-                        m_counter.set((UInt32)result);
-                    }
-                }
-            } else {
-                // normally a callback is required to run
+            // stop the timer (once or continue)
+            if (result < 0) {
                 break;
             }
+
+            // reset once callback done
+            m_mutex.lock();
+
+            m_counter.set(m_timeout);  // m_counter.reset();
+            // remaining = m_counter.getRemaining();
+            remaining = m_timeout;
+
+            // once timer can be throw again if result is different from previous timeout
+            if (m_mode == TIMER_ONCE) {
+                if (result != (Int32)m_timeout) {
+                    // once again
+                    m_counter.set((UInt32)result);
+                } else {
+                    running = False;
+                }
+            }
+
+            m_mutex.unlock();
+        }
+
+        // once done
+        if (!running) {
+            break;
         }
 
         // don't waste the CPU
-        if (m_counter.getRemaining() == 0) {
+        if (remaining == 0) {
             System::waitMs(0);  // simple yeld
-        } else if (m_counter.getRemaining() <= 5) {
+        } else if (remaining <= 5) {
             System::waitMs(1);  // keep precision
-        } else if (m_counter.getRemaining() <= 10) {
+        } else if (remaining <= 10) {
             System::waitMs(2);  // keep precision
         } else {
             System::waitMs(10);
@@ -197,28 +210,27 @@ Int32 TimerThread::run(void*)
 
 void TimerThread::throwTimer(UInt32 timeout)
 {
-    if (getId() < 0 && m_pCallback) {
+    if (!m_thread.isThread() && m_pCallback && getId() < 0) {
         TimerManager::instance()->addTimerInternal(this);
 
         m_timeout = timeout;
         m_counter.set(timeout);
         m_counter.start();
 
-        if (!m_thread.isThread()) {
-            m_thread.start();
-        }
+        m_thread.start();
     }
 }
 
 void TimerThread::killTimer()
 {
-    if (getId() >= 0) {
+    if (m_thread.isThread() && getId() >= 0) {
         TimerManager::instance()->removeTimerInternal(this);
-    }
 
-    if (m_thread.isThread()) {
+        m_mutex.lock();
         m_counter.stop();
-        m_thread.stop();
+        m_mutex.unlock();
+
+        m_thread.waitFinish();
     }
 }
 
@@ -251,9 +263,11 @@ void TimerManager::destroy()
 
 TimerManager::~TimerManager()
 {
+#ifndef O3D_WIN32
     m_mutex.lock();
     m_running = False;
     m_mutex.unlock();
+#endif
 
     m_mutex.lock();
     while (getNumElt()) {
@@ -275,13 +289,18 @@ TimerManager::~TimerManager()
 
 // constructor
 TimerManager::TimerManager() :
-    TemplateManager<BaseTimer>(nullptr)
+    TemplateManager<BaseTimer>(nullptr),
+    m_useCallbacks(true)
 #ifndef O3D_WIN32
     ,m_thread(this),
-    m_running(False)
+    m_running(False),
+    m_currentTimer(nullptr)
 #endif
 {
 	m_instance = (TimerManager*)this;
+
+    // listen to himself for asynchronous timer event of non-threaded timer
+    onTimerCall.connect(this, &TimerManager::timerCall, EvtHandler::CONNECTION_ASYNCH);
 }
 
 // remove a timer by it's Id
@@ -304,15 +323,26 @@ void TimerManager::addTimerInternal(BaseTimer* pTimer)
         return;
     }
 
-    Int32 size = 0;
+    Bool wakeup = False;
 
     m_mutex.lock();
     addElement(pTimer);
-    size = getNumElt();
+
+    if (pTimer->getTimerType() == Timer::NON_THREADED) {
+        Timer *ltimer = static_cast<Timer*>(pTimer);
+        m_queue.insert(std::pair<Int32, Timer*>(Int32(ltimer->getTimeout() + System::getMsTime()), ltimer));
+        wakeup = True;
+    }
+
     m_mutex.unlock();
 
-#ifndef O3D_WIN32
-    if (!m_thread.isThread() && size > 0) {
+#ifdef O3D_WIN32
+    if (pTimer->getTimerType() == Timer::NON_THREADED) {
+        Timer *timer = static_cast<Timer*>(pTimer);
+        m_handlesMap[timer->m_handle] = timer;
+    }
+#else
+    if (!m_thread.isThread() && wakeup) {
         m_running = True;
         m_thread.start();
     }
@@ -327,6 +357,32 @@ void TimerManager::removeTimerInternal(BaseTimer* pTimer)
 
     m_mutex.lock();
     removeElement(pTimer);
+
+    if (pTimer->getTimerType() == Timer::NON_THREADED) {
+        Timer *ltimer = static_cast<Timer*>(pTimer);
+
+        auto it = m_queue.begin();
+        while (it != m_queue.end()) {
+            if (it->second == ltimer) {
+                m_queue.erase(it);
+                break;
+            }
+
+            ++it;
+        }
+    }
+
+#ifdef O3D_WIN32
+    if (pTimer->getTimerType() == Timer::NON_THREADED) {
+        Timer *timer = static_cast<Timer*>(pTimer);
+
+        auto it = m_handlesMap.find(timer->m_handle);
+        if (it != m_handlesMap.end()) {
+            m_handlesMap.erase(it);
+        }
+    }
+#endif
+
     m_mutex.unlock();
 }
 
