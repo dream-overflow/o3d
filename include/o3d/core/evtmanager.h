@@ -54,7 +54,7 @@ private:
 	Bool m_mainMessage;
 	Bool m_isAutoWakeUp;
 
-    Callback *m_callback;
+    Callback *m_wakeUpCallback;
 
 	static EvtManager * m_pInstance;
 
@@ -131,7 +131,7 @@ public:
     //! @note This is not sent every posted event, because this will be counter performant, instead of,
     //! once you receive this callback, processing waiting events on the application thread will reset a flag,
     //! and so another callback will be called on futurs events.
-    void setWakupCallback(Callback *callback);
+    void setWakeUpCallback(Callback *callback);
 };
 
 class O3D_API EvtPool

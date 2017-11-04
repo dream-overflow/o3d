@@ -26,7 +26,7 @@ EvtManager::EvtManager():
 	m_mutex(),
     m_mainMessage(False),
     m_isAutoWakeUp(True),
-    m_callback(nullptr)
+    m_wakeUpCallback(nullptr)
 {
 }
 
@@ -70,9 +70,9 @@ void EvtManager::postEvent(EvtFunctionAsyncBase * _pFunction)
             Application::pushEvent(Application::EVENT_EVT_MANAGER, 0, 0);
             m_mainMessage = True;
 
-            if (m_callback) {
+            if (m_wakeUpCallback) {
                 m_mutex.unlock();
-                m_callback->call(nullptr);
+                m_wakeUpCallback->call(nullptr);
             }
 		}
     } else {
@@ -413,17 +413,17 @@ Bool EvtManager::isAutoWakeUp() const
     return ret;
 }
 
-void EvtManager::setWakupCallback(Callback *callback)
+void EvtManager::setWakeUpCallback(Callback *callback)
 {
-    if (m_callback == callback) {
+    if (m_wakeUpCallback == callback) {
         return;
     }
 
-    if (m_callback) {
-        delete m_callback;
+    if (m_wakeUpCallback) {
+        delete m_wakeUpCallback;
     }
 
-    m_callback = callback;
+    m_wakeUpCallback = callback;
 }
 
 EvtPool::EvtPool():
