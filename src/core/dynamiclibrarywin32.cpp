@@ -23,10 +23,9 @@ using namespace o3d;
 DynamicLibrary* DynamicLibrary::load(const String &name)
 {
 	String fullPath = FileManager::instance()->getFullFileName(name);
-	for (std::list<DynamicLibrary*>::iterator it = ms_libraries.begin(); it != ms_libraries.end(); ++it)
-	{
+    for (std::list<DynamicLibrary*>::iterator it = ms_libraries.begin(); it != ms_libraries.end(); ++it) {
 		if ((*it)->m_name == fullPath)
-			throw new E_DynamicLibraryException("Already loaded library " + name);
+            O3D_ERROR(E_DynamicLibraryException("Already loaded library " + name));
 	}
 
 	DynamicLibrary *library = new DynamicLibrary;
@@ -35,10 +34,9 @@ DynamicLibrary* DynamicLibrary::load(const String &name)
 	lname.replace('/','\\');
 
 	library->m_instance = (_HINSTANCE)LoadLibraryW(lname.getData());
-	if (!library->m_instance)
-	{
+    if (!library->m_instance) {
 		deletePtr(library);
-		throw new E_DynamicLibraryException("Cannot load library " + fullPath);
+        O3D_ERROR(E_DynamicLibraryException("Cannot load library " + fullPath));
 	}
 
 	library->m_name = fullPath;
@@ -49,13 +47,12 @@ DynamicLibrary* DynamicLibrary::load(const String &name)
 
 void DynamicLibrary::unload(DynamicLibrary *library)
 {
-	if (library == NULL)
-		return;
+    if (library == nullptr) {
+        return;
+    }
 
-	for (std::list<DynamicLibrary*>::iterator it = ms_libraries.begin(); it != ms_libraries.end(); ++it)
-	{
-		if ((*it) == library)
-		{
+    for (std::list<DynamicLibrary*>::iterator it = ms_libraries.begin(); it != ms_libraries.end(); ++it) {
+        if ((*it) == library) {
 			ms_libraries.erase(it);
 
 			O3D_MESSAGE("Unload managed dynamic library " + library->m_name);
@@ -80,4 +77,3 @@ void* DynamicLibrary::getFunctionPtr(const CString &foo) const
 }
 
 #endif // O3D_WIN32_SYS
-
