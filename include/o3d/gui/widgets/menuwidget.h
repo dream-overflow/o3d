@@ -1,7 +1,7 @@
 /**
  * @file menuwidget.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ namespace o3d {
 /**
  * @brief MenuLabelItem
  * A simple targetable and hoverable menu entry containing only a left aligned label.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-10-13
  */
 class O3D_API MenuLabelItem : public Widget
@@ -86,7 +86,7 @@ protected:
  * Menu form, using of a kind of list box with separators widgets, entry widgets.
  * A menu never have horizontal scrolling. Only vertical scrolling is possible.
  * The width is adjusted to the largest item.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-10-13
  */
 class O3D_API MenuWidget : public Widget

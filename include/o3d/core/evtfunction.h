@@ -24,7 +24,7 @@ class Thread;
 /**
  * @brief Event function. Base template class.
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-03-06
  */
 class O3D_API EvtFunctionBase
@@ -76,7 +76,7 @@ protected:
 /**
  * @brief Event function for asynchronous mode. Base class.
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-01-03
  */
 class O3D_API EvtFunctionAsyncBase
@@ -129,7 +129,7 @@ protected:
 /**
  * @brief Event function without parameters.
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-03-06
  */
 class O3D_API EvtFunction0Param : public EvtFunctionBase
@@ -155,7 +155,7 @@ public:
 /**
  * @brief Event function without parameters.
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-03-06
  */
 class O3D_API EvtFunctionAsync0Param : public EvtFunctionAsyncBase
@@ -203,7 +203,7 @@ struct gens<0, S...>
 
 /**
  * @brief Asynchrounous event function with variadics parameters.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-01-03
  */
 template <typename... Args>
@@ -258,7 +258,7 @@ public:
 
 /**
  * @brief Event function without parameters.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-01-03
  */
 template <typename... Args>
@@ -307,7 +307,7 @@ public:
 
 /**
  * @brief Asynchrounous event std::function without parameters.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-03-01
  */
 class O3D_API EvtStdFunctionAsync0Param: public EvtFunctionAsyncBase
@@ -339,7 +339,7 @@ public:
 
 /**
  * @brief Event std::function without parameters.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-03-01
  */
 class O3D_API EvtStdFunction0Param : public EvtFunctionBase
@@ -368,7 +368,7 @@ public:
 
 ///**
 // * @brief Asynchrounous event function with a single parameters.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2016-01-03
 // */
 //template <class T>

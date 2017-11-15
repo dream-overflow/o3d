@@ -1,7 +1,7 @@
 /**
  * @file smartobject.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 
 /**
  * @brief Shared part of a template smart object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-04-03
  */
 class O3D_API BaseSmartObject
@@ -53,7 +53,7 @@ public:
 
 /**
  * @brief Sharable object usage.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-04-03
  * Auto usage/release/deferred delete. The referer must be a BaseObject.
  */

@@ -1,7 +1,7 @@
 /**
  * @file smartcounter.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 
 /**
  * @brief A smart counter is used to known if an object is actually in use or not.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-09-23
  * A smart counter is used to known if an object is actually in use or not. UseIt add
  * an user, and release it, remove an user of the object. If the counter is equal to

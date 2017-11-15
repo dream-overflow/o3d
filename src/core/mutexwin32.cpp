@@ -1,7 +1,7 @@
 /**
  * @file mutexwin32.cpp
  * @brief Implementation of Mutex.h (WIN32 part)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @author  Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
  * @date 2008-09-28
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.

@@ -1,7 +1,7 @@
 /**
  * @file collisionmanager.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ namespace o3d {
 
 /**
  * @brief Physic collision manager for physic entities.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-06-01
  * Manage all collision between the rigid bodies of an PhysicentityManager.
  * The collision are stored in a linked list. It also use a garbage collector

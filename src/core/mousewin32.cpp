@@ -1,7 +1,7 @@
 /**
  * @file mousewin32.cpp
  * @brief Implementation of Mouse.h (WIN32 part).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2003-09-05
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

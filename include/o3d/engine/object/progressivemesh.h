@@ -1,7 +1,7 @@
 /**
  * @file progressivemesh.h
  * @brief Progressive mesh data computation
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-03-24
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

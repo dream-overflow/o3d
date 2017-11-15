@@ -1,7 +1,7 @@
 /**
  * @file gif.h
  * @brief Loading of Gif 87a/89a
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-19
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

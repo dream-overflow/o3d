@@ -1,7 +1,7 @@
 /**
  * @file color.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -24,7 +24,7 @@ typedef UInt32 Rgb;
 
 /**
  * @brief Simple color object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-04-04
  * Float version of a 4 components color.
  */

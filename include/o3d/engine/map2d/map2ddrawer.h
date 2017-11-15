@@ -1,7 +1,7 @@
 /**
  * @file map2ddrawer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ namespace o3d {
 /**
  * @brief A simple scene drawer that manage a Map2d without any 3d part of the engine
  * and without post effects.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-08-02
  */
 class O3D_API Map2dDrawer : public SceneDrawer

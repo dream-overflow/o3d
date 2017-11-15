@@ -1,7 +1,7 @@
 /**
  * @file worldmanager.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -16,7 +16,7 @@ namespace o3d {
 
 /**
  * @brief World manager is responsible of the full or part of the world.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-02-14
  * A world manager update, display, load, unload scene object, according to
  * specific technics, strategy, and have in responsibility the state of the scene

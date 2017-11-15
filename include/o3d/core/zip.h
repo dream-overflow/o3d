@@ -1,7 +1,7 @@
 /**
  * @file zip.h
  * @brief OpenFile.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-02
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

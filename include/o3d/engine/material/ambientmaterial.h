@@ -1,7 +1,7 @@
 /**
  * @file ambientmaterial.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 /**
  * @brief Material using the simple ambient component or ambient.
  * @date 2010-01-19
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  *
  * First it look for an ambient map, if not look for a diffuse map.
  * If there is a diffuse map it use it as ambient map and compute :

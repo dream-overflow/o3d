@@ -1,7 +1,7 @@
 /**
  * @file filemanager.cpp
  * @brief Global file system manager.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-08
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

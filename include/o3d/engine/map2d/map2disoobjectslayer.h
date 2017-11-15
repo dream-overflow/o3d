@@ -1,7 +1,7 @@
 /**
  * @file map2disoobjectslayer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -19,7 +19,7 @@ namespace o3d {
  * @brief A layer of a 2d map, specialized for the rendering of multiple objects
  * in 2d isometrics ccordinates. Object rendering is done from up to down, and
  * right to left.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-08-13
  */
 class O3D_API Map2dIsoObjectsLayer : public Map2dLayer

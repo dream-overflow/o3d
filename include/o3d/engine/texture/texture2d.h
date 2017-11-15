@@ -1,7 +1,7 @@
 /**
  * @file texture2d.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ namespace o3d {
 
 /**
  * @brief Two dimensional texture object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2014-03-16
  */
 class O3D_API Texture2D : public Texture
@@ -150,7 +150,7 @@ protected:
 
 /**
  * @brief Task responsible of the loading of a 2D texture.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2014-03-16
  */
 class O3D_API Texture2DTask : public Task

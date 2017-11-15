@@ -1,7 +1,7 @@
 /**
  * @file framebuffer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -23,7 +23,7 @@ class Texture2DMS;
 
 /**
  * @brief Frame buffer object for MRT and to texture rendering.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-11-14
  */
 class O3D_API FrameBuffer : NonCopyable<>

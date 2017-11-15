@@ -1,7 +1,7 @@
 /**
  * @file task.h
  * @brief Task object. A specialized task must inherit from this object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2009-10-07
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

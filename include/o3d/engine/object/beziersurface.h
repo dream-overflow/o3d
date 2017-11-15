@@ -1,7 +1,7 @@
 /**
  * @file beziersurface.h
  * @brief A computed surface with bezier method.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-04-22
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

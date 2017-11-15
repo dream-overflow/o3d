@@ -1,7 +1,7 @@
 /**
  * @file lambertmaterial.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 /**
  * @brief Material using the Lambert illumination model.
  * @date 2010-01-19
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Illumination shader, based on Lambert method. It supports forward lighting, and
  * in the case of a deferred shading mode it put no more informations than the model do.
  * That means in deferred mode there is only an interpolated per vertex normal

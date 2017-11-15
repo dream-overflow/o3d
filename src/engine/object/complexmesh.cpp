@@ -1,7 +1,7 @@
 /**
  * @file complexmesh.cpp
  * @brief by face.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-05-04
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

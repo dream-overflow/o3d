@@ -1,7 +1,7 @@
 /**
  * @file engine.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -27,7 +27,7 @@ class ViewPortManager;
 
 /**
  * @brief Engine entry point.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-02-17
  * Engine class maintains the resources (texture, shaders, materials, models...)
  * that can be shared with one ore many scene objects.

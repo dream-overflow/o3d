@@ -1,7 +1,7 @@
 /**
  * @file rootwindow.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ class WidgetManager;
 
 /**
  * @brief Widget manager root window. Special window defining the background of the gui.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-07
  */
 class O3D_API RootWindow : public Widget

@@ -1,7 +1,7 @@
 /**
  * @file atransform.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ namespace o3d {
 /**
  * @brief Animation oriented transform.
  * It contains a SRT tranform with two types for the rotation (euler vector + quaternion).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2014-03-30
  */
 class O3D_API ATransform : public Transform

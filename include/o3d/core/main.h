@@ -1,7 +1,7 @@
 /**
  * @file main.h
  * @brief Application main helper.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2012-12-07
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

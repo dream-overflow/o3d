@@ -1,7 +1,7 @@
 /**
  * @file heightmapio.cpp
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-08-24
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -1,7 +1,7 @@
 /**
  * @file abcfont.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -21,7 +21,7 @@ namespace o3d {
 /**
  * @brief Base class for all font classes of the GUI.
  * Inherits from the Text2D interface to be used by the engine part for font rendering.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-05-08
  */
 class O3D_API ABCFont : public SceneEntity, public Text2D

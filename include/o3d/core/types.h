@@ -1,7 +1,7 @@
 /**
  * @file types.h
  * @brief Primitives types, somes basic types, and primitive type ranges.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-11-21
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

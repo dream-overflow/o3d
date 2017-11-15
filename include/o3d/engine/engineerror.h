@@ -1,7 +1,7 @@
 /**
  * @file engineerror.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -16,7 +16,7 @@ namespace o3d {
 
 /**
  * @brief E_OpenGLDebug throw when an OpenGL error is detected by an OpenGL debug context.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2014-04-27
  */
 class O3D_API E_OpenGLDebug : public E_BaseException

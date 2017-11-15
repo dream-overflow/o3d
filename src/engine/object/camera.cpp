@@ -1,7 +1,7 @@
 /**
  * @file camera.cpp
  * @brief Implementation of Camera.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-02-13--
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

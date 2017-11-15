@@ -1,7 +1,7 @@
 /**
  * @file scrollbar.h
  * @brief An horizontal or vertical scroll bar widget.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2009-11-16
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

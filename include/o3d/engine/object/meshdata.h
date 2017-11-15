@@ -1,7 +1,7 @@
 /**
  * @file meshdata.h
  * @brief MeshData object that contain any kind of geometry.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-10-22
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

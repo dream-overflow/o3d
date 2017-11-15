@@ -1,7 +1,7 @@
 /**
  * @file mousesmoother.h
  * @brief Mouse input smoother using spline
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-11-11
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

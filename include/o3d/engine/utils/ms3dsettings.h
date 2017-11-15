@@ -1,7 +1,7 @@
 /**
  * @file ms3dsettings.h
  * @brief Milkshape 3D file loader
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-06-09
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -2,7 +2,7 @@
  * @file visibilityabc.h
  * @brief VisibilityABC is the base class for all object visibility methods computation
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-12-08
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

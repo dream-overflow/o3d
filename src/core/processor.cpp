@@ -1,7 +1,7 @@
 /**
  * @file processor.cpp
  * @brief Implementation of Processor.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-12-01
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -1,7 +1,7 @@
 /**
  * @file materialprofile.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -26,7 +26,7 @@ class DrawInfo;
 
 /**
  * @brief Define a set of material techniques and material settings.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-01-03
  * Define a set of material techniques. The technique is chosen according some
  * parameters like distance (level of detail), current GPU load or such others.

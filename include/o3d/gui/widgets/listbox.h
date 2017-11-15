@@ -1,7 +1,7 @@
 /**
  * @file listbox.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -21,7 +21,7 @@ class ListBox;
 /**
  * @brief List box element.
  * Contains a reference to a widget element, a meta-data, and reference to its list-box.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-10-01
  */
 class O3D_API ListBoxElement
@@ -79,7 +79,7 @@ private:
 /**
  * @brief List box widget
  * The borders of the list box is based on the border of the Window of the theme.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-09-30
  */
 class O3D_API ListBox : public Widget

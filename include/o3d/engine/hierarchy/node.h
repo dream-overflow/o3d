@@ -1,7 +1,7 @@
 /**
  * @file node.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -28,7 +28,7 @@ typedef T_SonList::const_iterator CIT_SonList;
 
 /**
  * @brief Node element into the world hierarchy.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2003-02-05
  */
 class O3D_API Node : public BaseNode

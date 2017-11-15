@@ -1,7 +1,7 @@
 /**
  * @file cloth.h
  * @brief A cloth skin or rigid object used by Humanoid.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-06-30
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

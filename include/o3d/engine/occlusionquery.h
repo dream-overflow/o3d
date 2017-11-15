@@ -1,7 +1,7 @@
 /**
  * @file occlusionquery.h
  * @brief This class is an interface for an occlusion query object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-08-08
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

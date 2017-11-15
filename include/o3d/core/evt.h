@@ -1,7 +1,7 @@
 /**
  * @file evt.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-01-01
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -28,7 +28,7 @@ namespace o3d {
 
 ///**
 // * @brief Used on slot to define a parameter.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // * Usage :
 // * void mySlot(EvtType<String>::R name);
@@ -42,7 +42,7 @@ namespace o3d {
 
 ///**
 // * @brief Helper used to connect a signal.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // * Usage :
 // * o3d::Link<className::signalType>::make(
@@ -82,7 +82,7 @@ namespace o3d {
 // * @param signal Signal object on the sender
 // * @param receiver Receiver event handler object
 // * @param slot Pointer on a slot on the receiver (must be of the type of the signal)
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // */
 //template <class SIGNAL_TYPE, class FUNC_PTR>
@@ -106,7 +106,7 @@ namespace o3d {
 
 ///**
 // * @brief Base template struct for signals definition.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // */
 //template <class P0 = NullType, class P1 = NullType, class P2 = NullType, class P3 = NullType>
@@ -114,7 +114,7 @@ namespace o3d {
 
 ///**
 // * @brief A signal with 0 parameters and void as return.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // * Declaration usage :
 // * Signal1<> onMySignal;
@@ -164,7 +164,7 @@ namespace o3d {
 
 ///**
 // * @brief A signal with 1 parameters and void as return.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // * Declaration usage :
 // * Signal1<TYPE> onMySignal;
@@ -216,7 +216,7 @@ namespace o3d {
 
 ///**
 // * @brief A signal with 2 parameters and void as return.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // * Declaration usage :
 // * Signal1<TYPE1, TYPE2> onMySignal;
@@ -268,7 +268,7 @@ namespace o3d {
 
 ///**
 // * @brief A signal with 3 parameters and void as return.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // * Declaration usage :
 // * Signal1<TYPE1, TYPE2, TYPE3> onMySignal;
@@ -320,7 +320,7 @@ namespace o3d {
 
 ///**
 // * @brief A signal with 4 parameters and void as return.
-// * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+// * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
 // * @date 2013-01-01
 // * Declaration usage :
 // * Signal1<TYPE1, TYPE2, TYPE3, TYPE4> onMySignal;
@@ -372,7 +372,7 @@ namespace o3d {
 
 /**
  * @brief A signal with variadic parameters and void as return.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-01-04
  * Declaration usage :
  * Signal<TYPE1, TYPE2, ...> onMySignal{this};
@@ -551,7 +551,7 @@ struct Signal
 
 /**
  * @brief Specialization of the previous signe for 0 zero parameters and void as return.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-01-04
  * Declaration usage :
  * Signal<> onMySignal{this};

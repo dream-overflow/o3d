@@ -1,7 +1,7 @@
 /**
  * @file matrix4.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -28,7 +28,7 @@ class String;
 
 /**
  * @brief 4x4 matrix definition.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-02-18
  * 4x4 column major matrix. In memory first index represent the column. Accessors works
  * in row at first index. IE m23 mean row 2, column 3.

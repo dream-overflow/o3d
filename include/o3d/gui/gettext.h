@@ -1,7 +1,7 @@
 /**
  * @file gettext.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -23,7 +23,7 @@ class Texture2D;
 
 /**
  * @brief A single or multi-line text input grabber.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-04-29
  * Get the typed text on a keyboard device and convert some specials keys like backspace
  * or arrow key for the cursor pos in the word.

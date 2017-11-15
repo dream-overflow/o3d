@@ -1,7 +1,7 @@
 /**
  * @file primitivemanager.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -32,7 +32,7 @@ class AABBoxExt;
 
 /**
  * @brief Manager manager usage helper.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2009-09-16
  * A simple object that set at constructor and automatically reset at destructor,
  * the usage of the primitive rendering.
@@ -68,7 +68,7 @@ private:
 
 /**
  * @brief Manager that offers many primitives objects for easy rendering.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2009-09-16
  */
 class O3D_API PrimitiveManager: public SceneEntity

@@ -1,7 +1,7 @@
 /**
  * @file primitive.cpp
  * @brief Implementation of Primitive.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @author  Julien IBARZ
  * @date 2003-02-14
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.

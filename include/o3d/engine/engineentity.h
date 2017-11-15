@@ -1,7 +1,7 @@
 /**
  * @file engineentity.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ class Engine;
 
 /**
  * @brief A base object of the engine.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-02-17
  */
 class O3D_API EngineEntity : public BaseObject
@@ -49,7 +49,7 @@ public:
 
 /**
  * @brief A base resource of the engine.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-02-17
  */
 class O3D_API EngineResource : public Resource
@@ -76,7 +76,7 @@ public:
 
 /**
  * @brief A base resource manager of the engine.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-02-17
  */
 class O3D_API EngineResourceManager : public ResourceManager

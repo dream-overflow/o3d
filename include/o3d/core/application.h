@@ -1,7 +1,7 @@
 /**
  * @file application.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -21,7 +21,7 @@ class AppWindow;
 
 /**
  * @brief Base application object settings.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-08-12
  * The Application class need somes parameters, that is. This class defines the necessary
  * parameters with defaults values that should be suffiscient for most of the usage, but
@@ -60,7 +60,7 @@ public:
 /**
  * @brief Application entry
  * @date 2010-08-12
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Application is a static class offering support for :
  * - the command line interface (CLI),
  * - application initialization and terminaison (init, quit)

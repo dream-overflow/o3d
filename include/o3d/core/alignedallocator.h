@@ -1,7 +1,7 @@
 /**
  * @file alignedallocator.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 /**
  * @brief Aligned allocator STL compatible.
  * @date 2008-07-14
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 template <typename T, unsigned Alignment = 0>
 class O3D_API AlignedAllocator

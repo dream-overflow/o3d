@@ -1,7 +1,7 @@
 /**
  * @file sceneentity.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ class Scene;
 
 /**
  * @brief A base object of the scene.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-03-22
  */
 class O3D_API SceneEntity : public BaseObject
@@ -49,7 +49,7 @@ public:
 
 /**
  * @brief A base resource of the scene.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-03-22
  */
 class O3D_API SceneResource : public Resource
@@ -76,7 +76,7 @@ public:
 
 /**
  * @brief A base resource manager of the scene.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-03-22
  */
 class O3D_API SceneResourceManager : public ResourceManager

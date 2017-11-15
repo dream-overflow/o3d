@@ -1,7 +1,7 @@
 /**
  * @file scheduledthreadpool.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -16,7 +16,7 @@ namespace o3d {
 
 /**
  * @brief ScheduledRunnable
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-28
  */
 class O3D_API ScheduledRunnable : public Runnable
@@ -88,7 +88,7 @@ private:
  * Manage a pool of a limited number of thread, and a list of Runnable object
  * to process at regular interval of time.
  * @note Works with a microseconds precision.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-27
  */
 class O3D_API ScheduledThreadPool

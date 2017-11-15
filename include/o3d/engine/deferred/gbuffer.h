@@ -1,7 +1,7 @@
 /**
  * @file gbuffer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -31,7 +31,7 @@ class Texture2DMS;
  *  - specular buffer, contains specular RGBA
  *  - shine buffer, contains the specular power is a 8 bits integer or 32 bits float in R
  * @date 2013-01-14
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API GBuffer : public SceneEntity
 {

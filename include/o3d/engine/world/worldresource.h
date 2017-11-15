@@ -1,7 +1,7 @@
 /**
  * @file worldresource.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ class WorldManager;
 
 /**
  * @brief World resource interface.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-02-14
  * A world resource is an high level object defining a way to load, unload its content
  * dynamically, and even to reaload its content dynamicaly for example during the world

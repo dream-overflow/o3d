@@ -1,7 +1,7 @@
 /**
  * @file objective3d.h
  * @brief Application dynamic library exporter
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (C) 2001-2017 Dream Overflow. All rights reserved.
  * @details

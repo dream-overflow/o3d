@@ -1,7 +1,7 @@
 /**
  * @file input.h
  * @brief Base class for input device such as keyboard, mouse, joystick and also webcam.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2003-09-04
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

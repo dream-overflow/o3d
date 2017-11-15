@@ -1,7 +1,7 @@
 /**
  * @file blockpooler.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -32,7 +32,7 @@ namespace o3d {
 
 /**
  * @brief An optimized allocator for fixed size block allocation.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-11-03
  * Fast memory pooler for fixed block allocation. Take care this file is used only
  * in inline, and than the memory manager is not present here.

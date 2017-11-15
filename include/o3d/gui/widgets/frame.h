@@ -1,7 +1,7 @@
 /**
  * @file frame.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ class Layout;
  * A widget representing a frame. This widget can contain a layout definition which can
  * contain some children widgets. A frame is not a top level widget.
  * The borders of the frame is based on the border of the Window of the theme.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-10-01
  */
 class O3D_API Frame : public Widget

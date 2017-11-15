@@ -1,7 +1,7 @@
 /**
  * @file evaluator.cpp
  * @brief Implementation of Evaluator.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 03-02-2005
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

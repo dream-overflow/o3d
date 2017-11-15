@@ -1,7 +1,7 @@
 /**
  * @file sndsource.h
  * @brief 2D or 3D sound source.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2003-04-13
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

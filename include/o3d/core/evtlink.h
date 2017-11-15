@@ -22,7 +22,7 @@ namespace o3d {
  * the receiver containing the slot. But can be also a std::function with more a complex
  * context.
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-11-13
  */
 class O3D_API EvtLinkBase

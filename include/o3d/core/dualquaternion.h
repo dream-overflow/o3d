@@ -1,7 +1,7 @@
 /**
  * @file dualquaternion.h
  * @brief The Dual of a Quaternion can model the movement of an object in 3d
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-12-08
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -1,7 +1,7 @@
 /**
  * @file screenviewport.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ namespace o3d {
 /**
  * @brief Viewport managing.
  * @date 2002-08-01
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Screen out viewport. A portion (or the full) of the rendering device context.
  */
 class O3D_API ScreenViewPort : public ViewPort

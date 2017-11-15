@@ -1,7 +1,7 @@
 /**
  * @file hierarchytree.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ typedef T_SceneObjectList::const_iterator CIT_SceneObjectList;
 
 /**
  * @brief Root node is a special case of node.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2003-02-25
  */
 class O3D_API RootNode : public Node
@@ -44,7 +44,7 @@ public:
 /**
  * @brief Hierarchical object tree for any SceneObject and nodes.
  * @date 2003-02-25
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API HierarchyTree : public SceneEntity
 {

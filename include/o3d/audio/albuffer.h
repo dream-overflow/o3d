@@ -1,7 +1,7 @@
 /**
  * @file albuffer.h
  * @brief OpenAL internal sound buffer object and creation.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-12-31
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

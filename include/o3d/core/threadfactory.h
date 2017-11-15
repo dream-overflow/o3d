@@ -1,7 +1,7 @@
 /**
  * @file threadfactory.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -16,7 +16,7 @@ namespace o3d {
 
 /**
  * @brief ThreadFactory A simple thread factory.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-28
  */
 class O3D_API ThreadFactory
@@ -30,7 +30,7 @@ public:
 
 /**
  * @brief DefaultThreadFactory A simple thread factory.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-28
  */
 class O3D_API DefaultThreadFactory

@@ -1,7 +1,7 @@
 /**
  * @file gltexture.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ class Context;
 /**
  * @brief Load picture in OpenGL texture memory (1d,2d,3d,cubemap,mipmap).
  * Contains formats and internals formats conversion from O3D pixels formats.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-08-05
  */
 class O3D_API GLTexture

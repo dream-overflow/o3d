@@ -1,7 +1,7 @@
 /**
  * @file idmanager.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -25,7 +25,7 @@ class OutStream;
  * @brief The IDManager class
  * A manager for id. Provide an identifiers generator with recycler.
  * @date 2005-04-20
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API IDManager
 {

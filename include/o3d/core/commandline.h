@@ -1,7 +1,7 @@
 /**
  * @file commandline.h
  * @brief Command line parser and helper.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-09-28
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

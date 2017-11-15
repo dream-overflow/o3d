@@ -1,7 +1,7 @@
 /**
  * @file layout.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ class LayoutItem;
 
 /**
  * @brief A layout represent the way of organize widgets into a frame or a window.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-02-21
  * A layout represent the way of organize widgets into a frame or a window.
  * Some layout align horizontally, some others vertically, and some as grid.
@@ -143,7 +143,7 @@ protected:
 
 /**
  * @brief Widget/layout child element.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-02-21
  */
 class O3D_API LayoutItem : NonCopyable<>

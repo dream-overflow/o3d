@@ -1,7 +1,7 @@
 /**
  * @file servicemanager.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -33,7 +33,7 @@ class DynamicLibrary;
  * - Service* getService() return a new instance of the service class.
  * Thoose two functions must be declared in an extern "C" block, of a source file.
  *
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-26
  */
 class O3D_API ServiceManager : public BaseObject

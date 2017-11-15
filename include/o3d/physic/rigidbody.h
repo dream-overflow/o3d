@@ -1,7 +1,7 @@
 /**
  * @file rigidbody.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -24,7 +24,7 @@ namespace o3d {
 
 /**
  * @brief A rigid body entity used by object that want to have rigid body physic computation
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-05-30
  */
 class O3D_API RigidBody : public PhysicEntity

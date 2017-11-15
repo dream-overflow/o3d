@@ -1,7 +1,7 @@
 /**
  * @file sceneobjectmanager.cpp
  * @brief Implementation of SceneObjectManager.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-12-05
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

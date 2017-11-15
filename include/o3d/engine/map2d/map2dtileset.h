@@ -1,7 +1,7 @@
 /**
  * @file map2dtileset.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -58,7 +58,7 @@ namespace o3d {
  *
  * @todo Use of a TEXTURE_2D_ARRAY in place of multiple-atlases
  *
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-08-03
  */
 class O3D_API Map2dTileSet : public SceneEntity

@@ -1,7 +1,7 @@
 /**
  * @file lodstrategy.cpp
  * @brief Implementation of LodStrategy.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-02-16
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

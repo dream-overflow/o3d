@@ -1,7 +1,7 @@
 /**
  * @file texturefont.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ class Texture2D;
 
 /**
  * @brief Manage a font from a texture and a data file that contain characters step.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-05-08
  * TextureFont is independent of Scene::TextureManager.
  * Font file is relative to current working directory, and the texture file is

@@ -1,7 +1,7 @@
 /**
  * @file viewport.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ namespace o3d {
 /**
  * @brief Viewport managing.
  * @date 2002-08-01
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Viewport base class. A viewport is a portion of screen or a feedback (off-screen)
  * rendering zone. Feedback use of FrameBufferObject as a render target.
  */

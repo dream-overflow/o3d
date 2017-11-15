@@ -1,7 +1,7 @@
 /**
  * @file colormaterial.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 /**
  * @brief Material using the simple diffuse color and diffuse map (if one).
  * @date 2014-03-01
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Use diffuse color or diffuse map * diffuse color to compute the fragment color.
  * No lighting is performed.
  * It supports any types of vertex mode (static mesh, rigging, skinning...).

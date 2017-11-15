@@ -1,7 +1,7 @@
 /**
  * @file logger.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ namespace o3d {
 
 /**
  * @brief Interface for logger.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2015-12-30
  */
 class O3D_API Logger
@@ -65,7 +65,7 @@ public:
 
 /**
  * @brief Base file system logger.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-11-04
  */
 class O3D_API FileLogger : public Logger

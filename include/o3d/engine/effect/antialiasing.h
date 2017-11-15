@@ -1,7 +1,7 @@
 /**
  * @file antialiasing.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -21,7 +21,7 @@ namespace o3d {
 /**
  * @brief Anti aliasing post effect.
  * Uses it as a post effect, to be applied on a FBO with the input as read buffer 0.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2014-04-06
  */
 class O3D_API AntiAliasing : public SceneEntity

@@ -1,7 +1,7 @@
 /**
  * @file animationnode.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -27,7 +27,7 @@ typedef T_AnimationNodeList::const_iterator CIT_AnimationNodeList;
 
 /**
  * @brief An animation node.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-02-23
  * An animation node is used in Animation. And each node has a list of track wich
  * contains the animations settings.

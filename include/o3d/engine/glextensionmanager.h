@@ -1,7 +1,7 @@
 /**
  * @file glextensionmanager.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -21,7 +21,7 @@ namespace o3d {
  * It load many extensions entry point and check for theirs existence. The manager can
  * thrown an exception or warning if some entries points are missing.
  * @date 2003-01-30
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API GLExtensionManager
 {

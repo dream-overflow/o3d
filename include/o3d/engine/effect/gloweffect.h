@@ -1,7 +1,7 @@
 /**
  * @file gloweffect.h
  * @brief A glow effect mainly used for lens flare effect.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-08-07
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

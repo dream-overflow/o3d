@@ -1,7 +1,7 @@
 /**
  * @file transformable.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ typedef T_TransformList::const_iterator CIT_TransformList;
 
 /**
  * @brief Transformable is able to apply a stack of transformations objects.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-09-04
  */
 class O3D_API Transformable

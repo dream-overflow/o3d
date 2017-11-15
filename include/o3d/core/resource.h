@@ -1,7 +1,7 @@
 /**
  * @file resource.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 
 /**
  * @brief Registrable resource type. (@note unused)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-11-23
  * A resource must have a resource type. A resource type should be previously registered
  * one time to the resource manager.
@@ -49,7 +49,7 @@ class ResourceManager;
 
 /**
  * @brief A resource is an entity that associate an object to a file.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-11-23
  * A resource is an entity that associate an object to a file. The resource can be
  * anywhere (diskfile, memfile, database, in a manager, real or virtual...).

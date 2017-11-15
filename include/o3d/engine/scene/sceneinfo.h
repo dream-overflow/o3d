@@ -1,7 +1,7 @@
 /**
  * @file sceneinfo.h
  * @brief Scene information object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-07-02
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

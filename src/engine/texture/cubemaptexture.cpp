@@ -1,7 +1,7 @@
 /**
  * @file cubemaptexture.cpp
  * @brief Implementation of CubeMapTexture.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-04-26
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

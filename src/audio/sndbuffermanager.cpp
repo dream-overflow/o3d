@@ -1,7 +1,7 @@
 /**
  * @file sndbuffermanager.cpp
  * @brief Implementation of SndBufferManager.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-02-01
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

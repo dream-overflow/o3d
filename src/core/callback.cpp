@@ -1,7 +1,7 @@
 /**
  * @file callback.cpp
  * @brief Implementation of Callback.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-01-14
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -1,7 +1,7 @@
 /**
  * @file truetypefont.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -24,7 +24,7 @@ class Texture2D;
  * @brief TrueTypeFont loading and rendering.
  * @todo Dynamically manage unloaded characters as necessary. Need a dynamic atlas.
  * @date 2005-05-09
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API TrueTypeFont : public ABCFont, public Shadable
 {

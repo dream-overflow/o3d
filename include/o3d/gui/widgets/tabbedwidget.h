@@ -1,7 +1,7 @@
 /**
  * @file tabbedwidget.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ class ListBoxElement;
 /**
  * @brief TabbedWidgetData
  * Inherit you own class to manage it with a tab. This class is deleted at tab destruction.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-10-11
  */
 class O3D_API TabbedWidgetData
@@ -32,7 +32,7 @@ public:
 
 /**
  * @brief A tabbed widget managed many tab and theirs states.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-09-11
  */
 class O3D_API TabbedWidget : public Widget

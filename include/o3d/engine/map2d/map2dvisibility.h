@@ -1,7 +1,7 @@
 /**
  * @file map2dvisibility.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 /**
  * @brief Visibility controler for a map 2d, using multi-layers and quadtree optimisations
  * The depth is dynamicaly computed from the number of object per cell.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-09-01
  */
 class O3D_API Map2dVisibility

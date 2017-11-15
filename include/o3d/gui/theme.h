@@ -1,7 +1,7 @@
 /**
  * @file theme.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ namespace o3d {
 
 /**
  * @brief Theme manager for widgets.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-06-21
  * Theme manager for winmanager and widgets.
  * Theme file path are relative to current working directory, and internal textures

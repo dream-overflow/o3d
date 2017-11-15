@@ -1,7 +1,7 @@
 /**
  * @file animationmanager.cpp
  * @brief Implementation of AnimationManager.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-02-23
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

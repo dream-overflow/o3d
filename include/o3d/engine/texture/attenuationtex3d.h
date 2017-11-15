@@ -1,7 +1,7 @@
 /**
  * @file attenuationtex3d.h
  * @brief Attenuation texture which use of a 3d texture.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-07-31
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

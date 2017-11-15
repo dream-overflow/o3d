@@ -1,7 +1,7 @@
 /**
  * @file debug.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -133,7 +133,7 @@ namespace o3d {
 
 /**
  * @brief Contain information about a signal emitted by Debug
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-11-10
  */
 class O3D_API DebugInfo
@@ -163,7 +163,7 @@ public:
 
 /**
  * @brief Debug manager.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-11-10
  * Debug is used to throw an error, a warning or a simple information message.
  * Next, event are raised, and listeners can filter the received error/warning/message

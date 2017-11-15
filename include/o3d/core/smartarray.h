@@ -1,7 +1,7 @@
 /**
  * @file smartarray.h
  * @brief Smart array container.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-07-31
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

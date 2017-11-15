@@ -1,7 +1,7 @@
 /**
  * @file physicmodel.h
  * @brief A physic model is used for collision detection.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-05-30
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

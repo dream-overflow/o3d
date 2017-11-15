@@ -1,7 +1,7 @@
 /**
  * @file cursormanager.h
  * @brief Mouse cursor manager.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-02-11
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

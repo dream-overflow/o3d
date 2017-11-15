@@ -1,7 +1,7 @@
 /**
  * @file matrix3.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ class String;
 
 /**
  * @brief 3x3 Matrix definition
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-07-21
  * Row major 3x3 matrix. Notice than Matrix3 is column major like OpenGL.
  */

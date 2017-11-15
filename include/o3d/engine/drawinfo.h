@@ -1,7 +1,7 @@
 /**
  * @file drawinfo.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -24,7 +24,7 @@ class ShaderInstance;
 /**
  * @brief Draw information context.
  * @date 2009-10-19
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Draw information is a context containing current global variable for the current
  * draw pass. It is used by the Drawable::draw method.
  */

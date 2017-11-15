@@ -1,7 +1,7 @@
 /**
  * @file heightmapsplatting.cpp
  * @brief Implementation of HeihtmapSplatting.h
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
  * @date 2010-01-03
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.

@@ -1,7 +1,7 @@
 /**
  * @file texturearray2d.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ namespace o3d {
  * @brief Two dimensional texture array.
  * In others words a texture array 2d is a multi-layer set a 2d texture. Like 3d texture,
  * but without relations between the pixels of two layers.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-08-26
  */
 class O3D_API TextureArray2D : public Texture

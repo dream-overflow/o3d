@@ -1,7 +1,7 @@
 /**
  * @file database.h
  * @brief Database interface.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-11-08
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

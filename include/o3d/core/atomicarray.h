@@ -1,7 +1,7 @@
 /**
  * @file atomicarray.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -18,7 +18,7 @@ namespace o3d {
 /**
  * @brief Atomic array container, aligned for POD like objects.
  * @date 2007-12-03
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @details Atomic array container. 16 bytes data aligned. POD objects content are adjacent to
  * each other. Useful for optimization and to avoid some copy.
  * ContentSize must be in pow of 2 only. If your content take 3 bytes, so it must

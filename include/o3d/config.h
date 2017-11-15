@@ -1,7 +1,7 @@
 /**
  * @file config.h
  * @brief Defines the compilation options
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-11-17
  * @copyright Copyright (C) 2001-2017 Dream Overflow. All rights reserved.
  * @details

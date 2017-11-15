@@ -1,7 +1,7 @@
 /**
  * @file al.h
  * @brief OpenAL base header.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-07-02
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

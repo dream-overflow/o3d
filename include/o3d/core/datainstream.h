@@ -1,7 +1,7 @@
 /**
  * @file datainstream.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 
 /**
  * @brief DataInStream base on a ArrayUInt8
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-12-04
  */
 class O3D_API DataInStream : public InStream
@@ -80,7 +80,7 @@ private:
 
 /**
  * @brief SharedDataInStream base on a SmartArrayUInt8
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-12-05
  */
 class O3D_API SharedDataInStream : public InStream

@@ -1,7 +1,7 @@
 /**
  * @file shadable.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -11,7 +11,7 @@
  * @file shadable.h
  * @brief Shadable interface
  * @date 2007-12-09
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @copyright Copyright (C) 2001-2017 Dream Overflow. All rights reserved.
  * @details
  */
@@ -34,7 +34,7 @@ class FaceArray;
 /**
  * @brief Shadable object interface
  * @date 2007-12-09
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Shablable interface for material rendered objects. It require the use of an
  * MaterialProfile object. It offers 3 vertex program methods :
  * - mesh for static mesh

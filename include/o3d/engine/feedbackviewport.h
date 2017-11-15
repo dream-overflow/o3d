@@ -1,7 +1,7 @@
 /**
  * @file feedbackviewport.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ namespace o3d {
 /**
  * @brief Feedback (offscreen) viewport.
  * @date 2002-08-01
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Feedback viewport rendering using PBO. As result you can get a buffer of data and
  * into a texture 2d.
  */

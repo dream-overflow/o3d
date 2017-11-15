@@ -1,7 +1,7 @@
 /**
  * @file inputmanager.h
  * @brief Manager for inputs like keyboard, mouse, joystick and more.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2003-09-06
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

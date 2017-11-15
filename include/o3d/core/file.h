@@ -1,7 +1,7 @@
 /**
  * @file file.h
  * @brief Base base for disk and memory file objects.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-01-02
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -48,7 +48,7 @@ struct O3D_API BlockData
 
 /**
  * @brief File utils.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-01-02
  */
 class O3D_API File

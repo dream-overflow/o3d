@@ -1,7 +1,7 @@
 /**
  * @file string.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -82,7 +82,7 @@ inline WChar *wcsdup(const WChar *str) { return ::wcsdup(str); }
 /**
  * @brief The C style mutable string container. It use of a sharable data container.
  * @note To manipulate a string prefers the usage of o3d::String.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2012-01-01
  * They are mutable, it means a change to the content of this string change any other
  * references to it and to its internal shared array.
@@ -196,7 +196,7 @@ class O3D_API_TEMPLATE TemplateArray;
 
 /**
  * @brief Mutable and dynamic size wide char string for manipulations using a shared object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-01-01
  * String can be used in an unordered map with @see struct hash<o3d::String>.
  * @note On Windows String are UCS2, on others UCS4 is used.

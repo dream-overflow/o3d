@@ -1,7 +1,7 @@
 /**
  * @file console.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -23,7 +23,7 @@ class Console;
 
 /**
  * @brief A command for the Console widget
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2015-12-30
  * A command is an object that must be inherited. In the object you can redefine
  * a command and subcommand sets with theirs actions.
@@ -114,7 +114,7 @@ typedef T_CommandList::const_iterator CIT_CommandList;
 
 /**
  * @brief A full options console standalone widget
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-05-13
  */
 class O3D_API Console : public Widget

@@ -1,7 +1,7 @@
 /**
  * @file keyframe.h
  * @brief A key frame is an element of an animation track.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-02-03
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

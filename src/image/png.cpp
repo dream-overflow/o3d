@@ -1,7 +1,7 @@
 /**
  * @file png.cpp
  * @brief Loading/Writing of PNG pictures (portable network graphic).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-01-23
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

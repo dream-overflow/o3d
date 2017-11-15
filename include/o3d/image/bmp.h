@@ -1,7 +1,7 @@
 /**
  * @file bmp.h
  * @brief Bitmap file loading (1,2,4,8,24 bpp) and writing (24 bpp).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-10
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -1,7 +1,7 @@
 /**
  * @file singleton.h
  * @brief Template for singleton object.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2004-12-12
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

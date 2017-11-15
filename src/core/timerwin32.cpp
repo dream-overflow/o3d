@@ -1,7 +1,7 @@
 /**
  * @file timerwin32.cpp
  * @brief simple timer with callback (WIN32 part)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-08-10
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -1,7 +1,7 @@
 /**
  * @file error.h
  * @brief Common errors and exceptions
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-10-12
  * @copyright Copyright (C) 2001-2017 Dream Overflow. All rights reserved.
  * @details
@@ -38,7 +38,7 @@ namespace o3d {
 
 /**
  * @brief Base class for all exceptions
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-10-12
  */
 class O3D_API E_BaseException : public std::exception

@@ -1,7 +1,7 @@
 /**
  * @file widgetdrawcompass.h
  * @brief Drawing mode based on compass (9 parts).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-10-11
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

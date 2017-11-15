@@ -1,7 +1,7 @@
 /**
  * @file quaternion.h
  * @brief Quaternion (hyper-complex number) with 3x3 and 4x4 matrix conversion
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @author Romain LOCCI
  * @date 2003-07-13
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.

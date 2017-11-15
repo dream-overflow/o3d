@@ -1,7 +1,7 @@
 /**
  * @file md5.cpp
  * @brief MD5 Checksum calculation and file checking.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-01-31
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

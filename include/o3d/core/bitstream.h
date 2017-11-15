@@ -1,7 +1,7 @@
 /**
  * @file bitstream.h
  * @brief Bit Stream.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @author  Arnaud DELMOTTE
  * @date 2007-07-03
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.

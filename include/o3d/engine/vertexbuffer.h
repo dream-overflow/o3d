@@ -1,7 +1,7 @@
 /**
  * @file vertexbuffer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ class Context;
 
 /**
  * @brief Vertex buffer base class.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
 class O3D_API VertexBuffer
@@ -122,7 +122,7 @@ protected:
 
 /**
  * @brief Generic vertex buffer.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
 template <UInt32 bufferType, class T>
@@ -482,7 +482,7 @@ inline void VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt32>::unbindB
 
 /**
  * @brief Vertex buffer object (vertex array object).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
 template <class T>
@@ -513,7 +513,7 @@ public:
 
 /**
  * @brief Element buffer object (index buffer object).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
 template <class T>

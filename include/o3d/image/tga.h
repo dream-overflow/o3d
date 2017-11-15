@@ -1,7 +1,7 @@
 /**
  * @file tga.h
  * @brief Load of TGA picture (8,24,32 bpp) support of palette and RLE compression.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @author  Romain LOCCI
  * @date 2001-12-23
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.

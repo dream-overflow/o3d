@@ -1,7 +1,7 @@
 /**
  * @file skybox.h
  * @brief shader can be only a color, with 5 or 6 simple textures.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-01-05
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

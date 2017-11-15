@@ -1,7 +1,7 @@
 /**
  * @file vertexelement.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -22,7 +22,7 @@ class VertexElement;
 /**
  * @brief VertexBufferBuilder
  * @date 2008-06-06
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * An elements of a geometry object stored in 32 bits float array. Excepted faces array.
  */
 class O3D_API VertexBufferBuilder : NonCopyable<>
@@ -72,7 +72,7 @@ private:
 /**
  * @brief The VertexElement class
  * @date 2008-06-06
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * An elements of a geometry object stored in 32 bits float array. Excepted faces array.
  */
 class O3D_API VertexElement : NonCopyable<>
@@ -244,7 +244,7 @@ protected:
 /**
  * @brief Vertex blender
  * @date 2008-06-06
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Software vertex blending controller. Because these data can be modified more than
  * one time by frame, we need to works using local data. That the data of the vertex
  * element must be modified using the Update method.

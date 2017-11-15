@@ -1,7 +1,7 @@
 /**
  * @file skin.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -26,7 +26,7 @@ class Humanoid;
 /**
  * @brief Base class for Rigging and Skinning.
  * @date 2003-08-12
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * A skin based object does not have a relative neither an absolute matrix. Its space
  * depend of its parent (generally a skeleton root). This mean if you want to move in
  * the world a skin object, you should move its parent bones, and same to query its

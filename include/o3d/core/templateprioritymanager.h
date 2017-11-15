@@ -1,7 +1,7 @@
 /**
  * @file templateprioritymanager.h
  * @brief Simple chained list with uses of priority for orders element.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-02-02
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

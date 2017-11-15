@@ -2,7 +2,7 @@
  * @file evtmanager.h
  * @brief 
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-11-14
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

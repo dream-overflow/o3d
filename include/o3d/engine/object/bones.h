@@ -1,7 +1,7 @@
 /**
  * @file bones.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -20,7 +20,7 @@ class Skeleton;
 /**
  * @brief A skeleton bone is a node.
  * @date 2003-08-12
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * A bone is used generally by a Skeleton in a Skin object.
  */
 class O3D_API Bones : public Node

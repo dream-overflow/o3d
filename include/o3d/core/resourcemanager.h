@@ -1,7 +1,7 @@
 /**
  * @file resourcemanager.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -19,7 +19,7 @@ namespace o3d {
 /**
  * @brief Base resource manager.
  * @date 2008-11-23
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * The resource manager is able to manage a path containings somes resources that
  * are retrieved into the path by the file extensions according to its extensions list.
  * It is also possible to add virtual resources dynamicaly.

@@ -1,7 +1,7 @@
 /**
  * @file keyboard.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -25,7 +25,7 @@ class AppWindow;
 /**
  * @brief Keys having a state.
  * @date 2014-02-07
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 enum KeyMods
 {
@@ -37,7 +37,7 @@ enum KeyMods
 /**
  * @brief Key event.
  * @date 2010-01-01
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class KeyEvent
 {
@@ -119,7 +119,7 @@ private:
 /**
  * @brief Character event.
  * @date 2010-01-01
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class CharacterEvent
 {
@@ -169,7 +169,7 @@ private:
 /**
  * @brief Keyboard input manager.
  * @date 2003-09-04
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API Keyboard : public Input
 {

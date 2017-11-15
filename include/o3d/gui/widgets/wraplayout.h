@@ -1,7 +1,7 @@
 /**
  * @file wraplayout.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -19,7 +19,7 @@ namespace o3d {
  * @brief Wrap layout.
  * It that manage elements horizontaly or verticaly, line by line or colunm by colmun,
  * adding a new line or columun when there is no more space available.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-09-23
  */
 class O3D_API WrapLayout : public Layout

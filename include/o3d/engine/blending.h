@@ -1,7 +1,7 @@
 /**
  * @file blending.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -16,7 +16,7 @@ namespace o3d {
 
 /**
  * @brief Blending mode controller.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2016-02-06
  * This class help the usage of current and custom blending functions and equations.
  * It support a global and a per draw buffer settings.

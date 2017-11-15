@@ -1,7 +1,7 @@
 /**
  * @file cubemaptexture.h
  * @brief A cube map texture in video card memory, all picture side must be of the same format
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-04-26
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

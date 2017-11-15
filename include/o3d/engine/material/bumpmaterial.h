@@ -1,7 +1,7 @@
 /**
  * @file bumpmaterial.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 /**
  * @brief Material using a bump map and per pixel illumination.
  * @date 2010-02-17
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * Illumination shader, based on per pixel lighting. It supports forward lighting, and
  * deferred shading. The shadable must provides a tangent space
  * (normal, tangent, bitangente) arrays.

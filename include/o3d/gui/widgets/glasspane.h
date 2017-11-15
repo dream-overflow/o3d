@@ -1,7 +1,7 @@
 /**
  * @file glasspane.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -19,7 +19,7 @@ namespace o3d {
  * An invisible pane, that receive all events like another widget.
  * It is a top-level widget. It can own a layout liki a window, and manage children.
  * For example, a menu is a good case of a child in a glass pane.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-10-13
  */
 class O3D_API GlassPane : public Window

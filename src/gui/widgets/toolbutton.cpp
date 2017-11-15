@@ -1,7 +1,7 @@
 /**
  * @file toolbutton.cpp
  * @brief A widget representing a simple button
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-02-14
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

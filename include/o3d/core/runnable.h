@@ -1,7 +1,7 @@
 /**
  * @file runnable.h
  * @brief Interface for process execution.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-08-10
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

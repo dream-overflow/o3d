@@ -1,7 +1,7 @@
 /**
  * @file progessivemesh.cpp
  * @brief Progressive mesh data (LOD)
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 24-03-2006
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

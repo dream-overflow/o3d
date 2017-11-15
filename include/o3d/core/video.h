@@ -1,7 +1,7 @@
 /**
  * @file video.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -53,7 +53,7 @@ class AppWindow;
 
 /**
  * @brief Display mode manager.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-08-01
  * TODO multi-screen (called screen on X11, display on SDL and WIN32.
  * List display mode and frequency.

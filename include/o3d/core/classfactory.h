@@ -1,7 +1,7 @@
 /**
  * @file classfactory.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -25,7 +25,7 @@ class ClassInfo;
  * @brief The ClassFactory class. It create class instance according to a class name.
  * Cloned class must inherit from Serialize or BaseObject.
  * @date 2003-02-25
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API ClassFactory
 {

@@ -1,7 +1,7 @@
 /**
  * @file audio.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -36,7 +36,7 @@ class AudioRenderer;
  * It contains the sound buffers, control the available hardware sound source and
  * the current listener. It also control globals OpenAL parameters.
  * @date 2003-04-15
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API Audio : public SceneEntity, public AudioManager
 {

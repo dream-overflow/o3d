@@ -1,7 +1,7 @@
 /**
  * @file stringlist.h
  * @brief String list container.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2003-08-01
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

@@ -1,7 +1,7 @@
 /**
  * @file integer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -16,7 +16,7 @@ namespace o3d {
 
 /**
  * @brief Signed integer 32 container and tools.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-22
  */
 class O3D_API Integer32
@@ -61,7 +61,7 @@ private:
 
 /**
  * @brief Unsigned integer 32 container and tools.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-22
  */
 class O3D_API UInteger32
@@ -106,7 +106,7 @@ private:
 
 /**
  * @brief Signed integer 16 container and tools.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-29
  */
 class O3D_API Integer16
@@ -151,7 +151,7 @@ private:
 
 /**
  * @brief Unsigned integer 16 container and tools.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-29
  */
 class O3D_API UInteger16
@@ -196,7 +196,7 @@ private:
 
 /**
  * @brief Signed integer 8 container and tools.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-29
  */
 class O3D_API Integer8
@@ -241,7 +241,7 @@ private:
 
 /**
  * @brief Unsigned integer 8 container and tools.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-11-29
  */
 class O3D_API UInteger8

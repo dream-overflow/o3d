@@ -1,7 +1,7 @@
 /**
  * @file templatearray.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -21,7 +21,7 @@ namespace o3d {
 
 /**
  * @brief Dynamic array, for push/pop elements, delete, insert, replace, sort.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2004-10-12
  * Dynamic array, for push/pop elements, delete, insert, replace, sort.
  * This this class don't have allocator, items are directly accessible such as an array

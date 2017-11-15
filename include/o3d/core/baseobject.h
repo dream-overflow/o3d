@@ -1,7 +1,7 @@
 /**
  * @file baseobject.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2014-02-24
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -27,7 +27,7 @@ class OutStream;
 
 /**
  * @brief Interface for sharable objects (smart object reference).
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2014-02-24
  */
 class O3D_API Sharable
@@ -62,7 +62,7 @@ public:
 /**
  * @brief Common base class. All typical object must inherit from it, except atomics or
  * other very specialized objects.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-12-05
  */
 class O3D_API BaseObject : public EvtHandler, public virtual Sharable

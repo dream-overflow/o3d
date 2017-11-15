@@ -1,7 +1,7 @@
 /**
  * @file renderer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -41,7 +41,7 @@ class AppWindow;
  *  Note that a shared renderer cannot be shared, and all shared renderer must be
  * destroyed before the sharing (original/main/parent) renderer.
  * @date 2002-08-01
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  */
 class O3D_API Renderer : public EvtHandler
 {

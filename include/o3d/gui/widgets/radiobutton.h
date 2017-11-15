@@ -1,7 +1,7 @@
 /**
  * @file radiobutton.h
  * @brief A widget representing a radio button.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-10-12
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

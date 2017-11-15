@@ -1,7 +1,7 @@
 /**
  * @file smartpointer.h
  * @brief 
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -17,7 +17,7 @@ namespace o3d {
 
 /**
  * @brief Pointer manager with counter and auto-destruction
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-07-31
  * Pointer manager with counter and auto-destruction for SmartCounter inherited data.
  */
@@ -130,7 +130,7 @@ private:
 
 /**
  * @brief Simple pointer manager. Auto delete and assign.
- * @author Frederic SCHERMA (frederic.scherma@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-07-31
  * Simple pointer manager. Auto delete and assign.
  */
