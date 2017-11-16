@@ -148,6 +148,11 @@ void AnimationTrack::findKeyFrame(
 	keyAfter = *nextIt;
 }
 
+void AnimationTrack::drawTrajectory(SceneObject*)
+{
+    /* nothing is default */
+}
+
 // Find the nearest keyframe time according a given time
 void AnimationTrack::findKeyFrameTime(
 		Animatable* target,

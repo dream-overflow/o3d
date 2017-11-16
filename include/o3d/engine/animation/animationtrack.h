@@ -244,7 +244,7 @@ public:
 	virtual const void* compute(Animatable* target, Float time, UInt32 &ValSize) = 0;
 
 	//! Draw the trajectory of the animation.
-	virtual void drawTrajectory(SceneObject* object) { /* nothing is default */ }
+    virtual void drawTrajectory(SceneObject* object);
 
 	//! Find the nearest time according given time.
 	void findKeyFrameTime(

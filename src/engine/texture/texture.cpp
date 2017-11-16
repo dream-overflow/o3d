@@ -93,6 +93,11 @@ void Texture::unload()
 	m_updateFlags = UPDATE_ALL;
 }
 
+Bool Texture::addMipsLevels(UInt32, UInt32)
+{
+    return False;
+}
+
 // Define the texture parameters.
 Bool Texture::generateId(
 	PixelFormat pixelFormat,
@@ -211,4 +216,3 @@ Bool Texture::readFromFile(InStream &is)
 
 	return True;
 }
-

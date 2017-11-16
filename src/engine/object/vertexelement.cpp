@@ -236,7 +236,7 @@ void VertexElement::create(
 		O3D_ERROR(E_InvalidParameter("Element size must be different from zero"));
     }
 
-    if (!(&vbo) || !vbo.isExist()) {
+    if (/*!(&vbo) || */!vbo.isExist()) {
 		O3D_ERROR(E_InvalidParameter("VBO must be defined"));
     }
 

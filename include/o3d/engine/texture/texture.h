@@ -37,12 +37,12 @@ public:
 	//! Return the operation string list.
 	String getOpString() const { return String(); }
 
-	inline Bool operator< (const TextureOps& comp) const
+    inline Bool operator< (const TextureOps&) const
 	{
 		return True;
 	}
 
-	inline Bool operator== (const TextureOps& comp) const
+    inline Bool operator== (const TextureOps&) const
 	{
 		return True;
 	}
@@ -74,13 +74,13 @@ public:
 			type = PIXEL_TRANSFERT_OP;
 		}
 
-		inline Bool operator< (const Operation& comp) const
+        inline Bool operator< (const Operation&) const
 		{
 			//return ((scaleColor < comp.scaleColor) && (biasColor < comp.biasColor));
 			return True;
 		}
 
-		inline Bool operator== (const Operation& comp) const
+        inline Bool operator== (const Operation&) const
 		{
 			return True;
 		}
@@ -177,7 +177,7 @@ public:
 	//! @param minLevel Minimal level to generate.
 	//! @param maxLevel Maximal level to generate (>0). If maxLevel is greater than
 	//! log2(max(width,height)) it will stop to this limit without warning.
-	virtual Bool addMipsLevels(UInt32 minLevel, UInt32 maxLevel) { return False; }
+    virtual Bool addMipsLevels(UInt32 minLevel, UInt32 maxLevel);
 
 
 	//-----------------------------------------------------------------------------------
@@ -325,4 +325,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TEXTURE_H
-

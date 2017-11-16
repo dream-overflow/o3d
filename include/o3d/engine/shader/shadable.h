@@ -1,14 +1,5 @@
 /**
  * @file shadable.h
- * @brief 
- * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
- * @date 2001-12-25
- * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
- * @details 
- */
-
-/**
- * @file shadable.h
  * @brief Shadable interface
  * @date 2007-12-09
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
@@ -155,8 +146,8 @@ public:
 #define O3D_SHADABLE_NO_DATA_ACCESS \
     virtual VertexElement* getVertexElement(VertexAttributeArray) const { return nullptr; }\
     virtual FaceArray* getFaceArray() const { return nullptr; }\
-    virtual void operation(Operations what) {}\
-	virtual Bool isOperation(Operations what) const { return False; }
+    virtual void operation(Operations) {}\
+    virtual Bool isOperation(Operations) const { return False; }
 
 //! Shadable always null material/shader
 #define O3D_SHADABLE_VP_MESH \
@@ -173,11 +164,10 @@ public:
     virtual void setUpModelView() {}\
     virtual const Matrix4& getObjectWorldMatrix() const { return Matrix4::getIdentity(); }\
     virtual const Float* getMatrixArray() const { return nullptr; }\
-	virtual Float getDistanceFrom(const Vector3 &point) const { return 0.0f; }
+    virtual Float getDistanceFrom(const Vector3 &) const { return 0.0f; }
 
 //! Shadable no matrix array, no boundingBox
 #define O3D_SHADABLE_NO_MISC2 \
     virtual const Float* getMatrixArray() const { return nullptr; }
 
 #endif // _O3D_SHADABLE_H
-

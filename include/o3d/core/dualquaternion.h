@@ -95,8 +95,8 @@ public:
 		identity();
 	}
 
-	//! Simple constructor which dont identity the qu
-    inline DualQuaternion(Int32 v) {}
+    //! Simple constructor which dont identity the quaternion
+    inline DualQuaternion(Int32 /*v*/) {}
 
 	//! initialisation constructor
 	inline DualQuaternion(
@@ -310,7 +310,7 @@ public:
 	}
 
 	//! is two dual quaternions are equal (near to a given tolerance)
-    inline Bool isEquivalent(const DualQuaternion& _Q, Float tolerance) const
+    inline Bool isEquivalent(const DualQuaternion& /*_Q*/, Float /*tolerance*/) const
 	{
 		// @todo return mReal.isEquivalent(inOther.mReal, inTolerance) && mDual.isEquivalent(inOther.mDual, inTolerance);
 		// @todo in SSE2
