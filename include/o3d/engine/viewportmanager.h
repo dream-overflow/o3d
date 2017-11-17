@@ -20,16 +20,15 @@ class ScreenViewPort;
 class FeedbackViewPort;
 class Texture2D;
 
-//---------------------------------------------------------------------------------------
-//! @class ViewPortManager
-//-------------------------------------------------------------------------------------
-//! View-port displayer with priority ordering.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The ViewPortManager class
+ * View-port displayer with priority ordering.
+ */
 class O3D_API ViewPortManager : public SceneEntity
 {
 public:
 
-	O3D_DECLARE_DYNAMIC_CLASS(ViewPortManager);
+    O3D_DECLARE_DYNAMIC_CLASS(ViewPortManager)
 
 	//! Default constructor.
 	ViewPortManager(BaseObject *parent);
@@ -37,9 +36,9 @@ public:
 	//! Delete child viewport.
 	virtual Bool deleteChild(BaseObject *child);
 
-	//-----------------------------------------------------------------------------------
+    //
 	// Factory
-	//-----------------------------------------------------------------------------------
+    //
 
 	//! Delete a viewport.
 	//! @return TRUE if the viewport is owned by this manager and if it is
@@ -102,4 +101,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_VIEWPORTMANAGER_H
-

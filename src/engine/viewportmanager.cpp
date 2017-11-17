@@ -126,4 +126,3 @@ void ViewPortManager::display()
 		elt = elt->Son;
 	}
 }
-
