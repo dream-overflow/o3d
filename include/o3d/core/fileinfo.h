@@ -13,7 +13,7 @@
 #include "memorydbg.h"
 #include "dir.h"
 #include "file.h"
-#include "objects.h"
+#include "datetime.h"
 
 namespace o3d {
 
@@ -170,13 +170,13 @@ public:
 	}
 
 	//! get the creation date/time
-	virtual const Date& getCreationDate() = 0;
+    virtual const DateTime& getCreationDate() = 0;
 
 	//! get the last access date/time
-	virtual const Date& getLastAccessDate() = 0;
+    virtual const DateTime& getLastAccessDate() = 0;
 
 	//! get the last modification date/time
-	virtual const Date& getModifiedDate() = 0;
+    virtual const DateTime& getModifiedDate() = 0;
 
 	//! is the file a symbolic link
 	virtual Bool isSymbolicLink() = 0;
@@ -214,9 +214,9 @@ protected:
 	{
 		FileTypes type;       //!< file type
 
-		Date created;        //!< creation date
-		Date lastAccess;     //!< last access date
-		Date modified;       //!< last modification date
+        DateTime created;     //!< creation date
+        DateTime lastAccess;  //!< last access date
+        DateTime modified;    //!< last modification date
 
 		Bool readable;      //!< is the file readable
 		Bool writable;      //!< is the file writable
@@ -289,4 +289,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_FILEINFO_H
-

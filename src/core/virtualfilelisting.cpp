@@ -245,21 +245,21 @@ UInt64 VirtualFileListing::getFileSize() const
 }
 
 // get the creation file time
-const Date& VirtualFileListing::getCreationTime() const
+const DateTime& VirtualFileListing::getCreationTime() const
 {
-	return Date::nullDate();
+    return DateTime::nullDate();
 }
 
 // get the last access file time
-const Date& VirtualFileListing::getAccesTime() const
+const DateTime& VirtualFileListing::getAccesTime() const
 {
-	return Date::nullDate();
+    return DateTime::nullDate();
 }
 
  //get the last write file time
-const Date& VirtualFileListing::getWriteTime() const
+const DateTime& VirtualFileListing::getWriteTime() const
 {
-	return Date::nullDate();
+    return DateTime::nullDate();
 }*/
 
 // get the absolute directory of the file
@@ -357,4 +357,3 @@ void VirtualFileListing::setPath(const String &path)
 	m_virtualFileList.clear();
 	FileListing::setPath(path);
 }
-

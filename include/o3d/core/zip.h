@@ -119,7 +119,7 @@ public:
 	inline String getZipFileName() const { return m_zipFileName; }
 
     //! get complete Zip path+filename.
-	inline String getZipFullFileName() const { return (m_zipPathName + m_zipFileName); }
+    inline String getZipFullFileName() const { return (m_zipPathName + '/' + m_zipFileName); }
 
     //! get the Zip path name only.
 	inline String getZipPathName() const { return m_zipPathName; }
@@ -160,4 +160,3 @@ typedef T_ZipList::const_iterator CIT_ZipList;
 } // namespace o3d
 
 #endif // _O3D_ZIP_H
-

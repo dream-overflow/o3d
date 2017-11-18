@@ -11,7 +11,7 @@
 #define _O3D_FILELISTING_H
 
 #include "stringlist.h"
-#include "objects.h"
+#include "datetime.h"
 #include "memorydbg.h"
 
 #include <vector>
@@ -35,13 +35,13 @@ namespace o3d {
 //! FileSize and time informations are valid only if the type is O3DFileFile or O3DFileDir.
 struct FLItem
 {
-	String FileName;                     //!< full filename only
-	FileTypes FileType;                  //!< file type
+    String FileName;                 //!< full filename only
+    FileTypes FileType;              //!< file type
 	UInt64 FileSize;                 //!< file size if bytes
 
-	Date CreateTime;                     //!< creation date
-	Date AccessTime;                     //!< last access date
-	Date WriteTime;                      //!< last modification date
+    DateTime CreateTime;             //!< creation date
+    DateTime AccessTime;             //!< last access date
+    DateTime WriteTime;              //!< last modification date
 };
 
 typedef std::vector<FLItem*> T_FLItemVector;
@@ -92,11 +92,11 @@ public:
 	//! get the file size
 	virtual UInt64 getFileSize() const;
 	//! get the creation file time
-	virtual const Date& getCreationTime() const;
+    virtual const DateTime& getCreationTime() const;
 	//! get the last access file time
-	virtual const Date& getAccesTime() const;
+    virtual const DateTime& getAccesTime() const;
 	//! get the last write file time
-	virtual const Date& getWriteTime() const;
+    virtual const DateTime& getWriteTime() const;
 
 	//! initialize the file search
 	virtual void searchFirstFile();
@@ -121,4 +121,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_FILELISTING_H
-

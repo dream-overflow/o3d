@@ -13,7 +13,7 @@
 #include "o3d/core/architecture.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/core/debug.h"
-#include "o3d/core/objects.h"
+#include "o3d/core/datetime.h"
 
 using namespace o3d;
 
@@ -49,7 +49,7 @@ void FileLogger::log(LogLevel level, const String &str)
                     FileOutStream::APPEND);
     }
 
-	Date current(True);
+    DateTime current(True);
     String date = current.buildString(m_dateFormat);
     if (!date.isEmpty()) {
         date += ' ';

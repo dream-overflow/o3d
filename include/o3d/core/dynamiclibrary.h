@@ -108,6 +108,14 @@ public:
 	}
 #endif
 
+    /**
+     * @brief Full path name of the module.
+     */
+    inline const String& getName() const
+    {
+        return m_name;
+    }
+
 private:
 
 	String m_name;
@@ -119,4 +127,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_DYNAMICLIBRARY_H
-

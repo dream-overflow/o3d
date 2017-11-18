@@ -16,7 +16,8 @@
 #include "o3d/core/filemanager.h"
 #include "o3d/core/thread.h"
 #include "o3d/core/timer.h"
-#include "o3d/core/objects.h"
+#include "o3d/core/date.h"
+#include "o3d/core/datetime.h"
 #include "o3d/core/math.h"
 #include "o3d/core/stringmap.h"
 #include "o3d/core/appwindow.h"
@@ -48,6 +49,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 
 	System::initTime();
 	Date::init();
+    DateTime::init();
 
     // only if display
     if (settings.m_display) {
@@ -151,6 +153,7 @@ void Application::quit()
 
 	// date quit
 	Date::quit();
+    DateTime::quit();
 
     // object mapping
     deletePtr(ms_mappedObject);
@@ -270,9 +273,9 @@ BaseObject *Application::getObject(const String &name)
     return nullptr;
 }
 
-void Application::run()
+void Application::run(Bool runOnce)
 {
-    runPrivate();
+    runPrivate(runOnce);
 }
 
 void Application::pushEvent(Application::EventType type, _HWND hWnd, void *data)

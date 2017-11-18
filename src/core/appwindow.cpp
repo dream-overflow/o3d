@@ -644,4 +644,3 @@ Bool AppWindow::isUpdateNeeded()
 	
 	return False;
 }
-

@@ -47,11 +47,11 @@ public:
 	/*//! get the file size
 	virtual UInt64 getFileSize() const;
 	//! get the creation file time
-	virtual const Date& getCreationTime() const;
+    virtual const DateTime& getCreationTime() const;
 	//! get the last access file time
-	virtual const Date& getAccesTime() const;
+    virtual const DateTime& getAccesTime() const;
 	//! get the last write file time
-	virtual const Date& getWriteTime() const;*/
+    virtual const DateTime& getWriteTime() const;*/
 
 	//! Initialize the file search
 	virtual void searchFirstFile();
@@ -74,4 +74,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_VIRTUALFILELISTING_H
-

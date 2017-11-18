@@ -187,4 +187,3 @@ void FileInfo::setFile(const Dir &dir, const String &filename)
 	else
 		m_cachedData.hidden = False;
 }
-

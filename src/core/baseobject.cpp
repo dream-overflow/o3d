@@ -252,4 +252,3 @@ Bool BaseObject::writeToFile(OutStream &ostream)
 
     return True;
 }
-

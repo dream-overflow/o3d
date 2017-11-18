@@ -15,7 +15,6 @@
 #include "o3d/core/diskfileinfo.h"
 #include "o3d/core/diskdir.h"
 #include "o3d/core/filemanager.h"
-#include "o3d/core/objects.h"
 #include "o3d/core/debug.h"
 
 #ifdef O3D_WIN32_SYS
@@ -104,34 +103,34 @@ UInt64 FileListing::getFileSize() const
 /*---------------------------------------------------------------------------------------
   get the creation file time
 ---------------------------------------------------------------------------------------*/
-const Date& FileListing::getCreationTime() const
+const DateTime& FileListing::getCreationTime() const
 {
 	if ((m_curPos >= 0) && (m_curPos < (Int32)m_fileList.size()))
 		return m_fileList[m_curPos]->CreateTime;
 
-	return Date::nullDate();
+    return DateTime::nullDate();
 }
 
 /*---------------------------------------------------------------------------------------
   get the last access file time
 ---------------------------------------------------------------------------------------*/
-const Date& FileListing::getAccesTime() const
+const DateTime& FileListing::getAccesTime() const
 {
 	if ((m_curPos >= 0) && (m_curPos < (Int32)m_fileList.size()))
 		return m_fileList[m_curPos]->AccessTime;
 
-	return Date::nullDate();
+    return DateTime::nullDate();
 }
 
 /*---------------------------------------------------------------------------------------
   get the last write file time
 ---------------------------------------------------------------------------------------*/
-const Date& FileListing::getWriteTime() const
+const DateTime &FileListing::getWriteTime() const
 {
 	if ((m_curPos >= 0) && (m_curPos < (Int32)m_fileList.size()))
 		return m_fileList[m_curPos]->WriteTime;
 
-	return Date::nullDate();
+    return DateTime::nullDate();
 }
 
 /*---------------------------------------------------------------------------------------

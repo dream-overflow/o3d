@@ -16,6 +16,7 @@
 namespace o3d {
 
 class Date;
+class DateTime;
 
 /**
  * @brief DbVariable
@@ -44,6 +45,7 @@ public:
         IT_SMART_ARRAY_UINT8,
         IT_CSTRING,
         IT_DATE,
+        IT_DATETIME,
         IT_ISTREAM,
         IT_OSTREAM
     };
@@ -254,6 +256,12 @@ public:
     //! Return the variable as a Date
     const Date& asDate() const;
 
+    //! Set the variable as a DateTime
+    void setDateTime(const DateTime &v);
+
+    //! Return the variable as a DateTime
+    const DateTime& asDateTime() const;
+
     //! Return the variable as a CString with a convertion as necessary
     CString toCString() const;
 
@@ -313,4 +321,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_DBVARIABLE_H
-

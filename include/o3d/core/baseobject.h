@@ -351,4 +351,3 @@ inline Bool typeOf(BaseObject &object)
 //#include "MemoryDbg.h"
 
 #endif // _O3D_BASEOBJECT_H
-

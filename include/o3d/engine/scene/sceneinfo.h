@@ -11,7 +11,7 @@
 #define _O3D_SCENEINFO_H
 
 #include "o3d/core/file.h"
-#include "o3d/core/objects.h"
+#include "o3d/core/datetime.h"
 
 namespace o3d {
 
@@ -63,14 +63,14 @@ public:
 	inline UInt32 getRevision() const { return m_revision; }
 
 	//! Set the created date
-	inline void setCreated(const Date& date) { m_created = date; }
+    inline void setCreated(const DateTime& date) { m_created = date; }
 	//! Get the created date
-	inline const Date& getCreated() const { return m_created; }
+    inline const DateTime& getCreated() const { return m_created; }
 
 	//! Set the modified date
-	inline void setModified(const Date& date) { m_modified = date; }
+    inline void setModified(const DateTime& date) { m_modified = date; }
 	//! Get the modified date
-	inline const Date& getModified() const { return m_modified; }
+    inline const DateTime& getModified() const { return m_modified; }
 
 	//! Set the unit
 	inline void setUnit(Float unit) { m_unit = unit; }
@@ -97,8 +97,8 @@ private:
 
 	UInt32 m_revision;
 
-	Date m_created;
-	Date m_modified;
+    DateTime m_created;
+    DateTime m_modified;
 
 	Float m_unit;
 	String m_unitName;
@@ -107,4 +107,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SCENEINFO_H
-

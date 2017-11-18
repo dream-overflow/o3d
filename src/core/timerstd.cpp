@@ -133,18 +133,29 @@ Int32 TimerManager::run(void*)
     Int32 size = 0;
     std::multimap<Int32, Timer*>::iterator head;
     Bool running = False;
-    Int32 wait = 10;
+
+    // retry at least 100 cycles of 10ms of waiting to avoid recreation of the thread to frequently
+    const Int32 WaitDuration = 10;
+    const Int32 WaitCycle = 100;
+
+    Int32 wait = WaitDuration;
+    Int32 nCycle = 0;
 
     for (;;) {
-        wait = 10;
+        wait = WaitDuration;
 
         m_mutex.lock();
         running = m_running;
         size = m_queue.size();
         m_mutex.unlock();
 
-        // stopped or nothing to process
-        if (!size || !running) {
+        // stopped by owner process
+        if (!running) {
+            break;
+        }
+
+        // nothing to process since many cycles
+        if (!size && nCycle >= WaitCycle) {
             break;
         }
 
@@ -176,6 +187,9 @@ Int32 TimerManager::run(void*)
             }
             m_currentTimer = nullptr;
             m_mutex.unlock();
+
+            // reset number of waiting cycle
+            nCycle = 0;
         } else {
             m_mutex.unlock();
         }
@@ -185,11 +199,13 @@ Int32 TimerManager::run(void*)
             System::waitMs(0);  // simple yeld
         } else if (wait <= 5) {
             System::waitMs(1);  // keep precision
-        } else if (wait <= 10) {
+        } else if (wait <= WaitDuration) {
             System::waitMs(2);  // keep precision
         } else {
-            System::waitMs(10);
+            System::waitMs(WaitDuration);
         }
+
+        ++nCycle;
     }
 
     return 0;

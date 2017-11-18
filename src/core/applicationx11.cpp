@@ -16,6 +16,9 @@
 #include "o3d/core/evtmanager.h"
 #include "o3d/core/video.h"
 
+// @note X11 defines somes types that overwrite Bool, True and False
+typedef o3d::Bool oBool;
+
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
@@ -152,16 +155,16 @@ static Int32 pending(Display *display, UInt32 timeout)
 }
 
 // Run the application main loop.
-void Application::runPrivate()
+void Application::runPrivate(oBool runOnce)
 {
-	Bool quit = False;
+    Bool quit = False;
 	Display *display = reinterpret_cast<Display*>(ms_display);
 	XEvent event;
-	//Bool isEvent = False;
+    // Bool isEvent = False;
 	AppWindow::EventData eventData;
 
     while (!quit || EvtManager::instance()->isPendingEvent()) {
-		//isEvent = False;
+        //isEvent = False;
         ms_currAppWindow = nullptr;
 
         EvtManager::instance()->processEvent();
@@ -475,6 +478,10 @@ void Application::runPrivate()
 
         if (ms_appWindowMap.empty()) {
 			quit = True;
+        }
+
+        if (runOnce) {
+            break;
         }
 	}
 }

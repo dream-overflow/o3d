@@ -480,8 +480,7 @@ T_FLItem_List DiskDir::findFilesInfos(const String &filters, FileTypes Type) con
 
 	T_FLItem_List result;
 	FLItem *Item;
-	while ((Item = fileListing.searchNextFile()) != NULL)
-	{
+    while ((Item = fileListing.searchNextFile()) != nullptr) {
 		result.push_back(*Item);
 	}
 
@@ -505,8 +504,7 @@ T_StringList DiskDir::findFiles(const String &filters, FileTypes Type) const
 
 	T_StringList result;
 	FLItem *Item;
-	while ((Item = fileListing.searchNextFile()) != NULL)
-	{
+    while ((Item = fileListing.searchNextFile()) != nullptr) {
 		result.push_back(Item->FileName);
 	}
 
@@ -553,30 +551,32 @@ Dir::DirReturn DiskDir::copyFile(const String &filename, UInt32 blockSize) const
 
 	String destFile(m_fullPathname);
     Int32 pos = srcFilename.reverseFind('/');
-	if (pos != -1)
+    if (pos != -1) {
 		destFile = destFile + '/' + srcFilename.sub(pos+1);
-	else
+    } else {
 		destFile = destFile + '/' + srcFilename;
+    }
 
     FileOutStream *dest = FileManager::instance()->openOutStream(destFile, FileOutStream::CREATE);
 
-    if (blockSize == 0)
+    if (blockSize == 0) {
         blockSize = 32768;
+    }
 
     UInt32 SrcSize = src->getAvailable();
     UInt8 *pBuffer = new UInt8[blockSize];
 
 	// copy the file
 	UInt32 count = 0;
-	while (count < SrcSize)
-	{
+    while (count < SrcSize) {
         src->read(pBuffer, blockSize);
         dest->write(pBuffer, blockSize);
 
         count += blockSize;
 
-		if (count > SrcSize)
+        if (count > SrcSize) {
             blockSize -= count - SrcSize;
+        }
 	}
 
 	deleteArray(pBuffer);

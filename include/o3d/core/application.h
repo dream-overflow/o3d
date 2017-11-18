@@ -139,7 +139,7 @@ public:
 	//! Run the application main loop until there is at least one event or one appWindow.
     //! In the case you are using your own main loop or window manager, you have to
     //! setup the two callbacks (setEvtManagerCallback and setStdTimerCallback).
-	static void run();
+    static void run(Bool runOnce = False);
 
 	//! Push a user application event.
     static void pushEvent(EventType type, _HWND hWnd, void *data);
@@ -178,7 +178,7 @@ public:
 
 private:
 
-    static void runPrivate();
+    static void runPrivate(Bool runOnce);
     static void pushEventPrivate(EventType type, _HWND hWnd, void *data);
     static void apiInitPrivate();
     static void apiQuitPrivate();

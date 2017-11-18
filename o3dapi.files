@@ -33,6 +33,8 @@ include/o3d/core/commandline.h
 include/o3d/core/configfile.h
 include/o3d/core/coretype.h
 include/o3d/core/database.h
+include/o3d/core/date.h
+include/o3d/core/datetime.h
 include/o3d/core/debug.h
 include/o3d/core/dir.h
 include/o3d/core/diskdir.h
@@ -385,6 +387,8 @@ src/core/classinfo.cpp
 src/core/commandline.cpp
 src/core/configfile.cpp
 src/core/database.cpp
+src/core/date.cpp
+src/core/datetime.cpp
 src/core/debug.cpp
 src/core/dir.cpp
 src/core/diskdir.cpp

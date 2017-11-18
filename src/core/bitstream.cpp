@@ -14,7 +14,8 @@
 #include "o3d/core/bitstream.h"
 
 #include "o3d/core/debug.h"
-#include "o3d/core/objects.h"
+#include "o3d/core/date.h"
+#include "o3d/core/datetime.h"
 
 using namespace o3d;
 
@@ -85,7 +86,7 @@ void BitStream::addData(const UInt8 *buf,Int32 nb_bits)
 // push nb_bits data from buf to the debug buffer
 void BitStream::addDataDebug(const UInt8 *buf,Int32 nb_bits)
 {
-	O3D_ASSERT(buf != NULL);
+    O3D_ASSERT(buf != nullptr);
 
 	Int32 k=0,l=0;
 
@@ -227,11 +228,29 @@ void BitStream::getDate(Date &val)
 	val.year = getUInt16(12);
 	val.month = (Month)getUInt8(4);
 	val.day = (Day)getUInt8(3);
-	val.mday = getUInt8(5);
-	val.hour = getUInt8(5);
-	val.minute = getUInt8(6);
-	val.second = getUInt8(6);
-	val.millisecond = getUInt8(7);
+    val.mday = getUInt8(5);
+}
+
+// push an DateTime value to the bitstream
+void BitStream::getDateTime(DateTime &val)
+{
+    #ifdef O3D_BITSTREAM_DEBUG
+    if(debug)
+    {
+        UInt8 type=0;
+        getDataDebug(&type,5);
+        O3D_ASSERT(type == Type_Date);
+    }
+    #endif
+
+    val.year = getUInt16(12);
+    val.month = (Month)getUInt8(4);
+    val.day = (Day)getUInt8(3);
+    val.mday = getUInt8(5);
+    val.hour = getUInt8(5);
+    val.minute = getUInt8(6);
+    val.second = getUInt8(6);
+    val.millisecond = getUInt8(7);
 }
 
 // push String value to the bitstream
@@ -254,24 +273,40 @@ void BitStream::pushString(const String &val)
 	}
 }
 
-// push an O3DDate value to the bitstream
+// push a Date value to the bitstream
 void BitStream::pushDate(const Date &val)
 {
 	#ifdef O3D_BITSTREAM_DEBUG
 	if(debug)
 	{
 		UInt8 type = Type_Date;
-		addDataDebug(&type,5);
+        addDataDebug(&type, 5);
 	}
 	#endif
 
 	pushUInt16(val.year,12);
 	pushUInt8((UInt8)val.month,4);
 	pushUInt8((UInt8)val.day,3);
-	pushUInt8((UInt8)val.mday,5);
-	pushUInt8((UInt8)val.hour,5);
-	pushUInt8((UInt8)val.minute,6);
-	pushUInt8((UInt8)val.second,6);
-	pushUInt8((UInt8)val.millisecond,7);
+    pushUInt8((UInt8)val.mday,5);
 }
 
+// push a DateTime value to the bitstream
+void BitStream::pushDateTime(const DateTime &val)
+{
+    #ifdef O3D_BITSTREAM_DEBUG
+    if(debug)
+    {
+        UInt8 type = Type_DateTime;
+        addDataDebug(&type, 5);
+    }
+    #endif
+
+    pushUInt16(val.year,12);
+    pushUInt8((UInt8)val.month,4);
+    pushUInt8((UInt8)val.day,3);
+    pushUInt8((UInt8)val.mday,5);
+    pushUInt8((UInt8)val.hour,5);
+    pushUInt8((UInt8)val.minute,6);
+    pushUInt8((UInt8)val.second,6);
+    pushUInt8((UInt8)val.millisecond,7);
+}

@@ -432,13 +432,15 @@ Bool DiskFileInfo::makeAbsolute()
 /*---------------------------------------------------------------------------------------
   get the creation date/time
 ---------------------------------------------------------------------------------------*/
-const Date& DiskFileInfo::getCreationDate()
+const DateTime &DiskFileInfo::getCreationDate()
 {
-	if (!m_isValid)
+    if (!m_isValid) {
 		return m_cachedData.created;
+    }
 
-	if (m_cached)
+    if (m_cached) {
 		return m_cachedData.created;
+    }
 
 	Int32 result;
 
@@ -461,7 +463,7 @@ const Date& DiskFileInfo::getCreationDate()
 /*---------------------------------------------------------------------------------------
   get the last access date/time
 ---------------------------------------------------------------------------------------*/
-const Date& DiskFileInfo::getLastAccessDate()
+const DateTime &DiskFileInfo::getLastAccessDate()
 {
 	if (!m_isValid)
 		return m_cachedData.lastAccess;
@@ -490,7 +492,7 @@ const Date& DiskFileInfo::getLastAccessDate()
 /*---------------------------------------------------------------------------------------
   get the last modification date/time
 ---------------------------------------------------------------------------------------*/
-const Date& DiskFileInfo::getModifiedDate()
+const DateTime& DiskFileInfo::getModifiedDate()
 {
 	if (!m_isValid)
 		return m_cachedData.modified;
@@ -562,4 +564,3 @@ Bool DiskFileInfo::isInRoot() const
 
 	return False;
 }
-

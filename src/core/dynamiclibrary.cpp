@@ -36,4 +36,3 @@ UInt32 DynamicLibrary::getNumLoadedLibraries()
 {
 	return ms_libraries.size();
 }
-

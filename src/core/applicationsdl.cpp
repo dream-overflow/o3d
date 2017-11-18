@@ -36,7 +36,7 @@ void Application::apiQuitPrivate()
 }
 
 // Run the application main loop.
-void Application::runPrivate()
+void Application::runPrivate(Bool runOnce)
 {
 	Bool quit = False;
 	SDL_Event event;
@@ -234,6 +234,10 @@ void Application::runPrivate()
 			event.type = SDL_QUIT;
 			SDL_PushEvent(&event);
 		}
+
+        if (runOnce) {
+            break;
+        }
 	}
 }
 

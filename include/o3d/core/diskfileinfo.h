@@ -122,13 +122,13 @@ public:
 	virtual Bool makeAbsolute();
 
 	//! get the creation date/time
-	virtual const Date& getCreationDate();
+    virtual const DateTime& getCreationDate();
 
 	//! get the last access date/time
-	virtual const Date& getLastAccessDate();
+    virtual const DateTime& getLastAccessDate();
 
 	//! get the last modification date/time
-	virtual const Date& getModifiedDate();
+    virtual const DateTime& getModifiedDate();
 
 	//! is the file a symbolic link
 	virtual Bool isSymbolicLink();
@@ -140,4 +140,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_DISKFILEINFO_H
-

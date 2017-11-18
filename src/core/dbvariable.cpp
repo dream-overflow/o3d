@@ -9,7 +9,8 @@
 
 #include "o3d/core/dbvariable.h"
 #include "o3d/core/debug.h"
-#include "o3d/core/objects.h"
+#include "o3d/core/date.h"
+#include "o3d/core/datetime.h"
 
 using namespace o3d;
 
@@ -94,6 +95,11 @@ DbVariable::DbVariable(
         break;
     case IT_DATE:
         m_object = (UInt8*)new Date(*(Date*)data);
+        m_objectPtr = new UInt8[64];
+        m_objectSize = 64;
+        break;
+    case IT_DATETIME:
+        m_object = (UInt8*)new DateTime(*(DateTime*)data);
         m_objectPtr = new UInt8[64];
         m_objectSize = 64;
         break;
@@ -182,6 +188,11 @@ DbVariable::DbVariable(IntType intType,
         m_objectPtr = new UInt8[64];
         m_objectSize = 64;
         break;
+    case IT_DATETIME:
+        m_object = (UInt8*)new DateTime;
+        m_objectPtr = new UInt8[64];
+        m_objectSize = 64;
+        break;
     case IT_ISTREAM:
         m_object = nullptr; // TODO with ArrayUInt8
         m_objectPtr = nullptr;
@@ -244,6 +255,10 @@ DbVariable::~DbVariable()
         deletePtr((Date*)m_object);
         deleteArray(m_objectPtr);
         break;
+    case IT_DATETIME:
+        deletePtr((DateTime*)m_object);
+        deleteArray(m_objectPtr);
+        break;
     case IT_ISTREAM:
         break;
     case IT_OSTREAM:
@@ -263,6 +278,18 @@ const Date &DbVariable::asDate() const
 {
     O3D_ASSERT(m_intType == IT_DATE);
     return (*(Date*)m_object);
+}
+
+void DbVariable::setDateTime(const DateTime &v)
+{
+    O3D_ASSERT(m_intType == IT_DATETIME);
+    (*(DateTime*)m_object) = v;
+}
+
+const DateTime &DbVariable::asDateTime() const
+{
+    O3D_ASSERT(m_intType == IT_DATETIME);
+    return (*(DateTime*)m_object);
 }
 
 CString DbVariable::toCString() const
@@ -307,4 +334,3 @@ const SmartArrayUInt8& DbVariable::getSmartArrayUInt8() const
     O3D_ASSERT(m_intType == IT_SMART_ARRAY_UINT8);
     return (*(SmartArrayUInt8*)m_object);
 }
-

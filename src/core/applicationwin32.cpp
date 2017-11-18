@@ -133,7 +133,7 @@ void Application::apiQuitPrivate()
 }
 
 // Run the application main loop.
-void Application::runPrivate()
+void Application::runPrivate(Bool runOnce)
 {
 	// WIN32 messages peeking
 	MSG message;
@@ -199,6 +199,10 @@ void Application::runPrivate()
 			// If we were actually waiting on any handles, we would get the
 			// object index using this expression:
 			// int index = result - WAIT_OBJECT_0;
+        }
+
+        if (runOnce) {
+            break;
         }
 	}
 }

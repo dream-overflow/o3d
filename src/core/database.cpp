@@ -9,7 +9,8 @@
 
 #include "o3d/core/precompiled.h"
 #include "o3d/core/database.h"
-#include "o3d/core/objects.h"
+#include "o3d/core/date.h"
+#include "o3d/core/datetime.h"
 #include "o3d/core/smartarray.h"
 
 using namespace o3d;
@@ -118,4 +119,3 @@ DbQuery::~DbQuery()
 {
 
 }
-

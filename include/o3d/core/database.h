@@ -24,6 +24,7 @@ namespace o3d {
 class DbQuery;
 class DbAttribute;
 class Date;
+class DateTime;
 class InStream;
 
 //template<class T>
@@ -147,8 +148,11 @@ public:
     //! Set an input variable as CString.
     virtual void setCString(UInt32 attr, const CString &v) = 0;
 
+    //! Set an input variable as Date.
+    virtual void setDate(UInt32 attr, const Date &date) = 0;
+
     //! Set an input variable as Timestamp.
-    virtual void setTimestamp(UInt32 attr, const Date &date) = 0;
+    virtual void setTimestamp(UInt32 attr, const DateTime &date) = 0;
 
     //! Get an output attribute id by its name.
     virtual UInt32 getOutAttr(const CString &name) = 0;
@@ -191,4 +195,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_DATABASE_H
-

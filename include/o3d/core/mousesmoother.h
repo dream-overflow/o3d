@@ -70,7 +70,7 @@ private:
 
 		//! ctor with pos and date
 		Sample(Float date, const Vector2f &pos) :
-			Date(date), Pos(pos) {}
+            Date(date), Pos(pos) {}
 	};
 
 	Float m_samplingPeriod;
@@ -85,4 +85,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MOUSESMOOTHER_H
-

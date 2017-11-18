@@ -27,7 +27,7 @@
 
 using namespace o3d;
 
-FileManager* FileManager::m_instance = NULL;
+FileManager* FileManager::m_instance = nullptr;
 static FastMutex O3D_FileManagerMutex;
 
 // Singleton instantiation

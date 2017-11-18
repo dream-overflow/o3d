@@ -22,6 +22,7 @@
 namespace o3d {
 
 class Date;
+class DateTime;
 
 //---------------------------------------------------------------------------------------
 //! @class BitStream
@@ -89,7 +90,8 @@ public:
 		Type_Float,
 		Type_Double,
 		Type_String,
-		Type_Date
+        Type_Date,
+        Type_DateTime
 	};
 
 	//! @brief Return the main data array
@@ -335,8 +337,11 @@ public:
 	String getString();
 	void getString(String &val);
 
-	//! @brief return Date value from the bitstream
-	void getDate(Date &val);
+    //! @brief return Date value from the bitstream
+    void getDate(Date &val);
+
+    //! @brief return DateTime value from the bitstream
+    void getDateTime(DateTime &val);
 
 
 	//-----------------------------------------------------------------------------------
@@ -533,20 +538,22 @@ public:
 	//! @brief push String value to the bitstream
 	void pushString(const String &val);
 
-	//! @brief push an O3DData value to the bitstream
+    //! @brief push a Date value to the bitstream
 	void pushDate(const Date &val);
 
+    //! @brief push a DateTime value to the bitstream
+    void pushDateTime(const DateTime &val);
 
 	inline void setAllReaded()
 	{
-	   m_CurByteRead=m_CurByteWrite;
-	   m_CurBitRead=m_CurBitWrite;
+       m_CurByteRead = m_CurByteWrite;
+       m_CurBitRead = m_CurBitWrite;
 	}
 
 private:
 
-	ArrayUInt8 m_Data;              //!< bitstream buffer
-	ArrayUInt8 m_DataDebug;	        //!< debug bitstream
+    ArrayUInt8 m_Data;          //!< bitstream buffer
+    ArrayUInt8 m_DataDebug;	    //!< debug bitstream
 
 	UInt32 m_CurByteWrite;      //!< current octet position to write
 	UInt8 m_CurBitWrite;        //!< current bit position of the last written octet
@@ -566,4 +573,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_BITSTREAM_H
-
