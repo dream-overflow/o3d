@@ -29,6 +29,7 @@
 using namespace o3d;
 
 String *Application::ms_appsName = nullptr;
+String *Application::ms_appsPath = nullptr;
 Application::T_AppWindowMap Application::ms_appWindowMap;
 _DISP Application::ms_display = NULL_DISP;
 AppWindow* Application::ms_currAppWindow = nullptr;
@@ -56,17 +57,8 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
         apiInitPrivate();
     }
 
-	// Get the application name
-#ifdef O3D_WIN32
-	WChar buf[MAX_PATH];
-	GetModuleFileNameW(NULL, buf, MAX_PATH);
-	ms_appsName = new String(buf);
-#else
-	if (argv && (argc >= 1) && argv[0])	{
-		ms_appsName = new String;
-		ms_appsName->fromUtf8(argv[0]);
-	}
-#endif
+    // Get the application name and path
+    getBaseNamePrivate(argc, argv);
 
 	// Initialize fast memory allocator
 	MemoryManager::instance()->initFastAllocator(
@@ -121,6 +113,7 @@ void Application::quit()
 	// Global destruction
 	o3d::deletePtr(ms_appsCommandLine);
 	o3d::deletePtr(ms_appsName);
+    o3d::deletePtr(ms_appsPath);
 
 	// terminate the task manager if running
 	TaskManager::destroy();
@@ -182,7 +175,12 @@ CommandLine* Application::getCommandLine()
 // Get the application name
 const String& Application::getAppName()
 {
-	return *ms_appsName;
+    return *ms_appsName;
+}
+
+const String &Application::getAppPath()
+{
+    return *ms_appsPath;
 }
 
 void Application::addAppWindow(AppWindow *appWindow)

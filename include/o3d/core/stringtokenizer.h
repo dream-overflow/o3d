@@ -177,10 +177,9 @@ private:
 
 	Bool    m_dlFlag;            //!< delimiter flag
 
-	void prepWorkStr(const WChar* delimiters = NULL, Int32 delimiterSize = 0);
+    void prepWorkStr(const WChar* delimiters = nullptr, Int32 delimiterSize = 0);
 };
 
 } // namespace o3d
 
 #endif // _O3D_STRINGTOKENIZER_H
-

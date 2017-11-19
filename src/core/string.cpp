@@ -179,66 +179,106 @@ SmartArrayUInt8 CString::getBytes() const
 
 Bool CString::operator<(const CString &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
 
     return strcmp(m_data.getData(), s.m_data.getData()) < 0;
 }
 
 Bool CString::operator<(const Char *s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
 
-    if (!s)
-        O3D_ERROR(E_NullPointer("right string is null"));
+    if (!s) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
 
     return strcmp(m_data.getData(), s) < 0;
 }
 
 Bool CString::operator==(const CString &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && s.isNull()) {
+        return True;
+    } else if (isNull() || s.isNull()) {
+        return False;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+//    if (isNull()) {
+//        O3D_ERROR(E_NullPointer("left string is null"));
+//    }
+
+//    if (s.isNull()) {
+//        O3D_ERROR(E_NullPointer("right string is null"));
+//    }
 
     return strcmp(m_data.getData(), s.m_data.getData()) == 0;
 }
 
 Bool CString::operator==(const Char *s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && !s) {
+        return True;
+    } else if (isNull() || !s) {
+        return False;
+    }
 
-    if (!s)
-        O3D_ERROR(E_NullPointer("right string is null"));
+//    if (isNull()) {
+//        O3D_ERROR(E_NullPointer("left string is null"));
+//    }
+
+//    if (!s) {
+//        O3D_ERROR(E_NullPointer("right string is null"));
+//    }
 
     return strcmp(m_data.getData(), s) == 0;
 }
 
 Bool CString::operator!=(const CString &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && s.isNull()) {
+        return False;
+    } else if (isNull() || s.isNull()) {
+        return True;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+//    if (isNull()) {
+//        O3D_ERROR(E_NullPointer("left string is null"));
+//    }
+
+//    if (s.isNull()) {
+//        O3D_ERROR(E_NullPointer("right string is null"));
+//    }
 
     return strcmp(m_data.getData(), s.m_data.getData()) != 0;
 }
 
 Bool CString::operator!=(const Char *s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && !s) {
+        return False;
+    } else if (isNull() || !s) {
+        return True;
+    }
 
-    if (!s)
-        O3D_ERROR(E_NullPointer("right string is null"));
+//    if (isNull()) {
+//        O3D_ERROR(E_NullPointer("left string is null"));
+//    }
+
+//    if (!s) {
+//        O3D_ERROR(E_NullPointer("right string is null"));
+//    }
 
     return strcmp(m_data.getData(), s) != 0;
 }
@@ -832,11 +872,19 @@ String String::operator+ (WChar c) const
 //! Case sensitive comparison.
 Bool String::operator== (const String &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && s.isNull()) {
+        return True;
+    } else if (isNull() || s.isNull()) {
+        return False;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+//    if (isNull()) {
+//        O3D_ERROR(E_NullPointer("left string is null"));
+//    }
+
+//    if (s.isNull()) {
+//        O3D_ERROR(E_NullPointer("right string is null"));
+//    }
 
 //    if (isEmpty() && s.isEmpty()) // both are empty
 //        return 0;
@@ -846,11 +894,19 @@ Bool String::operator== (const String &s) const
 
 Bool String::operator!=(const String &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && s.isNull()) {
+        return False;
+    } else if (isNull() || s.isNull()) {
+        return True;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+//    if (isNull()) {
+//        O3D_ERROR(E_NullPointer("left string is null"));
+//    }
+
+//    if (s.isNull()) {
+//        O3D_ERROR(E_NullPointer("right string is null"));
+//    }
 
 //    if (isEmpty() && s.isEmpty()) // both are empty
 //        return 1;
@@ -861,11 +917,19 @@ Bool String::operator!=(const String &s) const
 //! Comparison.
 Int32 String::compare(const String & s, ComparisonPolicy _type) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && s.isNull()) {
+        return True;
+    } else if (isNull() || s.isNull()) {
+        return False;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+//    if (isNull()) {
+//        O3D_ERROR(E_NullPointer("left string is null"));
+//    }
+
+//    if (s.isNull()) {
+//        O3D_ERROR(E_NullPointer("right string is null"));
+//    }
 
 //    if (isEmpty() && s.isEmpty()) // both are empty
 //		return 0;
@@ -879,11 +943,15 @@ Int32 String::compare(const String & s, ComparisonPolicy _type) const
 //! Case sensitive comparison.
 Bool String::operator> (const String &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return False;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return True;
+    }
 
 //    if (isEmpty() && s.isEmpty()) // both are empty
 //        return 0;
@@ -894,11 +962,15 @@ Bool String::operator> (const String &s) const
 //! Case sensitive comparison.
 Bool String::operator< (const String &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
 
 //    if (isEmpty() && s.isEmpty()) // both are empty
 //        return 0;
@@ -908,12 +980,19 @@ Bool String::operator< (const String &s) const
 
 Bool String::operator>=(const String &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && s.isNull()) {
+        return True;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return False;
+    }
 
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return True;
+    }
 //    if (isEmpty() && s.isEmpty()) // both are empty
 //        return 0;
 
@@ -922,11 +1001,19 @@ Bool String::operator>=(const String &s) const
 
 Bool String::operator<=(const String &s) const
 {
-    if (isNull())
-        O3D_ERROR(E_NullPointer("left string is null"));
+    if (isNull() && s.isNull()) {
+        return True;
+    }
 
-    if (s.isNull())
-        O3D_ERROR(E_NullPointer("right string is null"));
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
+
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
 
 //    if (isEmpty() && s.isEmpty()) // both are empty
 //        return 0;
@@ -1145,22 +1232,49 @@ String String::extract(UInt32 pos, UInt32 n)
 {
     String result;
 
-    if (pos >= m_size)
+    if (pos >= m_size) {
         return result;
+    }
 
-    if (n >= m_size - pos)
+    if (n >= m_size - pos) {
         n = m_size - pos - 1;
+    }
 
     result.setCapacity(n);
 
     // copy
     memcpy(result.m_data, m_data + pos, n*sizeof(WChar));
-    result.m_size = n+1;
+    result.m_size = n + 1;
     result.m_data[result.m_size-1] = '\0';
 
     // cut
     memmove(m_data + pos, m_data + pos + n, (m_size-pos)*sizeof(WChar));
     m_data[(m_size -= n)-1] = 0;
+
+    return result;
+}
+
+String String::slice(Int32 start, Int32 end) const
+{
+    String result;
+
+    if (start >= m_size) {
+        return result;
+    }
+
+    Int32 n = 0;
+    if (end >= m_size || end < 0) {
+        n = m_size - start - 1;
+    } else {
+        n = start - end - 1;
+    }
+
+    result.setCapacity(n);
+
+    // copy
+    memcpy(result.m_data, m_data + start, n*sizeof(WChar));
+    result.m_size = n + 1;
+    result.m_data[result.m_size-1] = '\0';
 
     return result;
 }
@@ -1737,3 +1851,17 @@ Bool String::readFromFile(InStream &is)
     return True;
 }
 
+#include "o3d/core/stringlist.h"
+#include "o3d/core/stringtokenizer.h"
+
+T_StringList split(const String &content, const String &delimiters)
+{
+    T_StringList parts;
+
+    StringTokenizer tokenizer(content, delimiters);
+    while (tokenizer.hasMoreElements()) {
+        parts.push_back(tokenizer.nextElement());
+    }
+
+    return parts;
+}

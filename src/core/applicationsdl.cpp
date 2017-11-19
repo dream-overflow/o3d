@@ -9,6 +9,7 @@
 
 #include "o3d/core/precompiled.h"
 #include "o3d/core/application.h"
+#include "o3d/core/filemanager.h"
 
 // IF O3D_SDL IS SELECTED
 #ifdef O3D_SDL
@@ -256,6 +257,22 @@ void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
     event.user.data2 = nullptr;
 
 	SDL_PushEvent(&event);
+}
+
+void Application::getBaseNamePrivate(Int32 argc, Char **argv)
+{
+    char *basePath = SDL_GetBasePath();
+    if (basePath) {
+        ms_appsPath = new String(basePath);
+        SDL_free(basePath);
+    } else {
+        ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
+    }
+
+    if (argv && (argc >= 1) && argv[0])	{
+        ms_appsName = new String;
+        ms_appsName->fromUtf8(argv[0]);
+    }
 }
 
 #endif // O3D_SDL

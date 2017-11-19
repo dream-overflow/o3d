@@ -19,7 +19,13 @@ typedef std::list<String> T_StringList;
 typedef T_StringList::iterator IT_StringList;
 typedef T_StringList::const_iterator CIT_StringList;
 
+/**
+ * @brief Split the string according to a list of characters.
+ * @param chars String containings one ore many characters as separators.
+ * @return List of String.
+ */
+T_StringList split(const String &content, const String &delimiters);
+
 } // namespace o3d
 
 #endif // _O3D_STRINGLIST_H
-

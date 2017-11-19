@@ -422,4 +422,3 @@ void StringTokenizer::prepWorkStr(const WChar* delimiters, Int32 delimiterSize)
 
 	m_remainingTokens = m_totalTokens;
 }
-

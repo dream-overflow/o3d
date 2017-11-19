@@ -114,6 +114,9 @@ public:
 	//! Get the application name
 	static const String& getAppName();
 
+    //! Get the application path
+    static const String& getAppPath();
+
 	//! Show a message. On win32 application it draw a standard message box,
 	//! on UNIX's plate-forms it print on stdout.
 	//! @param content Content of the message box.
@@ -182,6 +185,7 @@ private:
     static void pushEventPrivate(EventType type, _HWND hWnd, void *data);
     static void apiInitPrivate();
     static void apiQuitPrivate();
+    static void getBaseNamePrivate(Int32 argc, Char **argv);
 
 protected:
 
@@ -190,6 +194,7 @@ protected:
 	typedef T_AppWindowMap::const_iterator CIT_AppWindowMap;
 
 	static String *ms_appsName;
+    static String *ms_appsPath;
 
 	static T_AppWindowMap ms_appWindowMap;
 

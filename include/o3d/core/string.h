@@ -568,6 +568,14 @@ public:
     String extract(UInt32 pos, UInt32 n);
 
     /**
+     * @brief Get a part of the string
+     * @param start Starting postion
+     * @param end Ending position or -1 for end
+     * @return A new string
+     */
+    String slice(Int32 start, Int32 end) const;
+
+    /**
      * @brief sub Get a substring given a range of position.
      * @param start The starting position
      * @param end The ending position
@@ -807,4 +815,3 @@ namespace std {
 }
 
 #endif // _O3D_STRING_H
-

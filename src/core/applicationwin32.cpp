@@ -221,4 +221,36 @@ void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 		reinterpret_cast<LPARAM>(data));
 }
 
+void Application::getBaseNamePrivate(Int32 argc, Char **argv)
+{
+    WChar buf[MAX_PATH];
+    GetModuleFileNameW(NULL, buf, MAX_PATH);
+
+    if (buf) {
+        String path(buf);
+        path.replace('\\', '/');
+
+        Int32 pos = ms_appsName->reverseFind('/');
+        if (pos >= 0) {
+            ms_appsName = new String(path);
+            ms_appsName->remove(0, pos);
+            )
+            ms_appsName->fromUtf8(argv[0]);
+
+
+        ms_appsName = new String(buf);
+        ms_appsPath = new String(buf);  // @todo
+
+
+            String path = ms_appsName->extract(0, pos+1);
+            ms_appsPath = new String(FileManager::instance()->getFullFileName(path));
+        } else {
+            ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
+        }
+    } else {
+        ms_appsName = new String("undefined");
+        ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
+    }
+}
+
 #endif // O3D_WIN32
