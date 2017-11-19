@@ -72,13 +72,12 @@ public:
         m_counter = new Int32;
 		(*m_counter) = 1;
 
-		if (!own)
-		{
+        if (!own) {
             m_data = new T[m_size];
 			memcpy(m_data, data, m_size * sizeof(T));
-		}
-		else
+        } else {
 			m_data = data;
+        }
 	}
 
 	//! Initialization constructor from const data.
@@ -102,8 +101,7 @@ public:
 	{
 		releaseIt();
 
-		if (noLongerUsed())
-		{
+        if (noLongerUsed()) {
 			deleteArray(m_data);
 			deletePtr(m_counter);
 		}
@@ -113,15 +111,12 @@ public:
 	inline const SmartArray& operator=(const SmartArray &ptr)
 	{
 		// Check if it's the same data
-		if (m_data != ptr.m_data)
-		{
-			if (m_data)
-			{
+        if (m_data != ptr.m_data) {
+            if (m_data) {
 				// If not, release the old pointer
 				releaseIt();
 
-				if (noLongerUsed())
-				{
+                if (noLongerUsed()) {
                     deleteArray(m_data);
 					deletePtr(m_counter);
 
@@ -162,10 +157,11 @@ public:
 	//! Return true if counter value is 0. If the object is totally released.
     inline Bool noLongerUsed() const
 	{
-		if (m_counter)
+        if (m_counter) {
 			return ((*m_counter) == 0);
-		else
+        } else {
             return True;
+        }
 	}
 
 	//! Get the length of the array.
@@ -189,13 +185,13 @@ public:
     //! Check if the object is totally released and then delete it.
     Bool releaseCheckAndDelete()
 	{
-        if (m_data == nullptr)
+        if (m_data == nullptr) {
             return False;
+        }
 
 		releaseIt();
 
-		if (noLongerUsed())
-		{
+        if (noLongerUsed()) {
             deleteArray(m_data);
 			deletePtr(m_counter);
 
@@ -235,15 +231,15 @@ protected:
 	//! Use object.
 	inline void useIt()
 	{
-		if (m_counter)
+        if (m_counter) {
 			(*m_counter)++;
+        }
 	}
 
 	//! Release object.
 	inline void releaseIt()
 	{
-		if (m_counter)
-		{
+        if (m_counter) {
 			(*m_counter)--;
 			O3D_ASSERT((*m_counter) >=0);
 		}
@@ -290,4 +286,3 @@ typedef SmartArray<Double>	SmartArrayDouble;
 } // namespace o3d
 
 #endif // _O3D_SMARTARRAY_H
-

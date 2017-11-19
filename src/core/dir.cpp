@@ -99,7 +99,7 @@ Bool Dir::cd(const String &path)
 	clean();
 
 	// check if it exist and if it is readable
-	if (!isExist())
+	if (!exists())
 	{
 		m_fullPathname = oldDir;
 

@@ -174,7 +174,7 @@ UInt64 DiskFileInfo::getFileSize()
 }
 
 // check if the filename exists
-Bool DiskFileInfo::isExist()
+Bool DiskFileInfo::exists()
 {
 	Int32 result;
 
@@ -418,7 +418,7 @@ Bool DiskFileInfo::makeAbsolute()
 	String oldFileName = m_fullFilename;
 	m_fullFilename = FileManager::instance()->getWorkingDirectory() + '/' + m_fullFilename;
 
-	if (!isExist())
+    if (!exists())
 	{
 		m_fullFilename = oldFileName;
 

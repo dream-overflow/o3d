@@ -43,6 +43,12 @@ void DiskDir::clean()
     File::adaptPath(m_fullPathname);
 }
 
+Bool DiskDir::empty() const
+{
+    // @todo could be optimized (but what about virtualfile listing if we optimize ?)
+    return findFiles().size() == 0;
+}
+
 /*---------------------------------------------------------------------------------------
   is an absolute or relative path ?
 ---------------------------------------------------------------------------------------*/
@@ -413,47 +419,32 @@ Dir::DirReturn DiskDir::check(const String &fileOrPath) const
 	result = stat(toCheck.toUtf8().getData(), &statresult);
 #endif
 
-	if (result == 0)
+    if (result == 0) {
 		return SUCCESS;
-
-	else if (errno == EBADF)
-	{
+    } else if (errno == EBADF) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " is not found"));
 		return NOT_FOUND;
-	}
-	else if (errno == EFAULT)
-	{
+    } else if (errno == EFAULT) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " is an invalid address"));
 		return INVALID_ADDRESS;
-	}
-	else if (errno == EACCES)
-	{
+    } else if (errno == EACCES) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " non read access"));
 		return NOT_READ_ACCESS;
-	}
-	else if (errno == ENAMETOOLONG)
-	{
+    } else if (errno == ENAMETOOLONG) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " is too long"));
 		return TOO_LONG;
-	}
-	else if (errno == ENOENT)
-	{
+    } else if (errno == ENOENT) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " is an invalid path"));
 		return INVALID_PATH;
-	}
-	else if (errno == ENOMEM)
-	{
+    } else if (errno == ENOMEM) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " Kernel memory error"));
 		return MEMORY_ERROR;
-	}
-	else if (errno == ENOTDIR)
-	{
+    } else if (errno == ENOTDIR) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " is an invalid path"));
 		return INVALID_PATH;
 	}
 #ifndef O3D_WINDOWS
-	else if (errno == ELOOP)
-	{
+    else if (errno == ELOOP) {
 		//O3D_ERROR(O3D_E_InvalidResult(toCheck + " have circulars references"));
 		return CIRCULAR_REF;
 	}
@@ -525,7 +516,7 @@ Bool DiskDir::makeAbsolute()
 	String oldPath = m_fullPathname;
 	m_fullPathname = FileManager::instance()->getWorkingDirectory() + '/' + m_fullPathname;
 
-	if (!isExist())
+	if (!exists())
 	{
 		m_fullPathname = oldPath;
 

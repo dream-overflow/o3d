@@ -130,8 +130,9 @@ CString::CString(UInt32 strlen) :
 CString::CString(const Char *copy) :
 	m_data()
 {
-	if (copy)
+    if (copy) {
         m_data = SmartArrayChar(copy, strlen(copy)+1);
+    }
 }
 
 CString::CString(const CString &dup) :
@@ -143,16 +144,18 @@ CString::CString(const CString &dup) :
 CString::CString(const Char *copy, UInt32 strlen) :
 	m_data()
 {
-	if (copy && strlen)
+    if (copy && strlen) {
 		m_data = SmartArrayChar(copy, strlen+1);
+    }
 }
 
 // Construct using a valid string and len. Own it or copy it.
 CString::CString(Char *source, UInt32 strlen, Bool own) :
 	m_data()
 {
-	if (source && strlen)
+    if (source && strlen) {
 		m_data = SmartArrayChar(source, strlen+1, own);
+    }
 }
 
 // Destructor
@@ -1258,12 +1261,16 @@ String String::slice(Int32 start, Int32 end) const
 {
     String result;
 
-    if (start >= m_size) {
+    if (start >= (Int32)m_size) {
         return result;
     }
 
+    if (start < 0) {
+        start = 0;
+    }
+
     Int32 n = 0;
-    if (end >= m_size || end < 0) {
+    if (end >= (Int32)m_size || end < 0) {
         n = m_size - start - 1;
     } else {
         n = start - end - 1;

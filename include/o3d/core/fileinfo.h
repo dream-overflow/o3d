@@ -128,7 +128,7 @@ public:
 	virtual UInt64 getFileSize() = 0;
 
 	//! check if the filename exists
-	virtual Bool isExist() = 0;
+	virtual Bool exists() = 0;
 
 	//! is an absolute or relative filename ?
 	virtual Bool isAbsolute() const = 0;

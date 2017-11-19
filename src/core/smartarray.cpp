@@ -222,4 +222,3 @@ template<> Bool SmartArray<Double>::readFromFile(InStream &is)
 
     return True;
 }
-

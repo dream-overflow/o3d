@@ -65,7 +65,7 @@ public:
 	};
 
 	//! default constructor. Is the path is empty '.' is used.
-	Dir(const String& pathname);
+    Dir(const String& pathname = String());
 
 	//! copy constructor
 	Dir(const Dir& dup) :
@@ -146,10 +146,13 @@ public:
 	virtual Dir::DirReturn check(const String &fileOrPath) const = 0;
 
 	//! check if Dir exist
-	inline Bool isExist() const
+    inline Bool exists() const
 	{
 		return m_isValid && (check("") == SUCCESS);
 	}
+
+    //! check if the directory is empty
+    virtual Bool empty() const = 0;
 
 	//! change directory. return true if the new directory exists and it is readable
 	Bool cd(const String &path);
@@ -215,4 +218,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_DIR_H
-

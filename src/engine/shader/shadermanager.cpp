@@ -97,7 +97,7 @@ ShaderManager::ShaderManager(
 	if (defaultPath.isValid())
 	{
 		DiskDir dir(defaultPath);
-		if (dir.isExist())
+		if (dir.exists())
 		{
 			O3D_MESSAGE("Found defaults shaders in shaders directory");
 			addPath(defaultPath);
@@ -110,7 +110,7 @@ ShaderManager::ShaderManager(
 		// search for a shaders.zip archive
 		String pwd = FileManager::instance()->getWorkingDirectory();
 		DiskFileInfo zip(pwd + "/shaders.zip");
-		if (zip.isExist())
+		if (zip.exists())
 		{
 			O3D_MESSAGE("Found defaults shaders in shaders.zip");
 			FileManager::instance()->mountArchive(zip.getFullFileName());

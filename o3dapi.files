@@ -106,6 +106,7 @@ include/o3d/core/templateprioritymanager.h
 include/o3d/core/thread.h
 include/o3d/core/timer.h
 include/o3d/core/types.h
+include/o3d/core/uuid.h
 include/o3d/core/vector2.h
 include/o3d/core/vector3.h
 include/o3d/core/vector4.h
@@ -442,6 +443,7 @@ src/core/threadwin32.cpp
 src/core/timer.cpp
 src/core/timerstd.cpp
 src/core/timerwin32.cpp
+src/core/uuid.cpp
 src/core/vector2.cpp
 src/core/vector3.cpp
 src/core/vector4.cpp

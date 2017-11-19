@@ -29,7 +29,7 @@ public:
 	static DiskDir current();
 
 	//! default constructor. Is the path is empty '.' is used.
-	DiskDir(const String& pathname) :
+    DiskDir(const String& pathname = String()) :
 		Dir(pathname)
 	{
 		m_type = Dir::FILE_SYSTEM_DIR;
@@ -46,6 +46,9 @@ public:
 
 	//! clean the path (remove '..' and '.' when possible)
 	virtual void clean();
+
+    //! check if the directory is empty
+    virtual Bool empty() const;
 
 	//! is an absolute or relative path ?
 	virtual Bool isAbsolute() const;

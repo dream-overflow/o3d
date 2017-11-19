@@ -83,7 +83,7 @@ public:
 	}
 
 	//! Find an object and return True if "_which" exists
-	inline Bool isExist(const KEY & _which)
+    inline Bool exists(const KEY & _which)
 	{
 		IT_GarbageManager it = m_container.find(_which);
 
@@ -135,7 +135,7 @@ public:
 	//! Add an object to the garbage manager
 	Bool add(const KEY & _which, const OBJ & _object)
 	{
-		if (isExist(_which))
+        if (exists(_which))
 			return False;
 
 		if ((m_container.size() == m_maxsize) && (m_maxsize > 0))

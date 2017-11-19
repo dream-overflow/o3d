@@ -61,7 +61,7 @@ void PCLODMaterial::rtLoad()
 
 	DiskFileInfo lFileInfo(m_filePath);
 
-	if (!lFileInfo.isExist())
+	if (!lFileInfo.exists())
 	{
 		// If the file is not found, we load a black texture
 

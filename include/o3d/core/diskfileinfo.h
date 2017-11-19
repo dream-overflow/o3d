@@ -34,7 +34,7 @@ public:
 		FileInfo(filename)
 	{
 		m_type = FileInfo::FILE_SYSTEM_FILE_INFO;
-		m_isValid = isExist();
+        m_isValid = exists();
 	}
 
 	//! constructor with separates pathname and filename
@@ -42,7 +42,7 @@ public:
 		FileInfo(pathname,filename)
 	{
 		m_type = FileInfo::FILE_SYSTEM_FILE_INFO;
-		m_isValid = isExist();
+        m_isValid = exists();
 	}
 
 	//! constructor with separates pathname and filename
@@ -50,7 +50,7 @@ public:
 		FileInfo(dir,filename)
 	{
 		m_type = FileInfo::FILE_SYSTEM_FILE_INFO;
-		m_isValid = isExist();
+        m_isValid = exists();
 	}
 
 	//! copy constructor
@@ -58,7 +58,7 @@ public:
 		FileInfo(dup)
 	{
 		m_type = FileInfo::FILE_SYSTEM_FILE_INFO;
-		m_isValid = isExist();
+        m_isValid = exists();
 	}
 
 	virtual ~DiskFileInfo() {}
@@ -67,21 +67,21 @@ public:
 	void setFile(const String &filename)
 	{
 		FileInfo::setFile(filename);
-		m_isValid = isExist();
+        m_isValid = exists();
 	}
 
 	//! set from a separates pathname and filename
 	void setFile(const String &pathname,const String &filename)
 	{
 		FileInfo::setFile(pathname,filename);
-		m_isValid = isExist();
+        m_isValid = exists();
 	}
 
 	//! set from separates pathname and filename
 	void setFile(const Dir &dir, const String &filename)
 	{
 		FileInfo::setFile(dir,filename);
-		m_isValid = isExist();
+        m_isValid = exists();
 	}
 
 	//! Get the file type.
@@ -91,7 +91,7 @@ public:
 	virtual UInt64 getFileSize();
 
 	//! check if the filename exists
-	virtual Bool isExist();
+    virtual Bool exists();
 
 	//! is an absolute or relative filename ?
 	virtual Bool isAbsolute() const;

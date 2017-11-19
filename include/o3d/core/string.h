@@ -738,80 +738,80 @@ protected :
 } // namespace o3d
 
 namespace std {
-	//namespace tr1 {
-		template<>
-		struct hash<o3d::CString> {
-			enum
-			{
-				bucket_size = 8,
-				min_buckets = 16
-			};
+//namespace tr1 {
+template<>
+struct hash<o3d::CString> {
+    enum
+    {
+        bucket_size = 8,
+        min_buckets = 16
+    };
 
-			bool operator()(const o3d::CString &s1, const o3d::CString &s2) const
-			{
-				return memcmp(
-							s1.getData(),
-							s2.getData(),
-							s1.length() < s2.length() ? s1.length() : s2.length()) < 0;
-			}
+    bool operator()(const o3d::CString &s1, const o3d::CString &s2) const
+    {
+        return memcmp(
+                    s1.getData(),
+                    s2.getData(),
+                    s1.length() < s2.length() ? s1.length() : s2.length()) < 0;
+    }
 
-			size_t operator()(const o3d::CString &s1) const
-			{
-				size_t  h = 0;
+    size_t operator()(const o3d::CString &s1) const
+    {
+        size_t  h = 0;
 
-                o3d::Char *p = const_cast<o3d::Char*>(s1.getData());
-                o3d::Char zero = '\0';
+        o3d::Char *p = const_cast<o3d::Char*>(s1.getData());
+        o3d::Char zero = '\0';
 
-				while ( *p != zero ) h = 31 * h + (*p++);
+        while ( *p != zero ) h = 31 * h + (*p++);
 
-				return h;
-			}
+        return h;
+    }
 
-			/*std::size_t operator()(o3d::CString &c) const
-			{
+    /*std::size_t operator()(o3d::CString &c) const
+            {
                 std::hash<o3d::Char*> hash;
-				if (c.isValid())
-					return hash(c.getData());
-				else
-					return 0;
-			}*/
-		};
+                if (c.isValid())
+                    return hash(c.getData());
+                else
+                    return 0;
+            }*/
+};
 
-		template<>
-		struct hash<o3d::String> {
-			enum
-			{
-				bucket_size = 8,
-				min_buckets = 16
-			};
+template<>
+struct hash<o3d::String> {
+    enum
+    {
+        bucket_size = 8,
+        min_buckets = 16
+    };
 
-			bool operator()(const o3d::String &s1, const o3d::String &s2) const
-			{
-				return s1 < s2;
-			}
+    bool operator()(const o3d::String &s1, const o3d::String &s2) const
+    {
+        return s1 < s2;
+    }
 
-			size_t operator()(const o3d::String &s1) const
-			{
-				size_t  h = 0;
+    size_t operator()(const o3d::String &s1) const
+    {
+        size_t  h = 0;
 
-                wchar_t *p = const_cast<o3d::WChar*>(s1.getData());
-				wchar_t zero = L'\0';
+        wchar_t *p = const_cast<o3d::WChar*>(s1.getData());
+        wchar_t zero = L'\0';
 
-				while ( *p != zero ) h = 31 * h + (*p++);
+        while ( *p != zero ) h = 31 * h + (*p++);
 
-				return h;
-			}
+        return h;
+    }
 
-			/*std::size_t operator()(const o3d::String &c) const
-			{
+    /*std::size_t operator()(const o3d::String &c) const
+            {
                 //std::hash<o3d::WChar*> hash;
-				//if (c.isValid())
-				//	return hash(c.getData());
-				//else
-					return 0;
-			}*/
-		};
-	//}
+                //if (c.isValid())
+                //	return hash(c.getData());
+                //else
+                    return 0;
+            }*/
+};
+//}
 }
 
 #endif // _O3D_STRING_H

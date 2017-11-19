@@ -96,7 +96,7 @@ Bool PCLODColormap::rtLoad()
 
 	DiskFileInfo fileInfo(m_filePath);
 
-	if (!fileInfo.isExist())
+	if (!fileInfo.exists())
 	{
 		// If the file is not found, we load a black texture
 

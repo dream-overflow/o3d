@@ -280,7 +280,7 @@ HICON WinTools::createIconFromBitmap(
 			O3D_ERROR(E_InvalidFormat("Icon must be a bmp file."));
 		}
 
-		if (!fileInfo.isExist())
+        if (!fileInfo.exists())
 			return NULL;
 	}
 	else

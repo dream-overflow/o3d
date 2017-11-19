@@ -445,7 +445,7 @@ Bool ConfigFile::save(const String & _filePath)
 
 	DiskFileInfo lFileInfo(lFilePath);
 
-//	if (lFileInfo.isExist() && !lFileInfo.isWritable())
+//	if (lFileInfo.isExists() && !lFileInfo.isWritable())
 //		return False;
 
     OutStream *los = (OutStream*)FileManager::instance()->openOutStream(lFilePath, FileOutStream::CREATE);
