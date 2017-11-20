@@ -11,6 +11,18 @@
 #include "o3d/core/instream.h"
 #include "o3d/core/outstream.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// #include "../../third/sha/sha1.h"
+#include "../../third/uuid/sysdep.h"
+#include "../../third/uuid/uuid.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 using namespace o3d;
 
 static inline UInt8 fromHexAB(WChar a, WChar b)
@@ -60,7 +72,20 @@ const Uuid &Uuid::nullUuid()
 Uuid Uuid::makeUuid()
 {
     Uuid uuid;
-    // @todo
+
+    uuid_t nsid;
+    uuid_create(&nsid);
+
+    uuid_t u;
+    uuid_create_md5_from_name(&u, nsid, (void*)"objective3d", 11);
+
+    *reinterpret_cast<UInt32*>(&uuid.m_raw.getData()[0]) = u.time_low;
+    *reinterpret_cast<UInt16*>(&uuid.m_raw.getData()[4]) = u.time_mid;
+    *reinterpret_cast<UInt16*>(&uuid.m_raw.getData()[6]) = u.time_hi_and_version;
+    uuid.m_raw.getData()[8] = u.clock_seq_hi_and_reserved;
+    uuid.m_raw.getData()[9] = u.clock_seq_low;
+    memcpy(&uuid.m_raw.getData()[10], &u.node, 6);
+
     return uuid;
 }
 
@@ -315,6 +340,11 @@ Bool Uuid::operator!=(const Uuid &_which) const
     }
 
     return memcmp(m_raw.getData(), _which.m_raw.getData(), 16) != 0;
+}
+
+UInt8 Uuid::version() const
+{
+    return (timeHiVersion() & 0xf000) >> 12;
 }
 
 Bool Uuid::writeToFile(OutStream &os) const

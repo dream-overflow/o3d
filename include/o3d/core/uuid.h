@@ -71,13 +71,13 @@ public:
     Bool operator!= (const Uuid& _which) const;
 
     //! Time lower part (first 32 bits)
-    inline UInt32 timeLow() const { return *reinterpret_cast<const UInt32*>(m_raw.getData()[0]); }
+    inline UInt32 timeLow() const { return *reinterpret_cast<const UInt32*>(&m_raw.getData()[0]); }
 
     //! Time middle part (next 16 bits)
-    inline UInt16 timeMid() const { return *reinterpret_cast<const UInt16*>(m_raw.getData()[4]); }
+    inline UInt16 timeMid() const { return *reinterpret_cast<const UInt16*>(&m_raw.getData()[4]); }
 
     //! Time/version part (next 16 bits)
-    inline UInt16 timeHiVersion() const { return *reinterpret_cast<const UInt16*>(m_raw.getData()[6]); }
+    inline UInt16 timeHiVersion() const { return *reinterpret_cast<const UInt16*>(&m_raw.getData()[6]); }
 
     //! Clock sequence high part (next 8 bits)
     inline UInt8 clockSeqHiVariant() const { return m_raw.getData()[8]; }
@@ -87,6 +87,9 @@ public:
 
     //! Node part (last 48 bits)
     inline const UInt8* node() const { return &m_raw.getData()[10]; }
+
+    //! Version (1 to 5)
+    UInt8 version() const;
 
     //
     // Serialization

@@ -186,9 +186,10 @@ include_directories(${CMAKE_BINARY_DIR}/include)
 # sub-directories
 #----------------------------------------------------------
 
-#add_subdirectory(third)
+add_subdirectory(third)
 add_subdirectory(src)
 add_subdirectory(test)
+
 
 #----------------------------------------------------------
 # install

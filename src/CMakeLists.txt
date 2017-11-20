@@ -28,6 +28,20 @@ set(nvtristrip
 	../third/nvTriStrip/NvTriStrip.cpp
 	../third/nvTriStrip/NvTriStripObjects.cpp)
 
+# @todo should be used as extern lib
+set(uuid
+	../third/uuid/sysdep.c
+    ../third/uuid/uuid.c
+    ../third/uuid/md5c.c)
+
+# @todo should be used as extern lib
+set(md5
+	../third/MD5/_MD5.cpp)
+
+# @todo should be used as extern lib
+set(sha
+	../third/sha/sha1.c)
+
 link_directories(${SDL2_LIBDIR})
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -42,7 +56,10 @@ add_library(${O3D_LIB_NAME} SHARED
 			${tinyxml}
 			${tristripper}
 			${nvtristrip}
-			${CORE_CXX} ../third/MD5/_MD5.cpp
+			${md5}
+			# ${sha}
+			${uuid}
+			${CORE_CXX}
 			${GEOM_CXX}
 			${PHYSIC_CXX}
 			${IMAGE_CXX}
@@ -56,6 +73,8 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 			${ZLIB_LIBRARY}
 			${JPEG_LIBRARY}
 			rt
+			# uuid
+			# sha
 			${XRANDR_LIBRARY}
 			${PNG_LIBRARY}
 			${OGG_LIBRARY}

@@ -17,3 +17,4 @@ add_library(nvtristrip STATIC
 	nvTriStrip/NvTriStrip.cpp
 	nvTriStrip/NvTriStripObjects.cpp)
 
+add_subdirectory(uuid)

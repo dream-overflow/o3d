@@ -35,3 +35,7 @@ third/TriStripper/Include/detail
 third/TriStripper/TriStripper/Include
 third/TriStripper/TriStripper/Include/detail
 src/core
+third/uuid/src
+third/uuid/include
+third/uuid
+third/sha
