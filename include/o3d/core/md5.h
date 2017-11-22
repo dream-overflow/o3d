@@ -16,11 +16,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class MD5Hash
-//-------------------------------------------------------------------------------------
-//! MD5 Checksum calculation and file checking
-//---------------------------------------------------------------------------------------
+/**
+ * @brief MD5 Checksum calculation and file checking
+ */
 class O3D_API MD5Hash
 {
 public:
@@ -37,7 +35,7 @@ public:
     ~MD5Hash();
 
     //! true if update can be called.
-    Bool isStreaming() const { return m_intMD5 != nullptr; }
+    inline Bool isStreaming() const { return m_privateData != nullptr; }
 
     //! update the MD5 checksum
     void update(UInt8* data, UInt32 len);
@@ -53,17 +51,31 @@ public:
 	inline const SmartArrayUInt8& getRaw() const { return m_rawDigest; }
 
 	//! get the MD5 in 32+1bytes hex
-	inline const String& getHex() const { return m_hexDigest; }
+    String getHex() const;
 
 protected:
 
-    class MD5 *m_intMD5;
-
     SmartArrayUInt8 m_rawDigest; //!< the result in 16bytes array
-    String m_hexDigest;          //!< the result in 32+1bytes hex string
+
+    struct PrivateMD5
+    {
+        UInt32 state[4];
+        UInt32 count[2];         //!< number of *bits*, mod 2^64
+        UInt8 buffer[64];         //!< input buffer
+        UInt8 digest[16];
+        UInt8 finalized;
+
+        PrivateMD5();
+
+        void update(const UInt8 *input, UInt32 input_length);
+        void finalize();
+
+        void transform(const UInt8 block[64]);
+    };
+
+    PrivateMD5 *m_privateData;
 };
 
 }
 
 #endif // _O3D_MD5_H
-

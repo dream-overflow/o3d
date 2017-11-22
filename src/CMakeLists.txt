@@ -34,14 +34,6 @@ set(uuid
     ../third/uuid/uuid.c
     ../third/uuid/md5c.c)
 
-# @todo should be used as extern lib
-set(md5
-	../third/MD5/_MD5.cpp)
-
-# @todo should be used as extern lib
-set(sha
-	../third/sha/sha1.c)
-
 link_directories(${SDL2_LIBDIR})
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -56,8 +48,6 @@ add_library(${O3D_LIB_NAME} SHARED
 			${tinyxml}
 			${tristripper}
 			${nvtristrip}
-			${md5}
-			# ${sha}
 			${uuid}
 			${CORE_CXX}
 			${GEOM_CXX}
@@ -73,8 +63,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 			${ZLIB_LIBRARY}
 			${JPEG_LIBRARY}
 			rt
-			# uuid
-			# sha
 			${XRANDR_LIBRARY}
 			${PNG_LIBRARY}
 			${OGG_LIBRARY}
@@ -108,7 +96,7 @@ ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	#		${SDL2_LIBRARIES}
 			${FREETYPE_LIBRARIES}
 			${OPENGL_LIBRARY})
-ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	#	target_link_libraries({O3D_LIB_NAME}
 	#		${OPENGL_gl_LIBRARY}
 	#		zlib

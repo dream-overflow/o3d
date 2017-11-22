@@ -1,8 +1,9 @@
+include/o3d/core/sha1.h
+src/core/sha1.cpp
 third/uuid/uuid.h
 third/uuid/uuid.c
 third/uuid/sysdep.h
 third/uuid/sysdep.c
-third/sha/sha1.c
 third/uuid/CMakeLists.txt
 third/uuid/CMakeLists.txt
 third/uuid/copyrt.h
