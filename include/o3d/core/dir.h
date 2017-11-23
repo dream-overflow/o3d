@@ -103,16 +103,16 @@ public:
 	inline const String& getFullPathName() const { return m_fullPathname; }
 
 	//! concat the filename to the directory full-path (does not check its existence)
-	String makeFullFileName(const String &filename);
+    String makeFullFileName(const String &filename) const;
 
 	//! concat the filename to the directory relative path (does not check its existence)
-	String makeFileName(const String &filename);
+    String makeFileName(const String &filename) const;
 
 	//! concat the pathname to the full-path (does not check its existence)
-	String makeFullPathName(const String &pathName);
+    String makeFullPathName(const String &pathName) const;
 
 	//! concat the pathname to the relative path (does not check its existence)
-	String makePathName(const String &pathName);
+    String makePathName(const String &pathName) const;
 
     //! adapt a filename to this path. Note: the filename path and this Dir must have a common root.
 	//! e.g:

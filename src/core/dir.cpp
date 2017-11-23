@@ -78,29 +78,31 @@ Bool Dir::setPathName(const String &pathName)
 ---------------------------------------------------------------------------------------*/
 Bool Dir::cd(const String &path)
 {
-	if (!m_isValid)
+    if (!m_isValid) {
 		return False;
+    }
 
 	// clear the given path
 	String lPath(path);
 	lPath.replace('\\','/');
 	lPath.trimRight('/');
 
-	if (lPath.sub("/",0) == 0)
+    if (lPath.sub("/",0) == 0) {
 		O3D_ERROR(E_InvalidResult(lPath + " is an invalid path"));
+    }
 
 	// backup the current path and transform it
 	String oldDir(m_fullPathname);
-	if (m_fullPathname.isValid())
+    if (m_fullPathname.isValid()) {
 		m_fullPathname += '/';
+    }
 	m_fullPathname += lPath;
 
 	// adapt the path
 	clean();
 
 	// check if it exist and if it is readable
-	if (!exists())
-	{
+    if (!exists()) {
 		m_fullPathname = oldDir;
 
 		O3D_ERROR(E_InvalidParameter(lPath));
@@ -109,103 +111,95 @@ Bool Dir::cd(const String &path)
 
 	Int32 pos = m_fullPathname.reverseFind('/');
 
-	if (pos != -1)
+    if (pos != -1) {
 		m_pathName = m_fullPathname.sub(pos+1);
-	else
+    } else {
 		m_pathName = m_fullPathname;
+    }
 
 	return True;
 }
 
 // concat the filename to the directory full-path (do not check its existence)
-String Dir::makeFullFileName(const String &filename)
+String Dir::makeFullFileName(const String &filename) const
 {
-	if (!m_isValid)
+    if (!m_isValid) {
 		return String("");
+    }
 
 	String lFilename(filename);
 	lFilename.replace('\\','/');
 	lFilename.trimRight('/');
 
-	if (m_fullPathname.isValid())
-	{
+    if (m_fullPathname.isValid()) {
 		lFilename = m_fullPathname + '/' + lFilename;
 		File::adaptPath(lFilename);
 		return lFilename;
-	}
-	else
-	{
+    } else {
 		File::adaptPath(lFilename);
 		return lFilename;
 	}
 }
 
 // concat the filename to the directory relative path (do not check its existence)
-String Dir::makeFileName(const String &filename)
+String Dir::makeFileName(const String &filename) const
 {
-	if (!m_isValid)
+    if (!m_isValid) {
 		return String("");
+    }
 
 	String lFilename(filename);
 	lFilename.replace('\\','/');
 	lFilename.trimRight('/');
 
-	if (m_pathName.isValid())
-	{
+    if (m_pathName.isValid()) {
 		lFilename = m_pathName + '/' + lFilename;
 		File::adaptPath(lFilename);
 		return lFilename;
-	}
-	else
-	{
+    } else {
 		File::adaptPath(lFilename);
 		return lFilename;
 	}
 }
 
 // concat the pathname to the full-path (do not check its existence)
-String Dir::makeFullPathName(const String &pathName)
+String Dir::makeFullPathName(const String &pathName) const
 {
-	if (!m_isValid)
+    if (!m_isValid) {
 		return String("");
+    }
 
 	String lPathName(pathName);
 	lPathName.replace('\\','/');
 	lPathName.trimRight('/');
 
-	if (m_fullPathname.isValid())
-	{
+    if (m_fullPathname.isValid()) {
 		lPathName = m_fullPathname + '/' + lPathName;
 		File::adaptPath(lPathName);
 		return lPathName;
-	}
-	else
-	{
+    } else {
 		File::adaptPath(lPathName);
 		return lPathName;
 	}
 }
 
 // concat the pathname to the relative path (do not check its existence)
-String Dir::makePathName(const String &pathName)
+String Dir::makePathName(const String &pathName) const
 {
-	if (!m_isValid)
-		return String("");
+    if (!m_isValid) {
+        return String("");
+    }
 
 	String lPathName(pathName);
 	lPathName.replace('\\','/');
 	lPathName.trimRight('/');
 
-	if (m_pathName.isValid())
-	{
+    if (m_pathName.isValid()) {
 		lPathName = m_pathName + '/' + lPathName;
 		File::adaptPath(lPathName);
 		return lPathName;
-	}
-	else
-	{
+    } else {
 		File::adaptPath(lPathName);
 		return lPathName;
 	}
 }
-

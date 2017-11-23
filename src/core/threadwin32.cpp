@@ -503,4 +503,3 @@ Bool ReadWriteLock::tryLockWrite()
 }
 
 #endif // O3D_WIN32_SYS
-
