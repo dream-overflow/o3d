@@ -37,6 +37,21 @@ public:
     static const Uuid& nullUuid();
     static Uuid makeUuid(Version version = VERSION_5);
 
+    /**
+     * @brief By defaut each a node id is generated staticaly for the current application instance.
+     * @param nodeId Valid node identifier.
+     */
+    static void setIEEENodeId(const SmartArrayUInt8 &nodeId);
+
+    /**
+     * @brief Set the initial time at a precision of 100ns since Oct 15, 1582.
+     * @param time
+     */
+    static void setTime(UInt64 time);
+
+    static void init();
+    static void quit();
+
     Uuid();
     Uuid(const Char *uuid);
     Uuid(const CString &uuid);

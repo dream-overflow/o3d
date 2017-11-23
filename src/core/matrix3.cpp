@@ -712,4 +712,3 @@ Bool Matrix3::readFromFile(InStream &is)
 
 	return True;
 }
-

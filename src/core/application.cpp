@@ -16,6 +16,7 @@
 #include "o3d/core/filemanager.h"
 #include "o3d/core/thread.h"
 #include "o3d/core/timer.h"
+#include "o3d/core/uuid.h"
 #include "o3d/core/date.h"
 #include "o3d/core/datetime.h"
 #include "o3d/core/math.h"
@@ -51,6 +52,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 	System::initTime();
 	Date::init();
     DateTime::init();
+    Uuid::init();
 
     // only if display
     if (settings.m_display) {
@@ -147,6 +149,7 @@ void Application::quit()
 	// date quit
 	Date::quit();
     DateTime::quit();
+    Uuid::quit();
 
     // object mapping
     deletePtr(ms_mappedObject);

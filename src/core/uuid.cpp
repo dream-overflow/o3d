@@ -10,11 +10,17 @@
 #include "o3d/core/uuid.h"
 #include "o3d/core/md5.h"
 #include "o3d/core/sha1.h"
+#include "o3d/core/debug.h"
+#include "o3d/core/stringutils.h"
 #include "o3d/core/instream.h"
 #include "o3d/core/outstream.h"
 #include "o3d/core/application.h"
 
 using namespace o3d;
+
+static UInt64 s_lastTime = 0;
+static UInt16 s_clockSeq = 0;
+static SmartArrayUInt8 s_nodeId = SmartArrayUInt8();
 
 struct uuid_t {
     UInt32  time_low;
@@ -93,7 +99,7 @@ const Uuid &Uuid::nullUuid()
 Uuid Uuid::makeUuid(Version version)
 {
     Uuid uuid;
-version = VERSION_5;
+version=VERSION_1;
     if (version == VERSION_1) {
         uuid_t u;
         uuid_create(&u);
@@ -432,12 +438,9 @@ Bool Uuid::readFromFile(InStream &is)
 #include <stdlib.h>
 #include <time.h>
 
-#if defined(_MSC_VER) || defined(WIN32) || defined(__MINGW32__)
+#ifdef O3D_WINDOWS
 #include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #else
-#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/sysinfo.h>
@@ -446,72 +449,63 @@ Bool Uuid::readFromFile(InStream &is)
 /* set the following to the number of 100ns ticks of the actual resolution of your system's clock */
 #define UUIDS_PER_TICK 1024
 
-typedef UInt64 uuid_time_t;
-typedef struct {
+typedef struct UuidNode {
     UInt8 nodeID[6];
 } uuid_node_t;
 
 void get_ieee_node_identifier(uuid_node_t *node);
-void get_system_time(uuid_time_t *uuid_time);
+void get_system_time(UInt64 *uuid_time);
 SmartArrayUInt8 get_random_info();
 
 /* system dependent call to get IEEE node ID. This sample implementation generates a random node ID. */
 void get_ieee_node_identifier(uuid_node_t *node)
 {
-    // @todo
-    static int inited = 0;
-    static uuid_node_t saved_node;
     SmartArrayUInt8 seed;
-    FILE *fp;
 
-    if (!inited) {
-        fp = fopen("nodeid", "rb");
-        if (fp) {
-            fread(&saved_node, sizeof saved_node, 1, fp);
-            fclose(fp);
-        }
-        else {
-            seed = get_random_info();
-            seed.getData()[0] |= 0x01;
-            memcpy(&saved_node, seed.getData(), sizeof saved_node);
-            fp = fopen("nodeid", "wb");
-            if (fp) {
-                fwrite(&saved_node, sizeof saved_node, 1, fp);
-                fclose(fp);
-            }
-        }
-        inited = 1;
+    if (s_nodeId.isEmpty()) {
+        seed = get_random_info();
+        seed.getData()[0] |= 0x01;
+
+        s_nodeId = seed;
     }
 
-    *node = saved_node;
+    memcpy(node, s_nodeId.getData(), 6);
 }
 
-/* system dependent call to get the current system time. Returned as
-   100ns ticks since UUID epoch, but resolution may be less than 100ns. */
-#ifdef _WINDOWS_
-
-void get_system_time(uuid_time_t *uuid_time)
+/* system dependent call to get the current system time.
+ * Returned as 100ns ticks since UUID epoch, but resolution may be less than 100ns. */
+void get_system_time(UInt64 *uuid_time)
 {
+#ifdef O3D_WINDOWS
     ULARGE_INTEGER time;
 
-    /* NT keeps time in FILETIME format which is 100ns ticks since
-       Jan 1, 1601. UUIDs use time in 100ns ticks since Oct 15, 1582.
-       The difference is 17 Days in Oct + 30 (Nov) + 31 (Dec)
-       + 18 years and 5 leap days. */
+    // NT keeps time in FILETIME format which is 100ns ticks since Jan 1, 1601. UUIDs use time in 100ns ticks since Oct 15, 1582.
+    // The difference is 17 Days in Oct + 30 (Nov) + 31 (Dec) + 18 years and 5 leap days.
     GetSystemTimeAsFileTime((FILETIME *)&time);
     time.QuadPart +=
           (UInt64) (1000*1000*10)       // seconds
         * (UInt64) (60 * 60 * 24)       // days
         * (UInt64) (17+30+31+365*18+5); // # of days
     *uuid_time = time.QuadPart;
+#else
+    struct timeval tp;
+
+    gettimeofday(&tp, (struct timezone *)0);
+
+    // Offset between UUID formatted times and Unix formatted times.
+    // - UUID UTC base time is October 15, 1582
+    // - Unix base time is January 1, 1970
+    *uuid_time = ((UInt64)tp.tv_sec * 10000000) + ((UInt64)tp.tv_usec * 10) + UInt64(0x01B21DD213814000);
+#endif
 }
 
-/* Sample code, not for use in production; see RFC 1750 */
+/* @todo Improve @see RFC 1750 */
 SmartArrayUInt8 get_random_info()
 {
     MD5Hash md5;
 
-    struct r {
+#ifdef O3D_WINDOWS
+    struct R {
         MEMORYSTATUS m;
         SYSTEM_INFO s;
         FILETIME t;
@@ -519,7 +513,7 @@ SmartArrayUInt8 get_random_info()
         DWORD tc;
         DWORD l;
         Char hostname[MAX_COMPUTERNAME_LENGTH + 1];
-    };
+    } r;
 
     GlobalMemoryStatus(&r.m);
     GetSystemInfo(&r.s);
@@ -530,31 +524,8 @@ SmartArrayUInt8 get_random_info()
     r.l = MAX_COMPUTERNAME_LENGTH + 1;
     GetComputerName(r.hostname, &r.l);
 
-    md5.update(&r, sizeof r);
-    md5.finalize();
-
-    return md5.getRaw();
-}
-
+    md5.update((const UInt8*)&r, sizeof(R));
 #else
-
-void get_system_time(uuid_time_t *uuid_time)
-{
-    struct timeval tp;
-
-    gettimeofday(&tp, (struct timezone *)0);
-
-    // Offset between UUID formatted times and Unix formatted times.
-    // - UUID UTC base time is October 15, 1582
-    // - Unix base time is January 1, 1970
-    *uuid_time = ((UInt64)tp.tv_sec * 10000000) + ((UInt64)tp.tv_usec * 10) + Int64(0x01B21DD213814000);
-}
-
-/* @todo Improve @see RFC 1750 */
-SmartArrayUInt8 get_random_info()
-{
-    MD5Hash md5;
-
     struct R {
         struct sysinfo s;
         struct timeval t;
@@ -566,36 +537,37 @@ SmartArrayUInt8 get_random_info()
     gethostname(r.hostname, 256);
 
     md5.update((const UInt8*)&r, sizeof(R));
+#endif
+
     md5.finalize();
 
     return md5.getRaw();
 }
 
-#endif
-
 /* various forward declarations */
-static int read_state(UInt16 *clockseq, uuid_time_t *timestamp, uuid_node_t *node);
-static void write_state(UInt16 clockseq, uuid_time_t timestamp, uuid_node_t node);
 static UInt16 true_random(void);
-static void get_current_time(uuid_time_t *timestamp);
+static void get_current_time(UInt64 *timestamp);
 
-static void format_uuid_v1(uuid_t *uuid, UInt16 clockseq, uuid_time_t timestamp, uuid_node_t node);
+/* read_state -- read UUID generator state from non-volatile store */
+static int read_state(UInt16 *clockseq, UInt64 *timestamp, uuid_node_t *node);
+static void write_state(UInt16 clockseq, UInt64 timestamp, uuid_node_t node);
+
+static void format_uuid_v1(uuid_t *uuid, UInt16 clockseq, UInt64 timestamp, uuid_node_t node);
 static void format_uuid_v3or5(uuid_t *uuid, const UInt8 hash[], int v);
 
 /* uuid_create -- generator a UUID */
 int uuid_create(uuid_t *uuid)
 {
-     uuid_time_t timestamp, last_time;
+     UInt64 timestamp, last_time;
      UInt16 clockseq;
      uuid_node_t node;
      uuid_node_t last_node;
      int f;
 
      /* get time, node ID, saved state from non-volatile storage */
-     // @todo
      get_current_time(&timestamp);
      get_ieee_node_identifier(&node);
-     f = read_state(&clockseq, &last_time, &last_node);
+     //f = read_state(&clockseq, &last_time, &last_node);
 
      /* if no NV state, or if clock went backwards, or node ID changed (e.g., new network card) change clockseq */
      if (!f || memcmp(&node, &last_node, sizeof node)) {
@@ -613,8 +585,10 @@ int uuid_create(uuid_t *uuid)
 }
 
 /* format_uuid_v1 -- make a UUID from the timestamp, clockseq, and node ID */
-void format_uuid_v1(uuid_t* uuid, UInt16 clock_seq, uuid_time_t timestamp, uuid_node_t node)
+void format_uuid_v1(uuid_t* uuid, UInt16 clock_seq, UInt64 timestamp, uuid_node_t node)
 {
+    printf("%u %u %u\n", clock_seq, timestamp, clock_seq);
+
     /* Construct a version 1 uuid with the information we've gathered plus a few constants. */
     uuid->time_low = (unsigned long)(timestamp & 0xFFFFFFFF);
     uuid->time_mid = (unsigned short)((timestamp >> 32) & 0xFFFF);
@@ -626,79 +600,20 @@ void format_uuid_v1(uuid_t* uuid, UInt16 clock_seq, uuid_time_t timestamp, uuid_
     memcpy(&uuid->node, &node, sizeof uuid->node);
 }
 
-/* data type for UUID generator persistent state */
-typedef struct {
-    uuid_time_t  ts;       /* saved timestamp */
-    uuid_node_t  node;     /* saved node ID */
-    UInt16   cs;           /* saved clock sequence */
-} uuid_state;
-
-static uuid_state st;
-
-/* read_state -- read UUID generator state from non-volatile store */
-int read_state(UInt16 *clockseq, uuid_time_t *timestamp, uuid_node_t *node)
-{
-    // @todo
-    static int inited = 0;
-    FILE *fp;
-
-    /* only need to read state once per boot */
-    if (!inited) {
-        fp = fopen("state", "rb");
-        if (fp == NULL) {
-            return 0;
-        }
-        fread(&st, sizeof st, 1, fp);
-        fclose(fp);
-        inited = 1;
-    }
-    *clockseq = st.cs;
-    *timestamp = st.ts;
-    *node = st.node;
-
-    return 1;
-}
-
-/* write_state -- save UUID generator state back to non-volatile storage */
-void write_state(UInt16 clockseq, uuid_time_t timestamp, uuid_node_t node)
-{
-    // @todo
-    static int inited = 0;
-    static uuid_time_t next_save;
-    FILE* fp;
-
-    if (!inited) {
-        next_save = timestamp;
-        inited = 1;
-    }
-
-    /* always save state to volatile shared state */
-    st.cs = clockseq;
-    st.ts = timestamp;
-    st.node = node;
-    if (timestamp >= next_save) {
-        fp = fopen("state", "wb");
-        fwrite(&st, sizeof st, 1, fp);
-        fclose(fp);
-        /* schedule next save for 10 seconds from now */
-        next_save = timestamp + (10 * 10 * 1000 * 1000);
-    }
-}
-
 /* get-current_time -- get time as 60-bit 100ns ticks since UUID epoch.
-   Compensate for the fact that real clock resolution is less than 100ns. */
-void get_current_time(uuid_time_t *timestamp)
+ * Compensate for the fact that real clock resolution is less than 100ns. */
+void get_current_time(UInt64 *timestamp)
 {
-    // @todo
     static int inited = 0;
-    static uuid_time_t time_last;
+    static UInt64 time_last = 0;
     static UInt16 uuids_this_tick;
-    uuid_time_t time_now;
+    UInt64 time_now;
 
     if (!inited) {
         get_system_time(&time_now);
         uuids_this_tick = UUIDS_PER_TICK;
         inited = 1;
+        // time_last = time_now;
     }
 
     for ( ; ; ) {
@@ -727,7 +642,7 @@ static UInt16 true_random(void)
 {
     // @todo better random generator (@see stl)
     static int inited = 0;
-    uuid_time_t time_now;
+    UInt64 time_now;
 
     if (!inited) {
         get_system_time(&time_now);
@@ -737,6 +652,31 @@ static UInt16 true_random(void)
     }
 
     return rand();
+}
+
+/* read_state -- read UUID generator state from non-volatile store */
+int read_state(UInt16 *clockseq, UInt64 *timestamp, uuid_node_t *node)
+{
+//    static int inited = 0;
+
+//    if (!inited) {
+//        inited = 1;
+//        return 0;
+//    }
+
+    *clockseq = s_clockSeq;
+    *timestamp = s_lastTime;
+    memcpy(node, s_nodeId.getData(), sizeof(UuidNode));
+
+    return 1;
+}
+
+/* write_state -- save UUID generator state back to non-volatile storage */
+void write_state(UInt16 clockseq, UInt64 timestamp, uuid_node_t node)
+{
+    s_clockSeq = clockseq;
+    s_lastTime = timestamp;
+    memcpy(s_nodeId.getData(), &node, sizeof(UuidNode));
 }
 
 /* uuid_create_md5_from_name -- create a version 3 (MD5) UUID using a "name" from a "name space" */
@@ -822,4 +762,36 @@ void format_uuid_v3or5(uuid_t *uuid, const UInt8 hash[16], int v)
     uuid->time_hi_and_version |= (v << 12);
     uuid->clock_seq_hi_and_reserved &= 0x3F;
     uuid->clock_seq_hi_and_reserved |= 0x80;
+}
+
+void Uuid::init()
+{
+    s_nodeId = get_random_info();
+    s_nodeId.getData()[0] |= 0x01;
+    s_clockSeq = true_random();
+
+    get_current_time(&s_lastTime);
+}
+
+void Uuid::quit()
+{
+    // release
+    s_nodeId = SmartArrayUInt8();
+}
+
+
+void Uuid::setIEEENodeId(const SmartArrayUInt8 &lnodeId)
+{
+    MD5Hash md5;
+
+    md5.update(lnodeId);
+    md5.finalize();
+
+    s_nodeId = md5.getRaw();
+    s_nodeId.getData()[0] |= 0x01;
+}
+
+void Uuid::setTime(UInt64 time)
+{
+    s_lastTime = time;
 }

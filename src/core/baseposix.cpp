@@ -231,4 +231,3 @@ void System::print(
 #undef HAVE_CLOCK_GETTIME
 
 #endif // O3D_POSIX_SYS
-
