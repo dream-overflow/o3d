@@ -27,8 +27,15 @@ class O3D_API Uuid
 
 public:
 
+    enum Version
+    {
+        VERSION_1 = 1,
+        VERSION_3 = 3,
+        VERSION_5 = 5
+    };
+
     static const Uuid& nullUuid();
-    static Uuid makeUuid();
+    static Uuid makeUuid(Version version = VERSION_5);
 
     Uuid();
     Uuid(const Char *uuid);
@@ -101,6 +108,8 @@ public:
 private:
 
     SmartArrayUInt8 m_raw;
+
+    void *m_privateData;
 };
 
 } // namespace o3d

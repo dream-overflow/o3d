@@ -28,12 +28,6 @@ set(nvtristrip
 	../third/nvTriStrip/NvTriStrip.cpp
 	../third/nvTriStrip/NvTriStripObjects.cpp)
 
-# @todo should be used as extern lib
-set(uuid
-	../third/uuid/sysdep.c
-    ../third/uuid/uuid.c
-    ../third/uuid/md5c.c)
-
 link_directories(${SDL2_LIBDIR})
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -48,7 +42,6 @@ add_library(${O3D_LIB_NAME} SHARED
 			${tinyxml}
 			${tristripper}
 			${nvtristrip}
-			${uuid}
 			${CORE_CXX}
 			${GEOM_CXX}
 			${PHYSIC_CXX}

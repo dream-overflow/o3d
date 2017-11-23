@@ -38,7 +38,7 @@ public:
     inline Bool isStreaming() const { return m_privateData != nullptr; }
 
     //! update the MD5 checksum
-    void update(UInt8* data, UInt32 len);
+    void update(const UInt8* data, UInt32 len);
     //! update the MD5 checksum
     void update(const SmartArrayUInt8 &array);
     //! update the MD5 checksum

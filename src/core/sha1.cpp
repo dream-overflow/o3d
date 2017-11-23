@@ -115,7 +115,7 @@ SHA1Hash::~SHA1Hash()
     }
 }
 
-void SHA1Hash::update(UInt8 *data, UInt32 len)
+void SHA1Hash::update(const UInt8 *data, UInt32 len)
 {
     if (m_privateData && data && len) {
         SHA1Context *ctx = reinterpret_cast<SHA1Context*>(m_privateData);

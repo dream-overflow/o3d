@@ -83,7 +83,7 @@ MD5Hash::~MD5Hash()
     deletePtr(m_privateData);
 }
 
-void MD5Hash::update(UInt8* data, UInt32 len)
+void MD5Hash::update(const UInt8 *data, UInt32 len)
 {
     if (m_privateData && data && len) {
         m_privateData->update(data, len);
