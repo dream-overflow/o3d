@@ -27,21 +27,50 @@ class O3D_API Uuid
 
 public:
 
-    enum Version
-    {
-        VERSION_1 = 1,
-        VERSION_3 = 3,
-        VERSION_5 = 5
-    };
-
     static const Uuid& nullUuid();
-    static Uuid makeUuid(Version version = VERSION_5);
+
+    /**
+     * @brief Generate a new UUID version 1
+     */
+    static Uuid uuid1();
+
+    /**
+     * @brief Generate a new UUID version 1
+     * @param node If empty use pseudo generated node at startup.
+     * @param clockSeq If -1 uses a random clock seq at startup.
+     */
+    static Uuid uuid1(const SmartArrayUInt8 &node, Int32 clockSeq);
+
+    /**
+     * @brief Generate a new UUID version 3 (using MD5)
+     * @param name If empty name uses the application name.
+     */
+    static Uuid uuid3(const String &name = String());
+
+    /**
+     * @brief Generate a new UUID version 3 (using MD5)
+     * @param ns If empty namespace generate one else it must be a 16 bytes hash from MD5 digest.
+     * @param name If empty name uses the application name.
+     */
+    static Uuid uuid3(const Uuid &ns, const String &name);
+
+    /**
+     * @brief Generate a new UUID version 5 (using SHA1)
+     */
+    static Uuid uuid5(const String &name = String());
+
+    /**
+     * @brief Generate a new UUID version 5 (using SHA1)
+     * @param ns If empty namespace generate one else it must be a 20 bytes hash from SHA1 digest.
+     * @param name If empty name uses the application name.
+     */
+    static Uuid uuid5(const Uuid &ns, const String &name);
 
     /**
      * @brief By defaut each a node id is generated staticaly for the current application instance.
      * @param nodeId Valid node identifier.
      */
-    static void setIEEENodeId(const SmartArrayUInt8 &nodeId);
+    static void setNode(const SmartArrayUInt8 &nodeId);
 
     /**
      * @brief Set the initial time at a precision of 100ns since Oct 15, 1582.
@@ -93,22 +122,22 @@ public:
     Bool operator!= (const Uuid& _which) const;
 
     //! Time lower part (first 32 bits)
-    inline UInt32 timeLow() const { return *reinterpret_cast<const UInt32*>(&m_raw.getData()[0]); }
+    UInt32 timeLow() const;
 
     //! Time middle part (next 16 bits)
-    inline UInt16 timeMid() const { return *reinterpret_cast<const UInt16*>(&m_raw.getData()[4]); }
+    UInt16 timeMid() const;
 
     //! Time/version part (next 16 bits)
-    inline UInt16 timeHiVersion() const { return *reinterpret_cast<const UInt16*>(&m_raw.getData()[6]); }
+    UInt16 timeHiVersion() const;
 
     //! Clock sequence high part (next 8 bits)
-    inline UInt8 clockSeqHiVariant() const { return m_raw.getData()[8]; }
+    UInt8 clockSeqHiVariant() const;
 
     //! Clock low part (next 8 bits)
-    inline UInt8 clockSeqLow() const { return m_raw.getData()[9]; }
+    UInt8 clockSeqLow() const;
 
     //! Node part (last 48 bits)
-    inline const UInt8* node() const { return &m_raw.getData()[10]; }
+    const UInt8* node() const;
 
     //! Version (1 to 5)
     UInt8 version() const;

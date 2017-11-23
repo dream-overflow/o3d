@@ -32,7 +32,8 @@ struct uuid_t {
 };
 
 /* uuid_create -- generate a UUID */
-int uuid_create(uuid_t * uuid);
+int uuid_create(uuid_t *uuid);
+int uuid_create(uuid_t * uuid, const SmartArrayUInt8 &lnode, Int32 lclockSeq);
 
 /* uuid_create_md5_from_name -- create a version 3 (MD5) UUID using a "name" from a "name space" */
 void uuid_create_md5_from_name(uuid_t *uuid,         /* resulting UUID */
@@ -96,41 +97,138 @@ const Uuid &Uuid::nullUuid()
     return nullUuid;
 }
 
-Uuid Uuid::makeUuid(Version version)
+Uuid Uuid::uuid1()
 {
     Uuid uuid;
-version=VERSION_1;
-    if (version == VERSION_1) {
-        uuid_t u;
-        uuid_create(&u);
 
-//        *reinterpret_cast<UInt32*>(&uuid.m_raw.getData()[0]) = u.time_low;
-//        *reinterpret_cast<UInt16*>(&uuid.m_raw.getData()[4]) = u.time_mid;
-//        *reinterpret_cast<UInt16*>(&uuid.m_raw.getData()[6]) = u.time_hi_and_version;
-//        uuid.m_raw.getData()[8] = u.clock_seq_hi_and_reserved;
-//        uuid.m_raw.getData()[9] = u.clock_seq_low;
-//        memcpy(&uuid.m_raw.getData()[10], &u.node, 6);
+    uuid_t u;
+    uuid_create(&u);
 
-        memcpy(uuid.m_raw.getData(), &u, 16);
-    } else if (version == VERSION_3) {
+//    *reinterpret_cast<UInt32*>(&uuid.m_raw.getData()[0]) = u.time_low;
+//    *reinterpret_cast<UInt16*>(&uuid.m_raw.getData()[4]) = u.time_mid;
+//    *reinterpret_cast<UInt16*>(&uuid.m_raw.getData()[6]) = u.time_hi_and_version;
+//    uuid.m_raw.getData()[8] = u.clock_seq_hi_and_reserved;
+//    uuid.m_raw.getData()[9] = u.clock_seq_low;
+//    memcpy(&uuid.m_raw.getData()[10], &u.node, 6);
+
+    memcpy(uuid.m_raw.getData(), &u, 16);
+
+    return uuid;
+}
+
+Uuid Uuid::uuid1(const SmartArrayUInt8 &lnode, Int32 lclockSeq)
+{
+    Uuid uuid;
+
+    uuid_t u;
+    uuid_create(&u, lnode, lclockSeq);
+
+    memcpy(uuid.m_raw.getData(), &u, 16);
+
+    return uuid;
+}
+
+Uuid Uuid::uuid3(const String &lname)
+{
+    Uuid uuid;
+    CString name;
+
+    if (lname.isValid()) {
+        name = lname.toUtf8();
+    } else {
+        name = Application::getAppName().toUtf8();
+    }
+
+    uuid_t nsid;
+    uuid_create(&nsid);
+
+    uuid_t u;
+    uuid_create_md5_from_name(&u, nsid, name.getData(), name.length());
+
+    memcpy(uuid.m_raw.getData(), &u, 16);
+
+    return uuid;
+}
+
+Uuid Uuid::uuid3(const Uuid &lns, const String &lname)
+{
+    Uuid uuid;
+    CString name;
+
+    if (lname.isValid()) {
+        name = lname.toUtf8();
+    } else {
+        name = Application::getAppName().toUtf8();
+    }
+
+    if (lns.isNull()) {
         uuid_t nsid;
         uuid_create(&nsid);
 
         uuid_t u;
-        puid(nsid);
-
-        CString ns = Application::getAppName().toUtf8();
-        uuid_create_md5_from_name(&u, nsid, ns.getData(), ns.length());
+        uuid_create_md5_from_name(&u, nsid, name.getData(), name.length());
 
         memcpy(uuid.m_raw.getData(), &u, 16);
-    } else if (version == VERSION_5) {
+    } else {
+        uuid_t nsid;
+        memcpy(&nsid, lns.m_raw.getData(), 16);
+
+        uuid_t u;
+        uuid_create_md5_from_name(&u, nsid, name.getData(), name.length());
+
+        memcpy(uuid.m_raw.getData(), &u, 16);
+    }
+
+    return uuid;
+}
+
+Uuid Uuid::uuid5(const String &lname)
+{
+    Uuid uuid;
+    CString name;
+
+    if (lname.isValid()) {
+        name = lname.toUtf8();
+    } else {
+        name = Application::getAppName().toUtf8();
+    }
+
+    uuid_t nsid;
+    uuid_create(&nsid);
+
+    uuid_t u;
+    uuid_create_sha1_from_name(&u, nsid, name.getData(), name.length());
+
+    memcpy(uuid.m_raw.getData(), &u, 16);
+
+    return uuid;
+}
+
+Uuid Uuid::uuid5(const Uuid &lns, const String &lname)
+{
+    Uuid uuid;
+    CString name;
+
+    if (lname.isValid()) {
+        name = lname.toUtf8();
+    } else {
+        name = Application::getAppName().toUtf8();
+    }
+
+    if (lns.isNull()) {
         uuid_t nsid;
         uuid_create(&nsid);
 
         uuid_t u;
+        uuid_create_sha1_from_name(&u, nsid, name.getData(), name.length());
 
-        CString ns = Application::getAppName().toUtf8();
-        uuid_create_sha1_from_name(&u, nsid, ns.getData(), ns.length());
+        memcpy(uuid.m_raw.getData(), &u, 16);
+    } else {
+        uuid_t nsid;
+        memcpy(&nsid, lns.m_raw.getData(), 16);
+
+        uuid_t u;
+        uuid_create_sha1_from_name(&u, nsid, name.getData(), name.length());
 
         memcpy(uuid.m_raw.getData(), &u, 16);
     }
@@ -150,16 +248,34 @@ void fromHex(T* data, SmartArrayUInt8 &raw)
     if (data[8] == '-' || data[13] == '-' || data[18] == '-' || data[23] == '-') {
         UInt8 *dst = raw.getData();
 
+        // uuid is in big endian
+#ifdef O3D_BIG_ENDIAN
         dst[0] = fromHexAB(data[0], data[1]);
         dst[1] = fromHexAB(data[2], data[3]);
         dst[2] = fromHexAB(data[4], data[5]);
         dst[3] = fromHexAB(data[6], data[7]);
+#else
+        dst[3] = fromHexAB(data[0], data[1]);
+        dst[2] = fromHexAB(data[2], data[3]);
+        dst[1] = fromHexAB(data[4], data[5]);
+        dst[0] = fromHexAB(data[6], data[7]);
+#endif
 
+#ifdef O3D_BIG_ENDIAN
         dst[4] = fromHexAB(data[9], data[10]);
         dst[5] = fromHexAB(data[11], data[12]);
+#else
+        dst[5] = fromHexAB(data[9], data[10]);
+        dst[4] = fromHexAB(data[11], data[12]);
+#endif
 
+#ifdef O3D_BIG_ENDIAN
         dst[6] = fromHexAB(data[14], data[15]);
         dst[7] = fromHexAB(data[16], data[17]);
+#else
+        dst[7] = fromHexAB(data[14], data[15]);
+        dst[6] = fromHexAB(data[16], data[17]);
+#endif
 
         dst[8] = fromHexAB(data[19], data[20]);
         dst[9] = fromHexAB(data[21], data[22]);
@@ -200,16 +316,33 @@ void toHex(const UInt8* raw, T* dst)
 {
     dst[8] = dst[13] = dst[18] = dst[23] = '-';
 
+#ifdef O3D_BIG_ENDIAN
     toHexAB(raw[0], dst[0], dst[1]);
     toHexAB(raw[1], dst[2], dst[3]);
     toHexAB(raw[2], dst[4], dst[5]);
     toHexAB(raw[3], dst[6], dst[7]);
+#else
+    toHexAB(raw[3], dst[0], dst[1]);
+    toHexAB(raw[2], dst[2], dst[3]);
+    toHexAB(raw[1], dst[4], dst[5]);
+    toHexAB(raw[0], dst[6], dst[7]);
+#endif
 
+#ifdef O3D_BIG_ENDIAN
     toHexAB(raw[4], dst[9], dst[10]);
     toHexAB(raw[5], dst[11], dst[12]);
+#else
+    toHexAB(raw[5], dst[9], dst[10]);
+    toHexAB(raw[4], dst[11], dst[12]);
+#endif
 
+#ifdef O3D_BIG_ENDIAN
     toHexAB(raw[6], dst[14], dst[15]);
     toHexAB(raw[7], dst[16], dst[17]);
+#else
+    toHexAB(raw[7], dst[14], dst[15]);
+    toHexAB(raw[6], dst[16], dst[17]);
+#endif
 
     toHexAB(raw[8], dst[19], dst[20]);
     toHexAB(raw[9], dst[21], dst[22]);
@@ -414,9 +547,51 @@ Bool Uuid::operator!=(const Uuid &_which) const
     return memcmp(m_raw.getData(), _which.m_raw.getData(), 16) != 0;
 }
 
+UInt32 Uuid::timeLow() const
+{
+    UInt32 v = *reinterpret_cast<const UInt32*>(&m_raw.getData()[0]);
+#ifndef O3D_BIG_ENDIAN
+    System::swapBytes4(&v);
+#endif
+    return v;
+}
+
+UInt16 Uuid::timeMid() const
+{
+    UInt16 v = *reinterpret_cast<const UInt16*>(&m_raw.getData()[4]);
+#ifndef O3D_BIG_ENDIAN
+    System::swapBytes2(&v);
+#endif
+    return v;
+}
+
+UInt16 Uuid::timeHiVersion() const
+{
+    UInt16 v = *reinterpret_cast<const UInt16*>(&m_raw.getData()[6]);
+#ifndef O3D_BIG_ENDIAN
+    System::swapBytes2(&v);
+#endif
+    return v;
+}
+
+UInt8 Uuid::clockSeqHiVariant() const
+{
+    return m_raw.getData()[8];
+}
+
+UInt8 Uuid::clockSeqLow() const {
+    return m_raw.getData()[9];
+}
+
+const UInt8* Uuid::node() const
+{
+    return &m_raw.getData()[10];
+}
+
 UInt8 Uuid::version() const
 {
-    return (timeHiVersion() & 0xf000) >> 12;
+    // return (timeHiVersion() & 0xf000) >> 12;
+    return (timeHiVersion() & 0x00f0) >> 4;  // timeHiVersion returns in system endianess
 }
 
 Bool Uuid::writeToFile(OutStream &os) const
@@ -567,7 +742,7 @@ int uuid_create(uuid_t *uuid)
      /* get time, node ID, saved state from non-volatile storage */
      get_current_time(&timestamp);
      get_ieee_node_identifier(&node);
-     //f = read_state(&clockseq, &last_time, &last_node);
+     f = read_state(&clockseq, &last_time, &last_node);
 
      /* if no NV state, or if clock went backwards, or node ID changed (e.g., new network card) change clockseq */
      if (!f || memcmp(&node, &last_node, sizeof node)) {
@@ -584,20 +759,59 @@ int uuid_create(uuid_t *uuid)
      return 1;
 }
 
+/* uuid_create -- generator a UUID */
+int uuid_create(uuid_t *uuid, const SmartArrayUInt8 &lnode, Int32 lclockSeq)
+{
+     UInt64 timestamp, last_time;
+     UInt16 clockseq;
+     uuid_node_t node;
+     uuid_node_t last_node;
+     int f;
+
+     /* get time, node ID, saved state from non-volatile storage */
+     get_current_time(&timestamp);
+     get_ieee_node_identifier(&node);
+     f = read_state(&clockseq, &last_time, &last_node);
+
+     /* if no NV state, or if clock went backwards, or node ID changed (e.g., new network card) change clockseq */
+     if (!f || memcmp(&node, &last_node, sizeof node)) {
+         clockseq = true_random();
+     } else if (timestamp < last_time) {
+         clockseq++;
+     }
+
+     // forced clock seq
+     if (lclockSeq > 0) {
+         clockseq = (UInt16)lclockSeq;
+     }
+
+     // forced node
+     if (lnode.isValid() && lnode.getSizeInBytes() >= sizeof node) {
+         memcpy(&node, lnode.getData(), sizeof node);
+     }
+
+     /* save the state for next time */
+     write_state(clockseq, timestamp, node);
+
+     /* stuff fields into the UUID */
+     format_uuid_v1(uuid, clockseq, timestamp, node);
+     return 1;
+}
+
 /* format_uuid_v1 -- make a UUID from the timestamp, clockseq, and node ID */
 void format_uuid_v1(uuid_t* uuid, UInt16 clock_seq, UInt64 timestamp, uuid_node_t node)
 {
-    printf("%u %u %u\n", clock_seq, timestamp, clock_seq);
-
     /* Construct a version 1 uuid with the information we've gathered plus a few constants. */
-    uuid->time_low = (unsigned long)(timestamp & 0xFFFFFFFF);
-    uuid->time_mid = (unsigned short)((timestamp >> 32) & 0xFFFF);
-    uuid->time_hi_and_version = (unsigned short)((timestamp >> 48) & 0x0FFF);
+    uuid->time_low = (UInt32)(timestamp & 0xFFFFFFFF);
+    uuid->time_mid = (UInt16)((timestamp >> 32) & 0xFFFF);
+    uuid->time_hi_and_version = (UInt16)((timestamp >> 48) & 0x0FFF);
     uuid->time_hi_and_version |= (1 << 12);
+
     uuid->clock_seq_low = clock_seq & 0xFF;
     uuid->clock_seq_hi_and_reserved = (clock_seq & 0x3F00) >> 8;
     uuid->clock_seq_hi_and_reserved |= 0x80;
-    memcpy(&uuid->node, &node, sizeof uuid->node);
+
+    memcpy(uuid->node, &node, sizeof uuid->node);
 }
 
 /* get-current_time -- get time as 60-bit 100ns ticks since UUID epoch.
@@ -611,9 +825,9 @@ void get_current_time(UInt64 *timestamp)
 
     if (!inited) {
         get_system_time(&time_now);
+        time_last = time_now;
         uuids_this_tick = UUIDS_PER_TICK;
         inited = 1;
-        // time_last = time_now;
     }
 
     for ( ; ; ) {
@@ -780,7 +994,7 @@ void Uuid::quit()
 }
 
 
-void Uuid::setIEEENodeId(const SmartArrayUInt8 &lnodeId)
+void Uuid::setNode(const SmartArrayUInt8 &lnodeId)
 {
     MD5Hash md5;
 
