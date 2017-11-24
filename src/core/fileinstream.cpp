@@ -84,7 +84,10 @@ UInt32 FileInStream::reader(void *buf, UInt32 size, UInt32 count)
 
 void FileInStream::close()
 {
-    fclose(m_file);
+    if (m_file) {
+        fclose(m_file);
+        m_file = nullptr;
+    }
 }
 
 void FileInStream::reset(UInt64 n)

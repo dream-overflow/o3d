@@ -1847,11 +1847,13 @@ Bool String::writeToFile(OutStream &os)
 Bool String::readFromFile(InStream &is)
 {
 	CString data;
-    if (!data.readFromFile(is))
+    if (!data.readFromFile(is)) {
         O3D_ERROR(E_StringUnderflow(""));
+    }
 
-	if (data[data.length()] != 0)
+    if (data.isValid() && data[data.length()] != 0) {
         O3D_ERROR(E_StringOverflow(""));
+    }
 
 	this->fromUtf8(data.getData());
 
