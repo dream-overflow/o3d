@@ -301,19 +301,19 @@ public:
 	~ReadWriteLock();
 
 	//! Acquire the write lock
-	void lockWrite();
+    void lockWrite() const;
 	//! Release the write lock
-	void unlockWrite();
+    void unlockWrite() const;
 
 	//! Acquire the read lock
-	void lockRead();
+    void lockRead() const;
 	//! Release the read lock
-	void unlockRead();
+    void unlockRead() const;
 
 	//! Try to lock in read
-	Bool tryLockRead();
+    Bool tryLockRead() const;
 	//! Try to lock in write
-	Bool tryLockWrite();
+    Bool tryLockWrite() const;
 
 private:
 

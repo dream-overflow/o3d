@@ -37,18 +37,20 @@ FileOutStream::FileOutStream(const String &filename, Mode mode) :
     else
         O3D_ERROR(E_InvalidParameter("Mode must by specifed"));
 #else
-    if (mode == CREATE)
+    if (mode == CREATE) {
         m_file = fopen(name.toUtf8().getData(), "wb");
-    else if (mode == CREATE_IF_NOT_EXISTS)
+    } else if (mode == CREATE_IF_NOT_EXISTS) {
         m_file = fopen(name.toUtf8().getData(), "wbx");
-    else if (mode == APPEND)
+    } else if (mode == APPEND) {
         m_file = fopen(name.toUtf8().getData(), "ab");
-    else
+    } else {
         O3D_ERROR(E_InvalidParameter("Mode must by specifed"));
+    }
 #endif
 
-    if (!m_file)
+    if (!m_file) {
         O3D_ERROR(E_FileNotFoundOrInvalidRights("", name));
+    }
 }
 
 FileOutStream::~FileOutStream()
@@ -68,8 +70,7 @@ UInt32 FileOutStream::writer(const void *buf, UInt32 size, UInt32 count)
 
 void FileOutStream::close()
 {
-    if (m_file)
-    {
+    if (m_file) {
         fclose(m_file);
         m_file = nullptr;
     }
@@ -77,22 +78,22 @@ void FileOutStream::close()
 
 void FileOutStream::flush()
 {
-    if (m_file)
+    if (m_file) {
         fflush(m_file);
+    }
 }
 
 int FileOutStream::getFD() const
 {
-    if (m_file)
-    {
+    if (m_file) {
 #ifdef O3D_VC_COMPILER
         return _fileno(m_file);
 #else
         return fileno(m_file);
 #endif
-    }
-    else
+    } else {
         return -1;
+    }
 }
 
 FILE *FileOutStream::getFile() const
@@ -103,71 +104,66 @@ FILE *FileOutStream::getFile() const
 
 Int32 FileOutStream::writeLine(const String &str, CharacterEncoding encoding)
 {
-    if (str.length() == 0)
-    {
-        if (fputc('\n', m_file) == EOF)
+    if (str.length() == 0) {
+        if (fputc('\n', m_file) == EOF) {
             O3D_ERROR(E_InvalidResult("Cannot write the line into the file stream"));
+        }
 
         return 0;
-    }
-    else
-    {
+    } else {
         // print using the specified encoding
-        if (encoding == ENCODING_UTF8)
-        {
+        if (encoding == ENCODING_UTF8) {
             CString utf8 = str.toUtf8().getData();
 
             UInt32 res = fwrite(utf8.getData(), 1, utf8.length(), m_file);
-            if (res == 0 || fputc('\n', m_file) == EOF)
+            if (res == 0 || fputc('\n', m_file) == EOF) {
                 O3D_ERROR(E_InvalidResult("Cannot write the line into the file stream"));
+            }
 
             return (Int32)res;
-        }
-        else if (encoding == ENCODING_ANSI)
-        {
+        } else if (encoding == ENCODING_ANSI) {
             CString utf8 = str.toAscii().getData();
 
             Int32 res = fwrite(utf8.getData(), 1, utf8.length(), m_file);
-            if (res == 0 || fputc('\n', m_file) == EOF)
+            if (res == 0 || fputc('\n', m_file) == EOF) {
                 O3D_ERROR(E_InvalidResult("Cannot write the line into the file stream"));
+            }
 
             return (Int32)res;
-        }
-        else
+        } else {
             O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
+        }
     }
 }
 
 Int32 FileOutStream::writeString(const String &str, CharacterEncoding encoding)
 {
-    if (str.length() > 0)
-    {
+    if (str.length() > 0) {
         // print using the specified encoding
-        if (encoding == ENCODING_UTF8)
-        {
+        if (encoding == ENCODING_UTF8) {
             CString utf8 = str.toUtf8().getData();
 
             UInt32 res = fwrite(utf8.getData(), 1, utf8.length(), m_file);
-            if (res == 0)
+            if (res == 0) {
                 O3D_ERROR(E_InvalidResult("Cannot write the string into the file stream"));
+            }
 
             return (Int32)res;
-        }
-        else if (encoding == ENCODING_ANSI)
-        {
+        } else if (encoding == ENCODING_ANSI) {
             CString utf8 = str.toAscii().getData();
 
             UInt32 res = fwrite(utf8.getData(), 1, utf8.length(), m_file);
-            if (res == 0)
+            if (res == 0) {
                 O3D_ERROR(E_InvalidResult("Cannot write the string into the file stream"));
+            }
 
             return (Int32)res;
-        }
-        else
+        } else {
             O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
-    }
-    else
+        }
+    } else {
         return 0;
+    }
 }
 
 /*
@@ -211,4 +207,3 @@ Int32 FileOutStream::writeString(const String &str, CharacterEncoding encoding)
         return curpos;
     }
 */
-

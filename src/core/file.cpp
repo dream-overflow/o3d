@@ -100,4 +100,3 @@ void File::getFileNameAndPath(
 		filename = fullFileName.sub(p+1);
     }
 }
-

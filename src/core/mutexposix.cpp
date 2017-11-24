@@ -203,6 +203,4 @@ Bool RecursiveMutex::tryLock() const
 	return (pthread_mutex_trylock(const_cast<pthread_mutex_t*>(&m_handle)) != EBUSY);
 }
 
-
 #endif // O3D_POSIX_SYS
-

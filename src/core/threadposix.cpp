@@ -420,43 +420,43 @@ ReadWriteLock::~ReadWriteLock()
 }
 
 // Acquire the write lock
-void ReadWriteLock::lockWrite()
+void ReadWriteLock::lockWrite() const
 {
-	Int32 r = pthread_rwlock_wrlock(&m_readerHandle);
-	O3D_ASSERT(r == 0);
+    Int32 r = pthread_rwlock_wrlock(const_cast<pthread_rwlock_t*>(&m_readerHandle));
+    O3D_ASSERT(r == 0);
 }
 
 // Release the write lock
-void ReadWriteLock::unlockWrite()
+void ReadWriteLock::unlockWrite() const
 {
-	Int32 r = pthread_rwlock_unlock(&m_readerHandle);
+    Int32 r = pthread_rwlock_unlock(const_cast<pthread_rwlock_t*>(&m_readerHandle));
 	O3D_ASSERT(r == 0);
 }
 
 // Acquire the read lock
-void ReadWriteLock::lockRead()
+void ReadWriteLock::lockRead() const
 {
-	Int32 r = pthread_rwlock_rdlock(&m_readerHandle);
+    Int32 r = pthread_rwlock_rdlock(const_cast<pthread_rwlock_t*>(&m_readerHandle));
 	O3D_ASSERT(r == 0);
 }
 
 // Release the read lock
-void ReadWriteLock::unlockRead()
+void ReadWriteLock::unlockRead() const
 {
-	Int32 r = pthread_rwlock_unlock(&m_readerHandle);
+    Int32 r = pthread_rwlock_unlock(const_cast<pthread_rwlock_t*>(&m_readerHandle));
 	O3D_ASSERT(r == 0);
 }
 
 // Try to lock in read
-Bool ReadWriteLock::tryLockRead()
+Bool ReadWriteLock::tryLockRead() const
 {
-	return (pthread_rwlock_tryrdlock(&m_readerHandle) == 0);
+    return (pthread_rwlock_tryrdlock(const_cast<pthread_rwlock_t*>(&m_readerHandle)) == 0);
 }
 
 // Try to lock in write
-Bool ReadWriteLock::tryLockWrite()
+Bool ReadWriteLock::tryLockWrite() const
 {
-	return (pthread_rwlock_trywrlock(&m_readerHandle) == 0);
+    return (pthread_rwlock_trywrlock(const_cast<pthread_rwlock_t*>(&m_readerHandle)) == 0);
 }
 
 #endif // O3D_POSIX_SYS

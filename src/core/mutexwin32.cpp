@@ -160,4 +160,3 @@ Bool RecursiveMutex::tryLock() const
 }
 
 #endif // O3D_WIN32_SYS
-

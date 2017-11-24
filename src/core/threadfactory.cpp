@@ -25,4 +25,3 @@ Thread *DefaultThreadFactory::createThread(Runnable *runnable)
 {
     return new Thread(runnable);
 }
-

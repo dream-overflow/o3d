@@ -44,8 +44,9 @@ FileInStream::FileInStream(const String &filename) :
     m_file = fopen(name.toUtf8().getData(), "rb");
 #endif
 
-    if (!m_file)
+    if (!m_file) {
         O3D_ERROR(E_FileNotFoundOrInvalidRights("", name));
+    }
 }
 
 FileInStream::FileInStream(const FileInfo &file) :
@@ -61,8 +62,9 @@ FileInStream::FileInStream(const FileInfo &file) :
     m_file = fopen(filename.toUtf8().getData(), "rb");
 #endif
 
-    if (!m_file)
+    if (!m_file) {
         O3D_ERROR(E_FileNotFoundOrInvalidRights("", filename));
+    }
 }
 
 FileInStream::~FileInStream()
@@ -87,22 +89,25 @@ void FileInStream::close()
 
 void FileInStream::reset(UInt64 n)
 {
-    if (n == 0)
+    if (n == 0) {
         rewind(m_file);
-    else if (fseek(m_file, n, SEEK_SET) != 0)
+    } else if (fseek(m_file, n, SEEK_SET) != 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 }
 
 void FileInStream::seek(Int64 n)
 {
-    if (fseek(m_file, n, SEEK_CUR) != 0)
+    if (fseek(m_file, n, SEEK_CUR) != 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 }
 
 void FileInStream::end(Int64 n)
 {
-    if (fseek(m_file, n, SEEK_END) != 0)
+    if (fseek(m_file, n, SEEK_END) != 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 }
 
 UInt8 FileInStream::peek()
@@ -118,8 +123,7 @@ void FileInStream::ignore(Int32 limit, UInt8 delim)
     Int32 value;
     Int32 counter = 0;
 
-    while ((counter < limit) && ((value = getc(m_file)) != EOF) && ((UInt8)value != delim))
-    {
+    while ((counter < limit) && ((value = getc(m_file)) != EOF) && ((UInt8)value != delim)) {
         ++counter;
     }
 }
@@ -139,11 +143,11 @@ static inline Int64 getFileLength(int fd)
 
 Int32 FileInStream::getAvailable() const
 {
-    if (m_length == 0)
+    if (m_length == 0) {
         *const_cast<Int32*>(&m_length) = getFileLength(getFD());
+    }
 
-    if (m_length != 0)
-    {
+    if (m_length != 0) {
 /*        fpos_t pos;
         fgetpos(m_file, &pos);
 
@@ -153,9 +157,9 @@ Int32 FileInStream::getAvailable() const
         return m_length - pos.__pos;
 #endif*/
         return m_length - ftell(m_file);
-    }
-    else
+    } else {
         return 0;
+    }
 }
 
 Int32 FileInStream::getPosition() const
@@ -170,16 +174,15 @@ Bool FileInStream::isEnd() const
 
 int FileInStream::getFD() const
 {
-    if (m_file)
-    {
+    if (m_file) {
 #ifdef O3D_VC_COMPILER
         return _fileno(m_file);
 #else
         return fileno(m_file);
 #endif
-    }
-    else
+    } else {
         return -1;
+    }
 }
 
 FILE *FileInStream::getFile() const
@@ -192,14 +195,13 @@ Int32 FileInStream::readLine(String &str, CharacterEncoding encoding)
     ArrayChar read;
 
     Int32 c;
-    while( ((c = getc(m_file)) != '\n') && ( c != EOF))
-    {
-        if (c != '\r')
+    while( ((c = getc(m_file)) != '\n') && ( c != EOF)) {
+        if (c != '\r') {
             read.push((Char)c);
+        }
     }
 
-    if ((read.getSize() == 0) && (c == EOF))
-    {
+    if ((read.getSize() == 0) && (c == EOF)) {
         // empty string
         str.destroy();
         return EOF;
@@ -208,12 +210,13 @@ Int32 FileInStream::readLine(String &str, CharacterEncoding encoding)
     read.push(0);
 
     // set using the specified encoding
-    if (encoding == ENCODING_UTF8)
+    if (encoding == ENCODING_UTF8) {
         str.fromUtf8(read.getData());
-    else if (encoding == ENCODING_ANSI)
+    } else if (encoding == ENCODING_ANSI) {
         str.set(read.getData(),0);
-    else
+    } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
+    }
 
     return str.length();
 }
@@ -224,14 +227,13 @@ Int32 FileInStream::readLine(String &str, Int32 limit, UInt8 delim, CharacterEnc
 
     Int32 c = EOF, counter = 0;
 
-    while((counter < limit) && ((c = getc(m_file)) != '\n') && (c != EOF) && (c != delim))
-    {
-        if (c != '\r')
+    while((counter < limit) && ((c = getc(m_file)) != '\n') && (c != EOF) && (c != delim)) {
+        if (c != '\r') {
             read.push((Char)c);
+        }
     }
 
-    if ((str.length() == 0) && (c == EOF))
-    {
+    if ((str.length() == 0) && (c == EOF)) {
         // empty string
         str.destroy();
         return EOF;
@@ -240,12 +242,13 @@ Int32 FileInStream::readLine(String &str, Int32 limit, UInt8 delim, CharacterEnc
     read.push(0);
 
     // set using the specified encoding
-    if (encoding == ENCODING_UTF8)
+    if (encoding == ENCODING_UTF8) {
         str.fromUtf8(read.getData());
-    else if (encoding == ENCODING_ANSI)
+    } else if (encoding == ENCODING_ANSI) {
         str.set(read.getData(),0);
-    else
+    } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
+    }
 
     return str.length();
 }
@@ -255,23 +258,24 @@ Int32 FileInStream::readWord(String &str, CharacterEncoding encoding)
     ArrayChar read;
 
     Int32 c;
-    while( ((c = getc(m_file)) != ' ') && ( c != EOF) && (c != '\n') && (c != '\r'))
-    {
+    while( ((c = getc(m_file)) != ' ') && ( c != EOF) && (c != '\n') && (c != '\r')) {
         read.push((Char)c);
     }
 
-    if ((read.getSize() == 0) && (c == EOF))
+    if ((read.getSize() == 0) && (c == EOF)) {
         return EOF;
+    }
 
     read.push(0);
 
     // set using the specified encoding
-    if (encoding == ENCODING_UTF8)
+    if (encoding == ENCODING_UTF8) {
         str.fromUtf8(read.getData());
-    else if (encoding == ENCODING_ANSI)
+    } else if (encoding == ENCODING_ANSI) {
         str.set(read.getData(),0);
-    else
+    } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
+    }
 
     return str.length();
 }
@@ -319,4 +323,3 @@ Int32 FileInStream::readWord(String &str, CharacterEncoding encoding)
         return curpos;
     }
 */
-

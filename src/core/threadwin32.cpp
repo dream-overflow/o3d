@@ -444,62 +444,65 @@ ReadWriteLock::~ReadWriteLock()
 }
 
 // Acquire the write lock
-void ReadWriteLock::lockWrite()
+void ReadWriteLock::lockWrite() const
 {
-	EnterCriticalSection(&m_writerHandle);
+    EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_writerHandle));
 }
 
 // Release the write lock
-void ReadWriteLock::unlockWrite()
+void ReadWriteLock::unlockWrite() const
 {
-	LeaveCriticalSection(&m_writerHandle);
+    LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_writerHandle));
 }
 
 // Acquire the read lock
-void ReadWriteLock::lockRead()
+void ReadWriteLock::lockRead() const
 {
-	EnterCriticalSection(&m_readerHandle);
+    EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_readerHandle));
 
-	if (++m_readerCounter == 1)
-		EnterCriticalSection(&m_writerHandle);
+    if (++const_cast<Int32>(m_readerCounter) == 1) {
+        EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_writerHandle));
+    }
 
-	LeaveCriticalSection(&m_readerHandle);
+    LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_readerHandle));
 }
 
 // Release the read lock
-void ReadWriteLock::unlockRead()
+void ReadWriteLock::unlockRead() const
 {
-	EnterCriticalSection(&m_readerHandle);
+    EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_readerHandle));
 
-    if (--m_readerCounter == 0)
-		LeaveCriticalSection(&m_writerHandle);
+    if (--const_cast<Int32>(m_readerCounter) == 0) {
+        LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_writerHandle));
+    }
 
-	LeaveCriticalSection(&m_readerHandle);
+    LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_readerHandle));
 }
 
 // Try to lock in read
-Bool ReadWriteLock::tryLockRead()
+Bool ReadWriteLock::tryLockRead() const
 {
-	if (TryEnterCriticalSection(&m_readerHandle))
-	{
-	    if ((++m_readerCounter == 1) && !TryEnterCriticalSection(&m_writerHandle))
-		{
-			--m_readerCounter;
-			LeaveCriticalSection(&m_readerHandle);
+    LPCRITICAL_SECTION reader = const_cast<LPCRITICAL_SECTION>(&m_readerHandle);
+    LPCRITICAL_SECTION writer = const_cast<LPCRITICAL_SECTION>(&m_writerHandle);
+
+    if (TryEnterCriticalSection(reader)) {
+        if ((++const_cast<Int32>(m_readerCounter) == 1) && !TryEnterCriticalSection(writer)) {
+            --const_cast<Int32>(m_readerCounter);
+            LeaveCriticalSection(reader);
 			return False;
 		}
 
-		LeaveCriticalSection(&m_readerHandle);
+        LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(reader));
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 // Try to lock in write
-Bool ReadWriteLock::tryLockWrite()
+Bool ReadWriteLock::tryLockWrite() const
 {
-	return TryEnterCriticalSection(&m_writerHandle);
+    return TryEnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_writerHandle));
 }
 
 #endif // O3D_WIN32_SYS

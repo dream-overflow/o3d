@@ -883,4 +883,3 @@ Bool Mesh::readFromFile(InStream &is)
 
 	return True;
 }
-

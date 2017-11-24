@@ -454,4 +454,3 @@ Int32 SharedDataInStream::readWord(String &str, CharacterEncoding encoding)
 
     return str.length();
 }
-

@@ -127,4 +127,3 @@ Int32 DataOutStream::writeString(const String &str, CharacterEncoding encoding)
     else
         return 0;
 }
-
