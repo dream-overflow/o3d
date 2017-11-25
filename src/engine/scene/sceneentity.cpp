@@ -42,4 +42,3 @@ Bool SceneResource::hasTopLevelParentTypeOf() const
 	else
 		return False;
 }
-

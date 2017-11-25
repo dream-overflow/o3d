@@ -484,4 +484,3 @@ typedef GLboolean (APIENTRYP PFNGLISTEXTUREPROC) (GLuint texture);
 #endif
 
 #endif // _O3D_GL_H
-

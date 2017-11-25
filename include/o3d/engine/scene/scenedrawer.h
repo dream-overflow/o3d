@@ -52,4 +52,3 @@ public:
 } // o3d
 
 #endif // _O3D_SCENEDRAWER_H
-

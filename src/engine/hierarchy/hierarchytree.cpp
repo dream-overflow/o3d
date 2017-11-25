@@ -249,4 +249,3 @@ void HierarchyTree::preExportPass()
 		(*it)->preExportPass();
 	}
 }
-

@@ -33,19 +33,15 @@ void ScreenViewPort::display(UInt32 w, UInt32 h)
 {
 	TimeMesure mesure(m_duration);
 
-	if (m_isActive)
-	{
+	if (m_isActive)	{
 		UInt32 x,y;
 
-		if (m_percent)
-		{
+        if (m_percent) {
 			x = (UInt32)(m_xpos * w);
 			y = (UInt32)(m_ypos * h);
 			m_nWidth = (UInt32)(m_width * w);
 			m_nHeight = (UInt32)(m_height * h);
-		}
-		else
-		{
+        } else {
 			x = (UInt32)m_xpos;
 			y = (UInt32)m_ypos;
 			m_nWidth = (UInt32)m_width;
@@ -54,8 +50,7 @@ void ScreenViewPort::display(UInt32 w, UInt32 h)
 
 		Float newCoef = (Float)m_nWidth / (Float)m_nHeight;
 
-		if (m_camera->getRatio() != newCoef)
-		{
+        if (m_camera->getRatio() != newCoef) {
 			m_camera->setRatio(newCoef);
 			m_camera->reCompute();
 		}
@@ -64,8 +59,7 @@ void ScreenViewPort::display(UInt32 w, UInt32 h)
         m_camera->getScene()->getContext()->modelView().set(m_camera.get()->getModelviewMatrix());
 
 		// redraw mode
-		if (m_camera->getScene()->getViewPortManager()->isDrawPickingMode())
-		{
+        if (m_camera->getScene()->getViewPortManager()->isDrawPickingMode()) {
 			Box2i viewport(x, y, m_nWidth, m_nHeight);
 
 			Vector2f pos = m_camera->getScene()->getPicking()->getWindowPos();//getPickingPos();
@@ -83,10 +77,8 @@ void ScreenViewPort::display(UInt32 w, UInt32 h)
 
 			// call the redrawing method
 			drawPicking();
-		}
-		// normal draw mode
-		else
-		{
+        } else {
+            // normal draw mode
 			m_camera->getScene()->getContext()->setViewPort(x,y,m_nWidth,m_nHeight);
 			m_camera->setProjectionMatrix();
 
@@ -95,4 +87,3 @@ void ScreenViewPort::display(UInt32 w, UInt32 h)
 		}
 	}
 }
-

@@ -31,4 +31,3 @@ O3DGLXextFuncPtr o3d::glxGetProcAddress(const Char *ext)
 #endif
 
 #endif // O3D_X11
-

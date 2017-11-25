@@ -17,4 +17,3 @@ SceneDrawer::SceneDrawer(BaseObject *parent) :
     SceneEntity(parent)
 {
 }
-

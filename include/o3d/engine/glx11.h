@@ -34,4 +34,3 @@ extern O3DGLXextFuncPtr glxGetProcAddress(const Char *ext);
 #endif // O3D_X11
 
 #endif // _O3D_GLX11_H
-

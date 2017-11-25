@@ -1107,4 +1107,3 @@ O3D_GLAPI void APIENTRY glSampleMaski (GLuint index, GLbitfield mask);
 #endif
 
 #endif // _O3D_GLEXTENSIONMANAGER_H
-

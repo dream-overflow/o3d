@@ -230,4 +230,3 @@ UInt32 ShadowVolumeForward::getPolicyLevel() const
 {
 	return 0;
 }
-

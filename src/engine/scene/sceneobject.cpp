@@ -469,4 +469,3 @@ void SceneObject::preExportPass()
 {
 	setSerializeId((Int32)getScene()->getSceneObjectManager()->getSingleId());
 }
-

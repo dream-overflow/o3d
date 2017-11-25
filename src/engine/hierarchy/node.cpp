@@ -72,26 +72,21 @@ Node& Node::operator=(const Node &dup)
 // Delete child
 Bool Node::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
-		if (child->getParent() != this)
+    if (child) {
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			// object should be type of SceneObject
 			SceneObject *object = dynamicCast<SceneObject*>(child);
-			if (object)
-			{
+            if (object) {
 				IT_SonList it = m_objectList.begin();
-				for (; it != m_objectList.end(); ++it)
-				{
+                for (; it != m_objectList.end(); ++it) {
 					if ((*it) == object)
 						break;
 				}
 
 				// remove the object of the son list
-				if (it != m_objectList.end())
-				{
+                if (it != m_objectList.end()) {
 					m_objectList.erase(it);
 
                     if (object->hasDrawable())
@@ -101,9 +96,7 @@ Bool Node::deleteChild(BaseObject *child)
 				}
 
 				deletePtr(object);
-			}
-			else
-			{
+            } else {
 				// otherwise simply delete it
 				deletePtr(child);
 			}
@@ -125,10 +118,10 @@ UInt32 Node::getNumElt() const
 	UInt32 n = getNumSon();
 
 	// count recursively
-	for (CIT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it)
-	{
-		if ((*it)->isNodeObject())
+    for (CIT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it) {
+        if ((*it)->isNodeObject()) {
 			n += ((Node*)(*it))->getNumElt();
+        }
 	}
 
 	return n;
@@ -137,31 +130,28 @@ UInt32 Node::getNumElt() const
 // Update the branch
 void Node::update()
 {
-	if (!getActivity())
+    if (!getActivity()) {
 		return;
+    }
 
 	clearUpdated();
 	Bool dirty = False;
 
-	if (getNode() && getNode()->hasUpdated())
-	{
+    if (getNode() && getNode()->hasUpdated()) {
 		// the parent has change so the child need to be updated
 		dirty = True;
-	}
-	else
-	{
+    } else {
 		// check if a transform has changed since last update
-		for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it)
-		{
-			dirty |= (*it)->isDirty() | (*it)->hasUpdated();
-			if (dirty)
+        for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it) {
+            dirty |= (*it)->isDirty() | (*it)->hasUpdated();
+            if (dirty) {
 				break;
+            }
 		}
 	}
 
 	// is animation transform needed
-	if (m_animTransform.isValid() && (m_animTransform->update() || m_animTransform->hasUpdated()))
-	{
+    if (m_animTransform.isValid() && (m_animTransform->update() || m_animTransform->hasUpdated())) {
 		m_animTransform->clearUpdated();
 		dirty = True;
 
@@ -169,23 +159,23 @@ void Node::update()
 		*m_prevAnimMatrix = m_animTransform->getMatrix();
 	}
 
-	if (dirty)
-	{
-		if (getNode())
+    if (dirty) {
+        if (getNode()) {
 			m_worldMatrix = getNode()->getAbsoluteMatrix();
-		else
+        } else {
 			m_worldMatrix.identity();
+        }
 
 		// local transforms
-		for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it)
-		{
+        for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it) {
 			(*it)->update();
 			m_worldMatrix *= (*it)->getMatrix();
 			(*it)->clearUpdated();
 		}
 
-		if (m_animTransform.isValid())
+        if (m_animTransform.isValid()) {
 			m_worldMatrix *= m_animTransform->getMatrix();
+        }
 
 		setUpdated();
 	}
@@ -269,13 +259,13 @@ void Node::animate(
 {
 	// cannot animate a static node
 	O3D_ASSERT(m_movable);
-	if (!m_movable)
+    if (!m_movable) {
 		return;
+    }
 
 	needAnimPart();
 
-	switch (type)
-	{
+    switch (type) {
 		case AnimationTrack::TRACK_TYPE_BOOL:
 			if (sizeOfValue != sizeof(Bool))
 				O3D_ERROR(E_InvalidParameter("Invalid SizeOfValue"));
@@ -522,16 +512,16 @@ void Node::addSonLast(SceneObject *object)
 {
 	O3D_ASSERT(object);
 
-	if (object)
-	{
+    if (object) {
 		object->setParent(this);
 		object->setNode(this);
 		object->setPersistant(True);
 
 		m_objectList.push_back(object);
 
-        if (object->hasDrawable())
+        if (object->hasDrawable()) {
             getScene()->getVisibilityManager()->addObject(object);
+        }
 	}
 }
 
@@ -539,23 +529,20 @@ void Node::addSonLast(SceneObject *object)
 void Node::removeSon(SceneObject *object)
 {
 	IT_SonList it = m_objectList.begin();
-	for (; it != m_objectList.end(); ++it)
-	{
+    for (; it != m_objectList.end(); ++it) {
 		if ((*it) == object)
 			break;
 	}
 
-	if (it == m_objectList.end())
-	{
+    if (it == m_objectList.end()) {
 		O3D_ERROR(E_InvalidParameter("Object not found"));
-	}
-	else
-	{
+    } else {
 		// remove the object of the son list
 		m_objectList.erase(it);
 
-        if (object->hasDrawable())
+        if (object->hasDrawable()) {
             getScene()->getVisibilityManager()->removeObject(object);
+        }
 
 		// no node
 		object->setParent(getScene());
@@ -567,20 +554,20 @@ void Node::removeSon(SceneObject *object)
 // Find an object/node given its name
 SceneObject* Node::findSon(const String &name)
 {
-	if (getName() == name)
+    if (getName() == name) {
 		return this;
+    }
 
-	for (IT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it)
-	{
+    for (IT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it) {
 		SceneObject *object = (*it);
-		if (object->isNodeObject())
-		{
+        if (object->isNodeObject()) {
 			SceneObject *result = ((BaseNode*)object)->findSon(name);
-			if (result)
+            if (result) {
 				return result;
-		}
-		else if (object->getName() == name)
+            }
+        } else if (object->getName() == name) {
 			return object;
+        }
 	}
 
     return nullptr;
@@ -589,20 +576,20 @@ SceneObject* Node::findSon(const String &name)
 // Find an object/node given its name
 const SceneObject* Node::findSon(const String &name) const
 {
-	if (getName() == name)
+    if (getName() == name) {
 		return this;
+    }
 
-	for (CIT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it)
-	{
+	for (CIT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it)	{
 		const SceneObject *object = (*it);
-		if (object->isNodeObject())
-		{
+        if (object->isNodeObject()) {
 			const SceneObject *result = ((BaseNode*)object)->findSon(name);
-			if (result)
+            if (result) {
 				return result;
-		}
-		else if (object->getName() == name)
+            }
+        } else if (object->getName() == name) {
 			return object;
+        }
 	}
 
     return nullptr;
@@ -611,20 +598,21 @@ const SceneObject* Node::findSon(const String &name) const
 // Find a scene object and return true if found
 Bool Node::findSon(SceneObject *object) const
 {
-	if (this == object)
+    if (this == object) {
 		return True;
+    }
 
-	for (CIT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it)
-	{
+    for (CIT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it) {
 		const SceneObject *search = (*it);
-		if (search->isNodeObject())
-		{
+        if (search->isNodeObject()) {
 			Bool result = ((BaseNode*)search)->findSon(object);
-			if (result)
+            if (result) {
 				return True;
+            }
 		}
-		else if (search == object)
+        else if (search == object) {
 			return True;
+        }
 	}
 
 	return False;
@@ -635,10 +623,10 @@ void Node::deleteAllSons()
 {
 	IT_SonList it = m_objectList.begin();
 
-	while (it != m_objectList.end())
-	{
-        if ((*it)->hasDrawable())
+    while (it != m_objectList.end()) {
+        if ((*it)->hasDrawable()) {
             getScene()->getVisibilityManager()->removeObject(*it);
+        }
 
 		deletePtr(*it);
 
@@ -756,21 +744,21 @@ Bool Node::writeToFile(OutStream &os)
     os << getNumSon();
 
 	// write each son (recursively if other nodes)
-	for (IT_SonList it = m_objectList.begin() ; it != m_objectList.end() ; ++it)
-	{
-		SceneObject *object = (*it);
+    for (IT_SonList it = m_objectList.begin() ; it != m_objectList.end() ; ++it) {
+        SceneObject *object = (*it);
 
-		if (getScene()->getCurSceneIO().isIO(object))
+        if (getScene()->getCurSceneIO().isIO(object)) {
             ClassFactory::writeToFile(os,*object);
+        }
 	}
 
 	// write each transforms
     os << (UInt32)m_transformList.size();
 
-	for (IT_TransformList it = m_transformList.begin() ; it != m_transformList.end() ; ++it)
-	{
-        if (!ClassFactory::writeToFile(os,*(*it)))
+    for (IT_TransformList it = m_transformList.begin() ; it != m_transformList.end() ; ++it) {
+        if (!ClassFactory::writeToFile(os,*(*it))) {
 			return False;
+        }
 	}
 
 	return True;
@@ -778,8 +766,9 @@ Bool Node::writeToFile(OutStream &os)
 
 Bool Node::readFromFile(InStream &is)
 {
-    if (!BaseNode::readFromFile(is))
+    if (!BaseNode::readFromFile(is)) {
 		return False;
+    }
 
 	// set imported object
 	getScene()->getSceneObjectManager()->setImportedSceneObject(getSerializeId(), this);
@@ -788,8 +777,7 @@ Bool Node::readFromFile(InStream &is)
     is >> num;
 
 	// read each son (recursively if other nodes)
-	for (UInt32 i = 0; i < num; ++i)
-	{
+    for (UInt32 i = 0; i < num; ++i) {
 		// import class name
 		String className;
         is >> className;
@@ -797,8 +785,7 @@ Bool Node::readFromFile(InStream &is)
 		// clone a class instance
         BaseObject *object = ClassFactory::getInstanceOfClassInfo(className)->createInstance(this);
 
-		if (typeOf<SceneObject>(object))
-		{
+        if (typeOf<SceneObject>(object)) {
 			addSonLast(dynamicCast<SceneObject*>(object));
 
 			// and read the object
@@ -808,9 +795,7 @@ Bool Node::readFromFile(InStream &is)
 			getScene()->getSceneObjectManager()->setImportedSceneObject(
 					object->getSerializeId(),
 					reinterpret_cast<SceneObject*>(object));
-		}
-		else
-		{
+        } else {
             O3D_ERROR(E_InvalidFormat("Invalid object type, must be a scene object"));
 			return False;
 		}
@@ -819,8 +804,7 @@ Bool Node::readFromFile(InStream &is)
 	// read each transforms
     is >> num;
 
-	for (UInt32 i = 0; i < num; ++i)
-	{
+    for (UInt32 i = 0; i < num; ++i) {
         BaseObject *object = ClassFactory::readFromFile(is, this);
 		addTransform(reinterpret_cast<Transform*>(object));
 	}
@@ -832,8 +816,7 @@ void Node::preExportPass()
 {
 	setSerializeId((Int32)getScene()->getSceneObjectManager()->getSingleId());
 
-	for (IT_SonList it = m_objectList.begin() ; it != m_objectList.end() ; ++it)
-	{
+    for (IT_SonList it = m_objectList.begin() ; it != m_objectList.end() ; ++it) {
 		(*it)->preExportPass();
 	}
 }

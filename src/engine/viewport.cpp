@@ -124,4 +124,3 @@ void ViewPort::setSize(
 	m_width = _width;
 	m_height = _height;
 }
-
