@@ -1602,8 +1602,51 @@ void String::concat(Double d)
     WChar str[32] = { 0 };
     swprintf(str, 32, L"%f", d);
 
-	(*this) += str;
+    (*this) += str;
 }
+
+//
+// arg
+//
+
+StringArg String::arg(const Char &c)
+{
+    return StringArg(this).arg(c);
+}
+
+StringArg String::arg(const WChar &w)
+{
+    return StringArg(this).arg(w);
+}
+
+StringArg String::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    return StringArg(this).arg(i, fieldWidth, base, fillChar);
+}
+
+StringArg String::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    return StringArg(this).arg(i, fieldWidth, base, fillChar);
+}
+
+StringArg String::arg(const Float &f, WChar separator)
+{
+    return StringArg(this).arg(f, separator);
+}
+
+StringArg String::arg(const Double &d, WChar separator)
+{
+    return StringArg(this).arg(d, separator);
+}
+
+StringArg String::arg(const String &s)
+{
+    return StringArg(this).arg(s);
+}
+
+//
+// convert to
+//
 
 Char String::toChar(UInt32 pos) const
 {
@@ -1873,4 +1916,231 @@ T_StringList split(const String &content, const String &delimiters)
     }
 
     return parts;
+}
+
+
+StringArg::StringArg(String *data) :
+    m_arg{'%', '1', '\0'},
+    m_data(data)
+{
+    // string arg ou sinon on utilise un suffix sur la STRING data par example @XX
+    // pour memoriser le next arg
+}
+
+StringArg &StringArg::arg(const Char &c)
+{
+    // max args reached
+    if (m_arg[1] > '9') {
+        return *this;
+    }
+
+    String s;
+    s.concat(c);
+
+    m_data->replace(m_arg, s);
+
+    if (m_arg[2] == 9) {
+        // inc 10^1
+        ++m_arg[1];
+        m_arg[2] = 0;
+    } else if (m_arg[2] == '\0') {
+        // 9 to 10
+        if (m_arg[1] == '9') {
+            m_arg[1] = '1';
+            m_arg[2] = '0';
+        } else {
+            ++m_arg[1];
+        }
+    } else {
+        ++m_arg[2];
+    }
+
+    return *this;
+}
+
+StringArg &StringArg::arg(const WChar &w)
+{
+    // max args reached
+    if (m_arg[1] > '9') {
+        return *this;
+    }
+
+    String s;
+    s.concat(w);
+
+    m_data->replace(m_arg, s);
+
+    if (m_arg[2] == 9) {
+        // inc 10^1
+        ++m_arg[1];
+        m_arg[2] = 0;
+    } else if (m_arg[2] == '\0') {
+        // 9 to 10
+        if (m_arg[1] == '9') {
+            m_arg[1] = '1';
+            m_arg[2] = '0';
+        } else {
+            ++m_arg[1];
+        }
+    } else {
+        ++m_arg[2];
+    }
+
+    return *this;
+}
+
+StringArg &StringArg::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    // max args reached
+    if (m_arg[1] > '9') {
+        return *this;
+    }
+
+    // @todo fieldWidth
+    String s;
+    s.concat(i, base);
+
+    m_data->replace(m_arg, s);
+
+    if (m_arg[2] == 9) {
+        // inc 10^1
+        ++m_arg[1];
+        m_arg[2] = 0;
+    } else if (m_arg[2] == '\0') {
+        // 9 to 10
+        if (m_arg[1] == '9') {
+            m_arg[1] = '1';
+            m_arg[2] = '0';
+        } else {
+            ++m_arg[1];
+        }
+    } else {
+        ++m_arg[2];
+    }
+
+    return *this;
+}
+
+StringArg &StringArg::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    // max args reached
+    if (m_arg[1] > '9') {
+        return *this;
+    }
+
+    // @todo fieldWidth
+    String s;
+    s.concat(i, base);
+
+    m_data->replace(m_arg, s);
+
+    if (m_arg[2] == 9) {
+        // inc 10^1
+        ++m_arg[1];
+        m_arg[2] = 0;
+    } else if (m_arg[2] == '\0') {
+        // 9 to 10
+        if (m_arg[1] == '9') {
+            m_arg[1] = '1';
+            m_arg[2] = '0';
+        } else {
+            ++m_arg[1];
+        }
+    } else {
+        ++m_arg[2];
+    }
+
+    return *this;
+}
+
+StringArg &StringArg::arg(const Float &f, WChar separator)
+{
+    // max args reached
+    if (m_arg[1] > '9') {
+        return *this;
+    }
+
+    // @todo separator
+    String s;
+    s.concat(f);
+
+    m_data->replace(m_arg, s);
+
+    if (m_arg[2] == 9) {
+        // inc 10^1
+        ++m_arg[1];
+        m_arg[2] = 0;
+    } else if (m_arg[2] == '\0') {
+        // 9 to 10
+        if (m_arg[1] == '9') {
+            m_arg[1] = '1';
+            m_arg[2] = '0';
+        } else {
+            ++m_arg[1];
+        }
+    } else {
+        ++m_arg[2];
+    }
+
+    return *this;
+}
+
+StringArg &StringArg::arg(const Double &d, WChar separator)
+{
+    // max args reached
+    if (m_arg[1] > '9') {
+        return *this;
+    }
+
+    // @todo separator
+    String s;
+    s.concat(d);
+
+    m_data->replace(m_arg, s);
+
+    if (m_arg[2] == 9) {
+        // inc 10^1
+        ++m_arg[1];
+        m_arg[2] = 0;
+    } else if (m_arg[2] == '\0') {
+        // 9 to 10
+        if (m_arg[1] == '9') {
+            m_arg[1] = '1';
+            m_arg[2] = '0';
+        } else {
+            ++m_arg[1];
+        }
+    } else {
+        ++m_arg[2];
+    }
+
+    return *this;
+}
+
+StringArg &StringArg::arg(const String &s)
+{
+    // max args reached
+    if (m_arg[1] > '9') {
+        return *this;
+    }
+
+    m_data->replace(m_arg, s);
+
+    if (m_arg[2] == 9) {
+        // inc 10^1
+        ++m_arg[1];
+        m_arg[2] = 0;
+    } else if (m_arg[2] == '\0') {
+        // 9 to 10
+        if (m_arg[1] == '9') {
+            m_arg[1] = '1';
+            m_arg[2] = '0';
+        } else {
+            ++m_arg[1];
+        }
+    } else {
+        ++m_arg[2];
+    }
+
+    return *this;
 }

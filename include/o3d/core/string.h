@@ -25,6 +25,7 @@ namespace o3d
 
 class InStream;
 class OutStream;
+class StringArg;
 
 #ifdef __APPLE__ // APPLE
 //! Perform a lower-case comparison of char strings.
@@ -689,7 +690,44 @@ public:
     {
         concat(s);
         return *this;
-    }
+    }   
+
+    //
+    // Concatenation arg methods using %1..%99 from the string constructor.
+    //
+
+    //! Set the nth argument of type char.
+    StringArg arg(const Char &c);
+
+    //! Set the nth argument of type wide char.
+    StringArg arg(const WChar &w);
+
+    /**
+     * @brief Set the nth argument of type integer, with default as base 10.
+     * @param i 32 bits integer value
+     * @param fieldWidth Width of the value (add some fill char to complete)
+     * @param base Integer base conversion (10 by default)
+     * @param fillChar Character used for filling
+     */
+    StringArg arg(const Int32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+
+    /**
+     * @brief Set the nth argument of type integer, with default as base 10.
+     * @param i 32 bits unsigned integer value
+     * @param fieldWidth Width of the value (add some fill char to complete)
+     * @param base Integer base conversion (10 by default)
+     * @param fillChar Character used for filling
+     */
+    StringArg arg(const UInt32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+
+    //! Set the nth argument of type float.
+    StringArg arg(const Float &f, WChar separator = '.');
+
+    //! Set the nth argument of type double.
+    StringArg arg(const Double &d, WChar separator = '.');
+
+    //! Set the nth argument of type string.
+    StringArg arg(const String& s);
 
     //
     // To <type> conversion.
@@ -733,6 +771,57 @@ protected :
     UInt32 m_size;        //!< String content size
     UInt32 m_maxsize;     //!< String memory allocation size
     UInt32 m_threshold;   //!< Reallocation size threshold
+};
+
+/**
+ * @brief The StringArg class to build compound string.
+ */
+class StringArg
+{
+public:
+
+    StringArg(String *data);
+
+    //! Set the nth argument of type char.
+    StringArg& arg(const Char &c);
+
+    //! Set the nth argument of type wide char.
+    StringArg& arg(const WChar &w);
+
+    /**
+     * @brief Set the nth argument of type integer, with default as base 10.
+     * @param i 32 bits integer value
+     * @param fieldWidth Width of the value (add some fill char to complete)
+     * @param base Integer base conversion (10 by default)
+     * @param fillChar Character used for filling
+     */
+    StringArg& arg(const Int32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+
+    /**
+     * @brief Set the nth argument of type integer, with default as base 10.
+     * @param i 32 bits unsigned integer value
+     * @param fieldWidth Width of the value (add some fill char to complete)
+     * @param base Integer base conversion (10 by default)
+     * @param fillChar Character used for filling
+     */
+    StringArg& arg(const UInt32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+
+    //! Set the nth argument of type float.
+    StringArg& arg(const Float &f, WChar separator = '.');
+
+    //! Set the nth argument of type double.
+    StringArg& arg(const Double &f, WChar separator = '.');
+
+    //! Set the nth argument of type string.
+    StringArg& arg(const String& s);
+
+    inline String& result() { return *m_data; }
+    inline const String& result() const { return *m_data; }
+
+private:
+
+    WChar m_arg[3];
+    String *m_data;
 };
 
 } // namespace o3d
