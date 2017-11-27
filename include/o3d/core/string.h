@@ -214,16 +214,14 @@ public:
 		CASE_INSENSITIVE
 	};
 
-	//! Return an null static string.
-	static const String& getNull();
-
 	//! Default constructor (use a 0 default maxsize, and a threshold of 256 bytes).
 	String() :
         m_data(nullptr),
 		m_size(0),
 		m_maxsize(0),
         m_threshold(256)
-	{}
+    {
+    }
 
 	//! Define a base maxsize and threshold.
     String(UInt32 isize, UInt32 ithreshold) :
@@ -278,19 +276,30 @@ public:
 		set(copy,0);
 	}
 
+    //! Destructor.
+    ~String();
+
+    //
+    // Static methods
+    //
+
+    //! Return an null static string.
+    static const String& getNull();
+
 	//! Build a new String with like sprintf method.
     static String print(const Char* str, ...);
 
 	//! Build a new String with like wsprintf method.
     static String print(const WChar* str, ...);
 
-	//! Destructor.
-	~String();
+    //
+    // String methods
+    //
 
-	//! Resize the string.
-    void setCapacity(UInt32 NewSize);
+    //! Resize the string, +1 is added to count the zero terminal.
+    void setCapacity(UInt32 newSize);
 
-	//! Destroy the string content and reset its size
+    //! Destroy the string content and reset its size.
 	void destroy();
 
 	//! Get the length of the string (don't count the terminal zero).
@@ -354,39 +363,6 @@ public:
 
 	//! change brutally the content size of the string (be-careful when using it)
     inline void setSize(UInt32 newsize) { m_size = newsize; }
-
-	//! Delete an eventually char at the end of the string
-    Bool trimRight(WChar c, Bool repeat = False);
-
-	//! Delete an eventually string at the end of the string
-    Bool trimRight(const String& str);
-
-	//! delete the last character of the string (if it is not empty)
-	//! @return the removed char value (0 mean empty string)
-    WChar trimRight();
-
-	//! Remove all chars from the end of the string which are contained in
-	//! the provided string. You must considered it as a array of chars instead of
-	//! a real string.
-	//! @param _charList the list of chars
-	//! @return TRUE if chars were removed
-    Bool trimRightChars(const String &charList);
-
-	//! Remove all chars at the beginning of the string which are contained in
-	//! the provided string. You must considered it as a array of chars instead of
-	//! a real string.
-	//! @param _charList the list of characters
-	//! @return TRUE if chars were removed
-    Bool trimLeftChars(const String &charList);
-
-	//! Delete an eventually char at the start of the string,
-	//! @param repeat to true for repeat until data[0] == c
-	//! @return TRUE if one or more occurrence of the character are removed.
-    Bool trimLeft(WChar c, Bool repeat = False);
-
-	//! delete the first character of the string (if it is not empty)
-	//! @return the removed char value (0 mean empty string)
-    WChar trimLeft();
 
     //
     // Construction operators.
@@ -472,6 +448,44 @@ public:
 	//! Return i if s1 <= s2 else return 0
     Bool operator<= (const String& s) const;
 
+    //
+    // String manipulation
+    //
+
+
+    //! Delete an eventually char at the end of the string
+    Bool trimRight(WChar c, Bool repeat = False);
+
+    //! Delete an eventually string at the end of the string
+    Bool trimRight(const String& str);
+
+    //! delete the last character of the string (if it is not empty)
+    //! @return the removed char value (0 mean empty string)
+    WChar trimRight();
+
+    //! Remove all chars from the end of the string which are contained in
+    //! the provided string. You must considered it as a array of chars instead of
+    //! a real string.
+    //! @param _charList the list of chars
+    //! @return TRUE if chars were removed
+    Bool trimRightChars(const String &charList);
+
+    //! Remove all chars at the beginning of the string which are contained in
+    //! the provided string. You must considered it as a array of chars instead of
+    //! a real string.
+    //! @param _charList the list of characters
+    //! @return TRUE if chars were removed
+    Bool trimLeftChars(const String &charList);
+
+    //! Delete an eventually char at the start of the string,
+    //! @param repeat to true for repeat until data[0] == c
+    //! @return TRUE if one or more occurrence of the character are removed.
+    Bool trimLeft(WChar c, Bool repeat = False);
+
+    //! delete the first character of the string (if it is not empty)
+    //! @return the removed char value (0 mean empty string)
+    WChar trimLeft();
+
 	//! Find for a substring occurrence, starting at a given position.
 	//! @param str The substring to find
 	//! @param pos The starting position for search
@@ -514,10 +528,6 @@ public:
 	//! @return True if the string ends by the string given in parameter
     Bool endsWith(const String &end) const;
 
-    //
-	// String manipulation
-    //
-
     //! Check the validity of a position into the string
     inline Bool isIndex(UInt32 index) const { return (index < m_size); }
 
@@ -557,7 +567,7 @@ public:
     String& insert(const String &str, UInt32 pos);
 
 	//! Insert a character at the first position
-    inline String& prepend(WChar c) { return insert(c,0); }
+    inline String& prepend(WChar c) { return insert(c, 0); }
 
 	//! Insert a character at the last position
     inline String& append(WChar c) { return *this += c; }
@@ -590,7 +600,7 @@ public:
 	//! replace a substring (find) by another substring (by)
 	String& replace(const String& find, const String& by);
 
-	//! Replace the substring at n by str
+    //! Replace the substring located at n by str, for length of str and keeping the actual length
     String& replace(const String& str, const UInt32 n);
 
 	//! Replace the character at the position n by the character given by c
@@ -622,10 +632,10 @@ public:
     void concat(UInt64 u, Int32 radix = 10);
 
 	//! Append a float
-    void concat(Float f);
+    void concat(Float f, Int32 decimals = -1);
 
 	//! Append a double
-    void concat(Double d);
+    void concat(Double d, Int32 decimals = -1);
 
 	//! Append a char.
     inline void concat(Char c) { *this += (WChar)static_cast<UInt8>(c); }
@@ -640,7 +650,7 @@ public:
 	inline void concat(const String& str) { *this += str; }
 
     //
-    // Concatenation << operator.
+    // Serialization << operator.
     //
 
     //! Operator concat a char to the string.
@@ -657,15 +667,29 @@ public:
         return *this;
     }
 
-    //! Operator concat a base 10 integer to the string.
+    //! Operator concat a base 10 32 bits integer to the string.
     String& operator<< (const Int32 &i)
     {
         concat(i, 10);
         return *this;
     }
 
-    //! Operator concat a base 10 unsigned integer to the string.
+    //! Operator concat a base 10 32 bits unsigned integer to the string.
     String& operator<< (const UInt32 &u)
+    {
+        concat(u, 10);
+        return *this;
+    }
+
+    //! Operator concat a base 10 64 bits integer to the string.
+    String& operator<< (const Int64 &i)
+    {
+        concat(i, 10);
+        return *this;
+    }
+
+    //! Operator concat a base 10 64 bits unsigned integer to the string.
+    String& operator<< (const UInt64 &u)
     {
         concat(u, 10);
         return *this;
@@ -693,41 +717,53 @@ public:
     }   
 
     //
-    // Concatenation arg methods using %1..%99 from the string constructor.
+    // Concatenation arg methods using placeholders {0} to {99} from the string constructor.
     //
 
     //! Set the nth argument of type char.
-    StringArg arg(const Char &c);
+    String& arg(const Char &c);
 
     //! Set the nth argument of type wide char.
-    StringArg arg(const WChar &w);
+    String& arg(const WChar &w);
 
     /**
-     * @brief Set the nth argument of type integer, with default as base 10.
+     * @brief Set the nth argument of type 32 bits integer, with default as base 10.
      * @param i 32 bits integer value
      * @param fieldWidth Width of the value (add some fill char to complete)
      * @param base Integer base conversion (10 by default)
      * @param fillChar Character used for filling
      */
-    StringArg arg(const Int32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+    String& arg(const Int32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
 
     /**
-     * @brief Set the nth argument of type integer, with default as base 10.
+     * @brief Set the nth argument of type unsigned 32 bits integer, with default as base 10.
      * @param i 32 bits unsigned integer value
      * @param fieldWidth Width of the value (add some fill char to complete)
      * @param base Integer base conversion (10 by default)
      * @param fillChar Character used for filling
      */
-    StringArg arg(const UInt32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+    String& arg(const UInt32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+
+    /**
+     * @brief Set the nth argument of type 64 bits integer, with default as base 10.
+     * @see arg for Int32
+     */
+    String& arg(const Int64 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
+
+    /**
+     * @brief Set the nth argument of type integer, with default as base 10.
+     * @see arf for UInt32
+     */
+    String& arg(const UInt64 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
 
     //! Set the nth argument of type float.
-    StringArg arg(const Float &f, WChar separator = '.');
+    String& arg(const Float &f, Int32 decimals = -1, WChar separator = '.');
 
     //! Set the nth argument of type double.
-    StringArg arg(const Double &d, WChar separator = '.');
+    String& arg(const Double &d, Int32 decimals = -1, WChar separator = '.');
 
     //! Set the nth argument of type string.
-    StringArg arg(const String& s);
+    String& arg(const String& s);
 
     //
     // To <type> conversion.
@@ -771,57 +807,13 @@ protected :
     UInt32 m_size;        //!< String content size
     UInt32 m_maxsize;     //!< String memory allocation size
     UInt32 m_threshold;   //!< Reallocation size threshold
-};
 
-/**
- * @brief The StringArg class to build compound string.
- */
-class StringArg
-{
-public:
+    //
+    // arg management helpers
+    //
 
-    StringArg(String *data);
-
-    //! Set the nth argument of type char.
-    StringArg& arg(const Char &c);
-
-    //! Set the nth argument of type wide char.
-    StringArg& arg(const WChar &w);
-
-    /**
-     * @brief Set the nth argument of type integer, with default as base 10.
-     * @param i 32 bits integer value
-     * @param fieldWidth Width of the value (add some fill char to complete)
-     * @param base Integer base conversion (10 by default)
-     * @param fillChar Character used for filling
-     */
-    StringArg& arg(const Int32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
-
-    /**
-     * @brief Set the nth argument of type integer, with default as base 10.
-     * @param i 32 bits unsigned integer value
-     * @param fieldWidth Width of the value (add some fill char to complete)
-     * @param base Integer base conversion (10 by default)
-     * @param fillChar Character used for filling
-     */
-    StringArg& arg(const UInt32 &i, Int32 fieldWidth = 0, Int32 base = 10, WChar fillChar = 0);
-
-    //! Set the nth argument of type float.
-    StringArg& arg(const Float &f, WChar separator = '.');
-
-    //! Set the nth argument of type double.
-    StringArg& arg(const Double &f, WChar separator = '.');
-
-    //! Set the nth argument of type string.
-    StringArg& arg(const String& s);
-
-    inline String& result() { return *m_data; }
-    inline const String& result() const { return *m_data; }
-
-private:
-
-    WChar m_arg[3];
-    String *m_data;
+    void allocateArg();
+    void replaceArg(const WChar *arg, UInt32 argSize, const String &by);
 };
 
 } // namespace o3d

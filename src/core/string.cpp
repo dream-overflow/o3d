@@ -315,8 +315,7 @@ String::~String()
 
 void String::destroy()
 {
-	if (m_data)
-	{
+	if (m_data)	{
 		/*O3D_FREE*/free(m_data);
         m_data = nullptr;
 	}
@@ -324,50 +323,45 @@ void String::destroy()
 	m_size = m_maxsize = 0;
 }
 
-// Initialise la taille de la chaîne a NewSize
-void String::setCapacity(UInt32 NewSize)
+// Initialise la taille de la chaine a newSize
+void String::setCapacity(UInt32 newSize)
 {
-	++NewSize;		// zero terminal
+    ++newSize;		// zero terminal
 
 	// test si la nouvelle taille est plus grande que l'actuelle
 	// ou si la nouvelle taille est plus petite que l'actuelle d'au moins 1*m_threshold
-	if (NewSize > m_maxsize || (m_maxsize > m_threshold && NewSize < m_maxsize - m_threshold))
-	{
+    if (newSize > m_maxsize || (m_maxsize > m_threshold && newSize < m_maxsize - m_threshold)) {
 		// calcule la nouvelle taille (plus proche multiple de m_threshold)
-		NewSize = ((NewSize + m_threshold - 1) / m_threshold) * m_threshold;
+        newSize = ((newSize + m_threshold - 1) / m_threshold) * m_threshold;
 
-		if (!NewSize)		// si la nouvelle taille est nulle
-		{
-			if (m_data)
-			{
+        if (!newSize) {
+            // si la nouvelle taille est nulle
+            if (m_data) {
 				/*O3D_FREE*/free(m_data);
                 m_data = nullptr;
+                m_size = m_maxsize = 0;
 			}
-		}
-		else
-		{
-			if (m_data)
-			{
+        } else {
+            if (m_data) {
 				// sinon realloue
-                m_data = (WChar*)/*O3D_REALLOC*/realloc(m_data,NewSize*sizeof(WChar));
-			}
-			else
-			{
+                m_data = (WChar*)/*O3D_REALLOC*/realloc(m_data, newSize*sizeof(WChar));
+            } else {
 				// alloue et met un zero terminal
-                m_data = (WChar*)/*O3D_MALLOC*/malloc(NewSize*sizeof(WChar));
+                m_data = (WChar*)/*O3D_MALLOC*/malloc(newSize*sizeof(WChar));
 				m_data[0] = 0;
 			}
-		}
 
-		if (!m_data)
-			O3D_ERROR(E_InvalidAllocation(""));
+            if (!m_data) {
+                O3D_ERROR(E_InvalidAllocation(""));
+            }
 
-		m_maxsize = NewSize;
+            m_maxsize = newSize;
 
-		if (m_size > m_maxsize) // test si la taille utilisée est supérieure à la taille allouée
-		{
-			m_size = m_maxsize;	    // redimmensionne à m_maxsize
-			m_data[m_size-1] = 0;   // et replace le zéro terminal
+            // test si la taille utilisée est supérieure à la taille allouée
+            if (m_size > m_maxsize) {
+                m_size = m_maxsize;	    // redimensionne à m_maxsize
+                m_data[m_size-1] = 0;   // et replace le zéro terminal
+            }
 		}
 	}
 }
@@ -385,15 +379,15 @@ void String::set(WChar c)
 void String::set(const String &copy, UInt32 pos)
 {
     Int32 len = copy.m_size - pos - 1;
-	if (len < 0)
-	{
+    if (len < 0) {
 		destroy();
 		return;
 	}
 
 	// resize if necessary
-	if (m_maxsize < (copy.m_size - pos))
+    if (m_maxsize < (copy.m_size - pos)) {
 		setCapacity(len);
+    }
 
 	// copy
     memmove(m_data, copy.m_data + pos, len*sizeof(WChar));
@@ -405,24 +399,24 @@ void String::set(const String &copy, UInt32 pos)
 
 void String::set(const Char* src, UInt32 pos)
 {
-    if (src == nullptr)
-	{
+    if (src == nullptr) {
 		destroy();
 		return;
 	}
 
     UInt32 srclen = (UInt32)strlen(src);
     Int32 len = srclen - pos;
-	if (len < 0)
+    if (len < 0) {
 		return;
+    }
 
 	// resize if necessary
-	if (m_maxsize < (srclen-pos+1))
+    if (m_maxsize < (srclen-pos+1)) {
 		setCapacity(len);
+    }
 
 	// copy
-    for (Int32 i = 0; i < len; ++i)
-	{
+    for (Int32 i = 0; i < len; ++i)	{
         m_data[i] = static_cast<UInt8>(*(src+pos+i));
 	}
 
@@ -432,20 +426,21 @@ void String::set(const Char* src, UInt32 pos)
 
 void String::set(const WChar* src, UInt32 pos)
 {
-    if (src == nullptr)
-	{
+    if (src == nullptr)	{
 		destroy();
 		return;
 	}
 
     UInt32 srclen = (UInt32)wcslen(src);
     Int32 len = srclen-pos;
-	if (len < 0)
+    if (len < 0) {
 		return;
+    }
 
 	// resize if necessary
-	if (m_maxsize < (srclen-pos+1))
+    if (m_maxsize < (srclen-pos+1)) {
 		setCapacity(len);
+    }
 
 	// copy
     memmove(m_data, src+pos, len*sizeof(WChar));
@@ -461,8 +456,7 @@ void String::setFill(WChar c, UInt32 n)
 	setCapacity(n);
 	m_size = n+1;
 
-    for (UInt32 i = 0 ; i < n ; ++i)
-	{
+    for (UInt32 i = 0 ; i < n ; ++i) {
 		m_data[i] = c;
 	}
 
@@ -472,8 +466,7 @@ void String::setFill(WChar c, UInt32 n)
 // Fill the string with a given character
 void String::fill(WChar c)
 {
-    for (UInt32 i = 0 ; i < (m_size-1) ; ++i)
-	{
+    for (UInt32 i = 0 ; i < (m_size-1) ; ++i) {
 		m_data[i] = c;
 	}
 
@@ -483,15 +476,16 @@ void String::fill(WChar c)
 // Count the number of occurrence of a given char
 UInt32 String::count(WChar c) const
 {
-	if (m_size == 0)
+    if (m_size == 0) {
 		return 0;
+    }
 
     Int32 count=0;
 
-    for (UInt32 i = 0; i < m_size; ++i)
-	{
-		if (m_data[i] == c)
+    for (UInt32 i = 0; i < m_size; ++i)	{
+        if (m_data[i] == c) {
 			++count;
+        }
 	}
 
 	return count;
@@ -503,13 +497,14 @@ Bool String::startsWith(const String &start) const
     UInt32 len = start.length();
 
 	// this is to lower
-	if (this->length() < len)
+    if (this->length() < len) {
         return False;
+    }
 
-    for (UInt32 i = 0; i < len; ++i)
-	{
-		if (m_data[i] != start[i])
+    for (UInt32 i = 0; i < len; ++i) {
+        if (m_data[i] != start[i]) {
             return False;
+        }
 	}
 
     return True;
@@ -521,13 +516,14 @@ Bool String::endsWith(const String &end) const
     UInt32 len = end.length();
 
 	// this is to lower
-	if (this->length() < len)
+    if (this->length() < len) {
         return False;
+    }
 
-    for (UInt32 i = 0, j = m_size - len - 1; j < m_size; ++i, ++j)
-	{
-		if (m_data[j] != end[i])
+    for (UInt32 i = 0, j = m_size - len - 1; j < m_size; ++i, ++j) {
+        if (m_data[j] != end[i]) {
             return False;
+        }
 	}
 
     return True;
@@ -536,23 +532,18 @@ Bool String::endsWith(const String &end) const
 // delete an eventually char/string at the end of the string
 Bool String::trimRight(WChar _char, Bool _repeat)
 {
-	if (m_size > 1)
-	{
-		if (_repeat)
-		{
-            for (Int32 k = (Int32)m_size-2 ; k >= 0 ; --k)
-			{
-				if (m_data[k] != _char)
-				{
-                    if (k != (Int32)m_size - 2)
+	if (m_size > 1)	{
+        if (_repeat) {
+            for (Int32 k = (Int32)m_size-2 ; k >= 0 ; --k) {
+                if (m_data[k] != _char) {
+                    if (k != (Int32)m_size - 2) {
 						truncate(k+1);
+                    }
 
                     return True;
 				}
 			}
-		}
-		else if (m_data[m_size-2] == _char)
-		{
+        } else if (m_data[m_size-2] == _char) {
 			truncate(m_size-2);
             return True;
 		}
@@ -563,14 +554,14 @@ Bool String::trimRight(WChar _char, Bool _repeat)
 Bool String::trimRight(const String& str)
 {
 	// source length lesser than search string
-	if (m_size < str.m_size)
+    if (m_size < str.m_size) {
         return False;
+    }
 
     Int32 searchPos = m_size - str.m_size;
     Int32 pos = sub(str, (UInt32)searchPos);
 
-	if ((pos != -1) && (pos == searchPos))
-	{
+    if ((pos != -1) && (pos == searchPos)) {
 		truncate(pos);
         return True;
 	}
@@ -580,8 +571,7 @@ Bool String::trimRight(const String& str)
 
 WChar String::trimRight()
 {
-	if (length())
-	{
+    if (length()) {
         WChar remChar = m_data[length()-1];
 
 		setCapacity(length()-1);
@@ -596,8 +586,9 @@ WChar String::trimRight()
 // Trim chars from the end of the string
 Bool String::trimRightChars(const String & _charList)
 {
-	if (_charList.isNull())
+    if (_charList.isNull()) {
         return False;
+    }
 
     UInt32 lCounter = 0;
     const WChar * lChar = nullptr;
@@ -605,29 +596,27 @@ Bool String::trimRightChars(const String & _charList)
 
     const WChar * lCharSrc = &m_data[m_size-2];
 
-    for (Int32 k = m_size-1 ; k > 0 ; --k)
-	{
+    for (Int32 k = m_size-1 ; k > 0 ; --k) {
 		lChar = _charList.m_data;
 
-		while (lChar != lCharEnd)
-		{
-			if (*lCharSrc == *lChar)
+        while (lChar != lCharEnd) {
+            if (*lCharSrc == *lChar) {
 				break;
+            }
 
 			++lChar;
 		}
 
-		if (lChar == lCharEnd)
+        if (lChar == lCharEnd) {
 			break;
+        }
 
 		--lCharSrc;
 		++lCounter;
 	}
 
-	if (lCounter > 0)
-	{
+    if (lCounter > 0) {
 		truncate(m_size - lCounter - 1);
-
         return True;
 	}
     return False;
@@ -636,8 +625,9 @@ Bool String::trimRightChars(const String & _charList)
 // Trim char from the start of the string
 Bool String::trimLeftChars(const String & _charList)
 {
-	if (_charList.isNull())
+    if (_charList.isNull()) {
         return False;
+    }
 
     UInt32 lCounter = 0;
     const WChar * lChar = nullptr;
@@ -645,27 +635,25 @@ Bool String::trimLeftChars(const String & _charList)
 
     const WChar * lCharSrc = m_data;
 
-    for (Int32 k = m_size-1 ; k > 0 ; --k)
-	{
+    for (Int32 k = m_size-1 ; k > 0 ; --k) {
 		lChar = _charList.m_data;
 
-		while (lChar != lCharEnd)
-		{
+        while (lChar != lCharEnd) {
 			if (*lCharSrc == *lChar)
 				break;
 
 			++lChar;
 		}
 
-		if (lChar == lCharEnd)
+        if (lChar == lCharEnd) {
 			break;
+        }
 
 		++lCharSrc;
 		++lCounter;
 	}
 
-	if (lCounter > 0)
-	{
+    if (lCounter > 0) {
         memmove(m_data, m_data + lCounter, sizeof(WChar)*(m_size-lCounter));
 		m_size = m_size-lCounter;
 		setCapacity(m_size);
@@ -678,14 +666,11 @@ Bool String::trimLeftChars(const String & _charList)
 // Delete an eventually char at the start of the string
 Bool String::trimLeft(WChar c, Bool rep)
 {
-	if (m_size > 1)
-	{
-		if (rep)
-		{
+    if (m_size > 1) {
+        if (rep) {
             Int32 count = 0;
 
-			while (m_data[count] == c)
-			{
+            while (m_data[count] == c) {
 				count++;
 			}
 
@@ -694,11 +679,8 @@ Bool String::trimLeft(WChar c, Bool rep)
 			setCapacity(m_size);
 
             return True;
-		}
-		else
-		{
-			if (m_data[0] == c)
-			{
+        } else {
+            if (m_data[0] == c) {
                 memmove(m_data, m_data+1, sizeof(WChar)*(m_size-1));
 				m_size = m_size - 1;
 				setCapacity(m_size);
@@ -713,8 +695,7 @@ Bool String::trimLeft(WChar c, Bool rep)
 // delete the first character of the string (if it is not empty)
 WChar String::trimLeft()
 {
-	if (length())
-	{
+    if (length()) {
         WChar remChar = m_data[0];
 
         memmove(m_data, m_data+1, sizeof(WChar)*(m_size-1));
@@ -796,16 +777,19 @@ String String::print(const WChar* str, ...)
 // Concat the string src to this
 String& String::operator+= (const String &src)
 {
-	if (src.m_size <= 1)
+    if (src.m_size <= 1) {
 		return *this;
+    }
 
-	if (m_size == 0)
+    if (m_size == 0) {
 		m_size = 1;
+    }
 
     UInt32 newlen = (m_size - 1) + (src.m_size - 1);
 
-	if (m_maxsize < newlen+1)
+    if (m_maxsize < newlen+1) {
 		setCapacity(newlen);
+    }
 
     memmove(m_data+m_size-1, src.m_data, (src.m_size-1)*sizeof(WChar));
 	m_data[newlen] = 0;
@@ -816,11 +800,13 @@ String& String::operator+= (const String &src)
 
 String& String::operator+= (WChar c)
 {
-	if (m_size == 0)
+    if (m_size == 0) {
 		m_size = 1;
+    }
 
-	if (m_maxsize < m_size+1)
+    if (m_maxsize < m_size+1) {
 		setCapacity(m_size+1);
+    }
 
 	m_data[m_size-1] = c;
 	m_data[m_size]   = 0;
@@ -832,21 +818,25 @@ String& String::operator+= (WChar c)
 // ajoute s1 et s2 et le renvoi return = s1 + s2
 String String::operator+ (const String &s)const
 {
-	if (m_size == 0)
+    if (m_size == 0) {
 		return String(s);
+    }
 
 	String str(*this);
 
-	if (s.m_size <= 1)
+    if (s.m_size <= 1) {
 		return str;
+    }
 
     UInt32 newlen = (str.m_size-1) + (s.m_size-1);
 
-	if (str.m_maxsize < newlen+1)
+    if (str.m_maxsize < newlen+1) {
 		str.setCapacity(newlen);
+    }
 
-	if (str.m_size == 0)
+    if (str.m_size == 0) {
 		str.m_size = 1;
+    }
 
     memmove(str.m_data+m_size-1, s.m_data, (s.m_size-1)*sizeof(WChar));
 	str.m_data[newlen] = 0;
@@ -860,8 +850,7 @@ String String::operator+ (const String &s)const
 String String::operator+ (WChar c) const
 {
 	// this is empty
-	if (m_size == 0)
-	{
+    if (m_size == 0) {
 		String result;
 		result.set(c);
 	}
@@ -881,17 +870,6 @@ Bool String::operator== (const String &s) const
         return False;
     }
 
-//    if (isNull()) {
-//        O3D_ERROR(E_NullPointer("left string is null"));
-//    }
-
-//    if (s.isNull()) {
-//        O3D_ERROR(E_NullPointer("right string is null"));
-//    }
-
-//    if (isEmpty() && s.isEmpty()) // both are empty
-//        return 0;
-
     return wcscmp(m_data, s.m_data) == 0;
 }
 
@@ -902,17 +880,6 @@ Bool String::operator!=(const String &s) const
     } else if (isNull() || s.isNull()) {
         return True;
     }
-
-//    if (isNull()) {
-//        O3D_ERROR(E_NullPointer("left string is null"));
-//    }
-
-//    if (s.isNull()) {
-//        O3D_ERROR(E_NullPointer("right string is null"));
-//    }
-
-//    if (isEmpty() && s.isEmpty()) // both are empty
-//        return 1;
 
     return wcscmp(m_data, s.m_data) != 0;
 }
@@ -926,38 +893,23 @@ Int32 String::compare(const String & s, ComparisonPolicy _type) const
         return False;
     }
 
-//    if (isNull()) {
-//        O3D_ERROR(E_NullPointer("left string is null"));
-//    }
-
-//    if (s.isNull()) {
-//        O3D_ERROR(E_NullPointer("right string is null"));
-//    }
-
-//    if (isEmpty() && s.isEmpty()) // both are empty
-//		return 0;
-
-	if (_type == String::CASE_SENSITIVE)
+    if (_type == String::CASE_SENSITIVE) {
         return wcscmp(getData(), s.getData());
-	else
+    } else {
         return o3d::wcscasecmp(getData(), s.getData());
+    }
 }
 
 //! Case sensitive comparison.
 Bool String::operator> (const String &s) const
 {
     if (isNull()) {
-        // O3D_ERROR(E_NullPointer("left string is null"));
         return False;
     }
 
     if (s.isNull()) {
-        // O3D_ERROR(E_NullPointer("right string is null"));
         return True;
     }
-
-//    if (isEmpty() && s.isEmpty()) // both are empty
-//        return 0;
 
     return wcscmp(m_data, s.m_data) > 0;
 }
@@ -966,17 +918,12 @@ Bool String::operator> (const String &s) const
 Bool String::operator< (const String &s) const
 {
     if (isNull()) {
-        // O3D_ERROR(E_NullPointer("left string is null"));
         return True;
     }
 
     if (s.isNull()) {
-        // O3D_ERROR(E_NullPointer("right string is null"));
         return False;
     }
-
-//    if (isEmpty() && s.isEmpty()) // both are empty
-//        return 0;
 
     return wcscmp(m_data, s.m_data) < 0;
 }
@@ -988,16 +935,12 @@ Bool String::operator>=(const String &s) const
     }
 
     if (isNull()) {
-        // O3D_ERROR(E_NullPointer("left string is null"));
         return False;
     }
 
     if (s.isNull()) {
-        // O3D_ERROR(E_NullPointer("right string is null"));
         return True;
     }
-//    if (isEmpty() && s.isEmpty()) // both are empty
-//        return 0;
 
     return wcscmp(m_data, s.m_data) >= 0;
 }
@@ -1009,36 +952,33 @@ Bool String::operator<=(const String &s) const
     }
 
     if (isNull()) {
-        // O3D_ERROR(E_NullPointer("left string is null"));
         return True;
     }
 
     if (s.isNull()) {
-        // O3D_ERROR(E_NullPointer("right string is null"));
         return False;
     }
-
-//    if (isEmpty() && s.isEmpty()) // both are empty
-//        return 0;
 
     return wcscmp(m_data, s.m_data) <= 0;
 }
 
 //  renvoie le charactère placé à la position Index
-WChar& String::operator[] (UInt32 Index)
+WChar& String::operator[] (UInt32 index)
 {
-	if (Index >= m_size)
+    if (index >= m_size) {
 		O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
-	return m_data[Index];
+    return m_data[index];
 }
 
-const WChar& String::operator[] (UInt32 Index)const
+const WChar& String::operator[] (UInt32 index) const
 {
-	if (Index >= m_size)
+    if (index >= m_size) {
 		O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
-	return m_data[Index];
+    return m_data[index];
 }
 
 // Lowercase the entire string
@@ -1048,8 +988,7 @@ String& String::lower()
 	_wcslwr(m_data);
 #else
     UInt32 i;
-	for (i = 0; i < m_size-1; i++)
-	{
+    for (i = 0; i < m_size-1; i++) {
 		m_data[i] = towlower(m_data[i]);
 	}
 #endif
@@ -1063,8 +1002,7 @@ String& String::upper()
 	_wcsupr(m_data);
 #else
     UInt32 i;
-	for (i = 0; i < m_size-1; i++)
-	{
+    for (i = 0; i < m_size-1; i++) {
 		m_data[i] = towupper(m_data[i]);
 	}
 #endif
@@ -1124,27 +1062,30 @@ String String::title() const
 
 Int32 String::sub(const String& str, UInt32 pos) const
 {
-    UInt32 len = str.m_size - 1;	// taille de la sous chaine a comparer
-    UInt32 i,j = 0;					// position dans la sous chaine
+    UInt32 len = str.m_size - 1;  // taille de la sous chaine a comparer
+    UInt32 i, j = 0;              // position dans la sous chaine
 
-	if ((m_size - pos) < len)
+    if ((m_size - pos) < len) {
 		return -1;	// chaine trop petite pour accepter sous chaine
+    }
 
-	for (i = pos; i < m_size; ++i)
-	{
-		if (m_data[i] == str.m_data[j])
+    for (i = pos; i < m_size; ++i) {
+        if (m_data[i] == str.m_data[j]) {
 			++j;
-		else
+        } else {
 			j = 0;
+        }
 
-		if (j == len)
+        if (j == len) {
 			break;
+        }
 	}
 
-	if (j == len)
+    if (j == len) {
 		return (i-len+1);
+    }
 
-	return (-1);
+    return -1;
 }
 
 // Insert a char
@@ -1413,8 +1354,9 @@ Int32 String::find(const String &s, UInt32 pos, Bool reverse, Bool last) const
 // Truncate the string
 String& String::truncate(UInt32 pos)
 {
-	if (pos >= m_size)
+    if (pos >= m_size) {
 		return *this;
+    }
 
 	setCapacity(pos);
 	m_size = pos + 1;
@@ -1426,14 +1368,16 @@ String& String::truncate(UInt32 pos)
 // Get a part of the string given a range
 String String::sub(UInt32 _start, UInt32 _end) const
 {
-	if (m_size == 0)
+    if (m_size == 0) {
 		return String("");
+    }
 
     _end = o3d::min<UInt32>(_end, m_size-1);
     _start = o3d::min<UInt32>(_start, m_size-1);
 
-	if (_end <= _start)
+    if (_end <= _start) {
 		return String("");
+    }
 
     const UInt32 lSize = _end - _start;
 
@@ -1484,18 +1428,19 @@ String& String::replace(WChar c, WChar n)
 // Replace each occurrence of a string by another string
 String& String::replace(const String& find, const String& by)
 {
-	if (m_size == 0 || find.m_size == 0 || by.m_size == 0)
+    if (m_size == 0 || find.m_size == 0 || by.m_size == 0) {
 		return *this;
+    }
 
     Int32 dstPos = 0; // starting at position 0
     Int32 srcPos;
 
-	while ((dstPos = sub(find, dstPos)) != -1)
-	{
+    while ((dstPos = sub(find, dstPos)) != -1) {
 		srcPos = dstPos + find.m_size - 1;
 
-		if (by.m_size > find.m_size)
+        if (by.m_size > find.m_size) {
 			setCapacity(m_size-1+ by.m_size-find.m_size);
+        }
 
         memmove(m_data+dstPos+by.m_size-1, m_data+srcPos, sizeof(WChar)*(m_size-srcPos));
         memmove(m_data+dstPos, by.m_data, sizeof(WChar)*(by.m_size-1));
@@ -1504,8 +1449,9 @@ String& String::replace(const String& find, const String& by)
 	}
 
 	// resize the m_maxsize if necessary, only when 'by' is lower than 'find'
-	if (by.m_size < find.m_size)
+    if (by.m_size < find.m_size) {
 		setCapacity(m_size-1);
+    }
 
 	return *this;
 }
@@ -1544,7 +1490,7 @@ void String::concat(Int32 i, Int32 radix)
 {
     WChar str[16] = { 0 };
 #ifdef _MSC_VER
-	_itow(i,str,radix);
+    _itow(i, str, radix);
 #else
 	swprintf(str, 16, L"%i", i);
 #endif
@@ -1588,19 +1534,41 @@ void String::concat(UInt64 i, Int32 radix)
 }
 
 // Concat a float
-void String::concat(Float f)
+void String::concat(Float f, Int32 decimals)
 {
     WChar str[16] = { 0 };
-	swprintf(str, 16, L"%f", f);
+    if (decimals >= 0) {
+        WChar format[] = L"%.xf";
+        format[2] = o3d::min(9, decimals) + '0';
+
+        swprintf(str, 16, format, f);
+    } else {
+        swprintf(str, 16, L"%f", f);
+    }
 
 	(*this) += str;
 }
 
 // Concat a double
-void String::concat(Double d)
+void String::concat(Double d, Int32 decimals)
 {
     WChar str[32] = { 0 };
-    swprintf(str, 32, L"%f", d);
+    if (decimals >= 10) {
+        decimals = o3d::min(16, decimals);
+
+        WChar format[] = L"%.xxf";
+        format[2] = decimals / 10 + '0';
+        format[3] = (decimals - ((decimals / 10) * 10)) + '0';
+
+        swprintf(str, 32, format, d);
+    } else if (decimals >= 0) {
+        WChar format[] = L"%.xxf";
+        format[2] =decimals + '0';
+
+        swprintf(str, 32, format, d);
+    } else {
+        swprintf(str, 32, L"%f", d);
+    }
 
     (*this) += str;
 }
@@ -1609,39 +1577,370 @@ void String::concat(Double d)
 // arg
 //
 
-StringArg String::arg(const Char &c)
+inline Bool hasArg(const WChar *data, UInt32 dataSize, UInt32 dataMaxSize)
 {
-    return StringArg(this).arg(c);
+    return ((dataSize+1 <= dataMaxSize) && ((data[dataSize] & 0xf0f0f0ff) >= 0xf0f0f000));
 }
 
-StringArg String::arg(const WChar &w)
+void String::allocateArg()
 {
-    return StringArg(this).arg(w);
+    // need 1 more extra char outsides of the string data
+    if (m_size+1 < m_maxsize) {
+        setCapacity(m_size-1+1);  // minus 1
+    }
+
+    m_data[m_size] = 0xf0f0f000;
 }
 
-StringArg String::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+inline UInt32 currentArg(const WChar *data, UInt32 dataSize)
 {
-    return StringArg(this).arg(i, fieldWidth, base, fillChar);
+    return data[dataSize] & 0x000000ff;
 }
 
-StringArg String::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+inline void incArg(WChar *data, UInt32 dataSize, UInt32 arg)
 {
-    return StringArg(this).arg(i, fieldWidth, base, fillChar);
+    if (arg < 99) {
+        ++arg;
+    }
+
+    data[dataSize] = (WChar)(0xf0f0f000 | arg);
 }
 
-StringArg String::arg(const Float &f, WChar separator)
+inline Int32 subArg(const WChar *arg, UInt32 argSize, WChar *data, UInt32 dataSize, UInt32 pos)
 {
-    return StringArg(this).arg(f, separator);
+    UInt32 len = argSize - 1;  // taille de la sous chaine a comparer
+    UInt32 i, j = 0;           // position dans la sous chaine
+
+    if ((dataSize - pos) < len) {
+        return -1;	// chaine trop petite pour accepter sous chaine
+    }
+
+    for (i = pos; i < dataSize; ++i) {
+        if (data[i] == arg[j]) {
+            ++j;
+        } else {
+            j = 0;
+        }
+
+        if (j == len) {
+            break;
+        }
+    }
+
+    if (j == len) {
+        return (i-len+1);
+    }
+
+    return -1;
 }
 
-StringArg String::arg(const Double &d, WChar separator)
+void String::replaceArg(const WChar *arg, UInt32 argSize, const String &by)
 {
-    return StringArg(this).arg(d, separator);
+    Int32 dstPos = 0; // starting at position 0
+    Int32 srcPos;
+
+    while ((dstPos = subArg(arg, argSize, m_data, m_size, dstPos)) != -1) {
+        srcPos = dstPos + argSize - 1;
+
+        if (by.m_size > argSize) {
+            setCapacity(m_size-1+1+by.m_size-argSize);  // conserve arg in data
+        }
+
+        memmove(m_data+dstPos+by.m_size-1, m_data+srcPos, sizeof(WChar)*(m_size-srcPos));
+        memmove(m_data+dstPos, by.m_data, sizeof(WChar)*(by.m_size-1));
+
+        m_size += by.m_size - argSize;
+    }
+
+    // resize the m_maxsize if necessary, only when 'by' is lower than 'arg'
+    if (by.m_size < argSize) {
+        setCapacity(m_size-1+1);  // conserve arg in data
+    }
 }
 
-StringArg String::arg(const String &s)
+String& String::arg(const Char &c)
+{   
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(c);
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const WChar &w)
 {
-    return StringArg(this).arg(s);
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(w);
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(i, base);  // @todo fillChar
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(i, base);  // @todo fillChar
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const Int64 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(i, base);  // @todo fillChar
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const UInt64 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
+{
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(i, base);  // @todo fillChar
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const Float &f, Int32 decimals, WChar separator)
+{
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(f, decimals);  // @todo separator or local
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const Double &d, Int32 decimals, WChar separator)
+{
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    String s;
+    s.concat(d, decimals);  // @todo separator or local
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
+}
+
+String& String::arg(const String &s)
+{
+    if (isEmpty()) {
+        return *this;
+    }
+
+    if (!hasArg(m_data, m_size, m_maxsize)) {
+        allocateArg();
+    }
+
+    UInt32 arg = currentArg(m_data, m_size);
+    WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
+    Int32 placeholderSize = 4;
+
+    if (arg < 10) {
+        placeholder[1] = WChar(arg + '0');
+        placeholder[3] = '\0';
+    } else {
+        placeholder[1] = WChar((arg / 10) + '0');
+        placeholder[2] = WChar(arg - ((arg / 10) * 10) + '0');
+        ++placeholderSize;
+    }
+
+    replaceArg(placeholder, placeholderSize, s);
+
+    incArg(m_data, m_size, arg);
+    return *this;
 }
 
 //
@@ -1916,231 +2215,4 @@ T_StringList split(const String &content, const String &delimiters)
     }
 
     return parts;
-}
-
-
-StringArg::StringArg(String *data) :
-    m_arg{'%', '1', '\0'},
-    m_data(data)
-{
-    // string arg ou sinon on utilise un suffix sur la STRING data par example @XX
-    // pour memoriser le next arg
-}
-
-StringArg &StringArg::arg(const Char &c)
-{
-    // max args reached
-    if (m_arg[1] > '9') {
-        return *this;
-    }
-
-    String s;
-    s.concat(c);
-
-    m_data->replace(m_arg, s);
-
-    if (m_arg[2] == 9) {
-        // inc 10^1
-        ++m_arg[1];
-        m_arg[2] = 0;
-    } else if (m_arg[2] == '\0') {
-        // 9 to 10
-        if (m_arg[1] == '9') {
-            m_arg[1] = '1';
-            m_arg[2] = '0';
-        } else {
-            ++m_arg[1];
-        }
-    } else {
-        ++m_arg[2];
-    }
-
-    return *this;
-}
-
-StringArg &StringArg::arg(const WChar &w)
-{
-    // max args reached
-    if (m_arg[1] > '9') {
-        return *this;
-    }
-
-    String s;
-    s.concat(w);
-
-    m_data->replace(m_arg, s);
-
-    if (m_arg[2] == 9) {
-        // inc 10^1
-        ++m_arg[1];
-        m_arg[2] = 0;
-    } else if (m_arg[2] == '\0') {
-        // 9 to 10
-        if (m_arg[1] == '9') {
-            m_arg[1] = '1';
-            m_arg[2] = '0';
-        } else {
-            ++m_arg[1];
-        }
-    } else {
-        ++m_arg[2];
-    }
-
-    return *this;
-}
-
-StringArg &StringArg::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
-{
-    // max args reached
-    if (m_arg[1] > '9') {
-        return *this;
-    }
-
-    // @todo fieldWidth
-    String s;
-    s.concat(i, base);
-
-    m_data->replace(m_arg, s);
-
-    if (m_arg[2] == 9) {
-        // inc 10^1
-        ++m_arg[1];
-        m_arg[2] = 0;
-    } else if (m_arg[2] == '\0') {
-        // 9 to 10
-        if (m_arg[1] == '9') {
-            m_arg[1] = '1';
-            m_arg[2] = '0';
-        } else {
-            ++m_arg[1];
-        }
-    } else {
-        ++m_arg[2];
-    }
-
-    return *this;
-}
-
-StringArg &StringArg::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillChar)
-{
-    // max args reached
-    if (m_arg[1] > '9') {
-        return *this;
-    }
-
-    // @todo fieldWidth
-    String s;
-    s.concat(i, base);
-
-    m_data->replace(m_arg, s);
-
-    if (m_arg[2] == 9) {
-        // inc 10^1
-        ++m_arg[1];
-        m_arg[2] = 0;
-    } else if (m_arg[2] == '\0') {
-        // 9 to 10
-        if (m_arg[1] == '9') {
-            m_arg[1] = '1';
-            m_arg[2] = '0';
-        } else {
-            ++m_arg[1];
-        }
-    } else {
-        ++m_arg[2];
-    }
-
-    return *this;
-}
-
-StringArg &StringArg::arg(const Float &f, WChar separator)
-{
-    // max args reached
-    if (m_arg[1] > '9') {
-        return *this;
-    }
-
-    // @todo separator
-    String s;
-    s.concat(f);
-
-    m_data->replace(m_arg, s);
-
-    if (m_arg[2] == 9) {
-        // inc 10^1
-        ++m_arg[1];
-        m_arg[2] = 0;
-    } else if (m_arg[2] == '\0') {
-        // 9 to 10
-        if (m_arg[1] == '9') {
-            m_arg[1] = '1';
-            m_arg[2] = '0';
-        } else {
-            ++m_arg[1];
-        }
-    } else {
-        ++m_arg[2];
-    }
-
-    return *this;
-}
-
-StringArg &StringArg::arg(const Double &d, WChar separator)
-{
-    // max args reached
-    if (m_arg[1] > '9') {
-        return *this;
-    }
-
-    // @todo separator
-    String s;
-    s.concat(d);
-
-    m_data->replace(m_arg, s);
-
-    if (m_arg[2] == 9) {
-        // inc 10^1
-        ++m_arg[1];
-        m_arg[2] = 0;
-    } else if (m_arg[2] == '\0') {
-        // 9 to 10
-        if (m_arg[1] == '9') {
-            m_arg[1] = '1';
-            m_arg[2] = '0';
-        } else {
-            ++m_arg[1];
-        }
-    } else {
-        ++m_arg[2];
-    }
-
-    return *this;
-}
-
-StringArg &StringArg::arg(const String &s)
-{
-    // max args reached
-    if (m_arg[1] > '9') {
-        return *this;
-    }
-
-    m_data->replace(m_arg, s);
-
-    if (m_arg[2] == 9) {
-        // inc 10^1
-        ++m_arg[1];
-        m_arg[2] = 0;
-    } else if (m_arg[2] == '\0') {
-        // 9 to 10
-        if (m_arg[1] == '9') {
-            m_arg[1] = '1';
-            m_arg[2] = '0';
-        } else {
-            ++m_arg[1];
-        }
-    } else {
-        ++m_arg[2];
-    }
-
-    return *this;
 }
