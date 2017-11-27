@@ -27,4 +27,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_STRINGMAP_H
-

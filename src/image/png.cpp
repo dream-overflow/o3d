@@ -33,14 +33,15 @@ using namespace o3d;
 // png man
 // http://www.libpng.org/pub/png/libpng-1.0.3-manual.html
 
-static void error_handler(png_struct* ,const char *error)
+static void error_handler(png_struct*, const char *error)
 {
 	O3D_ERROR(E_InvalidResult(String(error)));
 }
 
-static void warning_handler(png_struct* ,const char *warning)
+static void warning_handler(png_struct*, const char *warning)
 {
-	O3D_ERROR(E_InvalidResult(String(warning)));
+    // O3D_ERROR(E_InvalidResult(String(warning)));
+    O3D_WARNING(String(warning));
 }
 
 static void _ReadProc(png_struct *src, png_byte *data, png_size_t size)
@@ -924,4 +925,3 @@ Bool Image::saveRgbPng(const String &filename)
 #ifdef _MSC_VER
 #pragma warning (default: 4611)
 #endif
-

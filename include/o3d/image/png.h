@@ -29,8 +29,9 @@ public:
 		ImgFormat(),
 		m_palbpp(0),
 		m_bpp(0),
-		m_palette(NULL)
-	{}
+        m_palette(nullptr)
+    {
+    }
 
 	virtual ImgFormat* clone() const { return (ImgFormat*)new Png(*this); }
 
@@ -63,4 +64,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_PNG_H
-

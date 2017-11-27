@@ -29,11 +29,9 @@ I18n::~I18n()
 
 void I18n::setLang(I18n::Languages lang)
 {
-	if (m_currentLang != lang)
-	{
+    if (m_currentLang != lang) {
 		// reload each folder
-		for (String &folder : m_folders)
-		{
+        for (String &folder : m_folders) {
 			loadLang(folder, lang);
 		}
 
@@ -50,10 +48,11 @@ void I18n::addFolder(const String &path)
 String I18n::get(const String &key) const
 {
 	StringMap<String>::CIT cit = m_strings.find(key);
-	if (cit != m_strings.end())
+    if (cit != m_strings.end()) {
 		return cit->second;
-	else
+    } else {
 		return key;
+    }
 }
 
 String I18n::get(const String &key, Int32 _1) const
@@ -62,34 +61,31 @@ String I18n::get(const String &key, Int32 _1) const
     String res;
 
     StringMap<String>::CIT cit = m_strings.find(key);
-    if (cit != m_strings.end())
+    if (cit != m_strings.end()) {
         data = cit->second;
-    else
+    } else {
         return key;
+    }
 
     String val1 = String::print("%i", _1);
     Bool plural = o3d::abs(_1) > 1;
 
     Int32 p = data.sub("{}", 0);
-    if (p >= 0)
+    if (p >= 0) {
         res = data.sub(0, p) + val1 + data.sub(p+2, -1);
-    else
+    } else {
         return key;
+    }
 
     p = 0;
-    while ((p = res.sub("{", p)) != -1)
-    {
+    while ((p = res.sub("{", p)) != -1) {
         Int32 p2 = res.sub("}", p+2);
-        if (p2 > p)
-        {
-            if (plural)
-            {
+        if (p2 > p) {
+            if (plural) {
                 // set the value between {}
                 res.remove(p, 1);
                 res.remove(p2-1, 1);
-            }
-            else
-            {
+            } else {
                 // remove the value between {} and the {}
                 res.remove(p, p2-p+1);
             }
@@ -105,16 +101,18 @@ String I18n::get(const String &key, const String &_1) const
 	String res;
 
 	StringMap<String>::CIT cit = m_strings.find(key);
-	if (cit != m_strings.end())
+    if (cit != m_strings.end()) {
 		data = cit->second;
-	else
+    } else {
 		return key;
+    }
 
 	Int32 p = data.sub("{}", 0);
-	if (p >= 0)
+    if (p >= 0) {
 		return data.sub(0, p) + _1 + data.sub(p+2, -1);
-	else
+    } else {
 		return key;
+    }
 }
 
 String I18n::get(const String &key, const String &_1, const String &_2) const
@@ -123,19 +121,22 @@ String I18n::get(const String &key, const String &_1, const String &_2) const
 	String res;
 
 	StringMap<String>::CIT cit = m_strings.find(key);
-	if (cit != m_strings.end())
+    if (cit != m_strings.end()) {
 		data = cit->second;
-	else
+    } else {
 		return key;
+    }
 
 	Int32 p1 = data.sub("{}", 0);
 	Int32 p2 = data.sub("{}", p1+2);
 
-	if (p1 >= 0)
+    if (p1 >= 0) {
 		res = data.sub(0, p1) + _1 + data.sub(p1+2, p2);
+    }
 
-	if (p2 >= 0)
+    if (p2 >= 0) {
 		res += _2 + data.sub(p2+2, -1);
+    }
 
 	return res;
 }
@@ -146,23 +147,27 @@ String I18n::get(const String &key, const String &_1, const String &_2, const St
 	String res;
 
 	StringMap<String>::CIT cit = m_strings.find(key);
-	if (cit != m_strings.end())
+    if (cit != m_strings.end()) {
 		data = cit->second;
-	else
+    } else {
 		return key;
+    }
 
 	Int32 p1 = data.sub("{}", 0);
 	Int32 p2 = data.sub("{}", p1+2);
 	Int32 p3 = data.sub("{}", p2+2);
 
-	if (p1 >= 0)
+    if (p1 >= 0) {
 		res = data.sub(0, p1) + _1 + data.sub(p1+2, p2);
+    }
 
-	if (p2 >= 0)
+    if (p2 >= 0) {
 		res += _2 + data.sub(p2+2, p3);
+    }
 
-	if (p3 >= 0)
+    if (p3 >= 0) {
 		res += _3 + data.sub(p3+2, -1);
+    }
 
 	return res;
 }
@@ -206,19 +211,18 @@ void I18n::loadLang(const String &path, I18n::Languages lang)
 	Int32 equalPos;
 	String key, value;
 
-    while (is->readLine(line) != -1)
-	{
+    while (is->readLine(line) != -1) {
 		line.trimLeftChars(" \t");
 		line.trimRightChars(" \t");
 
 		// comment or empty line
-		if (line.startsWith("#") || line.isEmpty())
+        if (line.startsWith("#") || line.isEmpty()) {
 			continue;
+        }
 
 		// find the first = and split at
 		equalPos = line.find('=');
-		if (equalPos > 0)
-		{
+        if (equalPos > 0) {
 			key = line.sub(0, equalPos);
 			key.trimRight(' ');
 
@@ -231,4 +235,3 @@ void I18n::loadLang(const String &path, I18n::Languages lang)
 
     deletePtr(is);
 }
-

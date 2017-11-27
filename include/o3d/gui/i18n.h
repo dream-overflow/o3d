@@ -22,6 +22,11 @@ namespace o3d {
  * The languages files are simple text files with key = value.
  * Each pair key/value are key = string, with some string can contains {} as
  * a variable parameter @see get methods. Trailing space around = are trimmed.
+ * @todo Support .mo .po files
+ * @todo Changed placeholders to be consistent with string args
+ * @todo Improve plural forms support (depending of the lang)
+ * @todo Add namespace support
+ * @todo Be compatible with gnu gettext parsing
  */
 class O3D_API I18n
 {
@@ -59,7 +64,7 @@ public:
 
 	//! Add a language folder. The folder must contains one file per language,
 	//! like en_US.lang, fr_FR.lang.
-	//! The folder must remains accessible during the live of the usange of the Gui,
+    //! The folder must remains accessible during the live of the usage of the Gui,
 	//! in the case you want to change the language dynamicaly. Because calling a change
 	//! of language will do a full reload of the lang files.
 	void addFolder(const String &path);
@@ -106,4 +111,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_I18N_H
-
