@@ -248,4 +248,3 @@ void ToolBar::updateCache()
 	Theme *theme = getUsedTheme();
     theme->drawWidget(Theme::TOOL_BAR, 0, 0, m_size.x(), m_size.y());
 }
-
