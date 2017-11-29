@@ -185,4 +185,3 @@ FileLogger::LogLevel FileLogger::getLogLevel() const
 {
     return m_logLevel;
 }
-

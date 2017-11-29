@@ -69,12 +69,13 @@ void EvtManager::postEvent(EvtFunctionAsyncBase * _pFunction)
         if ((lThread == nullptr) && m_isAutoWakeUp && !m_mainMessage) {
             Application::pushEvent(Application::EVENT_EVT_MANAGER, 0, 0);
             m_mainMessage = True;
+        }
 
-            if (m_wakeUpCallback) {
-                m_mutex.unlock();
-                m_wakeUpCallback->call(nullptr);
-            }
-		}
+        lLocker.unlock();
+
+        if (m_wakeUpCallback) {
+            m_wakeUpCallback->call(nullptr);
+        }
     } else {
 		deletePtr(_pFunction);
 		O3D_ERROR(E_InvalidOperation("Thread not registered in the EvtManager"));
@@ -130,7 +131,7 @@ UInt32 EvtManager::processEvent()
 	T_EventList lList;
 
 	{
-		FastMutexLocker lLocker(m_mutex);
+        FastMutexLocker lLocker(m_mutex);
 
 		IT_PoolMap itMap = getPoolMap(lCurrentThreadId);
 

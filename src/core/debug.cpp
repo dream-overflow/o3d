@@ -26,8 +26,10 @@ Debug* Debug::m_instance = nullptr;
 //---------------------------------------------------------------------------------------
 Debug* Debug::instance()
 {
-	if (!m_instance)
+    if (!m_instance) {
 		m_instance = new Debug();
+    }
+
     return m_instance;
 }
 
@@ -36,8 +38,7 @@ Debug* Debug::instance()
 //---------------------------------------------------------------------------------------
 void Debug::destroy()
 {
-	if (m_instance)
-	{
+    if (m_instance) {
 		delete m_instance;
         m_instance = nullptr;
 	}
@@ -69,31 +70,33 @@ void Debug::throwDebug(
 {
 	O3D_DebugMutex.lock();
 
-    if (m_defaultLog)
-	{
+    if (m_defaultLog) {
 		String head;
-        if (logLevel == Logger::MESSAGE)
+        if (logLevel == Logger::MESSAGE) {
 			head = "<MSG> " ;
-        else if (logLevel == Logger::WARNING)
+        } else if (logLevel == Logger::WARNING) {
 			head = "<WRN> ";
-        else if (logLevel == Logger::ERROR)
+        } else if (logLevel == Logger::ERROR) {
 			head = "<ERR> ";
-        else if (logLevel == Logger::CRITICAL)
+        }else if (logLevel == Logger::CRITICAL) {
             head = "<CRI> ";
+        }
 
         String details = "";
 
-        if (logLevel >= Logger::ERROR)
+        if (logLevel >= Logger::ERROR) {
             details = String::print("\n    at line(%i) file(%s) function(%s)", _line_, _file_, _function_);
+        }
 
-		if (filename.isEmpty())
+        if (filename.isEmpty()) {
             m_defaultLog->log(
                         logLevel,
                         head + descr + (descr.length() > 0 ? ", " : "") + msg + details);
-		else
+        } else {
             m_defaultLog->log(
                         logLevel,
                         head + "<" + filename + "> " + descr + (descr.length() > 0 ? ", " : "") + msg + details);
+        }
 	}
 
 	O3D_DebugMutex.unlock();
@@ -107,29 +110,22 @@ void Debug::throwDebug(
 	info.Function.fromUtf8(_function_);
 	info.WorkingFile = filename;
 
-    if (logLevel == Logger::MESSAGE)
-	{
+    if (logLevel == Logger::MESSAGE) {
 		info.Descriptor = "Message";
 		info.Type = DebugInfo::MESSAGE_INFO;
 		throwMessage(info);
 		throwAll(info);
-	}
-    else if (logLevel == Logger::WARNING)
-	{
+    } else if (logLevel == Logger::WARNING) {
 		info.Descriptor = "Warning";
 		info.Type = DebugInfo::WARNING_INFO;
 		throwWarning(info);
 		throwAll(info);
-	}
-    else if (logLevel == Logger::ERROR)
-	{
+    } else if (logLevel == Logger::ERROR) {
 		info.Descriptor = descr;
 		info.Type = DebugInfo::ERROR_INFO;
         throwError(info);
 		throwAll(info);
-	}
-    else if (logLevel == Logger::CRITICAL)
-    {
+    } else if (logLevel == Logger::CRITICAL) {
         info.Descriptor = descr;
         info.Type = DebugInfo::CRITICAL_INFO;
         throwCritical(info);
@@ -149,32 +145,34 @@ void Debug::throwDebug(
 {
 	O3D_DebugMutex.lock();
 
-    if (m_defaultLog)
-	{
+    if (m_defaultLog) {
 		String head;
-        if (logLevel == Logger::MESSAGE)
+        if (logLevel == Logger::MESSAGE) {
 			head = "<MSG> " ;
-        else if (logLevel == Logger::WARNING)
+        } else if (logLevel == Logger::WARNING) {
 			head = "<WRN> ";
-        else if (logLevel == Logger::ERROR)
+        } else if (logLevel == Logger::ERROR) {
 			head = "<ERR> ";
-        else if (logLevel == Logger::CRITICAL)
+        } else if (logLevel == Logger::CRITICAL) {
             head = "<CRI> ";
+        }
 
         String details = "";
 
         // for error and critical
-        if (logLevel >= Logger::ERROR)
+        if (logLevel >= Logger::ERROR) {
             details = String::print("\n    at line(%i) file(%ls) function(%ls)", _line_, _file_, _function_);
+        }
 
-        if (filename.isEmpty())
+        if (filename.isEmpty()) {
             m_defaultLog->log(
                         logLevel,
                         head + descr + (descr.length() > 0 ? ", " : "") + msg + details);
-        else
+        } else {
             m_defaultLog->log(
                         logLevel,
                         head + "<" + filename + "> " + descr + (descr.length() > 0 ? ", " : "") + msg + details);
+        }
 	}
 
 	O3D_DebugMutex.unlock();
@@ -188,29 +186,22 @@ void Debug::throwDebug(
 	info.Function = _function_;
 	info.WorkingFile = filename;
 
-    if (logLevel == Logger::MESSAGE)
-	{
+    if (logLevel == Logger::MESSAGE) {
 		info.Descriptor = "Message";
 		info.Type = DebugInfo::MESSAGE_INFO;
 		throwMessage(info);
 		throwAll(info);
-	}
-    else if (logLevel == Logger::WARNING)
-	{
+    } else if (logLevel == Logger::WARNING) {
 		info.Descriptor = "Warning";
 		info.Type = DebugInfo::WARNING_INFO;
 		throwWarning(info);
 		throwAll(info);
-	}
-    else if (logLevel == Logger::ERROR)
-	{
+    } else if (logLevel == Logger::ERROR) {
 		info.Descriptor = descr;
 		info.Type = DebugInfo::ERROR_INFO;
         throwError(info);
 		throwAll(info);
-    }
-    else if (logLevel == Logger::CRITICAL)
-    {
+    } else if (logLevel == Logger::CRITICAL) {
         info.Descriptor = descr;
         info.Type = DebugInfo::CRITICAL_INFO;
         throwCritical(info);
@@ -226,8 +217,7 @@ void Debug::trace(
 {
     O3D_DebugMutex.lock();
 
-    if (m_defaultLog)
-    {
+    if (m_defaultLog) {
         String head = "<TRACE> ";
         m_defaultLog->log(
                     Logger::TRACE,
@@ -245,8 +235,7 @@ void Debug::trace(
 {
     O3D_DebugMutex.lock();
 
-    if (m_defaultLog)
-    {
+    if (m_defaultLog) {
        String head = "<TRACE> ";
 #ifdef O3D_WINDOWS
         m_defaultLog->log(
@@ -279,8 +268,9 @@ void Debug::setDefaultLog(const String &filename)
 	FastMutexLocker locker(O3D_DebugMutex);
     deletePtr(m_defaultLog);
 
-    if (filename.isValid())
+    if (filename.isValid()) {
         m_defaultLog = new FileLogger(filename);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -291,4 +281,3 @@ Bool Debug::isDefaultLog()
 	FastMutexLocker locker(O3D_DebugMutex);
     return (m_defaultLog != nullptr);
 }
-
