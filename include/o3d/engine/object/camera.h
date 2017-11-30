@@ -15,11 +15,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Camera
-//---------------------------------------------------------------------------------------
-//! Camera object that offer a projection matrix support. Can be ortho or perspective.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Camera object that offer a projection matrix support. Can be ortho or perspective.
+ */
 class O3D_API Camera : public SceneObject
 {
 public:
@@ -171,4 +169,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_CAMERA_H
-

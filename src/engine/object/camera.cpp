@@ -323,4 +323,3 @@ Bool Camera::readFromFile(InStream &is)
 	reCompute();
 	return True;
 }
-
