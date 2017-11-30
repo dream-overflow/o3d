@@ -27,25 +27,24 @@ namespace o3d {
 class Math;
 class DualQuaternion;
 
-//---------------------------------------------------------------------------------------
-//! @class Quaternion
-//-------------------------------------------------------------------------------------
-//! Quaternion (hyper-complex number) with 3x3 and 4x4 matrix conversion.
-//!
-//! Les Quaternions sont des vecteurs 4 dimensions : X, Y, Z, W.
-//! Leur representation est la suivantes :
-//!   q = w + xi + yj + zk ou w est la partie reelle et xi + yj + zk la partie imaginaire
-//! i, j, k obeissent aux lois internes suivantes :
-//!   i² = j² = k² = ijk = -1
-//!  ij = -ji = k
-//!  jk = -kj = i
-//!  ki = -ik = j
-//!
-//! (x,y,z) represente l'axe de rotation, et w l'angle.
-//!  
-//! @note contrairement a l'ensemble C( les nombres imaginaires ), les Quaternions
-//! n'ont pas une multiplication commutative donc attention au sens.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Quaternion
+ * @details Quaternion (hyper-complex number) with 3x3 and 4x4 matrix conversion.
+ *
+ * Les Quaternions sont des vecteurs 4 dimensions : X, Y, Z, W.
+ * Leur representation est la suivantes :
+ *   q = w + xi + yj + zk ou w est la partie reelle et xi + yj + zk la partie imaginaire
+ * i, j, k obeissent aux lois internes suivantes :
+ *   i² = j² = k² = ijk = -1
+ *  ij = -ji = k
+ *  jk = -kj = i
+ *  ki = -ik = j
+ *
+ * (x,y,z) represente l'axe de rotation, et w l'angle.
+ *
+ * @note contrairement a l'ensemble C( les nombres imaginaires ), les Quaternions
+ * n'ont pas une multiplication commutative donc attention au sens.
+ */
 class O3D_API Quaternion : Atomic
 {
 	friend class DualQuaternion;
@@ -302,12 +301,9 @@ public:
 	inline Quaternion& normalize()
 	{
 		Float s = Math::sqrt(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W]);
-		if (s == 0.0f)
-		{
+        if (s == 0.0f) {
 			V[X] = V[Y] = V[Z] = 0.0f, V[W] = 1.0f;
-		}
-		else
-		{
+        } else {
 			s = 1.f / s;
 			V[X] *= s; V[Y] *= s; V[Z] *= s; V[W] *= s;
 		}
@@ -319,12 +315,9 @@ public:
 	inline Quaternion getNormalized() const
 	{
 		Float s = Math::sqrt(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W]);
-		if (s == 0.0f)
-		{
+        if (s == 0.0f) {
 			return Quaternion();
-		}
-		else
-		{
+        } else {
 			s = 1.f / s;
 			return Quaternion(-V[X]*s,-V[Y]*s,-V[Z]*s,V[W]*s);
 		}
@@ -353,12 +346,9 @@ public:
 	{
 		Float s = V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W];
 		conjugate();
-		if (s == 0.f)
-		{
+        if (s == 0.f) {
 			V[X] = V[Y] = V[Z] = 0.0f; V[W] = 1.0f;
-		}
-		else
-		{
+        } else {
 			s = 1.f/s;
 
 			V[X] *= s;
@@ -372,12 +362,9 @@ public:
 	inline Quaternion invertTo() const
 	{
 		Float s = V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W];
-		if (s == 0.f)
-		{
+        if (s == 0.f) {
 			return Quaternion();
-		}
-		else
-		{
+        } else {
 			Quaternion __Q(conjugateTo());
 			s = 1.f/s;
 	

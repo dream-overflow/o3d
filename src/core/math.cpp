@@ -22,17 +22,19 @@ void Math::init()
 {
 	Processor processor;
 
-	if (processor.hasSSE())
+    if (processor.hasSSE()) {
 		sqrt = _SSE::sqrt;
-	else if (processor.has3DNow())
+    } else if (processor.has3DNow()) {
 		sqrt = _3DNow::sqrt;
-	else
+    } else {
 		sqrt = _Std::sqrt;
+    }
 
 #if defined(O3D_VC_COMPILER) && defined(O3D_WIN32)
 	// enable math SSE2 optimization on VC++ 32bit
-	if (processor.hasSSE2())
+    if (processor.hasSSE2()) {
 		_set_SSE2_enable(1);
+    }
 #endif
 
 	Matrix3::init();
@@ -154,4 +156,3 @@ Float Math::_3DNow::sqrt(Float x)
 	return ::sqrt(x);
 #endif
 }
-

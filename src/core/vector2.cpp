@@ -56,4 +56,3 @@ inline Bool Vector2<Double>::operator== (const Vector2<Double>& vec)const
 	if (fabs(V[Y] - vec[Y]) > o3d::Limits<Float>::epsilon()) return False;
 	return True;
 }
-

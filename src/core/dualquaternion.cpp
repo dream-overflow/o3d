@@ -186,4 +186,3 @@ Bool DualQuaternion::readFromFile(InStream &is)
 
 	return True;
 }
-

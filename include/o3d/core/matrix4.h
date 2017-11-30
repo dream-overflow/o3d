@@ -982,4 +982,3 @@ inline InStream& operator>> (InStream &is, Matrix4 &object)
 } // namespace o3d
 
 #endif // _O3D_MATRIX4_H
-

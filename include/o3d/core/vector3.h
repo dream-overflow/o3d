@@ -21,11 +21,9 @@ class InStream;
 class OutStream;
 class String;
 
-//---------------------------------------------------------------------------------------
-//! @class Vector3
-//-------------------------------------------------------------------------------------
-//! 3 dimensional vector
-//---------------------------------------------------------------------------------------
+/**
+ * @brief 3 dimensional vector
+ */
 class O3D_API Vector3
 {
 public:
@@ -131,8 +129,9 @@ public:
 	{
 		Float len = (Float) sqrtf(V[X] * V[X] + V[Y] * V[Y] + V[Z] * V[Z]);
 
-		if (len != 0)
+        if (len != 0) {
 			len = 1 / len;
+        }
 
 		return Vector3(V[X] * len, V[Y] * len, V[Z] * len);
 	}
@@ -143,14 +142,11 @@ public:
 	{
 		Float len = (Float)sqrtf(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]);
 
-		if (len < Limits<Float>::epsilon())
-		{
+        if (len < Limits<Float>::epsilon()) {
 			V[X] = 1;
 			V[Y] = 0;
 			V[Z] = 0;
-		}
-		else
-		{
+        } else {
 			len = 1.f/len;
 			V[X] *= len;
 			V[Y] *= len;
@@ -359,7 +355,9 @@ protected:
 	Float V[3];		//!< vector data
 };
 
+typedef Vector3    Point3f;
+typedef Vector3    Vector3f;
+
 } // namespace o3d
 
 #endif // _O3D_VECTOR3_H
-

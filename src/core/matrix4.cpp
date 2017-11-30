@@ -696,4 +696,3 @@ Bool Matrix4::readFromFile(InStream& is)
 #undef M42
 #undef M43
 #undef M44
-

@@ -12,15 +12,13 @@
 
 #include "o3d/core/base.h"
 #include "o3d/core/memorydbg.h"
-#include "o3d/core/vector2.h"
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Math
-//-------------------------------------------------------------------------------------
-//! Common mathematics functions
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Common mathematics functions
+ * @todo Add True randomizer
+ */
 class O3D_API Math
 {
 public:
@@ -33,8 +31,8 @@ public:
 	//! fast Sqrt (SSE or 3DNOW or STD)
 	static Float (*sqrt)(Float);
 
-	//! Fast Inv Sqrt
-	inline static Float invSqrt(Float x)
+    //! Fast reciproc sqrt
+    inline static Float rsqrt(Float x)
 	{
 		/*long i;
 		Float x2, y;
@@ -89,4 +87,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_MATH_H
-

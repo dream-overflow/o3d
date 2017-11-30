@@ -10,46 +10,47 @@
 #ifndef _O3D_VECTOR2_H
 #define _O3D_VECTOR2_H
 
-#include <math.h>
 #include "string.h"
 #include "memorydbg.h"
+
+#include <math.h>
+#include "math.h"
 
 namespace o3d {
 
 template <class TYPE> class Vector2;
 
 // Type definitions
-typedef Vector2<Double>	Vector2d;
-typedef Vector2<Float>	Vector2f;
-typedef Vector2<Int32>	Vector2i;
-typedef Vector2<UInt32>	Vector2ui;
-typedef Vector2<Int16>	Vector2s;
-typedef Vector2<UInt16>	Vector2us;
-typedef Vector2<Int8>	Vector2b;
-typedef Vector2<UInt8>	Vector2ub;
+typedef Vector2<Double> Vector2d;
+typedef Vector2<Float>  Vector2f;
+typedef Vector2<Int32>  Vector2i;
+typedef Vector2<UInt32> Vector2ui;
+typedef Vector2<Int16>  Vector2s;
+typedef Vector2<UInt16> Vector2us;
+typedef Vector2<Int8>   Vector2b;
+typedef Vector2<UInt8>  Vector2ub;
 
-typedef Vector2d		Point2d;
-typedef Vector2f		Point2f;
-typedef Vector2i		Point2i;
-typedef Vector2ui		Point2ui;
-typedef Vector2s		Point2s;
-typedef Vector2us		Point2us;
-typedef Vector2b		Point2c;
-typedef Vector2ub		Point2uc;
+typedef Vector2d        Point2d;
+typedef Vector2f        Point2f;
+typedef Vector2i        Point2i;
+typedef Vector2ui       Point2ui;
+typedef Vector2s        Point2s;
+typedef Vector2us       Point2us;
+typedef Vector2b        Point2c;
+typedef Vector2ub       Point2uc;
 
-//---------------------------------------------------------------------------------------
-//! @class Vector2
-//-------------------------------------------------------------------------------------
-//! Template class of a two dimensional vector
-//---------------------------------------------------------------------------------------
+/**
+ * @class Vector2
+ * @brief Template class of a two dimensional vector.
+ */
 template <class TYPE>
 class O3D_API_TEMPLATE Vector2
 {
 public:
 
-	//-----------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
 	// Constructors
-	//-----------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------
 
 	//! Default constructor
 	Vector2() { V[X] = V[Y] = 0; }
@@ -96,23 +97,23 @@ public:
 	}
 
 	// return the norm1 of the vector
-	inline TYPE norm1()const { return static_cast<TYPE>(abs(V[X]) + abs(V[Y])); }
+    inline TYPE norm1() const { return static_cast<TYPE>(o3d::abs(V[X]) + o3d::abs(V[Y])); }
 
 	// return the norm2 of the vector
-	inline TYPE norm2()const { return static_cast<TYPE>(sqrt(Double(V[X]*V[X] + V[Y]*V[Y]))); }
+    inline TYPE norm2() const { return static_cast<TYPE>(::sqrtf(Float(V[X]*V[X] + V[Y]*V[Y]))); }
 
 	//! return the infinite norm of the vector (the greatest absolute component)
-	inline TYPE normInf()const { return max(abs(V[X]), abs(V[Y])); }
+    inline TYPE normInf() const { return o3d::max(abs(V[X]), abs(V[Y])); }
 
 	//! return the length of the vector
-	inline TYPE length()const { return norm2(); }
+    inline TYPE length() const { return norm2(); }
 
 	//! return the squared length of the vector (norm²)
-	inline TYPE squareLength()const { return (V[X] * V[X] + V[Y] * V[Y]); }
+    inline TYPE squareLength() const { return (V[X] * V[X] + V[Y] * V[Y]); }
 
 	//! return the ptr data of the vector
 	inline TYPE* getData() { return V; }
-	inline const TYPE* getData()const { return V; }
+    inline const TYPE* getData() const { return V; }
 
 	//-----------------------------------------------------------------------------------
 	// Operators
@@ -120,7 +121,7 @@ public:
 
 	//! Get a component of the vector
 	inline       TYPE& operator[] (UInt32 i)      { return V[i]; }
-	inline const TYPE& operator[] (UInt32 i)const { return V[i]; }
+    inline const TYPE& operator[] (UInt32 i) const { return V[i]; }
 
 	//! get the X component (const)
 	inline const TYPE& x() const { return V[X]; }
@@ -151,14 +152,14 @@ public:
 	}
 
 	//! compare this to another given 2d vector
-	inline Bool operator== (const Vector2& _which)const { return ((V[X] == _which[X]) && (V[Y] == _which[Y])); }
-	inline Bool operator!= (const Vector2& _which)const { return ((V[X] != _which[X]) || (V[Y] != _which[Y])); }
+    inline Bool operator== (const Vector2& _which) const { return ((V[X] == _which[X]) && (V[Y] == _which[Y])); }
+    inline Bool operator!= (const Vector2& _which) const { return ((V[X] != _which[X]) || (V[Y] != _which[Y])); }
 
 	//! compare the length of this to another given 2d vector
-	inline Bool operator<  (const Vector2& _which)const { return (this->length() <  _which.length()); }
-	inline Bool operator>  (const Vector2& _which)const { return (this->length() >  _which.length()); }
-	inline Bool operator<= (const Vector2& _which)const { return (this->length() <= _which.length()); }
-	inline Bool operator>= (const Vector2& _which)const { return (this->length() >= _which.length()); }
+    inline Bool operator<  (const Vector2& _which) const { return (this->length() <  _which.length()); }
+    inline Bool operator>  (const Vector2& _which) const { return (this->length() >  _which.length()); }
+    inline Bool operator<= (const Vector2& _which) const { return (this->length() <= _which.length()); }
+    inline Bool operator>= (const Vector2& _which) const { return (this->length() >= _which.length()); }
 
 	//! add this and another given 2d vector and return the new vector
 	inline Vector2 operator+ (const Vector2& _which)const
@@ -237,7 +238,7 @@ public:
 	}
 
 	//! divide this by a scalar and return the new vector
-	inline Vector2 operator/ (TYPE scale)const
+    inline Vector2 operator/ (TYPE scale) const
 	{
 		return Vector2(V[X] / scale, V[Y] / scale);
 	}
@@ -271,7 +272,7 @@ public:
 		return True;
 	}
 
-    inline Bool writeToFile(OutStream &os)const
+    inline Bool writeToFile(OutStream &os) const
 	{
         os << V[X]
            << V[Y];
@@ -297,12 +298,13 @@ inline Vector2<TYPE> operator* (TYPE _scalar, const Vector2<TYPE> &_which)
 
 template <> inline Vector2<Float>::Vector2() { V[X] = V[Y] = 0.f; }
 template <> inline void Vector2<Float>::zero()  { V[X] = V[Y] = 0.f; }
-template <> inline Bool Vector2<Float>::operator!= (const Vector2<Float>& vec)const;
-template <> inline Bool Vector2<Float>::operator== (const Vector2<Float>& vec)const;
-template <> inline Bool Vector2<Double>::operator!= (const Vector2<Double>& vec)const;
-template <> inline Bool Vector2<Double>::operator== (const Vector2<Double>& vec)const;
+template <> inline Bool Vector2<Float>::operator!= (const Vector2<Float>& vec) const;
+template <> inline Bool Vector2<Float>::operator== (const Vector2<Float>& vec) const;
+template <> inline Bool Vector2<Double>::operator!= (const Vector2<Double>& vec) const;
+template <> inline Bool Vector2<Double>::operator== (const Vector2<Double>& vec) const;
 
-template <> inline Float Vector2<Float>::norm2()const { return (sqrtf(V[X]*V[X] + V[Y]*V[Y])); }
+template <> inline Float Vector2<Float>::norm2() const { return (::sqrtf(V[X]*V[X] + V[Y]*V[Y])); }
+template <> inline Double Vector2<Double>::norm2() const { return (::sqrt(V[X]*V[X] + V[Y]*V[Y])); }
 
 struct O3D_API Vector
 {
@@ -319,4 +321,3 @@ struct O3D_API Vector
 } // namespace o3d
 
 #endif // _O3D_VECTOR2_H
-

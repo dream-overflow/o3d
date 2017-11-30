@@ -252,7 +252,7 @@ std::vector<Float> MaterialProfile::getLodLevels() const
 	if (!m_lodList.empty())
 	{
 		for (size_t i = 0; i < m_lodList.size(); ++i)
-			result[i] = Math::sqrt(m_lodList[i]);
+            result[i] = /*Math::sqrt*/::sqrtf(m_lodList[i]);
 
 		result[0] = 0.f;
 	}

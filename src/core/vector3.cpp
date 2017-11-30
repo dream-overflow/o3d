@@ -17,9 +17,6 @@
 
 using namespace o3d;
 
-/*---------------------------------------------------------------------------------------
-  convert to a string
----------------------------------------------------------------------------------------*/
 Vector3::operator String() const
 {
 	String temp;
@@ -27,9 +24,6 @@ Vector3::operator String() const
 	return temp;
 }
 
-/*---------------------------------------------------------------------------------------
-  A cross-product matrix corresponding to the vector
----------------------------------------------------------------------------------------*/
 Matrix3 Vector3::crossProductMatrix() const
 {
 	return Matrix3( 0.f, -V[2], V[1],
@@ -37,9 +31,6 @@ Matrix3 Vector3::crossProductMatrix() const
 					  -V[1], V[0], 0.f);
 }
 
-/*---------------------------------------------------------------------------------------
-  Serialization
----------------------------------------------------------------------------------------*/
 Bool Vector3::writeToFile(OutStream &os) const
 {
     os << V[0]
@@ -57,4 +48,3 @@ Bool Vector3::readFromFile(InStream &is)
 
 	return True;
 }
-

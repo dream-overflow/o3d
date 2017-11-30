@@ -26,13 +26,12 @@ namespace o3d {
 class InStream;
 class OutStream;
 
-//---------------------------------------------------------------------------------------
-//! @class DualQuaternion
-//-------------------------------------------------------------------------------------
-//! The Dual of a Quaternion can model the movement of an object in 3d,
-//! which can rotate and translate without changing shape, that is distances and
-//! angles between points on the object are preserved.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief DualQuaternion
+ * @details The Dual of a Quaternion can model the movement of an object in 3d,
+ * which can rotate and translate without changing shape, that is distances and
+ * angles between points on the object are preserved.
+ */
 class O3D_API DualQuaternion
 {
 private:
@@ -803,4 +802,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_DUALQUATERNION_H
-

@@ -61,9 +61,11 @@ void Matrix3::transpose()
 	Int32 i, j;
 	Float _M[3][3];
 
-	for (i = 0; i < 3; ++i)
-		for (j = 0; j < 3; ++j)
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 3; ++j) {
 			_M[j][i] = M[i][j];
+        }
+    }
 
 	memcpy(M, _M, sizeof(Float) * 9);
 }
@@ -74,9 +76,11 @@ Matrix3 Matrix3::transposeTo() const
 	Int32 i, j;
 	Matrix3 _M;
 
-	for (i = 0; i < 3; ++i)
-		for (j = 0; j < 3; ++j)
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 3; ++j) {
 			_M.M[j][i] = M[i][j];
+        }
+    }
 
 	return _M;
 }
@@ -87,9 +91,11 @@ Matrix3& Matrix3::operator*=(const Matrix3 &_M)
 	Int32 i, j;
 	Float __M[3][3];
 
-	for (i = 0; i < 3; ++i)
-		for (j = 0; j < 3; ++j)
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 3; ++j) {
 			__M[j][i] = M[0][i] * _M.M[j][0] + M[1][i] * _M.M[j][1] + M[2][i] * _M.M[j][2];
+        }
+    }
 
 	memcpy(M, __M, sizeof(Float) * 9);
 	return (*this);
@@ -101,9 +107,12 @@ Matrix3 Matrix3::operator*(const Matrix3 &_M) const
 	Int32 i, j;
 	Matrix3 __M;
 
-	for (i = 0; i < 3; ++i)
-		for (j = 0; j < 3; ++j)
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 3; ++j) {
 			__M.M[j][i] = M[0][i] * _M.M[j][0] + M[1][i] * _M.M[j][1] + M[2][i] * _M.M[j][2];
+        }
+    }
+
 	return __M;
 }
 
@@ -113,9 +122,11 @@ Matrix4 Matrix3::operator*(const Matrix4 &_M) const
 	Int32 i, j;
 	Matrix4 __M;
 
-	for (i = 0; i < 3; ++i)
-		for (j = 0; j < 4; ++j)
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 4; ++j) {
 			__M(i, j) = M[0][i] * _M(0, j) + M[1][i] * _M(1, j) + M[2][i] * _M(2, j);
+        }
+    }
 
 	return __M;
 }
@@ -161,8 +172,7 @@ void Matrix3::rotateAbsX(Float alpha)
 
 	Float tmp;
 
-	for (Int32 i = 0; i <= 2; ++i)
-	{
+    for (Int32 i = 0; i <= 2; ++i) {
 		tmp = M[i][Y] * cos - M[i][Z] * sin;
 		M[i][Z] = M[i][Z] * cos + M[i][Y] * sin;
 		M[i][Y] = tmp;
@@ -177,8 +187,7 @@ void Matrix3::rotateAbsY(Float alpha)
 
 	Float tmp;
 
-	for (Int32 i = 0; i <= 2; ++i)
-	{
+    for (Int32 i = 0; i <= 2; ++i) {
 		tmp = M[i][X] * cos - M[i][Z] * sin;
 		M[i][Z] = M[i][Z] * cos + M[i][X] * sin;
 		M[i][X] = tmp;
@@ -193,8 +202,7 @@ void Matrix3::rotateAbsZ(Float alpha)
 
 	Float tmp;
 
-	for (Int32 i = 0; i <= 2; ++i)
-	{
+    for (Int32 i = 0; i <= 2; ++i) {
 		tmp = M[i][X] * cos - M[i][Y] * sin;
 		M[i][Y] = M[i][Y] * cos + M[i][X] * sin;
 		M[i][X] = tmp;
@@ -204,24 +212,29 @@ void Matrix3::rotateAbsZ(Float alpha)
 // Scale on the three axis.
 void Matrix3::scale(const Vector3 &V)
 {
-	for (Int32 i = 0; i < 3; ++i)
-		for (Int32 j = 0; j < 3; ++j)
+    for (Int32 i = 0; i < 3; ++i) {
+        for (Int32 j = 0; j < 3; ++j) {
 			M[i][j] *= V[i];
+        }
+    }
 }
 
 // Scale a specific axis.
 void Matrix3::scale(UInt32 axe, Float scale)
 {
-	for (Int32 i = 0; i < 3; ++i)
+    for (Int32 i = 0; i < 3; ++i) {
 		M[axe][i] *= scale;
+    }
 }
 
 // Uniform scale.
 void Matrix3::scale(Float scale)
 {
-	for (Int32 i = 0; i < 3; ++i)
-		for (Int32 j = 0; j < 3; ++j)
+    for (Int32 i = 0; i < 3; ++i) {
+        for (Int32 j = 0; j < 3; ++j) {
 			M[i][j] *= scale;
+        }
+    }
 }
 
 // Return the 3 eigenvectors.
@@ -249,8 +262,7 @@ void Matrix3::eigenVector(Vector3 &R, Vector3 &S, Vector3 &T) const
 	Float a21(m21), a22, a23(m23);
 	Float a31(m31), a32(m32), a33;
 
-	for (UInt32 k = 0; k < 3; ++k)
-	{
+    for (UInt32 k = 0; k < 3; ++k) {
 		// On calcule le vecteur propre associe a v[k]
 
 		Float ev = v[k]; // Valeur propre courante
@@ -261,8 +273,7 @@ void Matrix3::eigenVector(Vector3 &R, Vector3 &S, Vector3 &T) const
 
 		Float det = (a22 * a33 - a23 * a32);
 
-		if (o3d::abs(det) > 0.0001f)// Avec l'hypothese suivante, le det est forcement non nul
-		{
+        if (o3d::abs(det) > 0.0001f) { // Avec l'hypothese suivante, le det est forcement non nul
 			// Supposons que la premiere composante soit 1.
 
 			Float x2 = -((a23 * -a31) - (a33 * -a21)) / det;
@@ -272,8 +283,7 @@ void Matrix3::eigenVector(Vector3 &R, Vector3 &S, Vector3 &T) const
 
             //Vector3 img = (*this) * bas;
 
-			if (((*this) * bas - bas * ev).normInf() < 0.001f)
-			{
+            if (((*this) * bas - bas * ev).normInf() < 0.001f) {
 				*sol[k] = bas;
 				continue;
 			}
@@ -281,8 +291,7 @@ void Matrix3::eigenVector(Vector3 &R, Vector3 &S, Vector3 &T) const
 
 		det = (a11 * a33 - a13 * a31);
 
-		if (o3d::abs(det) > 0.0001f)// Avec l'hypothese suivante, le det est forcement non nul
-		{
+        if (o3d::abs(det) > 0.0001f) { // Avec l'hypothese suivante, le det est forcement non nul
 			// Supposons que la seconde composante soit 1.
 
 			Float x1 = -((a13 * -a32) - (a33 * -a12)) / det;
@@ -290,8 +299,7 @@ void Matrix3::eigenVector(Vector3 &R, Vector3 &S, Vector3 &T) const
 
 			Vector3 bas = Vector3(x1, 1.0f, x3);
 
-			if (((*this) * bas - bas * ev).normInf() < 0.001f)
-			{
+            if (((*this) * bas - bas * ev).normInf() < 0.001f) {
 				*sol[k] = bas;
 				continue;
 			}
@@ -299,8 +307,7 @@ void Matrix3::eigenVector(Vector3 &R, Vector3 &S, Vector3 &T) const
 
 		det = (a11 * a22 - a21 * a12);
 
-		if (o3d::abs(det) > 0.0001f)// Avec l'hypothese suivante, le det est forcement non nul
-		{
+        if (o3d::abs(det) > 0.0001f) { // Avec l'hypothese suivante, le det est forcement non nul
 			// Supposons que la troisieme composante soit 1.
 
 			Float x1 = -((a12 * -a23) - (a22 * -a13)) / det;
@@ -308,8 +315,7 @@ void Matrix3::eigenVector(Vector3 &R, Vector3 &S, Vector3 &T) const
 
 			Vector3 bas = Vector3(x1, x2, 1.0f);
 
-			if (((*this) * bas - bas * ev).normInf() < 0.001f)
-			{
+            if (((*this) * bas - bas * ev).normInf() < 0.001f) {
 				*sol[k] = bas;
 				continue;
 			}
@@ -342,10 +348,9 @@ void Matrix3::eigenValue(Float & e1, Float & e2, Float & e3) const
 	Float p = -b * b / (3.0f * a * a) + c / a;
 	Float q = b / (27.0f * a) * (2.0f * b * b / (a * a) - 9.0f * c / a) + d / a;
 
-	if (o3d::abs(p) < 0.0001f)
-	{
-		if (o3d::abs(q) > 0.0001f) // Means that there is a unique solution. Impossible here !
-		{
+    if (o3d::abs(p) < 0.0001f) {
+        if (o3d::abs(q) > 0.0001f) {
+            // Means that there is a unique solution. Impossible here !
 			O3D_ASSERT(0);
 		}
 
@@ -354,8 +359,7 @@ void Matrix3::eigenValue(Float & e1, Float & e2, Float & e3) const
 		return;
 	}
 
-	if (o3d::abs(q) < 0.0001f)
-	{
+    if (o3d::abs(q) < 0.0001f) {
 		O3D_ASSERT(p < 0.0f);
 
 		e1 = -b / (3.0f * a);
@@ -366,34 +370,29 @@ void Matrix3::eigenValue(Float & e1, Float & e2, Float & e3) const
 
 	Float delta = q * q + 4.0f / 27.0f * p * p * p;
 
-	if (delta < -0.0001f) // It means that the 3 solutions are real
-	{
+    if (delta < -0.0001f) {
+        // It means that the 3 solutions are real
 		Float c0 = 2.0f * sqrtf(-p / 3.0f);
 		Float c1 = acosf(-q / 2.0f * sqrtf(27.0f / -(p * p * p)));
 
 		e1 = c0 * cosf(1.0f / 3.0f * (c1 + 2.0f * o3d::PI)) - b / (3.0f * a);
 		e2 = c0 * cosf(1.0f / 3.0f * (c1 + 4.0f * o3d::PI)) - b / (3.0f * a);
 		e3 = c0 * cosf(1.0f / 3.0f * (c1 + 6.0f * o3d::PI)) - b / (3.0f * a);
-	}
-	else if (delta < 0.0001f) // It means 2 real solutions
-	{
+    } else if (delta < 0.0001f) {
+        // It means 2 real solutions
 		e1 = 3.0f * q / p - b / (3.0f * a);
 		e2 = -1.5f * q / p - b / (3.0f * a);
 		e3 = 0.f;//e3;
-	}
-	else
-	{
+    } else {
 		O3D_ASSERT(0);
 	}
 }
 
 // Compute eigens value and eigens vector for a symmetric matrix
-void Matrix3::computeSymmetricEigenSystem(
-		Matrix3 &eigenVectors,
-		Vector3 &eigenValues)
+void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenValues)
 {
 	const Int32 maxSweeps = 32;
-	const Float epsilon = 1e-6f;//o3d::limits<Float>::Epsilon();
+    const Float epsilon = 1e-6f;  // o3d::limits<Float>::epsilon();
 
 	Matrix3 inp;
 	Int32 rot = 0;
@@ -406,51 +405,47 @@ void Matrix3::computeSymmetricEigenSystem(
 	// Set vectors to the identity matrix
 	eigenVectors.identity();
 	// Set B and values to the diagonal of the input matrix
-	for (i = 0; i < 3; i++)
-	{
+    for (i = 0; i < 3; i++) {
 		B[i] = eigenValues[i] = inp(i,i);
 	}
 
 	// Rotate until off diagonal elements of input matrix are zero
-	for (Int32 sweep = 0; sweep < maxSweeps; ++sweep)
-	{
+    for (Int32 sweep = 0; sweep < maxSweeps; ++sweep) {
 		Float sum = o3d::abs(inp(0,1)) + o3d::abs(inp(0,2)) + o3d::abs(inp(1,2));
 		Float thresh;
 		register Int32 p, q;
 
-		if (o3d::abs(sum) < epsilon)  // Normal return relies on quadratic
+        if (o3d::abs(sum) < epsilon) { // Normal return relies on quadratic
 			break;
+        }
 
 		thresh = (sweep < 4) ? sum * 0.2f / 9.0f : 0.0f;  // First three sweeps?
 
-		for (p = 0; p < 2; p++)
-		{
-			for (q = p+1; q < 3; q++)
-			{
+        for (p = 0; p < 2; p++) {
+            for (q = p+1; q < 3; q++) {
 				register Float g = 100.0f * o3d::abs(inp(p,q));
 
 				// After 4 sweeps, skip the rotation if the
 				// off-diagonal element is small.
-				if ((sweep > 4) && (o3d::abs(g) < epsilon))
+                if ((sweep > 4) && (o3d::abs(g) < epsilon)) {
 					inp(p,q) = 0.0;
-				else if (o3d::abs(inp(p,q)) > thresh)
-				{
+                } else if (o3d::abs(inp(p,q)) > thresh) {
 					register Float h = eigenValues[q] - eigenValues[p];
 					Float c, s, t;  // cosine, sine, tangent of rotation angle
 					Float tau;
 					register Int32 j;
 
-					if (o3d::abs(g) < epsilon)
+                    if (o3d::abs(g) < epsilon) {
 						t = inp(p,q) / h;
-					else
-					{
+                    } else {
 						Float theta = 0.5f * h / inp(p,q);
-						t = 1.0f / (o3d::abs(theta) + Math::sqrt(1.0f + theta*theta));
-						if (theta < 0.0f)
+                        t = 1.0f / (o3d::abs(theta) + /*Math::sqrt*/::sqrtf(1.0f + theta*theta));
+                        if (theta < 0.0f) {
 							t = -t;
+                        }
 					}
 
-					c = 1.0f / Math::sqrt(1.0f + t*t);   // cosine of rotation angle
+                    c = 1.0f / /*Math::sqrt*/::sqrtf(1.0f + t*t);   // cosine of rotation angle
 					s = t*c;                     // sine of rotation angle
 					tau = s / (1.0f + c);
 
@@ -462,8 +457,7 @@ void Matrix3::computeSymmetricEigenSystem(
 					inp(p,q) = 0.0f;
 
 					// case of rotations 0 <= j < p-1
-					for (j = 0; j <= p-1; j++)
-					{
+                    for (j = 0; j <= p-1; j++) {
 						g = inp(j,p);
 						h = inp(j,q);
 						inp(j,p) = g - s*(h + g*tau);
@@ -471,8 +465,7 @@ void Matrix3::computeSymmetricEigenSystem(
 					}
 
 					// case of rotations p < j < q
-					for (j = p + 1; j < q; j++)
-					{
+                    for (j = p + 1; j < q; j++) {
 						g = inp(p,j);
 						h = inp(j,q);
 						inp(p,j) = g - s*(h - g*tau);
@@ -480,8 +473,7 @@ void Matrix3::computeSymmetricEigenSystem(
 					}
 
 					// case of rotations q < j < 3
-					for (j = q + 1; j < 3; j++)
-					{
+                    for (j = q + 1; j < 3; j++) {
 						g = inp(p,j);
 						h = inp(q,j);
 						inp(p,j) = g - s*(h + g*tau);
@@ -489,8 +481,7 @@ void Matrix3::computeSymmetricEigenSystem(
 					}
 
 					// Set the eigen vectors
-					for (j = 0; j < 3; j++)
-					{
+                    for (j = 0; j < 3; j++) {
 						g = eigenVectors(j,p);
 						h = eigenVectors(j,q);
 						eigenVectors(j,p) = g - s*(h + g*tau);
@@ -508,23 +499,25 @@ void Matrix3::computeSymmetricEigenSystem(
 	}
 
 	// sort from greater to lesser
-	if (eigenValues[0] < eigenValues[1])
-	{
+    if (eigenValues[0] < eigenValues[1]) {
 		std::swap(eigenValues[0], eigenValues[1]);
-		for (i = 0; i < 3; i++)
+        for (i = 0; i < 3; i++) {
 			std::swap(eigenVectors(0,i), eigenVectors(1,i));
+        }
 	}
-	if (eigenValues[1] < eigenValues[2])
-	{
+
+    if (eigenValues[1] < eigenValues[2]) {
 		std::swap(eigenValues[1], eigenValues[2]);
-		for (i = 0; i < 3; i++)
+        for (i = 0; i < 3; i++) {
 			std::swap(eigenVectors(1,i), eigenVectors(2,i));
+        }
 	}
-	if (eigenValues[0] < eigenValues[1])
-	{
+
+    if (eigenValues[0] < eigenValues[1]) {
 		std::swap(eigenValues[0], eigenValues[1]);
-		for (i = 0; i < 3; i++)
+        for (i = 0; i < 3; i++) {
 			std::swap(eigenVectors(0,i), eigenVectors(1,i));
+        }
 	}
 /*
 	// Conversion to standard notations
@@ -546,8 +539,8 @@ void Matrix3::computeSymmetricEigenSystem(
 			Float u = (m22 - m11) * 0.5f / m12;
 			Float u2 = u * u;
 			Float u2p1 = u2 + 1.f;
-			Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (O3DMath::sqrt(u2p1) - o3d::abs(u)) : 0.5f / u;
-			Float c = 1.f / O3DMath::sqrt(t * t + 1.f);
+            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (::sqrtf(u2p1) - o3d::abs(u)) : 0.5f / u;
+            Float c = 1.f / ::sqrtf(t * t + 1.f);
 			Float s = c * t;
 
 			m11 -= t * m12;
@@ -572,8 +565,8 @@ void Matrix3::computeSymmetricEigenSystem(
 			Float u = (m33 - m11) * 0.5f / m13;
 			Float u2 = u * u;
 			Float u2p1 = u2 + 1.f;
-			Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (O3DMath::sqrt(u2p1) - o3d::abs(u)) : 0.5f / u;
-			Float c = 1.f / O3DMath::sqrt(t * t + 1.f);
+            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (::sqrtf(u2p1) - o3d::abs(u)) : 0.5f / u;
+            Float c = 1.f / ::sqrtf(t * t + 1.f);
 			Float s = c * t;
 
 			m11 -= t * m13;
@@ -598,8 +591,8 @@ void Matrix3::computeSymmetricEigenSystem(
 			Float u = (m33 - m22) * 0.5f / m23;
 			Float u2 = u * u;
 			Float u2p1 = u2 + 1.f;
-			Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (O3DMath::sqrt(u2p1) - o3d::abs(u)) : 0.5f / u;
-			Float c = 1.f / O3DMath::sqrt(t * t + 1.f);
+            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (::sqrtf(u2p1) - o3d::abs(u)) : 0.5f / u;
+            Float c = 1.f / ::sqrtf(t * t + 1.f);
 			Float s = c * t;
 
 			m22 -= t * m23;
@@ -655,8 +648,7 @@ Matrix3 Matrix3::invert() const
 	Float det = ACCESS(0,0) * c00 + ACCESS(1,0) * c01 + ACCESS(2,0) * c02;
 
 	// the Data can't be inverted
-	if (det == 0.0f)
-	{
+    if (det == 0.0f) {
 		return r;
 	}
 
@@ -686,10 +678,11 @@ Matrix3::operator String() const
 {
 	String temp;
 
-	for (UInt32 i = 0; i < 3; ++i)
+    for (UInt32 i = 0; i < 3; ++i) {
 		temp << String("\n{ ") << operator ()(i, 0) << String(", ") << operator ()(
 				i,
 				1) << String(", ") << operator ()(i, 2) << String(" }");
+    }
 
 	return temp;
 }
@@ -697,18 +690,22 @@ Matrix3::operator String() const
 // serialization
 Bool Matrix3::writeToFile(OutStream& os) const
 {
-	for (UInt32 i = 0; i < 3; ++i)
-		for (UInt32 j = 0; j < 3; ++j)
+    for (UInt32 i = 0; i < 3; ++i) {
+        for (UInt32 j = 0; j < 3; ++j) {
             os << M[j][i];
+        }
+    }
 
 	return True;
 }
 
 Bool Matrix3::readFromFile(InStream &is)
 {
-	for (UInt32 i = 0; i < 3; ++i)
-		for (UInt32 j = 0; j < 3; ++j)
+    for (UInt32 i = 0; i < 3; ++i) {
+        for (UInt32 j = 0; j < 3; ++j) {
             is >> M[j][i];
+        }
+    }
 
 	return True;
 }
