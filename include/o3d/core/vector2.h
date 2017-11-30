@@ -100,7 +100,7 @@ public:
     inline TYPE norm1() const { return static_cast<TYPE>(o3d::abs(V[X]) + o3d::abs(V[Y])); }
 
 	// return the norm2 of the vector
-    inline TYPE norm2() const { return static_cast<TYPE>(::sqrtf(Float(V[X]*V[X] + V[Y]*V[Y]))); }
+    inline TYPE norm2() const { return static_cast<TYPE>(Math::sqrt(Float(V[X]*V[X] + V[Y]*V[Y]))); }
 
 	//! return the infinite norm of the vector (the greatest absolute component)
     inline TYPE normInf() const { return o3d::max(abs(V[X]), abs(V[Y])); }
@@ -303,7 +303,7 @@ template <> inline Bool Vector2<Float>::operator== (const Vector2<Float>& vec) c
 template <> inline Bool Vector2<Double>::operator!= (const Vector2<Double>& vec) const;
 template <> inline Bool Vector2<Double>::operator== (const Vector2<Double>& vec) const;
 
-template <> inline Float Vector2<Float>::norm2() const { return (::sqrtf(V[X]*V[X] + V[Y]*V[Y])); }
+template <> inline Float Vector2<Float>::norm2() const { return (Math::sqrt(V[X]*V[X] + V[Y]*V[Y])); }
 template <> inline Double Vector2<Double>::norm2() const { return (::sqrt(V[X]*V[X] + V[Y]*V[Y])); }
 
 struct O3D_API Vector

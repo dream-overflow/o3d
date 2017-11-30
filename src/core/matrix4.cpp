@@ -255,8 +255,7 @@ void Matrix4::rotateAbsZ(Float alpha)
 	register UInt8 r;
 	Float tmp;
 
-	for (UInt8 i = 0; i <= 2; ++i)
-	{
+    for (UInt8 i = 0; i <= 2; ++i) {
 		r = i << 2;
 
 		   tmp = M[r+X] * cos - M[r+Y] * sin;
@@ -268,17 +267,17 @@ void Matrix4::rotateAbsZ(Float alpha)
 // Unscale the matrix.
 void Matrix4::unscale()
 {
-	Float len = 1.f / (Float)sqrtf(M11*M11 + M21*M21 + M31*M31);
+    Float len = 1.f / Math::sqrt(M11*M11 + M21*M21 + M31*M31);
 	M11 *= len;
 	M21 *= len;
 	M31 *= len;
 
-	len = 1.f / (Float)sqrtf(M12*M12 + M22*M22 + M32*M32);
+    len = 1.f / Math::sqrt(M12*M12 + M22*M22 + M32*M32);
 	M12 *= len;
 	M22 *= len;
 	M32 *= len;
 
-	len = 1.f / (Float)sqrtf(M13*M13 + M23*M23 + M33*M33);
+    len = 1.f / Math::sqrt(M13*M13 + M23*M23 + M33*M33);
 	M13 *= len;
 	M23 *= len;
 	M33 *= len;

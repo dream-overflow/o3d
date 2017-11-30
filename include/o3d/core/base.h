@@ -422,27 +422,6 @@ public:
 	// CPU methods and informations
 	//-----------------------------------------------------------------------------------
 
-	//! return processor cycles numbers
-	#ifdef _MSC_VER
-	#pragma warning(once: 4035)
-	#endif
-    inline static Int64 getCycleNumber()
-	{
-	#if defined(O3D_WIN32) && defined(O3D_VC_COMPILER) // VC++ x86
-		__asm{ RDTSC }
-	#elif defined(O3D_WIN64) && defined(O3D_VC_COMPILER) // VC++ x64
-		return __rdtsc();
-	#elif __APPLE__	// Apple computer
-		return mach_absolute_time();
-    #elif defined(__amd64__) || defined(__x86_64__) || defined (__i686__) // GCC Intel based compilers
-        Int64 x;
-		 __asm__ volatile ("RDTSC" : "=A"(x));
-		return x;
-	#else
-		#error "<< Unknown architecture ! >>"
-	#endif
-	}
-
 	//! return approximate processor frequency in MHz
     static Float getProcessorFrequency();
 
@@ -460,7 +439,7 @@ private:
 //---------------------------------------------------------------------------------------
 inline void System::swapBytes2(void* value)
 {
-#if defined(O3D_WIN32) && defined(O3D_VC_COMPILER) // VC++ x86
+#if defined(O3D_VC_COMPILER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
     __asm {
         mov ebx, value
                 mov al, [ebx+1]
@@ -480,13 +459,13 @@ inline void System::swapBytes2(void* value)
     UInt16 temp = *(UInt16*)value;
     *(UInt16*)value = (temp >> 8) | (temp << 8);
 #endif
-#endif // defined(O3D_WIN32) && defined(O3D_VC_COMPILER)
+#endif
 }
 
 inline void System::swapBytes4(void* value)
 {
     // swap 4 bytes type
-#if defined(O3D_WIN32) && defined(O3D_VC_COMPILER) // VC++ x86
+#if defined(O3D_VC_COMPILER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
     __asm {
         mov ebx, value
                 mov eax, [ebx]
@@ -510,7 +489,7 @@ inline void System::swapBytes4(void* value)
     UInt32 temp = *(UInt32*)value;
     *(UInt32*)value = (temp >> 24) | ((temp >> 8) & 0xff00) | ((temp << 8) & 0xff0000) | (temp << 24);
 #endif
-#endif // defined(O3D_WIN32) && defined(O3D_VC_COMPILER)
+#endif
 }
 
 inline void System::swapBytes8(void* value)

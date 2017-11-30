@@ -699,7 +699,7 @@ void Image::genNormalMap(UInt8* dst, Float scale, Bool wrap) const
 			dx = (Float)((h10 - h00) / 255.0f) * scale;
 			dy = (Float)((h01 - h00) / 255.0f) * scale;
 
-            mag = /*Math::sqrt*/::sqrtf(dx * dx + dy * dy + 1.0f);
+            mag = Math::sqrt(dx * dx + dy * dy + 1.0f);
 			rmag = 1.0f / mag;
 
 			n = (i * m_width + j) * 4;

@@ -542,10 +542,9 @@ void HeightmapSplatting::draw()
 		m_fboDepthTex->bind();
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, lpBuffer);
 
-        for (Int32 i = 0 ; i < lFboSize[X]*lFboSize[Y]; ++i)
-		{
+        for (Int32 i = 0 ; i < lFboSize[X]*lFboSize[Y]; ++i) {
 			// Thanks to sqrt, sensitivity of depth value near 1.0 is infinite.
-			lpBuffer[i] = 1.0f - sqrt(1.0f - lpBuffer[i]);
+            lpBuffer[i] = 1.0f - Math::sqrt(1.0f - lpBuffer[i]);
 		}
 
 		UInt32 format = GLTexture::getGLFormat(getScene()->getRenderer(), PF_RED_F32);
@@ -860,4 +859,3 @@ void HeightmapSplatting::drawDeferredStaticLighting()
 void HeightmapSplatting::update()
 {
 }
-

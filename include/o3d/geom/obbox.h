@@ -16,11 +16,9 @@ namespace o3d {
 
 class Plane;
 
-//---------------------------------------------------------------------------------------
-//! @class OBBox
-//-------------------------------------------------------------------------------------
-//! Oriented bounding box.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Oriented bounding box.
+ */
 class O3D_API OBBox
 {
 public:
@@ -121,12 +119,9 @@ protected:
 	Vector3 m_halfSize;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class OBBoxExt
-//-------------------------------------------------------------------------------------
-//! Oriented bounding box extended version with a surrounding sphere.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Oriented bounding box extended version with a surrounding sphere.
+ */
 class O3D_API OBBoxExt : public OBBox
 {
 public:
@@ -197,13 +192,12 @@ protected:
 
 		// The including sphere.
 		m_radiusMin = o3d::minMin(
-				(Float)fabs(m_halfSize[0]),
-				(Float)fabs(m_halfSize[1]),
-				(Float)fabs(m_halfSize[2]));
+                o3d::abs(m_halfSize[0]),
+                o3d::abs(m_halfSize[1]),
+                o3d::abs(m_halfSize[2]));
 	}
 };
 
 } // namespace o3d
 
 #endif // _O3D_OBBOX_H
-

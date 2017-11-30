@@ -588,7 +588,7 @@ String AppWindow::report() const
 	}
 
 	if (m_interval != 0)
-		equart = (Float)sqrtf(equart/m_interval);
+        equart = Math::sqrt(equart/m_interval);
 
 	msg += "\n- Esperance=";
 	msg.concat(moy);

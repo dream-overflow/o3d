@@ -14,11 +14,12 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//!@class Processor
-//-------------------------------------------------------------------------------------
-//! Give informations about processor type and its available features (like MMX,SSE...)
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Give informations about processor type and its available features
+ * like MMX, SSE...
+ * @todo Get count of CPUs
+ * @todo Support for ARM
+ */
 class O3D_API Processor
 {
 public:
@@ -92,6 +93,15 @@ public:
 	//! Get ext informations about the CPU family
     Int32 getExtFamily() const { return m_ext_family; }
 
+    //! Get number of CPUs
+    Int32 getNumCPU() const { return m_num_cpu; }
+
+    //! Get the cache line size
+    Int32 getCacheLineSize() const { return m_cache_line_size; }
+
+    //! Get the system RAM size in Mo
+    Int32 getSystemRAMSize() const { return m_system_ram_size; }
+
 private:
 
     Bool m_has_mmx;
@@ -118,10 +128,13 @@ private:
 
     Float m_cpu_speed;
 
+    Int32 m_num_cpu;
+    Int32 m_cache_line_size;
+    Int32 m_system_ram_size;
+
     void doCPUID();
 };
 
 } // namespace o3d
 
 #endif // _O3D_PROCESSOR_H
-

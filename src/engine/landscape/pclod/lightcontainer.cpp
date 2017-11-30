@@ -249,15 +249,11 @@ Float PCLODLight::getSpotDepth() const
 	Float lLightDepth = 0.0f; // Means infinity
 
 	// On cherche x tel que x = Coef[0] + Coef[1] * z + Coef[2] * z^2
-	if (m_spotCoefficients[0] < lInvTreshold)
-	{
-		if (m_spotCoefficients[2] != 0)
-		{
-			lLightDepth = -m_spotCoefficients[1] + sqrt(m_spotCoefficients[1]*m_spotCoefficients[1] + 4.0f*m_spotCoefficients[2]*(lInvTreshold - m_spotCoefficients[0]));
+    if (m_spotCoefficients[0] < lInvTreshold) {
+        if (m_spotCoefficients[2] != 0) {
+            lLightDepth = -m_spotCoefficients[1] + Math::sqrt(m_spotCoefficients[1]*m_spotCoefficients[1] + 4.0f*m_spotCoefficients[2]*(lInvTreshold - m_spotCoefficients[0]));
 			lLightDepth /= 2.0f*m_spotCoefficients[2];
-		}
-		else
-		{
+        } else {
 			lLightDepth = (lInvTreshold - m_spotCoefficients[0])/m_spotCoefficients[1];
 		}
 	}
@@ -407,4 +403,3 @@ PCLODLightInfo::PCLODLightInfo():
 PCLODLightInfo::~PCLODLightInfo()
 {
 }
-

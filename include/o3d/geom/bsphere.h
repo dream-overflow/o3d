@@ -22,11 +22,9 @@ class BCone;
 class AABBox;
 class Matrix4;
 
-//---------------------------------------------------------------------------------------
-//! @class BSphere
-//-------------------------------------------------------------------------------------
-//! A definition of a bounding sphere.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A definition of a bounding sphere.
+ */
 class O3D_API BSphere
 {
 public:
@@ -166,4 +164,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_BSPHERE_H
-

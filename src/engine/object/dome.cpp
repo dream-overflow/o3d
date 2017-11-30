@@ -153,7 +153,7 @@ void Dome::buildVertices()
 				{
 					Float u = lVertexPtr[Z];
 					Float v = lVertexPtr[X];
-					Float lINorm = sqrtf(u*u + v*v);
+                    Float lINorm = Math::sqrt(u*u + v*v);
 					lINorm = (lINorm > 0.0f ? 1.0f / lINorm : 0.0f);
 					u *= lINorm;
 					v *= lINorm;
@@ -330,7 +330,7 @@ Float Dome::getBaseRadius() const
 {
 	const Float lT = m_radius-m_height;
 
-	return sqrtf(m_radius*m_radius - lT*lT);
+    return Math::sqrt(m_radius*m_radius - lT*lT);
 }
 
 void Dome::setSubDiv(UInt32 _subDiv, Bool _update)

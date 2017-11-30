@@ -284,7 +284,7 @@ public:
     inline Bool hasRotation() const
 	{
 		O3D_ASSERT(isUnit());
-		return fabs(Q[R]) < 0.999999f;
+        return o3d::abs(Q[R]) < 0.999999f;
 	}
 
 	//! Check if the dual quaternion is a pure translation

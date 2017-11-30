@@ -11,10 +11,10 @@
 #include "o3d/geom/geometry.h"
 
 #include "o3d/geom/plane.h"
+#include "o3d/core/math.h"
 #include "o3d/core/vector3.h"
 #include "o3d/core/matrix3.h"
 #include "o3d/core/matrix4.h"
-#include "o3d/core/processor.h"
 
 using namespace o3d;
 
@@ -144,25 +144,29 @@ Int32 Geometry::intersection(
 	const Float lSqrP2S = lPointToSphere.squareLength();
 	const Float lSqrRadius = o3d::sqr<Float>(radius);
 
-	if (lSqrP2S > lSqrRadius)
+    if (lSqrP2S > lSqrRadius) {
 		return 0;
+    }
 
 	//const Float a = 1.0f;
 	const Float b = -2.0f * (lLineToSphere * lineDir);
 	const Float c = lSqrP2S - lSqrRadius;
 	Float delta = b*b - 4.0f * c;
 
-	if (delta < 0.0f) // Roundoff errors
+    if (delta < 0.0f) { // Roundoff errors
 		return 0;
-	else
-		delta = sqrt(delta);
+    } else {
+        delta = Math::sqrt(delta);
+    }
 
 	// Polynome : 2 solutions
-    if (result1 != nullptr)
+    if (result1 != nullptr) {
 		*result1 = lineOrigin + (0.5f * (-b - delta)) * lineDir;
+    }
 
-    if (result2 != nullptr)
+    if (result2 != nullptr) {
 		*result2 = lineOrigin + (0.5f * (-b + delta)) * lineDir;
+    }
 
 	return (delta < o3d::Limits<Float>::epsilon() ? 1 : 2);
 }

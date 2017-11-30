@@ -38,7 +38,7 @@
 // Windows
 //
 #if defined(_MSC_VER) || defined(WIN32) || defined(__MINGW32__)
-
+    // Compiler
 	#ifdef _MSC_VER
 		#define O3D_VC_COMPILER
 	#endif
@@ -47,11 +47,46 @@
 		#define _WINDOWS
 	#endif
 
-	#ifdef WIN32
-		#define O3D_WIN32
-	#else
-		#define O3D_WIN64
-	#endif
+    // Windows 32/64
+    #ifdef _WIN64
+        #define O3D_WIN64
+    #elif defined(_WIN32)
+        #define O3D_WIN32
+    #endif
+
+    // INTEL
+    #ifdef _M_X64
+        #define O3D_IX64
+    #elif defined(_M_IX86) || defined(_X86_)
+        #define O3D_IX32
+    #endif
+
+    // ARM
+    #ifdef _M_ARM64
+        #if _M_ARM == 6
+            #defined O3D_ARM_V6
+        #elif _M_ARM == 7
+            #defined O3D_ARM_V7
+        #elif _M_ARM < 6
+           #error "Unsupported ARM architecture version"
+        #endif
+        #define O3D_ARM64
+    #elif defined(_M_ARM)
+        #if _M_ARM == 6
+            #defined O3D_ARM_V6
+        #elif _M_ARM == 7
+            #defined O3D_ARM_V7
+        #elif _M_ARM < 6
+           #error "Unsupported ARM architecture version"
+        #endif
+        #define O3D_ARM32
+    #endif
+
+    #ifdef _M_IX86_FP
+        #if _M_IX86_FP == 2
+            #define O3D_SSE2 = 1
+        #endif
+    #endif
 
 	#ifdef O3D_X11
 		#error "X11 is not supported on Windows"
@@ -112,6 +147,22 @@
 		#define O3D_X11
 	#endif
 
+    #if defined(__amd64__) || defined(__x86_64__)
+        #define O3D_IX64
+    #elif defined(__i686__) || defined(_X86_)
+        #define O3D_IX32
+    #elif defined(__aarch64__)
+        #define O3D_ARM64
+    #elif defined(__arm__)
+        #defined O3D_ARM32
+    #endif
+
+    #ifdef __ARM_ARCH_6__
+        #defined O3D_ARM_V6
+    #elif __ARM_ARCH_7__
+        #defined O3D_ARM_V7
+    #endif
+
 	#if __BYTE_ORDER == __BIG_ENDIAN
 		#define O3D_BIG_ENDIAN
 	#endif
@@ -144,7 +195,10 @@
 	// support big endian for Motorola processors
 	#ifdef __motorola__
 		#define O3D_BIG_ENDIAN
-	#endif
+        #define O3D_M68K
+    #else
+        #define O3D_IX64
+    #endif
 
 	#define O3D_MACOSX
 

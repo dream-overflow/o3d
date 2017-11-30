@@ -767,7 +767,7 @@ void GeometryData::computeBounding(BoundingMode mode)
 		}
 		else
 		{
-			ecart = sqrtf(ecart / 3.f);
+            ecart = Math::sqrt(ecart / 3.f);
 
 			// check with the largest component
 			Float largest = o3d::maxMax((vec[X]),(vec[Y]),(vec[Z]));

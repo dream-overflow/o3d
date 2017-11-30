@@ -249,10 +249,10 @@ std::vector<Float> MaterialProfile::getLodLevels() const
 	std::vector<Float> result;
 	result.resize(m_lodList.size());
 
-	if (!m_lodList.empty())
-	{
-		for (size_t i = 0; i < m_lodList.size(); ++i)
-            result[i] = /*Math::sqrt*/::sqrtf(m_lodList[i]);
+    if (!m_lodList.empty()) {
+        for (size_t i = 0; i < m_lodList.size(); ++i) {
+            result[i] = Math::sqrt(m_lodList[i]);
+        }
 
 		result[0] = 0.f;
 	}
@@ -264,10 +264,10 @@ std::vector<Float> MaterialProfile::getLodLevels() const
 void MaterialProfile::setNumTechniques(UInt32 numTechniques)
 {
 	// delete more techniques
-	if (m_techniques.size() > static_cast<size_t>(numTechniques))
-	{
-		for (size_t i = numTechniques; i < m_techniques.size(); ++i)
+    if (m_techniques.size() > static_cast<size_t>(numTechniques)) {
+        for (size_t i = numTechniques; i < m_techniques.size(); ++i) {
 			deletePtr(m_techniques[i]);
+        }
 	}
 
 	size_t oldSize = m_techniques.size();
@@ -438,4 +438,3 @@ Bool MaterialProfile::readFromFile(InStream &is)
 
 	return True;
 }
-

@@ -972,4 +972,3 @@ Bool BCone::update(UpToDateData what) const
 
 	return True;
 }
-

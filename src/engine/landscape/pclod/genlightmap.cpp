@@ -344,8 +344,8 @@ void GenLightMap::buildShadowmapInfiniteLight(const Array2DFloat & _source, Floa
 	Vector3 lightDir(_dir);
 	lightDir.normalize();
 
-	Float VlightSlope = lightDir[Z]/sqrtf(lightDir[X]*lightDir[X] + lightDir[Y]*lightDir[Y]) * _units;
-	Float HlightSlope = lightDir[Y]/lightDir[X] * _units;
+    Float VlightSlope = lightDir[Z] / Math::sqrt(lightDir[X]*lightDir[X] + lightDir[Y]*lightDir[Y]) * _units;
+    Float HlightSlope = lightDir[Y] / lightDir[X] * _units;
 
 	UInt32 width = _source.width();
 	UInt32 height = _source.height();

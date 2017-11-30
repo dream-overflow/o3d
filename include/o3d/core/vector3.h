@@ -10,9 +10,7 @@
 #ifndef _O3D_VECTOR3_H
 #define _O3D_VECTOR3_H
 
-#include <cmath>
-
-#include "base.h"
+#include "math.h"
 #include "memorydbg.h"
 
 namespace o3d {
@@ -113,7 +111,7 @@ public:
 	inline const Float* getData() const { return V; }
 
 	//! renvoie la longueur du vecteur (norme)
-	inline Float length() const { return (Float)sqrtf(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]); }
+    inline Float length() const { return Math::sqrt(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]); }
 
 	//! renvoie la longueur du vecteur au carré (norme²)
 	inline Float squareLength() const { return (V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]); }
@@ -127,7 +125,7 @@ public:
 	//! return the new normalized vector (this is constant)
 	inline Vector3 operator!() const
 	{
-		Float len = (Float) sqrtf(V[X] * V[X] + V[Y] * V[Y] + V[Z] * V[Z]);
+        Float len = Math::sqrt(V[X] * V[X] + V[Y] * V[Y] + V[Z] * V[Z]);
 
         if (len != 0) {
 			len = 1 / len;
@@ -140,7 +138,7 @@ public:
 	//! @return Its magnitude
 	inline Float normalize()
 	{
-		Float len = (Float)sqrtf(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]);
+        Float len = Math::sqrt(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]);
 
         if (len < Limits<Float>::epsilon()) {
 			V[X] = 1;
@@ -302,9 +300,9 @@ public:
 	//! @return False if they are equals
 	inline Bool operator!= (const Vector3& v) const
 	{
-		if (fabs(V[X] - v[X]) > Limits<Float>::epsilon()) return True;
-		if (fabs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return True;
-		if (fabs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return True;
+        if (o3d::abs(V[X] - v[X]) > Limits<Float>::epsilon()) return True;
+        if (o3d::abs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return True;
+        if (o3d::abs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return True;
 		return False;
 	}
 
@@ -312,9 +310,9 @@ public:
 	//! @return True if they are equals
 	inline Bool operator== (const Vector3& v) const
 	{
-		if (fabs(V[X] - v[X]) > Limits<Float>::epsilon()) return False;
-		if (fabs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return False;
-		if (fabs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return False;
+        if (o3d::abs(V[X] - v[X]) > Limits<Float>::epsilon()) return False;
+        if (o3d::abs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return False;
+        if (o3d::abs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return False;
 		return True;
 	}
 

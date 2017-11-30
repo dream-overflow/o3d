@@ -10,8 +10,7 @@
 #ifndef _O3D_VECTOR4_H
 #define _O3D_VECTOR4_H
 
-#include <math.h>
-#include "base.h"
+#include "math.h"
 #include "memorydbg.h"
 
 namespace o3d {
@@ -21,11 +20,9 @@ class OutStream;
 class String;
 class Vector3;
 
-//---------------------------------------------------------------------------------------
-//! @class Vector4
-//-------------------------------------------------------------------------------------
-//! 4 dimensional vector.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief 4 dimensionals vector.
+ */
 class O3D_API Vector4
 {
 public:
@@ -122,7 +119,7 @@ public:
 	inline const Float* getData() const { return V; }
 
 	//! Compute the norm2.
-	inline Float length() const { return (Float)sqrtf(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]+ V[W]*V[W]); }
+    inline Float length() const { return Math::sqrt(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z]+ V[W]*V[W]); }
 
 	//! Return the vector square length
 	inline Float squarelength() const { return (V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W]); }
@@ -133,7 +130,7 @@ public:
 	//! return the new normalized vector (this is constant)
 	inline Vector4 operator!() const
 	{
-		Float len = (Float)sqrtf(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W]);
+        Float len = Math::sqrt(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W]);
 
 		if (len!=0) len = 1/len;
 		return Vector4(V[X]*len,V[Y]*len,V[Z]*len,V[W]*len);
@@ -142,7 +139,7 @@ public:
 	//! Normalize using norm2.
 	inline void normalize()
 	{
-		Float len = (Float)sqrtf(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W]);
+        Float len = Math::sqrt(V[X]*V[X] + V[Y]*V[Y] + V[Z]*V[Z] + V[W]*V[W]);
 
 		if (len != 0.0f) len = 1.f/len;
 
@@ -269,20 +266,20 @@ public:
 	//! Compare two vector for a difference.
 	inline Bool operator!= (const Vector4& v)const
 	{
-		if (fabs(V[X] - v[X]) > Limits<Float>::epsilon()) return True;
-		if (fabs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return True;
-		if (fabs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return True;
-		if (fabs(V[W] - v[W]) > Limits<Float>::epsilon()) return True;
+        if (o3d::abs(V[X] - v[X]) > Limits<Float>::epsilon()) return True;
+        if (o3d::abs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return True;
+        if (o3d::abs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return True;
+        if (o3d::abs(V[W] - v[W]) > Limits<Float>::epsilon()) return True;
 		return False;
 	}
 
 	//! Compare two vector for an equality.
 	inline Bool operator== (const Vector4& v)const
 	{
-		if (fabs(V[X] - v[X]) > Limits<Float>::epsilon()) return False;
-		if (fabs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return False;
-		if (fabs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return False;
-		if (fabs(V[W] - v[W]) > Limits<Float>::epsilon()) return False;
+        if (o3d::abs(V[X] - v[X]) > Limits<Float>::epsilon()) return False;
+        if (o3d::abs(V[Y] - v[Y]) > Limits<Float>::epsilon()) return False;
+        if (o3d::abs(V[Z] - v[Z]) > Limits<Float>::epsilon()) return False;
+        if (o3d::abs(V[W] - v[W]) > Limits<Float>::epsilon()) return False;
 		return True;
 	}
 
@@ -307,4 +304,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_VECTOR4
-

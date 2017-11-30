@@ -12,6 +12,8 @@
 
 #include "o3d/core/instream.h"
 
+#include <math.h>
+
 using namespace o3d;
 
 // invert the dual quaternion

@@ -15,6 +15,8 @@
 #include "o3d/core/debug.h"
 #include "o3d/engine/glextensionmanager.h"
 
+#include <math.h>
+
 using namespace o3d;
 
 //---------------------------------------------------------------------------------------
@@ -24,13 +26,13 @@ using namespace o3d;
 O3D_IMPLEMENT_ABSTRACT_CLASS1(Primitive, ENGINE_PRIMITIVE, BaseObject)
 
 Primitive::Primitive(UInt32 flags) :
-	BaseObject(NULL),
+    BaseObject(nullptr),
 		m_capacities(flags),
 		m_verticesCount(0),
-		m_pVertices(NULL),
+        m_pVertices(nullptr),
 		m_indicesCount(0),
-		m_pIndices(NULL),
-		m_pTexCoords(NULL)
+        m_pIndices(nullptr),
+        m_pTexCoords(nullptr)
 {
 }
 
@@ -38,13 +40,13 @@ Primitive::Primitive(
 	UInt32 _verticesCount,
 	UInt32 _indicesCount,
 	UInt32 _flags) :
-		BaseObject(NULL),
+        BaseObject(nullptr),
 			m_capacities(_flags),
 			m_verticesCount(_verticesCount),
-			m_pVertices(NULL),
+            m_pVertices(nullptr),
 			m_indicesCount(_indicesCount),
-			m_pIndices(NULL),
-			m_pTexCoords(NULL)
+            m_pIndices(nullptr),
+            m_pTexCoords(nullptr)
 {
 	m_pVertices = new Float[_verticesCount*3];
 	O3D_ASSERT(m_pVertices);
@@ -1230,4 +1232,3 @@ void Surface::constructWired(
 		++offSet;
 	}
 }
-

@@ -477,7 +477,7 @@ void Quadtree::addObject(SceneObject *object)
     if (relativPos.normInf() > halfSize) {
 		// The object is outside the range of the quadtree
         // O3D_ERROR(E_InvalidParameter("Attempt to add an object outside the quadtree range"));
-        O3D_WARNING(E_InvalidParameter("Attempt to add an object outside the quadtree range"));
+        O3D_WARNING("Attempt to add an object outside the quadtree range");
 		return;
 	}
 

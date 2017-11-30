@@ -363,7 +363,7 @@ void Matrix3::eigenValue(Float & e1, Float & e2, Float & e3) const
 		O3D_ASSERT(p < 0.0f);
 
 		e1 = -b / (3.0f * a);
-		e2 = sqrtf(-p) + e1;
+        e2 = Math::sqrt(-p) + e1;
 		e3 = -e2 + e1;
 		return;
 	}
@@ -372,8 +372,8 @@ void Matrix3::eigenValue(Float & e1, Float & e2, Float & e3) const
 
     if (delta < -0.0001f) {
         // It means that the 3 solutions are real
-		Float c0 = 2.0f * sqrtf(-p / 3.0f);
-		Float c1 = acosf(-q / 2.0f * sqrtf(27.0f / -(p * p * p)));
+        Float c0 = 2.0f * Math::sqrt(-p / 3.0f);
+        Float c1 = acosf(-q / 2.0f * Math::sqrt(27.0f / -(p * p * p)));
 
 		e1 = c0 * cosf(1.0f / 3.0f * (c1 + 2.0f * o3d::PI)) - b / (3.0f * a);
 		e2 = c0 * cosf(1.0f / 3.0f * (c1 + 4.0f * o3d::PI)) - b / (3.0f * a);
@@ -439,13 +439,13 @@ void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenV
 						t = inp(p,q) / h;
                     } else {
 						Float theta = 0.5f * h / inp(p,q);
-                        t = 1.0f / (o3d::abs(theta) + /*Math::sqrt*/::sqrtf(1.0f + theta*theta));
+                        t = 1.0f / (o3d::abs(theta) + Math::sqrt(1.0f + theta*theta));
                         if (theta < 0.0f) {
 							t = -t;
                         }
 					}
 
-                    c = 1.0f / /*Math::sqrt*/::sqrtf(1.0f + t*t);   // cosine of rotation angle
+                    c = 1.0f / Math::sqrt(1.0f + t*t);   // cosine of rotation angle
 					s = t*c;                     // sine of rotation angle
 					tau = s / (1.0f + c);
 
@@ -539,8 +539,8 @@ void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenV
 			Float u = (m22 - m11) * 0.5f / m12;
 			Float u2 = u * u;
 			Float u2p1 = u2 + 1.f;
-            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (::sqrtf(u2p1) - o3d::abs(u)) : 0.5f / u;
-            Float c = 1.f / ::sqrtf(t * t + 1.f);
+            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (Math::sqrt(u2p1) - o3d::abs(u)) : 0.5f / u;
+            Float c = 1.f / Math::sqrt(t * t + 1.f);
 			Float s = c * t;
 
 			m11 -= t * m12;
@@ -565,8 +565,8 @@ void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenV
 			Float u = (m33 - m11) * 0.5f / m13;
 			Float u2 = u * u;
 			Float u2p1 = u2 + 1.f;
-            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (::sqrtf(u2p1) - o3d::abs(u)) : 0.5f / u;
-            Float c = 1.f / ::sqrtf(t * t + 1.f);
+            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (Math::sqrt(u2p1) - o3d::abs(u)) : 0.5f / u;
+            Float c = 1.f / Math::sqrt(t * t + 1.f);
 			Float s = c * t;
 
 			m11 -= t * m13;
@@ -591,8 +591,8 @@ void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenV
 			Float u = (m33 - m22) * 0.5f / m23;
 			Float u2 = u * u;
 			Float u2p1 = u2 + 1.f;
-            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (::sqrtf(u2p1) - o3d::abs(u)) : 0.5f / u;
-            Float c = 1.f / ::sqrtf(t * t + 1.f);
+            Float t = (u2p1 != u2) ? ((u < 0.f) ? -1.f : 1.f) * (Math::sqrt(u2p1) - o3d::abs(u)) : 0.5f / u;
+            Float c = 1.f / Math::sqrt(t * t + 1.f);
 			Float s = c * t;
 
 			m22 -= t * m23;

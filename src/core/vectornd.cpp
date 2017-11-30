@@ -11,49 +11,40 @@
 #include "o3d/core/vectornd.h"
 #include "o3d/core/instream.h"
 #include "o3d/core/outstream.h"
+#include "o3d/core/math.h"
 
 #include <math.h>
 
 using namespace o3d;
 
-/*---------------------------------------------------------------------------------------
-  set tout les élements de V avec val
----------------------------------------------------------------------------------------*/
 void VectorND::setValue(Float val)
 {
     for (UInt32 i = 0 ; i < dim ; ++i)
 		V[i] = val;
 }
 
-/*---------------------------------------------------------------------------------------
-  renvoie la longueur du vecteur (norme)
----------------------------------------------------------------------------------------*/
 Float VectorND::length()const
 {
 	Float val = 0;
 
-	for (UInt32 i = 0 ; i < dim ; ++i)
+    for (UInt32 i = 0 ; i < dim ; ++i) {
 		val += (V[i] * V[i]);
+    }
 
-	return (Float)sqrtf(val);
+    return Math::sqrt(val);
 }
 	
-/*---------------------------------------------------------------------------------------
-  renvoie la longueur du vecteur au carré (normée)
----------------------------------------------------------------------------------------*/
 Float VectorND::squareLength()const
 {
 	Float val = 0;
 
-	for (UInt32 i = 0 ; i < dim ; ++i)
+    for (UInt32 i = 0 ; i < dim ; ++i) {
 		val += (V[i] * V[i]);
+    }
 
 	return val;
 }
 
-/*---------------------------------------------------------------------------------------
-  renvoie la norme infinie du vecteur (plus grande valeur absolue)
----------------------------------------------------------------------------------------*/
 Float VectorND::normInf()const
 {
 	Float val = 0;
@@ -69,9 +60,6 @@ Float VectorND::normInf()const
 	return val;
 }
 
-/*---------------------------------------------------------------------------------------
-  renvoie la norme absolue du vecteur (somme absolue de ses �lements)
----------------------------------------------------------------------------------------*/
 Float VectorND::normAbs()const
 {
 	Float val = 0;
@@ -82,9 +70,6 @@ Float VectorND::normAbs()const
 	return val;
 }
 
-/*---------------------------------------------------------------------------------------
-  ajoute un vecteur � this
----------------------------------------------------------------------------------------*/
 VectorND& VectorND::operator+= (const VectorND& vec)
 {
 	if (dim != vec.getDim()) return (*this);
@@ -95,9 +80,6 @@ VectorND& VectorND::operator+= (const VectorND& vec)
 	return (*this);
 }
 
-/*---------------------------------------------------------------------------------------
-  soustrait un vecteur � this
----------------------------------------------------------------------------------------*/
 VectorND& VectorND::operator-= (const VectorND& vec)
 {
 	if (dim != vec.getDim()) return (*this);
@@ -108,9 +90,6 @@ VectorND& VectorND::operator-= (const VectorND& vec)
 	return (*this);
 }
 
-/*---------------------------------------------------------------------------------------
-  scalairiser this*=scal
----------------------------------------------------------------------------------------*/
 VectorND& VectorND::operator*= (const Float scal)
 {
 	for (UInt32 i = 0 ; i < dim ; ++i)
@@ -119,9 +98,6 @@ VectorND& VectorND::operator*= (const Float scal)
 	return (*this);
 }
 
-/*---------------------------------------------------------------------------------------	
-  division scalaire this/=scal
----------------------------------------------------------------------------------------*/
 VectorND& VectorND::operator/= (const Float scal)
 {
 	for (UInt32 i = 0 ; i < dim ; ++i)
@@ -130,9 +106,6 @@ VectorND& VectorND::operator/= (const Float scal)
 	return (*this);
 }
 
-/*---------------------------------------------------------------------------------------
-  produit scalaire this*vec
----------------------------------------------------------------------------------------*/
 Float VectorND::operator* (const VectorND& v)const
 {
 	if (dim != v.getDim()) return 0;
@@ -145,9 +118,6 @@ Float VectorND::operator* (const VectorND& v)const
 	return val;
 }
 
-/*---------------------------------------------------------------------------------------
-  produit scalaire vec*scal
----------------------------------------------------------------------------------------*/
 VectorND VectorND::operator* (const Float scal)const
 {
 	VectorND temp(dim);
@@ -158,9 +128,6 @@ VectorND VectorND::operator* (const Float scal)const
 	return temp;
 }
 
-/*---------------------------------------------------------------------------------------
-  division scalaire vec/scal
----------------------------------------------------------------------------------------*/
 VectorND VectorND::operator/ (const Float scal)const
 {
 	VectorND temp(dim);
@@ -171,9 +138,6 @@ VectorND VectorND::operator/ (const Float scal)const
 	return temp;
 }
 
-/*---------------------------------------------------------------------------------------
-  addition vectorielle v1 + v2
----------------------------------------------------------------------------------------*/
 VectorND VectorND::operator+ (const VectorND& v)const
 {
 	if (dim != v.getDim()) return VectorND(dim);
@@ -186,9 +150,6 @@ VectorND VectorND::operator+ (const VectorND& v)const
 	return temp;
 }
 
-/*---------------------------------------------------------------------------------------
- soustraction vectorielle v1 - v2
----------------------------------------------------------------------------------------*/
 VectorND VectorND::operator- (const VectorND& v)const
 {
 	if (dim != v.getDim()) return VectorND(dim);
@@ -201,9 +162,6 @@ VectorND VectorND::operator- (const VectorND& v)const
 	return temp;
 }
 
-/*---------------------------------------------------------------------------------------
- inverse le vecteur this et le renvoi (toutes ses composante sons invers�es (-))
----------------------------------------------------------------------------------------*/
 VectorND VectorND::operator- ()const
 {
 	VectorND temp(dim);
@@ -214,9 +172,6 @@ VectorND VectorND::operator- ()const
 	return temp;
 }
 
-/*---------------------------------------------------------------------------------------
-  S�rialisation: �crit/lit dans un fichier
----------------------------------------------------------------------------------------*/
 Bool VectorND::writeToFile(OutStream &os)const
 {
     os << dim;
@@ -237,4 +192,3 @@ Bool VectorND::readFromFile(InStream &is)
 
 	return True;
 }
-

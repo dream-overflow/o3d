@@ -425,7 +425,7 @@ Bool CloudLayerPerlin::updateGeometry()
 
 				// A more correct but costly version of a similar vector
 				// Y component is a point computed by following the gradient direction. The y component will then be always negative.
-				// O3DVector3 lVec(lGradient[1], sqrt(lSquareNorm), lGradient[2]);
+                // Vector3 lVec(lGradient[1], Math::sqrt(lSquareNorm), lGradient[2]);
 
 				lVec = lVec ^ (lVec ^ lGradient);
 				// Equal to (wikipedia , Lagrange identity)

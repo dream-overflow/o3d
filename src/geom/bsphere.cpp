@@ -118,8 +118,9 @@ Bool BSphere::clipFront(const Plane &p) const
 {
 	// assume normalized planes.
 	Float d = p*m_center;
-	if(d<-m_radius)
+    if (d<-m_radius) {
 		return False;
+    }
 	
 	return True;
 }
@@ -128,10 +129,11 @@ Bool BSphere::clipFront(const Plane &p) const
 Bool BSphere::clipBack(const Plane &p) const
 {
 	// assume normalized planes.
-	
-	Float d = p*m_center;
-	if (d>m_radius)
+		Float d = p*m_center;
+    if (d>m_radius) {
 		return False;
+    }
+
 	return True;
 }
 
@@ -147,14 +149,16 @@ Bool BSphere::include(const Vector3 &p) const
 Bool BSphere::include(const BSphere &s) const
 {
 	// if smaller than s, how could we include it???
-	if(m_radius <= s.m_radius)
+    if(m_radius <= s.m_radius) {
 		return False;
+    }
+
 	Float r2 = (s.m_center - m_center).squareLength();
 	// Because of prec test, m_radius-s.m_radius>0.
 	//Float r2 = (s.m_center - m_center).length();
-	//return  (r2 <= sqrtf(m_radius-s.m_radius));
+    //return  (r2 <= Math::sqrt(m_radius-s.m_radius));
 	Float radius = m_radius - s.m_radius;
-	return  (r2 <= radius * radius);
+    return (r2 <= radius * radius);
 }
 
 //! Does the sphere include TOTALY a box
@@ -162,38 +166,33 @@ Bool BSphere::include(const AABBox &b) const
 {
 	Vector3 lBoxToSphere(m_center - b.getCenter());
 
-	if (lBoxToSphere.x() >= 0.0f)
-	{
-		if (lBoxToSphere.y() >= 0.0f)
-		{
-			if (lBoxToSphere.z() >= 0.0f)
+    if (lBoxToSphere.x() >= 0.0f) {
+        if (lBoxToSphere.y() >= 0.0f) {
+            if (lBoxToSphere.z() >= 0.0f) {
 				return ((lBoxToSphere += Vector3(-b.getHalfSize().x(), -b.getHalfSize().y(), -b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
-			else
+            } else {
 				return ((lBoxToSphere += Vector3(-b.getHalfSize().x(), -b.getHalfSize().y(), +b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
-		}
-		else
-		{
-			if (lBoxToSphere.z() >= 0.0f)
+            }
+        } else {
+            if (lBoxToSphere.z() >= 0.0f) {
 				return ((lBoxToSphere += Vector3(-b.getHalfSize().x(), +b.getHalfSize().y(), -b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
-			else
+            } else {
 				return ((lBoxToSphere += Vector3(-b.getHalfSize().x(), +b.getHalfSize().y(), +b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
+            }
 		}
-	}
-	else
-	{
-		if (lBoxToSphere.y() >= 0.0f)
-		{
-			if (lBoxToSphere.z() >= 0.0f)
+    } else {
+        if (lBoxToSphere.y() >= 0.0f) {
+            if (lBoxToSphere.z() >= 0.0f) {
 				return ((lBoxToSphere += Vector3(+b.getHalfSize().x(), -b.getHalfSize().y(), -b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
-			else
+            } else {
 				return ((lBoxToSphere += Vector3(+b.getHalfSize().x(), -b.getHalfSize().y(), +b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
-		}
-		else
-		{
-			if (lBoxToSphere.z() >= 0.0f)
+            }
+        } else {
+            if (lBoxToSphere.z() >= 0.0f) {
 				return ((lBoxToSphere += Vector3(+b.getHalfSize().x(), +b.getHalfSize().y(), -b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
-			else
+            } else {
 				return ((lBoxToSphere += Vector3(+b.getHalfSize().x(), +b.getHalfSize().y(), +b.getHalfSize().z())).squareLength() <= o3d::sqr<Float>(m_radius));
+            }
 		}
 	}
 }
@@ -226,48 +225,48 @@ Geometry::Clipping BSphere::clip(const Plane & plane) const
 {
 	const Float lDistance = o3d::abs<Float>(plane*m_center);
 
-	if (lDistance > m_radius)
+    if (lDistance > m_radius) {
 		return Geometry::CLIP_OUTSIDE;
-	else
+    } else {
 		return Geometry::CLIP_INTERSECT;
+    }
 }
 
 Geometry::Clipping BSphere::clip(const BSphere & sphere) const
 {
 	const Float lDist = (sphere.m_center - m_center).length();
 
-	if (lDist > sphere.m_radius + m_radius)
+    if (lDist > sphere.m_radius + m_radius) {
 		return Geometry::CLIP_OUTSIDE;
-	else if (lDist + sphere.m_radius <= m_radius)
+    } else if (lDist + sphere.m_radius <= m_radius) {
 		return Geometry::CLIP_INSIDE;
-	else
+    } else {
 		return Geometry::CLIP_INTERSECT;
+    }
 }
 
 Geometry::Clipping BSphere::clip(const BCone & cone) const
 {
-	if (!cone.isValid())
-	{
+    if (!cone.isValid()) {
 		O3D_WARNING("Invalid BCone object");
 		return Geometry::CLIP_OUTSIDE;
 	}
 
 	Geometry::Clipping lResult;
 
-	if ((lResult = clip(cone.getOutBSphere())) != Geometry::CLIP_INTERSECT)
+    if ((lResult = clip(cone.getOutBSphere())) != Geometry::CLIP_INTERSECT) {
 		return lResult;
+    }
 
 	const Vector3 lCenterToOrigin(cone.getOrigin() - m_center);
 	Vector3 lVertical(lCenterToOrigin ^ cone.getDirection());
 
 	const Float lSqrRadius = o3d::sqr<Float>(m_radius);
 
-	if (lVertical.normalize() < o3d::Limits<Float>::epsilon())
-	{
+    if (lVertical.normalize() < o3d::Limits<Float>::epsilon()) {
 		lVertical = Vector3(1.0f, 0.0f, 0.0f) ^ cone.getDirection();
 
-		if (lVertical.normalize() < o3d::Limits<Float>::epsilon())
-		{
+        if (lVertical.normalize() < o3d::Limits<Float>::epsilon()) {
 			lVertical = Vector3(0.0f, 1.0f, 0.0f) ^ cone.getDirection();
 			lVertical.normalize();
 		}
@@ -275,8 +274,7 @@ Geometry::Clipping BSphere::clip(const BCone & cone) const
 
 	const Vector3 lAxeToCenter(cone.getDirection() ^ lVertical);
 
-	if (cone.isSpheric())
-	{
+    if (cone.isSpheric()) {
 		const Vector3 lTopToCenter = m_center - cone.getOrigin() - cone.getDepth()*cone.getDirection(); // L'origine du repere 2D est differente dans le cas non spheric
 		const Float lHalfBase = cone.getDepth()*cone.getSinCutoff();
 
@@ -291,75 +289,74 @@ Geometry::Clipping BSphere::clip(const BCone & cone) const
 		Float lT;
 
 		// Test lorsque le centre du cercle est a l'exterieur du triangle
-		if (lCoord.y() <= lF2) // Zone 1
-		{
-			if (lSqrCoord.x() + lSqrCoord.y() > o3d::sqr<Float>(cone.getDepth() + m_radius))
+        if (lCoord.y() <= lF2) {
+            // Zone 1
+            if (lSqrCoord.x() + lSqrCoord.y() > o3d::sqr<Float>(cone.getDepth() + m_radius)) {
 				return Geometry::CLIP_OUTSIDE;
-			else if ((lSqrCoord.x() + lSqrCoord.y() <= lSqrRadius) &&
+            } else if ((lSqrCoord.x() + lSqrCoord.y() <= lSqrRadius) &&
 					(lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() + cone.getDepth()) <= lSqrRadius) &&
-					(o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) <= lSqrRadius))
+                    (o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) <= lSqrRadius)) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
-
-		}
-		else if ((cone.getCutoff() < o3d::HALF_PI) && (lCoord.y() >= 0.0f) && (lCoord.y() >= lF3)) // Zone 4
-		{
-			if (lSqrCoord.x() + lSqrCoord.y() > lSqrRadius)
+            }
+        } else if ((cone.getCutoff() < o3d::HALF_PI) && (lCoord.y() >= 0.0f) && (lCoord.y() >= lF3)) {
+            // Zone 4
+            if (lSqrCoord.x() + lSqrCoord.y() > lSqrRadius) {
 				return Geometry::CLIP_OUTSIDE;
-			else if ((lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() + cone.getDepth()) <= lSqrRadius) &&
-					(o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) <= lSqrRadius))
+            } else if ((lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() + cone.getDepth()) <= lSqrRadius) &&
+                    (o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) <= lSqrRadius)) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
-		}
-		else if ((lCoord.y() >= lF2) && ((lT = (lCoord.x() - lHalfBase)*cone.getSinCutoff() + (lCoord.y() + cone.getDepth()*cone.getCosCutoff())*(-cone.getCosCutoff())) <= 0.0f)) // Zone 3
-		{
-			if (lCoord.y() > lF2 + m_radius/cone.getSinCutoff())
+            }
+        } else if ((lCoord.y() >= lF2) && ((lT = (lCoord.x() - lHalfBase)*cone.getSinCutoff() + (lCoord.y() + cone.getDepth()*cone.getCosCutoff())*(-cone.getCosCutoff())) <= 0.0f)) {
+            // Zone 3
+            if (lCoord.y() > lF2 + m_radius/cone.getSinCutoff()) {
 				return Geometry::CLIP_OUTSIDE;
-			else if (sqrt(lSqrCoord.x() + lSqrCoord.y()) + cone.getDepth() <= m_radius) // point symetrique par rapport a l'origine du cone (le plus loin)
+            } else if (Math::sqrt(lSqrCoord.x() + lSqrCoord.y()) + cone.getDepth() <= m_radius) {
+                // point symetrique par rapport a l'origine du cone (le plus loin)
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
-		}
-		// Calcul de la distance par rapport a la droite f1
-		else if ((lT = (lCoord.x() - lHalfBase)*cone.getSinCutoff() + (lCoord.y() + cone.getDepth()*cone.getCosCutoff())*(-cone.getCosCutoff())) >= 0.0f) // Zone 2
-		{
-			if (lT > m_radius)
+            }
+        } else if ((lT = (lCoord.x() - lHalfBase)*cone.getSinCutoff() + (lCoord.y() + cone.getDepth()*cone.getCosCutoff())*(-cone.getCosCutoff())) >= 0.0f) {
+            // Calcul de la distance par rapport a la droite f1
+            // Zone 2
+            if (lT > m_radius) {
 				return Geometry::CLIP_OUTSIDE;
-			else if (o3d::sqr<Float>(lCoord.x() - lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) > lSqrRadius)
+            } else if (o3d::sqr<Float>(lCoord.x() - lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) > lSqrRadius) {
 				return Geometry::CLIP_OUTSIDE;
-			else if ((cone.getCutoff() >= o3d::HALF_PI) && (sqrt(lSqrCoord.x() + lSqrCoord.y()) + cone.getDepth() <= m_radius)) // Distance avec le point le plus loin du cone
+            } else if ((cone.getCutoff() >= o3d::HALF_PI) && (Math::sqrt(lSqrCoord.x() + lSqrCoord.y()) + cone.getDepth() <= m_radius)) {
+                // Distance avec le point le plus loin du cone
 				return Geometry::CLIP_INSIDE;
-			else if ((cone.getCutoff() < o3d::HALF_PI) && (o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) <= lSqrRadius) &&
-				(lSqrCoord.x() + lSqrCoord.y() <= lSqrRadius))
+            } else if ((cone.getCutoff() < o3d::HALF_PI) && (o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) <= lSqrRadius) &&
+                (lSqrCoord.x() + lSqrCoord.y() <= lSqrRadius)) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
+            }
 		}
 
 		// Sinon le centre du cercle est dans le cone
 		O3D_ASSERT((lCoord.y() <= lF2) && (lSqrCoord.x() + lSqrCoord.y() <= lSqrRadius));
 
 		// On test si la sphere englobe le tout cad avec chaque point
-		if (cone.getCutoff() >= o3d::HALF_PI)
-		{
-			if (sqrt(lSqrCoord.x() + lSqrCoord.y()) + cone.getDepth() <= m_radius)
+        if (cone.getCutoff() >= o3d::HALF_PI) {
+            if (Math::sqrt(lSqrCoord.x() + lSqrCoord.y()) + cone.getDepth() <= m_radius) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
-		}
-		else
-		{
+            }
+        } else {
 			if ((o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y() + cone.getDepth()*cone.getCosCutoff()) <= lSqrRadius) &&
-				(lSqrCoord.x() + lSqrCoord.y() >= lSqrRadius))
+                (lSqrCoord.x() + lSqrCoord.y() >= lSqrRadius)) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
+            }
 		}
-	}
-	else
-	{
+    } else {
 		const Vector3 lTopToCenter = m_center - cone.getOrigin() - cone.getDepth()*cone.getDirection();
 		const Float lHalfBase = cone.getDepth() * cone.getTanCutoff();
 
@@ -373,44 +370,45 @@ Geometry::Clipping BSphere::clip(const BCone & cone) const
 		const Float lF3 = cone.getDepth() + lCoord.x() * lTanCutoff;
 
 		// Test lorsque le centre du cercle est a l'exterieur du triangle
-		if ((lCoord.y() <= 0.0f) && (lCoord.x() <= lHalfBase)) // Zone 1
-		{
-			if (lCoord.y() < -m_radius)
+        if ((lCoord.y() <= 0.0f) && (lCoord.x() <= lHalfBase)) {
+            // Zone 1
+            if (lCoord.y() < -m_radius) {
 				return Geometry::CLIP_OUTSIDE;
-			else if ((o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y()) <= lSqrRadius) &&
-					(lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) <= lSqrRadius))
+            } else if ((o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y()) <= lSqrRadius) &&
+                    (lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) <= lSqrRadius)) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
-		}
-		else if ((lCoord.x() >= lHalfBase) && (lCoord.y() <= lF1)) // Zone 2
-		{
-			if (o3d::sqr<Float>(lCoord.x() - lHalfBase) + lSqrCoord.y() > lSqrRadius)
+            }
+        } else if ((lCoord.x() >= lHalfBase) && (lCoord.y() <= lF1)) {
+            // Zone 2
+            if (o3d::sqr<Float>(lCoord.x() - lHalfBase) + lSqrCoord.y() > lSqrRadius) {
 				return Geometry::CLIP_OUTSIDE;
-			else if ((o3d::sqr<Float>(lCoord.x() + lHalfBase) + lSqrCoord.y() <= lSqrRadius) &&
-					(lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) <= lSqrRadius))
+            } else if ((o3d::sqr<Float>(lCoord.x() + lHalfBase) + lSqrCoord.y() <= lSqrRadius) &&
+                    (lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) <= lSqrRadius)) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
-		}
-		else if (lCoord.y() >= lF3) // Zone 4
-		{
-			if (lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) > lSqrRadius)
+            }
+        } else if (lCoord.y() >= lF3) {
+            // Zone 4
+            if (lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) > lSqrRadius) {
 				return Geometry::CLIP_OUTSIDE;
-			else if (o3d::sqr<Float>(lCoord.x() + lHalfBase) + lSqrCoord.y() <= lSqrRadius)
+            } else if (o3d::sqr<Float>(lCoord.x() + lHalfBase) + lSqrCoord.y() <= lSqrRadius) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
-		}
-		else if (lCoord.y() >= lF2) // Zone 3
-		{
-			if (lCoord.y() > lF2 + m_radius/cone.getSinCutoff())
-				return Geometry::CLIP_OUTSIDE;
-			else if ((o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y()) <= lSqrRadius) &&
-					(lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) <= lSqrRadius))
+            }
+        } else if (lCoord.y() >= lF2) {
+            // Zone 3
+            if (lCoord.y() > lF2 + m_radius/cone.getSinCutoff()) {
+                return Geometry::CLIP_OUTSIDE;
+            } else if ((o3d::sqr<Float>(lCoord.x() + lHalfBase) + o3d::sqr<Float>(lCoord.y()) <= lSqrRadius) &&
+                    (lSqrCoord.x() + o3d::sqr<Float>(lCoord.y() - cone.getDepth()) <= lSqrRadius)) {
 				return Geometry::CLIP_INSIDE;
-			else
+            } else {
 				return Geometry::CLIP_INTERSECT;
+            }
 		}
 
 		O3D_ASSERT((lCoord.y() <= cone.getDepth()) && (lCoord.y() >= 0.0f) && (lCoord.x() <= lHalfBase));
@@ -419,46 +417,41 @@ Geometry::Clipping BSphere::clip(const BCone & cone) const
 		const Float lSqrDist1 = o3d::sqr<Float>(lCoord.x() + lHalfBase) + lSqrCoord.y();
 		const Float lSqrDist2 = lSqrCoord.x() + o3d::sqr<Float>(cone.getDepth() - lCoord.y());
 
-		if ((lSqrDist1 <= lSqrRadius) && (lSqrDist2 <= lSqrRadius))
+        if ((lSqrDist1 <= lSqrRadius) && (lSqrDist2 <= lSqrRadius)) {
 			return Geometry::CLIP_INSIDE;
-		else
+        } else {
 			return Geometry::CLIP_INTERSECT;
+        }
 	}
 }
 
 void BSphere::setUnion(const BSphere &sa, const BSphere &sb)
 {
-	Float	r2 = (sb.m_center-sa.m_center).length();
+    Float r2 = (sb.m_center-sa.m_center).length();
 	
 	// Name Sphere 0 the biggest one, and Sphere 1 the other
-	const BSphere	*s0;
-	const BSphere	*s1;
+    const BSphere *s0;
+    const BSphere *s1;
 
-	if(sa.m_radius>sb.m_radius)
-	{
+    if(sa.m_radius>sb.m_radius) {
 		s0= &sa;
 		s1= &sb;
-	}
-	else
-	{
+    } else {
 		s0= &sb;
 		s1= &sa;
 	}
-	Float	r0= s0->m_radius;
-	Float	r1= s1->m_radius;
+    Float r0= s0->m_radius;
+    Float r1= s1->m_radius;
 	
 	// If Sphere1 is included into Sphere0, then the union is simply Sphere0
-	if(r2<=(r0-r1))
-	{
+    if (r2<=(r0-r1)) {
 		*this= *s0;
-	}
-	else
-	{
+    } else {
 		/* Compute the Union sphere Diameter. It is D= r0 + r2 + r1 
 		do the draw, works for intersect and don't intersect case, 
 		acknowledge that Sphere1 not included inton Sphere0
 		*/
-		Float	diameter= r0 + r2 + r1;
+        Float diameter= r0 + r2 + r1;
 		
 		// compute dir from big m_center to small one.
 		Vector3	dir= s1->m_center - s0->m_center;
@@ -487,4 +480,3 @@ Bool BSphere::readFromFile(InStream &is)
 
 	return True;
 }
-

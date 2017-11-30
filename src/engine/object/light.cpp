@@ -487,16 +487,19 @@ Bool Light::readFromFile(InStream &is)
 
 	deletePtr(m_pConeBounding);
 
-	if (m_lightType == SPOT_LIGHT)
+    if (m_lightType == SPOT_LIGHT) {
 		m_pConeBounding = new BCone(Vector3(getWorldPosition().getData()), getWorldDirection(), getThresholdDistance(), m_cutOff, True);
+    }
 
     return True;
 }
 
 Float Light::getThresholdDistance() const
 {
-	if (m_thresholdDistance >= 0.0f) // It means that the value is up to date
+    if (m_thresholdDistance >= 0.0f) {
+        // It means that the value is up to date
 		return m_thresholdDistance;
+    }
 
 	// Assume all components of m_attenuation are positive
 	O3D_ASSERT((m_attenuation.x() >= 0.0f) && (m_attenuation.y() >= 0.0f) && (m_attenuation.z() >= 0.0f));
@@ -507,23 +510,19 @@ Float Light::getThresholdDistance() const
 	const Float b = m_attenuation.y();
 	const Float c = m_attenuation.x();
 
-	if (a <= 0.0f)
-	{
+    if (a <= 0.0f) {
 		// Solve b.x + c - eps = 0
 		if (b <= 0.0f)
 			return 0.0f;
 		else
 			return (eps - c) / b;
-	}
-	else
-	{
+    } else {
 		// Solve a.x^2 + b.x + c - eps = 0
 		const Float delta = b*b - 4.0f*a*(c-eps);
 
 		if (delta <= 0.0f)
 			return 0.0f;
 		else
-			return (-b + sqrt(delta)) / (2.0f * a);
+            return (-b + Math::sqrt(delta)) / (2.0f * a);
 	}
 }
-

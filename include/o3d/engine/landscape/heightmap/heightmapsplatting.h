@@ -175,4 +175,3 @@ private:
 } // namespace o3d
 
 #endif // __O3DHEIGHTMAPSPLATTING_H
-

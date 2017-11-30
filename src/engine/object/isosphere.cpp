@@ -10,7 +10,9 @@
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/object/isosphere.h"
 
+#include "o3d/core/math.h"
 #include "o3d/core/debug.h"
+
 #include <math.h>
 
 using namespace o3d;
@@ -134,17 +136,17 @@ static void isoSphereSubDivide(
 	lNewVertexCA[Z] = 0.5f*(lVC[Z] + lVA[Z]);
 
 	Float liLength;
-	liLength = 1.0f/sqrtf(lNewVertexAB[X] * lNewVertexAB[X] + lNewVertexAB[Y] * lNewVertexAB[Y] + lNewVertexAB[Z] * lNewVertexAB[Z]);
+    liLength = 1.0f / Math::sqrt(lNewVertexAB[X] * lNewVertexAB[X] + lNewVertexAB[Y] * lNewVertexAB[Y] + lNewVertexAB[Z] * lNewVertexAB[Z]);
 	lNewVertexAB[X] *= liLength;
 	lNewVertexAB[Y] *= liLength;
 	lNewVertexAB[Z] *= liLength;
 
-	liLength = 1.0f/sqrtf(lNewVertexBC[X] * lNewVertexBC[X] + lNewVertexBC[Y] * lNewVertexBC[Y] + lNewVertexBC[Z] * lNewVertexBC[Z]);
+    liLength = 1.0f / Math::sqrt(lNewVertexBC[X] * lNewVertexBC[X] + lNewVertexBC[Y] * lNewVertexBC[Y] + lNewVertexBC[Z] * lNewVertexBC[Z]);
 	lNewVertexBC[X] *= liLength;
 	lNewVertexBC[Y] *= liLength;
 	lNewVertexBC[Z] *= liLength;
 
-	liLength = 1.0f/sqrtf(lNewVertexCA[X] * lNewVertexCA[X] + lNewVertexCA[Y] * lNewVertexCA[Y] + lNewVertexCA[Z] * lNewVertexCA[Z]);
+    liLength = 1.0f / Math::sqrt(lNewVertexCA[X] * lNewVertexCA[X] + lNewVertexCA[Y] * lNewVertexCA[Y] + lNewVertexCA[Z] * lNewVertexCA[Z]);
 	lNewVertexCA[X] *= liLength;
 	lNewVertexCA[Y] *= liLength;
 	lNewVertexCA[Z] *= liLength;
@@ -180,7 +182,7 @@ static void isoSphereSubDivideSegment(
 	lV[Y] = 0.5f*(lV1[Y] + lV2[Y]);
 	lV[Z] = 0.5f*(lV1[Z] + lV2[Z]);
 
-	Float liLength = 1.0f/sqrtf(lV1[X] * lV[X] + lV1[Y] * lV[Y] + lV1[Z] * lV[Z]);
+    Float liLength = 1.0f / Math::sqrt(lV1[X] * lV[X] + lV1[Y] * lV[Y] + lV1[Z] * lV[Z]);
 	lV[X] *= liLength;
 	lV[Y] *= liLength;
 	lV[Z] *= liLength;
@@ -223,7 +225,7 @@ static void isoSphereSubDivideCenter(
 		lCenterPtr[Y] = 0.5f*(lTopPtr[Y] + lBotPtr[Y]);
 		lCenterPtr[Z] = 0.5f*(lTopPtr[Z] + lBotPtr[Z]);
 
-		Float liLength = 1.0f/sqrtf(lCenterPtr[X] * lCenterPtr[X] + lCenterPtr[Y] * lCenterPtr[Y] + lCenterPtr[Z] * lCenterPtr[Z]);
+        Float liLength = 1.0f / Math::sqrt(lCenterPtr[X] * lCenterPtr[X] + lCenterPtr[Y] * lCenterPtr[Y] + lCenterPtr[Z] * lCenterPtr[Z]);
 		lCenterPtr[X] *= liLength;
 		lCenterPtr[Y] *= liLength;
 		lCenterPtr[Z] *= liLength;
@@ -612,4 +614,3 @@ void IsoSphere::buildIsoSphere()
 		}
 	}
 }
-

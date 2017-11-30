@@ -450,12 +450,12 @@ Vector3 ScatteringModelDefault::getMieCrossSectionCoef(const TaskData & _datas, 
 Vector3 ScatteringModelDefault::getSphereIntersection(const Vector3 & _pos, const Vector3 & _direction, Float _radius) const
 {
 	const Float lSquareAltitude = _pos.squareLength();
-	const Float lAltitude = sqrtf(lSquareAltitude);
+    const Float lAltitude = Math::sqrt(lSquareAltitude);
 	Vector3 lNormalizedPosition(_pos);
 	lNormalizedPosition.normalize();
 
 	const Float lCosAlpha = lNormalizedPosition * _direction;
-	const Float lT = sqrtf(_radius * _radius - lSquareAltitude*(1.0f - lCosAlpha*lCosAlpha)) - lAltitude * lCosAlpha;
+    const Float lT = Math::sqrt(_radius * _radius - lSquareAltitude*(1.0f - lCosAlpha*lCosAlpha)) - lAltitude * lCosAlpha;
 
 	return (_pos + _direction * lT);
 }
@@ -502,7 +502,7 @@ void ScatteringModelDefault::getOpticalLength(	const TaskData & _datas,
 			quit = True;
 		}
 
-		const Float lAltitude = sqrtf(lBaseAltitudeSquare + lTwoDot * lS + lS*lS) - lEarthRadius;
+        const Float lAltitude = Math::sqrt(lBaseAltitudeSquare + lTwoDot * lS + lS*lS) - lEarthRadius;
 		Float lRayValue = expf(-lAltitude * lIRayDecFactor);
 		Float lMieValue = expf(-lAltitude * lIMieDecFactor);
 

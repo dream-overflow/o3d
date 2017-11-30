@@ -57,4 +57,3 @@ Bool Vector4::readFromFile(InStream &is)
 
 	return True;
 }
-

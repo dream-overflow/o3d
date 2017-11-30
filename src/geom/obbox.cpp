@@ -63,4 +63,3 @@ Bool OBBoxExt::readFromFile(InStream &is)
 	updateRadius();
 	return True;
 }
-

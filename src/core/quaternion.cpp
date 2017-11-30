@@ -38,7 +38,7 @@ Quaternion& Quaternion::fromMatrix3(const Matrix3& mat)
 
 	if (t > 0)
 	{
-		Float s = 0.5f / (Float)sqrtf(t);
+        Float s = 0.5f / Math::sqrt(t);
 		V[X] = s * (mat(2,1) - mat(1,2));
 		V[Y] = s * (mat(0,2) - mat(2,0));
 		V[Z] = s * (mat(1,0) - mat(0,1));
@@ -55,7 +55,7 @@ Quaternion& Quaternion::fromMatrix3(const Matrix3& mat)
 		//calcul du quaternion
 		if (i == 0)
 		{
-			Float s = 1.0f / (sqrtf(1.0f + mat(0,0) - mat(1,1) - mat(2,2)) * 2.f);
+            Float s = 1.0f / (Math::sqrt(1.0f + mat(0,0) - mat(1,1) - mat(2,2)) * 2.f);
 			V[X] = 0.25f / s;
 			V[Y] = (mat(0,1) + mat(1,0)) * s;
 			V[Z] = (mat(0,2) + mat(2,0)) * s;
@@ -63,7 +63,7 @@ Quaternion& Quaternion::fromMatrix3(const Matrix3& mat)
 		}
 		else if (i == 1)
 		{
-			Float s = 1.0f / (sqrtf(1.0f + mat(1,1) - mat(0,0) - mat(2,2)) * 2.f);
+            Float s = 1.0f / (Math::sqrt(1.0f + mat(1,1) - mat(0,0) - mat(2,2)) * 2.f);
 			V[Y] = 0.25f / s;
 			V[X] = (mat(0,1) + mat(1,0)) * s;
 			V[W] = (mat(0,2) + mat(2,0)) * s;
@@ -71,7 +71,7 @@ Quaternion& Quaternion::fromMatrix3(const Matrix3& mat)
 		}
 		else
 		{
-			Float s = 1.0f / (sqrtf(1.0f + mat(2,2) - mat(1,1) - mat(0,0)) * 2.f);
+            Float s = 1.0f / (Math::sqrt(1.0f + mat(2,2) - mat(1,1) - mat(0,0)) * 2.f);
 			V[Z] = 0.25f / s;
 			V[W] = (mat(0,1) + mat(1,0)) * s;
 			V[X] = (mat(0,2) + mat(2,0)) * s;
@@ -89,7 +89,7 @@ Quaternion& Quaternion::fromMatrix4(const Matrix4& mat)
 
 	if (t > 0)
 	{
-		Float s = 0.5f / (Float)sqrtf(t);
+        Float s = 0.5f / Math::sqrt(t);
 		V[X] = s * (mat(2,1) - mat(1,2));
 		V[Y] = s * (mat(0,2) - mat(2,0));
 		V[Z] = s * (mat(1,0) - mat(0,1));
@@ -106,7 +106,7 @@ Quaternion& Quaternion::fromMatrix4(const Matrix4& mat)
 		//calcul du quaternion
 		if (i == 0)
 		{
-			Float s = 1.0f / (sqrtf(1.0f + mat(0,0) - mat(1,1) - mat(2,2)) * 2.f);
+            Float s = 1.0f / (Math::sqrt(1.0f + mat(0,0) - mat(1,1) - mat(2,2)) * 2.f);
 			V[X] = 0.25f / s;
 			V[Y] = (mat(0,1) + mat(1,0)) * s;
 			V[Z] = (mat(0,2) + mat(2,0)) * s;
@@ -114,7 +114,7 @@ Quaternion& Quaternion::fromMatrix4(const Matrix4& mat)
 		}
 		else if (i == 1)
 		{
-			Float s = 1.0f / (sqrtf(1.0f + mat(1,1) - mat(0,0) - mat(2,2)) * 2.f);
+            Float s = 1.0f / (Math::sqrt(1.0f + mat(1,1) - mat(0,0) - mat(2,2)) * 2.f);
 			V[Y] = 0.25f / s;
 			V[X] = (mat(0,1) + mat(1,0)) * s;
 			V[W] = (mat(0,2) + mat(2,0)) * s;
@@ -122,7 +122,7 @@ Quaternion& Quaternion::fromMatrix4(const Matrix4& mat)
 		}
 		else
 		{
-			Float s = 1.0f / (sqrtf(1.0f + mat(2,2) - mat(1,1) - mat(0,0)) * 2.f);
+            Float s = 1.0f / (Math::sqrt(1.0f + mat(2,2) - mat(1,1) - mat(0,0)) * 2.f);
 			V[Z] = 0.25f / s;
 			V[W] = (mat(0,1) + mat(1,0)) * s;
 			V[X] = (mat(0,2) + mat(2,0)) * s;
@@ -260,7 +260,7 @@ Vector4 Quaternion::toAxisAngle() const
 {
 	Vector4 vec;
 	Quaternion q(*this);
-	Float s = sqrtf(1.0f - V[W]*V[W]);
+    Float s = Math::sqrt(1.0f - V[W]*V[W]);
 
 	q.normalize();
 	vec[W] = acosf(q[W]);

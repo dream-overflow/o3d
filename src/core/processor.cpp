@@ -19,6 +19,10 @@
 
 using namespace o3d;
 
+static Int32 _getNumCPU();
+static Int32 _getCPUCacheLineSize(const String &cpuType);
+static Int32 _getSystemRAMSize();
+
 // Default constructor
 Processor::Processor() :
 	m_has_mmx(False),
@@ -42,30 +46,36 @@ Processor::Processor() :
 	m_cpu_speed = System::getProcessorFrequency();
 
 	// CPU was in quiet mode, now it will be awake this time
-	if (m_cpu_speed < 0.f || m_cpu_speed > 20000.f)
+    if (m_cpu_speed < 0.f || m_cpu_speed > 20000.f) {
 		m_cpu_speed = System::getProcessorFrequency();
+    }
 
 	doCPUID();
+
+    m_num_cpu = _getNumCPU();
+    m_cache_line_size = _getCPUCacheLineSize(m_cpu_vendor);
+    m_system_ram_size = _getSystemRAMSize();
 }
 
 String Processor::getVendorName() const
 {
-    if (m_cpu_vendor == "AuthenticAMD")
+    if (m_cpu_vendor == "AuthenticAMD") {
         return String("AMD");
-    else if (m_cpu_vendor == "GenuineIntel")
+    } else if (m_cpu_vendor == "GenuineIntel") {
         return String("Intel");
-    else if (m_cpu_vendor == "CyrixInstead")
+    } else if (m_cpu_vendor == "CyrixInstead") {
         return String("Cyrix");
-    else if (m_cpu_vendor == "CentaurHauls")
+    } else if (m_cpu_vendor == "CentaurHauls") {
         return String("Centaur");
-    else if (m_cpu_vendor == "RiseRiseRise")
+    } else if (m_cpu_vendor == "RiseRiseRise") {
         return String("Rise");
-    else if (m_cpu_vendor == "GenuineTMx86")
+    } else if (m_cpu_vendor == "GenuineTMx86") {
         return String("Transmeta");
-    else if (m_cpu_vendor == "UMC UMC UMC ")
+    } else if (m_cpu_vendor == "UMC UMC UMC ") {
         return String("UMC");
-    else
+    } else {
         return m_cpu_vendor;
+    }
 }
 
 void Processor::reportLog()
@@ -83,12 +93,15 @@ void Processor::reportLog()
 		<< "                    |- SSE: " << (m_has_sse?"SSE ":"NO") << (m_has_sse2?"SSE2 ":"") <<
 											 (m_has_sse3?"SSE3 ":"") << (m_has_ssse3?"SSSE3 ":"") <<
 											 (m_has_sse4_1?"SSE4_1 ":"") << (m_has_sse4_2?"SSE4_2 \n":"\n")
-		<< "                    |- HTT: " << (m_is_htt?"YES\n":"NO\n");
+        << "                    |- HTT: " << (m_is_htt?"YES\n":"NO\n")
+        << "                    |- NumCPU: " << m_num_cpu << "\n"
+        << "                    |- CacheLineSize: " << m_cache_line_size << "\n"
+        << "                    |- SystemRAMSize: " << m_system_ram_size << "\n";
 
 	O3D_MESSAGE(tmp);
 }
 
-#define SET_TRICHAR                                       \
+#define SET_TRICHAR                                             \
 	cpu_vendor_id_string[0]  = Char((rebx & 0x000000ff));       \
 	cpu_vendor_id_string[1]  = Char((rebx & 0x0000ff00) >> 8);  \
 	cpu_vendor_id_string[2]  = Char((rebx & 0x00ff0000) >> 16); \
@@ -102,7 +115,7 @@ void Processor::reportLog()
 	cpu_vendor_id_string[10] = Char((recx & 0x00ff0000) >> 16); \
 	cpu_vendor_id_string[11] = Char((recx & 0xff000000) >> 24);
 
-#define SET_QUADCHAR(start)                                \
+#define SET_QUADCHAR(start)                                      \
 	cpu_name_string[start+0]  = Char((reax & 0x000000ff));       \
 	cpu_name_string[start+1]  = Char((reax & 0x0000ff00) >> 8);  \
 	cpu_name_string[start+2]  = Char((reax & 0x00ff0000) >> 16); \
@@ -120,40 +133,62 @@ void Processor::reportLog()
 	cpu_name_string[start+14] = Char((redx & 0x00ff0000) >> 16); \
 	cpu_name_string[start+15] = Char((redx & 0xff000000) >> 24);
 
-#ifndef O3D_VC_COMPILER // GCC compiler
-	#if defined(__amd64__) || defined(__x86_64__)
-	  /*On x86-64, gcc save %rbx when compiling with -fPIC.*/
-	  void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d){
-	      __asm__  ( 
-		"cpuid              \n" 
-	        :"=a" (*a), "=b" (*b), "=c" (*c), "=d" (*d) : "a" (func));
-	  }
-	#else
-	  /*On x86-32*/
-	  void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d){
-	      __asm__  ( 
-		"pushl %%ebx        \n"
-		"cpuid              \n" 
-		"movl %%ebx, %%esi  \n" 
-		"popl %%ebx        \n"
-	        :"=a" (*a), "=S" (*b), "=c" (*c), "=d" (*d) : "a" (func));
-	  }
-	#endif
-#else
-	#if defined(O3D_WIN32) || defined(O3D_WIN64)
-		void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
-		{
-			Int32 info[4];
-			__cpuid(info, (Int32)func);
+#ifdef O3D_VC_COMPILER
+    #if defined(O3D_WIN32) || defined(O3D_WIN64)
+        void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
+        {
+            Int32 info[4];
+            __cpuid(info, (Int32)func);
 
-			*a = info[0];
-			*b = info[1];
-			*c = info[2];
-			*d = info[3];
-		}
-	#endif
+            *a = info[0];
+            *b = info[1];
+            *c = info[2];
+            *d = info[3];
+        }
+    #elif defined(O3D_ARM) || defined(O3D_ARM64)
+        void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
+        {
+            // non Intel CPU
+        }
+    #else
+        void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
+        {
+            // nont Intel CPU
+        }
+    #endif
+#else // GCC compiler
+    #if defined(O3D_IX64)
+    /*On x86-64, gcc save %rbx when compiling with -fPIC.*/
+    void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
+    {
+          __asm__  (
+        "cpuid              \n"
+            :"=a" (*a), "=b" (*b), "=c" (*c), "=d" (*d) : "a" (func));
+    }
+    #elif defined(O3D_IX32)
+    void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
+    {
+          __asm__  (
+        "pushl %%ebx        \n"
+        "cpuid              \n"
+        "movl %%ebx, %%esi  \n"
+        "popl %%ebx        \n"
+            :"=a" (*a), "=S" (*b), "=c" (*c), "=d" (*d) : "a" (func));
+    }
+    #elif defined(O3D_ARM64)
+        void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
+        {
+            // non Intel CPU
+        }
+    #elif defined(O3D_ARM32)
+        void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
+        {
+            // non Intel CPU
+        }
+    #endif
 #endif // O3D_VC_COMPILER
 
+#if defined(O3D_IX32) || defined(O3D_IX64)
 void Processor::doCPUID()
 {
   	Char cpu_name_string[49] = {0};      // max 48 chars + terminating 0
@@ -165,7 +200,7 @@ void Processor::doCPUID()
 
 	UInt32 reax, rebx, recx, redx;
 
-#if defined(O3D_VC_COMPILER) && defined(O3D_WIN32)
+#if defined(O3D_VC_COMPILER) && defined(O3D_IX32)
 	__asm
 	{
 		mov     eax, 0x00000000              // first CPUID function, always supported (on reasonable cpu)
@@ -240,18 +275,21 @@ void Processor::doCPUID()
 	}
 #else // GCC compiler and Windows x64
 	cpuid(0x0, &reax, &rebx, &recx, &redx);
-	if (reax == 0)
+    if (reax == 0) {
 		goto no_features;
+    }
 
 	SET_TRICHAR
 
 	cpuid(0x1, &cpu_feat_eax, &rebx, &cpu_feat_ecx, &cpu_feat_edx);
 
 	cpuid(0x80000000, &reax, &rebx, &recx, &redx);
-	if (reax < 0x80000001)
+    if (reax < 0x80000001) {
 		goto no_features;
-	if (reax < 0x80000004)
+    }
+    if (reax < 0x80000004) {
 		goto ext_feats_only;
+    }
 
 	cpuid(0x80000002, &reax, &rebx, &recx, &redx);
 	SET_QUADCHAR(0)
@@ -369,7 +407,111 @@ void Processor::doCPUID()
 	m_has_3dnow = (cpu_feat_ext_edx >> 31) & 0x1;
 	m_has_3dnow_ext = (cpu_feat_ext_edx >> 30) & 0x1;
 }
+#elif defined(O3D_ARM32) || defined(O3D_ARM64)
+void Processor::doCPUID()
+{
+    // @todo
+}
+#endif
 
 #undef SET_TRICHAR
 #undef SET_QUADCHAR
 
+#ifdef O3D_WINDOWS
+#include "o3d/core/architecture.h"
+#elif defined(O3D_POSIX_SYS)
+#define HAVE_SYSCONF 1
+#elif defined(O3D_MACOSX)
+#define HAVE_SYSCTLBYNAME 1
+#endif
+
+#ifdef HAVE_SYSCONF
+#include <unistd.h>
+#endif
+#ifdef HAVE_SYSCTLBYNAME
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+#if defined(__MACOSX__) && (defined(__ppc__) || defined(__ppc64__))
+#include <sys/sysctl.h>
+#elif defined(__OpenBSD__) && defined(__powerpc__)
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <machine/cpu.h>
+#endif
+
+static Int32 _getNumCPU()
+{
+    Int32 n = 1;  // one at least...
+
+#if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
+    n = (Int32)sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+#ifdef HAVE_SYSCTLBYNAME
+    size_t size = sizeof(n);
+    sysctlbyname("hw.ncpu", &n, &size, NULL, 0);
+#endif
+#ifdef O3D_WINDOWS
+    SYSTEM_INFO info;
+    GetSystemInfo(&info);
+    n = (Int32)info.dwNumberOfProcessors;
+#endif
+
+    return n;
+}
+
+static Int32 _getCPUCacheLineSize(const String &cpuType)
+{
+#if defined(O3D_IX32) || defined(O3D_IX64)
+    if (cpuType == "GenuineIntel") {
+        UInt32 a, b, c, d;
+
+        cpuid(0x00000001, &a, &b, &c, &d);
+        return (((b >> 8) & 0xff) * 8);
+    } else if (cpuType == "AuthenticAMD") {
+        UInt32 a, b, c, d;
+
+        cpuid(0x80000005, &a, &b, &c, &d);
+        return (c & 0xff);
+    }
+#elif defined(O3D_ARM)
+    return 0;  // @todo
+#endif
+    return 0;  // unknown
+}
+
+static Int32 _getSystemRAMSize()
+{
+    Int32 n = 0;
+
+#if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
+    n = (Int32)((Int64)sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE) / (1024*1024));
+#endif
+#ifdef HAVE_SYSCTLBYNAME
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+#ifdef HW_REALMEM
+    int mib[2] = {CTL_HW, HW_REALMEM};
+#else
+    /* might only report up to 2 GiB */
+    int mib[2] = {CTL_HW, HW_PHYSMEM};
+#endif /* HW_REALMEM */
+#else
+    int mib[2] = {CTL_HW, HW_MEMSIZE};
+#endif /* __FreeBSD__ || __FreeBSD_kernel__ */
+    Uint64 memsize = 0;
+    size_t len = sizeof(memsize);
+
+    if (sysctl(mib, 2, &memsize, &len, NULL, 0) == 0) {
+        n = (Int32)(memsize / (1024*1024));
+    }
+#endif
+#ifdef O3D_WINDOWS
+    MEMORYSTATUSEX stat;
+    stat.dwLength = sizeof(stat);
+    if (GlobalMemoryStatusEx(&stat)) {
+        n = (Int32)(stat.ullTotalPhys / (1024 * 1024));
+    }
+#endif
+
+    return n;
+}
