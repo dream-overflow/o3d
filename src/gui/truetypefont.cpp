@@ -23,7 +23,7 @@
 #include "o3d/gui/gui.h"
 #include "o3d/gui/guitype.h"
 
-#if O3D_VC_COMPILER
+#ifdef _MSC_VER
 	#include <freetype2/include/ft2build.h>
     #include <freetype2/include/freetype/freetype.h>
     #include <freetype2/include/freetype/ftglyph.h>

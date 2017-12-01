@@ -38,10 +38,7 @@
 // Windows
 //
 #if defined(_MSC_VER) || defined(WIN32) || defined(__MINGW32__)
-    // Compiler
-	#ifdef _MSC_VER
-		#define O3D_VC_COMPILER
-	#endif
+
 	#define O3D_WINDOWS
 	#if defined(WIN32) && !defined(_WINDOWS)
 		#define _WINDOWS
@@ -219,7 +216,7 @@
 	#endif
 
 	//! Memory manager allocation/free/leaks detection for SPU memory.
-	#ifdef _DEBUG
+    #ifdef _DEBUG
 		#define O3D_SPU_MEMORY_MANAGER
 	#endif
 

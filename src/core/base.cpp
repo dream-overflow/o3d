@@ -66,13 +66,17 @@ Int32 o3d::log2(UInt32 n)
 #endif
 inline static Int64 _getCycleNumber()
 {
-#if defined(O3D_VC_COMPILER) && defined(O3D_IX32)  // VC++ x86
+#if defined(_MSC_VER) && defined(O3D_IX32)
+    // VC++ x86
     __asm{ RDTSC }
-#elif defined(O3D_VC_COMPILER) && defined(O3D_IX64)  // VC++ x64
+#elif defined(_MSC_VER) && defined(O3D_IX64)
+    // VC++ x64
     return __rdtsc();
-#elif defined(__APPLE__)  // Apple computer
+#elif defined(__APPLE__)
+    // Apple computer
     return mach_absolute_time();
-#elif defined(O3D_IX32) || defined(O3D_IX64)  // GCC Intel based compilers
+#elif defined(__GNUC__) && (defined(O3D_IX32) || defined(O3D_IX64))
+    // GCC Intel based compilers
     Int64 x;
     __asm__ volatile ("RDTSC" : "=A"(x));
     return x;
@@ -91,21 +95,22 @@ Float System::getProcessorFrequency()
 	t1 = System::getTime();
     c1 = _getCycleNumber();
 
-// VC++ x86
-#if defined(O3D_VC_COMPILER) && (defined(O3D_IX32) || defined(O3D_IX64))
+#if defined(_MSC_VER) && (defined(O3D_IX32) || defined(O3D_IX64))
+    // VC++ x86
 	__asm {
 		MOV EBX,O3D_PROC_FREQ_LOOP
 		WaitAlittle:
 		DEC EBX
 		JNZ WaitAlittle
  	}
-// GCC Intel based compilers
-#elif defined(O3D_IX32) || defined(O3D_IX64)
+#elif defined(__GNUC__) && (defined(O3D_IX32) || defined(O3D_IX64))
+    // GCC Intel based compilers
     __asm__ volatile ("movl $0x5000000,%%ecx" : : : "%ecx");
     __asm__ volatile ("WaitAlittle:");
     __asm__ volatile ("dec %%ecx" : : : "%ecx");
     __asm__ volatile ("jnz WaitAlittle");
-#else /* __APPLE__, ARM */
+#else
+    // __APPLE__, ARM...
 	volatile Int32 i;
 	for (i=O3D_PROC_FREQ_LOOP; i--;) {}
 #endif

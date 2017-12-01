@@ -25,7 +25,7 @@ using namespace o3d;
 #include "o3d/core/architecture.h"
 
 // Use the best GPU with Optimus
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
 extern "C" {
 	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }

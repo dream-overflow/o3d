@@ -16,7 +16,7 @@ using namespace o3d;
 
 // E_BaseException base class for all exceptions
 E_BaseException::E_BaseException(const String& msg) throw()
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     : std::exception(msg.toUtf8().getData())
 #endif
 {
@@ -42,4 +42,3 @@ const char* E_BaseException::what() const throw()
 
 	return what.getData();
 }
-

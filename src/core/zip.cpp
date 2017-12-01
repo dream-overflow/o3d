@@ -14,7 +14,7 @@
 
 #include "o3d/core/debug.h"
 
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
 	#include <zlib/zlib.h>
 #else
 	#include <zlib.h>

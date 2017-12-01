@@ -439,7 +439,7 @@ private:
 //---------------------------------------------------------------------------------------
 inline void System::swapBytes2(void* value)
 {
-#if defined(O3D_VC_COMPILER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
+#if defined(_MSC_VER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
     __asm {
         mov ebx, value
                 mov al, [ebx+1]
@@ -465,7 +465,7 @@ inline void System::swapBytes2(void* value)
 inline void System::swapBytes4(void* value)
 {
     // swap 4 bytes type
-#if defined(O3D_VC_COMPILER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
+#if defined(_MSC_VER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
     __asm {
         mov ebx, value
                 mov eax, [ebx]

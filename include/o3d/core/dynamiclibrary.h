@@ -87,7 +87,7 @@ public:
 	 * R is the return type, Args are the arguments of the function.
 	 * @return A std::function<R(Args...)>.
 	 */
-#ifndef O3D_VC_COMPILER
+#ifndef _MSC_VER
 	template<class R, class... Args>
 	std::function<R(Args...)> getFunction(const CString &foo) const
 	{

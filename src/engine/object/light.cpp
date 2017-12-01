@@ -512,17 +512,19 @@ Float Light::getThresholdDistance() const
 
     if (a <= 0.0f) {
 		// Solve b.x + c - eps = 0
-		if (b <= 0.0f)
+        if (b <= 0.0f) {
 			return 0.0f;
-		else
+        } else {
 			return (eps - c) / b;
+        }
     } else {
 		// Solve a.x^2 + b.x + c - eps = 0
 		const Float delta = b*b - 4.0f*a*(c-eps);
 
-		if (delta <= 0.0f)
+        if (delta <= 0.0f) {
 			return 0.0f;
-		else
+        } else {
             return (-b + Math::sqrt(delta)) / (2.0f * a);
+        }
 	}
 }

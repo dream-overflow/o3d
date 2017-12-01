@@ -18,21 +18,21 @@
 using namespace o3d;
 
 // Set the pointer to default in case Initialize is not called
-// Float (*Math::sqrt)(Float) = Math::_Std::sqrt;
+Float (*Math::sqrt)(Float) = Math::_Std::sqrt;
 
 void Math::init()
 {
 	Processor processor;
 
-//    if (processor.hasSSE()) {
-//		sqrt = _SSE::sqrt;
-//    } else if (processor.has3DNow()) {
-//		sqrt = _3DNow::sqrt;
-//    } else {
-//		sqrt = _Std::sqrt;
-//    }
+    if (processor.hasSSE()) {
+        sqrt = _SSE::sqrt;
+    } else if (processor.has3DNow()) {
+        sqrt = _3DNow::sqrt;
+    } else {
+        sqrt = _Std::sqrt;
+    }
 
-#if defined(O3D_VC_COMPILER) && defined(O3D_WINDOWS)
+#if defined(_MSC_VER) && defined(O3D_WINDOWS)
 	// enable math SSE2 optimization on VC++ 32bit
     if (processor.hasSSE2()) {
 		_set_SSE2_enable(1);
@@ -52,24 +52,29 @@ void Math::quit()
 
 Float Math::_Std::sqrt(Float x)
 {
-// #if defined(O3D_USE_SIMD) && defined(O3D_VC_COMPILER) && defined(O3D_WINDOWS)
-//	__asm
-//	{
-//		fld     x
-//		fsqrt
-//	}
-// #elif defined(O3D_USE_SIMD) && (defined(O3D_IX32) || defined(O3D_IX64))
-//	register float ret;
-//	asm("fsqrt" : "=t"(ret): "0"(x));
-//	return ret;
-// #else
+#if defined(O3D_IX32) || defined(O3D_IX64)
+  #ifdef _MSC_VER
+    __asm
+    {
+        fld     x
+        fsqrt
+    }
+  #elif defined(__GNUC__)
+    register Float ret;
+    asm("fsqrt" : "=t"(ret): "0"(x));
+    return ret;
+  #else
     return ::sqrtf(x);
-// #endif
+  #endif
+#else
+    return ::sqrtf(x);
+#endif
 }
 
 Float Math::_SSE::sqrt(Float x)
 {
-#if defined(O3D_USE_SIMD) && defined(O3D_VC_COMPILER) && defined(O3D_WINDOWS)
+#ifdef O3D_USE_SIMD
+  #if defined(_MSC_VER)
     static Float half = 0.5f;
     static Float three = 3.0f;
     Float y;  // = 0.f; not set to 0 otherwise optimization will take 0 as result of the function
@@ -91,7 +96,7 @@ Float Math::_SSE::sqrt(Float x)
     }
 
     return y;
-#elif defined(O3D_USE_SIMD) && (defined(O3D_IX32) || defined(O3D_IX64))
+  #elif defined(__GNUC__)
     static Float half = 0.5f;
     static Float three = 3.0f;
     Float y;   // = 0.f; not set to 0 otherwise optimization will take 0 as result of the function
@@ -113,14 +118,19 @@ Float Math::_SSE::sqrt(Float x)
     // __asm__ __volatile__ ("movss %%xmm0,%0" : : "m" (y));
 
     return y;
+  #else
+    return ::sqrt(x);
+  #endif
 #else
     return ::sqrtf(x);
 #endif
+
 }
 
 Float Math::_3DNow::sqrt(Float x)
 {
-#if defined(O3D_USE_SIMD) && defined(O3D_VC_COMPILER) && defined(O3D_WINDOWS)
+#if defined(O3D_IX32) || defined(O3D_IX64)
+  #if defined(_MSC_VER)
 	Float y = 0.f;
 
 	__asm
@@ -138,7 +148,7 @@ Float Math::_3DNow::sqrt(Float x)
 	}
 
 	return y;
-#elif defined(O3D_USE_SIMD) && (defined(O3D_IX32) || defined(O3D_IX64))
+  #elif defined(__GNUC__)
 	Float y = 0.f;
 
 	__asm__ __volatile__ ("movd %0,%%mm0" : : "m" (x));
@@ -153,6 +163,9 @@ Float Math::_3DNow::sqrt(Float x)
 	__asm__ __volatile__ ("femms");
 
 	return y;
+  #else
+    return ::sqrt(x);
+  #endif
 #else
 	return ::sqrt(x);
 #endif

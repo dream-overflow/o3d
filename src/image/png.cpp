@@ -20,7 +20,7 @@ using namespace o3d;
 #define PNG_ASSEMBLER_CODE_SUPPORTED
 #define PNG_BYTES_TO_CHECK 8
 
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     #include <libpng/png.h>
 #else
     #include <png.h>

@@ -27,7 +27,7 @@ FileOutStream::FileOutStream(const String &filename, Mode mode) :
     name.replace('\\', '/');
 
     // file open
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     if (mode == CREATE)
         _wfopen_s(&m_file, name.getData(), L"wb");
     else if (mode == CREATE_IF_NOT_EXISTS)
@@ -86,7 +86,7 @@ void FileOutStream::flush()
 int FileOutStream::getFD() const
 {
     if (m_file) {
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
         return _fileno(m_file);
 #else
         return fileno(m_file);

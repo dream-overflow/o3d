@@ -23,7 +23,7 @@ extern "C" {
 	#define XMD_H 1
 #endif
 
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     #include <libjpeg/jpeglib.h>
     #include <libjpeg/jerror.h>
 #else

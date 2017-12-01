@@ -243,4 +243,3 @@ class O3D_API E_InvalidOperation : public E_BaseException
 } // namespace o3d
 
 #endif // _O3D_ERROR_H
-

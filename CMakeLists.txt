@@ -33,14 +33,14 @@ if(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_C_FLAGS_DEBUG            "/D_DEBUG /Zi /EHsc /MP /MDd")
     set(CMAKE_C_FLAGS_DEBUGFULL        "/D_DEBUG /Zi /EHsc /MP /MDd -DO3D_RAM_MEMORY_MANAGER -DO3D_FAST_MEMORY_MANAGER")
 else()
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -ggdb -D_DEBUG")
-	set(CMAKE_CXX_FLAGS_RELEASE        "-O2 -DNDEBUG")
-	set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -ggdb -D_DEBUG")
-	set(CMAKE_CXX_FLAGS_DEBUGFULL      "-O0 -ggdb -D_DEBUG")
-	set(CMAKE_C_FLAGS_RELWITHDEBINFO   "-O2 -ggdb -D_DEBUG")
-	set(CMAKE_C_FLAGS_RELEASE          "-O2 -DNDEBUG")
-	set(CMAKE_C_FLAGS_DEBUG            "-O0 -ggdb -D_DEBUG")
-	set(CMAKE_C_FLAGS_DEBUGFULL        "-O0 -ggdb -D_DEBUG -DO3D_RAM_MEMORY_MANAGER -DO3D_FAST_MEMORY_MANAGER")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -ggdb -D_DEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE        "-O2 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -ggdb -D_DEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUGFULL      "-O0 -ggdb -D_DEBUG")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO   "-O2 -ggdb -D_DEBUG")
+    set(CMAKE_C_FLAGS_RELEASE          "-O2 -DNDEBUG")
+    set(CMAKE_C_FLAGS_DEBUG            "-O0 -ggdb -D_DEBUG")
+    set(CMAKE_C_FLAGS_DEBUGFULL        "-O0 -ggdb -D_DEBUG -DO3D_RAM_MEMORY_MANAGER -DO3D_FAST_MEMORY_MANAGER")
 endif()
 
 #----------------------------------------------------------
@@ -52,8 +52,8 @@ set (CMAKE_FIND_ROOT_PATH ${CMAKE_FIND_ROOT_PATH} $ENV{PREFIX})
 # message(${CMAKE_MODULE_PATH})
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	set(CMAKE_PREFIX_PATH $ENV{PREFIX} ${CMAKE_PREFIX_PATH})
-	set(CMAKE_INCLUDE_PATH $ENV{PREFIX}/include ${CMAKE_INCLUDE_PATH})
+    set(CMAKE_PREFIX_PATH $ENV{PREFIX} ${CMAKE_PREFIX_PATH})
+    set(CMAKE_INCLUDE_PATH $ENV{PREFIX}/include ${CMAKE_INCLUDE_PATH})
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 find_package(OpenGL REQUIRED)
@@ -65,42 +65,42 @@ find_package(OggVorbis REQUIRED)
 #find_package(Bullet REQUIRED)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	find_package(Threads REQUIRED)
-	find_package(X11 REQUIRED)
-	find_package(PkgConfig REQUIRED)
-	find_package(Xrandr REQUIRED)	
+    find_package(Threads REQUIRED)
+    find_package(X11 REQUIRED)
+    find_package(PkgConfig REQUIRED)
+    find_package(Xrandr REQUIRED)
 	
-	pkg_check_modules(SDL2 sdl2)
+    pkg_check_modules(SDL2 sdl2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	find_package(Threads REQUIRED)
-	find_package(X11 REQUIRED)
-	find_package(PkgConfig REQUIRED)
-	find_package(Xrandr REQUIRED)
+    find_package(Threads REQUIRED)
+    find_package(X11 REQUIRED)
+    find_package(PkgConfig REQUIRED)
+    find_package(Xrandr REQUIRED)
 
-	pkg_check_modules(SDL2 sdl2)
+    pkg_check_modules(SDL2 sdl2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	find_package(PkgConfig REQUIRED)
+    find_package(PkgConfig REQUIRED)
 
-	pkg_check_modules(SDL2 sdl2)
+    pkg_check_modules(SDL2 sdl2)
 
-	IF(${TOOLCHAIN_PREFIX} MATCHES "x86_64-w64-mingw32")
-	ENDIF()
+    IF(${TOOLCHAIN_PREFIX} MATCHES "x86_64-w64-mingw32")
+    ELSE()
+        #set (O3D_DEPS_PATH $ENV{O3D_DEPS_PATH})
+        #set (OPENAL_PATH $ENV{OPENAL_PATH})
 
-	#set (O3D_DEPS_PATH $ENV{O3D_DEPS_PATH})
-	#set (OPENAL_PATH $ENV{OPENAL_PATH})
+        #include_directories("${O3D_DEPS_PATH}")
+        #include_directories("${O3D_DEPS_PATH}/freetype2/include")
+        #include_directories("${OPENAL_PATH}/include")
+        #link_directories("${O3D_DEPS_PATH}/lib")
+        #link_directories("${OPENAL_PATH}/libs/Win32")
+        #link_directories("${OPENAL_PATH}/lib")
+    ENDIF()
 
-	#include_directories("${O3D_DEPS_PATH}")
-	#include_directories("${O3D_DEPS_PATH}/freetype2/include")
-	#include_directories("${OPENAL_PATH}/include")
-	#link_directories("${O3D_DEPS_PATH}/lib")
-	#link_directories("${OPENAL_PATH}/libs/Win32")
-	#link_directories("${OPENAL_PATH}/lib")
-
-	include_directories(${FREETYPE_INCLUDE_DIRS})
+    include_directories(${FREETYPE_INCLUDE_DIRS})
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 include_directories(${FREETYPE_INCLUDE_DIR_ft2build})
@@ -113,74 +113,77 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 # options
 #----------------------------------------------------------
 
+# SSE2 ON by default
 option(O3D_USE_SSE2 "Compile SSE2 optimizations" ON)
 
 # Dynamic library
 set(O3D_EXPORT_DLL "") 
 
-# objective3dconfig.h
+# Library base path
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	if(MINGW)
-		set(LIB_PATH $ENV{CROSSROAD_PREFIX})
-	else()
-		set(LIB_PATH $ENV{LIB_PATH})
-	endif()
+    set(LIB_PATH $ENV{LIB_PATH})
 else()
-	set(LIB_PATH $ENV{PREFIX})
+    set(LIB_PATH $ENV{PREFIX})
 endif()
 
+# Library extension depending of the build mode
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-	include_directories(${LIB_PATH}/lib/objective3d-dbg)
-	set(LIB_EXT "-dbg")
+    set(LIB_EXT "-dbg")
 elseif(${CMAKE_BUILD_TYPE} MATCHES "RelWithDebInfo")
-	include_directories(${LIB_PATH}/lib/objective3d-odbg)
-	set(LIB_EXT "-odbg")
+    set(LIB_EXT "-odbg")
 elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
-	include_directories(${LIB_PATH}/lib/objective3d)
-	set(LIB_EXT "")
+    set(LIB_EXT "")
 endif()
 
+# Linux GCC cflags
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
-	if (O3D_USE_SSE2)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
-	endif (O3D_USE_SSE2)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
+    if (O3D_USE_SSE2)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+    endif (O3D_USE_SSE2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+# Darwin GCC cflags
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
-	if (O3D_USE_SSE2)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
-	endif (O3D_USE_SSE2)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
+        if (O3D_USE_SSE2)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+    endif (O3D_USE_SSE2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
+# Windows VC++ or GCC cflags
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	option(O3D_USE_SSE2 "Compile SSE2 optimizations" OFF) # TODO
-	if(MINGW)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_WIN32 -DO3D_EXPORT_DLL")
-	else()
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DO3D_EXPORT_DLL")
-	endif()
+    # todo SSE2 support On
+    option(O3D_USE_SSE2 "Compile SSE2 optimizations" OFF)
+    if(MINGW)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_WIN32 -DO3D_EXPORT_DLL")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DO3D_EXPORT_DLL")
+    endif()
     if(O3D_USE_SSE2)
-		if(MINGW)
+        if(MINGW)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
-		else()
-			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
-		endif()
+        else()
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
+        endif()
     endif (O3D_USE_SSE2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-if (O3D_USE_SSE2)
-	set(O3D_USE_SSE2 "1")
-endif (O3D_USE_SSE2)
+#----------------------------------------------------------
+# configuration target
+#----------------------------------------------------------
 
-# configuration
+# Configuration header
 configure_file (
 	"include/o3d/objective3dconfig.h.in"
     "${CMAKE_BINARY_DIR}/include/objective3dconfig.h"
 )
 
 include_directories(${CMAKE_BINARY_DIR}/include)
+
+# add a cmake configuration file
+configure_file(${PROJECT_SOURCE_DIR}/cmake/Configs/Objective3DConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/lib/Objective3DConfig.cmake" @ONLY)
 
 #----------------------------------------------------------
 # sub-directories
@@ -224,19 +227,22 @@ file(GLOB GUI_HXX include/o3d/gui/*.h)
 file(GLOB GUI_WIDGETS_HXX include/o3d/gui/widgets/*.h)
 file(GLOB TINYXML_HXX third/tinyxml/*.h)
 
-# objective3dconfig.h and shaders.zip
+# objective3dconfig.h and cmake config
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-	install (FILES ${CMAKE_BINARY_DIR}/include/objective3dconfig.h DESTINATION lib/objective3d-dbg)
+    install (FILES ${CMAKE_BINARY_DIR}/include/objective3dconfig.h DESTINATION lib/objective3d-dbg)
+    install (FILES ${CMAKE_BINARY_DIR}/lib/Objective3DConfig.cmake DESTINATION lib/objective3d-dbg)
 elseif(${CMAKE_BUILD_TYPE} MATCHES "RelWithDebInfo")
-	install (FILES ${CMAKE_BINARY_DIR}/include/objective3dconfig.h DESTINATION lib/objective3d-odbg)
+    install (FILES ${CMAKE_BINARY_DIR}/include/objective3dconfig.h DESTINATION lib/objective3d-odbg)
+    install (FILES ${CMAKE_BINARY_DIR}/lib/Objective3DConfig.cmake DESTINATION lib/objective3d-odbg)
 elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
-	install (FILES ${CMAKE_BINARY_DIR}/include/objective3dconfig.h DESTINATION lib/objective3d)
+    install (FILES ${CMAKE_BINARY_DIR}/include/objective3dconfig.h DESTINATION lib/objective3d)
+    install (FILES ${CMAKE_BINARY_DIR}/lib/Objective3DConfig.cmake DESTINATION lib/objective3d)
 endif()
 
 # Cmake module
 install (FILES ${PROJECT_SOURCE_DIR}/cmake/Modules/FindObjective3D.cmake DESTINATION share/cmake/Modules)
 
-# Config.h and shaders.zip
+# shaders.zip
 install (FILES ${CMAKE_BINARY_DIR}/src/shaders.zip DESTINATION share/o3d)
 
 # Headers

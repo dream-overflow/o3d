@@ -16,19 +16,24 @@
 if (UNIX OR MINGW)
 	include (CheckLibraryExists)
 
-	# @todo is there another way to check Debug Release and how to fallback to one of the two options
+	# build mode set library name
 	if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-		find_path(OBJECTIVE3D_INCLUDE_DIR o3d)
-		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig objective3dconfig.h HINTS ENV PREFIX PATH_SUFFIXES lib/objective3d-dbg)
-		find_library(OBJECTIVE3D_LIBRARY NAMES objective3d-dbg)
-	else()
-		find_path(OBJECTIVE3D_INCLUDE_DIR o3d)
-		find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig objective3dconfig.h HINTS ENV PREFIX PATH_SUFFIXES lib/objective3d)
-		find_library(OBJECTIVE3D_LIBRARY NAMES objective3d)
+		set(O3D_LIB_NAME "objective3d-dbg")
+	elseif(${CMAKE_BUILD_TYPE} MATCHES "RelWithDebInfo")
+		set(O3D_LIB_NAME "objective3d-odbg")
+	elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
+		set(O3D_LIB_NAME "objective3d")
 	endif()
+
+	find_path(OBJECTIVE3D_INCLUDE_DIR o3d)
+	find_file(OBJECTIVE3D_INCLUDE_FILE_objective3dconfig objective3dconfig.h HINTS ENV PREFIX PATH_SUFFIXES lib/${O3D_LIB_NAME})
+	find_library(OBJECTIVE3D_LIBRARY NAMES ${O3D_LIB_NAME})
 
 	get_filename_component(OBJECTIVE3D_INCLUDE_DIR_objective3dconfig ${OBJECTIVE3D_INCLUDE_FILE_objective3dconfig} DIRECTORY)
 	get_filename_component(OBJECTIVE3D_LIBRARY_DIR ${OBJECTIVE3D_LIBRARY} DIRECTORY)
+
+	# include the package build config
+	include(${OBJECTIVE3D_LIBRARY_DIR}/${O3D_LIB_NAME}/Objective3DConfig.cmake)	
 
 	# shaders.zip
 	find_file(OBJECTIVE3D_SHADERS_ZIP shaders.zip HINTS ENV PREFIX PATH_SUFFIXES share/o3d)

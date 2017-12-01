@@ -179,7 +179,7 @@ DateTime & DateTime::operator = (const DateTime & _which)
 
 DateTime::DateTime(time_t ltime)
 {
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER  // O3D_WINDOWS
     struct tm local;
     _localtime64_s(&local,&ltime);
 

@@ -11,7 +11,7 @@
 #include "o3d/core/fileinfo.h"
 #include "o3d/core/templatearray.h"
 
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     #include <io.h>
 #else
     #include <sys/types.h>
@@ -38,7 +38,7 @@ FileInStream::FileInStream(const String &filename) :
     name.replace('\\', '/');
 
     // file open
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     _wfopen_s(&m_file, name.getData(), "rb");
 #else
     m_file = fopen(name.toUtf8().getData(), "rb");
@@ -56,7 +56,7 @@ FileInStream::FileInStream(const FileInfo &file) :
     String filename(file.getFullFileName());
 
     // file open
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     _wfopen_s(&m_file, filename.getData(), "rb");
 #else
     m_file = fopen(filename.toUtf8().getData(), "rb");
@@ -133,7 +133,7 @@ void FileInStream::ignore(Int32 limit, UInt8 delim)
 
 static inline Int64 getFileLength(int fd)
 {
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     struct _stat64 st_file;
     _fstat64(fd, &st_file);
     return (Int64)st_file.st_size;
@@ -178,7 +178,7 @@ Bool FileInStream::isEnd() const
 int FileInStream::getFD() const
 {
     if (m_file) {
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
         return _fileno(m_file);
 #else
         return fileno(m_file);

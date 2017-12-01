@@ -154,7 +154,7 @@ Date & Date::operator = (const Date & _which)
 
 Date::Date(time_t ltime)
 {
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER  // O3D_WINDOWS
     struct tm local;
     _localtime64_s(&local,&ltime);
 

@@ -12,14 +12,14 @@
 
 #include "objective3dconfig.h"
 
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
 	#include <alc.h>
 #elif defined(__APPLE__)
 	#include <OpenAL/alc.h>
-#elif defined(__GNUC__)//__UNIX__)
+#elif defined(__GNUC__)
 	#include <AL/alc.h>
 #else
-	#error "<< Unknown architecture ! >>"
+    #error "<< Unsupported compiler ! >>"
 #endif
 
 #endif // _O3D_ALC_H

@@ -1,0 +1,9 @@
+# - Config file for the Objective3D package
+# It defines the following variables
+#  O3D_USE_SSE2 - 1 if Objective3D is compiled with SSE2 support
+ 
+# SSE2 support
+set(O3D_USE_SSE2 @O3D_USE_SSE2@)
+
+# Objective 3D version
+set(O3D_VERSION @O3D_VERSION@)

@@ -13,7 +13,7 @@
 #include "o3d/core/architecture.h"
 #include "o3d/core/debug.h"
 
-#if defined(O3D_VC_COMPILER) && defined(O3D_WIN64)
+#if defined(_MSC_VER) && defined(O3D_WIN64)
 #include <intrin.h>
 #endif
 
@@ -133,7 +133,7 @@ void Processor::reportLog()
 	cpu_name_string[start+14] = Char((redx & 0x00ff0000) >> 16); \
 	cpu_name_string[start+15] = Char((redx & 0xff000000) >> 24);
 
-#ifdef O3D_VC_COMPILER
+#ifdef _MSC_VER
     #if defined(O3D_WIN32) || defined(O3D_WIN64)
         void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
         {
@@ -156,16 +156,17 @@ void Processor::reportLog()
             // nont Intel CPU
         }
     #endif
-#else // GCC compiler
-    #if defined(O3D_IX64)
-    /*On x86-64, gcc save %rbx when compiling with -fPIC.*/
+#elif defined(__GNUC__)
+  // GCC compiler
+  #if defined(O3D_IX64)
+    // On x86-64, gcc save %rbx when compiling with -fPIC
     void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
     {
           __asm__  (
         "cpuid              \n"
             :"=a" (*a), "=b" (*b), "=c" (*c), "=d" (*d) : "a" (func));
     }
-    #elif defined(O3D_IX32)
+  #elif defined(O3D_IX32)
     void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
     {
           __asm__  (
@@ -175,18 +176,18 @@ void Processor::reportLog()
         "popl %%ebx        \n"
             :"=a" (*a), "=S" (*b), "=c" (*c), "=d" (*d) : "a" (func));
     }
-    #elif defined(O3D_ARM64)
+  #elif defined(O3D_ARM64)
         void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
         {
             // non Intel CPU
         }
-    #elif defined(O3D_ARM32)
+  #elif defined(O3D_ARM32)
         void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
         {
             // non Intel CPU
         }
-    #endif
-#endif // O3D_VC_COMPILER
+  #endif
+#endif
 
 #if defined(O3D_IX32) || defined(O3D_IX64)
 void Processor::doCPUID()
@@ -200,7 +201,7 @@ void Processor::doCPUID()
 
 	UInt32 reax, rebx, recx, redx;
 
-#if defined(O3D_VC_COMPILER) && defined(O3D_IX32)
+  #if defined(_MSC_VER) && defined(O3D_IX32)
 	__asm
 	{
 		mov     eax, 0x00000000              // first CPUID function, always supported (on reasonable cpu)
@@ -273,7 +274,8 @@ void Processor::doCPUID()
 
 		no_features:
 	}
-#else // GCC compiler and Windows x64
+  #else defined(__GNUC__) || (defined(_MSC_VER) && defined(O3D_IX64))
+    // GCC compiler and Windows x64
 	cpuid(0x0, &reax, &rebx, &recx, &redx);
     if (reax == 0) {
 		goto no_features;
@@ -380,7 +382,7 @@ void Processor::doCPUID()
 		__asm__ __volatile__ ("popq %rbx");
 		__asm__ __volatile__ ("popq %rax");
 	#endif*/
-#endif
+  #endif
 
 	// now process data we got from cpu
 	m_cpu_name = String(cpu_name_string);
@@ -412,6 +414,8 @@ void Processor::doCPUID()
 {
     // @todo
 }
+#else
+  #error "<< Unknown architecture ! >>"
 #endif
 
 #undef SET_TRICHAR
