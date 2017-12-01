@@ -613,27 +613,22 @@ void Context::setAllParameters()
 // Change culling mode
 CullingMode Context::setCullingMode(CullingMode mode)
 {
-	if (m_cullingMode != mode)
-	{
+    if (m_cullingMode != mode) {
 		// enable only if it was previously disabled
-		if (m_cullingMode == CULLING_NONE)
+        if (m_cullingMode == CULLING_NONE) {
 			glEnable(GL_CULL_FACE);
+        }
 
 		CullingMode old = m_cullingMode;
 		m_cullingMode = mode;
 
-		if (m_cullingMode == CULLING_FRONT_FACE)
-		{
+        if (m_cullingMode == CULLING_FRONT_FACE) {
 			glCullFace(GL_FRONT);
 			return old;
-		}
-		else if (m_cullingMode == CULLING_BACK_FACE)
-		{
+        } else if (m_cullingMode == CULLING_BACK_FACE) {
 			glCullFace(GL_BACK);
 			return old;
-		}
-		else if (m_cullingMode == CULLING_NONE)
-		{
+        } else if (m_cullingMode == CULLING_NONE) {
 			glDisable(GL_CULL_FACE);
 			return old;
 		}
@@ -647,20 +642,15 @@ CullingMode Context::forceCullingMode(CullingMode mode)
 	CullingMode old = m_cullingMode;
 	m_cullingMode = mode;
 
-	if (m_cullingMode == CULLING_FRONT_FACE)
-	{
+    if (m_cullingMode == CULLING_FRONT_FACE) {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		return old;
-	}
-	else if (m_cullingMode == CULLING_BACK_FACE)
-	{
+    } else if (m_cullingMode == CULLING_BACK_FACE) {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		return old;
-	}
-	else if (m_cullingMode == CULLING_NONE)
-	{
+    } else if (m_cullingMode == CULLING_NONE) {
 		glDisable(GL_CULL_FACE);
 		return old;
 	}
@@ -670,8 +660,9 @@ CullingMode Context::forceCullingMode(CullingMode mode)
 // change point size
 Float Context::setPointSize(Float val)
 {
-	if (val == m_pointSize)
+    if (val == m_pointSize) {
 		return m_pointSize;
+    }
 
 	Float old = m_pointSize;
 	m_pointSize = val;
@@ -706,16 +697,17 @@ Float Context::modifyPointSize(Float val)
 // Change the line width.
 Float Context::setLineSize(Float val)
 {
-	if (val == m_lineSize)
+    if (val == m_lineSize) {
 		return m_lineSize;
+    }
 
 	Float old = m_lineSize;
 	m_lineSize = val;
 	
-//	O3D_ASSERT(!getScene()->renderer()->isError());
-	if (!m_renderer->isGL3()) // TODO remove later
+    if (!m_renderer->isGL3()) {
+        // @todo remove it
         glLineWidth(m_lineSize);
-//	O3D_ASSERT(!getScene()->renderer()->isError());
+    }
 
 	return old;
 }
@@ -726,10 +718,9 @@ Float Context::forceLineSize(Float val)
 	Float old = m_lineSize;
 	m_lineSize = val;
 
-//	O3D_ASSERT(!getScene()->renderer()->isError());
-	if (!m_renderer->isGL3()) // TODO remove later
+    if (!m_renderer->isGL3())
+        // @todo remove it
 		glLineWidth(m_lineSize);
-//	O3D_ASSERT(!getScene()->renderer()->isError());
 
 	return old;
 }
@@ -740,10 +731,10 @@ Float Context::modifyLineSize(Float val)
 	Float old = m_lineSize;
 	m_lineSize += val;
 
-//	O3D_ASSERT(!getScene()->renderer()->isError());
-	if (!m_renderer->isGL3()) // TODO remove later
+    if (!m_renderer->isGL3()) {
+        // @todo remove it
 		glLineWidth(m_lineSize);
-//	O3D_ASSERT(!getScene()->renderer()->isError());
+    }
 
 	return old;
 }
@@ -751,8 +742,7 @@ Float Context::modifyLineSize(Float val)
 // Enable depth test.
 Bool Context::enableDepthTest()
 {
-	if (!m_isDepthTest)
-	{
+    if (!m_isDepthTest) {
 		m_isDepthTest = True;
 		glEnable(GL_DEPTH_TEST);
 
@@ -764,8 +754,7 @@ Bool Context::enableDepthTest()
 // Disable depth test.
 Bool Context::disableDepthTest()
 {
-	if (m_isDepthTest)
-	{
+    if (m_isDepthTest) {
 		m_isDepthTest = False;
 		glDisable(GL_DEPTH_TEST);
 
@@ -1500,4 +1489,3 @@ void Context::updateMatrix(const Matrix *matrix)
 	m_recomputeModelViewProjection = True;
 	m_recomputeNormalMatrix = True;
 }
-

@@ -348,9 +348,9 @@ private:
 
 		FastMemoryPool() :
 			m_status(False),
-			m_pool16(NULL),
-			m_pool32(NULL),
-			m_pool64(NULL)
+            m_pool16(nullptr),
+            m_pool32(nullptr),
+            m_pool64(nullptr)
 		{}
 
 		~FastMemoryPool();

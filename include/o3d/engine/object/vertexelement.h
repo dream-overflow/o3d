@@ -55,7 +55,7 @@ private:
 	{
 		SmartArrayFloat data;          //!< Smart array.
         UInt32 offset;                 //!< Offset in float entity
-		VertexElement *vertexElement;  //!< Can be NULL.
+        VertexElement *vertexElement;  //!< Can be null.
         Bool keepLocalData;            //!< Keep local data if TRUE.
 		const Float *lockedData;
 		UInt32 numElt;

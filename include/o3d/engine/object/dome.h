@@ -101,7 +101,7 @@ public:
 	TexCoordPolicy getTextureCoordinatePolicy() const { return m_texCoordPolicy; }
 
 	//! @brief Enable/Disable texture coordinates
-	//! If texture coordinates are not enabled, GetTexCoord() will always return NULL.
+    //! If texture coordinates are not enabled, GetTexCoord() will always return null.
 	//! By default, the option is enabled.
 	void enableTextureCoordinate(Bool _value = True, Bool _update = False);
 

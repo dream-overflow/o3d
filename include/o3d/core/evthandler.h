@@ -146,7 +146,7 @@ private:
 	// Members
 	T_ConnectionArray m_connections;	//! Contains the connections to all events.
 
-	Thread * m_pAttachedThread;		//! Owner thread. NULL means the default thread.
+    Thread * m_pAttachedThread;		//! Owner thread. null means the default thread.
 
 	T_SenderMap m_senders;			//! Contains the stack of sender for each thread.
 

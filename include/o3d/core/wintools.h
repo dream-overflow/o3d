@@ -31,7 +31,7 @@ class O3D_API WinTools
 public:
 
 	//! Create a simple window. Use pop-up for fullscreen.
-	//! @param hInstance Handle instance (mostly NULL).
+    //! @param hInstance Handle instance (mostly null).
 	//! @param title String containing the window title.
 	//! @param icon String defining the file name of a BMP icon to use, or empty string for none.
 	//! @param width Width of the window client area.

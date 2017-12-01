@@ -55,7 +55,7 @@ public:
 
 	//! Initialize the file search
 	virtual void searchFirstFile();
-	//! return the next file (if NULL its finished)
+    //! return the next file (if null its finished)
 	virtual FLItem *searchNextFile();
 
 	//! define working path (absolute or relative)

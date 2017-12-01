@@ -419,7 +419,7 @@ public:
 
 	//! Import an o3dsc scene file and return imported element.
 	//! @param filename The .o3dsc scene file to import.
-	//! @param whatImported If non NULL will contain imported manager type.
+    //! @param whatImported If non null will contain imported manager type.
 	Bool importScene(const String &filename, SceneIO *whatImported);
 
     //! Import an o3dsc scene file from a istream and return imported element.

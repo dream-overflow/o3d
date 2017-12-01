@@ -212,7 +212,7 @@ public:
 		}
 	}
 
-	//! return object pointer by its name. return NULL if not found
+    //! return object pointer by its name. return null if not found
 	T* searchName(const String &name)
 	{
 		for (IT_TemplateManager it=HashMapID<T>::m_MyMap.begin(); it!=HashMapID<T>::m_MyMap.end(); ++it)
@@ -223,7 +223,7 @@ public:
 			if (pObj->getName() == name)
 				return pObj;
 		}
-		return NULL;
+        return nullptr;
 	}
 
 	//! make all name are single (add _X suffix if needed, where X mean a number).

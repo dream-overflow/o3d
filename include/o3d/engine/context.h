@@ -139,7 +139,7 @@ public:
 
 	//! Vertex array object binding.
 	//! @param id Vertex array object identifier.
-	//! @param vaoState Valid pointer (or NULL if id is 0) to a VertexArrayState structure.
+    //! @param vaoState Valid pointer (or null if id is 0) to a VertexArrayState structure.
 	//!                 It must stay valid during the bind usage.
 	void bindVertexArray(UInt32 id, VertexArrayState *vaoState);
 
@@ -241,24 +241,31 @@ public:
 	inline CullingMode forceDefaultCullingMode() { return forceCullingMode(CULLING_BACK_FACE); }
 
 	//-----------------------------------------------------------------------------------
-	// Line parameters
+    // Line parameters @deprecrated since OpenGL 3
 	//-----------------------------------------------------------------------------------
 
-	//! Change the line width.
+    //! Change the line width
+    //! @deprecated Since OpenGL 3
 	Float setLineSize(Float val);
 
 	//! Get the line width.
+    //! @deprecated Since OpenGL 3
 	inline Float getLineSize() const { return m_lineSize; }
 
 	//! Force the line width.
+    //! @deprecated Since OpenGL 3
 	Float forceLineSize(Float val);
 
 	//! Increment by val the line width.
+    //! @deprecated Since OpenGL 3
 	Float modifyLineSize(Float val);
 
 	//! Set default line size.
+    //! @deprecated Since OpenGL 3
     inline Float setDefaultLineSize() { return setLineSize(1.f); }
-	//! Force default line size.
+
+    //! Force default line size.
+    //! @deprecated Since OpenGL 3
     inline Float forceDefaultLineSize() { return forceLineSize(1.f); }
 
 	//-----------------------------------------------------------------------------------
@@ -864,4 +871,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_CONTEXT_H
-

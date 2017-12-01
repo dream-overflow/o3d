@@ -46,7 +46,7 @@ public:
 
 	//! Default constructor.
 	Matrix() :
-		m_observer(NULL)
+        m_observer(nullptr)
 	{
 	}
 

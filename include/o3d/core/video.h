@@ -108,7 +108,7 @@ public:
 	// Current mode
 	//
 
-	//! Get the current application window that use the fullscreen mode or NULL if none.
+    //! Get the current application window that use the fullscreen mode or null if none.
 	inline const AppWindow* getAppWindow() const { return m_appWindow; }
 
 	//! Get an iterator on the current display mode.

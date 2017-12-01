@@ -131,7 +131,7 @@ public:
 	void searchFirstVirtualFile();
 
 	//! Return the next file name (empty string if finished).
-	//! @param fileType If non NULL will be contain the file type.
+    //! @param fileType If non null will be contain the file type.
     String searchNextVirtualFile(FileTypes *fileType = nullptr);
 
 

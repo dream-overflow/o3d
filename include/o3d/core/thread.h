@@ -88,7 +88,7 @@ public:
 	};
 
 	//! Default constructor
-	//! @param runnable Object to run. Can be NULL be Start method will not works.
+    //! @param runnable Object to run. Can be null be Start method will not works.
 	//! @param data Optional data pointer.
 	Thread(Runnable *runnable);
 
@@ -137,7 +137,7 @@ private:
 
 	std::list<UInt32> m_cpuAffinity;  //!< CPU affinity, empty mean undefined.
 
-	void *m_pData;            //!< Data associated with this thread (NULL if none).
+    void *m_pData;            //!< Data associated with this thread (null if none).
 	FastMutex m_mutex;
 
 	Runnable *m_runnable;  //!< Current runnable.

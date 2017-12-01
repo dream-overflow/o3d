@@ -19,14 +19,13 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class ConfigFile
-//---------------------------------------------------------------------------------------
-//! @brief This class implements a simple parser used to read or write config files.
-//! This class is used to manage config files. A config file is structured in blocks
-//! containing keys. You can assign a value to each keys. Supported type are:
-//! bool, int, double, string
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The ConfigFile class
+ * @details This class implements a simple parser used to read or write config files.
+ * This class is used to manage config files. A config file is structured in blocks
+ * containing keys. You can assign a value to each keys. Supported type are:
+ * bool, int, double, string
+ */
 class O3D_API ConfigFile
 {
 private:
@@ -83,10 +82,10 @@ private:
         Bool isType(KeyType _type) const { return (m_type == _type); }
 		KeyType getType() const { return m_type; }
 
-        Bool toBool(Bool, Bool * = NULL) const;
-        Int32 toInt(Int32, Bool * = NULL) const;
-        Double toDouble(Double, Bool * = NULL) const;
-        const String toString(const String &, Bool * = NULL) const;
+        Bool toBool(Bool, Bool * = nullptr) const;
+        Int32 toInt(Int32, Bool * = nullptr) const;
+        Double toDouble(Double, Bool * = nullptr) const;
+        const String toString(const String &, Bool * = nullptr) const;
 
         void setBool(Bool);
         void setInt(Int32);
@@ -291,27 +290,27 @@ public:
     Bool getBool(
 			const String & _keyName,
             Bool _defaultValue,
-            Bool * _ok = NULL) const;
+            Bool * _ok = nullptr) const;
 
 	//! @brief return the value of a key (integer)
-    //! @see ConfigFile::getInt(const O3DString &_keyName, Bool _defaultValue, Bool * _ok = NULL) const;
+    //! @see ConfigFile::getInt(const String &_keyName, Bool _defaultValue, Bool * _ok = nullptr) const;
     Int32 getInt(const String & _keyName,
             Int32 _defaultValue,
-            Bool * _ok = NULL) const;
+            Bool * _ok = nullptr) const;
 
 	//! @brief return the value of a key (double)
-    //! @see ConfigFile::getDouble(const O3DString &_keyName, Bool _defaultValue, Bool * _ok = NULL) const;
+    //! @see ConfigFile::getDouble(const Otring &_keyName, Bool _defaultValue, Bool * _ok = nullptr) const;
     Double getDouble(
 			const String & _keyName,
             Double _defaultValue,
-            Bool * _ok = NULL) const;
+            Bool * _ok = nullptr) const;
 
 	//! @brief return the value of a key (string)
-    //! @see ConfigFile::getString(const O3DString &_keyName, Bool _defaultValue, Bool * _ok = NULL) const;
+    //! @see ConfigFile::getString(const String &_keyName, Bool _defaultValue, Bool * _ok = nullptr) const;
 	const String getString(
 			const String & _keyName,
 			const String & _defaultValue,
-            Bool * _ok = NULL) const;
+            Bool * _ok = nullptr) const;
 
 	//! @brief Find a key
 	//! This function try to find a key in the current group only. Only a name
@@ -413,4 +412,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_CONFIGFILE_H
-

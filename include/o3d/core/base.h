@@ -196,7 +196,7 @@ namespace o3d
         return (min + (T)(Float(max-min)*Float(rand()%10000))/10000.f);
 	}
 
-	//! Delete a pointer if existing and set it to NULL.
+    //! Delete a pointer if existing and set it to null.
 	template <class T>
 	inline void deletePtr(T *&ptr)
 	{
@@ -206,7 +206,7 @@ namespace o3d
 		}
 	}
 
-	//! Delete a pointer if existing but doesn't set it to NULL.
+    //! Delete a pointer if existing but doesn't set it to null.
 	template<class T>
 	inline void deletePtr(const T *ptr)
 	{
@@ -215,7 +215,7 @@ namespace o3d
         }
 	}
 
-	//! Delete a pointer array if existing and set it to NULL.
+    //! Delete a pointer array if existing and set it to null.
 	template <class T>
 	inline void deleteArray(T *&ptr)
 	{
@@ -225,7 +225,7 @@ namespace o3d
 		}
 	}
 
-	//! Delete a pointer array if existing and doesn't set it to NULL.
+    //! Delete a pointer array if existing and doesn't set it to null.
 	template <class T>
 	inline void deleteArray(const T *ptr)
 	{

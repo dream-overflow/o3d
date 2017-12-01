@@ -63,7 +63,7 @@ namespace o3d {
 
 #ifdef O3D_WINDOWS
 
-	typedef void* _DISP;        //!< Display handle (NULL in WINDOWS)
+    typedef void* _DISP;        //!< Display handle (null in WINDOWS)
 	typedef char* _SCREEN;      //!< Screen handle (valid char*)
     typedef Int32 _PF;          //!< Pixel format of a HDC.
 
@@ -109,7 +109,7 @@ namespace o3d {
 
 #elif defined(O3D_SDL)
 
-	typedef void* _DISP;        //!< Display handle (NULL in SDL).
+    typedef void* _DISP;        //!< Display handle (null in SDL).
     typedef Int32 _SCREEN;      //!< Screen handle.
     typedef UInt32 _HWND;       //!< Window handle.
 	typedef void* _HDC;         //!< Drawable handle (SDL_Window).

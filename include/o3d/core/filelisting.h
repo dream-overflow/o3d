@@ -100,7 +100,7 @@ public:
 
 	//! initialize the file search
 	virtual void searchFirstFile();
-	//! return the next file (if NULL its finished)
+    //! return the next file (if null its finished)
 	virtual FLItem *searchNextFile();
 
 protected:

@@ -96,7 +96,7 @@ private:
 
 	Bool    m_dlFlag;            //!< delimiter flag
 
-	void prepWorkStr(const Char* delimiters = NULL, Int32 delimitersSize = 0);
+    void prepWorkStr(const Char* delimiters = nullptr, Int32 delimitersSize = 0);
 };
 
 //---------------------------------------------------------------------------------------

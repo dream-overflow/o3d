@@ -47,17 +47,17 @@ public:
 	//! Destructor.
 	~PrimitiveAccess();
 
-	//! Operator () to access transparently the the O3DPrimitiveManager.
+    //! Operator () to access transparently to the PrimitiveManager.
 	PrimitiveManager* operator-> () { return m_manager; }
 
-	//! Operator () to access transparently the the O3DPrimitiveManager
+    //! Operator () to access transparently to the PrimitiveManager
 	//! (read only).
 	const PrimitiveManager* operator-> () const { return m_manager; }
 
-	//! Operator () to access transparently the the O3DPrimitiveManager.
+    //! Operator () to access transparently to the PrimitiveManager.
 	PrimitiveManager& operator* () { return *m_manager; }
 
-	//! Operator () to access transparently the the O3DPrimitiveManager
+    //! Operator () to access transparently to the PrimitiveManager
 	//! (read only).
 	const PrimitiveManager& operator* () const { return *m_manager; }
 

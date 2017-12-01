@@ -816,7 +816,7 @@ void Scene::update()
 
 					drawInfo.setFromLight(light);
 					// TODO shadow mode, vis à vis du material def à utiliser...
-					drawInfo.ShaderInstance = NULL;
+                    drawInfo.ShaderInstance = nullptr;
 
 					// world objects
 					m_visibilityManager->draw(drawInfo);

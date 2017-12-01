@@ -80,8 +80,9 @@ inline void* debugRealloc(
 	const Char* file,
 	Int32 line)
 {
-	if (ptr == NULL)
+    if (ptr == nullptr) {
 		return o3d::debugMalloc(size,file,line);
+    }
 
 	MemoryManager::instance()->nextDelete(MemoryManager::MEM_RAM,file,line);
 	return MemoryManager::instance()->reallocate(ptr,size,file,line);
@@ -95,8 +96,9 @@ inline void* debugAlignedRealloc(
 	const Char* file,
 	Int32 line)
 {
-	if (ptr == NULL)
+    if (ptr == nullptr) {
 		return o3d::debugAlignedMalloc(size,Align,file,line);
+    }
 
 	MemoryManager::instance()->nextDelete(MemoryManager::MEM_RAM,file,line);
 	return MemoryManager::instance()->alignedReallocate(ptr,size,Align,file,line);
@@ -243,7 +245,7 @@ namespace o3d {
 inline void* alignedMalloc(size_t size, size_t align)
 {
 #ifdef O3D_USE_MEMALIGN
-	void* memptr = NULL;
+    void* memptr = nullptr;
 	posix_memalign((void**)&memptr, align, size);
 
 	return memptr;

@@ -60,4 +60,3 @@ void Octree::draw()
 	// setup modelview
 	getScene()->getContext()->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
 }
-

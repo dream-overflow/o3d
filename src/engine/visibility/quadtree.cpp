@@ -109,7 +109,8 @@ void QuadZone::draw(Scene *scene)
 	primitive->modelView().translate(absPosition);
 	primitive->setModelviewProjection();
 
-	primitive->setColor(1.0f, 1.0f, 1.0f);
+    // primitive->setColor(1.0f, 1.0f, 1.0f);
+    primitive->setColor(1.0f, 1.0f, 0.0f);
 
 	// We draw the edges of this zone
 	primitive->drawYAxisAlignedQuad(P_LINE_LOOP, Vector3(m_size, 1, m_size));
@@ -644,7 +645,7 @@ void Quadtree::draw()
 		// setup modelview
 		primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
 
-		primitive->setColor(1.f,1.f,1.f);
+        primitive->setColor(1.f, 1.f, 1.f);
 
 		getScene()->getContext()->setLineSize(2.0f);
 

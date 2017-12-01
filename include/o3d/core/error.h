@@ -169,7 +169,7 @@ class O3D_API E_InvalidPrecondition : public E_BaseException
 		O3D_E_DEF(E_InvalidPrecondition,"The precondition is not observed")
 };
 
-//! @class E_InvalidAllocation used when an object allocation return NULL
+//! @class E_InvalidAllocation used when an object allocation return null
 class O3D_API E_InvalidAllocation : public E_BaseException
 {
 	O3D_E_DEF_CLASS(E_InvalidAllocation)

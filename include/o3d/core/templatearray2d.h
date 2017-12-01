@@ -116,7 +116,7 @@ typedef TemplateArray2D<Double>	Array2DDouble;
 ---------------------------------------------------------------------------------------*/
 template <class T>
 TemplateArray2D<T>::TemplateArray2D(UInt32 _width, UInt32 _height, const T & _value) :
-	m_pData(NULL),
+    m_pData(nullptr),
 	m_width(_width),
 	m_height(_height)
 {
@@ -130,12 +130,12 @@ TemplateArray2D<T>::TemplateArray2D(UInt32 _width, UInt32 _height, const T & _va
 
 template <class T>
 TemplateArray2D<T>::TemplateArray2D(const T * _buffer, UInt32 _width, UInt32 _height) :
-	m_pData(NULL),
+    m_pData(nullptr),
 	m_width(_width),
 	m_height(_height)
 {
 #ifdef _DEBUG
-	if (_buffer == NULL)
+    if (_buffer == nullptr)
 	{
 		O3D_ASSERT((_width == 0) && (_height == 0));
 	}
@@ -145,7 +145,7 @@ TemplateArray2D<T>::TemplateArray2D(const T * _buffer, UInt32 _width, UInt32 _he
 	}
 #endif
 
-	if (_buffer != NULL)
+    if (_buffer != nullptr)
 	{
 		UInt32 size = _width * _height;
 		m_pData = new T[size];
@@ -177,7 +177,7 @@ TemplateArray2D<T>::TemplateArray2D(const TemplateArray2D<T> & _which) :
 		}
 	}
 	else
-		m_pData = NULL;
+        m_pData = nullptr;
 }
 
 template <class T>
@@ -213,7 +213,7 @@ TemplateArray2D<T> & TemplateArray2D<T>::operator = (const TemplateArray2D<T> & 
 			}
 		}
 		else
-			m_pData = NULL;
+            m_pData = nullptr;
 	}
 
 	return *this;
@@ -295,7 +295,7 @@ void TemplateArray2D<T>::destroy()
 template <class T>
 void TemplateArray2D<T>::fill(const T & _which)
 {
-	if (m_pData != NULL)
+    if (m_pData != nullptr)
 	{
 		T * pTarget = m_pData;
 
@@ -311,7 +311,7 @@ void TemplateArray2D<T>::fill(const T & _which)
 template <class T>
 void TemplateArray2D<T>::fill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _x2, UInt32 _y2)
 {
-	if (m_pData != NULL)
+    if (m_pData != nullptr)
 	{
 		_x1 = o3d::min<Int32>(_x1, m_width);
 		_y1 = o3d::min<Int32>(_y1, m_height);
@@ -322,7 +322,7 @@ void TemplateArray2D<T>::fill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _
 			return;
 
 		const UInt32 lLineSize = _x2 - _x1;
-		T * pTarget = NULL;
+        T * pTarget = nullptr;
 
 		for (UInt32 j = _y1 ; j < _y2 ; ++j)
 		{
@@ -337,7 +337,7 @@ void TemplateArray2D<T>::fill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _
 template <class T>
 void TemplateArray2D<T>::fastFill(const T & _which)
 {
-	if (m_pData != NULL)
+    if (m_pData != nullptr)
 	{
 		T* pTarget = m_pData;
 
@@ -360,7 +360,7 @@ void TemplateArray2D<T>::fastFill(const T & _which)
 template <class T>
 void TemplateArray2D<T>::fastFill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _x2, UInt32 _y2)
 {
-	if (m_pData != NULL)
+    if (m_pData != nullptr)
 	{
 		_x1 = o3d::min<Int32>(_x1, m_width);
 		_y1 = o3d::min<Int32>(_y1, m_height);
@@ -430,8 +430,8 @@ Bool TemplateArray2D<T>::getSubArray(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2,
 
 	_target.setSize(_x2 - _x1 + 1, _y2 - _y1 + 1);
 
-	T * lTargetPtr = NULL;
-	const T * lSourcePtr = NULL;
+    T * lTargetPtr = nullptr;
+    const T * lSourcePtr = nullptr;
 
 	for (UInt32 y = 0 ; y < _target.height() ; ++y)
 	{
@@ -453,8 +453,8 @@ Bool TemplateArray2D<T>::insert(const TemplateArray2D<T> & _source, UInt32 _i, U
 	if (_i + _source.width() - 1 >= m_width) return False;
 	if (_j + _source.height() - 1 >= m_height) return False;
 
-	T * lTargetPtr = NULL;
-	const T * lSourcePtr = NULL;
+    T * lTargetPtr = nullptr;
+    const T * lSourcePtr = nullptr;
 
 	for (UInt32 y = 0 ; y < _source.height() ; ++y)
 	{

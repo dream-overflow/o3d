@@ -17,20 +17,18 @@ namespace o3d {
 
 #define ACCESS(i,j) (j)+(i)*cols
 
-//---------------------------------------------------------------------------------------
-//! @class MatrixNxP
-//-------------------------------------------------------------------------------------
-//! Row major NxP matrix.
-//!   _                                  _
-//!  |                                    |
-//!  | a00   a10   a20   .....  a(n-1)0   |
-//!  | a01   a11   a21   .....  a(n-1)1   |
-//!  | a02   a12   a22   .....  a(n-1)2   |
-//!  |  .     .     .      .     .        |
-//!  |  .     .     .      .     .        |
-//!  | a0p-1 a1p-1 a2p-1 .....  a(n-1)p-1 |
-//!  |_                                  _|
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Row major NxP matrix.
+ * @details Row major NxP matrix.
+ *  |                                    |
+ *  | a00   a10   a20   .....  a(n-1)0   |
+ *  | a01   a11   a21   .....  a(n-1)1   |
+ *  | a02   a12   a22   .....  a(n-1)2   |
+ *  |  .     .     .      .     .        |
+ *  |  .     .     .      .     .        |
+ *  | a0p-1 a1p-1 a2p-1 .....  a(n-1)p-1 |
+ *  |_                                  _|
+ */
 class MatrixNxP
 {
 public:
@@ -38,7 +36,7 @@ public:
 	//! Default constructor
 	inline MatrixNxP()	// M null
 	{
-		M = NULL;
+        M = nullptr;
 		rows = 0;
 		cols = 0;
 	}
@@ -46,7 +44,7 @@ public:
 	//! Initialisation constructor
 	inline MatrixNxP(UInt32 NbrRows,UInt32 NbrCols)
 	{
-		M = NULL;
+        M = nullptr;
 		rows = 0;
 		cols = 0;
 
@@ -56,13 +54,10 @@ public:
 	//! Copy constructor
 	inline MatrixNxP(const MatrixNxP& _M)
 	{
-		if (_M.getData() == NULL)
-		{
+        if (_M.getData() == nullptr) {
 			deleteArray(M);
 			rows = cols = 0;
-		}
-		else
-		{
+        } else {
 			rows = _M.getNbrRows();
 			cols = _M.getNbrCols();
 
@@ -78,8 +73,7 @@ public:
 	//! initialise le tableau de la matrice
 	inline void reset(UInt32 NbrRows,UInt32 NbrCols)
 	{
-		if (NbrRows*NbrCols != rows*cols)
-		{
+        if (NbrRows*NbrCols != rows*cols) {
 			deleteArray(M);
 			M = new Float[NbrRows*NbrCols];
 			rows = NbrRows;
@@ -110,13 +104,10 @@ public:
 	//! affecte la matrice _M à this (M) , M = _M
 	inline MatrixNxP& operator= (const MatrixNxP& _M)
 	{
-		if (_M.getData() == NULL)
-		{
+        if (_M.getData() == nullptr) {
 			deleteArray(M);
 			rows = cols = 0;
-		}
-		else
-		{
+        } else {
 			rows = _M.getNbrRows();
 			cols = _M.getNbrCols();
 
@@ -196,4 +187,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_MATRIXNXP_H
-

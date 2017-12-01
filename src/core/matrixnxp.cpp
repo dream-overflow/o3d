@@ -269,4 +269,3 @@ Bool MatrixNxP::readFromFile(InStream &is)
 }
 
 #undef ACCESS
-

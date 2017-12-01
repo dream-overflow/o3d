@@ -33,11 +33,11 @@ public:
 
 	//! Default constructor
 	AlphaPipelineToken(
-			Shadable* object = NULL,
-			MaterialTechnique* material = NULL,
+            Shadable* object = nullptr,
+            MaterialTechnique* material = nullptr,
 			UInt32 p1 = 0,
 			UInt32 p2 = 0,
-			UInt32 p3 = 0)
+            UInt32 p3 = 0)
 	{
 		m_shadable		 = object;
 		m_material       = material;
@@ -48,8 +48,8 @@ public:
 
 	//! Set parameters
 	void set(
-			Shadable* object = NULL,
-			MaterialTechnique* material = NULL,
+            Shadable* object = nullptr,
+            MaterialTechnique* material = nullptr,
 			UInt32 p1 = 0,
 			UInt32 p2 = 0,
 			UInt32 p3 = 0)

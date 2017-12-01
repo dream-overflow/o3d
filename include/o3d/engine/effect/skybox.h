@@ -34,7 +34,7 @@ public:
 	//! Virtual destructor.
 	virtual ~SkyBox();
 
-	//! Create the sky box with the six sides. Can have NULL sides.
+    //! Create the sky box with the six sides. Can have null sides.
 	//! @note It need texture with clamp mode (no repeat).
 	void create(
 		Float size,

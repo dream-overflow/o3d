@@ -65,7 +65,7 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Create an animation player
-	AnimationPlayer* createAnimationPlayer(Animation *animation = NULL);
+    AnimationPlayer* createAnimationPlayer(Animation *animation = nullptr);
 
 	//! Delete an animation player.
 	//! The player is deleted even if the animation is not finished.

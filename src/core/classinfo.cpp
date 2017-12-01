@@ -53,4 +53,3 @@ void ClassInfo::unRegisterClass()
 {
 	ClassFactory::unRegisterClassInfo(m_className);
 }
-

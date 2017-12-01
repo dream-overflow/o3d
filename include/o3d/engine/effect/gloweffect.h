@@ -65,7 +65,7 @@ public:
 	};
 
 	//! Default constructor/
-	GlowEffect(BaseObject *parent, Texture2D *texture = NULL);
+    GlowEffect(BaseObject *parent, Texture2D *texture = nullptr);
 
 	//-----------------------------------------------------------------------------------
 	// Parameters

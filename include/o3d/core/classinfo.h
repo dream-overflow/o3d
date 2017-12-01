@@ -19,11 +19,9 @@ class BaseObject;
 //! Object creation functor
 typedef BaseObject *(*ObjectConstructorFn)(BaseObject *);
 
-//---------------------------------------------------------------------------------------
-//! @class ClassInfo
-//-------------------------------------------------------------------------------------
-//! Class info for run time type checking.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Class info for run time type checking.
+ */
 class O3D_API ClassInfo : NonCopyable<>
 {
 public:
@@ -344,7 +342,7 @@ public:
 			if (className == info->m_className)
 				return info;
 		}
-		return NULL;
+        return nullptr;
 	}
 
 	//! Check if the class info have a type of info
@@ -546,43 +544,42 @@ protected:
 
 //! Base abstract class
 #define O3D_IMPLEMENT_ABSTRACT_CLASS(name, type) \
-	O3D_IMPLEMENT_CLASS_COMMON(name, type, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON(name, type, nullptr)
 
 //! Single inheritance with one base class
 #define O3D_IMPLEMENT_ABSTRACT_CLASS1(name, type, basename) \
-	O3D_IMPLEMENT_CLASS_COMMON1(name, type, basename, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON1(name, type, basename, nullptr)
 
 //! Multiple inheritance with two base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS2(name, type, basename1, basename2) \
-	O3D_IMPLEMENT_CLASS_COMMON2(name, type, basename1, basename2, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON2(name, type, basename1, basename2, nullptr)
 
 //! Multiple inheritance with 3 base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS3(name, type, basename1, basename2, basename3) \
-	O3D_IMPLEMENT_CLASS_COMMON3(name, type, basename1, basename2, basename3, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON3(name, type, basename1, basename2, basename3, nullptr)
 
 //! Multiple inheritance with 4 base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS4(name, type, bn1, bn2, bn3, bn4) \
-	O3D_IMPLEMENT_CLASS_COMMON4(name, type, bn1, bn2, bn3, bn4, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON4(name, type, bn1, bn2, bn3, bn4, nullptr)
 
 //! Multiple inheritance with 5 base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS5(name, type, bn1, bn2, bn3, bn4, bn5) \
-	O3D_IMPLEMENT_CLASS_COMMON5(name, type, bn1, bn2, bn3, bn4, bn5, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON5(name, type, bn1, bn2, bn3, bn4, bn5, nullptr)
 
 //! Multiple inheritance with 6 base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS6(name, type, bn1, bn2, bn3, bn4, bn5, bn6) \
-	O3D_IMPLEMENT_CLASS_COMMON6(name, type, bn1, bn2, bn3, bn4, bn5, bn6, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON6(name, type, bn1, bn2, bn3, bn4, bn5, bn6, nullptr)
 
 //! Multiple inheritance with 7 base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS7(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7) \
-	O3D_IMPLEMENT_CLASS_COMMON7(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON7(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, nullptr)
 
 //! Multiple inheritance with 8 base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS8(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, bn8) \
-	O3D_IMPLEMENT_CLASS_COMMON8(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, bn8, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON8(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, bn8, nullptr)
 
 //! Multiple inheritance with 9 base classes
 #define O3D_IMPLEMENT_ABSTRACT_CLASS9(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, bn8, bn9) \
-	O3D_IMPLEMENT_CLASS_COMMON9(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, bn8, bn9, NULL)
+    O3D_IMPLEMENT_CLASS_COMMON9(name, type, bn1, bn2, bn3, bn4, bn5, bn6, bn7, bn8, bn9, nullptr)
 
 #endif // _O3D_CLASSINFO_H
-

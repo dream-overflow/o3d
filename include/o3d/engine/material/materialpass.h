@@ -262,7 +262,7 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Set a map texture. Need a call to PrepareAndCompile before to be effective.
-	//! @map Valid or NULL texture to define for the specified type.
+    //! @map Valid or null texture to define for the specified type.
 	void setMap(MapType type, Texture *map);
 	//! Get a map texture.
 	inline Texture* getMap(MapType type) const { return m_mapTypes[type].texture.get(); }

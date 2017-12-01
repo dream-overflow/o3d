@@ -85,13 +85,13 @@ public:
 		return m_doc->FirstChildElement();
 	}
 
-	//! get the next child element to pPrevNode and element name (NULL return the first)
+    //! get the next child element to pPrevNode and element name (null return the first)
 	inline TiXmlElement* childElement(const String &element, TiXmlNode *pPrevNode)
 	{
         O3D_ASSERT(m_doc!=nullptr);
 		return m_doc->IterateChildren(element.toUtf8().getData(), pPrevNode)->ToElement();
 	}
-	//! get the next child element to pPrevNode (NULL return the first)
+    //! get the next child element to pPrevNode (null return the first)
 	inline TiXmlElement* childElement(TiXmlNode *pPrevNode)
 	{
         O3D_ASSERT(m_doc!=nullptr);

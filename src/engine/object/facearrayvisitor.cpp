@@ -116,8 +116,8 @@ FaceArrayVisitor::FaceArrayVisitor(
 		UInt32 offset,
 		UInt32 size) :
 			m_faceArray(faceArray),
-			m_dataUInt16(NULL),
-			m_dataUInt32(NULL),
+            m_dataUInt16(nullptr),
+            m_dataUInt32(nullptr),
 			m_numIndices(0),
 			m_step(False)
 {
@@ -213,8 +213,8 @@ FaceArrayVisitor::FaceArrayVisitor(
 	}
 	else
 	{
-		m_endIt.m_dataUInt16 = NULL;
-		m_endIt.m_dataUInt32 = NULL;
+        m_endIt.m_dataUInt16 = nullptr;
+        m_endIt.m_dataUInt32 = nullptr;
 	}
 }
 
@@ -223,9 +223,9 @@ FaceArrayVisitor::FaceArrayVisitor(
 		UInt16 *faceArray,
 		UInt32 numElements,
 		PrimitiveFormat faceType) :
-			m_faceArray(NULL),
-			m_dataUInt16(NULL),
-			m_dataUInt32(NULL),
+            m_faceArray(nullptr),
+            m_dataUInt16(nullptr),
+            m_dataUInt32(nullptr),
 			m_numIndices(0),
 			m_step(False)
 {
@@ -272,7 +272,7 @@ FaceArrayVisitor::FaceArrayVisitor(
 		m_beginIt.getData(&m_beginIt);
 	}
 	else
-		m_endIt.m_dataUInt16 = NULL;
+        m_endIt.m_dataUInt16 = nullptr;
 }
 
 // Construct from a face indices array and a specified triangle format.
@@ -280,9 +280,9 @@ FaceArrayVisitor::FaceArrayVisitor(
 		UInt32 *faceArray,
 		UInt32 numElements,
 		PrimitiveFormat faceType) :
-			m_faceArray(NULL),
-			m_dataUInt16(NULL),
-			m_dataUInt32(NULL),
+            m_faceArray(nullptr),
+            m_dataUInt16(nullptr),
+            m_dataUInt32(nullptr),
 			m_numIndices(0),
 			m_step(False)
 {
@@ -330,7 +330,7 @@ FaceArrayVisitor::FaceArrayVisitor(
 	}
 	else
 	{
-		m_endIt.m_dataUInt32 = NULL;
+        m_endIt.m_dataUInt32 = nullptr;
 	}
 }
 
@@ -541,4 +541,3 @@ void FaceArrayVisitor::AccessTriangleStrip32::getArray(FaceArrayVisitor *in, UIn
 		v[2] = *(data+2);
 	}
 }
-

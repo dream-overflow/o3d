@@ -15,11 +15,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class FaceArrayVisitor
-//-------------------------------------------------------------------------------------
-//! Access on triangles from a face array of triangle/strip/fans.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Access on triangles from a face array of triangle/strip/fans.
+ */
 class O3D_API FaceArrayIterator
 {
 	friend class FaceArrayVisitor;
@@ -38,11 +36,11 @@ public:
 		b(0),
 		c(0),
 		id(0),
-		getData(NULL),
-		m_baseDataUInt16(NULL),
-		m_baseDataUInt32(NULL),
-		m_dataUInt16(NULL),
-		m_dataUInt32(NULL),
+        getData(nullptr),
+        m_baseDataUInt16(nullptr),
+        m_baseDataUInt32(nullptr),
+        m_dataUInt16(nullptr),
+        m_dataUInt32(nullptr),
 		m_step(False)
 	{
 	}
@@ -159,12 +157,9 @@ private:
 	Bool m_step;           //!< Two step for triangle strip.
 };
 
-
-//-------------------------------------------------------------------------------------
-//! @class FaceArrayVisitor
-//-------------------------------------------------------------------------------------
-//! Access on triangles from a face array of triangle/strip/fans.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Access on triangles from a face array of triangle/strip/fans.
+ */
 class O3D_API FaceArrayVisitor : NonCopyable<>
 {
 	friend class AccessTriangle16;
@@ -305,4 +300,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_FACEARRAYVISITOR_H
-

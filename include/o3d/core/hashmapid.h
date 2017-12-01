@@ -17,11 +17,10 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class HashMapID
-//-------------------------------------------------------------------------------------
-//! Integer identifier to template object hash map.
-//---------------------------------------------------------------------------------------
+/**
+ * @class HashMapID
+ * @brief Integer identifier to template object hash map.
+ */
 template<class T>
 class O3D_API_TEMPLATE HashMapID : public BaseObject
 {
@@ -117,7 +116,7 @@ public:
 		if (it != m_MyMap.end())
 			return (*it).second;
 
-		return NULL;
+        return nullptr;
 	}
 
 	const T* get(Int32 ID)const
@@ -126,7 +125,7 @@ public:
 		if (it != m_MyMap.end())
 			return (*it).second;
 
-		return NULL;
+        return nullptr;
 	}
 
 	T* get(Int32 ID)
@@ -135,21 +134,21 @@ public:
 		if (it != m_MyMap.end())
 			return (*it).second;
 
-		return NULL;
+        return nullptr;
 	}
 
 	const T* getFirstElement()const
 	{
 		CIT_HashMapID it=m_MyMap.begin();
 		if (it != m_MyMap.end()) return (*it).second;
-		return NULL;
+        return nullptr;
 	}
 
 	T* getFirstElement()
 	{
 		IT_HashMapID it=m_MyMap.begin();
 		if (it != m_MyMap.end()) return (*it).second;
-		return NULL;
+        return nullptr;
 	}
 
 	//! does the manager contains an element
