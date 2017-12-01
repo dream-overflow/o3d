@@ -109,25 +109,58 @@ void QuadZone::draw(Scene *scene)
 	primitive->modelView().translate(absPosition);
 	primitive->setModelviewProjection();
 
-    // primitive->setColor(1.0f, 1.0f, 1.0f);
+    // yellow
     primitive->setColor(1.0f, 1.0f, 0.0f);
 
 	// We draw the edges of this zone
-	primitive->drawYAxisAlignedQuad(P_LINE_LOOP, Vector3(m_size, 1, m_size));
+    // primitive->drawYAxisAlignedQuad(P_LINE_LOOP, Vector3(m_size, 1, m_size));
+
+    // Daw corners of this zone
+    primitive->beginDraw(P_LINES);
+
+    // top left
+    primitive->addVertex(Vector3(-m_size, 0, -m_size));
+    primitive->addVertex(Vector3(-m_size*0.8, 0, -m_size));
+
+    primitive->addVertex(Vector3(-m_size, 0, -m_size));
+    primitive->addVertex(Vector3(-m_size, 0, -m_size*0.8));
+
+    // top right
+    primitive->addVertex(Vector3(m_size, 0, -m_size));
+    primitive->addVertex(Vector3(m_size*0.8, 0, -m_size));
+
+    primitive->addVertex(Vector3(m_size, 0, -m_size));
+    primitive->addVertex(Vector3(m_size, 0, -m_size*0.8));
+
+    // bottom left
+    primitive->addVertex(Vector3(-m_size, 0, m_size));
+    primitive->addVertex(Vector3(-m_size*0.8, 0, m_size));
+
+    primitive->addVertex(Vector3(-m_size, 0, m_size));
+    primitive->addVertex(Vector3(-m_size, 0, m_size*0.8));
+
+    // bottom right
+    primitive->addVertex(Vector3(m_size, 0, m_size));
+    primitive->addVertex(Vector3(m_size*0.8, 0, m_size));
+
+    primitive->addVertex(Vector3(m_size, 0, m_size));
+    primitive->addVertex(Vector3(m_size, 0, m_size*0.8));
+
+    primitive->endDraw();
+
+//    // Now we draw connections
+//    Vector3 absCenter = absPosition + Vector3(0.5f * m_size, 0.0f, 0.5f * m_size);
+//
+//    primitive->beginDraw(P_LINES);
+//        for (IT_ZoneObjectList it = m_objectList.begin(); it != m_objectList.end() ; it++)
+//        {
+//            primitive->addVertex(absCenter.getData());
+//            primitive->addVertex((*it)->getSceneObject()->getAbsoluteMatrix().getTranslationPtr());
+//        }
+//    primitive->endDraw();
 
 	primitive->setColor(1.0f, 0.0f, 0.0f);
 	primitive->modelView().pop();
-
-	/*Vector3 absCenter = absPosition + Vector3(0.5f * m_size, 0.0f, 0.5f * m_size);
-
-	// Now we draw connections
-	primitive->beginDraw(P_LINES);
-		for (IT_ZoneObjectList it = m_objectList.begin(); it != m_objectList.end() ; it++)
-		{
-			primitive->addVertex(absCenter.getData());
-			primitive->addVertex((*it)->getObject()->getAbsoluteMatrix()->getTranslationPtr());
-		}
-	primitive->endDraw();*/
 
     for (UInt32 k = 0; k < 4 ; ++k) {
         if (m_pChildren[k] != nullptr) {

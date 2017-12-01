@@ -1,5 +1,8 @@
 include/o3d/core/sha1.h
 src/core/sha1.cpp
+src/shaders/smoothline/smoothline1/450/default_fp.glsl
+src/shaders/smoothline/smoothline1/450/default_vp.glsl
+src/shaders/smoothline/smoothline1/450_fp.glsl
 third/CMakeLists.txt
 third/uuid/CMakeLists.txt
 third/uuid/include/copyrt.h

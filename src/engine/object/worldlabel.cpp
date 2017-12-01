@@ -80,14 +80,15 @@ WorldLabel& WorldLabel::operator = (const WorldLabel & _dup)
 //! @brief Prepare the drawing of the label
 void WorldLabel::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if (!hasTopLevelParentTypeOf())
+    if (!hasTopLevelParentTypeOf()) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_WORLD_LABEL))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_WORLD_LABEL)) {
 		getScene()->getContext()->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
 
 		const Vector4 lWorldPosition(getAbsoluteMatrix().m14(),
@@ -98,13 +99,15 @@ void WorldLabel::draw(const DrawInfo &drawInfo)
 			Vector3(lWorldPosition[X], lWorldPosition[Y], lWorldPosition[Z])).length();
 
 		// Check if the distance between the center of the label and the camera is not null.
-		if (lCamDistance == 0.0f)
+        if (lCamDistance == 0.0f) {
 			return;
+        }
 
 		// Next check if the label is in the valid range [m_distanceBounds[0] ; m_distanceBounds[1]
 		// The previous test is only done if the bounds are defined, that is if (m_distanceBounds[1] > 0)
-		if ((m_distanceBounds[1] > m_distanceBounds[0]) && ((lCamDistance < m_distanceBounds[0]) || (lCamDistance > m_distanceBounds[1])))
+        if ((m_distanceBounds[1] > m_distanceBounds[0]) && ((lCamDistance < m_distanceBounds[0]) || (lCamDistance > m_distanceBounds[1]))) {
 			return;
+        }
 
 		Context * lpContext = getScene()->getContext();
 
@@ -127,8 +130,9 @@ void WorldLabel::draw(const DrawInfo &drawInfo)
 
 		Vector4 lVertex(lProjection * (lModelview * lWorldPosition));
 
-		if (lVertex[Z] < 0.0f)
+        if (lVertex[Z] < 0.0f) {
 			return;
+        }
 
 		const Float lInverseW = 1.0f / lVertex[W];
 
@@ -136,18 +140,23 @@ void WorldLabel::draw(const DrawInfo &drawInfo)
 		lVertex[Y] *= lInverseW;
 		lVertex[Z] *= lInverseW;
 
-		const Vector2i lScreenPos(	lViewPort[0] + Int32((lVertex[0] * 0.5f + 0.5f) * lViewPort[2]),
-										lViewPort[1] + Int32((lVertex[1] * 0.5f + 0.5f) * lViewPort[3]));
+        const Vector2i lScreenPos(
+                    lViewPort[0] + Int32((lVertex[0] * 0.5f + 0.5f) * lViewPort[2]),
+                    lViewPort[1] + Int32((lVertex[1] * 0.5f + 0.5f) * lViewPort[3]));
 
-		const Vector2i lScreenSize(	Int32(m_screenSize[X] * lSizeFactor),
-										Int32(m_screenSize[Y] * lSizeFactor));
+        const Vector2i lScreenSize(
+                    Int32(m_screenSize[X] * lSizeFactor),
+                    Int32(m_screenSize[Y] * lSizeFactor));
+
 		const Int32 lBorderSize(Int32(m_borderSize * lSizeFactor));
 
-		if (o3d::abs<Int32>(lScreenPos[X] - lViewPort[2]/2) > (lViewPort[2] + lScreenSize[X])/2 + (m_borderSize < 0 ? -m_borderSize : 0))
+        if (o3d::abs<Int32>(lScreenPos[X] - lViewPort[2]/2) > (lViewPort[2] + lScreenSize[X])/2 + (m_borderSize < 0 ? -m_borderSize : 0)) {
 			return;
+        }
 
-		if (o3d::abs<Int32>(lScreenPos[Y] - lViewPort[3]/2) > (lViewPort[3] + lScreenSize[Y])/2 + (m_borderSize < 0 ? -m_borderSize : 0))
+        if (o3d::abs<Int32>(lScreenPos[Y] - lViewPort[3]/2) > (lViewPort[3] + lScreenSize[Y])/2 + (m_borderSize < 0 ? -m_borderSize : 0)) {
 			return;
+        }
 
 		Matrix4 lOrtho2D(
 			2.0f / lViewPort[2],	0.0f,					0.0f,		-1.0f,
@@ -158,8 +167,7 @@ void WorldLabel::draw(const DrawInfo &drawInfo)
 		lOrtho2D.setData(0, 3, lOrtho2D.m11() * ((lScreenPos[X] - lScreenSize[X]/2) + 0.5f) + lOrtho2D.m14());
 		lOrtho2D.setData(1, 3, lOrtho2D.m22() * ((lScreenPos[Y] - lScreenSize[Y]/2) + 0.5f) + lOrtho2D.m24());
 
-		if (isRelativeCoordinate())
-		{
+        if (isRelativeCoordinate()) {
 			lOrtho2D.setData(0, 0, lScreenSize[X] * lOrtho2D.m11());
 			lOrtho2D.setData(1, 1, lScreenSize[Y] * lOrtho2D.m22());
 		}
@@ -167,22 +175,19 @@ void WorldLabel::draw(const DrawInfo &drawInfo)
 		lpContext->projection().set(lOrtho2D);
 		lpContext->modelView().identity();
 
-		if (isShowAlways())
+        if (isShowAlways()) {
 			lpContext->setDepthRange(lDepthRange[0], lDepthRange[0]);
-		else
-		{
+        } else {
 			Float lT = 0.5f * lVertex[Z] + 0.5f;
 			lT = lDepthRange[1] * lT + (1.0f - lT) * lDepthRange[0];
 
 			lpContext->setDepthRange(lT, lT);
 		}
 
-		if (isClipping())
-		{
+        if (isClipping()) {
 			Int32 lBox[4];
 
-			if (lScissorEnabled)
-			{
+            if (lScissorEnabled) {
 				Int32 lContextBox[4] = {	lScissorBox[0],
 											lScissorBox[1],
 											lScissorBox[0] + lScissorBox[2],
@@ -192,9 +197,7 @@ void WorldLabel::draw(const DrawInfo &drawInfo)
 				lBox[1] = o3d::max<Int32>(lContextBox[1], lScreenPos[Y] - lScreenSize[Y]/2 + lBorderSize);
 				lBox[2] = o3d::min<Int32>(lContextBox[2], lScreenPos[X] + lScreenSize[X]/2 - lBorderSize);
 				lBox[3] = o3d::min<Int32>(lContextBox[3], lScreenPos[Y] + lScreenSize[Y]/2 - lBorderSize);
-			}
-			else
-			{
+            } else {
 				lBox[0] = lScreenPos[X] - lScreenSize[X]/2 + lBorderSize;
 				lBox[1] = lScreenPos[Y] - lScreenSize[Y]/2 + lBorderSize;
 				lBox[2] = lScreenPos[X] + lScreenSize[X]/2 - lBorderSize;
@@ -211,10 +214,10 @@ void WorldLabel::draw(const DrawInfo &drawInfo)
 
         lpContext->setAntiAliasing(aa);
 
-		if (isClipping())
-		{
-			if (!lScissorEnabled)
+        if (isClipping()) {
+            if (!lScissorEnabled) {
 				lpContext->disableScissorTest();
+            }
 
 			lpContext->setScissor(lScissorBox);
 		}
@@ -269,4 +272,3 @@ Bool WorldLabel::readFromFile(InStream &is)
 
 	return False;
 }
-

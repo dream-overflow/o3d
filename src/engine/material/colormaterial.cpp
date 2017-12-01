@@ -375,4 +375,3 @@ void ColorMaterial::processDeferred(
         shader.unbindShader();
     }
 }
-

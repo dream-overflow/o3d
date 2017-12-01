@@ -89,4 +89,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_TEXT2D_H
-

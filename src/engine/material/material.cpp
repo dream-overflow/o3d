@@ -238,4 +238,3 @@ void MaterialDep::processShadow(Shadable &shadable, Shadowable &object, const Dr
 	}
 }
 */
-

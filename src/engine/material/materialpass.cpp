@@ -371,4 +371,3 @@ void MaterialPass::loadMaps()
 	load2DMap(REFLECTION_MAP);
 	loadCubeMap(CUBICAL_ENV_MAP);
 }
-

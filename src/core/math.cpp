@@ -17,6 +17,8 @@
 
 using namespace o3d;
 
+// @see http://gruntthepeon.free.fr/ssemath/ if we need more optimized maths func
+
 // Set the pointer to default in case Initialize is not called
 Float (*Math::sqrt)(Float) = Math::_Std::sqrt;
 
@@ -124,7 +126,6 @@ Float Math::_SSE::sqrt(Float x)
 #else
     return ::sqrtf(x);
 #endif
-
 }
 
 Float Math::_3DNow::sqrt(Float x)

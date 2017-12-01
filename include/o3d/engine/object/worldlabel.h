@@ -17,11 +17,11 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class WorldLabel
-//-------------------------------------------------------------------------------------
-//! Description
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Draw a front label, at a 3d position into the scene, using size relative distance
+ * from camera or constant. The label always stay in front of the camera, and can be or not
+ * alway visible.
+ */
 class O3D_API WorldLabel : public SceneObject
 {
 public:
@@ -176,4 +176,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_WORLDLABEL_H
-

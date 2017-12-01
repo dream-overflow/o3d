@@ -410,4 +410,3 @@ Bool MaterialTechnique::readFromFile(InStream &is)
 
 	return True;
 }
-

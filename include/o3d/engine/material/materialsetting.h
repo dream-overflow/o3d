@@ -21,12 +21,10 @@ class Texture2D;
 class CubeMapTexture;
 class Scene;
 
-//---------------------------------------------------------------------------------------
-//! @class MaterialSetting
-//-------------------------------------------------------------------------------------
-//! Material setting mostly managed by a material profile. It contain all parameters
-//! to apply a material (technique).
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Material setting mostly managed by a material profile. It contains all parameters
+ * to apply a material (technique).
+ */
 class O3D_API MaterialSetting : NonCopyable<>
 {
 public:
@@ -278,4 +276,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MATERIALSETTING_H
-

@@ -28,37 +28,35 @@ class Shadowable;
 class Pickable;
 class MaterialPass;
 
-//---------------------------------------------------------------------------------------
-//! @class Material
-//-------------------------------------------------------------------------------------
-//! A material establish the OpenGL context parameters, add bind texture, attributes
-//! array, and define uniforms parameters (like ambient, diffuse, bump offset...).
-//! A material can be manually specified by inheriting from this class, but it can also
-//! use the programmable definition or by importing its definition from an o3dmt file.
-//! And here the naming convention :
-//!  - For uniforms parameters :
-//!    - vec4 u_ambient : Premultiplied object ambient * current light ambient color.
-//!    - vec4 u_diffuse : Premultiplied object diffuse * current light diffuse color.
-//!    - vec4 u_specular : Premultiplied object specular * current light specular color
-//!    - vec4 u_matAmbient : Object material ambient color.
-//!    - vec4 u_matDiffuse : Object material diffuse color.
-//!    - vec4 u_matSpecular : Object material specular color.
-//!    - vec4 u_matEmission : Object material emission/self illumination color.
-//!    - float u_shine : Object material specular shininess [0..+oo].
-//!    - float u_transparency : Object material transparency [0..1].
-//!    - TODO
-//!  - For attributes array :
-//!    - vec4 a_vertex (location 0) : Vertex position attribute.
-//!    - vec3 a_normal (location 1) : Vertex normal (TBN) attribute.
-//!    - vec3 a_tangent (location 2) : Vertex tangent (TBN) attribute.
-//!    - vec3 a_bitangent (location 3) : Vertex bi-tangent (TBN) attribute.
-//!    - vec4 a_color (location 4) : Vertex color attribute.
-//!    - float a_rigging (location 5) : Vertex rigging bones ID attribute.
-//!    - vec4 a_skinning (location 6) : Vertex skinning 4 bones ID attribute.
-//!    - vec4 a_weighting (location 7) : Vertex weighting 4 bones weight attribute.
-//!    - xxx a_texCoords1 (location 8) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
-//!    - xxx a_texCoords2 (location 9) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A material establish the OpenGL context parameters, add bind texture, attributes
+ * array, and define uniforms parameters (like ambient, diffuse, bump offset...).
+ * @details A material can be manually specified by inheriting from this class, but it can also
+ * use the programmable definition or by importing its definition from an o3dmt file.
+ * And here the naming convention :
+ *  - For uniforms parameters :
+ *    - vec4 u_ambient : Premultiplied object ambient * current light ambient color.
+ *    - vec4 u_diffuse : Premultiplied object diffuse * current light diffuse color.
+ *    - vec4 u_specular : Premultiplied object specular * current light specular color
+ *    - vec4 u_matAmbient : Object material ambient color.
+ *    - vec4 u_matDiffuse : Object material diffuse color.
+ *    - vec4 u_matSpecular : Object material specular color.
+ *    - vec4 u_matEmission : Object material emission/self illumination color.
+ *    - float u_shine : Object material specular shininess [0..+oo].
+ *    - float u_transparency : Object material transparency [0..1].
+ *    - TODO
+ *  - For attributes array :
+ *    - vec4 a_vertex (location 0) : Vertex position attribute.
+ *    - vec3 a_normal (location 1) : Vertex normal (TBN) attribute.
+ *    - vec3 a_tangent (location 2) : Vertex tangent (TBN) attribute.
+ *    - vec3 a_bitangent (location 3) : Vertex bi-tangent (TBN) attribute.
+ *    - vec4 a_color (location 4) : Vertex color attribute.
+ *    - float a_rigging (location 5) : Vertex rigging bones ID attribute.
+ *    - vec4 a_skinning (location 6) : Vertex skinning 4 bones ID attribute.
+ *    - vec4 a_weighting (location 7) : Vertex weighting 4 bones weight attribute.
+ *    - xxx a_texCoords1 (location 8) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
+ *    - xxx a_texCoords2 (location 9) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
+ */
 class O3D_API Material : public SceneResource, NonCopyable<>
 {
 public:
@@ -183,4 +181,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_MATERIAL_H
-

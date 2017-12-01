@@ -529,4 +529,3 @@ void PrimitiveManager::addVertex(const Float *vertex, const Float *color)
 	m_vertices.pushArray(vertex, 3);
 	m_colors.pushArray(color, 4);
 }
-

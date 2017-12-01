@@ -40,3 +40,5 @@ third/uuid/include
 third/uuid
 third/sha
 third
+src/shaders/smoothline/smoothline1
+src/shaders/smoothline/smoothline1/450

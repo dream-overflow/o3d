@@ -146,4 +146,3 @@ Bool MaterialSetting::readFromFile(Scene *scene, InStream &is)
 
 	return True;
 }
-
