@@ -29,13 +29,13 @@ enum ObjectType
  */
 enum CoreObjectType
 {
-	CORE_BASE_OBJECT = 0x10000000,
+    CORE_BASE_OBJECT = 0x01000000,
     CORE_SHARABLE,
     CORE_PARENTABLE,
 	CORE_EVT_HANDLER,
 	CORE_RESOURCE,
 
-	CORE_INPUT_LIST = 0x10020000,    //!< input list
+    CORE_INPUT_LIST = 0x01010000,    //!< input list
 	CORE_INPUT,                      //!< void input
 	CORE_KEYBOARD,                   //!< the keyboard input
 	CORE_MOUSE,                      //!< the mouse input
@@ -47,6 +47,11 @@ enum CoreObjectType
 
     CORE_SERVICE,                    //!< abstract service
     CORE_SERVICE_MANAGER             //!< service manager
+};
+
+enum UserObjectType
+{
+    USER_OBJECT = 0x10000000         //!< First id for user objects types
 };
 
 //! File types
@@ -92,4 +97,3 @@ enum CharacterEncoding
 } // namespace o3d
 
 #endif // _O3D_CORETYPE_H
-

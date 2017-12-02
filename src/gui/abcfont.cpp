@@ -86,4 +86,3 @@ Blending::FuncProfile ABCFont::getBlendFunc() const
 {
     return m_blendFunc;
 }
-

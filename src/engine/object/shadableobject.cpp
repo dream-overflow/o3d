@@ -18,7 +18,7 @@ O3D_IMPLEMENT_ABSTRACT_CLASS1(ShadableObject, ENGINE_SHADABLE_OBJECT, SceneObjec
 ShadableObject::ShadableObject(BaseObject *parent) :
 	SceneObject(parent)
 {
-	m_shadableInfo.faceArray = NULL;
+    m_shadableInfo.faceArray = nullptr;
 	m_shadableInfo.numFaces = 0;
 	m_shadableInfo.firstFace = 0;
 	m_shadableInfo.lastFace = 0;
@@ -31,7 +31,7 @@ ShadableObject::ShadableObject(BaseObject *parent) :
 ShadableObject::ShadableObject(const ShadableObject &dup) :
 	SceneObject(dup)
 {
-	m_shadableInfo.faceArray = NULL;
+    m_shadableInfo.faceArray = nullptr;
 	m_shadableInfo.numFaces = 0;
 	m_shadableInfo.firstFace = 0;
 	m_shadableInfo.lastFace = 0;
@@ -45,7 +45,7 @@ ShadableObject& ShadableObject::operator= (const ShadableObject &dup)
 {
 	SceneObject::operator =(dup);
 
-	m_shadableInfo.faceArray = NULL;
+    m_shadableInfo.faceArray = nullptr;
 	m_shadableInfo.numFaces = 0;
 	m_shadableInfo.firstFace = 0;
 	m_shadableInfo.lastFace = 0;
@@ -89,4 +89,3 @@ FaceArray* ShadableObject::getFaceArrayToProcess(UInt32 &first, UInt32 &last)
 
 	return m_shadableInfo.faceArray;
 }
-

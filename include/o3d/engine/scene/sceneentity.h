@@ -46,7 +46,6 @@ public:
 	virtual Bool hasTopLevelParentTypeOf() const;
 };
 
-
 /**
  * @brief A base resource of the scene.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
@@ -72,7 +71,6 @@ public:
 	//! The top level parent must be a scene.
 	virtual Bool hasTopLevelParentTypeOf() const;
 };
-
 
 /**
  * @brief A base resource manager of the scene.

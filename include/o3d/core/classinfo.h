@@ -337,10 +337,10 @@ public:
 	//! Find a class by its name
 	inline static ClassInfo* findClass(const String &className)
 	{
-		for (ClassInfo *info = ms_first; info ; info = info->m_next)
-		{
-			if (className == info->m_className)
+        for (ClassInfo *info = ms_first; info ; info = info->m_next) {
+            if (className == info->m_className) {
 				return info;
+            }
 		}
         return nullptr;
 	}
@@ -348,11 +348,11 @@ public:
 	//! Check if the class info have a type of info
 	Bool getTypeOf(const ClassInfo *info) const
 	{
-		if (info == this)
+        if (info == this) {
 			return True;
+        }
 
-		for (size_t i = 0; i < m_numParents; ++i)
-		{
+        for (size_t i = 0; i < m_numParents; ++i) {
 			if (m_parents[i]->getTypeOf(info))
 				return True;
 		}
@@ -429,60 +429,60 @@ protected:
 
 //! common part of the macros below
 #define O3D_IMPLEMENT_CLASS_COMMON(name, type, func) \
-	ClassInfo name::ms_classInfo(#name, type, sizeof(name), (ObjectConstructorFn) func);
+    o3d::ClassInfo name::ms_classInfo(#name, type, sizeof(name), (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON1(name, type, basename, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, sizeof(name), \
-            (ObjectConstructorFn) func);
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, sizeof(name), \
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON2(name, type, basename, baseclsinfo2, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			sizeof(name), \
-            (ObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON3(name, type, basename, baseclsinfo2, bc3, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			&bc3::ms_classInfo, sizeof(name), \
-            (ObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON4(name, type, basename, baseclsinfo2, bc3, bc4, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			&bc3::ms_classInfo, bc4, sizeof(name), \
-            (O3DObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON5(name, type, basename, baseclsinfo2, bc3, bc4, bc5, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			&bc3::ms_classInfo, &bc4::ms_classInfo, \
 			&bc5::ms_classInfo, sizeof(name), \
-            (ObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON6(name, type, basename, baseclsinfo2, bc3, bc4, bc5, bc6, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			&bc3::ms_classInfo, &bc4::ms_classInfo, \
 			&bc5::ms_classInfo, &bc6::ms_classInfo, sizeof(name), \
-            (ObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON7(name, type, basename, baseclsinfo2, bc3, bc4, bc5, bc6, bc7, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			&bc3::ms_classInfo, &bc4::ms_classInfo, \
 			&bc5::ms_classInfo, &bc6::ms_classInfo, \
 			&bc7::ms_classInfo, sizeof(name), \
-            (ObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON8(name, type, basename, baseclsinfo2, bc3, bc4, bc5, bc6, bc7, bc8, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			&bc3::ms_classInfo, &bc4::ms_classInfo, \
 			&bc5::ms_classInfo, &bc6::ms_classInfo, \
 			&bc7::ms_classInfo, &bc8::ms_classInfo, sizeof(name), \
-            (ObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 #define O3D_IMPLEMENT_CLASS_COMMON9(name, type, basename, baseclsinfo2, bc3, bc4, bc5, bc6, bc7, bc8, bc9, func) \
-	ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
+    o3d::ClassInfo name::ms_classInfo(#name, type, &basename::ms_classInfo, &baseclsinfo2::ms_classInfo, \
 			&bc3::ms_classInfo, &bc4::ms_classInfo, \
 			&bc5::ms_classInfo, &bc6::ms_classInfo, \
 			&bc7::ms_classInfo, &bc8::ms_classInfo, \
 			&bc9::ms_classInfo, sizeof(name), \
-            (ObjectConstructorFn) func);
+            (o3d::ObjectConstructorFn) func);
 
 //---------------------------------------------------------------------------------------
 // For instanciable classes
@@ -491,52 +491,52 @@ protected:
 //! Base class
 #define O3D_IMPLEMENT_DYNAMIC_CLASS(name, type)                                     \
 	O3D_IMPLEMENT_CLASS_COMMON(name, type, name::createInstance)                    \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Single inheritance with one base class
 #define O3D_IMPLEMENT_DYNAMIC_CLASS1(name, type, basename)                          \
 	O3D_IMPLEMENT_CLASS_COMMON1(name, type, basename, name::createInstance)         \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with two base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS2(name, type, basename1, basename2)                  \
 	O3D_IMPLEMENT_CLASS_COMMON2(name, type, basename1, basename2, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with 3 base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS3(name, type, basename1, bn2, bn3)                  \
 	O3D_IMPLEMENT_CLASS_COMMON3(name, type, basename1, bn2, bn3, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with 4 base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS4(name, type, basename1, bn2, bn3, bn4)                  \
 	O3D_IMPLEMENT_CLASS_COMMON4(name, type, basename1, bn2, bn3, bn4, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with 5 base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS5(name, type, basename1, bn2, bn3, bn4, bn5)                  \
 	O3D_IMPLEMENT_CLASS_COMMON5(name, type, basename1, bn2, bn3, bn4, bn5, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with 6 base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS6(name, type, basename1, bn2, bn3, bn4, bn5, bn6)                  \
 	O3D_IMPLEMENT_CLASS_COMMON6(name, type, basename1, bn2, bn3, bn4, bn5, bn6, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with 7 base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS7(name, type, basename1, bn2, bn3, bn4, bn5, bn6, bn7)                  \
 	O3D_IMPLEMENT_CLASS_COMMON7(name, type, basename1, bn2, bn3, bn4, bn5, bn6, nb7, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with 8 base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS8(name, type, basename1, bn2, bn3, bn4, bn5, bn6, bn7, bn8)                  \
 	O3D_IMPLEMENT_CLASS_COMMON8(name, type, basename1, bn2, bn3, bn4, bn5, bn6, nb7, bn8, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //! Multiple inheritance with 9 base classes
 #define O3D_IMPLEMENT_DYNAMIC_CLASS9(name, type, basename1, bn2, bn3, bn4, bn5, bn6, bn7, bn8, bn9)                  \
 	O3D_IMPLEMENT_CLASS_COMMON9(name, type, basename1, bn2, bn3, bn4, bn5, bn6, nb7, bn8, bn9, name::createInstance) \
-    BaseObject* name::createInstance(BaseObject *parent) { return (BaseObject*)new name(parent); }
+    o3d::BaseObject* name::createInstance(o3d::BaseObject *parent) { return (o3d::BaseObject*)new name(parent); }
 
 //---------------------------------------------------------------------------------------
 // For abstract classes

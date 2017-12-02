@@ -154,13 +154,10 @@ public:
 	//! Toggle the visibility state.
 	inline Bool toggleVisibility()
 	{
-		if (getVisibility())
-		{
+        if (getVisibility()) {
 			disableVisibility();
 			return False;
-		}
-		else
-		{
+        } else {
 			enableVisibility();
 			return True;
 		}
@@ -169,10 +166,11 @@ public:
 	//! Set the object visibility.
 	inline void setVisible(Bool state)
 	{
-		if (state)
+        if (state) {
 			enableVisibility();
-		else
+        } else {
 			disableVisibility();
+        }
 	}
 
 
@@ -263,22 +261,20 @@ public:
 	//! Define the picking processing state of the object.
 	inline void setPicking(Bool state)
 	{
-		if (state)
+        if (state) {
 			enablePicking();
-		else
+        } else {
 			disablePicking();
+        }
 	}
 
 	//! Toggle the picking processing state of the object.
 	inline Bool togglePicking()
 	{
-		if (isPicking())
-		{
+        if (isPicking()) {
 			disablePicking();
 			return False;
-		}
-		else
-		{
+        } else {
 			enablePicking();
 			return True;
 		}

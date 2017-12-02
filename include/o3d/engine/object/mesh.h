@@ -18,14 +18,13 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Mesh
-//-------------------------------------------------------------------------------------
-//! A 3d static mesh object. It use an O3DMeshData object which contain mesh data.
-//! For skin object mesh data contain the vertex weighting too.
-//! The object is draw by it O3DMeshData object using the most adapted method.
-//! @note If no shader is defined it use the default one.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A 3d static mesh object
+ * @details It use a MeshData object which contains the geometry.
+ * For skin object mesh data contain the vertex weighting too.
+ * The object is draw by it O3DMeshData object using the most adapted method.
+ * @note If no shader is defined it use the default one.
+ */
 class O3D_API Mesh : public ShadableObject
 {
 public:
@@ -182,4 +181,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_MESH_H
-

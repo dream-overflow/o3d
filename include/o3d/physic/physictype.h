@@ -14,15 +14,15 @@ namespace o3d {
 
 enum PhysicObjectType
 {
-	PHYSIC_MANAGER = 0x40000000,//!< physic manager
+    PHYSIC_MANAGER = 0x04000000,   //!< physic manager
 
-	PHYSIC_RIGID_BODY,          //!< a rigid body
-	PHYSIC_MODEL,               //!< a physic model for rigid body
+    PHYSIC_RIGID_BODY,             //!< a rigid body
+    PHYSIC_MODEL,                  //!< a physic model for rigid body
 
-	PHYSIC_ENTITY_MANAGER,      //!< physic entity manager
+    PHYSIC_ENTITY_MANAGER,         //!< physic entity manager
 	PHYSIC_ENTITY,
 
-	PHYSIC_FORCE_MANAGER = 0x40010000, //!<  physic force manager
+    PHYSIC_FORCE_MANAGER = 0x04010000, //!<  physic force manager
 	PHYSIC_FORCE,                      //!< a base force
 	PHYSIC_FORCE_GRAVITY,              //!< a gravity force
 	PHYSIC_FORCE_SPRING,               //!< a spring force
@@ -34,4 +34,3 @@ enum PhysicObjectType
 } // namespace o3d
 
 #endif // _O3D_PHYSICTYPE_H
-

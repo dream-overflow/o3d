@@ -60,8 +60,9 @@ SceneObject::SceneObject(BaseObject *parent) :
     m_node(nullptr)
 {
 	// obtain an unique scene object identifier
-	if (getScene() && getScene()->getSceneObjectManager())
+    if (getScene() && getScene()->getSceneObjectManager()) {
 		getScene()->getSceneObjectManager()->addElement(this);
+    }
 
 	setUpdated();
 
@@ -83,8 +84,9 @@ SceneObject::SceneObject(const SceneObject &dup) :
     m_node(nullptr)
 {
 	// obtain an unique scene object identifier
-	if (getScene() && getScene()->getSceneObjectManager())
+    if (getScene() && getScene()->getSceneObjectManager()) {
 		getScene()->getSceneObjectManager()->addElement(this);
+    }
 
 	setUpdated();
 }
@@ -93,8 +95,9 @@ SceneObject::SceneObject(const SceneObject &dup) :
 SceneObject::~SceneObject()
 {
 	// release the identifier manually if the object is not a direct child of the manager
-	if ((m_id != -1) && getScene() && getScene()->getSceneObjectManager())
+    if ((m_id != -1) && getScene() && getScene()->getSceneObjectManager()) {
 		getScene()->getSceneObjectManager()->removeElement(this);
+    }
 }
 
 // assign
@@ -115,15 +118,13 @@ void SceneObject::setParent(BaseObject *parent)
 {
 	m_parent = parent;
 
-	if (parent)
-	{
-		if (m_topLevelParent && (m_topLevelParent != parent->getTopLevelParent()))
+    if (parent) {
+        if (m_topLevelParent && (m_topLevelParent != parent->getTopLevelParent())) {
 			O3D_ERROR(E_InvalidParameter("The top-level parent of the new parent is different of the old"));
-		else
+        } else {
 			m_topLevelParent = parent->getTopLevelParent();
-	}
-	else
-	{
+        }
+    } else {
         m_topLevelParent = nullptr;
 	}
 }
@@ -148,10 +149,11 @@ void SceneObject::setNode(BaseNode *node)
 // Return the absolute transform matrix (read only)
 const Matrix4& SceneObject::getAbsoluteMatrix() const
 {
-	if (m_node)
+    if (m_node) {
 		return m_node->getAbsoluteMatrix();
-	else
+    } else {
         return Matrix4::getIdentity();
+    }
 }
 
 void SceneObject::setRigidBody(RigidBody *rigidBody)
@@ -162,10 +164,11 @@ void SceneObject::setRigidBody(RigidBody *rigidBody)
 // Return the absolute matrix of the node or NULL.
 const Matrix4& SceneObject::getObjectWorldMatrix() const
 {
-	if (m_node)
+    if (m_node) {
 		return m_node->getAbsoluteMatrix();
-	else
+    } else {
 		return Matrix4::getIdentity();
+    }
 }
 
 // Setup the modelview matrix to OpenGL
@@ -173,11 +176,12 @@ void SceneObject::setUpModelView()
 {
     O3D_ASSERT(getScene()->getActiveCamera() != nullptr);
 
-	if (m_node)
+    if (m_node) {
 		getScene()->getContext()->modelView().set(
 				getScene()->getActiveCamera()->getModelviewMatrix() * m_node->getAbsoluteMatrix());
-	else
+    } else {
 		getScene()->getContext()->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
+    }
 }
 
 Bool SceneObject::isMovable() const
@@ -321,10 +325,11 @@ Bool SceneObject::isNeedDraw() const
 // Check only with its parent node position.
 Geometry::Clipping SceneObject::checkBounding(const AABBox &bbox) const
 {
-	if (bbox.include(m_node->getAbsoluteMatrix().getTranslation()))
+    if (bbox.include(m_node->getAbsoluteMatrix().getTranslation())) {
 		return Geometry::CLIP_INSIDE;
-	else
+    } else {
 		return Geometry::CLIP_OUTSIDE;
+    }
 }
 
 // Check only with its parent node position.
@@ -332,12 +337,13 @@ Geometry::Clipping SceneObject::checkBounding(const Plane &plane) const
 {
 	Float d = plane * m_node->getAbsoluteMatrix().getTranslation();
 
-	if (d > 0.f)
+    if (d > 0.f) {
 		return Geometry::CLIP_INSIDE;
-	else if (d == 0.f)
+    } else if (d == 0.f) {
 		return Geometry::CLIP_INTERSECT;
-	else
+    } else {
 		return Geometry::CLIP_OUTSIDE;
+    }
 }
 
 // Always returns inside.
@@ -361,8 +367,7 @@ Animatable::AnimatableTrack* SceneObject::getAnimationStatus(const AnimationTrac
 {
 	// register the track into the animatable
 	IT_AnimationKeyFrameItMap it = m_keyFrameMap.find(track);
-	if (it == m_keyFrameMap.end())
-	{
+    if (it == m_keyFrameMap.end()) {
 		AnimatableTrack animatableTrack;
 
 		animatableTrack.Time = 0.f;

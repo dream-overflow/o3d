@@ -14,20 +14,20 @@ namespace o3d {
 
 enum GuiObjectType
 {
-	GUI_GUI = 0x50000000,           //!< GUI
+    GUI_GUI = 0x05000000,           //!< GUI
 	GUI_CONSOLE,                    //!< Consol with command mecanim
 	GUI_MESSAGE_BOX,                //!< Predefined window for common modal message/alert box
 
-	GUI_FONT_MANAGER = 0x50010000,  //!< a list of fonts to load
+    GUI_FONT_MANAGER = 0x05010000,  //!< a list of fonts to load
 	GUI_FONT_ABC,                   //!< base class for font
 	GUI_FONT_TEXTURE,               //!< tag for a texture based font
 	GUI_FONT_TRUE_TYPE,             //!< tag for a true type font based font (TTF)
 	GUI_FONT_MATERIAL,              //!< a default material for font rendering
 
-	GUI_THEME_MANAGER = 0x50020000, //!< manager to have multiple themes
+    GUI_THEME_MANAGER = 0x05020000, //!< manager to have multiple themes
 	GUI_THEME,                      //!< theme container for widgets
 
-	GUI_WIDGET = 0x50030000,        //!< base widget object
+    GUI_WIDGET = 0x05030000,        //!< base widget object
 	GUI_WIDGET_MANAGER,             //!< widget controller and manager
     GUI_WIDGET_ROOT_WINDOW,         //!< root window
 	GUI_WIDGET_PROPERTIES,          //!< base class for widget
@@ -58,13 +58,13 @@ enum GuiObjectType
     GUI_WIDGET_TOOL_TIP,            //!< a tooltip frame
 	GUI_WIDGET_DRAW_MATERIAL,
 
-	GUI_CURSOR = 0x50040000,        //!< tag for a cursor object
+    GUI_CURSOR = 0x05040000,        //!< tag for a cursor object
 	GUI_CURSOR_MANAGER,
 	GUI_CARET,                      //!< tag for a caret object
 	GUI_ICON,                       //!< tag for an icon object
 	GUI_PICTURE,                    //!< tag for picture object
 
-	GUI_LAYOUT = 0x50050000,        //!< tag for an undefined layout widget
+    GUI_LAYOUT = 0x05050000,        //!< tag for an undefined layout widget
     GUI_LAYOUT_FREE,                //!< tag for a free layout widget
 	GUI_LAYOUT_BOX,                 //!< tag for a box layout widget
 	GUI_LAYOUT_GRID,                //!< tag for a grid box layout widget
@@ -77,4 +77,3 @@ enum GuiObjectType
 } // namespace o3d
 
 #endif // _O3D_GUI_TYPE_H
-

@@ -19,7 +19,10 @@ namespace o3d {
  */
 enum EngineObjectType
 {
-	ENGINE_SCENE = 0x20000000,         //!< scene manager
+    ENGINE_SCENE = 0x02000000,         //!< scene manager
+    ENGINE_ENGINE_ENTITY,
+    ENGINE_ENGINE_RESOURCE,
+    ENGINE_ENGINE_RESOURCE_MANAGER,
 	ENGINE_SCENE_OBJECT,
 	ENGINE_ALPHA_PIPELINE,
 	ENGINE_PICKING,
@@ -65,11 +68,11 @@ enum EngineObjectType
 	ENGINE_SCENEOBJECT_LIST,           //!< scene object mapper
 	ENGINE_GL_CONTEXT,                 //!< opengl context
 
-	ENGINE_ANIMATION_LIST = 0x20010000,//!< anmiation manager
+    ENGINE_ANIMATION_LIST = 0x02010000,//!< anmiation manager
 	ENGINE_ANIMATION,                  //!< animation object
 	ENGINE_ANIMATION_BLEND,            //!< animation blending object
 
-	ENGINE_LANDSCAPE = 0x20020000,     //!< landscape generator
+    ENGINE_LANDSCAPE = 0x02020000,     //!< landscape generator
 	ENGINE_ZONE,                       //!< a zone of the landscape
 	ENGINE_ZONEDATA,                   //!< a zone date of the landscape
 	ENGINE_SKY_OBJECT,
@@ -79,12 +82,12 @@ enum EngineObjectType
 	ENGINE_SKY_SCATTERING,
 	ENGINE_SKY_BASE,
 
-	ENGINE_VIEWPORT_LIST = 0x20030000,   //!< viewport manager
+    ENGINE_VIEWPORT_LIST = 0x02030000,   //!< viewport manager
 	ENGINE_VIEWPORT,                     //!< base viewport object
 	ENGINE_VIEWPORT_SCREEN,              //!< screen render viewport
 	ENGINE_VIEWPORT_FEEDBACK,            //!< texture render viewport
 
-	ENGINE_TEXTURE_LIST = 0x20040000,    //!< texture manager
+    ENGINE_TEXTURE_LIST = 0x02040000,    //!< texture manager
 	ENGINE_TEXTURE,                      //!< undefined texture
 	ENGINE_TEXTURE_1D,                   //!< texture 1D
 	ENGINE_TEXTURE_2D,                   //!< texture 2D
@@ -99,7 +102,7 @@ enum EngineObjectType
 	ENGINE_TEXTURE_2D_MULTISAMPLE_ARRAY, //!< texture 2D multisample array
 	ENGINE_TEXTURE_2D_CACHE,
 
-	ENGINE_MATERIAL_LIST = 0x20050000,   //!< Material manager.
+    ENGINE_MATERIAL_LIST = 0x02050000,   //!< Material manager.
 	ENGINE_MATERIAL_PROFILE,             //!< Material profile.
 	ENGINE_MATERIAL_TECHNIQUE,
 	ENGINE_MATERIAL_PASS,
@@ -119,42 +122,42 @@ enum EngineObjectType
 	ENGINE_MATERIAL_CUBE_MAP,            //!< Cube mapping.
 	ENGINE_MATERIAL_SPHERE_MAP,          //!< Sphere mapping.
 	ENGINE_MATERIAL_CARTOON,             //!< Cell shading.
-	ENGINE_MATERIAL_UNKNOWN = 0x2005FFFF,//!< Unknown material.
+    ENGINE_MATERIAL_UNKNOWN = 0x0205FFFF,//!< Unknown material.
 
-	ENGINE_TRANSFORM = 0x20060000,     //!< base transform object
-    ENGINE_ATRANSFORM,                 //!< accumulative SRT transform
-	ENGINE_MTRANSFORM,                 //!< accumulative SRT transform
-	ENGINE_FTRANSFORM,                 //!< first person view like transform
-	ENGINE_DQTRANSFORM,                //!< dual quaternion based RT transform
+    ENGINE_TRANSFORM = 0x02060000,       //!< base transform object
+    ENGINE_ATRANSFORM,                   //!< accumulative SRT transform
+    ENGINE_MTRANSFORM,                   //!< accumulative SRT transform
+    ENGINE_FTRANSFORM,                   //!< first person view like transform
+    ENGINE_DQTRANSFORM,                  //!< dual quaternion based RT transform
 
-	ENGINE_HIERARCHY_TREE = 0x20070000,//!< hierarchy-tree
+    ENGINE_HIERARCHY_TREE = 0x02070000,  //!< hierarchy-tree
 	ENGINE_ROOT_NODE,
-	ENGINE_BASE_NODE,                  //!< abstract base node object
-	ENGINE_NODE,                       //!< transform node object for 3d
-	ENGINE_NODE_TARGET,                //!< target node object
-	ENGINE_BONES,                      //!< bones node object
-	ENGINE_NODE_END = 0x2007FFFF,      //!< last node identifier
+    ENGINE_BASE_NODE,                    //!< abstract base node object
+    ENGINE_NODE,                         //!< transform node object for 3d
+    ENGINE_NODE_TARGET,                  //!< target node object
+    ENGINE_BONES,                        //!< bones node object
+    ENGINE_NODE_END = 0x0207FFFF,        //!< last node identifier
 
-	ENGINE_MESH = 0x20080000,          //!< mesh
+    ENGINE_MESH = 0x02080000,          //!< mesh
 	ENGINE_SPRITE2D,                   //!< 2d sprite
 	ENGINE_SPRITE2D_INSTANCED,         //!< Multiple sprite in a single object.
 
-	ENGINE_SKIN = 0x20090000,          //!< skin mesh base object
+    ENGINE_SKIN = 0x02090000,          //!< skin mesh base object
 	ENGINE_RIGGING,                    //!< rigging mesh object
 	ENGINE_SKINNING,                   //!< skinning mesh object
 	ENGINE_HUMANOID,                   //!< humanoid mesh object (complex skinning)
     ENGINE_CLOTH_OBJECT,               //!< cloth object
     ENGINE_SKELETON,                   //!< skeleton container
 
-	ENGINE_COMPLEX_MESH = 0x200A0000,  //!< complex mesh base object
+    ENGINE_COMPLEX_MESH = 0x020A0000,  //!< complex mesh base object
 	ENGINE_BEZIERSURFACE_MESH,         //!< bezier surface
 	ENGINE_NURBS_RENDERER,             //!< nurbs surface renderer
 
-	ENGINE_LIGHT = 0x200B0000,         //!< Light object.
+    ENGINE_LIGHT = 0x020B0000,         //!< Light object.
 
-	ENGINE_CAMERA = 0x200C0000,        //!< camera object
+    ENGINE_CAMERA = 0x020C0000,        //!< camera object
 
-	ENGINE_GIZMO = 0x200D0000,         //!< base gizmo object
+    ENGINE_GIZMO = 0x020D0000,         //!< base gizmo object
 	ENGINE_GIZMO_CUBE,                 //!< a box gizmo
 	ENGINE_GIZMO_CYLINDER,             //!< a cylinder gizmo
 	ENGINE_GIZMO_POINT,                //!< a point gizmo
@@ -162,7 +165,7 @@ enum EngineObjectType
 	ENGINE_GIZMO_SPHERE,               //!< a sphere gizmo
 	ENGINE_GIZMO_VECTOR,               //!< a vector gizmo
 
-	ENGINE_EFFET_LIST = 0x200E0000,    //!< special effect manager
+    ENGINE_EFFET_LIST = 0x020E0000,    //!< special effect manager
 	ENGINE_EFFECT,                     //!< base special effect object
 	ENGINE_EFFECT_FOG,                 //!< fog effect
 	ENGINE_EFFECT_VOLUMETRIC_FOG,      //!< volumetric fog effect (not yet implemented)
@@ -176,16 +179,16 @@ enum EngineObjectType
 	ENGINE_EFFECT_LENS_FLARE_LOCAL,    //!< lens flare on target
 	ENGINE_LENSFLARE_MODEL,            //!< lens flare model for lens effect
 
-	ENGINE_PARTICULE_MANAGER = 0x200F0000, //!< Particles manager
+    ENGINE_PARTICULE_MANAGER = 0x020F0000, //!< Particles manager
 	ENGINE_PARTICULE,                      //!< a particle
 
-	ENGINE_VISIBILITY_ABC = 0x20100000,    //!< abstract visibility controller
+    ENGINE_VISIBILITY_ABC = 0x02100000,    //!< abstract visibility controller
 	ENGINE_VISIBILITY_MANAGER,
 	ENGINE_VISIBILITY_BASIC,           //!< basic visibility controller
 	ENGINE_VISIBILITY_QUADTREE,        //!< quadtree visibility controller
 	ENGINE_VISIBILITY_OCTREE,          //!< octree visibility controller
 
-	ENGINE_TERRAIN_ABC = 0x20110000,    //!< abstract terrain renderer and visibility controller
+    ENGINE_TERRAIN_ABC = 0x02110000,    //!< abstract terrain renderer and visibility controller
 	ENGINE_TERRAIN_MANAGER,
 	ENGINE_TERRAIN_DEF_MANAGER,
 	ENGINE_HEIGHT_MAP_SPLATTING,
@@ -197,7 +200,7 @@ enum EngineObjectType
 	ENGINE_PCLOD_TERRAIN,
 	ENGINE_PCLOD_ZONE_MANAGER,
 
-	ENGINE_MAP_2D = 0x20120000,
+    ENGINE_MAP_2D = 0x02120000,
 	ENGINE_MAP_2D_LAYER,
 	ENGINE_MAP_2D_TILE_LAYER,
 	ENGINE_MAP_2D_OBJECT_LAYER,
@@ -205,11 +208,7 @@ enum EngineObjectType
 	ENGINE_MAP_2D_TILER,
 	ENGINE_MAP_2D_ISO_TILER,
 	ENGINE_MAP_2D_DRAWER,
-    ENGIME_MAP_2D_TILE_SET,
-
-    ENGINE_ENGINE_ENTITY = 0x2F000000,
-    ENGINE_ENGINE_RESOURCE,
-    ENGINE_ENGINE_RESOURCE_MANAGER,
+    ENGIME_MAP_2D_TILE_SET
 };
 
 //! Culling mode
@@ -371,4 +370,3 @@ enum PrimitiveFormat
 } // namespace o3d
 
 #endif // _O3D_ENGINETYPE_H
-

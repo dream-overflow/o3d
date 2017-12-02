@@ -14,7 +14,7 @@ namespace o3d {
 
 enum ImageObjectType
 {
-	ENGINE_IMAGE = 0x60000000          //!< image
+    ENGINE_IMAGE = 0x06000000          //!< image
 };
 
 //! RGBA components for colors
@@ -67,4 +67,3 @@ enum PixelFormat
 } // namespace o3d
 
 #endif // _O3D_IMAGETYPE_H
-

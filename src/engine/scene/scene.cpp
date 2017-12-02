@@ -849,8 +849,9 @@ void Scene::display()
 	TimeMesure mesure(m_lastDisplayDuration);
 
 	// Set the renderer as current if necessary
-	if (!m_renderer->isCurrent())
+    if (!m_renderer->isCurrent()) {
 		m_renderer->setCurrent();
+    }
 
 	// update display statistics
 	m_frameManager->update(m_lastDisplayDuration);

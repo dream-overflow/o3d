@@ -17,11 +17,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class ShadowVolumeForward
-//-------------------------------------------------------------------------------------
-//! Shadow volume rendering using forward light.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Shadow volume rendering using forward light.
+ */
 class O3D_API ShadowVolumeForward :
         public SceneDrawer,
         public ShadowRenderer

@@ -892,4 +892,3 @@ void TrueTypeFont::attribute(VertexAttributeArray mode, UInt32 location)
 		m_texCoords.attribute(location, 2, 0, 0);
     }
 }
-

@@ -90,7 +90,7 @@ public:
 		UInt32 lastFace) = 0;
 
 	//! Use the internal face array.
-	inline void useInternalFaceArray() { useExternalFaceArray(NULL, 0, 0, 0); }
+    inline void useInternalFaceArray() { useExternalFaceArray(nullptr, 0, 0, 0); }
 
 	//! Return true if there is a specific list of faces.
 	virtual Bool isExternalFaceArray() const = 0;
