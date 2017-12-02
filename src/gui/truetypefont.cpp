@@ -44,30 +44,25 @@ O3D_IMPLEMENT_DYNAMIC_CLASS2(TrueTypeFont, GUI_FONT_TRUE_TYPE, ABCFont, Shadable
 Bool TrueTypeFont::initializeFreeType()
 {
 	// Create and initialize FreeType
-	if (!m_freeType)
-	{
-		if (FT_Init_FreeType(&m_freeType))
-		{
+    if (!m_freeType) {
+        if (FT_Init_FreeType(&m_freeType)) {
 			O3D_ERROR(E_InvalidResult("Unable to instantiate FreeType 2 library"));
-			return False;
-		}
-	}
+            // return False;
+        }
+    }
+
     O3D_ASSERT(m_freeType != nullptr);
 	return True;
 }
 
 void TrueTypeFont::deleteFreeType()
 {
-	if (m_freeType)
-	{
+    if (m_freeType) {
 		FT_Done_FreeType(m_freeType);
         m_freeType = nullptr;
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  constructor
----------------------------------------------------------------------------------------*/
 TrueTypeFont::TrueTypeFont(BaseObject *parent) :
 	ABCFont(parent),
 	m_material(this),
@@ -76,8 +71,9 @@ TrueTypeFont::TrueTypeFont(BaseObject *parent) :
     m_texCoords(getScene()->getContext()),
     m_faces(getScene()->getContext())
 {
-	if (!getScene())
+    if (!getScene()) {
 		return;
+    }
 
 	// material
 	m_material.setNumTechniques(1);
@@ -100,24 +96,18 @@ TrueTypeFont::TrueTypeFont(BaseObject *parent) :
 	m_material.prepareAndCompile(*this);
 }
 
-/*---------------------------------------------------------------------------------------
-  destructor
----------------------------------------------------------------------------------------*/
 TrueTypeFont::~TrueTypeFont()
 {
-	if (m_face)
+    if (m_face) {
 		FT_Done_Face((FT_Face)m_face);
+    }
 
 	// delete all glyphs textures
-	for (IT_GlyphTextureMap it = m_GlyphTextureMap.begin(); it != m_GlyphTextureMap.end(); ++it)
-	{
+    for (IT_GlyphTextureMap it = m_GlyphTextureMap.begin(); it != m_GlyphTextureMap.end(); ++it) {
 		deletePtr(it->second.texture);
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  Load a font data file
----------------------------------------------------------------------------------------*/
 void TrueTypeFont::load(
     const String& filename,
 	CharSet charSet,
@@ -305,9 +295,6 @@ Int32 TrueTypeFont::write(
     return (Int32)curX - pos.x();
 }
 
-/*---------------------------------------------------------------------------------------
-  Get size of this string
----------------------------------------------------------------------------------------*/
 Int32 TrueTypeFont::sizeOf(const String &text)
 {
 	Int32 size = 0;
@@ -401,9 +388,6 @@ Int32 TrueTypeFont::nearestChar(const String &text, Int32 x)
     return len;
 }
 
-/*---------------------------------------------------------------------------------------
-  return the bounding box of a given string
----------------------------------------------------------------------------------------*/
 Box2i TrueTypeFont::getBoundingBox(const String &text)
 {
 	Int32 xmin = 0;
@@ -446,9 +430,6 @@ Box2i TrueTypeFont::getBoundingBox(const String &text)
 	return Box2i(xmin, ymin, xmax-xmin, ymax-ymin);
 }
 
-/*---------------------------------------------------------------------------------------
-  is this char is supported by the loaded font
----------------------------------------------------------------------------------------*/
 Bool TrueTypeFont::isSupportedChar(UInt32 c)
 {
 	IT_GlyphTextureMap glyphTexture = m_GlyphTextureMap.find(m_charH);
@@ -605,9 +586,6 @@ Int32 TrueTypeFont::adjust(
     return o3d::max(0, pos - dstLeft + leftBearing);
 }
 
-/*---------------------------------------------------------------------------------------
-  Generate glyphs's texture for a given font height
----------------------------------------------------------------------------------------*/
 Bool TrueTypeFont::generateTexture(UInt32 height)
 {
 	TextureGlyph textureGlyph;

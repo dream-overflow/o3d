@@ -527,8 +527,7 @@ void HeightmapSplatting::draw()
 	getScene()->getContext()->setViewPort(0, 0, viewPort.width(), viewPort.height());
 
 	// Screen rendering of generated texture	
-	if (!getScene()->getRenderer()->isGL3())
-	{
+    if (getScene()->getRenderer()->getVersion() <= Renderer::OGL_210) {
         Float * lpBuffer = new Float[lFboSize[X]*lFboSize[Y]];
 
         //	m_fboColorTex->bind();
@@ -580,9 +579,7 @@ void HeightmapSplatting::draw()
 		m_fboDepthTex->unbind();
 
 		deleteArray(lpBuffer);
-	}
-	else
-	{
+    } else {
 		/*pbo->bindUnpackBuffer();
 
 		//glReadPixels(0, 0, lVboSize.x(), lVboSize.y(), GL_DEPTH_COMPONENT, GL_FLOAT, NULL);

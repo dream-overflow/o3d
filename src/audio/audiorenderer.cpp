@@ -89,7 +89,7 @@ AudioRenderer::AudioRenderer(const String& device, Bool useEAX) :
 			for (Int32 i = 0 ; i < ndevices ; ++i)
 			{
 				m_devicesList[i] = devices[i];
-				str += "                    |- " + m_devicesList[i] + "\n";
+                str += "    |- " + m_devicesList[i] + "\n";
 			}
 		}
 	}
@@ -205,12 +205,12 @@ Bool AudioRenderer::create(const String &device, Bool useEAX)
 
 	if(alReverbScale && alReverbDelay)
 	{
-		str += "                    |- OpenAL LOKI reverb: YES\n";
+        str += "    |- OpenAL LOKI reverb: YES\n";
 		m_reverb = True;
 	}
 	else
 	{
-		str += "                    |- OpenAL LOKI reverb: NO\n";
+        str += "    |- OpenAL LOKI reverb: NO\n";
 		m_reverb = False;
 	}
 

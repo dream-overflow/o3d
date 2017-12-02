@@ -18,11 +18,9 @@ namespace o3d {
 class TextureFont;
 class TrueTypeFont;
 
-//---------------------------------------------------------------------------------------
-//! @class FontManager
-//-------------------------------------------------------------------------------------
-//! Font manager instanced by Gui.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Font manager instancied by Gui.
+ */
 class O3D_API FontManager : public SceneTemplateManager<ABCFont>
 {
 public:
@@ -68,4 +66,3 @@ public:
 } // namespace o3d
 
 #endif // _O3DFONTMANAGER_H
-

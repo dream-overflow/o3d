@@ -28,12 +28,11 @@ namespace o3d {
 class Texture;
 class ShaderInstance;
 
-//---------------------------------------------------------------------------------------
-//! @class Shader
-//-------------------------------------------------------------------------------------
-//! Use Shader when you want to use a GLSL shader program.
-//! You can load many vertex, fragment and geometry program in the same object.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Use Shader when you want to use a GLSL shader program.
+ * @details You can load many vertex, fragment and geometry program in the same object.
+ * @todo Add tesselation program
+ */
 class O3D_API Shader : public SceneEntity, NonCopyable<>
 {
 	friend class ShaderInstance;
@@ -46,13 +45,16 @@ public:
 		TYPE_UNDEFINED = 0,
 		TYPE_VERTEX_PROGRAM,
 		TYPE_FRAGMENT_PROGRAM,
-		TYPE_GEOMETRY_PROGRAM };
+        TYPE_GEOMETRY_PROGRAM,
+        TYPE_TESSELATION_PROGRAM
+    };
 
 	//! Enum used to avoid trying to compile twice the same program if previously attempt failed.
 	enum ProgramState {
 		PROGRAM_UNDEFINED = 0,	//!< The program was never compiled.
 		PROGRAM_INVALID,		//!< the compilation or linkage failed.
-		PROGRAM_COMPILED };		//!< The program was successfully compiled.
+        PROGRAM_COMPILED		//!< The program was successfully compiled.
+    };
 
 	enum ShaderState {
 		SHADER_UNDEFINED =  0,				//!< Empty shader
@@ -60,12 +62,14 @@ public:
 		SHADER_DEFINED =	0x00000002,		//!< Programs defined and ready to be compiled
 		SHADER_COMPILED =	0x00000004,		//!< Programs defined and compiled
 		SHADER_LINKED =		0x00000008,		//!< Linked and ready to be sent to the GPU
-		SHADER_INUSE =		0x00000010 };	//!< Currently executed by the GPU
+        SHADER_INUSE =		0x00000010      //!< Currently executed by the GPU
+    };
 
 	enum BuildType {
 		BUILD_DEFINE = 0,
 		BUILD_COMPILE,
-		BUILD_COMPILE_AND_LINK };
+        BUILD_COMPILE_AND_LINK
+    };
 
 	typedef std::vector<Int32> T_ProgramIndexArray;
 
@@ -121,12 +125,15 @@ public:
 	//!                       all fragment programs which were not compiled.
 	//! @param _gProgramArray a pointer to an integer array. It will contain the index of
 	//!                       all geometry programs which were not compiled.
+    //! @param _tProgramArray a pointer to an integer array. It will contain the index of
+    //!                       all tessaltion programs which were not compiled.
 	//! @return FALSE if a least one program was not compiled, TRUE otherwise.
 	//! @exception E_InvalidOperation if the shader object is not defined.
 	Bool compileAllPrograms(
             T_ProgramIndexArray * _vProgramArray = nullptr,
             T_ProgramIndexArray * _fProgramArray = nullptr,
-            T_ProgramIndexArray * _gProgramArray = nullptr);*/
+            T_ProgramIndexArray * _gProgramArray = nullptr
+            T_ProgramIndexArray * _tProgramArray = nullptr);*/
 
 	//! @brief Add a program to the shader
 	//! @param _programType is the type of program you want to add : TYPE_VERTEX_PROGRAM or TYPE_FRAGMENT_PROGRAM
@@ -297,11 +304,9 @@ protected:
 	void refreshInstanceState();
 };
 
-//---------------------------------------------------------------------------------------
-//! @class ShaderInstance
-//-------------------------------------------------------------------------------------
-//! Define an instance of an Shader object.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Define an instance of an Shader object.
+ */
 class O3D_API ShaderInstance
 {
 public:
@@ -826,4 +831,3 @@ void ShaderInstance::setNConstMatrix4(
 } // namespace o3d
 
 #endif // _O3D_SHADER_H
-

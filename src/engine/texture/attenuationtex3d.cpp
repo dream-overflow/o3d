@@ -209,8 +209,9 @@ Bool AttenuationTex3D::create()
 	getScene()->getContext()->bindTexture(TEXTURE_3D,0);
 
 	Int32 size = m_size*m_size*m_size;
-	if (!getScene()->getRenderer()->isGL3())
+    if (getScene()->getRenderer()->getVersion() <= Renderer::OGL_210) {
 		size *= 4;
+    }
 
 	if (create)
 		O3D_GALLOC(MemoryManager::GPU_TEXTURE_3D, m_textureId, size);
@@ -280,4 +281,3 @@ Bool AttenuationTex3D::readFromFile(InStream &is)
 
 	return True;
 }
-

@@ -36,7 +36,7 @@ MeshDataManager::~MeshDataManager()
 
 		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
 		{
-            message += "       |- " + it->second->getResourceName() + "\n";
+            message += "    |- " + it->second->getResourceName() + "\n";
 			deletePtr(it->second);
 		}
 

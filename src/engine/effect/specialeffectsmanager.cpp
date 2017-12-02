@@ -31,13 +31,11 @@ SpecialEffectsManager::~SpecialEffectsManager()
 {
 	deleteArray(m_indexToEffect);
 
-	if (!m_findMap.empty())
-	{
+    if (!m_findMap.empty()) {
 		String message("Specials effects still exists into the manager :\n");
 
-		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-		{
-			message += "       |- " + it->second->getName() + "\n";
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
+            message += "    |- " + it->second->getName() + "\n";
 			deletePtr(it->second);
 		}
 
@@ -47,16 +45,13 @@ SpecialEffectsManager::~SpecialEffectsManager()
 
 Bool SpecialEffectsManager::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
-		if (child->getParent() != this)
+    if (child) {
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			// is it a material, and is it managed by this
 			SpecialEffects *specialEffect = o3d::dynamicCast<SpecialEffects*>(child);
-			if (specialEffect && (specialEffect->m_manager == this))
-			{
+            if (specialEffect && (specialEffect->m_manager == this)) {
 				deleteSpecialEffects(specialEffect);
 				return True;
 			}
@@ -252,6 +247,5 @@ SpecialEffects* SpecialEffectsManager::findSpecialEffect(
 	}
 
 	// not found
-	return NULL;
+    return nullptr;
 }
-

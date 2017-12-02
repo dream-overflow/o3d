@@ -33,8 +33,7 @@ ShaderManager::ShaderManager(
 	m_activeVersion(VERSION_110)
 {
 	// set to the supported GLSL version
-	switch (getScene()->getContext()->getGLSLVersion())
-	{
+	switch (getScene()->getContext()->getGLSLVersion())	{
 		case 110:
 			m_activeVersion = VERSION_110;
 			break;
@@ -49,15 +48,6 @@ ShaderManager::ShaderManager(
 			break;
 		case 150:
 			m_activeVersion = VERSION_150;
-			break;
-		case 300:
-			m_activeVersion = VERSION_300;
-			break;
-		case 310:
-			m_activeVersion = VERSION_310;
-			break;
-		case 320:
-			m_activeVersion = VERSION_320;
 			break;
 		case 330:
 			m_activeVersion = VERSION_330;
@@ -80,38 +70,75 @@ ShaderManager::ShaderManager(
         case 450:
             m_activeVersion = VERSION_450;
             break;
+        case 460:
+            m_activeVersion = VERSION_460;
+            break;
 		default:
             // fallback to the major supported version
-			if (getScene()->getRenderer()->isGL4())
-                m_activeVersion = VERSION_430;
-			else if (getScene()->getRenderer()->isGL3())
-                m_activeVersion = VERSION_310;
-			else
-				m_activeVersion = VERSION_110;
+            switch (getScene()->getRenderer()->getVersion()) {
+                case Renderer::OGL_460:
+                    m_activeVersion = VERSION_460;
+                    break;
+                case Renderer::OGL_450:
+                    m_activeVersion = VERSION_450;
+                    break;
+                case Renderer::OGL_440:
+                    m_activeVersion = VERSION_440;
+                    break;
+                case Renderer::OGL_430:
+                    m_activeVersion = VERSION_430;
+                    break;
+                case Renderer::OGL_420:
+                    m_activeVersion = VERSION_420;
+                    break;
+                case Renderer::OGL_410:
+                    m_activeVersion = VERSION_410;
+                    break;
+                case Renderer::OGL_400:
+                    m_activeVersion = VERSION_400;
+                    break;
+                case Renderer::OGL_330:
+                    m_activeVersion = VERSION_330;
+                    break;
+                case Renderer::OGL_320:
+                    m_activeVersion = VERSION_150;
+                    break;
+                case Renderer::OGL_310:
+                    m_activeVersion = VERSION_140;
+                    break;
+                case Renderer::OGL_300:
+                    m_activeVersion = VERSION_130;
+                    break;
+                case Renderer::OGL_210:
+                    m_activeVersion = VERSION_120;
+                    break;
+                case Renderer::OGL_200:
+                    m_activeVersion = VERSION_110;
+                    break;
+                default:
+                    O3D_ERROR(E_InvalidPrecondition("Shaders works only with OpenGL 2.0 and greater"));
+                    break;
+            }
 			break;
 	}
 
 	// and browse the default path
 	Bool valid = False;
 
-	if (defaultPath.isValid())
-	{
+    if (defaultPath.isValid()) {
 		DiskDir dir(defaultPath);
-		if (dir.exists())
-		{
+        if (dir.exists()) {
 			O3D_MESSAGE("Found defaults shaders in shaders directory");
 			addPath(defaultPath);
 			valid = True;
 		}
 	}
 
-	if (!valid)
-	{
-		// search for a shaders.zip archive
+    if (!valid) {
+        // search for a shaders.zip archive in working directory
 		String pwd = FileManager::instance()->getWorkingDirectory();
 		DiskFileInfo zip(pwd + "/shaders.zip");
-		if (zip.exists())
-		{
+        if (zip.exists()) {
 			O3D_MESSAGE("Found defaults shaders in shaders.zip");
 			FileManager::instance()->mountArchive(zip.getFullFileName());
 
@@ -121,8 +148,7 @@ ShaderManager::ShaderManager(
 		}
 	}
 
-	if (!valid)
-	{
+    if (!valid) {
 		O3D_ERROR(E_InvalidParameter("Missing shaders directory or shaders.zip file"));
 	}
 }
@@ -137,8 +163,7 @@ void ShaderManager::destroy()
 	FastMutexLocker locker(m_mutex);
 
 	// clear any program entry
-	for (IT_ProgramMap it = m_programs.begin(); it != m_programs.end(); ++it)
-	{
+    for (IT_ProgramMap it = m_programs.begin(); it != m_programs.end(); ++it) {
 		deletePtr(it->second);
 	}
 
@@ -164,14 +189,15 @@ UInt32 ShaderManager::addPath(const String &path)
 			lPath);
 
 	// already include path
-	if (it != m_searchPathList.end())
+    if (it != m_searchPathList.end()) {
 		O3D_ERROR(E_InvalidParameter(String("The path is already registered <") + lPath + ">"));
+    }
 
 	// check if a similar path already contain 'path'
-	for (it = m_searchPathList.begin(); it != m_searchPathList.end(); ++it)
-	{
-		if (it->startsWith(lPath))
+    for (it = m_searchPathList.begin(); it != m_searchPathList.end(); ++it) {
+        if (it->startsWith(lPath)) {
 			O3D_ERROR(E_InvalidParameter(String("The path is already partially registered <") + lPath + ">"));
+        }
 	}
 
 	return browseFolder(lPath);
@@ -184,8 +210,7 @@ Shader* ShaderManager::addShader(
 {
 	FastMutexLocker locker(m_mutex);
 
-	switch (version)
-	{
+    switch (version) {
 		case NUM_VERSIONS:
 		case ANY_VERSIONS:
 			O3D_ERROR(E_InvalidParameter("A valid version must be specified"));
@@ -202,8 +227,7 @@ Shader* ShaderManager::addShader(
 	IT_ProgramMap it = m_programs.find(name);
 
 	// found it
-	if (it != m_programs.end())
-	{
+    if (it != m_programs.end()) {
 		// of the same version
 		if (it->second->versions[version].shader)
 			return it->second->versions[version].shader;
@@ -213,8 +237,7 @@ Shader* ShaderManager::addShader(
 		shader->setName(name);
 		shader->setProgramName(name);
 
-		if (createShader(shader, it->second->versions[version]))
-		{
+        if (createShader(shader, it->second->versions[version])) {
 			// set it into the manager
 			it->second->versions[version].shader = shader;
 
@@ -222,15 +245,13 @@ Shader* ShaderManager::addShader(
 			TemplateManager<Shader>::addElement(shader);
 
 			return shader;
-		}
-		else
-		{
+        } else {
 			deletePtr(shader);
             return nullptr;
 		}
-	}
-	else
+    } else {
 		O3D_ERROR(E_InvalidParameter("Program name is not known of the manager"));
+    }
 
     return nullptr;
 }
@@ -248,17 +269,15 @@ UInt32 ShaderManager::addShader(
 	Shader *shader;
 	UInt32 num = 0;
 
-	for (CIT_StringList cit = programNameArray.begin();
-			cit != programNameArray.end(); ++cit)
-	{
+    for (CIT_StringList cit = programNameArray.begin(); cit != programNameArray.end(); ++cit) {
 		shader = addShader(*cit, version);
 
-		if (shader)
-		{
+        if (shader) {
 			++num;
 
-			if (programPtrArray)
+            if (programPtrArray) {
 				programPtrArray->push_back(shader);
+            }
 		}
 	}
 
@@ -272,8 +291,7 @@ Shader* ShaderManager::get(
 {
 	FastMutexLocker locker(m_mutex);
 
-	switch (version)
-	{
+    switch (version) {
 		case NUM_VERSIONS:
 		case ANY_VERSIONS:
 			O3D_ERROR(E_InvalidParameter("A valid version must be specified"));
@@ -289,15 +307,15 @@ Shader* ShaderManager::get(
 
 	CIT_ProgramMap cit = m_programs.find(name);
 
-	if (cit != m_programs.end())
-	{
-		if (cit->second->versions[m_activeVersion].shader)
+    if (cit != m_programs.end()) {
+        if (cit->second->versions[m_activeVersion].shader) {
 			return cit->second->versions[m_activeVersion].shader;
-		else
+        } else {
 			O3D_ERROR(E_InvalidParameter("Program name is not loaded. Process a AddShader."));
-	}
-	else
+        }
+    } else {
 		O3D_ERROR(E_InvalidParameter("Program name does not exists"));
+    }
 
     return nullptr;
 }
@@ -312,12 +330,11 @@ UInt32 ShaderManager::find(
 	CIT_ProgramMap cit = m_programs.find(name);
 
 	// push all valid program found for a given name
-	if (cit != m_programs.end())
-	{
-		for (UInt32 i = 0; i < NUM_VERSIONS; ++i)
-		{
-			if (cit->second->versions[i].shader)
+    if (cit != m_programs.end()) {
+        for (UInt32 i = 0; i < NUM_VERSIONS; ++i) {
+            if (cit->second->versions[i].shader) {
 				programPtrArray.push_back(cit->second->versions[i].shader);
+            }
 		}
 	}
 	return programPtrArray.size();
@@ -330,8 +347,7 @@ void ShaderManager::deleteShader(
 {
 	FastMutexLocker locker(m_mutex);
 
-	switch (version)
-	{
+    switch (version) {
 		case NUM_VERSIONS:
 		case ANY_VERSIONS:
 			O3D_ERROR(E_InvalidParameter("A valid version must be specified"));
@@ -347,22 +363,19 @@ void ShaderManager::deleteShader(
 
 	IT_ProgramMap it = m_programs.find(name);
 
-	if (it != m_programs.end())
-	{
-		for (UInt32 i = 0; i < NUM_VERSIONS; ++i)
-		{
+    if (it != m_programs.end()) {
+        for (UInt32 i = 0; i < NUM_VERSIONS; ++i) {
 			Shader *shader = it->second->versions[i].shader;
 
 			// valid for this version
-			if (shader)
-			{
+            if (shader) {
 				TemplateManager<Shader>::deleteElementPtr(shader);
                 it->second->versions[i].shader = nullptr;
 			}
 		}
-	}
-	else
+    } else {
 		O3D_ERROR(E_InvalidParameter("Program name does not exists"));
+    }
 }
 
 // Delete a shader.
@@ -638,15 +651,6 @@ UInt32 ShaderManager::browseProgramFolder(
                 case 150:
                     numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_150, program);
                     break;
-                case 300:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_300, program);
-                    break;
-                case 310:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_310, program);
-                    break;
-                case 320:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_320, program);
-                    break;
                 case 330:
                     numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_330, program);
                     break;
@@ -667,6 +671,9 @@ UInt32 ShaderManager::browseProgramFolder(
                     break;
                 case 450:
                     numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_450, program);
+                    break;
+                case 460:
+                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_460, program);
                     break;
                 default:
                     // unknown version
@@ -818,4 +825,3 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
 
 	return True;
 }
-

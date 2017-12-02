@@ -47,6 +47,30 @@ class O3D_API Renderer : public EvtHandler
 {
 public:
 
+    //! OpenGL version.
+    enum Version
+    {
+        OGL_UNDEFINED = 0,
+        OGL_110 = 110,
+        OGL_120 = 120,
+        OGL_130 = 130,
+        OGL_140 = 140,
+        OGL_150 = 150,
+        OGL_200 = 200,
+        OGL_210 = 210,
+        OGL_300 = 300,
+        OGL_310 = 310,
+        OGL_320 = 320,
+        OGL_330 = 330,
+        OGL_400 = 400,
+        OGL_410 = 410,
+        OGL_420 = 420,
+        OGL_430 = 430,
+        OGL_440 = 440,
+        OGL_450 = 450,
+        OGL_460 = 460   //!< or greater
+    };
+
     //! OpenGL debug level
     enum DebugLevel
     {
@@ -121,8 +145,10 @@ public:
 
 	//! Get information about the renderer.
 	String getRendererName() const;
-	//! Get OpenGL version of the renderer.
-	String getVersion() const;
+    //! Get OpenGL version of the renderer as string. Context must be current.
+    String getStrVersion() const;
+    //! Get OpenGL version enum. Valid after initialization of the renderer.
+    inline Version getVersion() const { return m_version; }
 
 	//! Is the renderer use of a shared renderer.
     inline Bool isSharing() const { return (m_sharing != nullptr); }
@@ -150,11 +176,6 @@ public:
 
 	//! Check if the renderer is used by one or many Scene.
 	inline Bool isUsed() const { return (m_refCount > 0); }
-
-	//! Is the context is in OpenGL 3.x or above.
-	inline Bool isGL3() const { return m_version >= OGL_300; }
-	//! Is the context is in OpenGL 4.x or above.
-	inline Bool isGL4() const { return m_version >= OGL_400; }
 
     //
     // Debugging (OGL 4.x+)
@@ -251,29 +272,6 @@ public:
     UInt32 getRenderBufferFreeMemory() const;
 
 protected:
-
-	//! OpenGL version.
-	enum Version
-	{
-		OGL_UNDEFINED = 0,
-		OGL_110 = 110,
-		OGL_120 = 120,
-		OGL_130 = 130,
-		OGL_140 = 140,
-		OGL_150 = 150,
-		OGL_200 = 200,
-		OGL_210 = 210,
-		OGL_300 = 300,
-		OGL_310 = 310,
-		OGL_320 = 320,
-		OGL_330 = 330,
-		OGL_400 = 400,
-		OGL_410 = 410,
-        OGL_420 = 420,
-        OGL_430 = 430,
-        OGL_440 = 440,
-        OGL_450 = 450   //!< or greater
-	};
 
     enum States
     {

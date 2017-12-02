@@ -93,4 +93,3 @@ TrueTypeFont* FontManager::addTrueTypeFont(
 	addElement(font);
 	return font;
 }
-

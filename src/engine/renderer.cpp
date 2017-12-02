@@ -61,8 +61,9 @@ void Renderer::unrefShare()
 {
 	m_shareCount--;
 
-	if (m_shareCount < 0)
+    if (m_shareCount < 0) {
 		O3D_ERROR(E_IndexOutOfRange("Renderer share reference counter reach a negative value"));
+    }
 }
 
 void Renderer::useIt()
@@ -74,21 +75,18 @@ void Renderer::releaseIt()
 {
 	m_refCount--;
 
-	if (m_refCount < 0)
+    if (m_refCount < 0) {
         O3D_ERROR(E_IndexOutOfRange("Renderer usage reference counter reach a negative value"));
+    }
 }
 
 void Renderer::setDebug(Bool debug)
 {
-    if (m_state.getBit(STATE_DEBUG_AVAILABLE))
-    {
-        if (debug && !m_state.getBit(STATE_DEBUG_ON))
-        {
+    if (m_state.getBit(STATE_DEBUG_AVAILABLE)) {
+        if (debug && !m_state.getBit(STATE_DEBUG_ON)) {
             enableDebug();
             m_state.enable(STATE_DEBUG_ON);
-        }
-        else if (!debug && m_state.getBit(STATE_DEBUG_ON))
-        {
+        } else if (!debug && m_state.getBit(STATE_DEBUG_ON)) {
             disableDebug();
             m_state.disable(STATE_DEBUG_ON);
         }
@@ -125,8 +123,9 @@ Bool Renderer::screenShot(
 	Image::FileFormat format,
 	UInt32 quality)
 {
-	if (!m_state)
+    if (!m_state) {
 		O3D_ERROR(E_InvalidPrecondition("The OpenGL context must be defined before"));
+    }
 
 	Image picture;
 
@@ -154,47 +153,46 @@ Bool Renderer::screenShot(
 
 String Renderer::getRendererName() const
 {
-	if (isCurrent())
-	{
+    if (isCurrent()) {
 		String vendor(reinterpret_cast<const Char*>(glGetString(GL_VENDOR)));
 		vendor += " ";
 		String renderer(reinterpret_cast<const Char*>(glGetString(GL_RENDERER)));
 
 		return vendor + renderer;
-	}
-	else
+    } else {
 		return String("ERROR: Undefined OpenGL context");
+    }
 }
 
-String Renderer::getVersion() const
+String Renderer::getStrVersion() const
 {
-	if (isCurrent())
+    if (isCurrent()) {
 		return String(reinterpret_cast<const Char*>(glGetString(GL_VERSION)));
-	else
+    } else {
 		return String("ERROR: Undefined OpenGL context");
+    }
 }
 
 // Check for an error from OpenGL.
 Bool Renderer::isError()
 {
-	if (isCurrent())
-	{
+    if (isCurrent()) {
 		m_glErrno = glGetError();
 
-		if (m_glErrno != GL_NO_ERROR)
+        if (m_glErrno != GL_NO_ERROR) {
 			O3D_WARNING(getError());
+        }
 
 		return (m_glErrno != GL_NO_ERROR);
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 // Get an error string from OpenGL.
 String Renderer::getError() const
 {
-	switch (m_glErrno)
-	{
+    switch (m_glErrno) {
 		case GL_NO_ERROR:
 			return String("OpenGL: No error.");
 
@@ -237,15 +235,12 @@ void Renderer::doAttachment(AppWindow *appWindow)
 
 UInt32 Renderer::getTextureFreeMemory() const
 {
-    if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info"))
-    {
+    if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info")) {
         GLint free;
         glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
 
         return (UInt32)free;
-    }
-    else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo"))
-    {
+    } else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo")) {
         GLint mem[4];
         glGetIntegerv(GL_TEXTURE_FREE_MEMORY_ATI, mem);
 
@@ -257,15 +252,12 @@ UInt32 Renderer::getTextureFreeMemory() const
 
 UInt32 Renderer::getVBOFreeMemory() const
 {
-    if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info"))
-    {
+    if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info")) {
         GLint free;
         glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
 
         return (UInt32)free;
-    }
-    else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo"))
-    {
+    } else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo")) {
         GLint mem[4];
         glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, mem);
 
@@ -277,15 +269,12 @@ UInt32 Renderer::getVBOFreeMemory() const
 
 UInt32 Renderer::getRenderBufferFreeMemory() const
 {
-    if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info"))
-    {
+    if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info")) {
         GLint free;
         glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
 
         return (UInt32)free;
-    }
-    else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo"))
-    {
+    } else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo")) {
         GLint mem[4];
         glGetIntegerv(GL_RENDERBUFFER_FREE_MEMORY_ATI, mem);
 
@@ -311,8 +300,7 @@ static void formatDebugOutputARB(
 {
     // source
     String lsource;
-    switch (source)
-    {
+    switch (source) {
         case GL_DEBUG_SOURCE_API_ARB:
             lsource = "API";
             break;
@@ -338,8 +326,7 @@ static void formatDebugOutputARB(
 
     // type
     String ltype;
-    switch (type)
-    {
+    switch (type) {
         case GL_DEBUG_TYPE_ERROR_ARB:
             ltype = "ERROR";
             break;
@@ -365,8 +352,7 @@ static void formatDebugOutputARB(
 
     // severity
     String lseverity;
-    switch (severity)
-    {
+    switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH_ARB:
             lseverity = "HIGH";
             break;
@@ -402,15 +388,17 @@ static void CALLBACK debugCallbackARB(
     String lmessage;
 
     // minimal debug level
-    if (type > static_cast<Renderer*>(userParam)->getDebugLevel())
+    if (type > static_cast<Renderer*>(userParam)->getDebugLevel()) {
         return;
+    }
 
     formatDebugOutputARB(lmessage, source, type, id, severity, message);
 
-    if (severity == GL_DEBUG_SEVERITY_HIGH_ARB)
+    if (severity == GL_DEBUG_SEVERITY_HIGH_ARB) {
         O3D_ERROR(E_OpenGLDebug(lmessage));
-    else
+    } else {
         O3D_WARNING(lmessage);
+    }
 }
 
 //
@@ -430,34 +418,28 @@ typedef GLvoid (APIENTRYP PFNGLDEBUGMESSAGECALLBACKARBPROC)(PFNGLDEBUGPROCARB ca
 
 void Renderer::initDebug()
 {
-    if (GLExtensionManager::isExtensionSupported("GL_KHR_debug"))
-    {
+    if (GLExtensionManager::isExtensionSupported("GL_KHR_debug")) {
         PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARB = nullptr;
         glDebugMessageCallbackARB = GLExtensionManager::getFunction<PFNGLDEBUGMESSAGECALLBACKARBPROC>("glDebugMessageCallback");
 
         glDebugMessageCallbackARB(debugCallbackARB, this);
 
         m_state.enable(STATE_DEBUG_AVAILABLE);
-    }
-    else if (GLExtensionManager::isExtensionSupported("GL_ARB_debug_output"))
-    {
+    } else if (GLExtensionManager::isExtensionSupported("GL_ARB_debug_output")) {
         PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARB = nullptr;
         glDebugMessageCallbackARB = GLExtensionManager::getFunction<PFNGLDEBUGMESSAGECALLBACKARBPROC>("glDebugMessageCallbackARB");
 
         glDebugMessageCallbackARB(debugCallbackARB, this);
 
         m_state.enable(STATE_DEBUG_AVAILABLE);
-    }
-    else
-    {
+    } else {
         m_state.disable(STATE_DEBUG_AVAILABLE);
     }
 }
 
 void Renderer::enableDebug()
 {
-    if (m_state.getBit(STATE_DEBUG_AVAILABLE))
-    {
+    if (m_state.getBit(STATE_DEBUG_AVAILABLE)) {
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
         O3D_MESSAGE("GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB is now active");
     }
@@ -465,8 +447,7 @@ void Renderer::enableDebug()
 
 void Renderer::disableDebug()
 {
-    if (m_state.getBit(STATE_DEBUG_AVAILABLE))
-    {
+    if (m_state.getBit(STATE_DEBUG_AVAILABLE)) {
         glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
         O3D_MESSAGE("GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB is now disabled");
     }

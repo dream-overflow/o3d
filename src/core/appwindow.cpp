@@ -546,7 +546,7 @@ void AppWindow::logFps()
 	for (UInt32 i = 0; i < m_interval; ++i)
 	{
 		str += String::print
-				("                    |- %i -> %.4f fps\n",
+                ("    |- %i -> %.4f fps\n",
 				i,
 				m_framesList[i]);
 	}

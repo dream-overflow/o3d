@@ -34,7 +34,7 @@ SndBufferManager::~SndBufferManager()
 		{
 			for (std::list<SndBuffer*>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
 			{
-                message += "       |- " + (*it2)->getResourceName() + "\n";
+                message += "    |- " + (*it2)->getResourceName() + "\n";
 				deletePtr(*it2);
 			}
 		}

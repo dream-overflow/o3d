@@ -36,7 +36,7 @@ AnimationManager::~AnimationManager()
 
 		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
 		{
-			message += "       |- " + it->second->getFileName() + "\n";
+            message += "    |- " + it->second->getFileName() + "\n";
 			deletePtr(it->second);
 		}
 

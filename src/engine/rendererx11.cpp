@@ -244,7 +244,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
     m_state.enable(STATE_DEFINED);
 
 	O3D_MESSAGE("Video renderer: " + getRendererName());
-	O3D_MESSAGE("OpenGL version: " + getVersion());
+	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
 	version = glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
@@ -455,7 +455,7 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
     m_state.enable(STATE_DEFINED);
 
 	O3D_MESSAGE("Video renderer: " + getRendererName());
-	O3D_MESSAGE("OpenGL version: " + getVersion());
+	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
 	version = glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {

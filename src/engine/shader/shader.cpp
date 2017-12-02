@@ -150,9 +150,8 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_12_ARRAY, "a_tex2D_12");
 	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_12_ARRAY, "a_tex3D_12");
 */
-	// for OpenGL 3 context only, bind out fragments
-	if (getScene()->getRenderer()->isGL3())
-	{
+    // for OpenGL 3+ context only, bind out fragments
+    if (getScene()->getRenderer()->getVersion() >= Renderer::OGL_300) {
 		glBindFragDataLocation(_instance.shaderId, 0, "o_finalColor");
         glBindFragDataLocation(_instance.shaderId, 0, "o_fragData");
         glBindFragDataLocation(_instance.shaderId, 0, "o_ambient");
@@ -169,8 +168,7 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 	glAttachShader(_instance.shaderId, lFpCit->second.programId);
 
 	// optional geometry program
-	if (lGeometryId != -1)
-	{
+    if (lGeometryId != -1) {
 		const T_ProgramInfo & lGeometryProgram = m_geometryProgramArray[lGeometryId];
 		T_ProgramInfo::CIT_ProgramMap lGpCit = lGeometryProgram.programs.find(lOptions);
 
@@ -182,8 +180,7 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 	GLint lResult = 0;
 	glGetProgramiv(_instance.shaderId,GL_LINK_STATUS,(GLint*)&lResult);
 
-	if (lResult == GL_FALSE)
-	{
+    if (lResult == GL_FALSE) {
 		GLint lLogSize = 0;
 		glGetProgramiv(_instance.shaderId, GL_INFO_LOG_LENGTH, &lLogSize);
 
@@ -196,8 +193,7 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 		_instance.shaderState &= ~SHADER_LINKED;
 
 		// optional geometry program
-		if (lGeometryId != -1)
-		{
+        if (lGeometryId != -1) {
 			const T_ProgramInfo & lGeometryProgram = m_geometryProgramArray[lGeometryId];
 
 			O3D_ERROR(E_InvalidOperation(String("Shader : Unable to link the program <") << m_name
@@ -205,28 +201,22 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 					<< "> ... FP <" << lFragmentProgram.programName
 					<< "> and GP <" << lGeometryProgram.programName << "> to the object <"
 					<< m_name << "> contained in the file : <" << m_programName << "> : " << lLogMessage.getData()));
-		}
-		else
-		{
+        } else {
 			O3D_ERROR(E_InvalidOperation(String("Shader : Unable to link the program <") << m_name
 					<< "> with VP <" << lVertexProgram.programName
 					<< "> and FP <" << lFragmentProgram.programName << "> to the object <"
 					<< m_name << "> contained in the file : <" << m_programName << "> : " << lLogMessage.getData()));
 		}
-	}
-	else
-	{
+    } else {
 		GLint lLogSize = 0;
 		glGetProgramiv(_instance.shaderId, GL_INFO_LOG_LENGTH, &lLogSize);
 
-		if (lLogSize > 1)
-		{
+        if (lLogSize > 1) {
 			ArrayChar lLogMessage('\0', lLogSize+1, 0);
 			glGetProgramInfoLog(_instance.shaderId, lLogSize, NULL, lLogMessage.getData());
 
 			// optional geometry program
-			if (lGeometryId != -1)
-			{
+            if (lGeometryId != -1) {
 				const T_ProgramInfo & lGeometryProgram = m_geometryProgramArray[lGeometryId];
 
 				O3D_MESSAGE(String("Shader : Warning when link the program <") << m_name
@@ -234,9 +224,7 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 						<< "> ... FP <" << lFragmentProgram.programName
 						<< "> and GP <" << lGeometryProgram.programName << "> to the object <"
 						<< m_name << "> contained in the file : <" << m_programName << "> : " << lLogMessage.getData());
-			}
-			else
-			{
+            } else {
 				O3D_MESSAGE(String("Shader : Warning when link the program <") << m_name
 						<< "> with VP <" << lVertexProgram.programName
 						<< "> and FP <" << lFragmentProgram.programName << "> to the object <"
@@ -1430,4 +1418,3 @@ void ShaderInstance::removeAttributes()
 {
 	m_attribLocations.clear();
 }
-

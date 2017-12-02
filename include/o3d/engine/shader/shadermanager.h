@@ -22,7 +22,8 @@ namespace o3d {
 
 /**
  * @brief GLSL shader manager.
- * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com), Frederic SCHERMA
+ * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-10-19
  * This manager is responsible to browser directory containing program shader, and
  * to create instance (@see Shader) of these program.
@@ -59,21 +60,19 @@ public:
 	//! Managed version
 	enum Version
 	{
-		VERSION_110 = 0,      //!< GLSL 1.10
-		VERSION_120,          //!< GLSL 1.20
-		VERSION_130,          //!< GLSL 1.30
-		VERSION_140,          //!< GLSL 1.40
-		VERSION_150,          //!< GLSL 1.50
-		VERSION_300,          //!< GLSL 3.00
-		VERSION_310,          //!< GLSL 3.10
-		VERSION_320,          //!< GLSL 3.20
-		VERSION_330,          //!< GLSL 3.30
-		VERSION_400,          //!< GLSL 4.00
-		VERSION_410,          //!< GLSL 4.10
-		VERSION_420,          //!< GLSL 4.20
-        VERSION_430,          //!< GLSL 4.30
-        VERSION_440,          //!< GLSL 4.40
-        VERSION_450,          //!< GLSL 4.50
+        VERSION_110 = 0,      //!< GLSL 1.10 (OpenGL 2.0)
+        VERSION_120,          //!< GLSL 1.20 (OpenGL 2.1)
+        VERSION_130,          //!< GLSL 1.30 (OpenGL 3.0)
+        VERSION_140,          //!< GLSL 1.40 (OpenGL 3.1)
+        VERSION_150,          //!< GLSL 1.50 (OpenGL 3.2)
+        VERSION_330,          //!< GLSL 3.30 (OpenGL 3.3)
+        VERSION_400,          //!< GLSL 4.00 (OpenGL 4.0)
+        VERSION_410,          //!< GLSL 4.10 (OpenGL 4.1)
+        VERSION_420,          //!< GLSL 4.20 (OpenGL 4.2)
+        VERSION_430,          //!< GLSL 4.30 (OpenGL 4.3)
+        VERSION_440,          //!< GLSL 4.40 (OpenGL 4.4)
+        VERSION_450,          //!< GLSL 4.50 (OpenGL 4.5)
+        VERSION_460,          //!< GLSL 4.50 (OpenGL 4.6)
 		NUM_VERSIONS,         //!< Number of versions
 		ACTIVE_VERSION,       //!< Apply to the current active version
 		ANY_VERSIONS          //!< Apply to any versions
@@ -228,4 +227,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SHADERMANAGER_H
-

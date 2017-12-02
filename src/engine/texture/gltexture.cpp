@@ -565,18 +565,20 @@ UInt32 GLTexture::loadTextureCubeMap(
 
 TextureFormat GLTexture::getGLFormat(const Renderer *renderer, PixelFormat pixelFormat)
 {
-	if (renderer->isGL3())
+    if (renderer->getVersion() >= Renderer::OGL_300) {
 		return formatsMap[pixelFormat].format;
-	else
+    } else {
 		return formatsMap[pixelFormat].formatGL2;
+    }
 }
 
 TextureIntFormat GLTexture::getGLInternalFormat(const Renderer *renderer, PixelFormat pixelFormat)
 {
-	if (renderer->isGL3())
+    if (renderer->getVersion() >= Renderer::OGL_300) {
 		return formatsMap[pixelFormat].intFormat;
-	else
+    } else {
 		return formatsMap[pixelFormat].intFormatGL2;
+    }
 }
 
 DataType GLTexture::getGLType(PixelFormat pixelFormat)
@@ -591,9 +593,9 @@ UInt32 GLTexture::getPixelSize(PixelFormat pixelFormat)
 
 UInt32 GLTexture::getInternalPixelSize(const Renderer *renderer, PixelFormat pixelFormat)
 {
-	if (renderer->isGL3())
+    if (renderer->getVersion() >= Renderer::OGL_300) {
 		return formatsMap[pixelFormat].intBitsPerPixel;
-	else
+    } else {
 		return formatsMap[pixelFormat].intBitsPerPixelGL2;
+    }
 }
-

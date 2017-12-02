@@ -21,7 +21,7 @@
 #include "o3d/core/debug.h"
 
 //---------------------------------------------------------------------------------------
-// for compatibility with OpenGL 2.x context settings.
+// for compatibility with OpenGL 2.0 & 2.1 context settings.
 //---------------------------------------------------------------------------------------
 
 #define GL_LIGHT0                         0x4000
@@ -131,9 +131,8 @@ Context::Context(Renderer *renderer) :
 	m_currentVAOId = 0;
 	m_currentVaoState = &m_defaultVaoState;
 
-	// for old fixed pipeline in GL 2 and <
-	if (!m_renderer->isGL3())
-	{
+    // for old fixed pipeline in GL 2.1 and lesser
+    if (m_renderer->getVersion() <= Renderer::OGL_210) {
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 		glDisableClientState(GL_VERTEX_ARRAY);
@@ -172,26 +171,22 @@ Context::Context(Renderer *renderer) :
 		m_maxTessControlTextureImageUnits = 0;
 		m_maxGeometryTextureImageUnits = 0;
 		m_maxViewports = 0;
-	}
-	else
-	{
+    } else {
         // Create a default VAO and bind it
 		glGenVertexArrays(1, (GLuint*)&m_defaultVAOId);
         bindVertexArray(0, nullptr);
 	}
 
-	if (m_renderer->isGL3())
-	{
-		glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
+    if (m_renderer->getVersion() >= Renderer::OGL_300) {
+        glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
 
 		m_maxTessEvalTextureImageUnits = 0;
 		m_maxTessControlTextureImageUnits = 0;
 		m_maxViewports = 0;
 	}
 
-	if (m_renderer->isGL4())
-	{
-		glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
+    if (m_renderer->getVersion() >= Renderer::OGL_400) {
+        glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
 		glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessControlTextureImageUnits);
 		glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
 	}
@@ -217,14 +212,14 @@ Context::Context(Renderer *renderer) :
 
 	// GLSL version
 	const GLubyte *version = glGetString(GL_SHADING_LANGUAGE_VERSION);
-	if ((version != NULL) && (version[0] >= '1') && (version[1] == '.'))
-	{
+    if ((version != nullptr) && (version[0] >= '1') && (version[1] == '.'))	{
 		m_glslVersion = (version[0] - '0') * 100 +
 						(version[2] - '0') * 10 +
 						(version[3] - '0') * 1;
-	}
-	else // assume 1.10 otherwise
+    } else {
+        // assume 1.10 otherwise
 		m_glslVersion = 110;
+    }
 
 	O3D_ASSERT(!m_renderer->isError());
 
@@ -235,22 +230,22 @@ Context::Context(Renderer *renderer) :
 	// Print a beautiful log message
 	String message;
 	message << "OpenGL capacities:\n"
-		<< "                    |- Texture max size = " << m_textureMaxSize << "\n"
-		<< "                    |- Texture 3D max size = " << m_texture3dMaxSize << "\n"
-        << "                    |- Texture max samples = " << m_textureMaxSamples << "\n"
-		<< "                    |- Max texture layers = " << m_textureMaxLayers << "\n"
-		<< "                    |- Max fragment texture image units = " << m_maxTextureImageUnits << "\n"
-		<< "                    |- Max vertex texture image units = " << m_maxVertexTextureImageUnits << "\n"
-        << "                    |- Max geometry texture image units = " << m_maxGeometryTextureImageUnits << "\n"
-		<< "                    |- Max tessellation eval texture image units = " << m_maxTessEvalTextureImageUnits << "\n"
-        << "                    |- Max tessellation control texture image units = " << m_maxTessControlTextureImageUnits << "\n"
-        << "                    |- Max combined texture image units = " << m_maxCombinedTextureImageUnits << "\n"
-		<< "                    |- Max vertex attribs = " << m_maxVertexAttribs << "\n"
-		<< "                    |- Max draw buffers = " << m_maxDrawBuffers << "\n"
-		<< "                    |- Max anisotropy lvl = " << m_maxAnisotropy << "\n"
-		<< "                    |- Max view-ports = " << m_maxViewports << "\n"
-		<< "                    |- GLSL version = " << (version?(const Char*)version:"1.10") << "\n";
-	
+            << "    |- Texture max size = " << m_textureMaxSize << "\n"
+            << "    |- Texture 3D max size = " << m_texture3dMaxSize << "\n"
+            << "    |- Texture max samples = " << m_textureMaxSamples << "\n"
+            << "    |- Max texture layers = " << m_textureMaxLayers << "\n"
+            << "    |- Max fragment texture image units = " << m_maxTextureImageUnits << "\n"
+            << "    |- Max vertex texture image units = " << m_maxVertexTextureImageUnits << "\n"
+            << "    |- Max geometry texture image units = " << m_maxGeometryTextureImageUnits << "\n"
+            << "    |- Max tessellation eval texture image units = " << m_maxTessEvalTextureImageUnits << "\n"
+            << "    |- Max tessellation control texture image units = " << m_maxTessControlTextureImageUnits << "\n"
+            << "    |- Max combined texture image units = " << m_maxCombinedTextureImageUnits << "\n"
+            << "    |- Max vertex attribs = " << m_maxVertexAttribs << "\n"
+            << "    |- Max draw buffers = " << m_maxDrawBuffers << "\n"
+            << "    |- Max anisotropy lvl = " << m_maxAnisotropy << "\n"
+            << "    |- Max view-ports = " << m_maxViewports << "\n"
+            << "    |- GLSL version = " << (version?(const Char*)version:"1.10") << "\n";
+
     O3D_MESSAGE(message);
 }
 
@@ -258,8 +253,9 @@ Context::Context(Renderer *renderer) :
 Context::~Context()
 {
 	// default VAO
-	if (m_defaultVAOId != O3D_UNDEFINED)
+    if (m_defaultVAOId != O3D_UNDEFINED) {
 		glDeleteVertexArrays(1, &m_defaultVAOId);
+    }
 
 	// matrix observer
 	m_modelview.removeObserver(this);
@@ -270,8 +266,7 @@ Context::~Context()
 void Context::setActiveTextureUnit(UInt32 unit)
 {
 	O3D_ASSERT(unit < UInt32(m_maxTextureImageUnits));
-	if (unit != m_currentTexUnit)
-	{
+    if (unit != m_currentTexUnit) {
 		glActiveTexture(unit + GL_TEXTURE0);
 		m_currentTexUnit = unit;
 	}
@@ -281,10 +276,8 @@ Bool Context::resetTexture(UInt32 id)
 {
     Bool res = True;
 
-    for (UInt32 i = 0; i < MAX_COMBINED_TEX_UNITS; ++i)
-    {
-        if (m_currentTexId[i] == id)
-        {
+    for (UInt32 i = 0; i < MAX_COMBINED_TEX_UNITS; ++i) {
+        if (m_currentTexId[i] == id) {
             m_currentTexId[i] = 0;
             res = False;
         }
@@ -295,8 +288,7 @@ Bool Context::resetTexture(UInt32 id)
 
 void Context::bindTexture(TextureType type, UInt32 id, Bool force)
 {
-	if ((id != m_currentTexId[m_currentTexUnit]) || force)
-	{
+    if ((id != m_currentTexId[m_currentTexUnit]) || force) {
 		glBindTexture((GLenum)type, id);
 		m_currentTexId[m_currentTexUnit] = id;
 	}
@@ -304,8 +296,7 @@ void Context::bindTexture(TextureType type, UInt32 id, Bool force)
 
 void Context::deleteTexture(UInt32 id)
 {
-	if (id != 0)
-	{
+    if (id != 0) {
         //O3D_ASSERT(resetTexture(id));
 		glDeleteTextures(1, (GLuint*)&id);
     }
@@ -315,10 +306,8 @@ Bool Context::resetSampler(UInt32 id)
 {
     Bool res = True;
 
-    for (UInt32 i = 0; i < MAX_COMBINED_TEX_UNITS; ++i)
-    {
-        if (m_currentSamplerId[i] == id)
-        {
+    for (UInt32 i = 0; i < MAX_COMBINED_TEX_UNITS; ++i) {
+        if (m_currentSamplerId[i] == id) {
             m_currentSamplerId[i] = 0;
             res = False;
         }
@@ -330,8 +319,7 @@ Bool Context::resetSampler(UInt32 id)
 void Context::bindSampler(UInt32 id, UInt32 unit, Bool force)
 {
     O3D_ASSERT(unit < (UInt32)m_maxCombinedTextureImageUnits);
-    if ((id != m_currentSamplerId[unit]) || force)
-    {
+    if ((id != m_currentSamplerId[unit]) || force) {
         glBindSampler(unit, id);
         m_currentSamplerId[unit] = id;
     }
@@ -339,8 +327,7 @@ void Context::bindSampler(UInt32 id, UInt32 unit, Bool force)
 
 void Context::deleteSampler(UInt32 id)
 {
-    if (id != 0)
-    {
+    if (id != 0) {
         //O3D_ASSERT(resetSampler(id));
         glDeleteSamplers(1, (GLuint*)&id);
     }
@@ -350,8 +337,7 @@ void Context::deleteSampler(UInt32 id)
 void Context::enableVertexAttribArray(UInt32 array)
 {
 	O3D_ASSERT(array < UInt32(m_maxVertexAttribs));
-	if (!m_currentVaoState->attributeArray[array])
-	{
+    if (!m_currentVaoState->attributeArray[array]) {
 		glEnableVertexAttribArray(array);
 		m_currentVaoState->attributeArray.setBit(array, True);
 	}
@@ -361,8 +347,7 @@ void Context::enableVertexAttribArray(UInt32 array)
 void Context::disableVertexAttribArray(UInt32 array)
 {
 	O3D_ASSERT(array < UInt32(m_maxVertexAttribs));
-	if (m_currentVaoState->attributeArray[array])
-	{
+    if (m_currentVaoState->attributeArray[array]) {
 		glDisableVertexAttribArray(array);
 		m_currentVaoState->attributeArray.setBit(array, False);
 	}
@@ -372,13 +357,10 @@ void Context::disableVertexAttribArray(UInt32 array)
 void Context::forceVertexAttribArray(UInt32 array, Bool state)
 {
 	O3D_ASSERT(array < UInt32(m_maxVertexAttribs));
-	if (state)
-	{
+    if (state) {
 		glEnableVertexAttribArray(array);
 		m_currentVaoState->attributeArray.setBit(array, True);
-	}
-	else
-	{
+    } else {
 		glDisableVertexAttribArray(array);
 		m_currentVaoState->attributeArray.setBit(array, False);
 	}
@@ -392,8 +374,7 @@ void Context::vertexAttribArray(
 		UInt32 offset)
 {
 	O3D_ASSERT(array < UInt32(m_maxVertexAttribs));
-	if (!m_currentVaoState->attributeArray[array])
-	{
+    if (!m_currentVaoState->attributeArray[array]) {
 		glEnableVertexAttribArray(array);
 		m_currentVaoState->attributeArray.setBit(array, True);
 	}
@@ -410,8 +391,7 @@ void Context::vertexAttribArray(
 // Vertex buffer binding
 void Context::bindVertexBuffer(UInt32 id)
 {
-	if ((id != m_currentVaoState->vbo) || (id == 0))
-	{
+    if ((id != m_currentVaoState->vbo) || (id == 0)) {
 		glBindBuffer(GL_ARRAY_BUFFER, id);
 		m_currentVaoState->vbo = id;
 	}
@@ -420,10 +400,10 @@ void Context::bindVertexBuffer(UInt32 id)
 // Delete a vertex buffer object.
 void Context::deleteVertexBuffer(UInt32 id)
 {
-	if (id != 0)
-	{
-		if (id == m_currentVaoState->vbo)
+    if (id != 0) {
+        if (id == m_currentVaoState->vbo) {
 			m_currentVaoState->vbo = 0;
+        }
 
 		glDeleteBuffers(1, (GLuint*)&id);
 	}
@@ -432,10 +412,8 @@ void Context::deleteVertexBuffer(UInt32 id)
 // Delete a vertex array object.
 void Context::deleteVertexArray(UInt32 vao)
 {
-	if (vao != 0)
-	{
-		if (vao == m_currentVAOId)
-		{
+    if (vao != 0) {
+        if (vao == m_currentVAOId) {
 			m_currentVAOId = 0;
 			m_currentVaoState = &m_defaultVaoState;
 
@@ -449,17 +427,14 @@ void Context::deleteVertexArray(UInt32 vao)
 // Vertex array object binding.
 void Context::bindVertexArray(UInt32 id, VertexArrayState *vaoState)
 {
-	if (id == 0)
-	{
+    if (id == 0) {
 		glBindVertexArray(m_defaultVAOId/*0*/);
 
 		m_currentVaoState = &m_defaultVaoState;
 		m_currentVAOId = 0/*m_defaultVAOId*/;
 		
 		return;
-	}
-	else if (id != m_currentVAOId)
-	{
+    } else if (id != m_currentVAOId) {
 		glBindVertexArray(id);
 
 		m_currentVaoState = vaoState;
@@ -472,8 +447,7 @@ void Context::bindVertexArray(UInt32 id, VertexArrayState *vaoState)
 // Index buffer object binding.
 void Context::bindIndexBuffer(UInt32 id)
 {
-	if ((id != m_currentVaoState->ibo) || (id == 0))
-	{
+    if ((id != m_currentVaoState->ibo) || (id == 0)) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
 		m_currentVaoState->ibo = id;
 	}
@@ -482,8 +456,7 @@ void Context::bindIndexBuffer(UInt32 id)
 // Delete an index buffer object.
 void Context::deleteIndexBuffer(UInt32 id)
 {
-	if (id != 0)
-	{
+    if (id != 0) {
 		if (id == m_currentVaoState->ibo)
 			m_currentVaoState->ibo = 0;
 
@@ -494,8 +467,7 @@ void Context::deleteIndexBuffer(UInt32 id)
 // Shader object binding.
 void Context::bindShader(UInt32 id)
 {
-	if ((id != m_currentShaderId) || (id == 0))
-	{
+	if ((id != m_currentShaderId) || (id == 0))	{
 		glUseProgram(id);
 		m_currentShaderId = id;
 	}
@@ -504,8 +476,7 @@ void Context::bindShader(UInt32 id)
 // Frame buffer object binding.
 void Context::bindFrameBuffer(UInt32 id)
 {
-	if ((id != m_currentFBOId) || (id == 0))
-	{
+    if ((id != m_currentFBOId) || (id == 0)) {
 		glBindFramebuffer(GL_FRAMEBUFFER, id);
 		m_currentFBOId = id;
 	}
@@ -513,8 +484,7 @@ void Context::bindFrameBuffer(UInt32 id)
 
 void Context::bindPixelPackBuffer(UInt32 id)
 {
-	if ((id != m_currentPackPBOId) || (id == 0))
-	{
+    if ((id != m_currentPackPBOId) || (id == 0)) {
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, id);
 		m_currentPackPBOId = id;
 	}
@@ -522,8 +492,7 @@ void Context::bindPixelPackBuffer(UInt32 id)
 
 void Context::bindPixelUnpackBuffer(UInt32 id)
 {
-	if ((id != m_currentUnpackPBOId) || (id == 0))
-	{
+    if ((id != m_currentUnpackPBOId) || (id == 0)) {
 		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, id);
 		m_currentUnpackPBOId = id;
 	}
@@ -531,13 +500,14 @@ void Context::bindPixelUnpackBuffer(UInt32 id)
 
 void Context::deletePixelBuffer(UInt32 id)
 {
-	if (id != 0)
-	{
-		if (id == m_currentPackPBOId)
+    if (id != 0) {
+        if (id == m_currentPackPBOId) {
 			m_currentPackPBOId = 0;
+        }
 
-		if (id == m_currentUnpackPBOId)
+        if (id == m_currentUnpackPBOId) {
 			m_currentUnpackPBOId = 0;
+        }
 
 		glDeleteBuffers(1, (GLuint*)&id);
 	}
@@ -553,8 +523,9 @@ OcclusionQuery* Context::createOcclusionQuery()
 // simple draw mode
 void Context::simpleDrawMode()
 {
-	if (m_useSimpleDrawMode)
+    if (m_useSimpleDrawMode) {
 		O3D_ERROR(E_InvalidOperation("The context is already in simple draw mode"));
+    }
 
 	bindTexture(TEXTURE_2D, 0);
 
@@ -572,12 +543,14 @@ void Context::simpleDrawMode()
 // normal draw mode
 void Context::normalDrawMode()
 {
-	if (!m_useSimpleDrawMode)
+    if (!m_useSimpleDrawMode) {
 		O3D_ERROR(E_InvalidOperation("The context is already in normal draw mode"));
+    }
 
 	// restore override drawing mode
-	if (isOverrideDrawingMode())
+    if (isOverrideDrawingMode()) {
 		setDrawingMode(m_overrideDrawing);
+    }
 
 	m_useSimpleDrawMode = False;
 }
@@ -606,8 +579,9 @@ void Context::setAllParameters()
     m_blending.setDefaultFunc();
     m_blending.setDefaultEquation();
 
-	if (!m_renderer->isGL3())
+    if (m_renderer->getVersion() <= Renderer::OGL_210) {
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    }
 }
 
 // Change culling mode
@@ -704,8 +678,7 @@ Float Context::setLineSize(Float val)
 	Float old = m_lineSize;
 	m_lineSize = val;
 	
-    if (!m_renderer->isGL3()) {
-        // @todo remove it
+    if (m_renderer->getVersion() <= Renderer::OGL_210) {
         glLineWidth(m_lineSize);
     }
 
@@ -718,9 +691,9 @@ Float Context::forceLineSize(Float val)
 	Float old = m_lineSize;
 	m_lineSize = val;
 
-    if (!m_renderer->isGL3())
-        // @todo remove it
+    if (m_renderer->getVersion() <= Renderer::OGL_210) {
 		glLineWidth(m_lineSize);
+    }
 
 	return old;
 }
@@ -731,8 +704,7 @@ Float Context::modifyLineSize(Float val)
 	Float old = m_lineSize;
 	m_lineSize += val;
 
-    if (!m_renderer->isGL3()) {
-        // @todo remove it
+    if (m_renderer->getVersion() <= Renderer::OGL_210) {
 		glLineWidth(m_lineSize);
     }
 
@@ -766,15 +738,12 @@ Bool Context::disableDepthTest()
 // Toggle depth test.
 Bool Context::toggleDepthTest()
 {
-	if (m_isDepthTest)
-	{
+    if (m_isDepthTest) {
 		glDisable(GL_DEPTH_TEST);
         m_isDepthTest = False;
 
         return False;
-	}
-	else
-	{
+    } else {
 		glEnable(GL_DEPTH_TEST);
         m_isDepthTest = True;
 
@@ -788,10 +757,11 @@ Bool Context::forceDepthTest(Bool mode)
 	Bool old = m_isDepthTest;
 	m_isDepthTest = mode;
 
-	if (mode)
+    if (mode) {
 		glEnable(GL_DEPTH_TEST);
-	else
+    } else {
 		glDisable(GL_DEPTH_TEST);
+    }
 
 	return old;
 }
@@ -801,10 +771,8 @@ Context::DrawingMode Context::setDrawingMode(DrawingMode mode)
 {
 	DrawingMode old = mode;
 
-	if (m_drawingMode != mode)
-	{
-		switch (mode)
-		{
+    if (m_drawingMode != mode) {
+        switch (mode) {
 			case DRAWING_FILLED:
 				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 				break;
@@ -826,8 +794,7 @@ Context::DrawingMode Context::forceDrawingMode(DrawingMode mode)
 	DrawingMode old = mode;
 	m_drawingMode = mode;
 
-	switch (mode)
-	{
+    switch (mode) {
 		case DRAWING_FILLED:
 			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 			break;
@@ -847,8 +814,7 @@ Context::DrawingMode Context::setOverrideDrawingMode(DrawingMode mode)
 	DrawingMode old = mode;
 	m_overrideDrawing = m_drawingMode = mode;
 
-	switch (mode)
-	{
+    switch (mode) {
 		case DRAWING_FILLED:
 			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 			m_overrideDrawingMode = True;
@@ -884,12 +850,11 @@ Context::AntiAliasingMethod Context::setAntiAliasing(AntiAliasingMethod mode)
 {
     AntiAliasingMethod old = m_antiAliasing;
 
-    if (old != mode)
-	{
-        if (mode == AA_HINT_NICEST)
-		{
-            if (old == AA_MULTI_SAMPLE)
+    if (old != mode) {
+        if (mode == AA_HINT_NICEST) {
+            if (old == AA_MULTI_SAMPLE) {
                 glDisable(GL_MULTISAMPLE);
+            }
 
             //glEnable(GL_POINT_SMOOTH);
             //glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -899,11 +864,10 @@ Context::AntiAliasingMethod Context::setAntiAliasing(AntiAliasingMethod mode)
 
 			glEnable(GL_POLYGON_SMOOTH);
             glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-		}
-        else if (mode == AA_HINT_FASTEST)
-        {
-            if (old == AA_MULTI_SAMPLE)
+        } else if (mode == AA_HINT_FASTEST) {
+            if (old == AA_MULTI_SAMPLE) {
                 glDisable(GL_MULTISAMPLE);
+            }
 
             //glEnable(GL_POINT_SMOOTH);
             //glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
@@ -913,24 +877,19 @@ Context::AntiAliasingMethod Context::setAntiAliasing(AntiAliasingMethod mode)
 
             glEnable(GL_POLYGON_SMOOTH);
             glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
-        }
-        else if (mode == AA_MULTI_SAMPLE)
-        {
-            if (old != AA_NONE)
-            {
+        } else if (mode == AA_MULTI_SAMPLE) {
+            if (old != AA_NONE) {
                 //glDisable(GL_POINT_SMOOTH);
                 glDisable(GL_LINE_SMOOTH);
                 glDisable(GL_POLYGON_SMOOTH);
             }
 
             glEnable(GL_MULTISAMPLE);
-        }
-        else // NO_AA
-		{
-            if (old == AA_MULTI_SAMPLE)
+        } else {
+            // NO_AA
+            if (old == AA_MULTI_SAMPLE) {
                 glDisable(GL_MULTISAMPLE);
-            else
-            {
+            } else {
                 //glDisable(GL_POINT_SMOOTH);
                 glDisable(GL_LINE_SMOOTH);
                 glDisable(GL_POLYGON_SMOOTH);
@@ -948,8 +907,7 @@ Context::AntiAliasingMethod Context::forceAntiAliasing(AntiAliasingMethod mode)
     AntiAliasingMethod old = m_antiAliasing;
     m_antiAliasing = mode;
 
-    if (mode == AA_HINT_NICEST)
-	{
+    if (mode == AA_HINT_NICEST) {
         glDisable(GL_MULTISAMPLE);
 
         //glEnable(GL_POINT_SMOOTH);
@@ -960,9 +918,7 @@ Context::AntiAliasingMethod Context::forceAntiAliasing(AntiAliasingMethod mode)
 
 		glEnable(GL_POLYGON_SMOOTH);
 		glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
-	}
-    else if (mode == AA_HINT_FASTEST)
-    {
+    } else if (mode == AA_HINT_FASTEST) {
         glDisable(GL_MULTISAMPLE);
 
         //glEnable(GL_POINT_SMOOTH);
@@ -973,13 +929,9 @@ Context::AntiAliasingMethod Context::forceAntiAliasing(AntiAliasingMethod mode)
 
         glEnable(GL_POLYGON_SMOOTH);
         glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
-    }
-    else if (mode == AA_MULTI_SAMPLE)
-    {
+    } else if (mode == AA_MULTI_SAMPLE) {
         glEnable(GL_MULTISAMPLE);
-    }
-    else
-	{
+    } else {
         glDisable(GL_MULTISAMPLE);
         //glDisable(GL_POINT_SMOOTH);
 		glDisable(GL_LINE_SMOOTH);
@@ -1016,8 +968,7 @@ Float Context::setDepthClear(Float val)
 {
     Float old = m_depthClear;
 
-	if (old != val)
-	{
+    if (old != val) {
 		m_depthClear = val;
 		glClearDepth(val);
 	}
@@ -1040,8 +991,7 @@ Int32 Context::setStencilClear(Int32 val)
 {
     Int32 old = m_stencilClear;
 
-	if (old != val)
-	{
+    if (old != val) {
 		m_stencilClear = val;
 		glClearStencil(val);
 	}
@@ -1062,8 +1012,7 @@ Int32 Context::forceStencilClear(Int32 val)
 // Change depth buffer range.
 void Context::setDepthRange(Float _near, Float _far)
 {
-	if ((m_depthNear != _near) || (m_depthFar != _far))
-	{
+    if ((m_depthNear != _near) || (m_depthFar != _far)) {
 		m_depthNear = _near;
 		m_depthFar = _far;
 
@@ -1083,8 +1032,7 @@ void Context::forceDepthRange(Float _near, Float _far)
 // Change depth buffer comparison function.
 void Context::setDepthFunc(Comparison _func)
 {
-	if (_func != m_depthFunc)
-	{
+    if (_func != m_depthFunc) {
 		m_depthFunc = _func;
 		glDepthFunc(_func);
 	}
@@ -1100,8 +1048,7 @@ void Context::forceDepthFunc(Comparison _func)
 // Enable depth write.
 Bool Context::enableDepthWrite()
 {
-	if (!m_isDepthWrite)
-	{
+    if (!m_isDepthWrite) {
 		glDepthMask(GL_TRUE);
 		m_isDepthWrite = True;
 
@@ -1113,8 +1060,7 @@ Bool Context::enableDepthWrite()
 // Disable depth write.
 Bool Context::disableDepthWrite()
 {
-	if (m_isDepthWrite)
-	{
+    if (m_isDepthWrite) {
 		glDepthMask(GL_FALSE);
 		m_isDepthWrite = False;
 
@@ -1126,13 +1072,10 @@ Bool Context::disableDepthWrite()
 // Toggle depth write state.
 Bool Context::toggleDepthWrite()
 {
-	if (m_isDepthWrite)
-	{
+    if (m_isDepthWrite) {
 		glDepthMask(GL_FALSE);
 		return m_isDepthWrite = False;
-	}
-	else
-	{
+    } else {
 		glDepthMask(GL_TRUE);
 		return m_isDepthWrite = True;
 	}
@@ -1144,10 +1087,11 @@ Bool Context::forceDepthWrite(Bool mode)
     Bool old = m_isDepthWrite;
 	m_isDepthWrite = mode;
 
-	if (m_isDepthWrite)
+    if (m_isDepthWrite) {
 		glDepthMask(GL_TRUE);
-	else
+    } else {
 		glDepthMask(GL_FALSE);
+    }
 
     return old;
 }
@@ -1155,8 +1099,7 @@ Bool Context::forceDepthWrite(Bool mode)
 // Enable double side rendering.
 Bool Context::enableDoubleSide()
 {
-	if (!m_isDoubleSided)
-	{
+    if (!m_isDoubleSided) {
 		glDisable(GL_CULL_FACE);
 		m_isDoubleSided = True;
 
@@ -1168,8 +1111,7 @@ Bool Context::enableDoubleSide()
 // Disable double side rendering.
 Bool Context::disableDoubleSide()
 {
-	if (m_isDoubleSided)
-	{
+    if (m_isDoubleSided) {
 		glEnable(GL_CULL_FACE);
 		m_isDoubleSided = False;
 
@@ -1181,15 +1123,12 @@ Bool Context::disableDoubleSide()
 // Toggle double side rendering state.
 Bool Context::toggleDoubleSide()
 {
-	if (m_isDoubleSided)
-	{
+    if (m_isDoubleSided) {
 		glEnable(GL_CULL_FACE);
         m_isDoubleSided = False;
 
         return False;
-	}
-	else
-	{
+    } else {
 		glDisable(GL_CULL_FACE);
         m_isDoubleSided = True;
 
@@ -1203,10 +1142,11 @@ Bool Context::forceDoubleSide(Bool mode)
     Bool old = m_isDoubleSided;
 	m_isDoubleSided = mode;
 
-	if (m_isDoubleSided)
+    if (m_isDoubleSided) {
 		glDisable(GL_CULL_FACE);
-	else
+    } else {
 		glEnable(GL_CULL_FACE);
+    }
 
     return old;
 }
@@ -1214,8 +1154,7 @@ Bool Context::forceDoubleSide(Bool mode)
 // Enable scissor test.
 Bool Context::enableScissorTest()
 {
-	if (!m_isScissorTest)
-	{
+    if (!m_isScissorTest) {
 		glEnable(GL_SCISSOR_TEST);
 		m_isScissorTest = True;
 
@@ -1227,8 +1166,7 @@ Bool Context::enableScissorTest()
 // Disable scissor test.
 Bool Context::disableScissorTest()
 {
-	if (m_isScissorTest)
-	{
+    if (m_isScissorTest) {
 		glDisable(GL_SCISSOR_TEST);
 		m_isScissorTest = False;
 
@@ -1240,15 +1178,12 @@ Bool Context::disableScissorTest()
 // Toggle scissor test state.
 Bool Context::toggleScissorTest()
 {
-	if (m_isScissorTest)
-	{
+    if (m_isScissorTest) {
 		glDisable(GL_SCISSOR_TEST);
         m_isScissorTest = False;
 
         return False;
-	}
-	else
-	{
+    } else {
 		glEnable(GL_SCISSOR_TEST);
         m_isScissorTest = True;
 
@@ -1262,10 +1197,11 @@ Bool Context::forceScissorTest(Bool mode)
     Bool old = m_isScissorTest;
 	m_isScissorTest = mode;
 
-	if (m_isScissorTest)
+    if (m_isScissorTest) {
 		glEnable(GL_SCISSOR_TEST);
-	else
+    } else {
 		glDisable(GL_SCISSOR_TEST);
+    }
 
     return old;
 }
@@ -1274,8 +1210,7 @@ Bool Context::forceScissorTest(Bool mode)
 void Context::setScissor(Int32 xpos,Int32 ypos,Int32 width,Int32 height)
 {
 	if ((width != m_scissor.width()) || (height != m_scissor.height()) ||
-		(xpos != m_scissor.x()) || (ypos != m_scissor.y()))
-	{
+        (xpos != m_scissor.x()) || (ypos != m_scissor.y())) {
 		glScissor(xpos,ypos,width,height);
 		m_scissor.set(xpos, ypos, width, height);
 	}
@@ -1285,8 +1220,7 @@ void Context::setScissor(Int32 xpos,Int32 ypos,Int32 width,Int32 height)
 void Context::setScissor(const Box2i &scissor)
 {
 	if ((scissor.width() != m_scissor.width()) || (scissor.height() != m_scissor.height()) ||
-		(scissor.x() != m_scissor.x()) || (scissor.y() != m_scissor.y()))
-	{
+        (scissor.x() != m_scissor.x()) || (scissor.y() != m_scissor.y())) {
 		glScissor(scissor.x(), scissor.y(), scissor.width(), scissor.height());
 		m_scissor = scissor;
 	}
@@ -1296,8 +1230,7 @@ void Context::setScissor(const Box2i &scissor)
 void Context::setScissor(Int32 *ptr)
 {
 	if ((ptr[2] != m_scissor.width()) || (ptr[3] != m_scissor.height()) ||
-		(ptr[0] != m_scissor.x()) || (ptr[1] != m_scissor.y()))
-	{
+        (ptr[0] != m_scissor.x()) || (ptr[1] != m_scissor.y())) {
 		glScissor(ptr[0],ptr[1],ptr[2],ptr[3]);
 		m_scissor.set(ptr);
 	}
@@ -1306,8 +1239,7 @@ void Context::setScissor(Int32 *ptr)
 // Enable Stencil test.
 Bool Context::enableStencilTest()
 {
-	if (!m_isStencilTest)
-	{
+    if (!m_isStencilTest) {
 		glEnable(GL_STENCIL_TEST);
 		m_isStencilTest = True;
 
@@ -1319,8 +1251,7 @@ Bool Context::enableStencilTest()
 // Disable Stencil test.
 Bool Context::disableStencilTest()
 {
-	if (m_isStencilTest)
-	{
+    if (m_isStencilTest) {
 		glDisable(GL_STENCIL_TEST);
 		m_isStencilTest = False;
 
@@ -1332,15 +1263,12 @@ Bool Context::disableStencilTest()
 // Toggle Stencil test state.
 Bool Context::toggleStencilTest()
 {
-	if (m_isStencilTest)
-	{
+    if (m_isStencilTest) {
 		glDisable(GL_STENCIL_TEST);
         m_isStencilTest = False;
 
         return False;
-	}
-	else
-	{
+    } else {
 		glEnable(GL_STENCIL_TEST);
         m_isStencilTest = True;
 
@@ -1354,10 +1282,11 @@ Bool Context::forceStencilTest(Bool mode)
     Bool old = m_isStencilTest;
 	m_isStencilTest = mode;
 
-	if (m_isStencilTest)
+    if (m_isStencilTest) {
 		glEnable(GL_STENCIL_TEST);
-	else
+    } else {
 		glDisable(GL_STENCIL_TEST);
+    }
 
     return old;
 }
@@ -1365,8 +1294,7 @@ Bool Context::forceStencilTest(Bool mode)
 // Set the stencil test function.
 void Context::setStencilTestFunc(Comparison func, Int32 ref, UInt32 mask)
 {
-	if (func != m_stencilTestFunc || ref != m_stencilTestRef || mask != m_stencilTestMask)
-	{
+    if (func != m_stencilTestFunc || ref != m_stencilTestRef || mask != m_stencilTestMask) {
 		glStencilFunc(func, ref, mask);
 
 		m_stencilTestFunc = func;
@@ -1401,8 +1329,7 @@ void Context::disable(UInt32 mode)
 void Context::setViewPort(Int32 xpos, Int32 ypos, Int32 width, Int32 height)
 {
 	if ((width != m_viewPort.width()) || (height != m_viewPort.height()) ||
-		(xpos != m_viewPort.x()) || (ypos != m_viewPort.y()))
-	{
+        (xpos != m_viewPort.x()) || (ypos != m_viewPort.y())) {
 		glViewport(xpos, ypos, width, height);
 		m_viewPort.set(xpos, ypos, width, height);
 	}
@@ -1412,8 +1339,7 @@ void Context::setViewPort(Int32 xpos, Int32 ypos, Int32 width, Int32 height)
 void Context::setViewPort(const Box2i &viewPort)
 {
 	if ((viewPort.width() != m_viewPort.width()) || (viewPort.height() != m_viewPort.height()) ||
-		(viewPort.x() != m_viewPort.x()) || (viewPort.y() != m_viewPort.y()))
-	{
+        (viewPort.x() != m_viewPort.x()) || (viewPort.y() != m_viewPort.y())) {
 		glViewport(viewPort.x(), viewPort.y(), viewPort.width(), viewPort.height());
 		m_viewPort = viewPort;
 	}
@@ -1423,8 +1349,7 @@ void Context::setViewPort(const Box2i &viewPort)
 void Context::setViewPort(Int32 *ptr)
 {
 	if ((ptr[2] != m_viewPort.width()) || (ptr[3] != m_viewPort.height()) ||
-		(ptr[0] != m_viewPort.x()) || (ptr[1] != m_viewPort.y()))
-	{
+        (ptr[0] != m_viewPort.x()) || (ptr[1] != m_viewPort.y())) {
 		glViewport(ptr[0], ptr[1], ptr[2], ptr[3]);
 		m_viewPort.set(ptr);
 	}
@@ -1451,8 +1376,7 @@ void Context::disableColorWrite()
 // Get the modelview-projection matrix.
 const Matrix4& Context::modelViewProjection()
 {
-	if (m_recomputeModelViewProjection)
-	{
+    if (m_recomputeModelViewProjection) {
 		projection().get().mult(modelView().get(), m_modelViewProjection);
 		m_recomputeModelViewProjection = False;
 	}
@@ -1463,8 +1387,7 @@ const Matrix4& Context::modelViewProjection()
 // Get the normal matrix.
 const Matrix3& Context::normalMatrix()
 {
-    if (m_recomputeNormalMatrix)
-	{
+    if (m_recomputeNormalMatrix) {
         m_normalMatrix = modelView().get().getRotation().invert().transposeTo();
 		m_recomputeNormalMatrix = False;
 	}

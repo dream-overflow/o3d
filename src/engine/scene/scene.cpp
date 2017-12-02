@@ -136,7 +136,7 @@ Scene::Scene(
 
 	m_rootPath = FileManager::instance()->getFullFileName(rootPath);
 
-    m_shaderManager            = new ShaderManager(this, /*m_rootPath + "/shaders"*/ "shaders");
+    m_shaderManager            = new ShaderManager(this, /*m_rootPath + */"shaders");
 
 	m_alphaPipeline	           = new AlphaPipeline(this);
 	m_specialEffectsManager    = new SpecialEffectsManager(this);
@@ -172,11 +172,13 @@ Scene::Scene(
 // Destructor
 Scene::~Scene()
 {
-    if (m_audio)
+    if (m_audio) {
         m_audio->release();
+    }
 
-    if (m_gui)
+    if (m_gui) {
         m_gui->release();
+    }
 
     //m_physicEntityManager->release();
 
@@ -206,15 +208,13 @@ Scene::~Scene()
 	deletePtr(m_frustum);
 	deletePtr(m_frameManager);
 
-	// remove all pack
-	for (IT_StringList it = m_packList.begin(); it != m_packList.end(); ++it)
-    {
+    // remove all archives
+    for (IT_StringList it = m_packList.begin(); it != m_packList.end(); ++it) {
 		FileManager::instance()->removeArchive(m_rootPath + '/' + *it);
     }
 
 	// remove the renderer
-	if (m_renderer)
-	{
+    if (m_renderer) {
 		m_renderer->releaseIt();
         m_renderer = nullptr;
 	}
@@ -225,37 +225,38 @@ Scene::~Scene()
 
 void Scene::setAudio(AudioManager *audio)
 {
-    if (m_audio)
-    {
+    if (m_audio) {
         m_audio->release();
         deletePtr(m_audio);
     }
 
     m_audio = audio;
 
-    if (m_audio)
+    if (m_audio) {
         m_audio->init();
+    }
 }
 
 void Scene::setGui(GuiManager *gui)
 {
-    if (m_gui)
-    {
+    if (m_gui) {
         m_gui->release();
         deletePtr(m_gui);
     }
 
     m_gui = gui;
 
-    if (m_gui)
+    if (m_gui) {
         m_gui->init();
+    }
 }
 
 // Use default connections and attach them to an AppWindow
 void Scene::defaultAttachment(AppWindow *appWindow)
 {
-    if (!appWindow)
+    if (!appWindow) {
         return;
+    }
 
 	// Update
     appWindow->onUpdate.connect(this, &Scene::update);
@@ -276,39 +277,44 @@ void Scene::defaultAttachment(AppWindow *appWindow)
 // Add pack file (ZIP file) that contain texture or others files needed by the scene
 Bool Scene::addArchive(const String& archiveName)
 {
-	if (!FileManager::instance()->isRelativePath(archiveName))
+    if (!FileManager::instance()->isRelativePath(archiveName)) {
 		O3D_ERROR(E_InvalidParameter("packname must be a relative path"));
+    }
 
-	if (FileManager::instance()->mountArchive(m_rootPath + '/' + archiveName))
-	{
+    if (FileManager::instance()->mountArchive(m_rootPath + '/' + archiveName)) {
 		m_packList.push_back(archiveName);
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 // Remove pack file (and unload it from the file manager
 void Scene::removeArchive(const String& archiveName)
 {
-	if (!FileManager::instance()->isRelativePath(archiveName))
+    if (!FileManager::instance()->isRelativePath(archiveName)) {
 		O3D_ERROR(E_InvalidParameter("packname must be a relative path"));
+    }
 
-	if (FileManager::instance()->removeArchive(m_rootPath + '/' + archiveName))
+    if (FileManager::instance()->removeArchive(m_rootPath + '/' + archiveName)) {
 		m_packList.remove(archiveName);
+    }
 }
 
 // Set current OpenGL renderer and context.
 void Scene::setRenderer(Renderer *renderer)
 {
-    if (!renderer || !renderer->isValid())
+    if (!renderer || !renderer->isValid()) {
 		O3D_ERROR(E_InvalidParameter("Renderer must be valid"));
+    }
 
-	if (!renderer->getContext())
+    if (!renderer->getContext()) {
 		O3D_ERROR(E_InvalidParameter("Renderer context must be valid"));
+    }
 
-	if (m_renderer)
+    if (m_renderer) {
 		m_renderer->releaseIt();
+    }
 
 	m_renderer = renderer;
 	m_context = renderer->getContext();
@@ -370,35 +376,41 @@ Bool Scene::getDrawObject(Scene::DrawObjectType type) const
 {
 	Int32 intType = (Int32)type;
 
-	if (intType >= 64)
+    if (intType >= 64) {
 		O3D_ERROR(E_IndexOutOfRange("Invalid Object type"));
+    }
 
-	if (intType < 32) // symbolic object
+    if (intType < 32) {
+        // symbolic object
 		return (m_objStateDraw[0] & (1 << intType));
-	else             // physical object
+    } else {
+        // physical object
 		return (m_objStateDraw[1] & (1 << (intType-32)));
+    }
 }
 
 void Scene::setDrawObject(Scene::DrawObjectType type, Bool state)
 {
 	Int32 intType = (Int32)type;
 
-	if (intType >= 64)
+    if (intType >= 64) {
 		O3D_ERROR(E_IndexOutOfRange("Invalid Object type"));
+    }
 
-	if (intType < 32) // symbolic object
-	{
-		if (state)
+    if (intType < 32) {
+        // symbolic object
+        if (state) {
 			m_objStateDraw[0] |= (1 << intType);
-		else
+        } else {
 			m_objStateDraw[0] &= m_objStateDraw[0] ^ (1 << intType);
-	}
-	else              // physical object
-	{
-		if (state)
+        }
+    } else {
+        // physical object
+        if (state) {
 			m_objStateDraw[1] |= (1 << (intType-32));
-		else
+        } else {
 			m_objStateDraw[1] &= m_objStateDraw[1] ^ (1 << (intType-32));
+        }
 	}
 }
 
@@ -414,12 +426,9 @@ Bool Scene::importScene(const String &filename, SceneIO *whatImported)
 
 	Bool ret;
 
-	try
-	{
+    try {
         ret = importScene(*is, whatImported);
-	}
-	catch(E_BaseException &)
-	{
+    } catch(E_BaseException &) {
         deletePtr(is);
 		throw;
 	}
@@ -450,8 +459,7 @@ Bool Scene::importScene(InStream &is, SceneIO *whatImported)
 	UInt32 tmpUInt32;
     is >> tmpUInt32;
 
-	if (tmpUInt32 < O3D_VERSION_FILE_MIN)
-	{
+    if (tmpUInt32 < O3D_VERSION_FILE_MIN) {
 		str.print("Bad file version : %u -/-> %u", O3D_VERSION_FILE_MIN, tmpUInt32);
         O3D_ERROR(E_InvalidFormat("Unsupported scene version : " + str));
 	}
@@ -462,25 +470,25 @@ Bool Scene::importScene(InStream &is, SceneIO *whatImported)
     is >> sceneio;
 
 	// backup the content of SceneIO
-	if (whatImported)
+    if (whatImported) {
 		*whatImported = sceneio;
+    }
 
 	// packs list
     is >> tmpUInt32;
-	for (UInt32 i = 0; i < tmpUInt32; ++i)
-	{
+    for (UInt32 i = 0; i < tmpUInt32; ++i) {
         is >> str;
 
-		if (!addArchive(str))
-		{
+        if (!addArchive(str)) {
 			return False;
 		}
 	}
 
 	// draw object states
-	if (sceneio.get(SceneIO::DRAWING_STATE))
+    if (sceneio.get(SceneIO::DRAWING_STATE)) {
         is >> m_objStateDraw[0]
 		     >> m_objStateDraw[1];
+    }
 
 	// total number of objects, and global ambient color
 	UInt32 numObj;
@@ -495,32 +503,40 @@ Bool Scene::importScene(InStream &is, SceneIO *whatImported)
 //			return False;
 
 	// read special effects that are not into the hierarchy tree
-	if (sceneio.get(SceneIO::SPECIAL_EFFECT))
-        if (!getSpecialEffectsManager()->readFromFile(is))
+    if (sceneio.get(SceneIO::SPECIAL_EFFECT)) {
+        if (!getSpecialEffectsManager()->readFromFile(is)) {
 			return False;
+        }
+    }
 
 	// scene hierarchy
-	if (sceneio.get(SceneIO::NODES))
-        if (!getHierarchyTree()->readFromFile(is))
+    if (sceneio.get(SceneIO::NODES)) {
+        if (!getHierarchyTree()->readFromFile(is)) {
 			return False;
+        }
+    }
 
 	// process to the post importation pass for imported objects
-	for (UInt32 i = 0 ; i < getSceneObjectManager()->getNumImportedSceneObjects() ; ++i)
+    for (UInt32 i = 0 ; i < getSceneObjectManager()->getNumImportedSceneObjects() ; ++i) {
 		getSceneObjectManager()->getImportedSceneObject(i)->postImportPass();
+    }
 
 	// read the player manager
-	if (sceneio.get(SceneIO::ANIMATION_PLAYER))
-        if (!getAnimationPlayerManager()->readFromFile(is))
+    if (sceneio.get(SceneIO::ANIMATION_PLAYER)) {
+        if (!getAnimationPlayerManager()->readFromFile(is)) {
 			return False;
+        }
+    }
 
 	// read physic manager
-	if (sceneio.get(SceneIO::PHYSIC))
-        if (!getPhysicEntityManager()->readFromFile(is))
+    if (sceneio.get(SceneIO::PHYSIC)) {
+        if (!getPhysicEntityManager()->readFromFile(is)) {
 			return False;
+        }
+    }
 
 	// we don't need this now then delete it
-	if (!m_keepArrays)
-	{
+    if (!m_keepArrays) {
 		getSceneObjectManager()->resizeImportedSceneObject(0);
 		getSpecialEffectsManager()->resizeImportedSpecialEffects(0);
 	}
@@ -528,9 +544,7 @@ Bool Scene::importScene(InStream &is, SceneIO *whatImported)
 	return True;
 }
 
-Bool Scene::exportScene(
-		const String &sceneFilename,
-		const SceneIO &whatExport)
+Bool Scene::exportScene(const String &sceneFilename, const SceneIO &whatExport)
 {
 	SceneIO sceneio = whatExport;
 
@@ -550,16 +564,19 @@ Bool Scene::exportScene(
 	getHierarchyTree()->preExportPass();
 
 	// first export all meshdata
-	if (getMeshDataManager()->exportMeshData() < 0)
+    if (getMeshDataManager()->exportMeshData() < 0) {
 		return False;
+    }
 
 	// next export all animations
-	if (getAnimationManager()->exportAnimation() < 0)
+    if (getAnimationManager()->exportAnimation() < 0) {
 		return False;
+    }
 
 	// next export all cloth
-	//if (getClothManager()->exportClothModel(path) < 0)
+    //if (getClothManager()->exportClothModel(path) < 0) {
 	//	return False;
+    // }
 
 	// and now really export the scene
     FileOutStream *os = FileManager::instance()->openOutStream(absSceneFilename, FileOutStream::CREATE);
@@ -573,49 +590,62 @@ Bool Scene::exportScene(
     ros << m_sceneInfo;
 
 	// if we export skinning bones but not bones...
-	if (sceneio.get(SceneIO::SKIN) && !sceneio.get(SceneIO::BONES))
+    if (sceneio.get(SceneIO::SKIN) && !sceneio.get(SceneIO::BONES)) {
 		sceneio.set(SceneIO::BONES,True);
+    }
 
 	// sceneimport setting
     ros << sceneio;
 
 	// packs list
     ros << (Int32)m_packList.size();
-	for (IT_StringList it = m_packList.begin() ; it != m_packList.end() ; ++it)
+    for (IT_StringList it = m_packList.begin() ; it != m_packList.end() ; ++it) {
         ros << (*it);
+    }
 
 	// draw object states
-	if (sceneio.get(SceneIO::DRAWING_STATE))
+    if (sceneio.get(SceneIO::DRAWING_STATE)) {
         ros << m_objStateDraw[0]
             << m_objStateDraw[1];
+    }
 
     ros << numObj
         << m_globalAmbient;
 
     // before write the hierarchy tree we need to check if we have to export some sounds data TODO
-//	if (sceneio.get(SceneIO::AUDIO_SETTING))
-//        if (!getAudio()->writeToFile(ros))
+//	if (sceneio.get(SceneIO::AUDIO_SETTING)) {
+//        if (!getAudio()->writeToFile(ros)) {
 //			return False;
+//        }
+//  }
 
 	// write effect that are not into the hierarchy tree structure
-	if (sceneio.get(SceneIO::SPECIAL_EFFECT))
-        if (!getSpecialEffectsManager()->writeToFile(ros))
+    if (sceneio.get(SceneIO::SPECIAL_EFFECT))  {
+        if (!getSpecialEffectsManager()->writeToFile(ros)) {
 			return False;
+        }
+    }
 
 	// write scene hierarchy
-	if (sceneio.get(SceneIO::NODES))
-        if (!getHierarchyTree()->writeToFile(ros))
+    if (sceneio.get(SceneIO::NODES)) {
+        if (!getHierarchyTree()->writeToFile(ros)) {
 			return False;
+        }
+    }
 
 	// write animation players
-	if (sceneio.get(SceneIO::ANIMATION_PLAYER))
-        if (!getAnimationPlayerManager()->writeToFile(ros))
+    if (sceneio.get(SceneIO::ANIMATION_PLAYER)) {
+        if (!getAnimationPlayerManager()->writeToFile(ros)) {
 			return False;
+        }
+    }
 
 	// write physic entities
-	if (sceneio.get(SceneIO::PHYSIC))
-        if (!getPhysicEntityManager()->writeToFile(ros))
+    if (sceneio.get(SceneIO::PHYSIC)) {
+        if (!getPhysicEntityManager()->writeToFile(ros)) {
 			return False;
+        }
+    }
 
     deletePtr(os);
 
@@ -628,14 +658,16 @@ Bool Scene::exportScene(
 
 void Scene::focus()
 {
-    if (m_audio)
+    if (m_audio) {
         m_audio->focus();
+    }
 }
 
 void Scene::lostFocus()
 {
-    if (m_audio)
+    if (m_audio) {
         m_audio->lostFocus();
+    }
 }
 
 void Scene::update()
@@ -864,8 +896,9 @@ void Scene::reshape(UInt32 width, UInt32 height)
 {
 	m_viewPortManager->reshape(width, height);
 
-    if (m_gui)
+    if (m_gui) {
         m_gui->reshape(width, height);
+    }
 }
 
 // take a screen-shot
@@ -876,14 +909,15 @@ Bool Scene::screenShot(const String &path, Image::FileFormat format)
 	Date date(True);
     fileName += "-" + date.buildString("%D.%M.%y-%h.%i.%s.%l");
 
-	if (format == Image::BMP)
+    if (format == Image::BMP) {
 		fileName += ".bmp";
-	else if (format == Image::JPEG)
+    } else if (format == Image::JPEG) {
 		fileName += ".jpg";
-	else if (format == Image::PNG)
+    } else if (format == Image::PNG) {
 		fileName += ".png";
-	else
+    } else {
         O3D_ERROR(E_InvalidFormat("Invalid screenshot image format"));
+    }
 
 	return m_renderer->screenShot(fileName, format);
 }

@@ -72,7 +72,7 @@ TerrainManager::~TerrainManager()
 
 		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
 		{
-			message += "       |- " + it->second->getName() + "\n";
+            message += "    |- " + it->second->getName() + "\n";
 			deletePtr(it->second);
 		}
 
@@ -250,7 +250,7 @@ TerrainDefManager::~TerrainDefManager()
 
 		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
 		{
-			message += "       |- " + it->second->getKeyName() + "\n";
+            message += "    |- " + it->second->getKeyName() + "\n";
 			deletePtr(it->second);
 		}
 

@@ -99,11 +99,11 @@ Gui::Gui(BaseObject *parent) :
 Gui::~Gui()
 {
 	// delete all FBO
-	for (IT_FBOPooler it = m_FBOPooler->begin(); it != m_FBOPooler->end(); ++it)
+    for (IT_FBOPooler it = m_FBOPooler->begin(); it != m_FBOPooler->end(); ++it) {
 		deletePtr((*it));
+    }
 
-	if (m_viewPort)
-	{
+	if (m_viewPort)	{
 		m_viewPort->setPersistant(False);
 		getScene()->getViewPortManager()->deleteViewPort(m_viewPort);
 	}
@@ -138,15 +138,14 @@ FrameBuffer* Gui::findFBO(
 	UInt32 height,
 	PixelFormat pixelFormat)
 {
-	if (!m_FBOPooler)
+    if (!m_FBOPooler) {
         return nullptr;
+    }
 
-	for (IT_FBOPooler it = m_FBOPooler->begin(); it != m_FBOPooler->end(); ++it)
-	{
+    for (IT_FBOPooler it = m_FBOPooler->begin(); it != m_FBOPooler->end(); ++it) {
         if (((UInt32)(*it)->getDimension().x() == width) &&
             ((UInt32)(*it)->getDimension().y() == height) &&
-			((*it)->getColorFormat() == pixelFormat))
-		{
+            ((*it)->getColorFormat() == pixelFormat)) {
 			return *it;
 		}
 	}
@@ -193,15 +192,15 @@ const ViewPort* Gui::getViewPort() const
 // Change the winmanager viewport priority (default is O3D_MAX_INT32)
 void Gui::changeViewPortPriority(Int32 newPriority)
 {
-	if (m_viewPort)
+    if (m_viewPort) {
 		getScene()->getViewPortManager()->changePriority(m_viewPort, newPriority);
+    }
 }
 
 // reset the winmanager viewport to its default parameters
 void Gui::resetViewPort()
 {
-	if (m_viewPort && m_camera)
-	{
+    if (m_viewPort && m_camera) {
 		// default priority
 		changeViewPortPriority(o3d::Limits<Int32>::max());
 
@@ -211,8 +210,9 @@ void Gui::resetViewPort()
 		m_viewPort->setSize(0.f,0.f,1.f,1.f);
 		m_viewPort->setName("<o3d::winmanager::viewport>");
 
-		if (m_viewPort->getCamera() != m_camera)
+        if (m_viewPort->getCamera() != m_camera) {
 			m_viewPort->setCamera(m_camera);
+        }
 	}
 }
 
@@ -220,8 +220,7 @@ void Gui::resetViewPort()
 void Gui::draw()
 {
 	// call the current viewport callback
-	if (m_viewPort && m_camera)
-	{
+    if (m_viewPort && m_camera) {
 		getScene()->getContext()->modelView().identity();
 
 		m_viewPort->display(
@@ -241,14 +240,16 @@ void Gui::update()
 // when a keyboard event or mouse event occurred send it with this methods
 void Gui::postKeyEvent(Keyboard *keyboard, KeyEvent event)
 {
-	if (m_widgetManager)
+    if (m_widgetManager) {
         m_widgetManager->keyboardToggled(keyboard, event);
+    }
 }
 
 void Gui::postCharacterEvent(Keyboard* keyboard, CharacterEvent event)
 {
-	if (m_widgetManager)
+    if (m_widgetManager) {
         m_widgetManager->character(keyboard, event);
+    }
 }
 
 void Gui::postMouseMotionEvent(Mouse *mouse)
@@ -259,8 +260,7 @@ void Gui::postMouseMotionEvent(Mouse *mouse)
 	Int32 x = mouse->getMappedPosition().x();
 	Int32 y = mouse->getMappedPosition().y();
 
-	if ((x != m_oldMousePos.x()) || (y != m_oldMousePos.y()))
-	{
+    if ((x != m_oldMousePos.x()) || (y != m_oldMousePos.y())) {
 		m_widgetManager->mouseMove(x, y);
 		m_oldMousePos.set(x, y);
 	}
@@ -268,19 +268,17 @@ void Gui::postMouseMotionEvent(Mouse *mouse)
 
 void Gui::postMouseButtonEvent(Mouse *mouse, ButtonEvent event)
 {
-	if (!m_widgetManager)
+    if (!m_widgetManager) {
 		return;
+    }
 
 	Int32 x = mouse->getMappedPosition().x();
 	Int32 y = mouse->getMappedPosition().y();
 
-    if (event.isDown() && !m_oldMouseButton[event.button()])
-    {
+    if (event.isDown() && !m_oldMouseButton[event.button()]) {
         m_oldMouseButton.enable(event.button());
         m_widgetManager->mouseButtonDown(event.button(), x, y);
-    }
-    else if (event.isUp() && m_oldMouseButton[event.button()])
-	{
+    } else if (event.isUp() && m_oldMouseButton[event.button()]) {
         m_oldMouseButton.disable(event.button());
         m_widgetManager->mouseButtonUp(event.button(), x, y);
 	}
@@ -288,14 +286,16 @@ void Gui::postMouseButtonEvent(Mouse *mouse, ButtonEvent event)
 
 void Gui::postMouseWheelEvent(Mouse *mouse)
 {
-	if (!m_widgetManager)
+    if (!m_widgetManager) {
 		return;
+    }
 
 	Int32 x = mouse->getMappedPosition().x();
 	Int32 y = mouse->getMappedPosition().y();
 
-	if (mouse->getWheelDelta() != 0)
+    if (mouse->getWheelDelta() != 0) {
 		m_widgetManager->mouseWheel(x, y, mouse->getWheelDelta());
+    }
 }
 
 // set/get the screen resolution for the GUI and font
@@ -321,8 +321,9 @@ Int32 Gui::getHeight() const
 
 void Gui::defaultAttachment(AppWindow *appWindow)
 {
-    if (!appWindow)
+    if (!appWindow) {
         return;
+    }
 
     // Inputs
     appWindow->onKey.connect(this, &Gui::postKeyEvent);
@@ -335,22 +336,15 @@ void Gui::defaultAttachment(AppWindow *appWindow)
     reshape(appWindow->getClientWidth(), appWindow->getClientHeight());
 }
 
-/*---------------------------------------------------------------------------------------
-  Import/export
----------------------------------------------------------------------------------------*/
-
 Bool Gui::importGui(const String &filename)
 {
     InStream *is = FileManager::instance()->openInStream(filename);
 
 	Bool ret;
 
-	try
-	{
+    try {
         ret = importGui(*is);
-	}
-	catch(E_BaseException &)
-	{
+    } catch(E_BaseException &) {
         deletePtr(is);
 		throw;
 	}
@@ -363,4 +357,3 @@ Bool Gui::importGui(InStream &is)
 {
     return True;
 }
-

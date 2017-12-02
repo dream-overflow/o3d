@@ -88,7 +88,7 @@ void FrameManager::logInfo() const
 	for (UInt32 i = 0; i < m_interval; ++i)
 	{
 		str += String::print
-				("                    |- %i -> duration(%.4f ms) tris(%i)/lines(%i)/points(%i)\n",
+                ("    |- %i -> duration(%.4f ms) tris(%i)/lines(%i)/points(%i)\n",
 				i,
 				m_framesList[i].duration,
 				m_framesList[i].numTris,
@@ -169,4 +169,3 @@ UInt32 FrameManager::getNumPoints() const
 	else
 		return 0;
 }
-
