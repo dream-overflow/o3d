@@ -52,7 +52,16 @@ add_library(${O3D_LIB_NAME} SHARED
 			${GUI_CXX}
 			${AUDIO_CXX})		
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+    target_link_libraries(${O3D_LIB_NAME}
+        # @todo
+    )
+
+    if(${O3D_USE_SDL2})
+         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
+    endif()
+
+ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	target_link_libraries(${O3D_LIB_NAME}
 			pthread
 			${ZLIB_LIBRARY}

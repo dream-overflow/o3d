@@ -1,11 +1,17 @@
 cmake/Configs/Objective3DConfig.cmake.in
 cmake/Modules/FindObjective3D.cmake
+include/o3d/core/egl.h
+include/o3d/core/gl.h
 include/o3d/core/glx.h
 include/o3d/core/glxdefines.h
 include/o3d/core/sha1.h
+include/o3d/core/wgl.h
 include/o3d/engine/glextdefines.h
+src/core/egl.cpp
+src/core/gl.cpp
 src/core/glx.cpp
 src/core/sha1.cpp
+src/core/wgl.cpp
 src/shaders/330_fp.glsl
 src/shaders/330_fp.glsl
 src/shaders/330_vp.glsl

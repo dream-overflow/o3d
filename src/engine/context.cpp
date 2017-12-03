@@ -109,7 +109,7 @@ Context::Context(Renderer *renderer) :
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, (GLint*)&m_maxVertexAttribs);
 
 	// GLSL version
-	const GLubyte *version = glGetString(GL_SHADING_LANGUAGE_VERSION);
+    const GLubyte *version = glGetString(GL_SHADING_LANGUAGE_VERSION);
     if ((version != nullptr) && (version[0] >= '1') && (version[1] == '.'))	{
 		m_glslVersion = (version[0] - '0') * 100 +
 						(version[2] - '0') * 10 +

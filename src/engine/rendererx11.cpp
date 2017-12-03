@@ -117,7 +117,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
     // we can retrieve glGetString now
     glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
 
-	const GLubyte *version = glGetString(GL_VERSION);
+    const GLubyte *version = glGetString(GL_VERSION);
     if (version && (version[0] == '3')) {
 		// try an OpenGL 3.0+ context.
 		queryMajor = 3;
@@ -231,12 +231,12 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	m_HGLRC = reinterpret_cast<_HGLRC>(context);
     m_state.enable(STATE_DEFINED);
 
+    GLExtensionManager::init();
+
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
-    GLExtensionManager::init();
-
-	version = glGetString(GL_VERSION);
+    version = glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
     }
@@ -261,7 +261,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 
 	m_glContext = new Context(this);
 
-	doAttachment(m_appWindow);
+    doAttachment(m_appWindow);
 }
 
 // Share the OpenGL rendering using a given window handle. Same as create but with sharing.
@@ -322,7 +322,7 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
     // we can retrieve glGetString now
     glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
 
-	const GLubyte *version = glGetString(GL_VERSION);
+    const GLubyte *version = glGetString(GL_VERSION);
     if (version && (version[0] == '3')) {
 		// try an OpenGL 3.0+ context.
 		queryMajor = 3;
@@ -444,12 +444,12 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	m_HGLRC = reinterpret_cast<_HGLRC>(context);
     m_state.enable(STATE_DEFINED);
 
+    GLExtensionManager::init();
+
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
-    GLExtensionManager::init();
-
-	version = glGetString(GL_VERSION);
+    version = glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
     }

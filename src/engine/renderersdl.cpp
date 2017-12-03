@@ -123,10 +123,10 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 
     m_state.enable(STATE_DEFINED);
 
+    GLExtensionManager::init();
+
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getVersion());
-
-    GLExtensionManager::init();
 
 	version = glGetString(GL_VERSION);
 	if (version && (version[0] == '1'))

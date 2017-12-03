@@ -155,9 +155,9 @@ Bool Renderer::screenShot(
 String Renderer::getRendererName() const
 {
     if (isCurrent()) {
-		String vendor(reinterpret_cast<const Char*>(glGetString(GL_VENDOR)));
+        String vendor(reinterpret_cast<const Char*>(glGetString(GL_VENDOR)));
 		vendor += " ";
-		String renderer(reinterpret_cast<const Char*>(glGetString(GL_RENDERER)));
+        String renderer(reinterpret_cast<const Char*>(glGetString(GL_RENDERER)));
 
 		return vendor + renderer;
     } else {
@@ -168,7 +168,7 @@ String Renderer::getRendererName() const
 String Renderer::getStrVersion() const
 {
     if (isCurrent()) {
-		return String(reinterpret_cast<const Char*>(glGetString(GL_VERSION)));
+        return String(reinterpret_cast<const Char*>(glGetString(GL_VERSION)));
     } else {
 		return String("ERROR: Undefined OpenGL context");
     }
