@@ -44,6 +44,16 @@ else()
 endif()
 
 #----------------------------------------------------------
+# options
+#----------------------------------------------------------
+
+# SSE2 ON by default
+option(O3D_USE_SSE2 "Compile SSE2 optimizations" ON)
+
+# SDL2 OFF by default
+option(O3D_USE_SDL2 "Compile using SDL2 support" OFF)
+
+#----------------------------------------------------------
 # externals libraries
 #----------------------------------------------------------
 
@@ -64,31 +74,27 @@ find_package(PNG REQUIRED)
 find_package(OggVorbis REQUIRED)
 #find_package(Bullet REQUIRED)
 
+if(${O3D_USE_SDL2})
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(SDL2 sdl2)
+endif()
+
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     find_package(Threads REQUIRED)
     find_package(X11 REQUIRED)
-    find_package(PkgConfig REQUIRED)
     find_package(Xrandr REQUIRED)
-	
-    pkg_check_modules(SDL2 sdl2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     find_package(Threads REQUIRED)
     find_package(X11 REQUIRED)
-    find_package(PkgConfig REQUIRED)
     find_package(Xrandr REQUIRED)
-
-    pkg_check_modules(SDL2 sdl2)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    find_package(PkgConfig REQUIRED)
-
-    pkg_check_modules(SDL2 sdl2)
-
     IF(${TOOLCHAIN_PREFIX} MATCHES "x86_64-w64-mingw32")
     ELSE()
+        # @todo upgrade more cmake like
         #set (O3D_DEPS_PATH $ENV{O3D_DEPS_PATH})
         #set (OPENAL_PATH $ENV{OPENAL_PATH})
 
@@ -110,11 +116,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 #----------------------------------------------------------
-# options
+# settings
 #----------------------------------------------------------
-
-# SSE2 ON by default
-option(O3D_USE_SSE2 "Compile SSE2 optimizations" ON)
 
 # Dynamic library
 set(O3D_EXPORT_DLL "") 
@@ -192,7 +195,6 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/Configs/Objective3DConfig.cmake.in
 add_subdirectory(third)
 add_subdirectory(src)
 add_subdirectory(test)
-
 
 #----------------------------------------------------------
 # install

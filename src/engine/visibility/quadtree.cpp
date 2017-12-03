@@ -680,8 +680,6 @@ void Quadtree::draw()
 
         primitive->setColor(1.f, 1.f, 1.f);
 
-        getScene()->getContext()->setLineSize(2.0f);
-
         for (UInt32 j = 0 ; j < m_topZone.height() ; ++j) {
             for (UInt32 i = 0 ; i < m_topZone.width() ; ++i) {
 				m_topZone(i,j)->draw(getScene());
@@ -695,7 +693,5 @@ void Quadtree::draw()
 		//	primitive->modelView().translate(absPos);
 		//	primitive->wireSphere1(Vector3(20.f,20.f,20.f));
 		//primitive->modelView().pop()
-
-		getScene()->getContext()->setDefaultLineSize();
 	}
 }

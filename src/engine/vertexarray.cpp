@@ -8,6 +8,7 @@
  */
 
 #include "o3d/engine/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 
 #include "o3d/engine/vertexarray.h"
 #include "o3d/engine/glextensionmanager.h"

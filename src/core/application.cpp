@@ -54,11 +54,6 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
     DateTime::init();
     Uuid::init();
 
-    // only if display
-    if (settings.m_display) {
-        apiInitPrivate();
-    }
-
     // Get the application name and path
     getBaseNamePrivate(argc, argv);
 
@@ -80,6 +75,11 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 
 	// Math initialization
 	Math::init();
+
+    // only if display
+    if (settings.m_display) {
+        apiInitPrivate();
+    }
 
     // Video only if display
     if (settings.m_display) {

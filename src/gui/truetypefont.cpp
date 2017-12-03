@@ -8,12 +8,12 @@
  */
 
 #include "o3d/gui/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/gui/truetypefont.h"
 #include "o3d/gui/fontmaterial.h"
 
 #include "o3d/core/filemanager.h"
 #include "o3d/core/architecture.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/material/material.h"
 #include "o3d/engine/texture/texturemanager.h"

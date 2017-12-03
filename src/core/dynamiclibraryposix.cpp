@@ -25,22 +25,21 @@ using namespace o3d;
 
 DynamicLibrary* DynamicLibrary::load(const String &name)
 {
-	String fullPath = FileManager::instance()->getFullFileName(name);
     for (std::list<DynamicLibrary*>::iterator it = ms_libraries.begin(); it != ms_libraries.end(); ++it) {
-        if ((*it)->m_name == fullPath) {
+        if ((*it)->m_name == name) {
             O3D_ERROR(E_DynamicLibraryException("Already loaded library " + name));
         }
 	}
 
 	DynamicLibrary *library = new DynamicLibrary;
 
-	library->m_instance = dlopen(fullPath.toUtf8().getData(), RTLD_LAZY);
+    library->m_instance = dlopen(name.toUtf8().getData(), RTLD_LAZY);
     if (!library->m_instance) {
 		deletePtr(library);
-        O3D_ERROR(E_DynamicLibraryException("Cannot load library " + fullPath));
+        O3D_ERROR(E_DynamicLibraryException("Cannot load library " + name));
 	}
 
-	library->m_name = fullPath;
+    library->m_name = name;
 	ms_libraries.push_back(library);
 
 	return library;

@@ -8,13 +8,13 @@
  */
 
 #include "o3d/gui/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/gui/textzone.h"
 
 #include "o3d/core/stringtokenizer.h"
 #include "o3d/gui/gui.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/object/primitivemanager.h"
 #include "o3d/core/templatemanager.h"
 

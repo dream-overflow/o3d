@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/base.h"
 
-/* ONLY IF O3D_SDL IS SELECTED */
-#ifdef O3D_SDL
+/* ONLY IF O3D_SDL2 IS SELECTED */
+#ifdef O3D_SDL2
 
 #include "o3d/core/keyboard.h"
 
@@ -144,5 +144,4 @@ void Keyboard::release()
 	}
 }
 
-#endif // O3D_SDL
-
+#endif // O3D_SDL2

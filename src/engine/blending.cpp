@@ -10,6 +10,7 @@
 #include "o3d/engine/blending.h"
 #include "o3d/core/debug.h"
 
+#include "o3d/engine/glextdefines.h"
 #include "o3d/engine/glextensionmanager.h"
 
 using namespace o3d;
@@ -565,4 +566,3 @@ void Blending::setEquation(UInt32 drawBuffer, Blending::Equation rgb, Blending::
     glBlendEquationSeparatei(drawBuffer, rgb, a);
     buffer->equations = (Equation)0;
 }
-

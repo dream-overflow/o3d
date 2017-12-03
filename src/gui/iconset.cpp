@@ -8,12 +8,12 @@
  */
 
 #include "o3d/gui/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/gui/iconset.h"
 
 #include "o3d/core/architecture.h"
 #include "o3d/core/xmldoc.h"
 #include "o3d/core/diskfileinfo.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"

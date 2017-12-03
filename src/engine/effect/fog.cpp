@@ -11,7 +11,6 @@
 #include "o3d/engine/effect/fog.h"
 
 #include "o3d/core/debug.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/scene/scene.h"
 
@@ -141,4 +140,3 @@ Bool Fog::readFromFile(InStream &is)
 
 	return True;
 }
-

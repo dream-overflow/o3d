@@ -1,9 +1,14 @@
 # - Config file for the Objective3D package
 # It defines the following variables
 #  O3D_USE_SSE2 - 1 if Objective3D is compiled with SSE2 support
+#  O3D_USE_SDL2 - 1 if Objective3D is compiled with SDL2 support
+#  O3D_VERSION  - Objective3D Version
  
 # SSE2 support
 set(O3D_USE_SSE2 @O3D_USE_SSE2@)
+
+# SDL2 support
+set(O3D_USE_SDL2 @O3D_USE_SDL2@)
 
 # Objective 3D version
 set(O3D_VERSION @O3D_VERSION@)

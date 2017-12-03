@@ -13,7 +13,6 @@
 #include "o3d/audio/audiotype.h"
 #include "o3d/audio/audio.h"
 #include "o3d/audio/audiorenderer.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/object/primitivemanager.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"
@@ -368,4 +367,3 @@ Bool SndListener::readFromFile(InStream &is)
 
 	return True;
 }
-

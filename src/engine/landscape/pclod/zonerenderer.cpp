@@ -632,14 +632,10 @@ void PCLODZoneRenderer::drawWireFrame()
 
 void PCLODZoneRenderer::drawBounding()
 {
-	getScene()->getContext()->setLineSize(2.0f);
-
 	getScene()->getPrimitiveManager()->bind();
 	getScene()->getPrimitiveManager()->boundingBox(
 			m_infos.bounding,
 			Color(0.0f, 0.0f, 1.0f));
 	getScene()->getPrimitiveManager()->unbind();
-
-	getScene()->getContext()->setDefaultLineSize();
 }
 

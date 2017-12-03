@@ -14,11 +14,13 @@
 #ifdef O3D_X11
 
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <X11/extensions/xf86vmode.h>
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
-#include <GL/glx.h>
 
+#include <o3d/core/glxdefines.h>
+#include <o3d/core/glx.h>
 #include "o3d/core/debug.h"
 #include "o3d/core/application.h"
 #include "o3d/core/video.h"
@@ -622,14 +624,14 @@ void AppWindow::applySettings(Bool fullScreen)
 	int glxMajor, glxMinor;
 
 	// FBConfigs were added in GLX version 1.3.
-	if (!glXQueryVersion(display, &glxMajor, &glxMinor) ||
+    if (!GLX::queryVersion(display, &glxMajor, &glxMinor) ||
         ((glxMajor == 1) && (glxMinor < 4)) || (glxMajor < 1)) {
 
         O3D_ERROR(E_InvalidResult("Invalid GLX version. Need 1.4+"));
 	}
 
 	int fbCount;
-	GLXFBConfig *glxFBConfig = glXChooseFBConfig(
+    GLXFBConfig *glxFBConfig = GLX::chooseFBConfig(
 			display,
 			DefaultScreen(display),
 			visualAttribs,
@@ -643,12 +645,12 @@ void AppWindow::applySettings(Bool fullScreen)
 	int bestFBC = -1, worstFBC = -1, bestNumSamp = -1, worstNumSamp = 999;
 
     for (int i = 0; i < fbCount; i++) {
-		XVisualInfo *vi = glXGetVisualFromFBConfig(display, glxFBConfig[i]);
+        XVisualInfo *vi = GLX::getVisualFromFBConfig(display, glxFBConfig[i]);
         if (vi) {
 			int sampBuf, samples;
 
-			glXGetFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLE_BUFFERS, &sampBuf);
-			glXGetFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLES, &samples);
+            GLX::getFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLE_BUFFERS, &sampBuf);
+            GLX::getFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLES, &samples);
 
 			O3D_MESSAGE(String::print(
 					"Matching fbconfig %d, visual ID 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d",
@@ -677,7 +679,7 @@ void AppWindow::applySettings(Bool fullScreen)
 	XFree(glxFBConfig);
 
 	// Get a visual info from the chosen FB config
-	XVisualInfo *visualInfo = glXGetVisualFromFBConfig(display, bestFbc);
+    XVisualInfo *visualInfo = GLX::getVisualFromFBConfig(display, bestFbc);
 	O3D_MESSAGE(String::print("Chosen visual ID = 0x%x", visualInfo->visualid));
 
 	XSetWindowAttributes windowAttr;
@@ -1262,7 +1264,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 void AppWindow::swapBuffers()
 {
     if (m_hWnd) {
-		glXSwapBuffers(
+        GLX::swapBuffers(
 				reinterpret_cast<Display*> (Application::getDisplay()),
 				static_cast<Window> (m_hWnd));
     }

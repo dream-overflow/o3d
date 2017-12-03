@@ -8,10 +8,10 @@
  */
 
 #include "o3d/gui/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/gui/widgets/picture.h"
 #include "o3d/gui/guitype.h"
 
-#include "o3d/engine/gl.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"
@@ -116,4 +116,3 @@ Vector2i Picture::getDefaultSize()
 {
     return Vector2i(1, 1);
 }
-

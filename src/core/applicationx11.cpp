@@ -25,6 +25,9 @@ typedef o3d::Bool oBool;
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
+#include "o3d/core/glxdefines.h"
+#include "o3d/core/glx.h"
+
 using namespace o3d;
 
 static Bool setDetectableAutoRepeat = False;
@@ -69,6 +72,8 @@ static int o3dXErrorHandler(Display* display, XErrorEvent* error_event)
 
 void Application::apiInitPrivate()
 {
+    GLX::init();
+
 	// because our app is multi-threaded
 	XInitThreads();
 

@@ -18,11 +18,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class E_DynamicLibraryException
-//-------------------------------------------------------------------------------------
-//! Exception on loading a dynamic library
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Exception on loading a dynamic library
+ */
 class O3D_API E_DynamicLibraryException : public E_BaseException
 {
 	O3D_E_DEF_CLASS(E_DynamicLibraryException)
@@ -32,12 +30,10 @@ class O3D_API E_DynamicLibraryException : public E_BaseException
 		O3D_E_DEF(E_DynamicLibraryException,"Unable to load the dynamic library")
 };
 
-//---------------------------------------------------------------------------------------
-//! @class DynamicLibrary
-//-------------------------------------------------------------------------------------
-//! Give the capacity to dynamically load a library (.so, .dll). The loaded library
-//! must implement this class and add the O3D_DYNAMIC_LIBRARY(CLASSNAME).
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Give the capacity to dynamically load a library (.so, .dll). The loaded library
+ * must implement this class and add the O3D_DYNAMIC_LIBRARY(CLASSNAME).
+ */
 class O3D_API DynamicLibrary
 {
 public:

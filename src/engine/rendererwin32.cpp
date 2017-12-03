@@ -116,7 +116,10 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 
 	Int32 queryMajor = 1;
 	Int32 queryMinor = 0;
-	
+
+    // we can retrieve glGetString now
+    glGetString = (PFNGLGETSTRINGPROC)wglGetProcAddress("glGetString");
+
 	const GLubyte *version = glGetString(GL_VERSION);
 	if (version && (version[0] == '3'))
 	{
@@ -150,7 +153,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	}
 
 	//
-	// Create an OpenGL context with glXCreateContextAttribsARB
+    // Create an OpenGL context with wglGetExtensionsStringARB
 	//
 
 	PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
@@ -218,11 +221,11 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getVersion());
 
+    GLExtensionManager::init();
+
 	version = glGetString(GL_VERSION);
 	if (version && (version[0] == '1'))
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
-
-	GLExtensionManager::initialize();
 
 	// compute the gl version
 	Int32 glVersion = (version[0] - '0') * 100 + (version[2] - '0') * 10;
@@ -285,6 +288,9 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	Int32 queryMajor = 1;
 	Int32 queryMinor = 0;
 
+    // we can retrieve glGetString now
+    glGetString = (PFNGLGETSTRINGPROC)wglGetProcAddress("glGetString");
+
 	const GLubyte *version = glGetString(GL_VERSION);
 	if (version && (version[0] == '3'))
 	{
@@ -318,7 +324,7 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	}
 
 	//
-	// Create an OpenGL context with glXCreateContextAttribsARB
+    // Create an OpenGL context with wglGetExtensionsStringARB
 	//
 
 	PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
@@ -386,11 +392,11 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getVersion());
 
+    GLExtensionManager::init();
+
 	version = glGetString(GL_VERSION);
 	if (version && (version[0] == '1'))
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
-
-	GLExtensionManager::initialize();
 
 	// compute the gl version
 	Int32 glVersion = (version[0] - '0') * 100 + (version[2] - '0') * 10;

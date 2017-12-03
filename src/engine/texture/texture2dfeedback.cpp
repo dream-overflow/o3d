@@ -8,11 +8,11 @@
  */
 
 #include "o3d/engine/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/texture/texture2d.h"
 #include "o3d/engine/texture/texture2dfeedback.h"
 #include "o3d/engine/context.h"
-#include "o3d/engine/glextdefines.h"
 
 using namespace o3d;
 

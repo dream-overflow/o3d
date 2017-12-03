@@ -8,14 +8,15 @@
  */
 
 #include "o3d/engine/precompiled.h"
+
+#include "o3d/engine/glextdefines.h"
+#include "o3d/engine/glextensionmanager.h"
+
 #include "o3d/engine/renderer.h"
 #include "o3d/engine/context.h"
 
 #include "o3d/core/debug.h"
 #include "o3d/core/appwindow.h"
-
-#include "o3d/core/architecture.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/engineerror.h"
 
 using namespace o3d;

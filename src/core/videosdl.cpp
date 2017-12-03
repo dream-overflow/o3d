@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/base.h"
 
-/* ONLY IF O3D_SDL IS SELECTED */
-#ifdef O3D_SDL
+/* ONLY IF O3D_SDL2 IS SELECTED */
+#ifdef O3D_SDL2
 
 #include "o3d/core/appwindow.h"
 #include "o3d/core/video.h"
@@ -133,5 +133,5 @@ void Video::listDisplayModes()
 	m_desktop = m_currentMode = findDisplayMode(desktop);
 }
 
-#endif // O3D_SDL
+#endif // O3D_SDL2
 

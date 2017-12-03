@@ -18,7 +18,7 @@ namespace o3d {
 // Base typedef definitions
 //---------------------------------------------------------------------------------------
 
-#if (defined(__UNIX__) || defined(__APPLE__))
+#if (defined(O3D_UNIX) || defined(O3D_MACOSX))
     typedef char                    Char;   //!< an (unsigned) bits char
     typedef char                    Int8;   //!< A signed 8 bits char
     typedef unsigned char           UInt8;  //!< An unsigned 8 bits char
@@ -54,8 +54,7 @@ namespace o3d {
     const Bool False = false;
 #else
 	#error "<< Unknown architecture ! >>"
-#endif // __UNIX__
-
+#endif
 
 //---------------------------------------------------------------------------------------
 // Some WINDOWS specifics types
@@ -107,7 +106,7 @@ namespace o3d {
     const _HGLRC NULL_HGLRC = nullptr;
     const _HINSTANCE NULL_HINSTANCE = nullptr;
 
-#elif defined(O3D_SDL)
+#elif defined(O3D_SDL2)
 
     typedef void* _DISP;        //!< Display handle (null in SDL).
     typedef Int32 _SCREEN;      //!< Screen handle.
@@ -145,8 +144,7 @@ namespace o3d {
 
 #else
 	#error "<< Unknown architecture ! >>"
-#endif // O3D_WIN32
-
+#endif
 
 //---------------------------------------------------------------------------------------
 // Types ranges

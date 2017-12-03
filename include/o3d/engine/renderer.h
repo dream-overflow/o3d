@@ -51,16 +51,6 @@ public:
     enum Version
     {
         OGL_UNDEFINED = 0,
-        OGL_110 = 110,
-        OGL_120 = 120,
-        OGL_130 = 130,
-        OGL_140 = 140,
-        OGL_150 = 150,
-        OGL_200 = 200,
-        OGL_210 = 210,
-        OGL_300 = 300,
-        OGL_310 = 310,
-        OGL_320 = 320,
         OGL_330 = 330,
         OGL_400 = 400,
         OGL_410 = 410,

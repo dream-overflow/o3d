@@ -44,64 +44,65 @@ AttenuationTex3D::~AttenuationTex3D()
 // set the warp mode to OpenGL
 void AttenuationTex3D::setWrapMode()
 {
-	if ((m_updateFlags & UPDATE_WRAPMODE) != UPDATE_WRAPMODE)
+    if ((m_updateFlags & UPDATE_WRAPMODE) != UPDATE_WRAPMODE) {
 		return;
+    }
 
 	m_updateFlags ^= UPDATE_WRAPMODE;
 
-	switch (m_wrap)
-	{
-	case Texture::CLAMP:
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_R,GL_CLAMP_TO_EDGE);
-		break;
+    switch (m_wrap) {
+        case Texture::CLAMP:
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_R,GL_CLAMP_TO_EDGE);
+            break;
 
-	default:  // clamp
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_R,GL_CLAMP_TO_EDGE);
-		break;
+        default:  // clamp
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_R,GL_CLAMP_TO_EDGE);
+            break;
 	}
 }
 
 // set le mode de filtering pour le cube-map
 void AttenuationTex3D::setFilteringMode()
 {
-	if ((m_updateFlags & UPDATE_FILTERING) != UPDATE_FILTERING)
-			return;
+    if ((m_updateFlags & UPDATE_FILTERING) != UPDATE_FILTERING) {
+        return;
+    }
 
 	m_updateFlags ^= UPDATE_FILTERING;
 
-	if ((m_updateFlags & UPDATE_ANISOTROPY) == UPDATE_ANISOTROPY)
+    if ((m_updateFlags & UPDATE_ANISOTROPY) == UPDATE_ANISOTROPY) {
 		m_updateFlags ^= UPDATE_ANISOTROPY;
+    }
 
-	switch (m_filtering)
-	{
-	case Texture::LINEAR_FILTERING:
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_3D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.f);
-		break;
+    switch (m_filtering) {
+        case Texture::LINEAR_FILTERING:
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_3D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.f);
+            break;
 
-	default:	// linear
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_3D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.f);
-		break;
+        default:	// linear
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_3D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.f);
+            break;
 	}
 }
 
 // Apply texture anisotropy level.
 void AttenuationTex3D::setAnisotropyLevel()
 {
-	if ((m_updateFlags & UPDATE_ANISOTROPY) != UPDATE_ANISOTROPY)
-			return;
+    if ((m_updateFlags & UPDATE_ANISOTROPY) != UPDATE_ANISOTROPY) {
+        return;
+    }
 
 	m_updateFlags ^= UPDATE_ANISOTROPY;
 
-	switch (m_filtering)
-	{
+    switch (m_filtering) {
 		case Texture::LINEAR_FILTERING:
 			glTexParameterf(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.f);
 			break;
@@ -125,11 +126,13 @@ Bool AttenuationTex3D::create()
 	setWrapMode();
 	setAnisotropyLevel();
 
-	if (m_filtering != 1)
+    if (m_filtering != 1) {
 		O3D_ERROR(E_InvalidParameter("Unsupported filtering mode"));
+    }
 
-	if (m_wrap != Texture::CLAMP)
+    if (m_wrap != Texture::CLAMP) {
 		O3D_ERROR(E_InvalidParameter("Unsupported warp mode"));
+    }
 
 	UInt8* data1d = new UInt8[m_size];
 	UInt8* data3d = new UInt8[m_size*m_size*m_size];
@@ -139,8 +142,7 @@ Bool AttenuationTex3D::create()
 	Float invSize  = 1.f / halfSize;
 
 	// Attenuation 3D Texture Generation
-	for (i = 0 ; i < m_size ; ++i)
-	{
+    for (i = 0 ; i < m_size ; ++i) {
 		// Get distance from center to this point
 		Float dist = (Float)i;
 		dist -= halfSize;
@@ -161,16 +163,13 @@ Bool AttenuationTex3D::create()
 	int currentByte = 0;
 	UInt8 dataI, dataJ, dataK;
 
-	for (i = 0 ; i < m_size ; i++)
-	{
+    for (i = 0 ; i < m_size ; i++) {
 		dataI = data1d[i];
 
-		for (j = 0 ; j < m_size ; j++)
-		{
+        for (j = 0 ; j < m_size ; j++) {
 			dataJ = data1d[j];
 
-			for (k = 0; k < m_size; k++)
-			{
+            for (k = 0; k < m_size; k++) {
 				dataK = data1d[k];
 
 				UInt32 newData = dataI + dataJ + dataK;
@@ -188,10 +187,11 @@ Bool AttenuationTex3D::create()
 
 	deleteArray(data1d);
 
-	if (((m_size*m_size*m_size) % 4) == 0)
+    if (((m_size*m_size*m_size) % 4) == 0) {
 		glPixelStorei(GL_UNPACK_ALIGNMENT,4);
-	else
+    } else {
 		glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+    }
 
 	glTexImage3D(
 		GL_TEXTURE_3D,
@@ -209,14 +209,12 @@ Bool AttenuationTex3D::create()
 	getScene()->getContext()->bindTexture(TEXTURE_3D,0);
 
 	Int32 size = m_size*m_size*m_size;
-    if (getScene()->getRenderer()->getVersion() <= Renderer::OGL_210) {
-		size *= 4;
-    }
 
-	if (create)
+    if (create) {
 		O3D_GALLOC(MemoryManager::GPU_TEXTURE_3D, m_textureId, size);
-	else
+    } else {
 		O3D_GREALLOC(MemoryManager::GPU_TEXTURE_3D, m_textureId, size);
+    }
 
 	deleteArray(data3d);
 
@@ -242,8 +240,7 @@ void AttenuationTex3D::unSet()
 // bind this texture to the current texture unit
 Bool AttenuationTex3D::bind()
 {
-	if (isValid())
-	{
+    if (isValid()) {
 		getScene()->getContext()->bindTexture(TEXTURE_3D, m_textureId);
 
 		setFilteringMode();
@@ -264,8 +261,9 @@ void AttenuationTex3D::unbind()
 // Serialization
 Bool AttenuationTex3D::writeToFile(OutStream &os)
 {
-    if (!Texture::writeToFile(os))
+    if (!Texture::writeToFile(os)) {
 		return False;
+    }
 
     os << m_size;
 
@@ -274,8 +272,9 @@ Bool AttenuationTex3D::writeToFile(OutStream &os)
 
 Bool AttenuationTex3D::readFromFile(InStream &is)
 {
-    if (!Texture::readFromFile(is))
+    if (!Texture::readFromFile(is)) {
 		return False;
+    }
 
     is >> m_size;
 

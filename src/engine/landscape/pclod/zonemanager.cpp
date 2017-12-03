@@ -541,7 +541,6 @@ void PCLODZoneManager::draw()
 		m_pTerrain->getScene()->getContext()->setCullingMode(CULLING_NONE);
         m_pTerrain->getScene()->getContext()->blending().setFunc(Blending::DISABLED);
 		m_pTerrain->getScene()->getContext()->setDrawingMode(Context::DRAWING_WIREFRAME);
-		m_pTerrain->getScene()->getContext()->setLineSize(3.0f);
 
 		// We draw the quadtree attached to the camera
 		Vector2ui halfSize = Vector2ui(m_visibleZoneArray.width()/2, m_visibleZoneArray.height()/2);
@@ -576,8 +575,6 @@ void PCLODZoneManager::draw()
 		}
 
 		primitive->endDraw();
-
-		m_pTerrain->getScene()->getContext()->setDefaultLineSize();
 
 		primitive->setColor(1,1,1);
 		primitive->beginDraw(P_LINES);

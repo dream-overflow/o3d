@@ -28,7 +28,9 @@ set(nvtristrip
 	../third/nvTriStrip/NvTriStrip.cpp
 	../third/nvTriStrip/NvTriStripObjects.cpp)
 
-link_directories(${SDL2_LIBDIR})
+if(${O3D_USE_SDL2})
+    link_directories(${SDL2_LIBDIR})
+endif()
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
 	set(O3D_LIB_NAME objective3d-dbg)
@@ -55,15 +57,19 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 			pthread
 			${ZLIB_LIBRARY}
 			${JPEG_LIBRARY}
-			rt
-			${XRANDR_LIBRARY}
-			${PNG_LIBRARY}
-			${OGG_LIBRARY}
-			${VORBIS_LIBRARY}
-			${VORBISFILE_LIBRARY}
-			${OPENAL_LIBRARY}
-			${SDL2_LIBRARIES}
-			${FREETYPE_LIBRARIES})
+            rt
+            ${XRANDR_LIBRARY}
+            ${PNG_LIBRARY}
+            ${OGG_LIBRARY}
+            ${VORBIS_LIBRARY}
+            ${VORBISFILE_LIBRARY}
+            ${OPENAL_LIBRARY}
+            ${FREETYPE_LIBRARIES})
+
+   if(${O3D_USE_SDL2})
+        target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
+    endif()
+
 ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	target_link_libraries(${O3D_LIB_NAME}
 			pthread
@@ -75,8 +81,12 @@ ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 			vorbis
 			vorbisfile
 			openal
-			${SDL2_LIBRARIES}
 			${FREETYPE_LIBRARIES})
+
+    if(${O3D_USE_SDL2})
+        target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
+    endif()
+
 ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	target_link_libraries(${O3D_LIB_NAME}
 			${PNG_LIBRARY}
@@ -86,22 +96,31 @@ ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 			${VORBIS_LIBRARY}
 			${VORBISFILE_LIBRARY}
 			${OPENAL_LIBRARY}
-	#		${SDL2_LIBRARIES}
 			${FREETYPE_LIBRARIES}
 			${OPENGL_LIBRARY})
-ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	#	target_link_libraries({O3D_LIB_NAME}
-	#		${OPENGL_gl_LIBRARY}
-	#		zlib
-	#		libjpeg
-	#		libpng
-	#		libogg
-	#		libvorbis
-	#		libvorbisfile
-	#		freetype235MT
-	#		OpenAL32)
-ENDIF()
 
+    if(${O3D_USE_SDL2})
+        target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
+    endif()
+
+ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    # todo upgrade and more cmake like
+    target_link_libraries({O3D_LIB_NAME}
+            ${OPENGL_gl_LIBRARY}
+            zlib
+            libjpeg
+            libpng
+            libogg
+            libvorbis
+            libvorbisfile
+            freetype235MT
+            OpenAL32)
+
+    if(${O3D_USE_SDL2})
+        target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
+    endif()
+
+ENDIF()
 
 # build shaders
 add_custom_target(copy_shaders 
@@ -114,9 +133,15 @@ add_custom_target(zip_shaders
     	"shaders")
 
 #execute_process(
-#    COMMAND
-#        "zip -r shaders.zip"
-#        	"${CMAKE_CURRENT_SOURCE_DIR}/shaders" 
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory
+#			"${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+#    		"${CMAKE_CURRENT_BINARY_DIR}/shaders/"
+#    RESULT_VARIABLE _result
+#)
+
+#execute_process(
+#    COMMAND zip -r shaders.zip
+#        "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
 #    RESULT_VARIABLE _result
 #)
 

@@ -10,7 +10,6 @@
 #include "o3d/audio/precompiled.h"
 
 #include "o3d/core/architecture.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/matrix.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/hierarchy/hierarchytree.h"
@@ -1373,4 +1372,3 @@ void SndSourceManager::unRegisterSource(SndSource *sndSource)
 		}
 	}
 }
-

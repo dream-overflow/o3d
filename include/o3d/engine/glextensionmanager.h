@@ -12,9 +12,10 @@
 
 #include "o3d/core/string.h"
 #include "o3d/core/memorydbg.h"
-#include "gl.h"
 
 namespace o3d {
+
+class DynamicLibrary;
 
 /**
  * @brief OpenGL extension manager.
@@ -31,7 +32,7 @@ public:
      * Initialize the extension manager. Depending of the build options and target
      * get OpenGL function pointers.
      */
-	static void initialize();
+    static void init();
 
     /**
      * @brief isExtensionSupported Check for an extension.
@@ -60,7 +61,8 @@ public:
 
 private:
 
-	static Bool m_valid;
+    static Bool ms_valid;
+    static DynamicLibrary *ms_openGL;
 
 	static void getExtFunctions();
 };
@@ -94,6 +96,24 @@ extern "C" {
 	#endif
 #endif
 
+/* Base GL types */
+
+typedef unsigned int GLenum;
+typedef unsigned char GLboolean;
+typedef unsigned int GLbitfield;
+typedef signed char GLbyte;
+typedef short GLshort;
+typedef int GLint;
+typedef int GLsizei;
+typedef unsigned char GLubyte;
+typedef unsigned short GLushort;
+typedef unsigned int GLuint;
+typedef float GLfloat;
+typedef float GLclampf;
+typedef double GLdouble;
+typedef double GLclampd;
+typedef void GLvoid;
+
 //
 // GL_ARB_sync
 //
@@ -105,6 +125,220 @@ typedef o3d::Int64 GLint64;
 typedef o3d::UInt64 GLuint64;
 typedef struct __GLsync *GLsync;
 #endif
+
+//
+// GL_VERSION_1_0
+//
+
+#ifndef GL_VERSION_1_0
+#define GL_VERSION_1_0 1
+#define O3D_GL_VERSION_1_0 1
+
+#ifndef O3D_GL_PROTOTYPES
+typedef void (APIENTRYP PFNGLCULLFACEPROC) (GLenum mode);
+typedef void (APIENTRYP PFNGLFRONTFACEPROC) (GLenum mode);
+typedef void (APIENTRYP PFNGLHINTPROC) (GLenum target, GLenum mode);
+typedef void (APIENTRYP PFNGLLINEWIDTHPROC) (GLfloat width);
+typedef void (APIENTRYP PFNGLPOINTSIZEPROC) (GLfloat size);
+typedef void (APIENTRYP PFNGLPOLYGONMODEPROC) (GLenum face, GLenum mode);
+typedef void (APIENTRYP PFNGLSCISSORPROC) (GLint x, GLint y, GLsizei width, GLsizei height);
+typedef void (APIENTRYP PFNGLTEXPARAMETERFPROC) (GLenum target, GLenum pname, GLfloat param);
+typedef void (APIENTRYP PFNGLTEXPARAMETERFVPROC) (GLenum target, GLenum pname, const GLfloat *params);
+typedef void (APIENTRYP PFNGLTEXPARAMETERIPROC) (GLenum target, GLenum pname, GLint param);
+typedef void (APIENTRYP PFNGLTEXPARAMETERIVPROC) (GLenum target, GLenum pname, const GLint *params);
+typedef void (APIENTRYP PFNGLTEXIMAGE1DPROC) (GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+typedef void (APIENTRYP PFNGLTEXIMAGE2DPROC) (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+typedef void (APIENTRYP PFNGLDRAWBUFFERPROC) (GLenum mode);
+typedef void (APIENTRYP PFNGLCLEARPROC) (GLbitfield mask);
+typedef void (APIENTRYP PFNGLCLEARCOLORPROC) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+typedef void (APIENTRYP PFNGLCLEARSTENCILPROC) (GLint s);
+typedef void (APIENTRYP PFNGLCLEARDEPTHPROC) (GLclampd depth);
+typedef void (APIENTRYP PFNGLSTENCILMASKPROC) (GLuint mask);
+typedef void (APIENTRYP PFNGLCOLORMASKPROC) (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+typedef void (APIENTRYP PFNGLDEPTHMASKPROC) (GLboolean flag);
+typedef void (APIENTRYP PFNGLDISABLEPROC) (GLenum cap);
+typedef void (APIENTRYP PFNGLENABLEPROC) (GLenum cap);
+typedef void (APIENTRYP PFNGLFINISHPROC) (void);
+typedef void (APIENTRYP PFNGLFLUSHPROC) (void);
+typedef void (APIENTRYP PFNGLBLENDFUNCPROC) (GLenum sfactor, GLenum dfactor);
+typedef void (APIENTRYP PFNGLLOGICOPPROC) (GLenum opcode);
+typedef void (APIENTRYP PFNGLSTENCILFUNCPROC) (GLenum func, GLint ref, GLuint mask);
+typedef void (APIENTRYP PFNGLSTENCILOPPROC) (GLenum fail, GLenum zfail, GLenum zpass);
+typedef void (APIENTRYP PFNGLDEPTHFUNCPROC) (GLenum func);
+typedef void (APIENTRYP PFNGLPIXELSTOREFPROC) (GLenum pname, GLfloat param);
+typedef void (APIENTRYP PFNGLPIXELSTOREIPROC) (GLenum pname, GLint param);
+typedef void (APIENTRYP PFNGLREADBUFFERPROC) (GLenum mode);
+typedef void (APIENTRYP PFNGLREADPIXELSPROC) (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
+typedef void (APIENTRYP PFNGLGETBOOLEANVPROC) (GLenum pname, GLboolean *params);
+typedef void (APIENTRYP PFNGLGETDOUBLEVPROC) (GLenum pname, GLdouble *params);
+typedef GLenum (APIENTRYP PFNGLGETERRORPROC) (void);
+typedef void (APIENTRYP PFNGLGETFLOATVPROC) (GLenum pname, GLfloat *params);
+typedef void (APIENTRYP PFNGLGETINTEGERVPROC) (GLenum pname, GLint *params);
+typedef const GLubyte * (APIENTRYP PFNGLGETSTRINGPROC) (GLenum name);
+typedef void (APIENTRYP PFNGLGETTEXIMAGEPROC) (GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels);
+typedef void (APIENTRYP PFNGLGETTEXPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
+typedef void (APIENTRYP PFNGLGETTEXPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
+typedef void (APIENTRYP PFNGLGETTEXLEVELPARAMETERFVPROC) (GLenum target, GLint level, GLenum pname, GLfloat *params);
+typedef void (APIENTRYP PFNGLGETTEXLEVELPARAMETERIVPROC) (GLenum target, GLint level, GLenum pname, GLint *params);
+typedef GLboolean (APIENTRYP PFNGLISENABLEDPROC) (GLenum cap);
+typedef void (APIENTRYP PFNGLDEPTHRANGEPROC) (GLclampd near, GLclampd far);
+typedef void (APIENTRYP PFNGLVIEWPORTPROC) (GLint x, GLint y, GLsizei width, GLsizei height);
+
+O3D_GLAPI PFNGLCULLFACEPROC glCullFace;
+O3D_GLAPI PFNGLFRONTFACEPROC glFrontFace;
+O3D_GLAPI PFNGLHINTPROC glHint;
+O3D_GLAPI PFNGLLINEWIDTHPROC glLineWidth;
+O3D_GLAPI PFNGLPOINTSIZEPROC glPointSize;
+O3D_GLAPI PFNGLPOLYGONMODEPROC glPolygonMode;
+O3D_GLAPI PFNGLSCISSORPROC glScissor;
+O3D_GLAPI PFNGLTEXPARAMETERFPROC glTexParameterf;
+O3D_GLAPI PFNGLTEXPARAMETERFVPROC glTexParameterfv;
+O3D_GLAPI PFNGLTEXPARAMETERIPROC glTexParameteri;
+O3D_GLAPI PFNGLTEXPARAMETERIVPROC glTexParameteriv;
+O3D_GLAPI PFNGLTEXIMAGE1DPROC glTexImage1D;
+O3D_GLAPI PFNGLTEXIMAGE2DPROC glTexImage2D;
+O3D_GLAPI PFNGLDRAWBUFFERPROC glDrawBuffer;
+O3D_GLAPI PFNGLCLEARPROC glClear;
+O3D_GLAPI PFNGLCLEARCOLORPROC glClearColor;
+O3D_GLAPI PFNGLCLEARSTENCILPROC glClearStencil;
+O3D_GLAPI PFNGLCLEARDEPTHPROC glClearDepth;
+O3D_GLAPI PFNGLSTENCILMASKPROC glStencilMask;
+O3D_GLAPI PFNGLCOLORMASKPROC glColorMask;
+O3D_GLAPI PFNGLDEPTHMASKPROC glDepthMask;
+O3D_GLAPI PFNGLDISABLEPROC glDisable;
+O3D_GLAPI PFNGLENABLEPROC glEnable;
+O3D_GLAPI PFNGLFINISHPROC glFinish;
+O3D_GLAPI PFNGLFLUSHPROC glFlush;
+O3D_GLAPI PFNGLBLENDFUNCPROC glBlendFunc;
+O3D_GLAPI PFNGLLOGICOPPROC glLogicOp;
+O3D_GLAPI PFNGLSTENCILFUNCPROC glStencilFunc;
+O3D_GLAPI PFNGLSTENCILOPPROC glStencilOp;
+O3D_GLAPI PFNGLDEPTHFUNCPROC glDepthFunc;
+O3D_GLAPI PFNGLPIXELSTOREFPROC glPixelStoref;
+O3D_GLAPI PFNGLPIXELSTOREIPROC glPixelStorei;
+O3D_GLAPI PFNGLREADBUFFERPROC glReadBuffer;
+O3D_GLAPI PFNGLREADPIXELSPROC glReadPixels;
+O3D_GLAPI PFNGLGETBOOLEANVPROC glGetBooleanv;
+O3D_GLAPI PFNGLGETDOUBLEVPROC glGetDoublev;
+O3D_GLAPI PFNGLGETERRORPROC glGetError;
+O3D_GLAPI PFNGLGETFLOATVPROC glGetFloatv;
+O3D_GLAPI PFNGLGETINTEGERVPROC glGetIntegerv;
+O3D_GLAPI PFNGLGETSTRINGPROC glGetString;
+O3D_GLAPI PFNGLGETTEXIMAGEPROC glGetTexImage;
+O3D_GLAPI PFNGLGETTEXPARAMETERFVPROC glGetTexParameterfv;
+O3D_GLAPI PFNGLGETTEXPARAMETERIVPROC glGetTexParameteriv;
+O3D_GLAPI PFNGLGETTEXLEVELPARAMETERFVPROC glGetTexLevelParameterfv;
+O3D_GLAPI PFNGLGETTEXLEVELPARAMETERIVPROC glGetTexLevelParameteriv;
+O3D_GLAPI PFNGLISENABLEDPROC glIsEnabled;
+O3D_GLAPI PFNGLDEPTHRANGEPROC glDepthRange;
+O3D_GLAPI PFNGLVIEWPORTPROC glViewport;
+#else
+O3D_GLAPI void APIENTRY glCullFace (GLenum mode);
+O3D_GLAPI void APIENTRY glFrontFace (GLenum mode);
+O3D_GLAPI void APIENTRY glHint (GLenum target, GLenum mode);
+O3D_GLAPI void APIENTRY glLineWidth (GLfloat width);
+O3D_GLAPI void APIENTRY glPointSize (GLfloat size);
+O3D_GLAPI void APIENTRY glPolygonMode (GLenum face, GLenum mode);
+O3D_GLAPI void APIENTRY glScissor (GLint x, GLint y, GLsizei width, GLsizei height);
+O3D_GLAPI void APIENTRY glTexParameterf (GLenum target, GLenum pname, GLfloat param);
+O3D_GLAPI void APIENTRY glTexParameterfv (GLenum target, GLenum pname, const GLfloat *params);
+O3D_GLAPI void APIENTRY glTexParameteri (GLenum target, GLenum pname, GLint param);
+O3D_GLAPI void APIENTRY glTexParameteriv (GLenum target, GLenum pname, const GLint *params);
+O3D_GLAPI void APIENTRY glTexImage1D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+O3D_GLAPI void APIENTRY glTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+O3D_GLAPI void APIENTRY glDrawBuffer (GLenum mode);
+O3D_GLAPI void APIENTRY glClear (GLbitfield mask);
+O3D_GLAPI void APIENTRY glClearColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+O3D_GLAPI void APIENTRY glClearStencil (GLint s);
+O3D_GLAPI void APIENTRY glClearDepth (GLclampd depth);
+O3D_GLAPI void APIENTRY glStencilMask (GLuint mask);
+O3D_GLAPI void APIENTRY glColorMask (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+O3D_GLAPI void APIENTRY glDepthMask (GLboolean flag);
+O3D_GLAPI void APIENTRY glDisable (GLenum cap);
+O3D_GLAPI void APIENTRY glEnable (GLenum cap);
+O3D_GLAPI void APIENTRY glFinish (void);
+O3D_GLAPI void APIENTRY glFlush (void);
+O3D_GLAPI void APIENTRY glBlendFunc (GLenum sfactor, GLenum dfactor);
+O3D_GLAPI void APIENTRY glLogicOp (GLenum opcode);
+O3D_GLAPI void APIENTRY glStencilFunc (GLenum func, GLint ref, GLuint mask);
+O3D_GLAPI void APIENTRY glStencilOp (GLenum fail, GLenum zfail, GLenum zpass);
+O3D_GLAPI void APIENTRY glDepthFunc (GLenum func);
+O3D_GLAPI void APIENTRY glPixelStoref (GLenum pname, GLfloat param);
+O3D_GLAPI void APIENTRY glPixelStorei (GLenum pname, GLint param);
+O3D_GLAPI void APIENTRY glReadBuffer (GLenum mode);
+O3D_GLAPI void APIENTRY glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
+O3D_GLAPI void APIENTRY glGetBooleanv (GLenum pname, GLboolean *params);
+O3D_GLAPI void APIENTRY glGetDoublev (GLenum pname, GLdouble *params);
+O3D_GLAPI GLenum APIENTRY glGetError (void);
+O3D_GLAPI void APIENTRY glGetFloatv (GLenum pname, GLfloat *params);
+O3D_GLAPI void APIENTRY glGetIntegerv (GLenum pname, GLint *params);
+O3D_GLAPI const GLubyte * APIENTRY glGetString (GLenum name);
+O3D_GLAPI void APIENTRY glGetTexImage (GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels);
+O3D_GLAPI void APIENTRY glGetTexParameterfv (GLenum target, GLenum pname, GLfloat *params);
+O3D_GLAPI void APIENTRY glGetTexParameteriv (GLenum target, GLenum pname, GLint *params);
+O3D_GLAPI void APIENTRY glGetTexLevelParameterfv (GLenum target, GLint level, GLenum pname, GLfloat *params);
+O3D_GLAPI void APIENTRY glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint *params);
+O3D_GLAPI GLboolean APIENTRY glIsEnabled (GLenum cap);
+O3D_GLAPI void APIENTRY glDepthRange (GLclampd near, GLclampd far);
+O3D_GLAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
+#endif // O3D_GL_PROTOTYPES
+#endif // GL_VERSION_1_0
+
+//
+// GL_VERSION_1_1
+//
+
+#ifndef GL_VERSION_1_1
+#define GL_VERSION_1_1 1
+#define O3D_GL_VERSION_1_1 1
+
+#ifndef O3D_GL_PROTOTYPES
+typedef void (APIENTRYP PFNGLDRAWARRAYSPROC) (GLenum mode, GLint first, GLsizei count);
+typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC) (GLenum mode, GLsizei count, GLenum type, const GLvoid *indices);
+typedef void (APIENTRYP PFNGLGETPOINTERVPROC) (GLenum pname, GLvoid* *params);
+typedef void (APIENTRYP PFNGLPOLYGONOFFSETPROC) (GLfloat factor, GLfloat units);
+typedef void (APIENTRYP PFNGLCOPYTEXIMAGE1DPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
+typedef void (APIENTRYP PFNGLCOPYTEXIMAGE2DPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
+typedef void (APIENTRYP PFNGLCOPYTEXSUBIMAGE1DPROC) (GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
+typedef void (APIENTRYP PFNGLCOPYTEXSUBIMAGE2DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+typedef void (APIENTRYP PFNGLTEXSUBIMAGE1DPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const GLvoid *pixels);
+typedef void (APIENTRYP PFNGLTEXSUBIMAGE2DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels);
+typedef void (APIENTRYP PFNGLBINDTEXTUREPROC) (GLenum target, GLuint texture);
+typedef void (APIENTRYP PFNGLDELETETEXTURESPROC) (GLsizei n, const GLuint *textures);
+typedef void (APIENTRYP PFNGLGENTEXTURESPROC) (GLsizei n, GLuint *textures);
+typedef GLboolean (APIENTRYP PFNGLISTEXTUREPROC) (GLuint texture);
+
+O3D_GLAPI PFNGLDRAWARRAYSPROC glDrawArrays;
+O3D_GLAPI PFNGLDRAWELEMENTSPROC glDrawElements;
+O3D_GLAPI PFNGLGETPOINTERVPROC glGetPointerv;
+O3D_GLAPI PFNGLPOLYGONOFFSETPROC glPolygonOffset;
+O3D_GLAPI PFNGLCOPYTEXIMAGE1DPROC glCopyTexImage1D;
+O3D_GLAPI PFNGLCOPYTEXIMAGE2DPROC glCopyTexImage2D;
+O3D_GLAPI PFNGLCOPYTEXSUBIMAGE1DPROC glCopyTexSubImage1D;
+O3D_GLAPI PFNGLCOPYTEXSUBIMAGE2DPROC glCopyTexSubImage2D;
+O3D_GLAPI PFNGLTEXSUBIMAGE1DPROC glTexSubImage1D;
+O3D_GLAPI PFNGLTEXSUBIMAGE2DPROC glTexSubImage2D;
+O3D_GLAPI PFNGLBINDTEXTUREPROC glBindTexture;
+O3D_GLAPI PFNGLDELETETEXTURESPROC glDeleteTextures;
+O3D_GLAPI PFNGLGENTEXTURESPROC glGenTextures;
+O3D_GLAPI PFNGLISTEXTUREPROC glIsTexture;
+#else
+O3D_GLAPI void APIENTRY glDrawArrays (GLenum mode, GLint first, GLsizei count);
+O3D_GLAPI void APIENTRY glDrawElements (GLenum mode, GLsizei count, GLenum type, const GLvoid *indices);
+O3D_GLAPI void APIENTRY glGetPointerv (GLenum pname, GLvoid* *params);
+O3D_GLAPI void APIENTRY glPolygonOffset (GLfloat factor, GLfloat units);
+O3D_GLAPI void APIENTRY glCopyTexImage1D (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
+O3D_GLAPI void APIENTRY glCopyTexImage2D (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
+O3D_GLAPI void APIENTRY glCopyTexSubImage1D (GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
+O3D_GLAPI void APIENTRY glCopyTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+O3D_GLAPI void APIENTRY glTexSubImage1D (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const GLvoid *pixels);
+O3D_GLAPI void APIENTRY glTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels);
+O3D_GLAPI void APIENTRY glBindTexture (GLenum target, GLuint texture);
+O3D_GLAPI void APIENTRY glDeleteTextures (GLsizei n, const GLuint *textures);
+O3D_GLAPI void APIENTRY glGenTextures (GLsizei n, GLuint *textures);
+O3D_GLAPI GLboolean APIENTRY glIsTexture (GLuint texture);
+#endif // GL_VERSION_1_1
+#endif // O3D_GL_PROTOTYPES
 
 //
 // GL_VERSION_1_2

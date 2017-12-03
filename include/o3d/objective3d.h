@@ -50,7 +50,7 @@
 #endif
 
 // sdl modules
-#ifdef O3D_SDL
+#ifdef O3D_SDL2
 	#pragma comment(lib,"SDL.lib")
 #endif
 

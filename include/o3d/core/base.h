@@ -43,7 +43,6 @@
 
 #include "assert.h"
 
-
 //---------------------------------------------------------------------------------------
 // API define depend on OS and dynamic library exporting type
 //---------------------------------------------------------------------------------------
@@ -69,7 +68,6 @@
 	#endif
 #endif
 
-
 //---------------------------------------------------------------------------------------
 // Memory alignment
 //---------------------------------------------------------------------------------------
@@ -78,16 +76,13 @@
 #define O3D_CHECK_ALIGN(PTR,ALIGN) (((PTR) & (ALIGN-1)) == 0)
 
 // bytes alignment
-#if (defined(__UNIX__) || defined(__APPLE__))
+#if defined(__GNUC__)
 	#define O3D_ALIGN(X) __attribute__ ((aligned(X)))
-#else
-	#if defined(__INTEL_COMPILER)
-		#define O3D_ALIGN(X) _alloca(X)
-	#elif defined(_MSC_VER)
-		#define O3D_ALIGN(X) __declspec(align(X))
-	#endif
+#elif defined(__INTEL_COMPILER)
+    #define O3D_ALIGN(X) _alloca(X)
+#elif defined(_MSC_VER)
+    #define O3D_ALIGN(X) __declspec(align(X))
 #endif
-
 
 //---------------------------------------------------------------------------------------
 // Base typedef definitions and enumerations
@@ -95,7 +90,6 @@
 
 #include "types.h"
 #include "coretype.h"
-
 
 //---------------------------------------------------------------------------------------
 // Constants and templates
@@ -258,7 +252,6 @@ namespace o3d
     inline Bool toBool(Int32 o) { return (o > 0) ? True : False; }
 }
 
-
 //---------------------------------------------------------------------------------------
 // Defines constants and macros
 //---------------------------------------------------------------------------------------
@@ -267,7 +260,6 @@ namespace o3d
 
 //! check if pointer is allocated
 #define O3D_CHECKPTR(p) if (!(p)) O3D_ERROR(E_NullPointer(#p))
-
 
 //---------------------------------------------------------------------------------------
 // Class declaration helpers

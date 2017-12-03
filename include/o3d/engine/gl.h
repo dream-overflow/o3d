@@ -7,6 +7,8 @@
  * @details 
  */
 
+#define _O3D_GL_H // @todo
+
 #ifndef _O3D_GL_H
 #define _O3D_GL_H
 
@@ -15,7 +17,7 @@
 // We don't want to include glext.h
 #define GL_GLEXT_LEGACY
 // Use prototypes from this file
-#define GL3_PROTOTYPES
+// #define GL3_PROTOTYPES
 
 #if defined(O3D_WINDOWS)
     #ifdef O3D_GL_PROTOTYPES
@@ -36,7 +38,6 @@
 #elif defined(O3D_UNIX)
     #ifndef O3D_GL_PROTOTYPES
         //#define O3D_GL_PROTOTYPES
-        #undef O3D_GL_PROTOTYPES
 	#endif
 	#ifdef GL_GLEXT_PROTOTYPES
 		#undef GL_GLEXT_PROTOTYPES

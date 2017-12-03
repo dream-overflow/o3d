@@ -30,25 +30,10 @@ ShaderManager::ShaderManager(
 		BaseObject *parent,
 		const String &defaultPath):
 	SceneTemplateManager<Shader>(parent),
-	m_activeVersion(VERSION_110)
+    m_activeVersion(VERSION_330)
 {
 	// set to the supported GLSL version
 	switch (getScene()->getContext()->getGLSLVersion())	{
-		case 110:
-			m_activeVersion = VERSION_110;
-			break;
-		case 120:
-			m_activeVersion = VERSION_120;
-			break;
-		case 130:
-			m_activeVersion = VERSION_130;
-			break;
-		case 140:
-			m_activeVersion = VERSION_140;
-			break;
-		case 150:
-			m_activeVersion = VERSION_150;
-			break;
 		case 330:
 			m_activeVersion = VERSION_330;
 			break;
@@ -99,21 +84,6 @@ ShaderManager::ShaderManager(
                     break;
                 case Renderer::OGL_330:
                     m_activeVersion = VERSION_330;
-                    break;
-                case Renderer::OGL_320:
-                    m_activeVersion = VERSION_150;
-                    break;
-                case Renderer::OGL_310:
-                    m_activeVersion = VERSION_140;
-                    break;
-                case Renderer::OGL_300:
-                    m_activeVersion = VERSION_130;
-                    break;
-                case Renderer::OGL_210:
-                    m_activeVersion = VERSION_120;
-                    break;
-                case Renderer::OGL_200:
-                    m_activeVersion = VERSION_110;
                     break;
                 default:
                     O3D_ERROR(E_InvalidPrecondition("Shaders works only with OpenGL 2.0 and greater"));
@@ -553,7 +523,7 @@ UInt32 ShaderManager::browseFolder(const String &path)
             {
                 Int32 version = fileItem->FileName.toInt32();
 
-                if (version >= 110 && version <= 450)
+                if (version >= 330 && version <= 450)
                     O3D_ERROR(E_InvalidParameter("The path must contain programs directories, but the given path contain version directories"));
             }
             else if ((fileItem->FileName != String(".")) &&
@@ -580,28 +550,21 @@ UInt32 ShaderManager::browseSubFolder(const String &path)
 	FLItem *fileItem;
 	UInt32 numPrograms = 0;
 
-    while ((fileItem = fileListing.searchNextFile()) != nullptr)
-	{
+    while ((fileItem = fileListing.searchNextFile()) != nullptr) {
 		// a sub directory
-		if (fileItem->FileType == FILE_DIR)
-        {
+        if (fileItem->FileType == FILE_DIR) {
             // we can directly found a version directory, or a sub directory
-            if (WideChar::isStringDigit(fileItem->FileName))
-            {
+            if (WideChar::isStringDigit(fileItem->FileName)) {
                 Int32 version = fileItem->FileName.toInt32();
 
-                if (version >= 110 && version <= 450)
-                {
+                if (version >= 330 && version <= 450) {
                     numPrograms += browseProgramFolder(&fileListing, fileItem);
 
                     // and return, because when we found a version directory,
                     // it should be a terminating sub folder.
                     return numPrograms;
                 }
-			}
-			else if ((fileItem->FileName != String(".")) &&
-					 (fileItem->FileName != String("..")))
-			{
+            } else if ((fileItem->FileName != String(".")) && (fileItem->FileName != String(".."))) {
 				numPrograms += browseSubFolder(fileListing.getFileFullName());
 			}
 		}
@@ -636,21 +599,6 @@ UInt32 ShaderManager::browseProgramFolder(
 
             switch (version)
             {
-                case 110:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_110, program);
-                    break;
-                case 120:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_120, program);
-                    break;
-                case 130:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_130, program);
-                    break;
-                case 140:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_140, program);
-                    break;
-                case 150:
-                    numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_150, program);
-                    break;
                 case 330:
                     numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_330, program);
                     break;

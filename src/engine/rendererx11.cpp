@@ -13,37 +13,23 @@
 // ONLY IF O3D_X11 IS SELECTED
 #ifdef O3D_X11
 
-#include <GL/glx.h>
+#include "o3d/engine/glextdefines.h"
+#include "o3d/engine/glextensionmanager.h"
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#include "o3d/core/glxdefines.h"
+#include "o3d/core/glx.h"
 
 #undef Bool
 
 #include "o3d/engine/context.h"
-#include "o3d/engine/glextensionmanager.h"
 #include "o3d/core/appwindow.h"
 #include "o3d/core/application.h"
 #include "o3d/core/debug.h"
 
 using namespace o3d;
-
-#define GLX_CONTEXT_FLAGS_ARB                  0x2094
-
-#ifndef GLX_CONTEXT_DEBUG_BIT_ARB
-#define GLX_CONTEXT_DEBUG_BIT_ARB              0x0001
-#endif
-
-#ifndef GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
-#define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
-#endif
-
-#define GLX_CONTEXT_MAJOR_VERSION_ARB       0x2091
-#define GLX_CONTEXT_MINOR_VERSION_ARB       0x2092
-
-#define GLX_CONTEXT_PROFILE_MASK_ARB              0x9126
-#define GLX_CONTEXT_CORE_PROFILE_BIT_ARB          0x00000001
-#define GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
-
-typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
-typedef int (*glXSwapIntervalEXTProc)(Display*, GLXDrawable, int);
 
 static Bool contextErrorOccured = False;
 static int contextErrorHandler(Display *display, XErrorEvent *event)
@@ -114,7 +100,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	// OpenGL version checking
 	GLXContext context = 0;
 
-	context = glXCreateNewContext(display, bestFbc, GLX_RGBA_TYPE, 0, True);
+    context = GLX::createNewContext(display, bestFbc, GLX_RGBA_TYPE, 0, True);
 
     if (contextErrorOccured || !context) {
 		// Restore the original error handler
@@ -123,10 +109,13 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 		O3D_ERROR(E_InvalidResult("Unable to create the OpenGL context"));
 	}
 
-	glXMakeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
+    GLX::makeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
 
 	Int32 queryMajor = 1;
 	Int32 queryMinor = 0;
+
+    // we can retrieve glGetString now
+    glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
 
 	const GLubyte *version = glGetString(GL_VERSION);
     if (version && (version[0] == '3')) {
@@ -145,7 +134,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 
 	// we need at least OpenGL 1.2
     if (version && (version[0] == '1') && (version[2] < '2')) {
-		glXDestroyContext(display, context);
+        GLX::destroyContext(display, context);
 
 		// Restore the original error handler
 		XSetErrorHandler(oldHandler);
@@ -158,19 +147,18 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	//
 
 	// Get the default screen's GLX extension list
-	const char *glxExts = glXQueryExtensionsString(display, DefaultScreen(display));
+    const char *glxExts = GLX::queryExtensionsString(display, DefaultScreen(display));
 
 	// It is not necessary to create or make current to a context before calling glXGetProcAddress
 	glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
-	glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddress(
-			(const GLubyte *)"glXCreateContextAttribsARB");
+    glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)GLX::getProcAddress("glXCreateContextAttribsARB");
 
 	// Check for the GLX_ARB_create_context extension string and the function.
 	// If either is not present, use GLX 1.3 context creation method.
     if (!isExtensionSupported(glxExts, "GLX_ARB_create_context") || !glXCreateContextAttribsARB) {
 		O3D_MESSAGE("GLX_ARB_create_context is not present use old style");
     } else {
-		glXDestroyContext(display, context);
+        GLX::destroyContext(display, context);
 		context = 0;
 
 		O3D_MESSAGE(String::print("Creating an OpenGL %i.%i context...", queryMajor, queryMinor));
@@ -231,13 +219,13 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
     }
 
 	// Verifying that context is a direct context
-    if (!glXIsDirect(display, context)) {
+    if (!GLX::isDirect(display, context)) {
 		O3D_MESSAGE("Indirect GLX rendering context obtained");
     } else {
 		O3D_MESSAGE("Direct GLX rendering context obtained");
     }
 
-	glXMakeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
+    GLX::makeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
 
 	m_HDC = appWindow->getHDC();
 	m_HGLRC = reinterpret_cast<_HGLRC>(context);
@@ -246,12 +234,12 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
+    GLExtensionManager::init();
+
 	version = glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
     }
-
-	GLExtensionManager::initialize();
 
 	// compute the gl version
 	Int32 glVersion = (version[0] - '0') * 100 + (version[2] - '0') * 10;
@@ -312,7 +300,7 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	// OpenGL version checking
 	GLXContext context = 0;
 
-	context = glXCreateNewContext(
+    context = GLX::createNewContext(
 			display,
 			bestFbc,
 			GLX_RGBA_TYPE,
@@ -326,10 +314,13 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 		O3D_ERROR(E_InvalidResult("Unable to create the OpenGL context"));
 	}
 
-	glXMakeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
+    GLX::makeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
 
 	Int32 queryMajor = 1;
 	Int32 queryMinor = 0;
+
+    // we can retrieve glGetString now
+    glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
 
 	const GLubyte *version = glGetString(GL_VERSION);
     if (version && (version[0] == '3')) {
@@ -348,7 +339,7 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 
 	// we need at least OpenGL 1.2
     if (version && (version[0] == '1') && (version[2] < '2')) {
-		glXDestroyContext(display, context);
+        GLX::destroyContext(display, context);
 
 		// Restore the original error handler
 		XSetErrorHandler(oldHandler);
@@ -361,19 +352,18 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	//
 
 	// Get the default screen's GLX extension list
-	const char *glxExts = glXQueryExtensionsString(display, DefaultScreen(display));
+    const char *glxExts = GLX::queryExtensionsString(display, DefaultScreen(display));
 
 	// It is not necessary to create or make current to a context before calling glXGetProcAddress
 	glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
-	glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddress(
-			(const GLubyte *)"glXCreateContextAttribsARB");
+    glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)GLX::getProcAddress("glXCreateContextAttribsARB");
 
 	// Check for the GLX_ARB_create_context extension string and the function.
 	// If either is not present, use GLX 1.3 context creation method.
     if (!isExtensionSupported(glxExts, "GLX_ARB_create_context") || !glXCreateContextAttribsARB) {
 		O3D_MESSAGE("GLX_ARB_create_context is not present use old style");
     } else {
-		glXDestroyContext(display, context);
+        GLX::destroyContext(display, context);
 		context = 0;
 
 		O3D_MESSAGE(String::print("Creating an OpenGL %i.%i context...", queryMajor, queryMinor));
@@ -442,13 +432,13 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
     }
 
 	// Verifying that context is a direct context
-    if (!glXIsDirect(display, context)) {
+    if (!GLX::isDirect(display, context)) {
 		O3D_MESSAGE("Indirect GLX rendering context obtained");
     } else {
 		O3D_MESSAGE("Direct GLX rendering context obtained");
     }
 
-	glXMakeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
+    GLX::makeCurrent(display, static_cast<GLXDrawable>(appWindow->getHDC()), context);
 
 	m_HDC = appWindow->getHDC();
 	m_HGLRC = reinterpret_cast<_HGLRC>(context);
@@ -457,12 +447,12 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
+    GLExtensionManager::init();
+
 	version = glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
     }
-
-	GLExtensionManager::initialize();
 
 	// compute the gl version
 	Int32 glVersion = (version[0] - '0') * 100 + (version[2] - '0') * 10;
@@ -514,11 +504,11 @@ void Renderer::destroy()
 		deletePtr(m_glContext);
 
         if (m_HGLRC && m_appWindow) {
-			glXMakeCurrent(
+            GLX::makeCurrent(
 					reinterpret_cast<Display*>(Application::getDisplay()),
 					None,
 					NULL);
-			glXDestroyContext(
+            GLX::destroyContext(
 					reinterpret_cast<Display*>(Application::getDisplay()),
 					reinterpret_cast<GLXContext>(m_HGLRC));
 
@@ -545,7 +535,7 @@ void Renderer::destroy()
 Bool Renderer::isCurrent() const
 {
     return (m_state.getBit(STATE_DEFINED) &&
-            (glXGetCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC)));
+            (GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC)));
 }
 
 // Set as current OpenGL context
@@ -553,9 +543,9 @@ void Renderer::setCurrent()
 {
     if (m_state.getBit(STATE_DEFINED) &&
         (m_appWindow != nullptr) &&
-        (glXGetCurrentContext() != reinterpret_cast<GLXContext>(m_HGLRC))) {
+        (GLX::getCurrentContext() != reinterpret_cast<GLXContext>(m_HGLRC))) {
 
-		if (glXMakeCurrent(
+        if (GLX::makeCurrent(
 				reinterpret_cast<Display*>(Application::getDisplay()),
 				static_cast<GLXDrawable>(m_HDC),
                 reinterpret_cast<GLXContext>(m_HGLRC)) == False) {
@@ -570,8 +560,7 @@ void Renderer::setVerticalRefresh(Bool use)
     static glXSwapIntervalEXTProc glXSwapIntervalEXT = nullptr;
 
     if (glXSwapIntervalEXT == nullptr) {
-		glXSwapIntervalEXT = (glXSwapIntervalEXTProc)glXGetProcAddress(
-			(const GLubyte *)"glXSwapIntervalEXT");
+        glXSwapIntervalEXT = (glXSwapIntervalEXTProc)GLX::getProcAddress("glXSwapIntervalEXT");
 	}
 
     if ((m_HDC != NULL_HDC) && (glXSwapIntervalEXT != nullptr))	{
@@ -587,7 +576,7 @@ Bool Renderer::isVerticalRefresh() const
 	unsigned int value = 0;
 
     if (m_HDC != NULL_HDC) {
-		glXQueryDrawable(
+        GLX::queryDrawable(
 			reinterpret_cast<Display*>(Application::getDisplay()),
 			static_cast<GLXDrawable>(m_HDC),
 			GLX_SWAP_INTERVAL_EXT,

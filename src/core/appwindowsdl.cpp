@@ -12,8 +12,8 @@
 
 #include "o3d/core/timer.h"
 
-// ONLY IF O3D_SDL IS SELECTED
-#ifdef O3D_SDL
+// ONLY IF O3D_SDL2 IS SELECTED
+#ifdef O3D_SDL2
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
@@ -611,4 +611,4 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 	}
 }
 
-#endif // O3D_SDL
+#endif // O3D_SDL2

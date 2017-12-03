@@ -11,8 +11,8 @@
 #include "o3d/core/application.h"
 #include "o3d/core/filemanager.h"
 
-// IF O3D_SDL IS SELECTED
-#ifdef O3D_SDL
+// IF O3D_SDL2 IS SELECTED
+#ifdef O3D_SDL2
 
 #include "o3d/core/architecture.h"
 #include "o3d/core/debug.h"
@@ -275,4 +275,4 @@ void Application::getBaseNamePrivate(Int32 argc, Char **argv)
     }
 }
 
-#endif // O3D_SDL
+#endif // O3D_SDL2

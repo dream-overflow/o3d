@@ -241,34 +241,6 @@ public:
 	inline CullingMode forceDefaultCullingMode() { return forceCullingMode(CULLING_BACK_FACE); }
 
 	//-----------------------------------------------------------------------------------
-    // Line parameters @deprecrated since OpenGL 3
-	//-----------------------------------------------------------------------------------
-
-    //! Change the line width
-    //! @deprecated Since OpenGL 3
-	Float setLineSize(Float val);
-
-	//! Get the line width.
-    //! @deprecated Since OpenGL 3
-	inline Float getLineSize() const { return m_lineSize; }
-
-	//! Force the line width.
-    //! @deprecated Since OpenGL 3
-	Float forceLineSize(Float val);
-
-	//! Increment by val the line width.
-    //! @deprecated Since OpenGL 3
-	Float modifyLineSize(Float val);
-
-	//! Set default line size.
-    //! @deprecated Since OpenGL 3
-    inline Float setDefaultLineSize() { return setLineSize(1.f); }
-
-    //! Force default line size.
-    //! @deprecated Since OpenGL 3
-    inline Float forceDefaultLineSize() { return forceLineSize(1.f); }
-
-	//-----------------------------------------------------------------------------------
 	// Point parameters
 	//-----------------------------------------------------------------------------------
 
@@ -789,7 +761,6 @@ private:
 	CullingMode m_cullingMode;      //!< culling face mode (default CullingBackFace)
 
     Float m_pointSize;              //!< point size (default 1)
-    Float m_lineSize;               //!< line size (default 1)
 
     Blending m_blending;            //!< blending function and equation manager
 

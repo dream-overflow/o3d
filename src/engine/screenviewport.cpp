@@ -8,13 +8,13 @@
  */
 
 #include "o3d/engine/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/engine/screenviewport.h"
 #include "o3d/engine/viewportmanager.h"
 
 #include "o3d/core/classfactory.h"
 #include "o3d/core/architecture.h"
 #include "o3d/core/objects.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"

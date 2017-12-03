@@ -10,73 +10,16 @@
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/context.h"
 
-#include "o3d/engine/gl.h"
-#include "o3d/engine/glextdefines.h"
-
 #include "o3d/engine/renderer.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/engine/glextensionmanager.h"
 #include "o3d/engine/matrix.h"
 #include "o3d/engine/occlusionquery.h"
 #include "o3d/engine/scene/scene.h"
+#include "o3d/core/objects.h"
 #include "o3d/core/debug.h"
 
-//---------------------------------------------------------------------------------------
-// for compatibility with OpenGL 2.0 & 2.1 context settings.
-//---------------------------------------------------------------------------------------
-
-#define GL_LIGHT0                         0x4000
-#define GL_LIGHTING                       0x0B50
-#define GL_COLOR_MATERIAL                 0x0B57
-
-#define GL_VERTEX_ARRAY                   0x8074
-#define GL_NORMAL_ARRAY                   0x8075
-#define GL_COLOR_ARRAY                    0x8076
-#define GL_INDEX_ARRAY                    0x8077
-#define GL_TEXTURE_COORD_ARRAY            0x8078
-#define GL_EDGE_FLAG_ARRAY                0x8079
-
-#define GL_PERSPECTIVE_CORRECTION_HINT    0x0C50
-
-#define GL_POINT_SMOOTH                   0x0B10
-#define GL_POINT_SMOOTH_HINT              0x0C51
-
-#define GL_ALPHA_TEST                     0x0BC0
-
-#define GL_RED_SCALE                      0x0D14
-#define GL_RED_BIAS                       0x0D15
-#define GL_GREEN_SCALE                    0x0D18
-#define GL_GREEN_BIAS                     0x0D19
-#define GL_BLUE_SCALE                     0x0D1A
-#define GL_BLUE_BIAS                      0x0D1B
-#define GL_ALPHA_SCALE                    0x0D1C
-#define GL_ALPHA_BIAS                     0x0D1D
-#define GL_DEPTH_SCALE                    0x0D1E
-#define GL_DEPTH_BIAS                     0x0D1F
-
-#define GL_MODULATE                       0x2100
-#define GL_TEXTURE_ENV                    0x2300
-#define GL_TEXTURE_ENV_MODE               0x2200
-
-#define GL_FLAT                           0x1D00
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-GLAPI void APIENTRY glShadeModel (GLenum mode);
-GLAPI void APIENTRY glTexEnvf (GLenum target, GLenum pname, GLfloat param);
-GLAPI void APIENTRY glDisableClientState (GLenum array);
-GLAPI void APIENTRY glPixelTransferf (GLenum pname, GLfloat param);
-
-#ifdef __cplusplus
-}
-#endif
-
 using namespace o3d;
-
-//---------------------------------------------------------------------------------------
-
-#include "o3d/core/objects.h"
 
 // Default constructor
 Context::Context(Renderer *renderer) :
@@ -90,7 +33,6 @@ Context::Context(Renderer *renderer) :
 	// force to default values
 	forceDefaultDrawingMode();
 	forceDefaultPointSize();
-	forceDefaultLineSize();
 	forceDefaultCullingMode();
 	forceDefaultDepthTest();
 	forceDefaultBackgroundColor();
@@ -131,59 +73,15 @@ Context::Context(Renderer *renderer) :
 	m_currentVAOId = 0;
 	m_currentVaoState = &m_defaultVaoState;
 
-    // for old fixed pipeline in GL 2.1 and lesser
-    if (m_renderer->getVersion() <= Renderer::OGL_210) {
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    // Create a default VAO and bind it
+    glGenVertexArrays(1, (GLuint*)&m_defaultVAOId);
+    bindVertexArray(0, nullptr);
 
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_NORMAL_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_COLOR_ARRAY);
-		glDisableClientState(GL_EDGE_FLAG_ARRAY);
-		glDisableClientState(GL_INDEX_ARRAY);
+    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
 
-		// lighting
-		glDisable(GL_LIGHT0);
-		glDisable(GL_LIGHTING);
-		glDisable(GL_COLOR_MATERIAL);
-
-		// alpha test
-		glDisable(GL_ALPHA_TEST);
-
-		glShadeModel(GL_FLAT);
-
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-		glPixelTransferf(GL_RED_SCALE, 1.0f);
-		glPixelTransferf(GL_GREEN_SCALE, 1.0f);
-		glPixelTransferf(GL_BLUE_SCALE, 1.0f);
-		glPixelTransferf(GL_ALPHA_SCALE, 1.0f);
-		glPixelTransferf(GL_DEPTH_SCALE, 1.0f);
-		glPixelTransferf(GL_RED_BIAS, 0.0f);
-		glPixelTransferf(GL_GREEN_BIAS, 0.0f);
-		glPixelTransferf(GL_BLUE_BIAS, 0.0f);
-		glPixelTransferf(GL_ALPHA_BIAS, 0.0f);
-		glPixelTransferf(GL_DEPTH_BIAS, 0.0f);
-
-		m_textureMaxLayers = 0;
-
-		m_maxTessEvalTextureImageUnits = 0;
-		m_maxTessControlTextureImageUnits = 0;
-		m_maxGeometryTextureImageUnits = 0;
-		m_maxViewports = 0;
-    } else {
-        // Create a default VAO and bind it
-		glGenVertexArrays(1, (GLuint*)&m_defaultVAOId);
-        bindVertexArray(0, nullptr);
-	}
-
-    if (m_renderer->getVersion() >= Renderer::OGL_300) {
-        glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
-
-		m_maxTessEvalTextureImageUnits = 0;
-		m_maxTessControlTextureImageUnits = 0;
-		m_maxViewports = 0;
-	}
+    m_maxTessEvalTextureImageUnits = 0;
+    m_maxTessControlTextureImageUnits = 0;
+    m_maxViewports = 0;
 
     if (m_renderer->getVersion() >= Renderer::OGL_400) {
         glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
@@ -562,7 +460,6 @@ void Context::setAllParameters()
 	setCullingMode(m_cullingMode);
 
 	setPointSize(m_pointSize);
-	setLineSize(m_lineSize);
 
 	forceDepthTest(m_isDepthTest);
 
@@ -578,10 +475,6 @@ void Context::setAllParameters()
 
     m_blending.setDefaultFunc();
     m_blending.setDefaultEquation();
-
-    if (m_renderer->getVersion() <= Renderer::OGL_210) {
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    }
 }
 
 // Change culling mode
@@ -664,49 +557,6 @@ Float Context::modifyPointSize(Float val)
 	m_pointSize += val;
 
 	glPointSize(m_pointSize);
-
-	return old;
-}
-
-// Change the line width.
-Float Context::setLineSize(Float val)
-{
-    if (val == m_lineSize) {
-		return m_lineSize;
-    }
-
-	Float old = m_lineSize;
-	m_lineSize = val;
-	
-    if (m_renderer->getVersion() <= Renderer::OGL_210) {
-        glLineWidth(m_lineSize);
-    }
-
-	return old;
-}
-
-// Force the line width.
-Float Context::forceLineSize(Float val)
-{
-	Float old = m_lineSize;
-	m_lineSize = val;
-
-    if (m_renderer->getVersion() <= Renderer::OGL_210) {
-		glLineWidth(m_lineSize);
-    }
-
-	return old;
-}
-
-// Increment the line width.
-Float Context::modifyLineSize(Float val)
-{
-	Float old = m_lineSize;
-	m_lineSize += val;
-
-    if (m_renderer->getVersion() <= Renderer::OGL_210) {
-		glLineWidth(m_lineSize);
-    }
 
 	return old;
 }

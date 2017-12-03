@@ -21,6 +21,9 @@
 //! SSE2 optimizations
 #cmakedefine O3D_USE_SSE2
 
+//! SDL2 suport
+#cmakedefine O3D_USE_SDL2
+
 //! OpenGL debugging extension support
 #cmakedefine01 O3D_GL_DEBUG
 
@@ -89,7 +92,7 @@
 		#error "X11 is not supported on Windows"
 	#endif
 
-	#if !defined(O3D_WIN32) && !defined(O3D_SDL)
+    #if !defined(O3D_WIN32) && !defined(O3D_USE_SDL2)
 		#define O3D_WIN32
 	#endif
 
@@ -129,18 +132,15 @@
 //
 // UNIXes
 //
-#elif defined(linux) || defined(__unix__)
+#elif defined(__linux__) || defined(__unix__)
 
-	#ifndef __UNIX__
-		#define __UNIX__
-	#endif
 	#define O3D_UNIX
 
-	#ifdef linux
+    #ifdef __linux__
 		#define O3D_LINUX
 	#endif
 
-	#if !defined(O3D_X11) && !defined(O3D_SDL)
+    #if !defined(O3D_X11) && !defined(O3D_USE_SDL2)
 		#define O3D_X11
 	#endif
 
@@ -189,6 +189,8 @@
 		#define __MACOSX__
 	#endif
 
+    #define O3D_UNIX
+
 	// support big endian for Motorola processors
 	#ifdef __motorola__
 		#define O3D_BIG_ENDIAN
@@ -199,8 +201,8 @@
 
 	#define O3D_MACOSX
 
-	#if !defined(O3D_X11) || !defined (O3D_COCOA) || !defined(O3D_SDL)
-		#define O3D_SDL
+    #if !defined(O3D_X11) || !defined (O3D_COCOA) || !defined(O3D_USE_SDL2)
+        #define O3D_USE_SDL2
 	#endif
 
 	//! System API (for thread, mutex, semaphore, timers...)
@@ -223,8 +225,9 @@
 #endif
 
 // no SDL backward compatibility
-#ifdef O3D_SDL
+#ifdef O3D_USE_SDL2
 	#define SDL_NO_COMPAT
+    #define O3D_SDL2
 #endif
 
 //! CRT window report. Incompatibility when using timers and wnd assert reports.

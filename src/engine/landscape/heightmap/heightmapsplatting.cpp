@@ -527,116 +527,115 @@ void HeightmapSplatting::draw()
 	getScene()->getContext()->setViewPort(0, 0, viewPort.width(), viewPort.height());
 
 	// Screen rendering of generated texture	
-    if (getScene()->getRenderer()->getVersion() <= Renderer::OGL_210) {
-        Float * lpBuffer = new Float[lFboSize[X]*lFboSize[Y]];
+//        deprecation of GL2.1
+//        Float * lpBuffer = new Float[lFboSize[X]*lFboSize[Y]];
 
-        //	m_fboColorTex->bind();
-        //	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, lpBuffer);
-        //	m_fboColorTex->unbind();
+//        //	m_fboColorTex->bind();
+//        //	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, lpBuffer);
+//        //	m_fboColorTex->unbind();
 
-        //	m_fboNormalTex->bind();
-        //	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, lpBuffer);
-        //	m_fboNormalTex->unbind();
+//        //	m_fboNormalTex->bind();
+//        //	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, lpBuffer);
+//        //	m_fboNormalTex->unbind();
 
-		m_fboDepthTex->bind();
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, lpBuffer);
+//		m_fboDepthTex->bind();
+//		glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, lpBuffer);
 
-        for (Int32 i = 0 ; i < lFboSize[X]*lFboSize[Y]; ++i) {
-			// Thanks to sqrt, sensitivity of depth value near 1.0 is infinite.
-            lpBuffer[i] = 1.0f - Math::sqrt(1.0f - lpBuffer[i]);
-		}
+//        for (Int32 i = 0 ; i < lFboSize[X]*lFboSize[Y]; ++i) {
+//			// Thanks to sqrt, sensitivity of depth value near 1.0 is infinite.
+//            lpBuffer[i] = 1.0f - Math::sqrt(1.0f - lpBuffer[i]);
+//		}
 
-		UInt32 format = GLTexture::getGLFormat(getScene()->getRenderer(), PF_RED_F32);
-		//UInt32 internalFormat = GLTexture::getGLInternalFormat(
-		//		getScene()->getRenderer(),
-		//		PF_RED_F32);
-		UInt32 type = GLTexture::getGLType(PF_RED_F32);
+//		UInt32 format = GLTexture::getGLFormat(getScene()->getRenderer(), PF_RED_F32);
+//		//UInt32 internalFormat = GLTexture::getGLInternalFormat(
+//		//		getScene()->getRenderer(),
+//		//		PF_RED_F32);
+//		UInt32 type = GLTexture::getGLType(PF_RED_F32);
 
-		// faster than TexImage2D
-		glTexSubImage2D(
-				GL_TEXTURE_2D,
-				0,
-				0,
-				0,
+//		// faster than TexImage2D
+//		glTexSubImage2D(
+//				GL_TEXTURE_2D,
+//				0,
+//				0,
+//				0,
+//                lFboSize.x(),
+//                lFboSize.y(),
+//				format,
+//				type,
+//				lpBuffer);
+
+//		/*glTexImage2D(
+//				GL_TEXTURE_2D,
+//				0,
+
+//				internalFormat,
+//				lVboSize.x(),
+//				lVboSize.y(),
+//				0,
+//				format,
+//				type,
+//				lpBuffer);	*/
+
+//		m_fboDepthTex->unbind();
+
+//		deleteArray(lpBuffer);
+
+    /*pbo->bindUnpackBuffer();
+
+        //glReadPixels(0, 0, lVboSize.x(), lVboSize.y(), GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        Float *data = pbo->lock(0, 0, PixelBuffer::READ_ONLY);
+        Image out;
+        out.loadBuffer(lVboSize.x(), lVboSize.y(), lVboSize.x()*lVboSize.y()*4, PF_DEPTH_F32, (UInt8*)data);
+        out.save("test.png", Image::PNG);
+
+        pbo->unlock();
+        pbo->unbindUnpackBuffer();*/
+
+    // TODO
+
+    GLuint lBuffer;
+    glGenBuffers(1, &lBuffer);
+    getScene()->getContext()->bindPixelPackBuffer(lBuffer);
+
+    glBufferData(GL_PIXEL_PACK_BUFFER,
+                 sizeof(Float) * lFboSize.x() * lFboSize.y(),
+                 NULL,
+                 GL_STATIC_COPY);
+
+    m_fboDepthTex->bind();
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+    getScene()->getContext()->bindPixelPackBuffer(0);
+    getScene()->getContext()->bindPixelUnpackBuffer(lBuffer);
+
+    // faster than TexImage2D
+    glTexSubImage2D(
+                GL_TEXTURE_2D,
+                0,
+                0,
+                0,
                 lFboSize.x(),
                 lFboSize.y(),
-				format,
-				type,
-				lpBuffer);
+                GL_RED,
+                GL_FLOAT,
+                NULL);
+    /*
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_R8,
+                lVboSize.x(),
+                lVboSize.y(),
+                0,
+                GL_RED,
+                GL_FLOAT,
+                NULL);*/
+    getScene()->getRenderer()->isError();
 
-		/*glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
+    getScene()->getContext()->bindPixelUnpackBuffer(0);
 
-				internalFormat,
-				lVboSize.x(),
-				lVboSize.y(),
-				0,
-				format,
-				type,
-				lpBuffer);	*/
-
-		m_fboDepthTex->unbind();
-
-		deleteArray(lpBuffer);
-    } else {
-		/*pbo->bindUnpackBuffer();
-
-		//glReadPixels(0, 0, lVboSize.x(), lVboSize.y(), GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		Float *data = pbo->lock(0, 0, PixelBuffer::READ_ONLY);
-		Image out;
-		out.loadBuffer(lVboSize.x(), lVboSize.y(), lVboSize.x()*lVboSize.y()*4, PF_DEPTH_F32, (UInt8*)data);
-		out.save("test.png", Image::PNG);
-
-		pbo->unlock();
-		pbo->unbindUnpackBuffer();*/
-
-		// TODO
-
-		GLuint lBuffer;
-		glGenBuffers(1, &lBuffer);
-		getScene()->getContext()->bindPixelPackBuffer(lBuffer);
-
-		glBufferData(GL_PIXEL_PACK_BUFFER,
-                sizeof(Float) * lFboSize.x() * lFboSize.y(),
-				NULL,
-				GL_STATIC_COPY);
-
-		m_fboDepthTex->bind();
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-
-		getScene()->getContext()->bindPixelPackBuffer(0);
-		getScene()->getContext()->bindPixelUnpackBuffer(lBuffer);
-
-		// faster than TexImage2D
-		glTexSubImage2D(
-				GL_TEXTURE_2D,
-				0,
-				0,
-				0,
-                lFboSize.x(),
-                lFboSize.y(),
-				GL_RED,
-				GL_FLOAT,
-				NULL);
-/*
-		glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_R8,
-				lVboSize.x(),
-				lVboSize.y(),
-				0,
-				GL_RED,
-				GL_FLOAT,
-				NULL);*/
-		getScene()->getRenderer()->isError();
-
-		getScene()->getContext()->bindPixelUnpackBuffer(0);
-
-		m_fboDepthTex->unbind();
-		glDeleteBuffers(1, &lBuffer);
-	}
+    m_fboDepthTex->unbind();
+    glDeleteBuffers(1, &lBuffer);
 
 	// Screen rendering
 	Matrix4 lProjection;

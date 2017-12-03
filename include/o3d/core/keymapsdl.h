@@ -10,8 +10,8 @@
 #ifndef _O3D_KEYMAPSDL_H
 #define _O3D_KEYMAPSDL_H
 
-/* ONLY IF O3D_SDL IS SELECTED */
-#ifdef O3D_SDL
+/* ONLY IF O3D_SDL2 IS SELECTED */
+#ifdef O3D_SDL2
 
 #include <SDL2/SDL_keycode.h>
 
@@ -172,7 +172,7 @@ enum VKey
 
 } // namespace o3d
 
-#endif // O3D_SDL
+#endif // O3D_SDL2
 
 #endif // _O3D_KEYMAPSDL_H
 

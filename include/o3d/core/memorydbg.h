@@ -37,14 +37,12 @@
 #define O3D_CHECK_ALIGN(PTR,ALIGN) (((PTR) & (ALIGN-1)) == 0)
 
 // bytes alignment
-#if (defined(__UNIX__) || defined(__APPLE__) || defined (__MINGW32__))
+#if defined(__GNUC__)
     #define O3D_ALIGN(X) __attribute__ ((aligned(X)))
-#else
-    #if defined(__INTEL_COMPILER)
-        #define O3D_ALIGN(X) _alloca(X)
-    #elif defined(_MSC_VER)
-        #define O3D_ALIGN(X) __declspec(align(X))
-    #endif
+#elif defined(__INTEL_COMPILER)
+    #define O3D_ALIGN(X) _alloca(X)
+#elif defined(_MSC_VER)
+    #define O3D_ALIGN(X) __declspec(align(X))
 #endif
 
 #include <stdlib.h>

@@ -13,31 +13,28 @@
 // it's needed for DLL exportation
 #define O3D_NO_LIB_FLAG
 
-#ifdef __APPLE__
-// Mac OS part
-#ifndef __O3D_NOLIB__
-int main(int argc, char *argv[])
-{
-	return 0;
-}
-#endif
-#elif defined(__UNIX__)
-// nothing
-#else
-// Windows part
-BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
-{
-    switch (ul_reason_for_call) {
-		case DLL_PROCESS_ATTACH:
-		case DLL_THREAD_ATTACH:
-		case DLL_THREAD_DETACH:
-		case DLL_PROCESS_DETACH:
-			break;
-	}
+#ifdef O3D_MACOSX
+  // Mac OS part
+  #ifndef __O3D_NOLIB__
+    int main(int argc, char *argv[])
+    {
+        return 0;
+    }
+  #endif // __O3D_NOLIB__
+#elif defined(O3D_WINDOWS)
+    // Windows part
+    BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
+    {
+        switch (ul_reason_for_call) {
+            case DLL_PROCESS_ATTACH:
+            case DLL_THREAD_ATTACH:
+            case DLL_THREAD_DETACH:
+            case DLL_PROCESS_DETACH:
+                break;
+        }
 
-	return TRUE;
-}
+        return TRUE;
+    }
 #endif
 
 #undef O3D_NO_LIB_FLAG
-

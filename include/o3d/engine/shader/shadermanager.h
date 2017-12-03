@@ -60,11 +60,6 @@ public:
 	//! Managed version
 	enum Version
 	{
-        VERSION_110 = 0,      //!< GLSL 1.10 (OpenGL 2.0)
-        VERSION_120,          //!< GLSL 1.20 (OpenGL 2.1)
-        VERSION_130,          //!< GLSL 1.30 (OpenGL 3.0)
-        VERSION_140,          //!< GLSL 1.40 (OpenGL 3.1)
-        VERSION_150,          //!< GLSL 1.50 (OpenGL 3.2)
         VERSION_330,          //!< GLSL 3.30 (OpenGL 3.3)
         VERSION_400,          //!< GLSL 4.00 (OpenGL 4.0)
         VERSION_410,          //!< GLSL 4.10 (OpenGL 4.1)

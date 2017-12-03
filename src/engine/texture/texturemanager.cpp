@@ -8,6 +8,7 @@
  */
 
 #include "o3d/engine/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/engine/texture/texturemanager.h"
 
 #include "o3d/core/filemanager.h"
@@ -15,7 +16,6 @@
 #include "o3d/core/taskmanager.h"
 #include "o3d/core/virtualfilelisting.h"
 #include "o3d/core/stringtokenizer.h"
-#include "o3d/engine/gl.h"
 #include "o3d/engine/texture/texture2d.h"
 #include "o3d/engine/texture/cubemaptexture.h"
 #include "o3d/engine/texture/normalcubemaptex.h"

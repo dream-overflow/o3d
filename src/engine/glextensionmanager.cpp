@@ -8,17 +8,86 @@
  */
 
 #include "o3d/engine/precompiled.h"
+#include "o3d/engine/glextdefines.h"
 #include "o3d/engine/glextensionmanager.h"
-#include "o3d/engine/glx11.h"
 
+#include "o3d/core/glxdefines.h"
+#include "o3d/core/glx.h"
 #include "o3d/core/debug.h"
+#include "o3d/core/dynamiclibrary.h"
 #include "o3d/core/stringtokenizer.h"
 
 using namespace o3d;
 
-#define GL_NUM_EXTENSIONS                 0x821D
-
 #ifndef O3D_GL_PROTOTYPES
+
+#ifdef O3D_GL_VERSION_1_0
+PFNGLCULLFACEPROC glCullFace = nullptr;
+PFNGLFRONTFACEPROC glFrontFace = nullptr;
+PFNGLHINTPROC glHint = nullptr;
+PFNGLLINEWIDTHPROC glLineWidth = nullptr;
+PFNGLPOINTSIZEPROC glPointSize = nullptr;
+PFNGLPOLYGONMODEPROC glPolygonMode = nullptr;
+PFNGLSCISSORPROC glScissor = nullptr;
+PFNGLTEXPARAMETERFPROC glTexParameterf = nullptr;
+PFNGLTEXPARAMETERFVPROC glTexParameterfv = nullptr;
+PFNGLTEXPARAMETERIPROC glTexParameteri = nullptr;
+PFNGLTEXPARAMETERIVPROC glTexParameteriv = nullptr;
+PFNGLTEXIMAGE1DPROC glTexImage1D = nullptr;
+PFNGLTEXIMAGE2DPROC glTexImage2D = nullptr;
+PFNGLDRAWBUFFERPROC glDrawBuffer = nullptr;
+PFNGLCLEARPROC glClear = nullptr;
+PFNGLCLEARCOLORPROC glClearColor = nullptr;
+PFNGLCLEARSTENCILPROC glClearStencil = nullptr;
+PFNGLCLEARDEPTHPROC glClearDepth = nullptr;
+PFNGLSTENCILMASKPROC glStencilMask = nullptr;
+PFNGLCOLORMASKPROC glColorMask = nullptr;
+PFNGLDEPTHMASKPROC glDepthMask = nullptr;
+PFNGLDISABLEPROC glDisable = nullptr;
+PFNGLENABLEPROC glEnable = nullptr;
+PFNGLFINISHPROC glFinish = nullptr;
+PFNGLFLUSHPROC glFlush = nullptr;
+PFNGLBLENDFUNCPROC glBlendFunc = nullptr;
+PFNGLLOGICOPPROC glLogicOp = nullptr;
+PFNGLSTENCILFUNCPROC glStencilFunc = nullptr;
+PFNGLSTENCILOPPROC glStencilOp = nullptr;
+PFNGLDEPTHFUNCPROC glDepthFunc = nullptr;
+PFNGLPIXELSTOREFPROC glPixelStoref = nullptr;
+PFNGLPIXELSTOREIPROC glPixelStorei = nullptr;
+PFNGLREADBUFFERPROC glReadBuffer = nullptr;
+PFNGLREADPIXELSPROC glReadPixels = nullptr;
+PFNGLGETBOOLEANVPROC glGetBooleanv = nullptr;
+PFNGLGETDOUBLEVPROC glGetDoublev = nullptr;
+PFNGLGETERRORPROC glGetError = nullptr;
+PFNGLGETFLOATVPROC glGetFloatv = nullptr;
+PFNGLGETINTEGERVPROC glGetIntegerv = nullptr;
+PFNGLGETSTRINGPROC glGetString = nullptr;
+PFNGLGETTEXIMAGEPROC glGetTexImage = nullptr;
+PFNGLGETTEXPARAMETERFVPROC glGetTexParameterfv = nullptr;
+PFNGLGETTEXPARAMETERIVPROC glGetTexParameteriv = nullptr;
+PFNGLGETTEXLEVELPARAMETERFVPROC glGetTexLevelParameterfv = nullptr;
+PFNGLGETTEXLEVELPARAMETERIVPROC glGetTexLevelParameteriv = nullptr;
+PFNGLISENABLEDPROC glIsEnabled = nullptr;
+PFNGLDEPTHRANGEPROC glDepthRange = nullptr;
+PFNGLVIEWPORTPROC glViewport = nullptr;
+#endif // O3D_GL_VERSION_1_0
+
+#ifdef O3D_GL_VERSION_1_1
+PFNGLDRAWARRAYSPROC glDrawArrays = nullptr;
+PFNGLDRAWELEMENTSPROC glDrawElements = nullptr;
+PFNGLGETPOINTERVPROC glGetPointerv = nullptr;
+PFNGLPOLYGONOFFSETPROC glPolygonOffset = nullptr;
+PFNGLCOPYTEXIMAGE1DPROC glCopyTexImage1D = nullptr;
+PFNGLCOPYTEXIMAGE2DPROC glCopyTexImage2D = nullptr;
+PFNGLCOPYTEXSUBIMAGE1DPROC glCopyTexSubImage1D = nullptr;
+PFNGLCOPYTEXSUBIMAGE2DPROC glCopyTexSubImage2D = nullptr;
+PFNGLTEXSUBIMAGE1DPROC glTexSubImage1D = nullptr;
+PFNGLTEXSUBIMAGE2DPROC glTexSubImage2D = nullptr;
+PFNGLBINDTEXTUREPROC glBindTexture = nullptr;
+PFNGLDELETETEXTURESPROC glDeleteTextures = nullptr;
+PFNGLGENTEXTURESPROC glGenTextures = nullptr;
+PFNGLISTEXTUREPROC glIsTexture = nullptr;
+#endif // O3D_GL_VERSION_1_1
 
 #ifdef O3D_GL_VERSION_1_2
 // draw range element
@@ -287,6 +356,9 @@ PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei = nullptr;
 #ifdef O3D_GL_VERSION_4_5
 #endif // O3D_GL_VERSION_4_5
 
+#ifdef O3D_GL_VERSION_4_6
+#endif // O3D_GL_VERSION_4_6
+
 #ifdef O3D_GL_ARB_framebuffer_object
 // framebuffer_object (render-to-texture)
 PFNGLISRENDERBUFFERPROC     glIsRenderbuffer       = nullptr;
@@ -333,25 +405,104 @@ PFNGLSAMPLEMASKIPROC glSampleMaski = nullptr;
 
 #endif // O3D_GL_PROTOTYPES
 
-// statics members
-Bool GLExtensionManager::m_valid = False;
-
 // Get OpenGL extension procedure address
 #ifdef O3D_WIN32
 	#define O3D_GET_OPENGL_PROC(ext) wglGetProcAddress(ext)
 #endif
 #ifdef O3D_X11
-    #define O3D_GET_OPENGL_PROC(ext) o3d::glxGetProcAddress(ext)
+    #define O3D_GET_OPENGL_PROC(ext) GLX::getProcAddress(ext)
 #endif
-#ifdef O3D_SDL
+#ifdef O3D_SDL2
 	#include <SDL2/SDL_video.h>
 	#define O3D_GET_OPENGL_PROC(ext) SDL_GL_GetProcAddress(ext)
 #endif
+
+#undef Bool
+
+// statics members
+Bool GLExtensionManager::ms_valid = False;
+DynamicLibrary* GLExtensionManager::ms_openGL = nullptr;
 
 // Get extensions pointers
 void GLExtensionManager::getExtFunctions()
 {
 #ifndef O3D_GL_PROTOTYPES
+
+    //
+    // OpenGL 1.0
+    //
+
+#ifdef O3D_GL_VERSION_1_0
+    glCullFace = (PFNGLCULLFACEPROC) O3D_GET_OPENGL_PROC("glCullFace");
+    glFrontFace = (PFNGLFRONTFACEPROC) O3D_GET_OPENGL_PROC("glFrontFace");
+    glHint = (PFNGLHINTPROC) O3D_GET_OPENGL_PROC("glHint");
+    glLineWidth = (PFNGLLINEWIDTHPROC) O3D_GET_OPENGL_PROC("glLineWidth");
+    glPointSize = (PFNGLPOINTSIZEPROC) O3D_GET_OPENGL_PROC("glPointSize");
+    glPolygonMode = (PFNGLPOLYGONMODEPROC) O3D_GET_OPENGL_PROC("glPolygonMode");
+    glScissor = (PFNGLSCISSORPROC) O3D_GET_OPENGL_PROC("glScissor");
+    glTexParameterf = (PFNGLTEXPARAMETERFPROC) O3D_GET_OPENGL_PROC("glTexParameterf");
+    glTexParameterfv = (PFNGLTEXPARAMETERFVPROC) O3D_GET_OPENGL_PROC("glTexParameterfv");
+    glTexParameteri = (PFNGLTEXPARAMETERIPROC) O3D_GET_OPENGL_PROC("glTexParameteri");
+    glTexParameteriv = (PFNGLTEXPARAMETERIVPROC) O3D_GET_OPENGL_PROC("glTexParameteriv");
+    glTexImage1D = (PFNGLTEXIMAGE1DPROC) O3D_GET_OPENGL_PROC("glTexImage1D");
+    glTexImage2D = (PFNGLTEXIMAGE2DPROC) O3D_GET_OPENGL_PROC("glTexImage2D");
+    glDrawBuffer = (PFNGLDRAWBUFFERPROC) O3D_GET_OPENGL_PROC("glDrawBuffer");
+    glClear = (PFNGLCLEARPROC) O3D_GET_OPENGL_PROC("glClear");
+    glClearColor = (PFNGLCLEARCOLORPROC) O3D_GET_OPENGL_PROC("glClearColor");
+    glClearStencil = (PFNGLCLEARSTENCILPROC) O3D_GET_OPENGL_PROC("glClearStencil");
+    glClearDepth = (PFNGLCLEARDEPTHPROC) O3D_GET_OPENGL_PROC("glClearDepth");
+    glStencilMask = (PFNGLSTENCILMASKPROC) O3D_GET_OPENGL_PROC("glStencilMask");
+    glColorMask = (PFNGLCOLORMASKPROC) O3D_GET_OPENGL_PROC("glColorMask");
+    glDepthMask = (PFNGLDEPTHMASKPROC) O3D_GET_OPENGL_PROC("glDepthMask");
+    glDisable = (PFNGLDISABLEPROC) O3D_GET_OPENGL_PROC("glDisable");
+    glEnable = (PFNGLENABLEPROC) O3D_GET_OPENGL_PROC("glEnable");
+    glFinish = (PFNGLFINISHPROC) O3D_GET_OPENGL_PROC("glFinish");
+    glFlush = (PFNGLFLUSHPROC) O3D_GET_OPENGL_PROC("glFlush");
+    glBlendFunc = (PFNGLBLENDFUNCPROC) O3D_GET_OPENGL_PROC("glBlendFunc");
+    glLogicOp = (PFNGLLOGICOPPROC) O3D_GET_OPENGL_PROC("glLogicOp");
+    glStencilFunc = (PFNGLSTENCILFUNCPROC) O3D_GET_OPENGL_PROC("glStencilFunc");
+    glStencilOp = (PFNGLSTENCILOPPROC) O3D_GET_OPENGL_PROC("glStencilOp");
+    glDepthFunc = (PFNGLDEPTHFUNCPROC) O3D_GET_OPENGL_PROC("glDepthFunc");
+    glPixelStoref = (PFNGLPIXELSTOREFPROC) O3D_GET_OPENGL_PROC("glPixelStoref");
+    glPixelStorei = (PFNGLPIXELSTOREIPROC) O3D_GET_OPENGL_PROC("glPixelStorei");
+    glReadBuffer = (PFNGLREADBUFFERPROC) O3D_GET_OPENGL_PROC("glReadBuffer");
+    glReadPixels = (PFNGLREADPIXELSPROC) O3D_GET_OPENGL_PROC("glReadPixels");
+    glGetBooleanv = (PFNGLGETBOOLEANVPROC) O3D_GET_OPENGL_PROC("glGetBooleanv");
+    glGetDoublev = (PFNGLGETDOUBLEVPROC) O3D_GET_OPENGL_PROC("glGetDoublev");
+    glGetError = (PFNGLGETERRORPROC) O3D_GET_OPENGL_PROC("glGetError");
+    glGetFloatv = (PFNGLGETFLOATVPROC) O3D_GET_OPENGL_PROC("glGetFloatv");
+    glGetIntegerv = (PFNGLGETINTEGERVPROC) O3D_GET_OPENGL_PROC("glGetIntegerv");
+    glGetString = (PFNGLGETSTRINGPROC) O3D_GET_OPENGL_PROC("glGetString");
+    glGetTexImage = (PFNGLGETTEXIMAGEPROC) O3D_GET_OPENGL_PROC("glGetTexImage");
+    glGetTexParameterfv = (PFNGLGETTEXPARAMETERFVPROC) O3D_GET_OPENGL_PROC("glGetTexParameterfv");
+    glGetTexParameteriv = (PFNGLGETTEXPARAMETERIVPROC) O3D_GET_OPENGL_PROC("glGetTexParameteriv");
+    glGetTexLevelParameterfv = (PFNGLGETTEXLEVELPARAMETERFVPROC) O3D_GET_OPENGL_PROC("glGetTexLevelParameterfv");
+    glGetTexLevelParameteriv = (PFNGLGETTEXLEVELPARAMETERIVPROC) O3D_GET_OPENGL_PROC("glGetTexLevelParameteriv");
+    glIsEnabled = (PFNGLISENABLEDPROC) O3D_GET_OPENGL_PROC("glIsEnabled");
+    glDepthRange = (PFNGLDEPTHRANGEPROC) O3D_GET_OPENGL_PROC("glDepthRange");
+    glViewport = (PFNGLVIEWPORTPROC) O3D_GET_OPENGL_PROC("glViewport");
+#endif
+
+    //
+    // OpenGL 1.1
+    //
+
+#ifdef O3D_GL_VERSION_1_1
+    glDrawArrays = (PFNGLDRAWARRAYSPROC) O3D_GET_OPENGL_PROC("glDrawArrays");
+    glDrawElements = (PFNGLDRAWELEMENTSPROC) O3D_GET_OPENGL_PROC("glDrawElements");
+    glGetPointerv = (PFNGLGETPOINTERVPROC) O3D_GET_OPENGL_PROC("glGetPointerv");
+    glPolygonOffset = (PFNGLPOLYGONOFFSETPROC) O3D_GET_OPENGL_PROC("glPolygonOffset");
+    glCopyTexImage1D = (PFNGLCOPYTEXIMAGE1DPROC) O3D_GET_OPENGL_PROC("glCopyTexImage1D");
+    glCopyTexImage2D = (PFNGLCOPYTEXIMAGE2DPROC) O3D_GET_OPENGL_PROC("glCopyTexImage2D");
+    glCopyTexSubImage1D = (PFNGLCOPYTEXSUBIMAGE1DPROC) O3D_GET_OPENGL_PROC("glCopyTexSubImage1D");
+    glCopyTexSubImage2D = (PFNGLCOPYTEXSUBIMAGE2DPROC) O3D_GET_OPENGL_PROC("glCopyTexSubImage2D");
+    glTexSubImage1D = (PFNGLTEXSUBIMAGE1DPROC) O3D_GET_OPENGL_PROC("glTexSubImage1D");
+    glTexSubImage2D = (PFNGLTEXSUBIMAGE2DPROC) O3D_GET_OPENGL_PROC("glTexSubImage2D");
+    glBindTexture = (PFNGLBINDTEXTUREPROC) O3D_GET_OPENGL_PROC("glBindTexture");
+    glDeleteTextures = (PFNGLDELETETEXTURESPROC) O3D_GET_OPENGL_PROC("glDeleteTextures");
+    glGenTextures = (PFNGLGENTEXTURESPROC) O3D_GET_OPENGL_PROC("glGenTextures");
+    glIsTexture = (PFNGLISTEXTUREPROC) O3D_GET_OPENGL_PROC("glIsTexture");
+#endif
 
 	//
 	// draw range element*
@@ -1118,15 +1269,30 @@ void GLExtensionManager::getExtFunctions()
 #ifdef O3D_GL_VERSION_4_5
 #endif // O3D_GL_VERSION_4_5
 
+#ifdef O3D_GL_VERSION_4_6
+#endif // O3D_GL_VERSION_4_6
+
 #endif // O3D_GL_PROTOTYPES
 }
 
+#include "objective3dconfig.h"
+
 // Initialize the extension manager
-void GLExtensionManager::initialize()
+void GLExtensionManager::init()
 {
-    if (m_valid) {
+    if (ms_valid) {
 		return;
     }
+
+#ifdef O3D_LINUX
+    ms_openGL = DynamicLibrary::load("libGL.so");
+#elif defined(O3D_WINDOWS)
+    ms_openGL = DynamicLibrary::load("opengl32.dll");
+#endif
+
+#ifndef O3D_GL_PROTOTYPES
+    glGetString = (PFNGLGETSTRINGPROC) O3D_GET_OPENGL_PROC("glGetString");
+#endif // O3D_GL_PROTOTYPES
 
 	// get extensions functions pointers (only for windows or for non valid OpenGL 2.0 context).
 	const GLubyte *version = glGetString(GL_VERSION);
@@ -1136,14 +1302,12 @@ void GLExtensionManager::initialize()
 
 	// get glGetStringi before
 #ifndef O3D_GL_PROTOTYPES
-#ifdef O3D_GL_VERSION_3_0
 	glGetStringi = (PFNGLGETSTRINGIPROC) O3D_GET_OPENGL_PROC("glGetStringi");
-#endif // O3D_GL_VERSION_3_0
 #endif // O3D_GL_PROTOTYPES
 
 	getExtFunctions();
 
-	m_valid = True;
+    ms_valid = True;
 }
 
 // Check for an extension
