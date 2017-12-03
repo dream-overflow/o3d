@@ -115,9 +115,9 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	Int32 queryMinor = 0;
 
     // we can retrieve glGetString now
-    glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
+    _glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
 
-    const GLubyte *version = glGetString(GL_VERSION);
+    const GLubyte *version = _glGetString(GL_VERSION);
     if (version && (version[0] == '3')) {
 		// try an OpenGL 3.0+ context.
 		queryMajor = 3;
@@ -236,7 +236,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
-    version = glGetString(GL_VERSION);
+    version = _glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
     }
@@ -320,9 +320,9 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	Int32 queryMinor = 0;
 
     // we can retrieve glGetString now
-    glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
+    _glGetString = (PFNGLGETSTRINGPROC)GLX::getProcAddress("glGetString");
 
-    const GLubyte *version = glGetString(GL_VERSION);
+    const GLubyte *version = _glGetString(GL_VERSION);
     if (version && (version[0] == '3')) {
 		// try an OpenGL 3.0+ context.
 		queryMajor = 3;
@@ -449,7 +449,7 @@ void Renderer::share(Renderer *sharing, AppWindow *appWindow, Bool debug)
 	O3D_MESSAGE("Video renderer: " + getRendererName());
 	O3D_MESSAGE("OpenGL version: " + getStrVersion());
 
-    version = glGetString(GL_VERSION);
+    version = _glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
     }

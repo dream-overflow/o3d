@@ -77,16 +77,16 @@ Context::Context(Renderer *renderer) :
     glGenVertexArrays(1, (GLuint*)&m_defaultVAOId);
     bindVertexArray(0, nullptr);
 
-    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
+    _glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
 
     m_maxTessEvalTextureImageUnits = 0;
     m_maxTessControlTextureImageUnits = 0;
     m_maxViewports = 0;
 
     if (m_renderer->getVersion() >= Renderer::OGL_400) {
-        glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
-		glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessControlTextureImageUnits);
-		glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
+        _glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
+        _glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessControlTextureImageUnits);
+        _glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
 	}
 
 	// anisotropy
@@ -97,19 +97,19 @@ Context::Context(Renderer *renderer) :
 	glDisable(GL_DITHER);
 
 	// texture
-	glGetIntegerv(GL_MAX_TEXTURE_SIZE, (GLint*)&m_textureMaxSize);
-	glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, (GLint*)&m_texture3dMaxSize);
-    glGetIntegerv(GL_MAX_SAMPLES, (GLint*)&m_textureMaxSamples);
-	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTextureImageUnits);
-	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxVertexTextureImageUnits);
-    glGetIntegerv(GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxGeometryTextureImageUnits);
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxCombinedTextureImageUnits);
+    _glGetIntegerv(GL_MAX_TEXTURE_SIZE, (GLint*)&m_textureMaxSize);
+    _glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, (GLint*)&m_texture3dMaxSize);
+    _glGetIntegerv(GL_MAX_SAMPLES, (GLint*)&m_textureMaxSamples);
+    _glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTextureImageUnits);
+    _glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxVertexTextureImageUnits);
+    _glGetIntegerv(GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxGeometryTextureImageUnits);
+    _glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxCombinedTextureImageUnits);
 
-	glGetIntegerv(GL_MAX_DRAW_BUFFERS, (GLint*)&m_maxDrawBuffers);
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, (GLint*)&m_maxVertexAttribs);
+    _glGetIntegerv(GL_MAX_DRAW_BUFFERS, (GLint*)&m_maxDrawBuffers);
+    _glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, (GLint*)&m_maxVertexAttribs);
 
 	// GLSL version
-    const GLubyte *version = glGetString(GL_SHADING_LANGUAGE_VERSION);
+    const GLubyte *version = _glGetString(GL_SHADING_LANGUAGE_VERSION);
     if ((version != nullptr) && (version[0] >= '1') && (version[1] == '.'))	{
 		m_glslVersion = (version[0] - '0') * 100 +
 						(version[2] - '0') * 10 +

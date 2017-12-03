@@ -155,9 +155,9 @@ Bool Renderer::screenShot(
 String Renderer::getRendererName() const
 {
     if (isCurrent()) {
-        String vendor(reinterpret_cast<const Char*>(glGetString(GL_VENDOR)));
+        String vendor(reinterpret_cast<const Char*>(_glGetString(GL_VENDOR)));
 		vendor += " ";
-        String renderer(reinterpret_cast<const Char*>(glGetString(GL_RENDERER)));
+        String renderer(reinterpret_cast<const Char*>(_glGetString(GL_RENDERER)));
 
 		return vendor + renderer;
     } else {
@@ -168,7 +168,7 @@ String Renderer::getRendererName() const
 String Renderer::getStrVersion() const
 {
     if (isCurrent()) {
-        return String(reinterpret_cast<const Char*>(glGetString(GL_VERSION)));
+        return String(reinterpret_cast<const Char*>(_glGetString(GL_VERSION)));
     } else {
 		return String("ERROR: Undefined OpenGL context");
     }
@@ -238,12 +238,12 @@ UInt32 Renderer::getTextureFreeMemory() const
 {
     if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info")) {
         GLint free;
-        glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
+        _glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
 
         return (UInt32)free;
     } else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo")) {
         GLint mem[4];
-        glGetIntegerv(GL_TEXTURE_FREE_MEMORY_ATI, mem);
+        _glGetIntegerv(GL_TEXTURE_FREE_MEMORY_ATI, mem);
 
         return (UInt32)mem[0];
     }
@@ -255,12 +255,12 @@ UInt32 Renderer::getVBOFreeMemory() const
 {
     if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info")) {
         GLint free;
-        glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
+        _glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
 
         return (UInt32)free;
     } else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo")) {
         GLint mem[4];
-        glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, mem);
+        _glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, mem);
 
         return (UInt32)mem[0];
     }
@@ -272,12 +272,12 @@ UInt32 Renderer::getRenderBufferFreeMemory() const
 {
     if (GLExtensionManager::isExtensionSupported("GL_NVX_gpu_memory_info")) {
         GLint free;
-        glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
+        _glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &free);
 
         return (UInt32)free;
     } else if (GLExtensionManager::isExtensionSupported("GL_ATI_meminfo")) {
         GLint mem[4];
-        glGetIntegerv(GL_RENDERBUFFER_FREE_MEMORY_ATI, mem);
+        _glGetIntegerv(GL_RENDERBUFFER_FREE_MEMORY_ATI, mem);
 
         return (UInt32)mem[0];
     }

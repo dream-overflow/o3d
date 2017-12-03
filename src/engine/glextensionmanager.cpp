@@ -17,8 +17,6 @@
 
 #include "o3d/engine/glextensionmanager.h"
 
-//#include "o3d/core/glxdefines.h"
-//#include "o3d/core/glx.h"
 #include "o3d/core/gl.h"
 #include "o3d/core/debug.h"
 #include "o3d/core/dynamiclibrary.h"
@@ -67,8 +65,8 @@ PFNGLGETBOOLEANVPROC glGetBooleanv = nullptr;
 PFNGLGETDOUBLEVPROC glGetDoublev = nullptr;
 PFNGLGETERRORPROC glGetError = nullptr;
 PFNGLGETFLOATVPROC glGetFloatv = nullptr;
-PFNGLGETINTEGERVPROC glGetIntegerv = nullptr;
-PFNGLGETSTRINGPROC glGetString = nullptr;
+PFNGLGETINTEGERVPROC _glGetIntegerv = nullptr;
+PFNGLGETSTRINGPROC _glGetString = nullptr;
 PFNGLGETTEXIMAGEPROC glGetTexImage = nullptr;
 PFNGLGETTEXPARAMETERFVPROC glGetTexParameterfv = nullptr;
 PFNGLGETTEXPARAMETERIVPROC glGetTexParameteriv = nullptr;
@@ -478,8 +476,8 @@ void GLExtensionManager::getExtFunctions()
     glGetDoublev = (PFNGLGETDOUBLEVPROC) GL::getProcAddress("glGetDoublev");
     glGetError = (PFNGLGETERRORPROC) GL::getProcAddress("glGetError");
     glGetFloatv = (PFNGLGETFLOATVPROC) GL::getProcAddress("glGetFloatv");
-    glGetIntegerv = (PFNGLGETINTEGERVPROC) GL::getProcAddress("glGetIntegerv");
-    glGetString = (PFNGLGETSTRINGPROC) GL::getProcAddress("glGetString");
+    _glGetIntegerv = (PFNGLGETINTEGERVPROC) GL::getProcAddress("glGetIntegerv");
+    _glGetString = (PFNGLGETSTRINGPROC) GL::getProcAddress("glGetString");
     glGetTexImage = (PFNGLGETTEXIMAGEPROC) GL::getProcAddress("glGetTexImage");
     glGetTexParameterfv = (PFNGLGETTEXPARAMETERFVPROC) GL::getProcAddress("glGetTexParameterfv");
     glGetTexParameteriv = (PFNGLGETTEXPARAMETERIVPROC) GL::getProcAddress("glGetTexParameteriv");
@@ -1298,11 +1296,11 @@ void GLExtensionManager::init()
 #endif
 
 #ifndef O3D_GL_PROTOTYPES
-    glGetString = (PFNGLGETSTRINGPROC) GL::getProcAddress("glGetString");
+    _glGetString = (PFNGLGETSTRINGPROC) GL::getProcAddress("glGetString");
 #endif // O3D_GL_PROTOTYPES
 
 	// get extensions functions pointers (only for windows or for non valid OpenGL 2.0 context).
-    const GLubyte *version = glGetString(GL_VERSION);
+    const GLubyte *version = _glGetString(GL_VERSION);
     if (!version) {
 		O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
     }
@@ -1325,7 +1323,7 @@ Bool GLExtensionManager::isExtensionSupported(const String &ext)
 		return False;
     }
 
-    const GLubyte *version = glGetString(GL_VERSION);
+    const GLubyte *version = _glGetString(GL_VERSION);
 
     if (!version) {
 		O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
@@ -1334,7 +1332,7 @@ Bool GLExtensionManager::isExtensionSupported(const String &ext)
     if ((version != nullptr) && ((version[0] - 48) >= 3)) {
 		GLint numExts;
 
-		glGetIntegerv(GL_NUM_EXTENSIONS, &numExts);
+        _glGetIntegerv(GL_NUM_EXTENSIONS, &numExts);
 
         for (GLint i = 0; i < numExts; ++i) {
 			const Char *extName = reinterpret_cast<const Char*>(glGetStringi(GL_EXTENSIONS, i));
@@ -1347,7 +1345,7 @@ Bool GLExtensionManager::isExtensionSupported(const String &ext)
 		return False;
     } else {
 		// get the list of extensions
-        const GLubyte *extensions = glGetString(GL_EXTENSIONS);
+        const GLubyte *extensions = _glGetString(GL_EXTENSIONS);
 
         if (!extensions) {
             O3D_ERROR(E_InvalidResult("glGetString(GL_EXTENSIONS) is null"));

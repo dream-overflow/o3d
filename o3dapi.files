@@ -955,7 +955,6 @@ include/o3d/engine/guimanager.h
 include/o3d/engine/physicmanager.h
 include/o3d/engine/deferred/deferreddrawer.h
 src/engine/deferred/deferreddrawer.cpp
-include/o3d/engine/gl.h
 include/o3d/engine/glx11.h
 src/engine/glx11.cpp
 include/o3d/engine/text2d.h
