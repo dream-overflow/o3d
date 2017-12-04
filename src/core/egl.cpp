@@ -65,7 +65,7 @@ void GLXEGLinit()
 
 void* GLX::getProcAddress(const Char *ext)
 {
-    return (void*)::_glXGetProcAddress((const GLubyte*)ext);
+    return (void*)::_eglGetProcAddress((const GLubyte*)ext);
 }
 
 #endif // O3D_EGL
