@@ -16,10 +16,10 @@
 #include "quaternion.h"
 #include "memorydbg.h"
 
-// SSE2 Optimisation in O3D_USE_SIMD mode
-#ifdef O3D_USE_SIMD
+// SSE2 Optimisation in O3D_SSE2 mode
+#ifdef O3D_SSE2
     #include <xmmintrin.h>
-#endif // O3D_USE_SIMD
+#endif // O3D_SSE2
 
 namespace o3d {
 
@@ -36,7 +36,7 @@ class O3D_API DualQuaternion
 {
 private:
 
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		union {
 			__m128 *__M128;
 			Float *Q;
@@ -111,7 +111,7 @@ public:
 	inline DualQuaternion(const DualQuaternion& _Q)
 	{
 		Q = (Float*)O3D_FAST_ALLOC(32);
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_Q.Q[0]);
 		__M128[1] = _mm_load_ps(&_Q.Q[4]);
 	#else
@@ -123,7 +123,7 @@ public:
 	inline DualQuaternion(const Quaternion &_Q)
 	{
 		Q = (Float*)O3D_FAST_ALLOC(32);
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_Q.V[0]);
 		__M128[1] = _mm_setzero_ps();
 	#else
@@ -152,7 +152,7 @@ public:
 	//! set all entry to zero
 	inline void zero()
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_setzero_ps();
 		__M128[1] = _mm_setzero_ps();
 	#else
@@ -163,7 +163,7 @@ public:
 	//! Q is set to identity
 	inline void identity()
 	{
-#ifdef O3D_USE_SIMD
+#ifdef O3D_SSE2
 		__M128[0] = _mm_set_ps(0.f,0.f,0.f,1.f);
 		__M128[1] = _mm_setzero_ps();
 #else
@@ -190,7 +190,7 @@ public:
 	//! duplicate
 	inline DualQuaternion& operator=(const DualQuaternion& _Q)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_Q.Q[0]);
 		__M128[1] = _mm_load_ps(&_Q.Q[4]);
 	#else
@@ -202,7 +202,7 @@ public:
 	//! construct from a rotation quaternion
 	inline DualQuaternion& operator=(const Quaternion& _Q)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_Q.V[0]);
 		__M128[1] = _mm_setzero_ps();
 	#else
@@ -323,7 +323,7 @@ public:
 	//! compute the dot product of two dual quaternion DOT = Q dot _Q
 	inline Float dot(const DualQuaternion& _Q) const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		O3D_ALIGN(16) Float DOT[4];
 		__m128 mm0, mm1, mm2;
 		mm0 = _mm_mul_ps(__M128[0],_Q.__M128[0]);
@@ -340,7 +340,7 @@ public:
 	//! compute the dot product of dual quaternion real part DOT = Q.real dot _Q.real
 	inline Float dotReal(const Quaternion& _Q) const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		O3D_ALIGN(16) Float DOT[4];
 		__m128 mm0 = _mm_mul_ps(__M128[0],_Q.__M128[0]);
 		_mm_store_ps(DOT,mm0);
@@ -353,7 +353,7 @@ public:
 	//! compute the dot product of dual quaternion dual (epsilon) part DOT = Q.dual dot _Q.dual
 	inline Float dotDual(const Quaternion& _Q) const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		O3D_ALIGN(16) Float DOT[4];
 		__m128 mm0 = _mm_mul_ps(__M128[1],_Q.__M128[0]);
 		_mm_store_ps(DOT,mm0);
@@ -370,7 +370,7 @@ public:
 	//! add two dual quaternion this + _Q and return into __Q
 	inline void add(const DualQuaternion& _Q, DualQuaternion& __Q) const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__Q.__M128[0] = _mm_add_ps(__M128[0], _Q.__M128[0]);
 		__Q.__M128[1] = _mm_add_ps(__M128[1], _Q.__M128[1]);
 	#else
@@ -401,7 +401,7 @@ public:
 	//! sub two dual quaternion this + _Q and return into __Q
 	inline void sub(const DualQuaternion& _Q, DualQuaternion& __Q) const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__Q.__M128[0] = _mm_sub_ps(__M128[0], _Q.__M128[0]);
 		__Q.__M128[1] = _mm_sub_ps(__M128[1], _Q.__M128[1]);
 	#else
@@ -433,7 +433,7 @@ public:
 	inline void mult(const DualQuaternion& _Q, DualQuaternion& __Q) const
 	{
 		// @todo
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		O3D_ALIGN(16) Float TMP[4];
 		Quaternion::mult(&_Q.Q[0],&Q[0],&__Q.Q[0]);
 		Quaternion::mult(&_Q.Q[4],&Q[0],TMP);
@@ -481,7 +481,7 @@ public:
 	inline void rotationNormalized(DualQuaternion &_Q) const
 	{
 		Float flength = 1.f / length();
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__m128 __scal = _mm_set_ps1(flength);        // scale
 		_Q.__M128[0] = _mm_mul_ps(__M128[0],__scal); // real
 		_Q.__M128[1] = _mm_mul_ps(__M128[1],__scal); // dual
@@ -512,7 +512,7 @@ public:
 	inline void pluckerNormalized(DualQuaternion &_Q) const
 	{
 		Float flength = 1.f / squareLength();
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		// real (_Q.real = this->real)
 		_mm_store_ps(&_Q.Q[0],__M128[0]);
 
@@ -558,7 +558,7 @@ public:
 	//! return the length of the dual quaternion
 	inline Float length() const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		O3D_ALIGN(16) Float DOT[4];
 		__m128 mm0 = _mm_mul_ps(__M128[0],__M128[0]);
 		_mm_store_ps(DOT,mm0);
@@ -571,7 +571,7 @@ public:
 	//! return the square length of the dual quaternion
 	inline Float squareLength() const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		O3D_ALIGN(16) Float DOT[4];
 		__m128 mm0 = _mm_mul_ps(__M128[0],__M128[0]);
 		_mm_store_ps(DOT,mm0);
@@ -669,7 +669,7 @@ public:
 	//! Scale any entry of the dual quaternion by scale
 	inline void scale(const Float scale)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__m128 __scal = _mm_set_ps1(scale);
 		__M128[0] = _mm_mul_ps(__M128[0],__scal);
 		__M128[1] = _mm_mul_ps(__M128[1],__scal);
@@ -706,7 +706,7 @@ public:
 	//! set from a 3d axis and a rotation quaternion
 	inline void fromAxisAndQuaternion(const Vector3 &_V, const Quaternion &_Q)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_Q[0]);
 		__M128[1] = _mm_set_ps(0.5f*_V[X],0.5f*_V[Y],0.5f*_V[Z],0.f);
 	#else

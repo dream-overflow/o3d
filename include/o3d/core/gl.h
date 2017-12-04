@@ -29,10 +29,9 @@ public:
     {
     public:
 
-        virtual void* call(const Char* ext)
-        {
-            return nullptr;
-        }
+        virtual ~GetProcAddressCallbackMethod() = 0;
+        virtual void* call(const Char *ext) = 0;
+        virtual void swapBuffers(void *surface) = 0;
     };
 
     //! Initialize, plateform dependency.
@@ -47,7 +46,13 @@ public:
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
 
-    // static void swapBuffers();
+    //! Which used implementation : EGL, GLX, SDL2 or WGL, CUSTOM or null.
+    //! Custom means than a callback was provided.
+    static const Char *getImplementation();
+
+    //! Swap buffer according to defined native display and window handler,
+    //! using the defined implementation.
+    static void swapBuffers(_DISP display, _HWND hWnd, _HDC hdc);
 
 private:
 

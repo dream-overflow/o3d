@@ -160,28 +160,28 @@ typedef XID GLXPbuffer;
 #define GLX_CONTEXT_CORE_PROFILE_BIT_ARB          0x00000001
 #define GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
 
-typedef Bool (*glXQueryVersionProc)(Display *dpy, int *maj, int *min);
-typedef GLXFBConfig *(*glXChooseFBConfigProc)(Display *dpy, int screen, const int *attribList, int *nitems);
-typedef XVisualInfo *(*glXGetVisualFromFBConfigProc)(Display *dpy, GLXFBConfig config);
-typedef int (*glXGetFBConfigAttribProc)(Display *dpy, GLXFBConfig config, int attribute, int *value);
-typedef void (*glXSwapBuffersProc)(Display *dpy, GLXDrawable drawable);
+typedef Bool (*GLXQUERYVERSIONPROC)(Display *dpy, int *maj, int *min);
+typedef GLXFBConfig *(*GLXCHOOSEFBCONFIGPROC)(Display *dpy, int screen, const int *attribList, int *nitems);
+typedef XVisualInfo *(*GLXGETVISUALFROMFBCONFIGPROC)(Display *dpy, GLXFBConfig config);
+typedef int (*GLXGETFBCONFIGATTRIBPROC)(Display *dpy, GLXFBConfig config, int attribute, int *value);
+typedef void (*GLXSWAPBUFFERSPROC)(Display *dpy, GLXDrawable drawable);
 
-typedef const char* (*glXQueryExtensionsStringProc)(Display *dpy, int screen);
+typedef const char* (*GLXQUERYEXTENSIONSSTRINGPROC)(Display *dpy, int screen);
 
-typedef GLXContext (*glXCreateContextProc)(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct);
-typedef void (*glXDestroyContextProc)(Display *dpy, GLXContext ctx);
+typedef GLXContext (*GLXCREATECONTEXTPROC)(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct);
+typedef void (*GLXDESTROYCONTEXTPROC)(Display *dpy, GLXContext ctx);
 
-typedef GLXContext (*glXCreateNewContextProc)(Display *dpy, GLXFBConfig config,
+typedef GLXContext (*GLXCREATENEWCONTEXTPROC)(Display *dpy, GLXFBConfig config,
                                           int renderType, GLXContext shareList,
                                           Bool direct);
 
-typedef Bool (*glXMakeCurrentProc)(Display *dpy, GLXDrawable drawable, GLXContext ctx);
-typedef Bool (*glXIsDirectProc)(Display *dpy, GLXContext ctx);
-typedef GLXContext (*glXGetCurrentContextProc)(void);
-typedef void (*glXQueryDrawableProc)(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value);
+typedef Bool (*GLXMAKECURRENTPROC)(Display *dpy, GLXDrawable drawable, GLXContext ctx);
+typedef Bool (*GLXISDIRECTPROC)(Display *dpy, GLXContext ctx);
+typedef GLXContext (*GLXGETCURRENTCONTEXTPROC)(void);
+typedef void (*GLXQUERYDRAWABLEPROC)(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value);
 
 // glxext
-typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
-typedef int (*glXSwapIntervalEXTProc)(Display*, GLXDrawable, int);
+typedef GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+typedef int (*GLXSWAPINTERVALEXTPROC)(Display*, GLXDrawable, int);
 
 #endif // _O3D_GLXDEFINES_H

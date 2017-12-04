@@ -17,10 +17,10 @@
 #include "matrix3.h"
 #include "memorydbg.h"
 
-// SSE2 Optimization in O3D_USE_SIMD mode
-#ifdef O3D_USE_SIMD
+// SSE2 Optimization in O3D_SSE2 mode
+#ifdef O3D_SSE2
     #include <xmmintrin.h>
-#endif // O3D_USE_SIMD
+#endif // O3D_SSE2
 
 namespace o3d {
 
@@ -32,7 +32,7 @@ class String;
  * @date 2002-02-18
  * 4x4 column major matrix. In memory first index represent the column. Accessors works
  * in row at first index. IE m23 mean row 2, column 3.
- * @note SIMD SSE2 optimizations are available when using O3D_USE_SIMD define.
+ * @note SIMD SSE2 optimizations are available when using O3D_SSE2 define.
  */
 class O3D_API Matrix4
 {
@@ -88,7 +88,7 @@ public:
 	inline Matrix4(const Matrix4& _M)
 	{
 		M = (Float*)O3D_FAST_ALLOC(64);
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_M.M[0]);
 		__M128[1] = _mm_load_ps(&_M.M[4]);
 		__M128[2] = _mm_load_ps(&_M.M[8]);
@@ -102,7 +102,7 @@ public:
 	inline Matrix4(const Float _M[16])
 	{
 		M = (Float*)O3D_FAST_ALLOC(64);
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_M[0]);
 		__M128[1] = _mm_load_ps(&_M[4]);
 		__M128[2] = _mm_load_ps(&_M[8]);
@@ -132,7 +132,7 @@ public:
 	//! set any entries of the matrix to zero
 	inline void zero()
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_setzero_ps();
 		__M128[1] = _mm_setzero_ps();
 		__M128[2] = _mm_setzero_ps();
@@ -145,7 +145,7 @@ public:
 	//! define as identity matrix
 	inline void identity()
 	{
-#ifdef O3D_USE_SIMD
+#ifdef O3D_SSE2
  		__M128[0] = _mm_set_ps(0.f,0.f,0.f,1.f);
 		__M128[1] = _mm_set_ps(0.f,0.f,1.f,0.f);
 		__M128[2] = _mm_set_ps(0.f,1.f,0.f,0.f);
@@ -165,7 +165,7 @@ public:
 		Float a31,Float a32,Float a33,Float a34,
 		Float a41,Float a42,Float a43,Float a44)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_set_ps(a41,a31,a21,a11);
 		__M128[1] = _mm_set_ps(a42,a32,a22,a12);
 		__M128[2] = _mm_set_ps(a43,a33,a23,a13);
@@ -181,7 +181,7 @@ public:
 	//! duplicate
 	inline Matrix4& operator= (const Matrix4& _M)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M128[0] = _mm_load_ps(&_M.M[0]);
 		__M128[1] = _mm_load_ps(&_M.M[4]);
 		__M128[2] = _mm_load_ps(&_M.M[8]);
@@ -338,7 +338,7 @@ public:
 	//! Matrix cross product from this * _M and return the result into __M
 	inline void mult(const Matrix4& _M, Matrix4& __M) const
 	{
-	#if defined(O3D_USE_SIMD)
+	#if defined(O3D_SSE2)
 		__M.__M128[0] = _mm_add_ps(_mm_add_ps(_mm_add_ps(
 			_mm_mul_ps(_mm_shuffle_ps(_M.__M128[0], _M.__M128[0], _MM_SHUFFLE(0,0,0,0)), __M128[0]),
 	    	_mm_mul_ps(_mm_shuffle_ps(_M.__M128[0], _M.__M128[0], _MM_SHUFFLE(1,1,1,1)), __M128[1])),
@@ -388,7 +388,7 @@ public:
 	//! produit matriciel M = M * _M
 	inline Matrix4& operator*= (const Matrix4& _M)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__m128 m0,m1,m2,m3;
 
 		m0 = _mm_add_ps(_mm_add_ps(_mm_add_ps(
@@ -445,7 +445,7 @@ public:
 	//! Uniform scale.
 	inline void scale(const Float scale)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__m128 __scal = _mm_set_ps1(scale);
 		__M128[0] = _mm_mul_ps(__M128[0],__scal);
 		__M128[1] = _mm_mul_ps(__M128[1],__scal);
@@ -500,7 +500,7 @@ public:
 	//! add two matrix this + _M and return into __M
 	inline void add(const Matrix4& _M, Matrix4& __M) const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M.__M128[0] = _mm_add_ps(__M128[0], _M.__M128[0]);
 		__M.__M128[1] = _mm_add_ps(__M128[1], _M.__M128[1]);
 		__M.__M128[2] = _mm_add_ps(__M128[2], _M.__M128[2]);
@@ -535,7 +535,7 @@ public:
 	//! sub two matrix this + _M and return into __M
 	inline void sub(const Matrix4& _M, Matrix4& __M) const
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__M.__M128[0] = _mm_sub_ps(__M128[0], _M.__M128[0]);
 		__M.__M128[1] = _mm_sub_ps(__M128[1], _M.__M128[1]);
 		__M.__M128[2] = _mm_sub_ps(__M128[2], _M.__M128[2]);
@@ -570,7 +570,7 @@ public:
 	//! translate la matrice M de v
 	inline void translate(const Vector3& v)
 	{
-//	#ifdef O3D_USE_SIMD
+//	#ifdef O3D_SSE2
 //		__M128[3] = _mm_add_ps(__M128[3],v.__M128);
 //	#else
 		M14 += v[X];
@@ -585,7 +585,7 @@ public:
 	//! translate la matrice M de {x,y,z}
 	inline void translate(const Float x,const Float y,const Float z)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__m128 v = _mm_set_ps(0,z,y,x);
 		__M128[3] = _mm_add_ps(__M128[3],v);
 	#else
@@ -648,7 +648,7 @@ public:
 	//! Scale on the three axis. W is supposed to be one.
 	inline void scale(const Vector3 &V)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__m128 v = _mm_set_ps(1.f,V[Z],V[Y],V[X]);
 		__M128[0] = _mm_mul_ps(__M128[0],v);//v.__M128);
 		__M128[1] = _mm_mul_ps(__M128[1],v);//v.__M128);
@@ -664,7 +664,7 @@ public:
     //! Scale a specific axis.
 	inline void scale(UInt32 axe, Float scale)
 	{
-	#ifdef O3D_USE_SIMD
+	#ifdef O3D_SSE2
 		__m128 v = _mm_set_ps1(scale);
 		__M128[axe] = _mm_mul_ps(__M128[axe],v);
 	#else
@@ -936,7 +936,7 @@ public:
 
 private:
 
-#ifdef O3D_USE_SIMD
+#ifdef O3D_SSE2
 	union {
 		__m128 *__M128;
 		Float *M;

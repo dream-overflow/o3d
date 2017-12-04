@@ -61,7 +61,7 @@ void Matrix4::quit()
 // Auto Transpose the matrix.
 void Matrix4::transpose()
 {
-#ifdef O3D_USE_SIMD
+#ifdef O3D_SSE2
 	_MM_TRANSPOSE4_PS(__M128[0],__M128[1],__M128[2],__M128[3]);
 #else
 	Float tmp;

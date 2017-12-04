@@ -78,17 +78,30 @@ public:
 	//! Get window title.
 	inline String getTitle() const { return m_title; }
 
-	//! Get the window identifier (HWND on WIN32, Window on X11, windowID on SDL).
+    //! Get the window identifier.
+    //! @note HWND on WIN32
+    //! @note Window on X11
+    //! @note windowID on SDL
 	inline _HWND getHWND() const { return m_hWnd; }
 
-	//! Get the related pixel format (PixelFormat on WIN32, best GLX frame buffer on X11,
-	//! xxx on SDL).
+    //! Get the related pixel format.
+    //! @note PixelFormat on WIN32
+    //! @note best GLX frame buffer on X11
+    //! @note Uint32 pixel format on SDL
+    //! @note EGLConfig on EFL
 	inline _PF getPixelFormat() const { return m_PF; }
 
-	//! Get the related HDC (HDC on WIN32, Drawable on X11, SDL_Window on SDL).
+    //! Get the related HDC.
+    //! @note HDC on WIN32
+    //! @note Drawable on GLX
+    //! @note SDL_Window on SDL
+    //! @note EGLSurface on EGL
 	inline _HDC getHDC() const { return m_HDC; }
 
-	//! Get the related input context (none on WIN32, XIM on X11, none on SDL).
+    //! Get the related input context.
+    //! @note null on WIN32
+    //! @note XIM on X11
+    //! @note null on SDL
 	inline void* getIC() const { return m_ic; }
 
 	//! Define the window icon filename or empty string to remove the icon.
@@ -482,10 +495,10 @@ protected:
 
 	InputManager m_inputManager; //!< input manager instance
 
-	_HWND m_hWnd;             //!< window handle
-	_HDC m_HDC;               //!< drawable handle
-	_PF m_PF;                 //!< pixel format
-	void *m_ic;               //!< input controller
+    _HWND m_hWnd;         //!< window handle
+    _HDC m_HDC;           //!< drawable handle
+    _PF m_PF;             //!< pixel format
+    void *m_ic;           //!< input controller
 
 	Bool m_hasMouse;      //!< Mouse inside the client area.
 	Bool m_hasFocus;      //!< Has keyboard focus.

@@ -24,6 +24,15 @@
 //! SDL2 suport
 #cmakedefine O3D_USE_SDL2
 
+//! EGL suport
+#cmakedefine O3D_USE_EGL
+
+//! WAYLAND suport
+#cmakedefine O3D_USE_WAYLAND
+
+//! VULKAN support
+#cmakedefine O3D_USE_VULKAN
+
 //! OpenGL debugging extension support
 #cmakedefine01 O3D_GL_DEBUG
 
@@ -38,9 +47,40 @@
 //#define O3D_STATIC_LIB
 
 //
+// Android
+//
+#if defined(__ANDROID__) || defined(ANDROID)
+
+    #define O3D_ANDROID
+    #define O3D_UNIX
+
+    #if defined(__amd64__) || defined(__x86_64__)
+        #define O3D_IX64
+    #elif defined(__i686__) || defined(_X86_)
+        #define O3D_IX32
+    #elif defined(__aarch64__)
+        #define O3D_ARM64
+    #elif defined(__arm__)
+        #defined O3D_ARM32
+    #endif
+
+    #ifdef __ARM_ARCH_6__
+        #defined O3D_ARM_V6
+    #elif __ARM_ARCH_7__
+        #defined O3D_ARM_V7
+    #endif
+
+    #if __BYTE_ORDER == __BIG_ENDIAN
+        #define O3D_BIG_ENDIAN
+    #endif
+
+    //! System API (for thread, mutex, semaphore, timers...)
+    #define O3D_POSIX_SYS
+
+//
 // Windows
 //
-#if defined(_MSC_VER) || defined(WIN32) || defined(__MINGW32__)
+#elif defined(_MSC_VER) || defined(WIN32) || defined(__MINGW32__)
 
 	#define O3D_WINDOWS
 	#if defined(WIN32) && !defined(_WINDOWS)
@@ -126,7 +166,7 @@
 		#pragma warning(disable:4201)    // nonstandard extension used : nameless struct/union
 	#endif
 
-	//! EAX sound effect support. Only available on Windows.
+    //! EAX sound effect support. Only available on Windows (@deprecated)
 	#define O3D_BUILD_EAX
 
 //
@@ -140,7 +180,7 @@
 		#define O3D_LINUX
 	#endif
 
-    #if !defined(O3D_X11) && !defined(O3D_USE_SDL2)
+    #if !defined(O3D_X11) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND)
 		#define O3D_X11
 	#endif
 
@@ -230,6 +270,18 @@
     #define O3D_SDL2
 #endif
 
+#ifdef O3D_USE_EGL
+    #define O3D_EGL
+#endif
+
+#ifdef O3D_USE_WAYLAND
+    #define O3D_WAYLAND
+#endif
+
+#ifdef O3D_USE_VULKAN
+    #define O3D_VULKAN
+#endif
+
 //! CRT window report. Incompatibility when using timers and wnd assert reports.
 //! Preferred value is 0.
 #define O3D_USE_CRT_WNDREPORT 0
@@ -245,7 +297,7 @@
 
 // SIMD
 #ifdef O3D_USE_SSE2
-	#define O3D_USE_SIMD
+    #define O3D_SSE2
 #endif
 
 // Checking...

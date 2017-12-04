@@ -18,7 +18,7 @@
 #include "o3d/core/video.h"
 #include "o3d/core/debug.h"
 
-#include <GL/glx.h>
+#include <X11/Xlib.h>
 #include <X11/extensions/xf86vmode.h>
 #include <X11/extensions/Xrandr.h>
 
@@ -354,4 +354,3 @@ void Video::listDisplayModes()
 }
 
 #endif // O3D_X11
-

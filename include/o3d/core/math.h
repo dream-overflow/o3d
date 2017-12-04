@@ -13,8 +13,8 @@
 #include "o3d/core/base.h"
 #include "o3d/core/memorydbg.h"
 
-#if defined(O3D_USE_SIMD) && defined(_MSC_VER) && defined(O3D_WINDOWS)
-#elif defined(O3D_USE_SIMD) && defined(__GNUC__) && (defined(O3D_IX32) || defined(O3D_IX64))
+#if defined(O3D_SSE2) && defined(_MSC_VER) && defined(O3D_WINDOWS)
+#elif defined(O3D_SSE2) && defined(__GNUC__) && (defined(O3D_IX32) || defined(O3D_IX64))
 #else
 #include <math.h>
 #endif

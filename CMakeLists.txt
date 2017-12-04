@@ -48,10 +48,19 @@ endif()
 #----------------------------------------------------------
 
 # SSE2 ON by default
-option(O3D_USE_SSE2 "Compile SSE2 optimizations" ON)
+option(O3D_USE_SSE2 "Compile using x86_64 SSE2 optimizations" ON)
 
 # SDL2 OFF by default
 option(O3D_USE_SDL2 "Compile using SDL2 support" OFF)
+
+# EGL2 OFF by default
+option(O3D_USE_EGL "Compile using EGL support" OFF)
+
+# WAYLAND OFF by default
+option(O3D_USE_WAYLAND "Compile using WAYLAND support" OFF)
+
+# VULKAN OFF by default
+option(O3D_USE_VULKAN "Compile using VULKAN support" OFF)
 
 #----------------------------------------------------------
 # externals libraries

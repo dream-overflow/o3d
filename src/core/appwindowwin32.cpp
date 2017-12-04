@@ -735,8 +735,9 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 // Swap buffers
 void AppWindow::swapBuffers()
 {
-	if (m_HDC != NULL_HDC)
+    if (m_HDC != NULL_HDC) {
 		::SwapBuffers((HDC)m_HDC);
+    }
 }
 
 // Process internals deferred events

@@ -40,6 +40,10 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
 	set(O3D_LIB_NAME objective3d)
 endif()
 
+if(${O3D_USE_EGL})
+    set(EGL_LIBRARIES "-lEGL")
+endif()
+
 add_library(${O3D_LIB_NAME} SHARED
 			${tinyxml}
 			${tristripper}
@@ -61,6 +65,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
          target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
     endif()
 
+    if(${O3D_USE_EGL})
+         target_link_libraries(${O3D_LIB_NAME} ${EGL_LIBRARIES})
+    endif()
+
 ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	target_link_libraries(${O3D_LIB_NAME}
 			pthread
@@ -77,6 +85,10 @@ ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
    if(${O3D_USE_SDL2})
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
+    endif()
+
+    if(${O3D_USE_EGL})
+         target_link_libraries(${O3D_LIB_NAME} ${EGL_LIBRARIES})
     endif()
 
 ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

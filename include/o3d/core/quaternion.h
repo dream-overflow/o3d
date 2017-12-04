@@ -17,10 +17,10 @@
 #include "math.h"
 #include "memorydbg.h"
 
-// SSE2 Optimisation in O3D_USE_SIMD mode
-#ifdef O3D_USE_SIMD
+// SSE2 Optimisation in O3D_SSE2 mode
+#ifdef O3D_SSE2
     #include <xmmintrin.h>
-#endif // O3D_USE_SIMD
+#endif // O3D_SSE2
 
 namespace o3d {
 
@@ -51,7 +51,7 @@ class O3D_API Quaternion : Atomic
 
 private:
 
-#ifdef O3D_USE_SIMD
+#ifdef O3D_SSE2
 	union {
 		__m128 *__M128;
 		Float *V;
@@ -282,7 +282,7 @@ public:
 	inline Float dot(const Quaternion& _Q) const
 	{
 
-		#ifdef O3D_USE_SIMD
+		#ifdef O3D_SSE2
 			O3D_ALIGN(16) Float DOT[4];
 			__m128 mm0 = _mm_mul_ps(__M128[0],_Q.__M128[0]);
 			_mm_store_ps(DOT,mm0);

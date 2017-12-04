@@ -25,13 +25,23 @@
 using namespace o3d;
 
 // create the renderer
-void Renderer::create(AppWindow *appWindow, Bool debug)
+void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
 {
-    if (m_state.getBit(STATE_DEFINED))
-		O3D_ERROR(E_InvalidPrecondition("The renderer is already initialized"));
+    if (sharing != nullptr) {
+        O3D_ERROR(E_InvalidOperation("Sharing GL context is not supported using SDL2"));
+    }
 
-	if (!appWindow || (appWindow->getHWND() == NULL_HWND))
+    if (m_state.getBit(STATE_DEFINED)) {
+		O3D_ERROR(E_InvalidPrecondition("The renderer is already initialized"));
+    }
+
+    if (!appWindow || (appWindow->getHWND() == NULL_HWND)) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
+
+    if ((sharing != nullptr) && m_sharing) {
+        O3D_ERROR(E_InvalidOperation("A shared renderer cannot be sharing"));
+    }
 
 	O3D_MESSAGE("Creating a new OpenGL context...");
 
@@ -52,28 +62,22 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
     _glGetString = (PFNGLGETSTRINGPROC)SDL_GL_GetProcAddress("glGetString");
 
     const GLubyte *version = _glGetString(GL_VERSION);
-	if (version && (version[0] == '3'))
-	{
+    if (version && (version[0] == '3')) {
 		// try an OpenGL 3.0+ context.
 		queryMajor = 3;
 		queryMinor = version[2] - '0';
-	}
-	else if (version && (version[0] == '4'))
-	{
+    } else if (version && (version[0] == '4')) {
 		// try an OpenGL 4.0+ context.
 		queryMajor = 4;
 		queryMinor = version[2] - '0';
-	}
-	else if (version && (version[0] > '4'))
-	{
+    } else if (version && (version[0] > '4')) {
         // try an OpenGL 4.5 context.
 		queryMajor = 4;
         queryMinor = 5;
 	}
 
 	// we need at least OpenGL 1.2
-	if (version && (version[0] == '1') && (version[2] < '2'))
-	{
+    if (version && (version[0] == '1') && (version[2] < '2')) {
 		SDL_GL_DeleteContext(reinterpret_cast<SDL_GLContext>(m_HGLRC));
 
 		m_HGLRC = NULL;
@@ -129,13 +133,15 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
 	O3D_MESSAGE("OpenGL version: " + getVersion());
 
     version = _glGetString(GL_VERSION);
-	if (version && (version[0] == '1'))
+    if (version && (version[0] == '1')) {
 		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
+    }
 
 	// compute the gl version
 	Int32 glVersion = (version[0] - '0') * 100 + (version[2] - '0') * 10;
-	if (glVersion > OGL_420)
-		glVersion = OGL_420;
+    if (glVersion > OGL_460) {
+        glVersion = OGL_460;
+    }
 
 	m_version = Version(glVersion);
 	
@@ -148,18 +154,18 @@ void Renderer::create(AppWindow *appWindow, Bool debug)
     m_stencil = appWindow->getStencil();
     m_samples = appWindow->getSamples();
 
-    if (debug)
+    if (sharing) {
+        m_sharing = sharing;
+        m_sharing->m_shareCount++;
+    }
+
+    if (debug) {
         initDebug();
+    }
 
 	m_glContext = new Context(this);
 
 	doAttachment(m_appWindow);
-}
-
-// Share the OpenGL rendering using a given window handle. Same as create but with sharing.
-void Renderer::share(Renderer *shared, AppWindow *appWindow, Bool debug)
-{
-	O3D_ERROR(E_InvalidOperation("Not yet supported"));
 }
 
 // delete the renderer
@@ -207,12 +213,12 @@ Bool Renderer::isCurrent() const
 // Set as current OpenGL context
 void Renderer::setCurrent()
 {
-//	if (m_state.getBit(STATE_DEFINED) && (SDL_GL_GetCurrentContext() != reinterpret_cast<SDL_GLContext>(m_HGLRC))
-//	{
+//	if (m_state.getBit(STATE_DEFINED) && (SDL_GL_GetCurrentContext() != reinterpret_cast<SDL_GLContext>(m_HGLRC)) {
 //		if (SDL_GL_MakeCurrent(
 //				reinterpret_cast<SDL_GLContext>(m_HDC),
-//				reinterpret_cast<SDL_GLContext>(m_HGLRC)) != 0)
+//				reinterpret_cast<SDL_GLContext>(m_HGLRC)) != 0) {
 //			O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+//      }
 //	}
 }
 

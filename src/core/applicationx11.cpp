@@ -25,8 +25,8 @@ typedef o3d::Bool oBool;
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
-#include "o3d/core/glxdefines.h"
-#include "o3d/core/glx.h"
+#include "o3d/core/private/glxdefines.h"
+#include "o3d/core/private/glx.h"
 
 using namespace o3d;
 

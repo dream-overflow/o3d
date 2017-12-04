@@ -1294,12 +1294,12 @@ void GLExtensionManager::init()
     if (!_glGetString) {
     #ifdef O3D_ANDROID
         ms_openGL = DynamicLibrary::load("libGL.so");
-    #else if defined(O3D_LINUX)
+    #elif defined(O3D_LINUX)
         ms_openGL = DynamicLibrary::load("libGL.so");
     #elif defined(O3D_MACOSX)
         ms_openGL = DynamicLibrary::load("libGL.so");
     #elif defined(O3D_WINDOWS)
-        ms_openGL = DynamicLibrary::load("opengl32.dll");
+        ms_openGL = DynamicLibrary::load("Opengl32.dll");
     #endif
     }
 #endif // O3D_GL_PROTOTYPES
@@ -1313,7 +1313,6 @@ void GLExtensionManager::init()
     if (!version) {
         O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
     }
-
 
 	// get glGetStringi before
 #ifndef O3D_GL_PROTOTYPES

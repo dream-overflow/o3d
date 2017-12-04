@@ -73,3 +73,6 @@ src/shaders/gui/font2d/330
 src/shaders/smoothline/smoothline1/330
 cmake/Configs
 cmake/Modules
+src/core/private
+include/o3d/core/private
+src/core/private

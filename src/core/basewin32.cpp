@@ -136,4 +136,3 @@ void System::print(
 }
 
 #endif // O3D_WIN32_SYS
-

@@ -19,8 +19,11 @@
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 
-#include <o3d/core/glxdefines.h>
-#include <o3d/core/glx.h>
+#include <o3d/core/gl.h>
+
+#include <o3d/core/private/glxdefines.h>
+#include <o3d/core/private/glx.h>
+
 #include "o3d/core/debug.h"
 #include "o3d/core/application.h"
 #include "o3d/core/video.h"
@@ -604,222 +607,232 @@ void AppWindow::applySettings(Bool fullScreen)
             break;
     }
 
-	// Get a matching FB config
-    int visualAttribs[] = {
-			GLX_X_RENDERABLE, True,
-			GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-			GLX_RENDER_TYPE, GLX_RGBA_BIT,
-			GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
-			GLX_RED_SIZE, r,
-			GLX_GREEN_SIZE, g,
-			GLX_BLUE_SIZE, b,
-			GLX_ALPHA_SIZE, a,
+    Window window = 0;
+
+    CString resourceName = m_title.toUtf8().getData();
+    CString className = m_title.toUtf8().getData();
+
+    if (strcasecmp("GLX", GL::getImplementation()) == 0) {
+        // Get a matching FB config
+        int visualAttribs[] = {
+            GLX_X_RENDERABLE, True,
+            GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+            GLX_RENDER_TYPE, GLX_RGBA_BIT,
+            GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+            GLX_RED_SIZE, r,
+            GLX_GREEN_SIZE, g,
+            GLX_BLUE_SIZE, b,
+            GLX_ALPHA_SIZE, a,
             GLX_DEPTH_SIZE, (int)getDepth(),
             GLX_STENCIL_SIZE, (int)getStencil(),
-			GLX_DOUBLEBUFFER, True,
+            GLX_DOUBLEBUFFER, True,
             GLX_SAMPLE_BUFFERS, m_samples == NO_MSAA ? 0 : 1,
             GLX_SAMPLES, (int)m_samples,
-			None };
+            None };
 
-	int glxMajor, glxMinor;
+        int glxMajor, glxMinor;
 
-	// FBConfigs were added in GLX version 1.3.
-    if (!GLX::queryVersion(display, &glxMajor, &glxMinor) ||
-        ((glxMajor == 1) && (glxMinor < 4)) || (glxMajor < 1)) {
+        // FBConfigs were added in GLX version 1.3.
+        if (!GLX::queryVersion(display, &glxMajor, &glxMinor) ||
+            ((glxMajor == 1) && (glxMinor < 4)) || (glxMajor < 1)) {
 
-        O3D_ERROR(E_InvalidResult("Invalid GLX version. Need 1.4+"));
-	}
+            O3D_ERROR(E_InvalidResult("Invalid GLX version. Need 1.4+"));
+        }
 
-	int fbCount;
-    GLXFBConfig *glxFBConfig = GLX::chooseFBConfig(
-			display,
-			DefaultScreen(display),
-			visualAttribs,
-			&fbCount);
+        int fbCount;
+        GLXFBConfig *glxFBConfig = GLX::chooseFBConfig(
+                                       display,
+                                       DefaultScreen(display),
+                                       visualAttribs,
+                                       &fbCount);
 
-    if (!glxFBConfig) {
-		O3D_ERROR(E_InvalidResult("Failed to retrieve a frame buffer config"));
-    }
+        if (!glxFBConfig) {
+            O3D_ERROR(E_InvalidResult("Failed to retrieve a frame buffer config"));
+        }
 
-	// Pick the FB config/visual with the most samples per pixel
-	int bestFBC = -1, worstFBC = -1, bestNumSamp = -1, worstNumSamp = 999;
+        // Pick the FB config/visual with the most samples per pixel
+        int bestFBC = -1, worstFBC = -1, bestNumSamp = -1, worstNumSamp = 999;
 
-    for (int i = 0; i < fbCount; i++) {
-        XVisualInfo *vi = GLX::getVisualFromFBConfig(display, glxFBConfig[i]);
-        if (vi) {
-			int sampBuf, samples;
+        for (int i = 0; i < fbCount; i++) {
+            XVisualInfo *vi = GLX::getVisualFromFBConfig(display, glxFBConfig[i]);
+            if (vi) {
+                int sampBuf, samples;
 
-            GLX::getFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLE_BUFFERS, &sampBuf);
-            GLX::getFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLES, &samples);
+                GLX::getFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLE_BUFFERS, &sampBuf);
+                GLX::getFBConfigAttrib(display, glxFBConfig[i], GLX_SAMPLES, &samples);
 
-			O3D_MESSAGE(String::print(
-					"Matching fbconfig %d, visual ID 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d",
-					i,
-					vi->visualid,
-					sampBuf,
-					samples));
+                O3D_MESSAGE(String::print(
+                                "Matching fbconfig %d, visual ID 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d",
+                                i,
+                                vi->visualid,
+                                sampBuf,
+                                samples));
 
-            if (((bestFBC < 0) || sampBuf) && (samples > bestNumSamp)) {
-				bestFBC = i;
-				bestNumSamp = samples;
-			}
+                if (((bestFBC < 0) || sampBuf) && (samples > bestNumSamp)) {
+                    bestFBC = i;
+                    bestNumSamp = samples;
+                }
 
-            if ((worstFBC < 0) || !sampBuf || (samples < worstNumSamp)) {
-				worstFBC = i;
-				worstNumSamp = samples;
-			}
-		}
-		XFree(vi);
-	}
+                if ((worstFBC < 0) || !sampBuf || (samples < worstNumSamp)) {
+                    worstFBC = i;
+                    worstNumSamp = samples;
+                }
+            }
+            XFree(vi);
+        }
 
-    bestFBC = 0;
-	GLXFBConfig bestFbc = glxFBConfig[bestFBC];
+        bestFBC = 0;
+        GLXFBConfig bestFbc = glxFBConfig[bestFBC];
 
-	// be sure to free the FBConfig list allocated by glXChooseFBConfig()
-	XFree(glxFBConfig);
+        // be sure to free the FBConfig list allocated by glXChooseFBConfig()
+        XFree(glxFBConfig);
 
-	// Get a visual info from the chosen FB config
-    XVisualInfo *visualInfo = GLX::getVisualFromFBConfig(display, bestFbc);
-	O3D_MESSAGE(String::print("Chosen visual ID = 0x%x", visualInfo->visualid));
+        // Get a visual info from the chosen FB config
+        XVisualInfo *visualInfo = GLX::getVisualFromFBConfig(display, bestFbc);
+        O3D_MESSAGE(String::print("Chosen visual ID = 0x%x", visualInfo->visualid));
 
-	XSetWindowAttributes windowAttr;
-	Colormap colorMap;
-	windowAttr.colormap = colorMap = XCreateColormap(
-			display,
-			RootWindow(display, visualInfo->screen),
-			visualInfo->visual,
-			AllocNone);
+        XSetWindowAttributes windowAttr;
+        Colormap colorMap;
+        windowAttr.colormap = colorMap = XCreateColormap(
+                                             display,
+                                             RootWindow(display, visualInfo->screen),
+                                             visualInfo->visual,
+                                             AllocNone);
 
-    if (fullScreen) {
-        windowAttr.override_redirect = False;//True; not necessary with modern WM cause issue
+        if (fullScreen) {
+            windowAttr.override_redirect = False;//True; not necessary with modern WM cause issue
+        } else {
+            windowAttr.override_redirect = False;
+        }
+
+        windowAttr.background_pixel = 0;
+        windowAttr.background_pixmap = None;
+        windowAttr.border_pixel = 0;
+        windowAttr.event_mask = 0;//ExposureMask | KeyPressMask | KeyReleaseMask |
+        //		ButtonPressMask | ButtonReleaseMask |
+        //		StructureNotifyMask | PropertyChangeMask | VisibilityChangeMask |
+        //		FocusChangeMask | FocusChangeMask | SubstructureNotifyMask;
+        windowAttr.cursor = None;
+
+        unsigned long flags;
+
+        flags = CWCursor | CWBorderPixel | CWColormap | CWOverrideRedirect;// | CWEventMask;//CWBackPixel
+
+        // compute the window position
+        if (fullScreen) {
+            m_posX = m_posY = 0;
+        } else {
+            CIT_VideoModeList videoMode = Video::instance()->getCurrentDisplayMode();
+            m_posX = Int32(videoMode->width - /*m_width*/m_clientWidth) / 2;
+            m_posY = Int32(videoMode->height - /*m_height*/m_clientHeight) / 2;
+        }
+
+        window = XCreateWindow(
+                     display,
+                     RootWindow(display, visualInfo->screen),
+                     m_posX,
+                     m_posY,
+                     m_clientWidth,
+                     m_clientHeight,
+                     0,
+                     visualInfo->depth,
+                     InputOutput,
+                     visualInfo->visual,
+                     flags,
+                     &windowAttr);
+
+        // Done with the visual info data
+        XFree(visualInfo);
+
+        if (!window) {
+            O3D_ERROR(E_InvalidResult("Failed to create window"));
+        }
+
+        XMapWindow(display, window);
+
+        // WM Hints
+        setWMHints(display, window, fullScreen);
+
+        // Hints
+        XWMHints *wmHints = XAllocWMHints();
+        wmHints->input = True;
+        wmHints->flags = InputHint | StateHint;
+
+        XClassHint *classHints = XAllocClassHint();
+
+        classHints->res_name = resourceName.getData();
+        classHints->res_class = className.getData();
+
+        XSizeHints *sizeHints = XAllocSizeHints();
+        if (!m_resizable || fullScreen)	{
+            sizeHints->min_width = sizeHints->max_width = m_clientWidth;
+            sizeHints->min_height = sizeHints->max_height = m_clientHeight;
+            sizeHints->flags = PMaxSize | PMinSize;
+        } else if (!fullScreen) {
+            sizeHints->x = m_posX;
+            sizeHints->y = m_posY;
+            sizeHints->width  = m_width;
+            sizeHints->height = m_height;
+            sizeHints->flags = PPosition | PSize;
+
+            if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
+                sizeHints->min_width = m_minSize.x();
+                sizeHints->min_height = m_minSize.y();
+
+                sizeHints->flags |= PMinSize;
+            }
+
+            if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
+                sizeHints->max_width = m_maxSize.x();
+                sizeHints->max_height = m_maxSize.y();
+
+                sizeHints->flags |= PMaxSize;
+            }
+        }
+
+        // Set the size, input and class hints, and define WM_CLIENT_MACHINE and WM_LOCALE_NAME
+        XSetWMProperties(display, window, NULL, NULL, NULL, 0, sizeHints, wmHints, classHints);
+        XFree(sizeHints);
+        XFree(classHints);
+        XFree(wmHints);
+
+        // set the window manager state
+        setWindowState(display, window, fullScreen);
+
+        // let the window manager know its a "normal" window
+        XChangeProperty(
+                    display,
+                    window,
+                    _NET_WM_WINDOW_TYPE,
+                    XA_ATOM,
+                    32,
+                    PropModeReplace,
+                    (unsigned char *) &_NET_WM_WINDOW_TYPE_NORMAL,
+                    1);
+
+        // set the window PID
+        Int32 pid = Application::getPID();
+
+        XChangeProperty(display, window, _NET_WM_PID,
+                        XA_CARDINAL, 32, PropModeReplace, (unsigned char *)&pid, 1);
+
+        // let the window manager delete the window
+        if (WM_DELETE_WINDOW != None) {
+            XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
+        }
+
+        XMapRaised(display, window);
+
+        m_hWnd = static_cast<_HWND>(window);
+        m_HDC = static_cast<_HDC>(window);
+        m_PF = reinterpret_cast<_PF>(bestFbc);
+    } else if (strcasecmp("EGL", GL::getImplementation()) == 0) {
+        // @todo
+
+        // eglGetConfigAttrib for glxGetVisualFromFBConfig
     } else {
-		windowAttr.override_redirect = False;
+        O3D_ERROR(E_UnsuportedFeature("Support for GLX or EGL only"));
     }
-
-	windowAttr.background_pixel = 0;
-	windowAttr.background_pixmap = None;
-	windowAttr.border_pixel = 0;
-	windowAttr.event_mask = 0;//ExposureMask | KeyPressMask | KeyReleaseMask |
-	//		ButtonPressMask | ButtonReleaseMask |
-	//		StructureNotifyMask | PropertyChangeMask | VisibilityChangeMask |
-	//		FocusChangeMask | FocusChangeMask | SubstructureNotifyMask;
-	windowAttr.cursor = None;
-
-	unsigned long flags;
-
-	flags = CWCursor | CWBorderPixel | CWColormap | CWOverrideRedirect;// | CWEventMask;//CWBackPixel
-
-	// compute the window position
-    if (fullScreen) {
-        m_posX = m_posY = 0;
-    } else {
-        CIT_VideoModeList videoMode = Video::instance()->getCurrentDisplayMode();
-        m_posX = Int32(videoMode->width - /*m_width*/m_clientWidth) / 2;
-        m_posY = Int32(videoMode->height - /*m_height*/m_clientHeight) / 2;
-    }
-
-	Window window = XCreateWindow(
-			display,
-			RootWindow(display, visualInfo->screen),
-			m_posX,
-			m_posY,
-			m_clientWidth,
-			m_clientHeight,
-			0,
-			visualInfo->depth,
-			InputOutput,
-			visualInfo->visual,
-			flags,
-			&windowAttr);
-
-    if (!window) {
-		O3D_ERROR(E_InvalidResult("Failed to create window"));
-    }
-
-	// Done with the visual info data
-	XFree(visualInfo);
-
-	XMapWindow(display, window);
-
-	// WM Hints
-    setWMHints(display, window, fullScreen);
-
-	// Hints
-    XWMHints *wmHints = XAllocWMHints();
-    wmHints->input = True;
-    wmHints->flags = InputHint | StateHint;
-
-    XClassHint *classHints = XAllocClassHint();
-
-	CString resName = m_title.toUtf8().getData();
-	CString className = m_title.toUtf8().getData();
-
-    classHints->res_name = resName.getData();
-    classHints->res_class = className.getData();
-
-    XSizeHints *sizeHints = XAllocSizeHints();
-	if (!m_resizable || fullScreen)	{
-        sizeHints->min_width = sizeHints->max_width = m_clientWidth;
-        sizeHints->min_height = sizeHints->max_height = m_clientHeight;
-        sizeHints->flags = PMaxSize | PMinSize;
-    } else if (!fullScreen) {
-        sizeHints->x = m_posX;
-        sizeHints->y = m_posY;
-        sizeHints->width  = m_width;
-        sizeHints->height = m_height;
-        sizeHints->flags = PPosition | PSize;
-
-        if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
-            sizeHints->min_width = m_minSize.x();
-            sizeHints->min_height = m_minSize.y();
-
-            sizeHints->flags |= PMinSize;
-		}
-
-        if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
-            sizeHints->max_width = m_maxSize.x();
-            sizeHints->max_height = m_maxSize.y();
-
-            sizeHints->flags |= PMaxSize;
-		}
-	}
-
-    // Set the size, input and class hints, and define WM_CLIENT_MACHINE and WM_LOCALE_NAME
-    XSetWMProperties(display, window, NULL, NULL, NULL, 0, sizeHints, wmHints, classHints);
-    XFree(sizeHints);
-    XFree(classHints);
-    XFree(wmHints);
-
-    // set the window manager state
-	setWindowState(display, window, fullScreen);
-
-	// let the window manager know its a "normal" window
-	XChangeProperty(
-			display,
-			window,
-			_NET_WM_WINDOW_TYPE,
-			XA_ATOM,
-			32,
-			PropModeReplace,
-			(unsigned char *) &_NET_WM_WINDOW_TYPE_NORMAL,
-			1);
-
-	// set the window PID
-	Int32 pid = Application::getPID();
-
-    XChangeProperty(display, window, _NET_WM_PID,
-    	XA_CARDINAL, 32, PropModeReplace, (unsigned char *)&pid, 1);
-
-	// let the window manager delete the window
-    if (WM_DELETE_WINDOW != None) {
-		XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
-    }
-
-	XMapRaised(display, window);
-
-	m_hWnd = static_cast<_HWND>(window);
-	m_HDC = static_cast<_HDC>(window);
-	m_PF = reinterpret_cast<_PF>(bestFbc);
 
     if (!fullScreen) {
 		XMoveWindow(
@@ -839,7 +852,7 @@ void AppWindow::applySettings(Bool fullScreen)
 	XSetLocaleModifiers("");
 
     if (im == NULL) {
-		im = XOpenIM(display, NULL, resName.getData(), className.getData());
+        im = XOpenIM(display, NULL, resourceName.getData(), className.getData());
     }
 
 	m_ic = (void*)XCreateIC(
@@ -847,7 +860,7 @@ void AppWindow::applySettings(Bool fullScreen)
 				XNClientWindow, window,
 				XNFocusWindow, window,
 				XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
-				XNResourceName, resName.getData(),
+                XNResourceName, resourceName.getData(),
 				XNResourceClass, className.getData(),
 				NULL);
 
@@ -1264,9 +1277,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 void AppWindow::swapBuffers()
 {
     if (m_hWnd) {
-        GLX::swapBuffers(
-				reinterpret_cast<Display*> (Application::getDisplay()),
-				static_cast<Window> (m_hWnd));
+        GL::swapBuffers(Application::getDisplay(), m_hWnd, m_HDC);
     }
 }
 

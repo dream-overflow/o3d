@@ -83,23 +83,11 @@ public:
      * Must be defined for each sub-system.
      * @param appWindow Application window. Must be a valid window.
      * @param debug Since OGL 4.x debug mode is allowed.
+     * @param sharing If defined to a valid context share its content with this.
      * @note It takes the color model of the application window. Also take care of
      * the debug mode, when use it it can impact performances.
      */
-    virtual void create(AppWindow *appWindow, Bool debug = False);
-
-    /**
-     * @brief Share the OpenGL rendering using a given an application window.
-     * Must be defined for each sub-system.
-     * Like create(...) but with context sharing.
-     * @param sharing Shared context, for sharing texture, VBO, FBO, and shaders.
-     * @param appWindow Application window. Must be a valid window.
-     * @param debug  Since OGL 4.x debug mode is allowed.
-     * @warning Unsupported by SDL.
-     * @note It takes the color model of the application window. Also take care of
-     * the debug mode, when use it it can impact performances.
-     */
-    virtual void share(Renderer *sharing, AppWindow *appWindow, Bool debug = False);
+    virtual void create(AppWindow *appWindow, Bool debug = False, Renderer *sharing = nullptr);
 
 	//! Delete the renderer. Must be defined for each sub-system.
 	virtual void destroy();
