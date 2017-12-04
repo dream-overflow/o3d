@@ -528,7 +528,12 @@ void Renderer::destroy()
 		}
 
 		m_glErrno = GL_NO_ERROR;
-	}
+    }
+}
+
+void *Renderer::getProcAddress(const Char *ext) const
+{
+    return GLX::getProcAddress(ext);
 }
 
 // Is it the current OpenGL context.

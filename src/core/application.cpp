@@ -23,6 +23,7 @@
 #include "o3d/core/stringmap.h"
 #include "o3d/core/appwindow.h"
 #include "o3d/core/debug.h"
+#include "o3d/core/gl.h"
 
 #include <algorithm>
 #include <iostream>
@@ -80,6 +81,8 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
     if (settings.m_display) {
         apiInitPrivate();
     }
+
+    GL::init();
 
     // Video only if display
     if (settings.m_display) {
@@ -162,6 +165,8 @@ void Application::quit()
         apiQuitPrivate();
         ms_displayInit = False;
     }
+
+    GL::quit();
 }
 
 Bool Application::isInit()

@@ -108,6 +108,9 @@ public:
 	// Getters
     //
 
+    //! GL get proc address related to this rendering context.
+    virtual void* getProcAddress(const Char *ext) const;
+
 	//! Is the renderer exists.
     inline Bool isValid() const { return m_state.getBit(STATE_DEFINED); }
 

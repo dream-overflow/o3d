@@ -72,8 +72,6 @@ static int o3dXErrorHandler(Display* display, XErrorEvent* error_event)
 
 void Application::apiInitPrivate()
 {
-    GLX::init();
-
 	// because our app is multi-threaded
 	XInitThreads();
 

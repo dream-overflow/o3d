@@ -15,14 +15,14 @@
 
 #ifdef O3D_X11
 
+using namespace o3d;
+
 typedef unsigned char GLubyte;
 
 /* GLX 1.4 function pointer typedefs */
 typedef void (*__GLXextFuncPtr)(void);
 typedef __GLXextFuncPtr (* PFNGLXGETPROCADDRESSPROC) (const GLubyte *procName);
-static PFNGLXGETPROCADDRESSPROC glXGetProcAddress = nullptr;
-
-using namespace o3d;
+static PFNGLXGETPROCADDRESSPROC _glXGetProcAddress = nullptr;
 
 DynamicLibrary* GLX::ms_glX = nullptr;
 
@@ -44,7 +44,8 @@ glXSwapBuffersProc GLX::swapBuffers = nullptr;
 void GLX::init()
 {
     ms_glX = DynamicLibrary::load("libGLX.so");
-    glXGetProcAddress = (PFNGLXGETPROCADDRESSPROC)ms_glX->getFunctionPtr("glXGetProcAddress");
+
+    _glXGetProcAddress = (PFNGLXGETPROCADDRESSPROC)ms_glX->getFunctionPtr("glXGetProcAddress");
 
     queryExtensionsString = (glXQueryExtensionsStringProc)getProcAddress("glXQueryExtensionsString");
     createContext = (glXCreateContextProc)getProcAddress("glXCreateContext");
@@ -64,7 +65,7 @@ void GLX::init()
 
 void* GLX::getProcAddress(const Char *ext)
 {
-    return (void*)::glXGetProcAddress((const GLubyte*)ext);
+    return (void*)::_glXGetProcAddress((const GLubyte*)ext);
 }
 
 #endif // O3D_X11

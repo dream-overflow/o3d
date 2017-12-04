@@ -21,13 +21,37 @@ class O3D_API GL
 {
 public:
 
+    /**
+     * @brief Inherit from this class and specialize call to reference your internal
+     * get proc address method.
+     */
+    class GetProcAddressCallbackMethod
+    {
+    public:
+
+        virtual void* call(const Char* ext)
+        {
+            return nullptr;
+        }
+    };
+
     //! Initialize, plateform dependency.
     static void init(const Char *library = nullptr);
+
+    //! Terminate (delete an eventual ms_callback).
+    static void quit();
+
+    //! Setup the adresse of the get proc address function pointer.
+    static void setProcAddress(GetProcAddressCallbackMethod *callback);
 
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
 
     // static void swapBuffers();
+
+private:
+
+    static GetProcAddressCallbackMethod* ms_callback;
 };
 
 } // namespace o3d

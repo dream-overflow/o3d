@@ -22,10 +22,19 @@
 // #include "o3d/core/wgl.h"
 #endif
 
+#include <string.h>
+
 using namespace o3d;
+
+GL::GetProcAddressCallbackMethod* GL::ms_callback = nullptr;
 
 void GL::init(const Char *library)
 {
+    // qt manage for us
+    if (library && (strcasecmp(library, "qt") == 0)) {
+        return;
+    }
+
 #if defined(O3D_ANDROID) || defined(O3D_EGL)
     EGL::init();
 #elif defined(O3D_X11)
@@ -37,8 +46,27 @@ void GL::init(const Char *library)
 #endif
 }
 
+void GL::quit()
+{
+    deletePtr(ms_callback);
+}
+
+void GL::setProcAddress(GetProcAddressCallbackMethod *callback)
+{
+    if (ms_callback) {
+        // delete previous callback
+        delete ms_callback;
+    }
+
+    ms_callback = callback;
+}
+
 void *GL::getProcAddress(const Char *ext)
 {
+    if (ms_callback) {
+        return ms_callback->call(ext);
+    }
+
 #if defined(O3D_ANDROID) || defined(O3D_EGL)
     return EGL::getProcAddress(ext);
 #elif defined(O3D_X11)
@@ -48,4 +76,6 @@ void *GL::getProcAddress(const Char *ext)
 #elif defined(O3D_WINDOWS)
     return WGL::getProcAddress(ext);
 #endif
+
+    return nullptr;
 }

@@ -476,6 +476,12 @@ void Renderer::destroy()
 	}
 }
 
+void *Renderer::getProcAddress(const Char *ext) const
+{
+    // return WGL::getProcAddress(ext);
+    return (void*)wglGetProcAddress((LPCSTR)ext);
+}
+
 // Is it the current OpenGL context.
 Bool Renderer::isCurrent() const
 {

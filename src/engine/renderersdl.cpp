@@ -192,6 +192,12 @@ void Renderer::destroy()
 	}
 }
 
+void *Renderer::getProcAddress(const Char *ext) const
+{
+    // return SDL2::getProcAddress(ext);
+    return (void*)SDL_GL_GetProcAddress(ext);
+}
+
 // Is it the current OpenGL context.
 Bool Renderer::isCurrent() const
 {

@@ -1289,21 +1289,31 @@ void GLExtensionManager::init()
 		return;
     }
 
-#ifdef O3D_LINUX
-    ms_openGL = DynamicLibrary::load("libGL.so");
-#elif defined(O3D_WINDOWS)
-    ms_openGL = DynamicLibrary::load("opengl32.dll");
-#endif
-
 #ifndef O3D_GL_PROTOTYPES
     _glGetString = (PFNGLGETSTRINGPROC) GL::getProcAddress("glGetString");
+    if (!_glGetString) {
+    #ifdef O3D_ANDROID
+        ms_openGL = DynamicLibrary::load("libGL.so");
+    #else if defined(O3D_LINUX)
+        ms_openGL = DynamicLibrary::load("libGL.so");
+    #elif defined(O3D_MACOSX)
+        ms_openGL = DynamicLibrary::load("libGL.so");
+    #elif defined(O3D_WINDOWS)
+        ms_openGL = DynamicLibrary::load("opengl32.dll");
+    #endif
+    }
 #endif // O3D_GL_PROTOTYPES
+
+    if (!_glGetString) {
+        O3D_ERROR(E_InvalidResult("Undefined OpenGL glGetString function"));
+    }
 
 	// get extensions functions pointers (only for windows or for non valid OpenGL 2.0 context).
     const GLubyte *version = _glGetString(GL_VERSION);
     if (!version) {
-		O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
+        O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
     }
+
 
 	// get glGetStringi before
 #ifndef O3D_GL_PROTOTYPES
@@ -1326,7 +1336,7 @@ Bool GLExtensionManager::isExtensionSupported(const String &ext)
     const GLubyte *version = _glGetString(GL_VERSION);
 
     if (!version) {
-		O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
+        //O3D_ERROR(E_InvalidResult("Undefined OpenGL version"));
     }
 
     if ((version != nullptr) && ((version[0] - 48) >= 3)) {
