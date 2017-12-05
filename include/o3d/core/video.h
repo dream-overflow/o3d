@@ -123,42 +123,46 @@ public:
 	//! Get the current display width resolution.
 	inline UInt32 getWidth() const
 	{
-		if (m_currentMode != m_modes.end())
+        if (m_currentMode != m_modes.end()) {
 			return m_currentMode->width;
-		else
+        } else {
 			return 0;
+        }
 	}
 
 	//! Get the current display height resolution.
 	inline UInt32 getHeight() const
 	{
-		if (m_currentMode != m_modes.end())
+        if (m_currentMode != m_modes.end()) {
 			return m_currentMode->height;
-		else
+        } else {
 			return 0;
+        }
 	}
 
 	//! Get the current display bits per pixel.
 	inline UInt32 getBpp() const
 	{
-		if (m_currentMode != m_modes.end())
+        if (m_currentMode != m_modes.end()) {
 			return m_currentMode->bpp;
-		else
+        } else {
 			return 0;
+        }
 	}
 
 	//! Get the current display frequency in Hertz.
 	inline UInt32 getFrequency() const
 	{
-		if (m_currentMode != m_modes.end())
+        if (m_currentMode != m_modes.end()) {
 			return m_currentMode->freq;
-		else
+        } else {
 			return 0;
+        }
 	}
 
 private:
 
-	AppWindow *m_appWindow;            //!< Application window related to the current video mode.
+    AppWindow *m_appWindow;           //!< Application window related to the current video mode.
 
 	CIT_VideoModeList m_currentMode;  //!< Current setting.
 
@@ -168,7 +172,6 @@ private:
     UInt32 m_desktopFreq;             //!< Desktop video mode rate.
 
 #ifdef O3D_X11
-	void *m_screenConfig;             //!< Screen configuration for X11.
 	unsigned short m_savedRotation;   //!< Desktop screen saved rotation.
 	unsigned short m_savedModeId;     //!< Desktop screen saved mode id.
 	short m_savedRate;                //!< Desktop screen saved rate.
@@ -203,4 +206,3 @@ class O3D_API E_InvalidVideoMode : public E_BaseException
 } // namespace o3d
 
 #endif // _O3D_VIDEO_H
-

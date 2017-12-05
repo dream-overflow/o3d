@@ -35,6 +35,7 @@ EGLSWAPBUFFERSPROC EGL::swapBuffers = nullptr;
 EGLDESTROYCONTEXTPROC EGL::destroyContext = nullptr;
 EGLDESTROYSURFACEPROC EGL::destroySurface = nullptr;
 EGLGETCONFIGATTRIBPROC EGL::getConfigAttrib = nullptr;
+EGLGETCURRENTCONTEXTPROC EGL::getCurrentContext = nullptr;
 
 DynamicLibrary* EGL::ms_egl = nullptr;
 
@@ -55,6 +56,7 @@ void EGL::init()
     destroyContext = (EGLDESTROYCONTEXTPROC)getProcAddress("eglDestroyContext");
     destroySurface = (EGLDESTROYSURFACEPROC)getProcAddress("eglDestroySurface");
     getConfigAttrib = (EGLGETCONFIGATTRIBPROC)getProcAddress("eglGetConfigAttrib");
+    getCurrentContext = (EGLGETCURRENTCONTEXTPROC)getProcAddress("eglGetCurrentContext");
 }
 
 void* EGL::getProcAddress(const Char *ext)

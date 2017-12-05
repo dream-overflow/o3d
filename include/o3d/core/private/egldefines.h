@@ -23,5 +23,6 @@ typedef EGLBoolean (*EGLSWAPBUFFERSPROC)(EGLDisplay dpy, EGLSurface surface);
 typedef EGLBoolean (*EGLDESTROYCONTEXTPROC)(EGLDisplay dpy, EGLContext ctx);
 typedef EGLBoolean (*EGLDESTROYSURFACEPROC)(EGLDisplay dpy, EGLSurface surface);
 typedef EGLBoolean (*EGLGETCONFIGATTRIBPROC)(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value);
+typedef EGLContext (*EGLGETCURRENTCONTEXTPROC)(void);
 
 #endif // _O3D_EGLDEFINES_H

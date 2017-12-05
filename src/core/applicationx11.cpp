@@ -9,7 +9,6 @@
 
 #include "o3d/core/precompiled.h"
 #include "o3d/core/application.h"
-#include "o3d/core/filemanager.h"
 
 #ifdef O3D_X11
 
@@ -519,33 +518,6 @@ void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 			False,
             0,
             &event);
-}
-
-void Application::getBaseNamePrivate(Int32 argc, Char **argv)
-{
-    if (argv && (argc >= 1) && argv[0])	{
-        ms_appsName = new String;
-        ms_appsName->fromUtf8(argv[0]);
-
-//        char szTmp[32];
-//        sprintf(szTmp, "/proc/%d/exe", getpid());
-//        int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
-//        if(bytes >= 0) {
-//            pBuf[bytes] = '\0';
-//        }
-//        String path = String::fromUtf8(bytes);
-
-        Int32 pos = ms_appsName->reverseFind('/');
-        if (pos >= 0) {
-            String path = ms_appsName->extract(0, pos+1);
-            ms_appsPath = new String(FileManager::instance()->getFullFileName(path));
-        } else {
-            ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
-        }
-    } else {
-        ms_appsName = new String("undefined");
-        ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
-    }
 }
 
 #endif // O3D_X11

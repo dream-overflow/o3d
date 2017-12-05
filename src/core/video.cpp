@@ -21,8 +21,7 @@ Video::Video() :
     m_appWindow(nullptr),
 	m_desktopFreq(0)
 #ifdef O3D_X11
-    ,m_screenConfig(nullptr),
-	m_savedRotation(0),
+    ,m_savedRotation(0),
 	m_savedModeId(0),
 	m_savedRate(0)
 #endif
@@ -41,16 +40,17 @@ Video::~Video()
 // Singleton instantiation
 Video* Video::instance()
 {
-    if (!m_instance)
+    if (!m_instance) {
 		m_instance = new Video();
+    }
+
     return m_instance;
 }
 
 // Singleton destruction
 void Video::destroy()
 {
-	if (m_instance)
-	{
+    if (m_instance) {
 		delete m_instance;
         m_instance = nullptr;
 	}
@@ -73,66 +73,59 @@ CIT_VideoModeList Video::findDisplayMode(const String &mode) const
 {
 	VideoMode videomode;
 
-	if (mode.isValid())
-	{
+    if (mode.isValid()) {
 		Int32 pos;
 
 		videomode.width = mode.toUInt32(0);
 
 		pos = mode.find('x',0);
-		if (pos == -1)
+        if (pos == -1) {
 			return m_modes.end();
-		else
+        } else {
 			videomode.height = mode.toUInt32(pos+1);
+        }
 
 		pos = mode.find(' ',0);
-		if (pos == -1)
+        if (pos == -1) {
 			return m_modes.end();
-		else
+        } else {
 			videomode.bpp = mode.toUInt32(pos+1);
+        }
 
 		pos = mode.reverseFind(' ');
-		if (pos == -1)
+        if (pos == -1) {
 			videomode.freq = 0;
-		else
+        } else {
 			videomode.freq = mode.toUInt32(pos+1);
+        }
 
 		return findDisplayMode(videomode);
-	}
-	else
+    } else {
 		return m_modes.end();
+    }
 }
 
 CIT_VideoModeList Video::findDisplayMode(const VideoMode &mode) const
 {
-	if (mode.freq == 0)
-	{
+    if (mode.freq == 0) {
 		UInt32 freq = 0;
 		CIT_VideoModeList result = m_modes.end();
 
-		for (CIT_VideoModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit)
-		{
-			if ((cit->width == mode.width) &&
-				(cit->height == mode.height) &&
-				(cit->bpp == mode.bpp) &&
-				(cit->freq > freq))
-			{
+        for (CIT_VideoModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit) {
+            if ((cit->width == mode.width) && (cit->height == mode.height) &&
+                (cit->bpp == mode.bpp) && (cit->freq > freq)) {
+
 				freq = cit->freq;
 				result = cit;
 			}
 		}
 
 		return result;
-	}
-	else
-	{
-		for (CIT_VideoModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit)
-		{
-			if ((cit->width == mode.width) &&
-				(cit->height == mode.height) &&
-				(cit->bpp == mode.bpp) &&
-				(cit->freq == mode.freq))
-			{
+    } else {
+        for (CIT_VideoModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit) {
+            if ((cit->width == mode.width) && (cit->height == mode.height) &&
+                (cit->bpp == mode.bpp) && (cit->freq == mode.freq)) {
+
 				return cit;
 			}
 		}
@@ -141,4 +134,3 @@ CIT_VideoModeList Video::findDisplayMode(const VideoMode &mode) const
 	// not found !
 	return m_modes.end();
 }
-

@@ -134,4 +134,3 @@ void Video::listDisplayModes()
 }
 
 #endif // O3D_SDL2
-

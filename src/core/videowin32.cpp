@@ -128,4 +128,3 @@ void Video::listDisplayModes()
 }
 
 #endif // O3D_WIN32
-

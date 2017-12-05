@@ -124,21 +124,22 @@ namespace o3d {
     const _HGLRC NULL_HGLRC = nullptr;
     const _HINSTANCE NULL_HINSTANCE = nullptr;
 
-#elif defined(O3D_X11)
+#elif defined(O3D_X11) || defined (O3D_ANDROID)
 
-    typedef UInt64 _DISP;     //!< Display handle.
-    typedef UInt64 _SCREEN;   //!< Screen handle.
-    typedef UInt64 _HWND;     //!< Window handle.
-    typedef UInt64 _HDC;      //!< Drawable handle.
-    typedef UInt64 _PF;       //!< Pixel format of a drawable (GlxFbContext).
-    typedef void* _HGLRC;     //!< OpenGL renderer context handle.
-    typedef void* _HINSTANCE; //!< Module instance handle.
+    // UInt32 on 32 bits, UInt64 on 64 bits
+    typedef unsigned long _DISP;     //!< Display handle.
+    typedef unsigned long _SCREEN;   //!< Screen handle.
+    typedef unsigned long _HWND;     //!< Window handle.
+    typedef unsigned long _HDC;      //!< Drawable/Surface handle.
+    typedef unsigned long _PF;       //!< Pixel format/config of a drawable/surface.
+    typedef void* _HGLRC;            //!< OpenGL renderer context handle.
+    typedef void* _HINSTANCE;        //!< Module instance handle.
 
-	const _DISP NULL_DISP = 0;
-	const _SCREEN NULL_SCREEN = 0;
-	const _HWND NULL_HWND = 0;
-	const _HDC  NULL_HDC = 0;
-	const _PF  NULL_PF = 0;
+    const _DISP NULL_DISP = 0;
+    const _SCREEN NULL_SCREEN = 0;
+    const _HWND NULL_HWND = 0;
+    const _HDC  NULL_HDC = 0;
+    const _PF  NULL_PF = 0;
     const _HGLRC NULL_HGLRC = nullptr;
     const _HINSTANCE NULL_HINSTANCE = nullptr;
 

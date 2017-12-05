@@ -429,14 +429,15 @@ private:
 //---------------------------------------------------------------------------------------
 // inv multi-bytes type (int,short,float,enum...)
 //---------------------------------------------------------------------------------------
+
 inline void System::swapBytes2(void* value)
 {
 #if defined(_MSC_VER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
     __asm {
         mov ebx, value
-                mov al, [ebx+1]
-                mov ah, [ebx  ]
-                mov [ebx], ax
+        mov al, [ebx+1]
+        mov ah, [ebx  ]
+        mov [ebx], ax
     }
 #else
 #ifdef O3D_BIG_ENDIAN
@@ -456,13 +457,12 @@ inline void System::swapBytes2(void* value)
 
 inline void System::swapBytes4(void* value)
 {
-    // swap 4 bytes type
 #if defined(_MSC_VER) && (defined(O3D_IX32) || defined(O3D_IX64)) // VC++ x86
     __asm {
         mov ebx, value
-                mov eax, [ebx]
-                bswap eax
-                mov [ebx], eax
+        mov eax, [ebx]
+        bswap eax
+        mov [ebx], eax
     }
 #else
 #ifdef O3D_BIG_ENDIAN

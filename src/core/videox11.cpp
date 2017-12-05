@@ -26,63 +26,56 @@ using namespace o3d;
 
 XF86VidModeModeInfo deskMode;
 
-/*void setFullScreen(Display *display, Window window, Bool fullScreen)
-{
-	XEvent event;
+//void setFullScreen(Display *display, Window window, Bool fullScreen)
+//{
+//	XEvent event;
 		
-	Atom _NET_WM_STATE = XInternAtom(
-			display,
-			"_NET_WM_STATE",
-			False);
+//	Atom _NET_WM_STATE = XInternAtom(
+//			display,
+//			"_NET_WM_STATE",
+//			False);
 
-	Atom _NET_WM_STATE_FULLSCREEN = XInternAtom(
-			display,
-			"_NET_WM_STATE_FULLSCREEN",
-			False);
+//	Atom _NET_WM_STATE_FULLSCREEN = XInternAtom(
+//			display,
+//			"_NET_WM_STATE_FULLSCREEN",
+//			False);
 
-	event.type = ClientMessage;
-	event.xclient.window = window;
-	event.xclient.message_type = _NET_WM_STATE;
-	event.xclient.format = 32;
-	event.xclient.data.l[0] = fullScreen ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
-	event.xclient.data.l[1] = _NET_WM_STATE_FULLSCREEN;
-	event.xclient.data.l[2] = 0;	// no second property to toggle
-	event.xclient.data.l[3] = 1;	// source indication: application
-	event.xclient.data.l[4] = 0;	// unused
+//	event.type = ClientMessage;
+//	event.xclient.window = window;
+//	event.xclient.message_type = _NET_WM_STATE;
+//	event.xclient.format = 32;
+//	event.xclient.data.l[0] = fullScreen ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
+//	event.xclient.data.l[1] = _NET_WM_STATE_FULLSCREEN;
+//	event.xclient.data.l[2] = 0;	// no second property to toggle
+//	event.xclient.data.l[3] = 1;	// source indication: application
+//	event.xclient.data.l[4] = 0;	// unused
 
-	XSendEvent(
-		display,
-		RootWindow(display, defaultScreen(display)),
-		0,
-		SubstructureRedirectMask | SubstructureNotifyMask,
-		&event);
-}*/
+//	XSendEvent(
+//		display,
+//		RootWindow(display, defaultScreen(display)),
+//		0,
+//		SubstructureRedirectMask | SubstructureNotifyMask,
+//		&event);
+//}
 
 // change display mode
 void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 {
-	if (mode == m_modes.end())
+    if (mode == m_modes.end()) {
 		O3D_ERROR(E_InvalidParameter("Invalid display mode"));
+    }
 
-	if (!appWindow || !appWindow->isSet())
+    if (!appWindow || !appWindow->isSet()) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
 
 	Display *display = reinterpret_cast<Display*>(Application::getDisplay());
-	XRRScreenConfiguration *screenConfig = reinterpret_cast<XRRScreenConfiguration*>(m_screenConfig);
-	int screen = DefaultScreen(display);
+    int screen = DefaultScreen(display);
 
-	/*if (appWindow != m_appWindow)
-	{
-		if (m_appWindow)
-			SetFullScreen(display, static_cast<Window>(m_appWindow->getHWND()), False);
-
-		SetFullScreen(display, static_cast<Window>(appWindow->getHWND()), True);
-	}*/
-
-    Status result;
+    XRRScreenConfiguration *screenConfig = XRRGetScreenInfo(display, RootWindow(display, screen));
 
     // first try with set screen config XRR 1.2
-    result = XRRSetScreenConfigAndRate(
+    Status result = XRRSetScreenConfigAndRate(
                  display,
                  screenConfig,
                  RootWindow(display, screen),
@@ -91,9 +84,10 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
                  static_cast<short>(mode->freq),
                  CurrentTime);
 
+    XRRFreeScreenConfigInfo(screenConfig);
+
     // second try with set screen size XRR 1.1 and compatible with moderns WM
-    if (result != Success)
-    {
+    if (result != Success) {
         XRRSetScreenSize(
                     display,
                     RootWindow(display, screen),
@@ -107,8 +101,7 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
     }
 
     // all tentatives failed
-    if (Application::isDisplayError())
-	{
+    if (Application::isDisplayError()) {
 		String str;
 		str << mode->width << 'x' << mode->height << ' ' <<
 			mode->bpp << String("bpp ") << mode->freq << String("Hz");
@@ -116,59 +109,59 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 		//SetFullScreen(display, static_cast<Window>(appWindow->getHWND()), False);
         O3D_ERROR(E_InvalidVideoMode(String("Unable to set display mode (") + str + ")"));
     }
-/*
-	UInt32 modeRate;
 
-	XF86VidModeModeInfo **modes;
-	XF86VidModeGetAllModeLines(display, screen, &numSizes, &modes);
+//    if (appWindow != m_appWindow) {
+//		if (m_appWindow) {
+//			setFullScreen(display, static_cast<Window>(m_appWindow->getHWND()), False);
+//      }
+//		setFullScreen(display, static_cast<Window>(appWindow->getHWND()), True);
+//	}
 
-	if (freq == 0)
-		freq = *m_desktop.freqList.begin();
+//	UInt32 modeRate;
+//	XF86VidModeModeInfo **modes;
+//	XF86VidModeGetAllModeLines(display, screen, &numSizes, &modes);
 
-	int size = -1
-    for (i = 0; i < numSizes; ++i)
-	{
-    	bpp = (UInt32)DefaultDepth(display, screen);
+//	if (freq == 0) {
+//		freq = *m_desktop.freqList.begin();
+//  }
 
-    	// Compute the displays refresh rate, dotclock comes in kHz.
-    	modeRate = UInt32((modes[i]->dotclock * 1000 ) / (modes[i]->htotal * modes[i]->vtotal));
+//	int size = -1
+//  for (i = 0; i < numSizes; ++i) {
+//      bpp = (UInt32)DefaultDepth(display, screen);
 
-		if ((modes[i]->hdisplay == mode->width) && (modes[i]->vdisplay == mode->height) &&
-			(modeRate == freq) && (mode->bpp == bpp))
-		{
-			break;
-		}
-	}
+//    	// Compute the displays refresh rate, dotclock comes in kHz.
+//    	modeRate = UInt32((modes[i]->dotclock * 1000 ) / (modes[i]->htotal * modes[i]->vtotal));
 
-    if (size < numSizes)
-    {
-    	Bool result = XF86VidModeSwitchToMode(display, screen, modes[size]);
-    	if (result == True)
-    		result = XF86VidModeSetViewPort(display, screen, 0, 0);
+//		if ((modes[i]->hdisplay == mode->width) && (modes[i]->vdisplay == mode->height) &&
+//			(modeRate == freq) && (mode->bpp == bpp)) {
+//			break;
+//		}
+//	}
 
-    	if (result == False)
-    	{
-    		String str;
-    		str << mode->width << 'x' << mode->height << ' ' <<
-    			mode->bpp << O3DString("bpp ") << freq << O3DString("Hz");
+//    if (size < numSizes) {
+//    	Bool result = XF86VidModeSwitchToMode(display, screen, modes[size]);
+//    	if (result == True) {
+//    		result = XF86VidModeSetViewPort(display, screen, 0, 0);
+//      }
 
-    		XFree(modes);
+//    	if (result == False) {
+//    		String str;
+//    		str << mode->width << 'x' << mode->height << ' ' <<
+//    			mode->bpp << O3DString("bpp ") << freq << O3DString("Hz");
 
-            O3D_ERROR(E_InvalidVideoMode(O3DString("Unable to set display mode (") + str + ")"));
-    	}
-    }
-    else
-	{
-		String str;
-		str << mode->width << 'x' << mode->height << ' ' <<
-			mode->bpp << O3DString("bpp ") << freq << O3DString("Hz");
+//    		XFree(modes);
+//          O3D_ERROR(E_InvalidVideoMode(O3DString("Unable to set display mode (") + str + ")"));
+//    	}
+//    } else {
+//		String str;
+//		str << mode->width << 'x' << mode->height << ' ' <<
+//			mode->bpp << O3DString("bpp ") << freq << O3DString("Hz");
 
-		XFree(modes);
+//		XFree(modes);
+//      O3D_ERROR(E_InvalidVideoMode(String("Unsupported display mode (") + str + ")"));
+//	}
 
-        O3D_ERROR(E_InvalidVideoMode(String("Unsupported display mode (") + str + ")"));
-	}
-
-    XFree(modes);*/
+//    XFree(modes);
 
 	XMapRaised(display, static_cast<Window>(appWindow->getHWND()));
 
@@ -179,31 +172,31 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 // restore to desktop display mode
 void Video::restoreDisplayMode()
 {
-	if (m_currentMode != m_desktop)
-	{
-		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
-		int screen = DefaultScreen(display);
-/*
-        XF86VidModeSwitchToMode(display, screen, &deskMode);
-        XF86VidModeSetViewPort(display, screen, 0, 0);
-        XFlush(display);
-*/
+    if (m_currentMode != m_desktop) {
+        Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+        int screen = DefaultScreen(display);
 
+//        XF86VidModeSwitchToMode(display, screen, &deskMode);
+//        XF86VidModeSetViewPort(display, screen, 0, 0);
+//        XFlush(display);
+
+        XRRScreenConfiguration *screenConfig = XRRGetScreenInfo(display, RootWindow(display, screen));
         Status result;
 
         // first try with set screen config XRR 1.2
         result = XRRSetScreenConfigAndRate(
                      display,
-                     reinterpret_cast<XRRScreenConfiguration*>(m_screenConfig),
+                     screenConfig,
                      RootWindow(display, screen),
                      m_savedModeId,
                      m_savedRotation,
                      m_savedRate,
                      CurrentTime);
 
+        XRRFreeScreenConfigInfo(screenConfig);
+
         // second try with set screen size XRR 1.1 and compatible with moderns WM
-        if (result != Success)
-        {
+        if (result != Success) {
             XRRSetScreenSize(
                         display,
                         RootWindow(display, screen),
@@ -217,8 +210,7 @@ void Video::restoreDisplayMode()
         }
 
         // all tentatives failed
-        if (Application::isDisplayError())
-        {
+        if (Application::isDisplayError()) {
             String str;
             str << m_desktop->width << 'x' << m_desktop->height << ' ' <<
                    m_desktop->bpp << String("bpp ") << m_desktop->freq << String("Hz");
@@ -229,9 +221,8 @@ void Video::restoreDisplayMode()
 		m_currentMode = m_desktop;
 	}
 
-	if (m_appWindow)
-	{
-		//SetFullScreen(display, static_cast<Window>(m_appWindow->getHWND()), False);
+    if (m_appWindow) {
+        // setFullScreen(display, static_cast<Window>(m_appWindow->getHWND()), False);
         m_appWindow = nullptr;
 	}
 }
@@ -240,16 +231,14 @@ void Video::restoreDisplayMode()
 void Video::listDisplayModes()
 {
 	Display *display = reinterpret_cast<Display*>(Application::getDisplay());
-	int screen = DefaultScreen(display);
 
 	int majorV, minorV;
-	if (!XRRQueryVersion(display, &majorV, &minorV))
+    if (!XRRQueryVersion(display, &majorV, &minorV)) {
 		O3D_ERROR(E_InvalidPrecondition("XRandR is not available"));
+    }
 
-	XRRScreenConfiguration *screenConfig;
-
-	screenConfig = XRRGetScreenInfo(display, RootWindow(display, screen));
-	m_screenConfig = reinterpret_cast<void*>(screenConfig);
+    int screen = DefaultScreen(display);
+    XRRScreenConfiguration *screenConfig = XRRGetScreenInfo(display, RootWindow(display, screen));
 
     int numSizes, numRates;
     XRRScreenSize *modes;
@@ -257,11 +246,9 @@ void Video::listDisplayModes()
 
 	// retrieve the list of resolutions
     modes = XRRConfigSizes(screenConfig, &numSizes);
-	if (numSizes > 0)
-	{
+    if (numSizes > 0) {
 		int i, j;
-		for (i = 0; i < numSizes; ++i)
-		{
+        for (i = 0; i < numSizes; ++i) {
 			VideoMode videoMode;
 
 			videoMode.index = i;
@@ -271,18 +258,15 @@ void Video::listDisplayModes()
             videoMode.mmHeight = (UInt32)modes[i].mheight;
 			videoMode.bpp = (UInt32)DefaultDepth(display, screen);
 
-			rates = XRRConfigRates(screenConfig, i, &numRates);
-			for (j = 0; j < numRates; ++j)
-			{
+            rates = XRRConfigRates(screenConfig, i, &numRates);
+            for (j = 0; j < numRates; ++j) {
 				videoMode.freq = (UInt32)rates[j];
 				m_modes.push_back(videoMode);
 			}
 		}
 
 		// desktop mode
-		m_savedModeId = XRRConfigCurrentConfiguration(
-				screenConfig,
-				&m_savedRotation);
+        m_savedModeId = XRRConfigCurrentConfiguration(screenConfig, &m_savedRotation);
 		m_savedRate = XRRConfigCurrentRate(screenConfig);
 
 		VideoMode desktop;
@@ -297,7 +281,7 @@ void Video::listDisplayModes()
 		m_desktop = m_currentMode = findDisplayMode(desktop);
 	}
 
-	XRRFreeScreenConfigInfo(screenConfig);
+    XRRFreeScreenConfigInfo(screenConfig);
 /*
 	XF86VidModeModeInfo **modes;
 

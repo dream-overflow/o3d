@@ -14,11 +14,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class TimeCounter
-//-------------------------------------------------------------------------------------
-//! A precise time counter object. It count as precise as the hardware can.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A precise time counter object. It count as precise as the hardware can.
+ */
 class O3D_API TimeCounter
 {
 public:
@@ -37,18 +35,18 @@ public:
 	{
 		m_curTime = System::getTime();
 
-		if (m_lastTime != 0)
+        if (m_lastTime != 0) {
 			m_delta = (Float)(m_curTime - m_lastTime) / (Float)System::getTimeFrequency();
-		else
+        } else {
 			m_lastTime = m_curTime;
+        }
 
-		if (m_delta >= m_checkTime)
-		{
+        if (m_delta >= m_checkTime) {
 			m_lastTime = m_curTime;
 			m_isUpdated = True;
-		}
-		else
+        } else {
 			m_isUpdated = False;
+        }
 	}
 
 	//! Reset the timer
@@ -81,12 +79,9 @@ protected:
 	Float m_checkTime;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class TimeCounterMs
-//-------------------------------------------------------------------------------------
-//! A millisecond precise time counter object. For more precision use O3DTimeCounter.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A millisecond precise time counter object. For more precision use TimeCounter.
+ */
 class O3D_API TimeCounterMs
 {
 public:
@@ -105,18 +100,18 @@ public:
 	{
 		m_curTime = System::getMsTime();
 
-		if (m_lastTime != 0)
+        if (m_lastTime != 0) {
 			m_delta = m_curTime - m_lastTime;
-		else
+        } else {
 			m_lastTime = m_curTime;
+        }
 
-		if (m_delta >= m_checkTime)
-		{
+        if (m_delta >= m_checkTime) {
 			m_lastTime = m_curTime;
 			m_isUpdated = True;
-		}
-		else
+        } else {
 			m_isUpdated = False;
+        }
 	}
 
 	//! Reset the timer
@@ -183,12 +178,10 @@ private:
 	Float *m_result;
 };
 
-//---------------------------------------------------------------------------------------
-//! @class Elapsed
-//-------------------------------------------------------------------------------------
-//! Helper to compute the elapsed time since a previous update with a precise time 
-//! counter.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief  Helper to compute the elapsed time since a previous update with a precise time
+ * counter.
+ */
 class O3D_API Elapsed
 {
 public:
@@ -205,8 +198,9 @@ public:
 	{
 		Int64 curTime = System::getTime();
 
-		if (m_previousTime == 0)
+        if (m_previousTime == 0) {
 			m_previousTime = curTime;
+        }
 
 		m_elapsed = Float(curTime - m_previousTime) / System::getTimeFrequency();
 		m_previousTime = curTime;

@@ -38,6 +38,7 @@ public:
     static EGLDESTROYCONTEXTPROC destroyContext;
     static EGLDESTROYSURFACEPROC destroySurface;
     static EGLGETCONFIGATTRIBPROC getConfigAttrib;
+    static EGLGETCURRENTCONTEXTPROC getCurrentContext;
 
 private:
 

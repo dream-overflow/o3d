@@ -61,35 +61,53 @@ Int32 o3d::log2(UInt32 n)
 
 
 //! return processor cycles numbers
+//! @note ARM : https://stackoverflow.com/questions/40454157/is-there-an-equivalent-instruction-to-rdtsc-in-arm
 #ifdef _MSC_VER
 #pragma warning(once: 4035)
 #endif
-inline static Int64 _getCycleNumber()
+inline static UInt64 _getCycleNumber()
 {
 #if defined(_MSC_VER) && defined(O3D_IX32)
     // VC++ x86
-    __asm{ RDTSC }
+    __asm { RDTSC }
 #elif defined(_MSC_VER) && defined(O3D_IX64)
     // VC++ x64
     return __rdtsc();
 #elif defined(__APPLE__)
     // Apple computer
     return mach_absolute_time();
-#elif defined(__GNUC__) && (defined(O3D_IX32) || defined(O3D_IX64))
-    // GCC Intel based compilers
-    Int64 x;
-    __asm__ volatile ("RDTSC" : "=A"(x));
+#elif defined(__GNUC__)
+  // GCC Intel based compilers
+  #ifdef O3D_IX64
+    UInt64 x;
+    __asm__ volatile ("rdtsc" : "=a"(x));
     return x;
+  #elif defined(O3D_IX32)
+    UInt64 x;
+    UInt32 a, d;
+    __asm__ volatile ("rdtsc" : "=a"(a), "=d"(d));
+    return a | (d << 32);
+  #elif defined(O3D_ARM64)
+    UInt64 pmccntr;
+    __asm__ volatile ("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
+    return pmccntr * 64;
+  #elif defined(O3D_ARM32)
+    UInt32 pmccntr;
+    __asm__ volatile ("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
+    return pmccntr * 64;
+  #else
+    #error "<< Unknown architecture ! >>"
+  #endif
 #else
-#error "<< Unknown architecture ! >>"
+  #error "<< Unknown architecture ! >>"
 #endif
 }
 
 // return approximate processor frequency in MHz
 Float System::getProcessorFrequency()
 {
-    Int64 t1,t2,tf;
-    Int64 c1,c2;
+    Int64 t1, t2, tf;
+    UInt64 c1, c2;
 
 	tf = System::getTimeFrequency();
 	t1 = System::getTime();

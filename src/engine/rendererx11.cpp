@@ -31,6 +31,11 @@
 #include "o3d/core/application.h"
 #include "o3d/core/debug.h"
 
+#ifdef O3D_EGL
+  #include "o3d/core/private/egldefines.h"
+  #include "o3d/core/private/egl.h"
+#endif
+
 using namespace o3d;
 
 static Bool contextErrorOccured = False;
@@ -91,20 +96,20 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
 
 	O3D_MESSAGE("Creating a new OpenGL context...");
 
-	Display *display = reinterpret_cast<Display*>(Application::getDisplay());
-
-	// Install an X error handler so the application won't exit if GL 3.0+
-	// context allocation fails.
-	// Note this error handler is global. All display connections in all threads
-	// of a process use the same error handler, so be sure to guard against other
-	// threads issuing X commands while this code is running.
-	contextErrorOccured = False;
-	int (*oldHandler)(Display*, XErrorEvent*) = XSetErrorHandler(&contextErrorHandler);
+    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
     //
     // GLX implementation
     //
     if (strcasecmp("GLX", GL::getImplementation()) == 0) {
+        // Install an X error handler so the application won't exit if GL 3.0+
+        // context allocation fails.
+        // Note this error handler is global. All display connections in all threads
+        // of a process use the same error handler, so be sure to guard against other
+        // threads issuing X commands while this code is running.
+        contextErrorOccured = False;
+        int (*oldHandler)(Display*, XErrorEvent*) = XSetErrorHandler(&contextErrorHandler);
+
         GLXFBConfig bestFbc = reinterpret_cast<GLXFBConfig>(appWindow->getPixelFormat());
 
         // OpenGL version checking
@@ -259,7 +264,34 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         // EGL implementation
         //
 
-        // @todo
+    #ifdef O3D_EGL
+        EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
+
+        EGLint contextAttributes[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_NONE };
+
+        EGLContext eglContext = eglCreateContext(
+                                    eglDisplay,
+                                    eglConfig,
+                                    sharing ? reinterpret_cast<EGLContext>(sharing->getHGLRC()) : EGL_NO_CONTEXT,
+                                    contextAttributes);
+
+        if (eglContext == EGL_NO_CONTEXT) {
+            O3D_ERROR(E_InvalidResult("Unable to create the OpenGL context"));
+        }
+
+        EGL::makeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
+
+        m_HDC = appWindow->getHDC();
+        m_HGLRC = reinterpret_cast<_HGLRC>(eglContext);
+        m_state.enable(STATE_DEFINED);
+        m_state.enable(STATE_EGL);
+    #else
+        O3D_ERROR(E_UnsuportedFeature("Support for EGL is missing"));
+    #endif
     } else {
         O3D_ERROR(E_UnsuportedFeature("Support for GLX or EGL only"));
     }
@@ -329,13 +361,17 @@ void Renderer::destroy()
 		deletePtr(m_glContext);
 
         if (m_HGLRC && m_appWindow) {
-            GLX::makeCurrent(
-					reinterpret_cast<Display*>(Application::getDisplay()),
-					None,
-					NULL);
-            GLX::destroyContext(
-					reinterpret_cast<Display*>(Application::getDisplay()),
-					reinterpret_cast<GLXContext>(m_HGLRC));
+            Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+
+            if (m_state.getBit(STATE_EGL)) {
+                EGLDisplay eglDisplay = EGL::getDisplay(display);
+                EGL::makeCurrent(eglDisplay, 0, 0, 0);
+
+                EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
+            } else {
+                GLX::makeCurrent(display, None, NULL);
+                GLX::destroyContext(display, reinterpret_cast<GLXContext>(m_HGLRC));
+            }
 
 			m_HGLRC = NULL_HGLRC;
 		}
@@ -364,49 +400,86 @@ void *Renderer::getProcAddress(const Char *ext) const
 // Is it the current OpenGL context.
 Bool Renderer::isCurrent() const
 {
-    return (m_state.getBit(STATE_DEFINED) &&
-            (GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC)));
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return False;
+    }
+
+    if (m_state.getBit(STATE_EGL)) {
+        return EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC);
+    } else {
+        return GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC);
+    }
 }
 
 // Set as current OpenGL context
 void Renderer::setCurrent()
 {
-    if (m_state.getBit(STATE_DEFINED) &&
-        (m_appWindow != nullptr) &&
-        (GLX::getCurrentContext() != reinterpret_cast<GLXContext>(m_HGLRC))) {
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return;
+    }
+
+    if (m_state.getBit(STATE_EGL)) {
+        if (EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC)) {
+            return;
+        }
+
+        if (EGL::makeCurrent(
+                reinterpret_cast<Display*>(Application::getDisplay()),
+                reinterpret_cast<EGLSurface>(m_HDC),
+                reinterpret_cast<EGLSurface>(m_HDC),
+                reinterpret_cast<EGLContext>(m_HGLRC))) {
+            O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+        }
+    } else {
+        if (GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC)) {
+            return;
+        }
 
         if (GLX::makeCurrent(
-				reinterpret_cast<Display*>(Application::getDisplay()),
-				static_cast<GLXDrawable>(m_HDC),
+                reinterpret_cast<Display*>(Application::getDisplay()),
+                static_cast<GLXDrawable>(m_HDC),
                 reinterpret_cast<GLXContext>(m_HGLRC)) == False) {
-
-			O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
-		}
+            O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+        }
 	}
 }
 
 void Renderer::setVerticalRefresh(Bool use)
 {
-    static GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return;
+    }
 
-    if (glXSwapIntervalEXT == nullptr) {
-        glXSwapIntervalEXT = (GLXSWAPINTERVALEXTPROC)GLX::getProcAddress("glXSwapIntervalEXT");
-	}
+    if (m_state.getBit(STATE_EGL)) {
 
-    if ((m_HDC != NULL_HDC) && (glXSwapIntervalEXT != nullptr))	{
-		glXSwapIntervalEXT(
-			reinterpret_cast<Display*>(Application::getDisplay()),
-			static_cast<GLXDrawable>(m_HDC),
-			use ? 1 : 0);
-	}
+    } else {
+        static GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
+
+        if (glXSwapIntervalEXT == nullptr) {
+            glXSwapIntervalEXT = (GLXSWAPINTERVALEXTPROC)GLX::getProcAddress("glXSwapIntervalEXT");
+        }
+
+        if (glXSwapIntervalEXT != nullptr)	{
+            glXSwapIntervalEXT(
+                        reinterpret_cast<Display*>(Application::getDisplay()),
+                        static_cast<GLXDrawable>(m_HDC),
+                        use ? 1 : 0);
+        }
+    }
 }
 
 Bool Renderer::isVerticalRefresh() const
 {
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return False;
+    }
+
 	unsigned int value = 0;
 
-    if (m_HDC != NULL_HDC) {
-        GLX::queryDrawable(
+    if (m_state.getBit(STATE_EGL)) {
+         // @todo
+    } else {
+         GLX::queryDrawable(
 			reinterpret_cast<Display*>(Application::getDisplay()),
 			static_cast<GLXDrawable>(m_HDC),
 			GLX_SWAP_INTERVAL_EXT,

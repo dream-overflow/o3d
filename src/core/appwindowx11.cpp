@@ -19,14 +19,19 @@
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 
-#include <o3d/core/gl.h>
+#include "o3d/core/gl.h"
 
-#include <o3d/core/private/glxdefines.h>
-#include <o3d/core/private/glx.h>
+#include "o3d/core/private/glxdefines.h"
+#include "o3d/core/private/glx.h"
 
 #include "o3d/core/debug.h"
 #include "o3d/core/application.h"
 #include "o3d/core/video.h"
+
+#ifdef O3D_EGL
+  #include "o3d/core/private/egldefines.h"
+  #include "o3d/core/private/egl.h"
+#endif
 
 #undef Bool
 
@@ -699,11 +704,8 @@ void AppWindow::applySettings(Bool fullScreen)
                                              visualInfo->visual,
                                              AllocNone);
 
-        if (fullScreen) {
-            windowAttr.override_redirect = False;//True; not necessary with modern WM cause issue
-        } else {
-            windowAttr.override_redirect = False;
-        }
+        // set to True is no necessary with modern WM, causes issue
+        windowAttr.override_redirect = fullScreen ? False/*True*/ : False;
 
         windowAttr.background_pixel = 0;
         windowAttr.background_pixmap = None;
@@ -714,9 +716,9 @@ void AppWindow::applySettings(Bool fullScreen)
         //		FocusChangeMask | FocusChangeMask | SubstructureNotifyMask;
         windowAttr.cursor = None;
 
-        unsigned long flags;
-
-        flags = CWCursor | CWBorderPixel | CWColormap | CWOverrideRedirect;// | CWEventMask;//CWBackPixel
+        unsigned long flags = CWCursor | CWBorderPixel | CWColormap | CWOverrideRedirect;
+        // flag |= CWEventMask;
+        // flag |= CWBackPixel;
 
         // compute the window position
         if (fullScreen) {
@@ -748,91 +750,196 @@ void AppWindow::applySettings(Bool fullScreen)
             O3D_ERROR(E_InvalidResult("Failed to create window"));
         }
 
-        XMapWindow(display, window);
-
-        // WM Hints
-        setWMHints(display, window, fullScreen);
-
-        // Hints
-        XWMHints *wmHints = XAllocWMHints();
-        wmHints->input = True;
-        wmHints->flags = InputHint | StateHint;
-
-        XClassHint *classHints = XAllocClassHint();
-
-        classHints->res_name = resourceName.getData();
-        classHints->res_class = className.getData();
-
-        XSizeHints *sizeHints = XAllocSizeHints();
-        if (!m_resizable || fullScreen)	{
-            sizeHints->min_width = sizeHints->max_width = m_clientWidth;
-            sizeHints->min_height = sizeHints->max_height = m_clientHeight;
-            sizeHints->flags = PMaxSize | PMinSize;
-        } else if (!fullScreen) {
-            sizeHints->x = m_posX;
-            sizeHints->y = m_posY;
-            sizeHints->width  = m_width;
-            sizeHints->height = m_height;
-            sizeHints->flags = PPosition | PSize;
-
-            if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
-                sizeHints->min_width = m_minSize.x();
-                sizeHints->min_height = m_minSize.y();
-
-                sizeHints->flags |= PMinSize;
-            }
-
-            if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
-                sizeHints->max_width = m_maxSize.x();
-                sizeHints->max_height = m_maxSize.y();
-
-                sizeHints->flags |= PMaxSize;
-            }
-        }
-
-        // Set the size, input and class hints, and define WM_CLIENT_MACHINE and WM_LOCALE_NAME
-        XSetWMProperties(display, window, NULL, NULL, NULL, 0, sizeHints, wmHints, classHints);
-        XFree(sizeHints);
-        XFree(classHints);
-        XFree(wmHints);
-
-        // set the window manager state
-        setWindowState(display, window, fullScreen);
-
-        // let the window manager know its a "normal" window
-        XChangeProperty(
-                    display,
-                    window,
-                    _NET_WM_WINDOW_TYPE,
-                    XA_ATOM,
-                    32,
-                    PropModeReplace,
-                    (unsigned char *) &_NET_WM_WINDOW_TYPE_NORMAL,
-                    1);
-
-        // set the window PID
-        Int32 pid = Application::getPID();
-
-        XChangeProperty(display, window, _NET_WM_PID,
-                        XA_CARDINAL, 32, PropModeReplace, (unsigned char *)&pid, 1);
-
-        // let the window manager delete the window
-        if (WM_DELETE_WINDOW != None) {
-            XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
-        }
-
-        XMapRaised(display, window);
-
         m_hWnd = static_cast<_HWND>(window);
         m_HDC = static_cast<_HDC>(window);
         m_PF = reinterpret_cast<_PF>(bestFbc);
-    } else if (strcasecmp("EGL", GL::getImplementation()) == 0) {
-        // @todo
 
-        // eglGetConfigAttrib for glxGetVisualFromFBConfig
+    } else if (strcasecmp("EGL", GL::getImplementation()) == 0) {
+        // Get a matching config
+        // @todo and about double, or triple buffer ?
+    #ifdef O3D_EGL
+        EGLint configAttributes[] = {
+            EGL_BUFFER_SIZE, 0,
+            EGL_RED_SIZE, r,
+            EGL_GREEN_SIZE, g,
+            EGL_BLUE_SIZE, b,
+            EGL_ALPHA_SIZE, a,
+            EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
+            EGL_DEPTH_SIZE, (EGLint)getDepth(),
+            EGL_LEVEL, 0,
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,/*EGL_OPENGL_ES2_BIT,*/
+            EGL_SAMPLE_BUFFERS, m_samples == NO_MSAA ? 0 : 1,
+            EGL_SAMPLES, (EGLint)m_samples,
+            EGL_STENCIL_SIZE, 0,
+            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+            EGL_TRANSPARENT_TYPE, EGL_NONE,
+            EGL_TRANSPARENT_RED_VALUE, EGL_DONT_CARE,
+            EGL_TRANSPARENT_GREEN_VALUE, EGL_DONT_CARE,
+            EGL_TRANSPARENT_BLUE_VALUE, EGL_DONT_CARE,
+            EGL_CONFIG_CAVEAT, EGL_DONT_CARE,
+            EGL_CONFIG_ID, EGL_DONT_CARE,
+            EGL_MAX_SWAP_INTERVAL, EGL_DONT_CARE,
+            EGL_MIN_SWAP_INTERVAL, EGL_DONT_CARE,
+            EGL_NATIVE_RENDERABLE, EGL_DONT_CARE,
+            EGL_NATIVE_VISUAL_TYPE, EGL_DONT_CARE,
+            EGL_NONE
+        };
+
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+
+        // Initialize EGL for this display, returns EGL version
+        EGLint eglVersionMajor, eglVersionMinor;
+        if (!EGL::initialize(eglDisplay, &eglVersionMajor, &eglVersionMinor) ||
+            ((eglVersionMajor == 1) && (eglVersionMinor < 4)) || (eglVersionMajor < 1)) {
+
+            O3D_ERROR(E_InvalidResult("Invalid EGL version. Need 1.4+"));
+        }
+
+        // Selection of the GL API
+        EGL::bindAPI(EGL_OPENGL_API);  // EGL_OPENGL_ES_API @todo
+
+        // Selection of the visual config
+        EGLint numConfigs;
+        EGLConfig eglConfig;
+
+        // @todo get the list and find the most appropriate
+        EGL::chooseConfig(eglDisplay, configAttributes, &eglConfig, 1, &numConfigs);
+
+        if (numConfigs != 1) {
+            O3D_ERROR(E_InvalidResult("More than one EGL config was returned"));
+        }
+
+        // Window attributes
+        XSetWindowAttributes windowAttr;
+
+        // set to True is no necessary with modern WM, causes issue
+        windowAttr.override_redirect = fullScreen ? False/*True*/ : False;
+
+        windowAttr.background_pixel = 0;
+        windowAttr.background_pixmap = None;
+        windowAttr.border_pixel = 0;
+        windowAttr.event_mask = 0;
+        windowAttr.cursor = None;
+
+        unsigned long flags = CWCursor | CWBorderPixel | CWColormap | CWOverrideRedirect;
+        // flag |= CWEventMask;
+        // flag |= CWBackPixel;
+
+        // compute the window position
+        if (fullScreen) {
+            m_posX = m_posY = 0;
+        } else {
+            CIT_VideoModeList videoMode = Video::instance()->getCurrentDisplayMode();
+            m_posX = Int32(videoMode->width - /*m_width*/m_clientWidth) / 2;
+            m_posY = Int32(videoMode->height - /*m_height*/m_clientHeight) / 2;
+        }
+
+        // Create the window
+        window = XCreateWindow(
+                     display,
+                     DefaultRootWindow(display), // RootWindow(display, visualInfo->screen),
+                     m_posX,
+                     m_posY,
+                     m_clientWidth,
+                     m_clientHeight,
+                     0,
+                     CopyFromParent,
+                     InputOutput,
+                     CopyFromParent,
+                     flags,
+                     &windowAttr);
+
+        if (!window) {
+            O3D_ERROR(E_InvalidResult("Failed to create window"));
+        }
+
+        // Create a window surface (EGL_RENDER_BUFFER is default to EGL_BACK_BUFFER if possible)
+        EGLint surfaceAttributes[] = { EGL_NONE };
+        EGLSurface eglSurface = EGL::createWindowSurface(eglDisplay, eglConfig, window, surfaceAttributes);
+
+        m_hWnd = static_cast<_HWND>(window);
+        m_HDC = reinterpret_cast<_HDC>(eglSurface);
+        m_PF = reinterpret_cast<_PF>(eglConfig);
+    #else
+        O3D_ERROR(E_UnsuportedFeature("Support for EGL is missing"));
+    #endif
     } else {
         O3D_ERROR(E_UnsuportedFeature("Support for GLX or EGL only"));
     }
+
+    XMapWindow(display, window);
+
+    // WM Hints
+    setWMHints(display, window, fullScreen);
+
+    // Hints
+    XWMHints *wmHints = XAllocWMHints();
+    wmHints->input = True;
+    wmHints->flags = InputHint | StateHint;
+
+    XClassHint *classHints = XAllocClassHint();
+
+    classHints->res_name = resourceName.getData();
+    classHints->res_class = className.getData();
+
+    XSizeHints *sizeHints = XAllocSizeHints();
+    if (!m_resizable || fullScreen)	{
+        sizeHints->min_width = sizeHints->max_width = m_clientWidth;
+        sizeHints->min_height = sizeHints->max_height = m_clientHeight;
+        sizeHints->flags = PMaxSize | PMinSize;
+    } else if (!fullScreen) {
+        sizeHints->x = m_posX;
+        sizeHints->y = m_posY;
+        sizeHints->width  = m_width;
+        sizeHints->height = m_height;
+        sizeHints->flags = PPosition | PSize;
+
+        if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {
+            sizeHints->min_width = m_minSize.x();
+            sizeHints->min_height = m_minSize.y();
+
+            sizeHints->flags |= PMinSize;
+        }
+
+        if (m_maxSize.x() >= 0 && m_maxSize.y() >= 0) {
+            sizeHints->max_width = m_maxSize.x();
+            sizeHints->max_height = m_maxSize.y();
+
+            sizeHints->flags |= PMaxSize;
+        }
+    }
+
+    // Set the size, input and class hints, and define WM_CLIENT_MACHINE and WM_LOCALE_NAME
+    XSetWMProperties(display, window, NULL, NULL, NULL, 0, sizeHints, wmHints, classHints);
+    XFree(sizeHints);
+    XFree(classHints);
+    XFree(wmHints);
+
+    // set the window manager state
+    setWindowState(display, window, fullScreen);
+
+    // let the window manager know its a "normal" window
+    XChangeProperty(
+                display,
+                window,
+                _NET_WM_WINDOW_TYPE,
+                XA_ATOM,
+                32,
+                PropModeReplace,
+                (unsigned char *) &_NET_WM_WINDOW_TYPE_NORMAL,
+                1);
+
+    // set the window PID
+    Int32 pid = Application::getPID();
+
+    XChangeProperty(display, window, _NET_WM_PID, XA_CARDINAL, 32, PropModeReplace, (unsigned char *)&pid, 1);
+
+    // let the window manager delete the window
+    if (WM_DELETE_WINDOW != None) {
+        XSetWMProtocols(display, window, &WM_DELETE_WINDOW, 1);
+    }
+
+    XMapRaised(display, window);
 
     if (!fullScreen) {
 		XMoveWindow(
@@ -905,6 +1012,12 @@ void AppWindow::destroy()
         }
 
         //XDestroyIC((XIC)m_ic);
+
+        // destroy surface
+        if (strcasecmp("EGL", GL::getImplementation()) == 0) {
+            EGLDisplay eglDisplay = EGL::getDisplay(display);
+            EGL::destroySurface(eglDisplay, reinterpret_cast<EGLSurface>(m_HDC));
+        }
 
 		// get the colormap from attribute
 		XWindowAttributes windowAttr;
@@ -1108,9 +1221,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
     }
 
-    if ((Video::instance()->getAppWindow() != nullptr) &&
-        (Video::instance()->getAppWindow() != this)) {
-
+    if ((Video::instance()->getAppWindow() != nullptr) && (Video::instance()->getAppWindow() != this)) {
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
 

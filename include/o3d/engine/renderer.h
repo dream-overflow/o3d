@@ -256,9 +256,10 @@ protected:
 
     enum States
     {
-        STATE_DEFINED = 0,
-        STATE_DEBUG_AVAILABLE = 1,
-        STATE_DEBUG_ON = 2,
+        STATE_DEFINED = 0,          //!< Renderer setup and valid
+        STATE_DEBUG_AVAILABLE = 1,  //!< Debug available
+        STATE_DEBUG_ON = 2,         //!< Debug enabled
+        STATE_EGL = 3               //!< Defined using EGL
     };
 
     Int32 m_glErrno;          //!< OpenGL last error code.

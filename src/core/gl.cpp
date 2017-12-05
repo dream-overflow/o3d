@@ -27,6 +27,10 @@
 
 #include <string.h>
 
+//#ifdef O3D_EGL
+//#undef O3D_EGL
+//#endif
+
 using namespace o3d;
 
 GL::GetProcAddressCallbackMethod::~GetProcAddressCallbackMethod()
@@ -82,11 +86,6 @@ void GL::init(const Char *library)
   #endif
 #endif
 }
-
-// @todo remove me
-#ifdef O3D_EGL
-#undef O3D_EGL
-#endif
 
 void GL::quit()
 {
@@ -153,7 +152,8 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
         // SDL::swapBuffers(reinterpret_cast<SDL_Window*>(hdc));
         SDL_GL_SwapWindow(reinterpret_cast<SDL_Window*>(hdc));
     #elif defined(O3D_EGL)
-        EGL::swapBuffers(reinterpret_cast<EGLDisplay>(display), reinterpret_cast<EGLSurface>(hdc));
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<Display*>(display));
+        EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
     #elif defined(O3D_X11)
         GLX::swapBuffers(reinterpret_cast<Display*>(display), static_cast<Window>(hWnd));
     #elif defined(O3D_WINDOWS)
