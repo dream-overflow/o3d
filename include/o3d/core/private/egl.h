@@ -14,6 +14,8 @@
 
 #ifdef O3D_EGL
 
+#include "o3d/core/gl.h"
+
 namespace o3d {
 
 class DynamicLibrary;
@@ -23,6 +25,7 @@ class O3D_API EGL
 public:
 
     static void init();
+    static void quit();
 
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
@@ -39,10 +42,16 @@ public:
     static EGLDESTROYSURFACEPROC destroySurface;
     static EGLGETCONFIGATTRIBPROC getConfigAttrib;
     static EGLGETCURRENTCONTEXTPROC getCurrentContext;
+    static EGLTERMINATEPROC terminate;
+    static EGLSWAPINTERVALPROC swapInterval;
+
+    //! Get instancied GL API type.
+    static GL::GLAPIType getType();
 
 private:
 
     static DynamicLibrary *ms_egl;
+    static GL::GLAPIType ms_type;
 };
 
 } // namespace o3d

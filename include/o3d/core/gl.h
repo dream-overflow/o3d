@@ -21,6 +21,14 @@ class O3D_API GL
 {
 public:
 
+    enum GLAPIType
+    {
+        GLAPI_UNDEFINED = 0x0,
+        GLAPI_CUSTOM = 0x1,
+        GLAPI_GL = 0x10,
+        GLAPI_GLES3 = 0x20
+    };
+
     /**
      * @brief Inherit from this class and specialize call to reference your internal
      * get proc address method.
@@ -49,6 +57,9 @@ public:
     //! Which used implementation : EGL, GLX, SDL2 or WGL, CUSTOM or null.
     //! Custom means than a callback was provided.
     static const Char *getImplementation();
+
+    //! Get instancied GL API type.
+    static GLAPIType getType();
 
     //! Swap buffer according to defined native display and window handler,
     //! using the defined implementation.

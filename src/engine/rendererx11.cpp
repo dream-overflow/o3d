@@ -418,13 +418,17 @@ void Renderer::setCurrent()
         return;
     }
 
+    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+
     if (m_state.getBit(STATE_EGL)) {
         if (EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC)) {
             return;
         }
 
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+
         if (EGL::makeCurrent(
-                reinterpret_cast<Display*>(Application::getDisplay()),
+                eglDisplay,
                 reinterpret_cast<EGLSurface>(m_HDC),
                 reinterpret_cast<EGLSurface>(m_HDC),
                 reinterpret_cast<EGLContext>(m_HGLRC))) {
@@ -444,49 +448,63 @@ void Renderer::setCurrent()
 	}
 }
 
-void Renderer::setVerticalRefresh(Bool use)
-{
-    if (!m_state.getBit(STATE_DEFINED)) {
-        return;
-    }
-
-    if (m_state.getBit(STATE_EGL)) {
-
-    } else {
-        static GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
-
-        if (glXSwapIntervalEXT == nullptr) {
-            glXSwapIntervalEXT = (GLXSWAPINTERVALEXTPROC)GLX::getProcAddress("glXSwapIntervalEXT");
-        }
-
-        if (glXSwapIntervalEXT != nullptr)	{
-            glXSwapIntervalEXT(
-                        reinterpret_cast<Display*>(Application::getDisplay()),
-                        static_cast<GLXDrawable>(m_HDC),
-                        use ? 1 : 0);
-        }
-    }
-}
-
-Bool Renderer::isVerticalRefresh() const
+Bool Renderer::setVSyncMode(VSyncMode mode)
 {
     if (!m_state.getBit(STATE_DEFINED)) {
         return False;
     }
 
-	unsigned int value = 0;
+    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+
+    int value = 0;
+
+    if (mode == VSYNC_NONE) {
+        value = 0;
+    } else if (mode == VSYNC_YES) {
+        value = 1;
+    } else if (mode == VSYNC_ADAPTIVE) {
+        value = -1;
+    }
 
     if (m_state.getBit(STATE_EGL)) {
-         // @todo
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        if (!EGL::swapInterval(eglDisplay, value)) {
+            return False;
+        }
+    } else if (GLX::swapIntervalEXT) {
+        GLX::swapIntervalEXT(
+                    reinterpret_cast<Display*>(Application::getDisplay()),
+                    static_cast<GLXDrawable>(m_HDC),
+                    value);
     } else {
-         GLX::queryDrawable(
-			reinterpret_cast<Display*>(Application::getDisplay()),
-			static_cast<GLXDrawable>(m_HDC),
-			GLX_SWAP_INTERVAL_EXT,
-			&value);
-	}
+        return False;
+    }
 
-	return value == 1;
+    if (mode == VSYNC_NONE) {
+        m_state.setBit(STATE_VSYNC, False);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, False);
+    } else if (mode == VSYNC_YES) {
+        m_state.setBit(STATE_VSYNC, True);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, False);
+    } else if (mode == VSYNC_ADAPTIVE) {
+        m_state.setBit(STATE_VSYNC, True);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, True);
+    }
+
+    return True;
 }
+
+//	unsigned int value = 0;
+//    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+//
+//    // Query is only supported by GLX
+//    if (!m_state.getBit(STATE_EGL)) {
+//         GLX::queryDrawable(
+//            display,
+//			static_cast<GLXDrawable>(m_HDC),
+//			GLX_SWAP_INTERVAL_EXT,
+//			&value);
+//	}
+//	return value == 1;
 
 #endif // O3D_X11

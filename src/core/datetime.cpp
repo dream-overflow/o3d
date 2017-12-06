@@ -77,8 +77,7 @@ DateTime* DateTime::sm_startDate = nullptr;
 
 void DateTime::init()
 {
-    if (!sm_null)
-    {
+    if (!sm_null) {
         sm_null = new DateTime(False);
         sm_startDate = new DateTime(True);
     }

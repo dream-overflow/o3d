@@ -80,12 +80,8 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
     // only if display
     if (settings.m_display) {
         apiInitPrivate();
-    }
 
-    GL::init();
-
-    // Video only if display
-    if (settings.m_display) {
+        GL::init();
         Video::instance();
     }
 
@@ -132,8 +128,8 @@ void Application::quit()
 	// delete class factory
 	ClassFactory::destroy();
 
-	// screen manager
-	Video::destroy();
+    // display manager
+    Video::destroy();
 
 	// deletion of the main thread
     EvtManager::instance()->unRegisterThread(nullptr);
@@ -163,10 +159,10 @@ void Application::quit()
 	// Specific quit
     if (ms_displayInit) {
         apiQuitPrivate();
-        ms_displayInit = False;
-    }
+        GL::quit();
 
-    GL::quit();
+        ms_displayInit = False;
+    }   
 }
 
 Bool Application::isInit()

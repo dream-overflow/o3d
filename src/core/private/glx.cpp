@@ -14,7 +14,10 @@
 
 #include "o3d/core/private/glxdefines.h"
 #include "o3d/core/private/glx.h"
+
 #include "o3d/core/dynamiclibrary.h"
+#include "o3d/core/application.h"
+#include "o3d/core/debug.h"
 
 using namespace o3d;
 
@@ -35,12 +38,12 @@ GLXMAKECURRENTPROC GLX::makeCurrent = nullptr;
 GLXISDIRECTPROC GLX::isDirect = nullptr;
 GLXGETCURRENTCONTEXTPROC GLX::getCurrentContext = nullptr;
 GLXQUERYDRAWABLEPROC GLX::queryDrawable = nullptr;
-
 GLXQUERYVERSIONPROC GLX::queryVersion = nullptr;
 GLXCHOOSEFBCONFIGPROC GLX::chooseFBConfig = nullptr;
 GLXGETVISUALFROMFBCONFIGPROC GLX::getVisualFromFBConfig = nullptr;
 GLXGETFBCONFIGATTRIBPROC GLX::getFBConfigAttrib = nullptr;
 GLXSWAPBUFFERSPROC GLX::swapBuffers = nullptr;
+GLXSWAPINTERVALEXTPROC GLX::swapIntervalEXT = nullptr;
 
 void GLX::init()
 {
@@ -56,12 +59,32 @@ void GLX::init()
     isDirect = (GLXISDIRECTPROC)getProcAddress("glXIsDirect");
     getCurrentContext = (GLXGETCURRENTCONTEXTPROC)getProcAddress("glXGetCurrentContext");
     queryDrawable = (GLXQUERYDRAWABLEPROC)getProcAddress("glXQueryDrawable");
-
     queryVersion = (GLXQUERYVERSIONPROC)getProcAddress("glXQueryVersion");
     chooseFBConfig = (GLXCHOOSEFBCONFIGPROC)getProcAddress("glXChooseFBConfig");
     getVisualFromFBConfig = (GLXGETVISUALFROMFBCONFIGPROC)getProcAddress("glXGetVisualFromFBConfig");
     getFBConfigAttrib = (GLXGETFBCONFIGATTRIBPROC)getProcAddress("glXGetFBConfigAttrib");
     swapBuffers = (GLXSWAPBUFFERSPROC)getProcAddress("glXSwapBuffers");
+    swapIntervalEXT = (GLXSWAPINTERVALEXTPROC)getProcAddress("glXSwapIntervalEXT");
+
+    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+    int glxMajor, glxMinor;
+
+    // FBConfigs were added in GLX version 1.3.
+    if (!GLX::queryVersion(display, &glxMajor, &glxMinor) ||
+        ((glxMajor == 1) && (glxMinor < 4)) || (glxMajor < 1)) {
+
+        O3D_ERROR(E_InvalidResult("Invalid GLX version. Need 1.4+"));
+    }
+}
+
+void GLX::quit()
+{
+    if (ms_glX) {
+        _glXGetProcAddress = nullptr;
+
+        DynamicLibrary::unload(ms_glX);
+        ms_glX = nullptr;
+    }
 }
 
 void* GLX::getProcAddress(const Char *ext)

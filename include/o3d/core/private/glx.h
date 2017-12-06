@@ -23,6 +23,7 @@ class O3D_API GLX
 public:
 
     static void init();
+    static void quit();
 
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
@@ -35,12 +36,12 @@ public:
     static GLXISDIRECTPROC isDirect;
     static GLXGETCURRENTCONTEXTPROC getCurrentContext;
     static GLXQUERYDRAWABLEPROC queryDrawable;
-
     static GLXQUERYVERSIONPROC queryVersion;
     static GLXCHOOSEFBCONFIGPROC chooseFBConfig;
     static GLXGETVISUALFROMFBCONFIGPROC getVisualFromFBConfig;
     static GLXGETFBCONFIGATTRIBPROC getFBConfigAttrib;
     static GLXSWAPBUFFERSPROC swapBuffers;
+    static GLXSWAPINTERVALEXTPROC swapIntervalEXT;
 
 private:
 

@@ -222,14 +222,47 @@ void Renderer::setCurrent()
 //	}
 }
 
-void Renderer::setVerticalRefresh(Bool use)
+Bool Renderer::setVSyncMode(VSyncMode mode)
 {
-	SDL_GL_SetSwapInterval(use ? 1 : 0);
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return False;
+    }
+
+    int value = 0;
+
+    if (mode == VSYNC_NONE) {
+        value = 0;
+    } else if (mode == VSYNC_YES) {
+        value = 1;
+    } else if (mode == VSYNC_ADAPTIVE) {
+        value = -1;
+    }
+
+    if (m_state.getBit(STATE_EGL)) {
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        if (!EGL::swapInterval(eglDisplay, value)) {
+            return False;
+        }
+    } else {
+        if (SDL_GL_SetSwapInterval(value) < 0) {
+            return False;
+        }
+    }
+
+    if (mode == VSYNC_NONE) {
+        m_state.setBit(STATE_VSYNC, False);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, False);
+    } else if (mode == VSYNC_YES) {
+        m_state.setBit(STATE_VSYNC, True);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, False);
+    } else if (mode == VSYNC_ADAPTIVE) {
+        m_state.setBit(STATE_VSYNC, True);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, True);
+    }
+
+    return True;
 }
 
-Bool Renderer::isVerticalRefresh() const
-{
-	return SDL_GL_GetSwapInterval() == 1;
-}
+// return SDL_GL_GetSwapInterval() == 1;
 
 #endif // O3D_SDL2

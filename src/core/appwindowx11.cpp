@@ -554,7 +554,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 	}
 }
 
-static XIM im = nullptr;
+static XIM ms_IM = nullptr;
 
 // Apply window settings
 void AppWindow::applySettings(Bool fullScreen)
@@ -633,16 +633,8 @@ void AppWindow::applySettings(Bool fullScreen)
             GLX_DOUBLEBUFFER, True,
             GLX_SAMPLE_BUFFERS, m_samples == NO_MSAA ? 0 : 1,
             GLX_SAMPLES, (int)m_samples,
-            None };
-
-        int glxMajor, glxMinor;
-
-        // FBConfigs were added in GLX version 1.3.
-        if (!GLX::queryVersion(display, &glxMajor, &glxMinor) ||
-            ((glxMajor == 1) && (glxMinor < 4)) || (glxMajor < 1)) {
-
-            O3D_ERROR(E_InvalidResult("Invalid GLX version. Need 1.4+"));
-        }
+            None
+        };
 
         int fbCount;
         GLXFBConfig *glxFBConfig = GLX::chooseFBConfig(
@@ -755,9 +747,13 @@ void AppWindow::applySettings(Bool fullScreen)
         m_PF = reinterpret_cast<_PF>(bestFbc);
 
     } else if (strcasecmp("EGL", GL::getImplementation()) == 0) {
-        // Get a matching config
-        // @todo and about double, or triple buffer ?
     #ifdef O3D_EGL
+        EGLint apiType = EGL_OPENGL_BIT;
+        if (GL::getType() == GL::GLAPI_GLES3) {
+            apiType = EGL_OPENGL_ES3_BIT;
+        }
+
+        // Get a matching config, double buffer is a default with EGL on Surface
         EGLint configAttributes[] = {
             EGL_BUFFER_SIZE, 0,
             EGL_RED_SIZE, r,
@@ -767,10 +763,10 @@ void AppWindow::applySettings(Bool fullScreen)
             EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
             EGL_DEPTH_SIZE, (EGLint)getDepth(),
             EGL_LEVEL, 0,
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,/*EGL_OPENGL_ES2_BIT,*/
+            EGL_RENDERABLE_TYPE, apiType,
             EGL_SAMPLE_BUFFERS, m_samples == NO_MSAA ? 0 : 1,
             EGL_SAMPLES, (EGLint)m_samples,
-            EGL_STENCIL_SIZE, 0,
+            EGL_STENCIL_SIZE, (EGLint)getStencil(),
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
             EGL_TRANSPARENT_TYPE, EGL_NONE,
             EGL_TRANSPARENT_RED_VALUE, EGL_DONT_CARE,
@@ -787,27 +783,55 @@ void AppWindow::applySettings(Bool fullScreen)
 
         EGLDisplay eglDisplay = EGL::getDisplay(display);
 
-        // Initialize EGL for this display, returns EGL version
-        EGLint eglVersionMajor, eglVersionMinor;
-        if (!EGL::initialize(eglDisplay, &eglVersionMajor, &eglVersionMinor) ||
-            ((eglVersionMajor == 1) && (eglVersionMinor < 4)) || (eglVersionMajor < 1)) {
-
-            O3D_ERROR(E_InvalidResult("Invalid EGL version. Need 1.4+"));
-        }
-
-        // Selection of the GL API
-        EGL::bindAPI(EGL_OPENGL_API);  // EGL_OPENGL_ES_API @todo
-
         // Selection of the visual config
         EGLint numConfigs;
-        EGLConfig eglConfig;
 
-        // @todo get the list and find the most appropriate
-        EGL::chooseConfig(eglDisplay, configAttributes, &eglConfig, 1, &numConfigs);
-
-        if (numConfigs != 1) {
-            O3D_ERROR(E_InvalidResult("More than one EGL config was returned"));
+        if (!EGL::chooseConfig(eglDisplay, configAttributes, nullptr, 1, &numConfigs) || !numConfigs) {
+            O3D_ERROR(E_InvalidResult("Failed to retrieve a frame buffer config"));
         }
+
+        EGLConfig *eglConfigs = new EGLConfig[numConfigs];
+
+        if (!EGL::chooseConfig(eglDisplay, configAttributes, eglConfigs, numConfigs, &numConfigs)) {
+            deleteArray(eglConfigs);
+            O3D_ERROR(E_InvalidResult("EGL get configs returns false"));
+        }
+
+        // Pick the FB config with the most samples per pixel
+        int bestFBC = -1, worstFBC = -1, bestNumSamp = -1, worstNumSamp = 999;
+
+        for (EGLint i = 0; i < numConfigs; i++) {
+            EGLint sampBuf, samples, visualId;
+
+            EGL::getConfigAttrib(eglDisplay, eglConfigs[i], EGL_NATIVE_VISUAL_ID, &visualId);
+            EGL::getConfigAttrib(eglDisplay, eglConfigs[i], EGL_SAMPLE_BUFFERS, &sampBuf);
+            EGL::getConfigAttrib(eglDisplay, eglConfigs[i], EGL_SAMPLES, &samples);
+
+            O3D_MESSAGE(String::print(
+                            "Matching fbconfig %d, visual ID 0x%2x: SAMPLE_BUFFERS = %d, SAMPLES = %d",
+                            i,
+                            visualId,
+                            sampBuf,
+                            samples));
+
+            if (((bestFBC < 0) || sampBuf) && (samples > bestNumSamp)) {
+                bestFBC = i;
+                bestNumSamp = samples;
+            }
+
+            if ((worstFBC < 0) || !sampBuf || (samples < worstNumSamp)) {
+                worstFBC = i;
+                worstNumSamp = samples;
+            }
+        }
+
+        bestFBC = 0;
+        EGLint visualId;
+        EGLConfig eglConfig = eglConfigs[bestFBC];
+        EGL::getConfigAttrib(eglDisplay, eglConfigs[bestFBC], EGL_NATIVE_VISUAL_ID, &visualId);
+        deleteArray(eglConfigs);
+
+        O3D_MESSAGE(String::print("Chosen visual ID = 0x%x", visualId));
 
         // Window attributes
         XSetWindowAttributes windowAttr;
@@ -958,12 +982,12 @@ void AppWindow::applySettings(Bool fullScreen)
 	// TODO to display
 	XSetLocaleModifiers("");
 
-    if (im == NULL) {
-        im = XOpenIM(display, NULL, resourceName.getData(), className.getData());
+    if (ms_IM == nullptr) {
+        ms_IM = XOpenIM(display, nullptr, resourceName.getData(), className.getData());
     }
 
 	m_ic = (void*)XCreateIC(
-				im,
+                ms_IM,
 				XNClientWindow, window,
 				XNFocusWindow, window,
 				XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
@@ -1006,12 +1030,14 @@ void AppWindow::destroy()
 			Video::instance()->restoreDisplayMode();
         }
 
-		// TODO to display
-        if (im != NULL) {
-			XCloseIM(im);
+        if (m_ic != nullptr) {
+            XDestroyIC((XIC)m_ic);
         }
 
-        //XDestroyIC((XIC)m_ic);
+        // @todo to display to be done once
+        if (ms_IM != nullptr) {
+            XCloseIM(ms_IM);
+        }
 
         // destroy surface
         if (strcasecmp("EGL", GL::getImplementation()) == 0) {

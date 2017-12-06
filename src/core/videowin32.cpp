@@ -23,11 +23,13 @@ using namespace o3d;
 // change display mode
 void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 {
-	if (mode == m_modes.end())
+    if (mode == m_modes.end()) {
 		O3D_ERROR(E_InvalidParameter("Invalid video mode"));
+    }
 
-	if (!appWindow || !appWindow->isSet())
+    if (!appWindow || !appWindow->isSet()) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
 
 	RECT rect;
 	DEVMODE VideoMode;
@@ -43,8 +45,7 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 	//VideoMode.dmFields = DM_BITSPERPEL | DM_PELSHEIGHT | DM_PELSWIDTH;
 	//VideoMode.dmFields |= DM_DISPLAYFREQUENCY;
 
-	if (ChangeDisplaySettings(&VideoMode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-	{
+    if (ChangeDisplaySettings(&VideoMode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
 		String str;
 		str << mode->width << 'x' << mode->height << ' ' <<
 			mode->bpp << String("bpp ") << mode->freq << String("Hz");
@@ -61,10 +62,8 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 // restore to desktop display mode
 void Video::restoreDisplayMode()
 {
-	if (m_currentMode != m_desktop)
-	{
+    if (m_currentMode != m_desktop) {
 		ChangeDisplaySettings(NULL, 0);
-
 		m_currentMode = m_desktop;
 	}
 
@@ -81,11 +80,9 @@ void Video::listDisplayModes()
 	// list display mode
 	Int32 i = 0;
 
-	while (EnumDisplaySettings(NULL,i++,&videoMode))
-	{
-		// list only 16 or 32bpp video mode
-		if (((videoMode.dmBitsPerPel == 16) || (videoMode.dmBitsPerPel == 32)))
-		{
+    while (EnumDisplaySettings(NULL,i++,&videoMode)) {
+        // list only 16 or 32bpp video mode
+        if (((videoMode.dmBitsPerPel == 16) || (videoMode.dmBitsPerPel == 32))) {
 			VideoMode videomode;
 
 			videomode.index = i-1;
@@ -97,16 +94,15 @@ void Video::listDisplayModes()
 			IT_VideoModeList comp_it = m_modes.begin();
 
 			// sort by BPP (32>16)
-			while ((comp_it != m_modes.end()) &&
-				   (comp_it->bpp > videoMode.dmBitsPerPel))
-			{
+            while ((comp_it != m_modes.end()) && (comp_it->bpp > videoMode.dmBitsPerPel)) {
 				++comp_it;
 			}
 
 			// sort by resolution (1024x768>800x600)
 			while ((comp_it != m_modes.end()) &&
-				   ((comp_it->width > (UInt32)(videoMode.dmPelsWidth)) &&  (comp_it->height > (UInt32)(videoMode.dmPelsHeight))))
-			{
+                   ((comp_it->width > (UInt32)(videoMode.dmPelsWidth)) &&
+                   (comp_it->height > (UInt32)(videoMode.dmPelsHeight)))) {
+
 					++comp_it;
 			}
 

@@ -14,6 +14,7 @@
 #ifdef O3D_WIN32
 
 // @see WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_PROFILE_MASK_ARB
+// @todo complete WGL class
 
 using namespace o3d;
 
@@ -337,14 +338,47 @@ void Renderer::setCurrent()
 	}
 }
 
-void Renderer::setVerticalRefresh(Bool use)
+Bool Renderer::setVSyncMode(VSyncMode mode)
 {
-	// TODO
-}
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return False;
+    }
 
-Bool Renderer::isVerticalRefresh() const
-{
-	return False; // TODO
+    int value = 0;
+
+    if (mode == VSYNC_NONE) {
+        value = 0;
+    } else if (mode == VSYNC_YES) {
+        value = 1;
+    } else if (mode == VSYNC_ADAPTIVE) {
+        value = -1;
+    }
+
+    if (m_state.getBit(STATE_EGL)) {
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        if (!EGL::swapInterval(eglDisplay, value)) {
+            return False;
+        }
+    } else if (WGL::swapIntervalEXT) {
+        if (!WGL::swapIntervalEXT(value)) {
+            return False;
+        }
+    } else {
+        return False;
+    }
+
+    if (mode == VSYNC_NONE) {
+        m_state.setBit(STATE_VSYNC, False);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, False);
+    } else if (mode == VSYNC_YES) {
+        m_state.setBit(STATE_VSYNC, True);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, False);
+    } else if (mode == VSYNC_ADAPTIVE) {
+        m_state.setBit(STATE_VSYNC, True);
+        m_state.setBit(STATE_ADAPTIVE_VSYNC, True);
+    }
+
+    return True;
 }
 
 #endif // O3D_WIN32 

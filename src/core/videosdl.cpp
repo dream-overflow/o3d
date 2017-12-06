@@ -26,17 +26,18 @@ using namespace o3d;
 // change display mode
 void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 {
-	if (mode == m_modes.end())
+    if (mode == m_modes.end()) {
 		O3D_ERROR(E_InvalidParameter("Invalid display mode"));
+    }
 
-	if (!appWindow || !appWindow->isSet())
+    if (!appWindow || !appWindow->isSet()) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
 
 	SDL_DisplayMode displayMode;
 	int display = 0;
 
-	if (SDL_GetDisplayMode(display, mode->index, &displayMode) != 0)
-	{
+    if (SDL_GetDisplayMode(display, mode->index, &displayMode) != 0) {
 		String str;
 		str << mode->width << 'x' << mode->height << ' ' <<
 			mode->bpp << String("bpp ") << mode->freq << String("Hz");
@@ -46,10 +47,8 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 
 	SDL_Window *appWindowSDL = reinterpret_cast<SDL_Window*>(appWindow->getHDC());
 
-	if (m_appWindow != appWindow)
-	{
-		if (m_appWindow)
-		{
+    if (m_appWindow != appWindow) {
+        if (m_appWindow) {
 			SDL_Window *windowSDL = reinterpret_cast<SDL_Window*>(m_appWindow->getHDC());
 			SDL_SetWindowFullscreen(windowSDL, SDL_FALSE);
 		}
@@ -57,8 +56,7 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 		SDL_SetWindowFullscreen(appWindowSDL, SDL_TRUE);
 	}
 
-	if (SDL_SetWindowDisplayMode(appWindowSDL, &displayMode) != 0)
-	{
+    if (SDL_SetWindowDisplayMode(appWindowSDL, &displayMode) != 0) {
 		String str;
 		str << mode->width << 'x' << mode->height << ' ' <<
 			mode->bpp << String("bpp ") << mode->freq << String("Hz");
@@ -74,16 +72,14 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 // restore to desktop display mode
 void Video::restoreDisplayMode()
 {
-	if (m_currentMode != m_desktop)
-	{
+    if (m_currentMode != m_desktop) {
 		m_currentMode = m_desktop;
 	}
 
-	if (m_appWindow)
-	{
+    if (m_appWindow) {
 		SDL_Window *windowSDL = reinterpret_cast<SDL_Window*>(m_appWindow->getHDC());
 		SDL_SetWindowFullscreen(windowSDL, SDL_FALSE);
-		m_appWindow = NULL;
+        m_appWindow = nullptr;
 	}
 }
 
@@ -94,8 +90,7 @@ void Video::listDisplayModes()
 	int display = 0;
 	Int32 numMode = SDL_GetNumDisplayModes(display);
 
-	for (Int32 i = 0; i < numMode; ++i)
-	{
+    for (Int32 i = 0; i < numMode; ++i) {
 		SDL_GetDisplayMode(display, i, &mode);
 
 		// list only display mode with 16 or 32 bpp and height greater than pixels
@@ -104,8 +99,7 @@ void Video::listDisplayModes()
 			 (mode.format == UInt32(SDL_PIXELFORMAT_ABGR8888)) ||
 			 (mode.format == UInt32(SDL_PIXELFORMAT_BGRA8888)) ||
 			 (mode.format == UInt32(SDL_PIXELFORMAT_ARGB4444)) ||
-			 (mode.format == UInt32(SDL_PIXELFORMAT_ABGR4444)))*/
-		{
+             (mode.format == UInt32(SDL_PIXELFORMAT_ABGR4444)))*/ {
 			UInt32 bpp = SDL_BITSPERPIXEL(mode.format);
 
 			VideoMode videoMode;

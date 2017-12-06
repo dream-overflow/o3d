@@ -23,11 +23,13 @@ class O3D_API WGL
 public:
 
     static void init();
+    static void quit();
 
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
 
     // @todo
+    // swapIntervalEXT
 
 private:
 

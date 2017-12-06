@@ -24,5 +24,7 @@ typedef EGLBoolean (*EGLDESTROYCONTEXTPROC)(EGLDisplay dpy, EGLContext ctx);
 typedef EGLBoolean (*EGLDESTROYSURFACEPROC)(EGLDisplay dpy, EGLSurface surface);
 typedef EGLBoolean (*EGLGETCONFIGATTRIBPROC)(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value);
 typedef EGLContext (*EGLGETCURRENTCONTEXTPROC)(void);
+typedef EGLBoolean (*EGLTERMINATEPROC)(EGLDisplay dpy);
+typedef EGLBoolean (*EGLSWAPINTERVALPROC)(EGLDisplay dpy, EGLint interval);
 
 #endif // _O3D_EGLDEFINES_H

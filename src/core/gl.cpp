@@ -42,11 +42,6 @@ GL::GetProcAddressCallbackMethod* GL::ms_callback = nullptr;
 
 void GL::init(const Char *library)
 {
-    // qt manage for us
-    if (library && (strcasecmp(library, "qt") == 0)) {
-        return;
-    }
-
 #if defined(O3D_ANDROID)
   #if defined(O3D_SDL)
     // SDL2::init();
@@ -90,6 +85,45 @@ void GL::init(const Char *library)
 void GL::quit()
 {
     deletePtr(ms_callback);
+
+#if defined(O3D_ANDROID)
+  #if defined(O3D_SDL)
+    // SDL2::quit();
+  #endif
+  #if defined(O3D_EGL)
+    EGL::quit();
+  #endif
+#elif defined(O3D_LINUX)
+  #if defined(O3D_SDL2)
+    // SDL2::quit();
+  #endif
+  #if defined(O3D_EGL)
+    EGL::quit();
+  #endif
+  #if defined(O3D_X11)
+    GLX::quit();
+  #endif
+#elif defined(O3D_MACOSX)
+  #if defined(O3D_SDL2)
+    // SDL2::quit();
+  #endif
+  #if defined(O3D_EGL)
+    EGL::quit();
+  #endif
+  #if defined(O3D_X11)
+    GLX::quit();
+  #endif
+#elif defined(O3D_WINDOWS)
+  #if defined(O3D_SDL2)
+    // SDL2::quit();
+  #endif
+  #if defined(O3D_EGL)
+    EGL::quit();
+  #endif
+  #if defined(O3D_WIN32) || defined(O3D_WIN64)
+    WGL::quit();
+  #endif
+#endif
 }
 
 void GL::setProcAddress(GetProcAddressCallbackMethod *callback)
@@ -140,6 +174,26 @@ const Char *GL::getImplementation()
 #endif
 
     return nullptr;
+}
+
+GL::GLAPIType GL::getType()
+{
+    if (ms_callback) {
+        return GLAPI_CUSTOM;
+    }
+
+    // SDL2 take precedence on EGL thats is take precedence over GLX or WGL
+#if defined(O3D_SDL2)
+    return GLAPI_GL;
+#elif defined(O3D_EGL)
+    return EGL::getType();
+#elif defined(O3D_X11)
+    return GLAPI_GL;
+#elif defined(O3D_WINDOWS)
+    return GLAPI_GL;
+#endif
+
+    return GLAPI_UNDEFINED;
 }
 
 void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)

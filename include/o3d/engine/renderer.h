@@ -72,6 +72,14 @@ public:
         DEBUG_TYPE_OTHER               = 0x8251
     };
 
+    //! Synchronisation mode
+    enum VSyncMode
+    {
+        VSYNC_ADAPTIVE = -1,        //!< Uses adaptive sync if supported
+        VSYNC_NONE = 0,             //!< No vertical sync
+        VSYNC_YES = 1,              //!< Default vertical sync
+    };
+
 	//! Default constructor.
 	Renderer();
 
@@ -221,11 +229,11 @@ public:
 	//! Get the OpenGL context (read only).
 	const Context* getContext() const;
 
-	//! Vertical refresh.
-	virtual void setVerticalRefresh(Bool use);
+    //! Set vertical refresh mode (default is sync with display to every frame).
+    virtual Bool setVSyncMode(VSyncMode mode = VSYNC_YES);
 
-	//! Is vertical refresh.
-	virtual Bool isVerticalRefresh() const;
+    //! Get vertical refresh mode.
+    VSyncMode getVSyncMode() const;
 
     //
     // Memory informations
@@ -259,7 +267,9 @@ protected:
         STATE_DEFINED = 0,          //!< Renderer setup and valid
         STATE_DEBUG_AVAILABLE = 1,  //!< Debug available
         STATE_DEBUG_ON = 2,         //!< Debug enabled
-        STATE_EGL = 3               //!< Defined using EGL
+        STATE_EGL = 3,              //!< Defined using EGL
+        STATE_VSYNC = 4,            //!< VSync ON
+        STATE_ADAPTIVE_VSYNC = 5    //!< Adaptive VSync USED
     };
 
     Int32 m_glErrno;          //!< OpenGL last error code.

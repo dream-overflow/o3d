@@ -660,7 +660,7 @@ void MemoryManager::alignedFree(void* ptr)
 	if (It->second.Align == 0)
 	{
 		O3D_MemoryManagerMutex.unlock();
-		O3D_ERROR(E_InvalidOperation("Non aligned pointer require non aligned free"));
+        O3D_ERROR(E_InvalidOperation("None aligned pointer require non aligned free"));
 		return;
 	}
 
@@ -701,10 +701,9 @@ void MemoryManager::alignedFree(void* ptr)
 // Define the fast allocator preallocated size
 void MemoryManager::initFastAllocator(size_t num16, size_t num32, size_t num64)
 {
-	if (!num16 || !num32 || !num64)
-	{
+    if (!num16 || !num32 || !num64) {
 		O3D_MemoryManagerMutex.unlock();
-		O3D_ERROR(E_InvalidParameter("Non null block number required"));
+        O3D_ERROR(E_InvalidParameter("None null block number required"));
 	}
 
 	BlockPooler<16,16,4> *pool16 = new BlockPooler<16,16,4>(num16);

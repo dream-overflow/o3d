@@ -77,8 +77,7 @@ Date* Date::sm_startDate = nullptr;
 
 void Date::init()
 {
-    if (!sm_null)
-    {
+    if (!sm_null) {
         sm_null = new Date(False);
         sm_startDate = new Date(True);
     }

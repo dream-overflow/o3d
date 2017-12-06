@@ -27,20 +27,31 @@ static WGLGETPROCADDRESSPROC _wglGetProcAddress = nullptr;
 
 using namespace o3d;
 
-DynamicLibrary* EGL::ms_egl = nullptr;
+DynamicLibrary* WGL::ms_wgl = nullptr;
 
 void WGL::init()
 {
-    ms_wgl = DynamicLibrary::load("Opengl32.dll");
+    // ms_wgl = DynamicLibrary::load("Opengl32.dll");
 
-    _wglGetProcAddress = (WGLGETPROCADDRESSPROC)ms_wgl->getFunctionPtr("wglGetProcAddress");
+    // _wglGetProcAddress = (WGLGETPROCADDRESSPROC)ms_wgl->getFunctionPtr("wglGetProcAddress");
 
     // @todo
 }
 
+void WGL::quit()
+{
+    if (ms_wgl) {
+        _wglGetProcAddress = nullptr;
+
+        DynamicLibrary::unload(ms_wgl);
+        ms_wgl = nullptr;
+    }
+}
+
 void* WGL::getProcAddress(const Char *ext)
 {
-    return (void*)::_wglGetProcAddress((const char*)ext);
+    // return (void*)::_wglGetProcAddress((const char*)ext);
+    return (void*)::wglGetProcAddress((const char*)ext);
 }
 
 #endif // O3D_WGL || O3D_WINDOWS

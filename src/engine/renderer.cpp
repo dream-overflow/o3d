@@ -222,6 +222,19 @@ void Renderer::doAttachment(AppWindow *appWindow)
     }
 }
 
+Renderer::VSyncMode Renderer::getVSyncMode() const
+{
+    if (m_state.getBit(STATE_VSYNC)) {
+        if (m_state.getBit(STATE_ADAPTIVE_VSYNC)) {
+            return VSYNC_ADAPTIVE;
+        } else {
+            return VSYNC_YES;
+        }
+    }
+
+    return VSYNC_NONE;
+}
+
 #include "o3d/engine/glextensionmanager.h"
 
 #define GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX          0x9047
