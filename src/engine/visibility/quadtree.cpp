@@ -679,6 +679,7 @@ void Quadtree::draw()
 		primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
 
         primitive->setColor(1.f, 1.f, 1.f);
+        getScene()->getContext()->setLineWidth(2.0f);
 
         for (UInt32 j = 0 ; j < m_topZone.height() ; ++j) {
             for (UInt32 i = 0 ; i < m_topZone.width() ; ++i) {
@@ -686,6 +687,7 @@ void Quadtree::draw()
 			}
 		}
 
+        getScene()->getContext()->setDefaultLineWidth();
 		primitive->setColor(0.0f, 1.0f, 0.0f);
 
 		//primitive->modelView().push();

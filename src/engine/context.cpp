@@ -33,6 +33,7 @@ Context::Context(Renderer *renderer) :
 	// force to default values
 	forceDefaultDrawingMode();
 	forceDefaultPointSize();
+    forceDefaultLineWidth();
 	forceDefaultCullingMode();
 	forceDefaultDepthTest();
 	forceDefaultBackgroundColor();
@@ -559,6 +560,43 @@ Float Context::modifyPointSize(Float val)
 	glPointSize(m_pointSize);
 
 	return old;
+}
+
+// change line width
+Float Context::setLineWidth(Float val)
+{
+    if (val == m_lineWidth) {
+        return m_lineWidth;
+    }
+
+    Float old = m_lineWidth;
+    m_lineWidth = val;
+
+    glLineWidth(m_lineWidth);
+
+    return old;
+}
+
+// force line width
+Float Context::forceLineWidth(Float val)
+{
+    Float old = m_lineWidth;
+    m_lineWidth = val;
+
+    glLineWidth(m_lineWidth);
+
+    return old;
+}
+
+// change line width
+Float Context::modifyLineWidth(Float val)
+{
+    Float old = m_lineWidth;
+    m_lineWidth += val;
+
+    glLineWidth(m_lineWidth);
+
+    return old;
 }
 
 // Enable depth test.

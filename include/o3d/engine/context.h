@@ -261,6 +261,27 @@ public:
 	//! Force default point size.
     inline Float forceDefaultPointSize() { return forcePointSize(1.f); }
 
+    //-----------------------------------------------------------------------------------
+    // Line parameters
+    //-----------------------------------------------------------------------------------
+
+    //! Change the line size.
+    Float setLineWidth(Float val);
+
+    //! Return the line size.
+    inline Float getLineWidth() const { return m_lineWidth; }
+
+    //! Force the line size.
+    Float forceLineWidth(Float val);
+
+    //! Increment by val the line size.
+    Float modifyLineWidth(Float val);
+
+    //! Set default line size.
+    inline Float setDefaultLineWidth() { return setLineWidth(1.f); }
+    //! Force default line size.
+    inline Float forceDefaultLineWidth() { return forceLineWidth(1.f); }
+
 	//-----------------------------------------------------------------------------------
 	// Blending
 	//-----------------------------------------------------------------------------------
@@ -761,6 +782,7 @@ private:
 	CullingMode m_cullingMode;      //!< culling face mode (default CullingBackFace)
 
     Float m_pointSize;              //!< point size (default 1)
+    Float m_lineWidth;               //!< line size (default 1)
 
     Blending m_blending;            //!< blending function and equation manager
 
