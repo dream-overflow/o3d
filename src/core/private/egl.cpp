@@ -81,10 +81,14 @@ void EGL::init()
 
     // Selection of the GL API (GL on Desktop, GLES on mobile)
 #if defined(O3D_LINUX) || defined(O3D_WINDOWS) || defined(O3D_MACOSX)
-    EGL::bindAPI(EGL_OPENGL_API);
+    if (!EGL::bindAPI(EGL_OPENGL_API)) {
+        O3D_ERROR(E_InvalidResult("EGL is not able to bind a GL API"));
+    }
     ms_type = GL::GLAPI_GL;
 #elif defined(O3D_ANDROID)
-    EGL::bindAPI(EGL_OPENGL_ES_API);
+    if (!EGL::bindAPI(EGL_OPENGL_ES_API)) {
+        O3D_ERROR(E_InvalidResult("EGL is not able to bind a GLES API"));
+    }
     ms_type = GL::GLAPI_GLES3;
 #endif
 }

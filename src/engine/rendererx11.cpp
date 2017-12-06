@@ -270,8 +270,9 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
         EGLint contextAttributes[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
-            EGL_NONE };
+            EGL_CONTEXT_CLIENT_VERSION, 3,
+            EGL_NONE
+        };
 
         EGLContext eglContext = eglCreateContext(
                                     eglDisplay,

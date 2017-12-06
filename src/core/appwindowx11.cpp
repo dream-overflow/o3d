@@ -881,6 +881,10 @@ void AppWindow::applySettings(Bool fullScreen)
         EGLint surfaceAttributes[] = { EGL_NONE };
         EGLSurface eglSurface = EGL::createWindowSurface(eglDisplay, eglConfig, window, surfaceAttributes);
 
+        if (eglSurface == EGL_NO_SURFACE) {
+            O3D_ERROR(E_InvalidResult("Failed to create a GL surface"));
+        }
+
         m_hWnd = static_cast<_HWND>(window);
         m_HDC = reinterpret_cast<_HDC>(eglSurface);
         m_PF = reinterpret_cast<_PF>(eglConfig);

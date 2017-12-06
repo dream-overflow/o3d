@@ -19,17 +19,21 @@
 #if defined(O3D_X11)
   #include "o3d/core/private/glxdefines.h"
   #include "o3d/core/private/glx.h"
+  #ifdef O3D_EGL
+    // prefere native GLX, most compatibility
+    #undef O3D_EGL
+  #endif
 #endif
 #if defined(O3D_WINDOWS)
   #include "o3d/core/private/wgldefines.h"
   #include "o3d/core/private/wgl.h"
+  #ifdef O3D_EGL
+    // prefere native WGL, most compatibility
+    #undef O3D_EGL
+  #endif
 #endif
 
 #include <string.h>
-
-//#ifdef O3D_EGL
-//#undef O3D_EGL
-//#endif
 
 using namespace o3d;
 
