@@ -617,7 +617,7 @@ void AppWindow::applySettings(Bool fullScreen)
     CString resourceName = m_title.toUtf8().getData();
     CString className = m_title.toUtf8().getData();
 
-    if (strcasecmp("GLX", GL::getImplementation()) == 0) {
+    if (GL::getImplementation() == GL::IMPL_GLX_14) {
         // Get a matching FB config
         int visualAttribs[] = {
             GLX_X_RENDERABLE, True,
@@ -746,10 +746,10 @@ void AppWindow::applySettings(Bool fullScreen)
         m_HDC = static_cast<_HDC>(window);
         m_PF = reinterpret_cast<_PF>(bestFbc);
 
-    } else if (strcasecmp("EGL", GL::getImplementation()) == 0) {
+    } else if (GL::getImplementation() == GL::IMPL_EGL_15) {
     #ifdef O3D_EGL
         EGLint apiType = EGL_OPENGL_BIT;
-        if (GL::getType() == GL::GLAPI_GLES3) {
+        if (GL::getType() == GL::GLAPI_GLES_3) {
             apiType = EGL_OPENGL_ES3_BIT;
         }
 
@@ -1044,7 +1044,7 @@ void AppWindow::destroy()
         }
 
         // destroy surface
-        if (strcasecmp("EGL", GL::getImplementation()) == 0) {
+        if (GL::getImplementation() == GL::IMPL_EGL_15) {
             EGLDisplay eglDisplay = EGL::getDisplay(display);
             EGL::destroySurface(eglDisplay, reinterpret_cast<EGLSurface>(m_HDC));
         }

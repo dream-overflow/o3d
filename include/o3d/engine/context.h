@@ -781,8 +781,10 @@ private:
 	DrawingMode m_drawingMode;      //!< polygon drawing mode (default DrawingFilled)
 	CullingMode m_cullingMode;      //!< culling face mode (default CullingBackFace)
 
-    Float m_pointSize;              //!< point size (default 1)
-    Float m_lineWidth;               //!< line size (default 1)
+    Float m_pointSize;                 //!< point size (default 1)
+    Float m_lineWidth;                 //!< line size (default 1)
+    Float m_aliasedLineWidthRange[2];  //!< min and max line width range.
+    Float m_smoothLineWidthRange[2];   //!< min and max line width range.
 
     Blending m_blending;            //!< blending function and equation manager
 

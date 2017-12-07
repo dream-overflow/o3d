@@ -31,9 +31,9 @@ DynamicLibrary* WGL::ms_wgl = nullptr;
 
 void WGL::init()
 {
-    // ms_wgl = DynamicLibrary::load("Opengl32.dll");
+    ms_wgl = DynamicLibrary::load("Opengl32.dll");
 
-    // _wglGetProcAddress = (WGLGETPROCADDRESSPROC)ms_wgl->getFunctionPtr("wglGetProcAddress");
+    _wglGetProcAddress = (WGLGETPROCADDRESSPROC)ms_wgl->getFunctionPtr("wglGetProcAddress");
 
     // @todo
 }
@@ -46,6 +46,11 @@ void WGL::quit()
         DynamicLibrary::unload(ms_wgl);
         ms_wgl = nullptr;
     }
+}
+
+Bool WGL::isValid()
+{
+    return ms_wgl && _wglGetProcAddress;
 }
 
 void* WGL::getProcAddress(const Char *ext)

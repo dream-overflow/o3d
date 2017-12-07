@@ -101,7 +101,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
     //
     // GLX implementation
     //
-    if (strcasecmp("GLX", GL::getImplementation()) == 0) {
+    if (GL::getImplementation() == GL::IMPL_GLX_14) {
         // Install an X error handler so the application won't exit if GL 3.0+
         // context allocation fails.
         // Note this error handler is global. All display connections in all threads
@@ -259,7 +259,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         m_HDC = appWindow->getHDC();
         m_HGLRC = reinterpret_cast<_HGLRC>(context);
         m_state.enable(STATE_DEFINED);
-    } else if (strcasecmp("EGL", GL::getImplementation()) == 0) {
+    } else if (GL::getImplementation() == GL::IMPL_EGL_15) {
         //
         // EGL implementation
         //

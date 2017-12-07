@@ -37,15 +37,16 @@ public:
 
 	//! Default constructor
     AppSettings() :
-		m_memoryManagerFastAlloc16(16384),
-		m_memoryManagerFastAlloc32(16384),
-        m_memoryManagerFastAlloc64(16384),
-        m_display(True)
-	{}
+        sizeOfFastAlloc16(16384),
+        sizeOfFastAlloc32(16384),
+        sizeOfFastAlloc64(16384),
+        useDisplay(True)
+    {
+    }
 
-    size_t m_memoryManagerFastAlloc16;  //!< Fast allocator chunk sizes for block of 16 bytes
-    size_t m_memoryManagerFastAlloc32;  //!< Fast allocator chunk sizes for block of 32 bytes
-    size_t m_memoryManagerFastAlloc64;  //!< Fast allocator chunk sizes for block of 64 bytes
+    size_t sizeOfFastAlloc16;  //!< Fast allocator chunk sizes for block of 16 bytes
+    size_t sizeOfFastAlloc32;  //!< Fast allocator chunk sizes for block of 32 bytes
+    size_t sizeOfFastAlloc64;  //!< Fast allocator chunk sizes for block of 64 bytes
 
     //! If True the display part containing the main event loop and support
     //! for application window is initialized.
@@ -53,7 +54,7 @@ public:
     //! for services and don't need of a display support. If you disable the display
     //! support and need a main event loop, you have to initiate the EvtManager with the
     //! main thread (as nullptr), and to call its update in your own main loop.
-    Bool m_display;
+    Bool useDisplay;
 };
 
 

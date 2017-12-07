@@ -50,7 +50,15 @@ void EGL::init()
         return;
     }
 
+#ifdef O3D_ANDROID
     ms_egl = DynamicLibrary::load("libEGL.so");
+#elif defined(O3D_LINUX)
+    ms_egl = DynamicLibrary::load("libEGL.so");  // "/usr/lib/nvidia-384/libEGL.so");
+#elif defined(O3D_WINDOWS)
+    ms_egl = DynamicLibrary::load("Opengl32.dll");
+#else
+    return;
+#endif
 
     _eglGetProcAddress = (PFNEGLGETPROCADDRESSPROC)ms_egl->getFunctionPtr("eglGetProcAddress");
 
@@ -71,12 +79,12 @@ void EGL::init()
     EGLNativeDisplayType display = reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
     EGLDisplay eglDisplay = EGL::getDisplay(display);
 
-    // Initialize EGL for this display (need 1.4+)
+    // Initialize EGL for this display (need 1.5+)
     EGLint eglVersionMajor, eglVersionMinor;
     if (!EGL::initialize(eglDisplay, &eglVersionMajor, &eglVersionMinor) ||
-        ((eglVersionMajor == 1) && (eglVersionMinor < 4)) || (eglVersionMajor < 1)) {
+        ((eglVersionMajor == 1) && (eglVersionMinor < 5)) || (eglVersionMajor < 1)) {
 
-        O3D_ERROR(E_InvalidResult("Invalid EGL version. Need 1.4+"));
+        O3D_ERROR(E_InvalidResult("Invalid EGL version. Need 1.5+"));
     }
 
     // Selection of the GL API (GL on Desktop, GLES on mobile)
@@ -89,7 +97,7 @@ void EGL::init()
     if (!EGL::bindAPI(EGL_OPENGL_ES_API)) {
         O3D_ERROR(E_InvalidResult("EGL is not able to bind a GLES API"));
     }
-    ms_type = GL::GLAPI_GLES3;
+    ms_type = GL::GLAPI_GLES_3;
 #endif
 }
 
@@ -110,6 +118,11 @@ void EGL::quit()
 
     DynamicLibrary::unload(ms_egl);
     ms_egl = nullptr;
+}
+
+Bool EGL::isValid()
+{
+    return ms_egl && _eglGetProcAddress;
 }
 
 void* EGL::getProcAddress(const Char *ext)

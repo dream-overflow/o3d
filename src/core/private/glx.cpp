@@ -87,6 +87,11 @@ void GLX::quit()
     }
 }
 
+Bool GLX::isValid()
+{
+    return ms_glX && _glXGetProcAddress;
+}
+
 void* GLX::getProcAddress(const Char *ext)
 {
     return (void*)::_glXGetProcAddress((const GLubyte*)ext);

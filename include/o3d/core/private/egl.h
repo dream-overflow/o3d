@@ -27,6 +27,8 @@ public:
     static void init();
     static void quit();
 
+    static Bool isValid();
+
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
 

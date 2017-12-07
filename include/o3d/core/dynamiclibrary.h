@@ -47,6 +47,7 @@ public:
 	 * cannot be loaded. throws an exception if it cannot execute the init function.
 	 * @param name Library filename.
 	 * @return Instance of an object describing an handle to its library.
+     * @note If the library was previously loaded, returns its instance directly.
 	 */
 	static DynamicLibrary* load(const String &name);
 

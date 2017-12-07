@@ -109,6 +109,9 @@ Context::Context(Renderer *renderer) :
     _glGetIntegerv(GL_MAX_DRAW_BUFFERS, (GLint*)&m_maxDrawBuffers);
     _glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, (GLint*)&m_maxVertexAttribs);
 
+    glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, (GLfloat*)m_aliasedLineWidthRange);
+    glGetFloatv(GL_SMOOTH_LINE_WIDTH_RANGE, (GLfloat*)m_smoothLineWidthRange);
+
 	// GLSL version
     const GLubyte *version = _glGetString(GL_SHADING_LANGUAGE_VERSION);
     if ((version != nullptr) && (version[0] >= '1') && (version[1] == '.'))	{
@@ -129,6 +132,9 @@ Context::Context(Renderer *renderer) :
 	// Print a beautiful log message
 	String message;
 	message << "OpenGL capacities:\n"
+            << String("    |- Aliased line width range = {0} to {1}").arg(m_aliasedLineWidthRange[0], 2).arg(m_aliasedLineWidthRange[1], 2) << "\n"
+            << String("    |- Smooth line width range = {0} to {1}").arg(m_smoothLineWidthRange[0], 2).arg(m_smoothLineWidthRange[1], 2) << "\n"
+            << "    |- Texture max size = " << m_textureMaxSize << "\n"
             << "    |- Texture max size = " << m_textureMaxSize << "\n"
             << "    |- Texture 3D max size = " << m_texture3dMaxSize << "\n"
             << "    |- Texture max samples = " << m_textureMaxSamples << "\n"
@@ -141,7 +147,7 @@ Context::Context(Renderer *renderer) :
             << "    |- Max combined texture image units = " << m_maxCombinedTextureImageUnits << "\n"
             << "    |- Max vertex attribs = " << m_maxVertexAttribs << "\n"
             << "    |- Max draw buffers = " << m_maxDrawBuffers << "\n"
-            << "    |- Max anisotropy lvl = " << m_maxAnisotropy << "\n"
+            << String("    |- Max anisotropy lvl = {0}").arg(m_maxAnisotropy, 2) << "\n"
             << "    |- Max view-ports = " << m_maxViewports << "\n"
             << "    |- GLSL version = " << (version?(const Char*)version:"1.10") << "\n";
 
@@ -572,7 +578,15 @@ Float Context::setLineWidth(Float val)
     Float old = m_lineWidth;
     m_lineWidth = val;
 
-    glLineWidth(m_lineWidth);
+    if (m_antiAliasing == AA_NONE) {
+        if (m_lineWidth >= m_aliasedLineWidthRange[0] && m_lineWidth <= m_aliasedLineWidthRange[1]) {
+            glLineWidth(m_lineWidth);
+        }
+    } else {
+        if (m_lineWidth >= m_smoothLineWidthRange[0] && m_lineWidth <= m_smoothLineWidthRange[1]) {
+            glLineWidth(m_lineWidth);
+        }
+    }
 
     return old;
 }
@@ -583,7 +597,15 @@ Float Context::forceLineWidth(Float val)
     Float old = m_lineWidth;
     m_lineWidth = val;
 
-    glLineWidth(m_lineWidth);
+    if (m_antiAliasing == AA_NONE) {
+        if (m_lineWidth >= m_aliasedLineWidthRange[0] && m_lineWidth <= m_aliasedLineWidthRange[1]) {
+            glLineWidth(m_lineWidth);
+        }
+    } else {
+        if (m_lineWidth >= m_smoothLineWidthRange[0] && m_lineWidth <= m_smoothLineWidthRange[1]) {
+            glLineWidth(m_lineWidth);
+        }
+    }
 
     return old;
 }
@@ -594,7 +616,15 @@ Float Context::modifyLineWidth(Float val)
     Float old = m_lineWidth;
     m_lineWidth += val;
 
-    glLineWidth(m_lineWidth);
+    if (m_antiAliasing == AA_NONE) {
+        if (m_lineWidth >= m_aliasedLineWidthRange[0] && m_lineWidth <= m_aliasedLineWidthRange[1]) {
+            glLineWidth(m_lineWidth);
+        }
+    } else {
+        if (m_lineWidth >= m_smoothLineWidthRange[0] && m_lineWidth <= m_smoothLineWidthRange[1]) {
+            glLineWidth(m_lineWidth);
+        }
+    }
 
     return old;
 }

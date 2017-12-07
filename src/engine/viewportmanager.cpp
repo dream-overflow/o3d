@@ -120,8 +120,7 @@ void ViewPortManager::display()
 {
 	PriorityManagerElt<ViewPort> *elt = m_manager.getRoot();
 
-    while (elt != nullptr)
-	{
+    while (elt != nullptr) {
 		elt->Element->display(m_width, m_height);
 		elt = elt->Son;
 	}

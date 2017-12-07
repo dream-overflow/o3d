@@ -27,7 +27,9 @@ DynamicLibrary* DynamicLibrary::load(const String &name)
 {
     for (std::list<DynamicLibrary*>::iterator it = ms_libraries.begin(); it != ms_libraries.end(); ++it) {
         if ((*it)->m_name == name) {
-            O3D_ERROR(E_DynamicLibraryException("Already loaded library " + name));
+            //O3D_ERROR(E_DynamicLibraryException("Already loaded library " + name));
+            O3D_WARNING("Already loaded library " + name);
+            return (*it);
         }
 	}
 

@@ -26,7 +26,17 @@ public:
         GLAPI_UNDEFINED = 0x0,
         GLAPI_CUSTOM = 0x1,
         GLAPI_GL = 0x10,
-        GLAPI_GLES3 = 0x20
+        GLAPI_GLES_3 = 0x20
+    };
+
+    enum Impl
+    {
+        IMPL_NONE = 0,
+        IMPL_CUSTOM = 1,
+        IMPL_GLX_14 = 2,
+        IMPL_WGL = 3,
+        IMPL_EGL_15 = 4,
+        IMPL_SDL_2 = 5
     };
 
     /**
@@ -56,7 +66,10 @@ public:
 
     //! Which used implementation : EGL, GLX, SDL2 or WGL, CUSTOM or null.
     //! Custom means than a callback was provided.
-    static const Char *getImplementation();
+    static const Char *getImplementationName();
+
+    //! Which used implementation.
+    static Impl getImplementation();
 
     //! Get instancied GL API type.
     static GLAPIType getType();
@@ -68,6 +81,8 @@ public:
 private:
 
     static GetProcAddressCallbackMethod* ms_callback;
+    static Impl ms_nativeImpl;
+    static Impl ms_usedImpl;
 };
 
 } // namespace o3d

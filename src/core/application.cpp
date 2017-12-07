@@ -60,9 +60,9 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 
 	// Initialize fast memory allocator
 	MemoryManager::instance()->initFastAllocator(
-		settings.m_memoryManagerFastAlloc16,
-		settings.m_memoryManagerFastAlloc32,
-		settings.m_memoryManagerFastAlloc64);
+        settings.sizeOfFastAlloc16,
+        settings.sizeOfFastAlloc32,
+        settings.sizeOfFastAlloc64);
 
 	// Registration of the main thread to activate events
     EvtManager::instance()->registerThread(nullptr);
@@ -78,10 +78,20 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 	Math::init();
 
     // only if display
-    if (settings.m_display) {
+    if (settings.useDisplay) {
         apiInitPrivate();
 
         GL::init();
+
+        String typeString = "Undefined";
+        if (GL::getType() == GL::GLAPI_GL) {
+            typeString = "GL3+";
+        } else if (GL::getType() == GL::GLAPI_GLES_3) {
+            typeString = "GLES3+";
+        }
+
+        O3D_MESSAGE(String("Choose {0} implementation with a {1} API").arg(GL::getImplementationName()).arg(typeString));
+
         Video::instance();
     }
 
