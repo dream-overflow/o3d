@@ -46,6 +46,7 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 	m_wireSphere2(1.f,8,6,Primitive::WIRED_MODE),
 	m_solidSphere1(1.f,12,8,Primitive::FILLED_MODE),
 	m_wireCube1(1.f,0,Primitive::WIRED_MODE),
+    m_solidCube1(1.f,0,Primitive::FILLED_MODE),
 	m_vertices(1024*3, 1024*3),
 	m_colors(1024*4, 1024*4),
     m_verticesVbo(getScene()->getContext()),
@@ -54,7 +55,7 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
     m_quadTexCoords(getScene()->getContext()),
     m_quadColors(getScene()->getContext())
 {
-	m_primitives.resize(WIRE_CUBE1+1);
+    m_primitives.resize(SOLID_CUBE1+1);
 
 	// TODO remplacer avec des VBO plus globaux
 
@@ -67,6 +68,7 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 	createPrimitive(WIRE_SPHERE2, m_wireSphere2);
 	createPrimitive(SOLID_SPHERE1, m_solidSphere1);
 	createPrimitive(WIRE_CUBE1, m_wireCube1);
+    createPrimitive(SOLID_CUBE1, m_solidCube1);
 
 	// create a simple uniform color shader
 	Shader *shader = getScene()->getShaderManager()->addShader("primitiveShader");
@@ -143,20 +145,17 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 PrimitiveManager::~PrimitiveManager()
 {
 	// delete primitives
-	for (IT_GeometryVector it = m_primitives.begin(); it != m_primitives.end(); ++it)
-	{
+    for (IT_GeometryVector it = m_primitives.begin(); it != m_primitives.end(); ++it) {
 		deletePtr(*it);
 	}
 
 	// delete objects
-	for (IT_ObjectVector it = m_objects.begin(); it != m_objects.end(); ++it)
-	{
+    for (IT_ObjectVector it = m_objects.begin(); it != m_objects.end(); ++it) {
 		deletePtr(*it);
 	}
 
 	// delete registered objects
-	for (IT_ObjectVector it = m_registeredObjects.begin(); it != m_registeredObjects.end(); ++it)
-	{
+    for (IT_ObjectVector it = m_registeredObjects.begin(); it != m_registeredObjects.end(); ++it) {
 		deletePtr(*it);
 	}
 }
@@ -167,8 +166,7 @@ void PrimitiveManager::bind()
 	++m_numUsage;
 
 	// bind the shader
-	if (!m_colorShader.instance.isInUse())
-	{
+    if (!m_colorShader.instance.isInUse()) {
 		getScene()->getContext()->simpleDrawMode();
 
 		m_colorShader.instance.bindShader();
@@ -181,12 +179,12 @@ void PrimitiveManager::bind()
 // Always restore after draw.
 void PrimitiveManager::unbind()
 {
-	if (m_numUsage <= 0)
+    if (m_numUsage <= 0) {
 		O3D_ERROR(E_InvalidOperation("Attempt to unbind the primitive manager whereas it was not previously bound"));
+    }
 
 	// unbound the shader
-	if (m_colorShader.instance.isInUse() && (m_numUsage == 1))
-	{
+    if (m_colorShader.instance.isInUse() && (m_numUsage == 1)) {
 		getScene()->getContext()->normalDrawMode();
 
 		getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
@@ -203,8 +201,7 @@ void PrimitiveManager::createPrimitive(PrimitiveManager::Primitives type, Primit
 	GeometryData *geometry = new GeometryData(this, primitive);
 
 	SmartArrayFloat colorArray(primitive.getNumVertices()*4);
-	for (UInt32 i = 0; i < colorArray.getNumElt(); ++i)
-	{
+    for (UInt32 i = 0; i < colorArray.getNumElt(); ++i) {
 		colorArray.getData()[i] = 1.0f;
 	}
 
@@ -366,12 +363,14 @@ void PrimitiveManager::drawXYZAxis(const Vector3 &scale)
 // Draw an object.
 void PrimitiveManager::drawObject(UInt32 objectId, const Vector3 &scale)
 {
-	if (objectId >= m_registeredObjects.size())
+    if (objectId >= m_registeredObjects.size()) {
 		O3D_ERROR(E_InvalidParameter("Unregistered object identifier"));
+    }
 
 	Object *object = m_registeredObjects[objectId];
-	if (!object)
+    if (!object) {
 		O3D_ERROR(E_InvalidParameter("Null object"));
+    }
 
 	drawArray(object->format, object->vertices, object->colors, scale);
 }

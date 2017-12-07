@@ -85,7 +85,8 @@ public:
 		WIRE_SPHERE1,
 		WIRE_SPHERE2,
 		SOLID_SPHERE1,
-		WIRE_CUBE1
+        WIRE_CUBE1,
+        SOLID_CUBE1
 	};
 
 	enum Objects
@@ -287,6 +288,7 @@ protected:
 	Sphere m_wireSphere2;
 	Sphere m_solidSphere1;
 	Cube m_wireCube1;
+    Cube m_solidCube1;
 
 	ArrayFloat m_vertices;
 	ArrayFloat m_colors;

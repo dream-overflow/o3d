@@ -65,10 +65,10 @@ Primitive::Primitive(const Primitive &dup) :
 	BaseObject(dup),
 		m_capacities(dup.m_capacities),
 		m_verticesCount(dup.m_verticesCount),
-		m_pVertices(NULL),
+        m_pVertices(nullptr),
 		m_indicesCount(dup.m_indicesCount),
-		m_pIndices(NULL),
-		m_pTexCoords(NULL)
+        m_pIndices(nullptr),
+        m_pTexCoords(nullptr)
 {
 }
 
