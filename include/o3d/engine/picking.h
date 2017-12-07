@@ -22,13 +22,12 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Picking
-//-------------------------------------------------------------------------------------
-//! This class manage all pickable objects. A pickable object work in 2 pass. And when
-//! a pickable is updated it is add to this manager for be checked if it is on a zone
-//! or under a pointer (like a mouse pointer).
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The Picking manager
+ * @details This class manage all pickable objects. A pickable object work in 2 pass.
+ * And when a pickable is updated it is add to this manager for be checked if it is on
+ * a zone or under a pointer (like a mouse pointer).
+ */
 class O3D_API Picking : public SceneEntity
 {
 public:
@@ -52,7 +51,7 @@ public:
 
 		//! Default constructor.
 		Hit() :
-			pickable(NULL),
+            pickable(nullptr),
 			depth(0)
 		{
 		}
@@ -104,9 +103,10 @@ public:
 	//! Get hited object
 	inline Pickable* getSingleHit()
 	{
-		if (m_hit && m_outObjectList.size())
+        if (m_hit && m_outObjectList.size()) {
 			return m_outObjectList.begin()->pickable;
-		return NULL;
+        }
+        return nullptr;
 	}
 
 	//! Get multiset of hits
@@ -203,4 +203,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_PICKING_H
-

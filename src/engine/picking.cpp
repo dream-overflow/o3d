@@ -204,4 +204,3 @@ Vector3 Picking::getPointerPos(Int32 x, Int32 y)
 	else
 		return Vector3();
 }
-
