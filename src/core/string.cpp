@@ -362,6 +362,11 @@ void String::setCapacity(UInt32 newSize)
                 m_size = m_maxsize;	    // redimensionne à m_maxsize
                 m_data[m_size-1] = 0;   // et replace le zéro terminal
             }
+
+            // init for args
+            if (m_size < m_maxsize) {
+                m_data[m_maxsize-1] = 0x8000;
+            }
 		}
 	}
 }
@@ -1579,7 +1584,7 @@ void String::concat(Double d, Int32 decimals)
 
 inline Bool hasArg(const WChar *data, UInt32 dataSize, UInt32 dataMaxSize)
 {
-    return ((dataSize+1 <= dataMaxSize) && ((data[dataSize] & 0xf0f0f0ff) >= 0xf0f0f000));
+    return ((dataSize+1 <= dataMaxSize) && ((data[dataMaxSize-1] & 0x80ff) >= 0x8000));
 }
 
 void String::allocateArg()
@@ -1589,21 +1594,21 @@ void String::allocateArg()
         setCapacity(m_size-1+1);  // minus 1
     }
 
-    m_data[m_size] = 0xf0f0f000;
+    m_data[m_maxsize-1] = 0x8000;
 }
 
-inline UInt32 currentArg(const WChar *data, UInt32 dataSize)
+inline UInt32 currentArg(const WChar *data, UInt32 dataMaxSize)
 {
-    return data[dataSize] & 0x000000ff;
+    return data[dataMaxSize-1] & 0x00ff;
 }
 
-inline void incArg(WChar *data, UInt32 dataSize, UInt32 arg)
+inline void incArg(WChar *data, UInt32 dataMaxSize, UInt32 arg)
 {
     if (arg < 99) {
         ++arg;
     }
 
-    data[dataSize] = (WChar)(0xf0f0f000 | arg);
+    data[dataMaxSize-1] = (WChar)(0x8000 | arg);
 }
 
 inline Int32 subArg(const WChar *arg, UInt32 argSize, WChar *data, UInt32 dataSize, UInt32 pos)
@@ -1656,6 +1661,8 @@ void String::replaceArg(const WChar *arg, UInt32 argSize, const String &by)
     if (by.m_size < argSize) {
         setCapacity(m_size-1+1);  // conserve arg in data
     }
+
+    m_data[m_size-1] = 0;
 }
 
 String& String::arg(const Char &c)
@@ -1668,7 +1675,7 @@ String& String::arg(const Char &c)
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1686,7 +1693,7 @@ String& String::arg(const Char &c)
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1700,7 +1707,7 @@ String& String::arg(const WChar &w)
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1718,7 +1725,7 @@ String& String::arg(const WChar &w)
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1732,7 +1739,7 @@ String& String::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1750,7 +1757,7 @@ String& String::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1764,7 +1771,7 @@ String& String::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillCha
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1782,7 +1789,7 @@ String& String::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillCha
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1796,7 +1803,7 @@ String& String::arg(const Int64 &i, Int32 fieldWidth, Int32 base, WChar fillChar
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1814,7 +1821,7 @@ String& String::arg(const Int64 &i, Int32 fieldWidth, Int32 base, WChar fillChar
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1828,7 +1835,7 @@ String& String::arg(const UInt64 &i, Int32 fieldWidth, Int32 base, WChar fillCha
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1846,7 +1853,7 @@ String& String::arg(const UInt64 &i, Int32 fieldWidth, Int32 base, WChar fillCha
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1860,7 +1867,7 @@ String& String::arg(const Float &f, Int32 decimals, WChar separator)
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1878,7 +1885,7 @@ String& String::arg(const Float &f, Int32 decimals, WChar separator)
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1892,7 +1899,7 @@ String& String::arg(const Double &d, Int32 decimals, WChar separator)
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1910,7 +1917,7 @@ String& String::arg(const Double &d, Int32 decimals, WChar separator)
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 
@@ -1924,7 +1931,7 @@ String& String::arg(const String &s)
         allocateArg();
     }
 
-    UInt32 arg = currentArg(m_data, m_size);
+    UInt32 arg = currentArg(m_data, m_maxsize);
     WChar placeholder[5] = {'{', '}', '}', '}', '\0'};
     Int32 placeholderSize = 4;
 
@@ -1939,7 +1946,7 @@ String& String::arg(const String &s)
 
     replaceArg(placeholder, placeholderSize, s);
 
-    incArg(m_data, m_size, arg);
+    incArg(m_data, m_maxsize, arg);
     return *this;
 }
 

@@ -67,6 +67,9 @@ public:
 	//! Get the number of drawn point for the last frame.
 	UInt32 getNumPoints() const;
 
+    //! Get the numbers of drawn vertices for the last frame.
+    UInt32 getNumVertices() const;
+
 protected:
 
 	struct Frame
@@ -75,6 +78,7 @@ protected:
 		UInt32 numTris;
 		UInt32 numLines;
 		UInt32 numPoints;
+        UInt32 numVertices;
 	};
 
 	Frame m_framesList[FPS_MAX_INTERVAL];  //!< Last computed frames.
@@ -82,6 +86,7 @@ protected:
 	UInt32 m_numTris;       //!< Current number of triangles.
 	UInt32 m_numLines;      //!< Current number of lines.
 	UInt32 m_numPoints;     //!< Current number of points.
+    UInt32 m_numVertices;   //!< Current number of vertices.
 
 	UInt32 m_interval;		//!< Number of frame elapsed in the interval.
 
@@ -98,4 +103,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_FRAMEMANAGER_H
-

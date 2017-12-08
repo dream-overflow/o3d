@@ -26,6 +26,7 @@ FrameManager::FrameManager() :
 	m_numTris(0),
 	m_numLines(0),
 	m_numPoints(0),
+    m_numVertices(0),
 	m_interval(0),
 	m_frame(0),
 	m_lastTime(0),
@@ -38,8 +39,7 @@ FrameManager::FrameManager() :
 // update frame information
 void FrameManager::update(Float prevDisplayDuration)
 {
-	if (m_frame == 0 && m_interval == 0)
-	{
+    if (m_frame == 0 && m_interval == 0) {
 		// initialization
 		m_totalFrame = 0;
 		m_lastTime = System::getTime();
@@ -48,26 +48,26 @@ void FrameManager::update(Float prevDisplayDuration)
 	++m_frame;
 	++m_totalFrame;
 
-	if (m_frame == FPS_INTERVAL_SIZE)
-	{
+    if (m_frame == FPS_INTERVAL_SIZE) {
 		Int64 time = System::getTime();
 
 		m_framesList[m_interval].duration = prevDisplayDuration;
 		m_framesList[m_interval].numLines = m_numLines;
 		m_framesList[m_interval].numPoints = m_numPoints;
 		m_framesList[m_interval].numTris = m_numTris;
+        m_framesList[m_interval].numVertices = m_numVertices;
 
 		m_lastTime = time;
 		++m_interval;
 		m_frame = 0;
 
-		if (m_interval == FPS_MAX_INTERVAL)
-		{
+        if (m_interval == FPS_MAX_INTERVAL) {
 			m_interval = 1;
 			m_framesList[0].duration = m_framesList[FPS_MAX_INTERVAL-1].duration;
 			m_framesList[0].numLines = m_framesList[FPS_MAX_INTERVAL-1].numLines;
 			m_framesList[0].numPoints = m_framesList[FPS_MAX_INTERVAL-1].numPoints;
 			m_framesList[0].numTris = m_framesList[FPS_MAX_INTERVAL-1].numTris;
+            m_framesList[0].numVertices = m_framesList[FPS_MAX_INTERVAL-1].numVertices;
 		}
 	}
 
@@ -75,6 +75,7 @@ void FrameManager::update(Float prevDisplayDuration)
 	m_numTris = 0;
 	m_numLines = 0;
 	m_numPoints = 0;
+    m_numVertices = 0;
 }
 
 // Log information about the last frames.
@@ -85,15 +86,15 @@ void FrameManager::logInfo() const
 	str.concat(m_interval);
 	str += " frames :\n";
 
-	for (UInt32 i = 0; i < m_interval; ++i)
-	{
+    for (UInt32 i = 0; i < m_interval; ++i) {
 		str += String::print
-                ("    |- %i -> duration(%.4f ms) tris(%i)/lines(%i)/points(%i)\n",
+                ("    |- %i -> duration(%.4f ms) tris(%i)/lines(%i)/points(%i)/vertices(%i)\n",
 				i,
 				m_framesList[i].duration,
 				m_framesList[i].numTris,
 				m_framesList[i].numLines,
-				m_framesList[i].numPoints);
+                m_framesList[i].numPoints,
+                m_framesList[i].numVertices);
 	}
 
 	O3D_MESSAGE(str);
@@ -104,10 +105,11 @@ void FrameManager::computeFrameDuration()
 {
  	Int64 time = System::getTime();
 	
-	if (m_frameLastTime == 0)
+    if (m_frameLastTime == 0) {
 		m_frameDuration = 0.0f;
-	else
+    } else {
 		m_frameDuration = Float(time - m_frameLastTime) / System::getTimeFrequency();
+    }
 
 	m_frameLastTime = time;
 }
@@ -115,8 +117,7 @@ void FrameManager::computeFrameDuration()
 // Add a number of drawn primitive to this frame.
 void FrameManager::addPrimitives(PrimitiveFormat primitive, UInt32 count)
 {
-	switch (primitive)
-	{
+    switch (primitive) {
 		case P_TRIANGLES:
 			m_numTris += count / 3;
 			break;
@@ -141,31 +142,45 @@ void FrameManager::addPrimitives(PrimitiveFormat primitive, UInt32 count)
 		default:
 			break;
 	}
+
+    m_numVertices += count;
 }
 
 // Get the number of drawn triangles for the last frame.
 UInt32 FrameManager::getNumTriangles() const
 {
-	if (m_interval != 0)
+    if (m_interval != 0) {
 		return m_framesList[m_interval-1].numTris;
-	else
+    } else {
 		return 0;
+    }
 }
 
 // Get the number of drawn lines for the last frame.
 UInt32 FrameManager::getNumLines() const
 {
-	if (m_interval != 0)
+    if (m_interval != 0) {
 		return m_framesList[m_interval-1].numLines;
-	else
+    } else {
 		return 0;
+    }
 }
 
 // Get the number of drawn point for the last frame.
 UInt32 FrameManager::getNumPoints() const
 {
-	if (m_interval != 0)
+    if (m_interval != 0) {
 		return m_framesList[m_interval-1].numPoints;
-	else
+    } else {
 		return 0;
+    }
+}
+
+UInt32 FrameManager::getNumVertices() const
+{
+    if (m_interval != 0) {
+        return m_framesList[m_interval-1].numVertices;
+    } else {
+        return 0;
+    }
 }
