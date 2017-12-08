@@ -17,7 +17,7 @@ namespace o3d {
 
 /**
  * @brief A layer of a 2d map, specialized for the rendering of multiple objects
- * in 2d isometrics ccordinates. Object rendering is done from up to down, and
+ * in 2d isometrics coordinates. Object rendering is done from up to down, and
  * right to left.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-08-13
@@ -44,38 +44,41 @@ public:
 	virtual ~Map2dIsoObjectsLayer();
 
 	//! Delete child. This node need to redone the sort for rendering.
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Compute recursively the number of element of this branch
-	virtual UInt32 getNumElt() const;
+    virtual UInt32 getNumElt() const override;
 
-	virtual void update();
+    virtual void update() override;
 
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	//
 	// Transforms
 	//
 
 	//! Get the front transform or null if none (read only)
-	virtual const Transform* getTransform() const;
+    virtual const Transform* getTransform() const override;
 
 	//! Get the front transform or null if none
-	virtual Transform* getTransform();
+    virtual Transform* getTransform() override;
 
 	//
 	// Objects
 	//
 
-	virtual UInt32 getNumSon() const;
+    virtual UInt32 getNumSon() const override;
+
+    //! Has a direct son scene object.
+    virtual Bool hasSon(SceneObject *object) const override;
 
 	//! Find an object/node given its name
-	virtual const SceneObject* findSon(const String &name) const;
+    virtual const SceneObject* findSon(const String &name) const override;
 	//! Find an object/node given its name
-	virtual SceneObject* findSon(const String &name);
+    virtual SceneObject* findSon(const String &name) override;
 
 	//! Find a scene object and return true if found.
-	virtual Bool findSon(SceneObject *object) const;
+    virtual Bool findSon(SceneObject *object) const override;
 
 	//! Get the objects list.
 	const T_Map2dObjectList& getObjects();
@@ -117,7 +120,7 @@ public:
 	//void moveObject(Map2dObject *object, const Vector2i &pos);
 
 	//! Remove and delete all objects.
-	virtual void deleteAllObjects();
+    virtual void deleteAllObjects();
 
 protected:
 
@@ -134,4 +137,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_MAP2DISOOBJECTSLAYER_H
-

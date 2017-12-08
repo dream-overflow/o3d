@@ -50,4 +50,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_MAP2DLAYER_H
-

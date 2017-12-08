@@ -18,12 +18,10 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Primitive
-//-------------------------------------------------------------------------------------
-//! Abstract definition of a 3d primitive
-//! TODO Generation of VBO using a methode CreateVBO and VBOs's accessors.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Abstract definition of a 3d primitive
+ * @todo Generation of VBO using a methode CreateVBO and VBOs's accessors.
+ */
 class O3D_API Primitive : NonAssignable<>, public BaseObject
 {
 	O3D_DECLARE_ABSTRACT_CLASS(Primitive)
@@ -105,12 +103,9 @@ protected:
 	Float *m_pTexCoords;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class Cube
-//-------------------------------------------------------------------------------------
-//! Definition of a cube primitive
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Definition of a cube primitive
+ */
 class O3D_API Cube : public Primitive
 {
 	O3D_DECLARE_ABSTRACT_CLASS(Cube)
@@ -207,7 +202,11 @@ private:
 	}
 
 	//! Do not use
-	Cube() : m_size(0.f), m_division(0) {};
+    Cube() :
+        m_size(0.f),
+        m_division(0)
+    {
+    }
 
 protected:
 
@@ -225,12 +224,9 @@ protected:
 	const UInt32 m_division;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class Cylinder
-//-------------------------------------------------------------------------------------
-//! Definition of a cylinder primitive
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Definition of a cylinder primitive
+ */
 class O3D_API Cylinder : public Primitive
 {
 	O3D_DECLARE_ABSTRACT_CLASS(Cylinder)
@@ -293,12 +289,9 @@ protected:
 	UInt32 m_stacks;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class Sphere
-//-------------------------------------------------------------------------------------
-//! Definition of a sphere primitive
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Definition of a sphere primitive
+ */
 class O3D_API Sphere : public Primitive
 {
 	O3D_DECLARE_ABSTRACT_CLASS(Sphere)
@@ -347,12 +340,9 @@ protected:
 	UInt32 m_stacks;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class Surface
-//-------------------------------------------------------------------------------------
-//! Definition of a plane surface primitive
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Definition of a plane surface primitive
+ */
 class O3D_API Surface : public Primitive
 {
 	O3D_DECLARE_ABSTRACT_CLASS(Surface)
@@ -429,4 +419,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_PRIMITIVES_H
-

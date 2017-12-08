@@ -43,11 +43,10 @@ public:
     Node(BaseObject *parent = nullptr, Bool isStatic = False);
 
 	//! destructor
-	virtual ~Node();
+    virtual ~Node();
 
 	//! Delete child
-	virtual Bool deleteChild(BaseObject *child);
-
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//-----------------------------------------------------------------------------------
 	// Child management
@@ -62,16 +61,19 @@ public:
 	//! Remove a specified son
     virtual void removeSon(SceneObject *object);
 
+    //! Has a direct son scene object.
+    virtual Bool hasSon(SceneObject *object) const override;
+
 	//! Find an object/node given its name
-	virtual const SceneObject* findSon(const String &name) const;
+    virtual const SceneObject* findSon(const String &name) const override;
 	//! Find an object/node given its name
-	virtual SceneObject* findSon(const String &name);
+    virtual SceneObject* findSon(const String &name) override;
 
 	//! Find a scene object and return true if found.
-	virtual Bool findSon(SceneObject *object) const;
+    virtual Bool findSon(SceneObject *object) const override;
 
 	//! Get the number of son into this node.
-	virtual UInt32 getNumSon() const;
+    virtual UInt32 getNumSon() const override;
 
 	//! Remove and delete all sons.
 	void deleteAllSons();
@@ -79,13 +81,12 @@ public:
 	//! Get the son list (read only).
 	inline const T_SonList& getSonList() const { return m_objectList; }
 
-
 	//-----------------------------------------------------------------------------------
 	// Properties
 	//-----------------------------------------------------------------------------------
 
 	//! Compute recursively the number of element of this branch
-	virtual UInt32 getNumElt() const;
+    virtual UInt32 getNumElt() const override;
 
 	//! Get the animation matrix
 	inline const Matrix4& getAnimationMatrix() const
@@ -98,57 +99,53 @@ public:
         }
 	}
 
-
 	//-----------------------------------------------------------------------------------
 	// Transform
 	//-----------------------------------------------------------------------------------
 
 	//! Add a new transform
-	virtual void addTransform(Transform *transform);
+    virtual void addTransform(Transform *transform) override;
 
 	//! Remove and delete a transform
-	virtual void deleteTransform(Transform *transform);
+    virtual void deleteTransform(Transform *transform) override;
 
 	//! Remove and delete all transforms
-	virtual void deleteAllTransforms();
+    virtual void deleteAllTransforms() override;
 
 	//! Find a transform
-	virtual Bool findTransform(Transform *transform) const;
+    virtual Bool findTransform(Transform *transform) const override;
 
 	//! Find a transform given its name (read only)
-	virtual const Transform* findTransform(const String &name) const;
+    virtual const Transform* findTransform(const String &name) const override;
 	//! Find a transform given its name
-	virtual Transform* findTransform(const String &name);
+    virtual Transform* findTransform(const String &name) override;
 
 	//! Get the transforms list (read only)
-	virtual const T_TransformList& getTransforms() const;
+    virtual const T_TransformList& getTransforms() const override;
 	//! Get the transforms list
-	virtual       T_TransformList& getTransforms();
+    virtual       T_TransformList& getTransforms() override;
 
 	//! Get the front transform or null if none (read only)
-	virtual const Transform* getTransform() const;
+    virtual const Transform* getTransform() const override;
 
 	//! Get the front transform or null if none
-	virtual Transform* getTransform();
-
+    virtual Transform* getTransform() override;
 
 	//-----------------------------------------------------------------------------------
 	// Movable
 	//-----------------------------------------------------------------------------------
 
 	//! Is the object is static (unmovable false) or dynamic (movable true)
-	virtual Bool isMovable() const;
-
+    virtual Bool isMovable() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Shadable
 	//-----------------------------------------------------------------------------------
 
-	virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
 	//! Return the absolute transform matrix (read only)
-	virtual const Matrix4& getAbsoluteMatrix() const;
-
+    virtual const Matrix4& getAbsoluteMatrix() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Animatable
@@ -161,54 +158,50 @@ public:
 		AnimationTrack::Target Target,
 		UInt32 SubTarget,
 		Animation::BlendMode BlendMode,
-		Float Weight);
+        Float Weight) override;
 
-	virtual Animatable* getFirstSon();
-	virtual Animatable* getNextSon();
-	virtual Bool hasMoreSons();
-	virtual void resetAnim();
+    virtual Animatable* getFirstSon() override;
+    virtual Animatable* getNextSon() override;
+    virtual Bool hasMoreSons() override;
+    virtual void resetAnim() override;
 
-	virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* track);
+    virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* track) override;
 
-	virtual const Matrix4& getPrevAnimationMatrix() const;
-
+    virtual const Matrix4& getPrevAnimationMatrix() const override;
 
     //-----------------------------------------------------------------------------------
     // Physic
     //-----------------------------------------------------------------------------------
 
-    virtual void setRigidBody(RigidBody *rigidBody);
+    virtual void setRigidBody(RigidBody *rigidBody) override;
 
     virtual RigidBody* getRigidBody();
-
 
 	//-----------------------------------------------------------------------------------
 	// Updatable
 	//-----------------------------------------------------------------------------------
 
-	virtual void update();
-
+    virtual void update() override;
 
 	//-----------------------------------------------------------------------------------
 	// Drawable
 	//-----------------------------------------------------------------------------------
 	
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
-
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 
 	//-----------------------------------------------------------------------------------
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! Recursively attribute serialize id to the node and each son
-	virtual void preExportPass();
+    virtual void preExportPass() override;
 
 protected:
 

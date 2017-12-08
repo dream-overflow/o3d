@@ -34,50 +34,53 @@ public:
 
 	virtual ~Map2d();
 
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Compute recursively the number of element of this branch
-	virtual UInt32 getNumElt() const;
+    virtual UInt32 getNumElt() const override;
 
 	//
 	// Drawable
 	//
 
 	//! Draw the map using the visibility controller.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const;
+    virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const override;
 
 	//
 	// Transforms
 	//
 
 	//! Get the front transform or null if none (read only)
-	virtual const Transform* getTransform() const;
+    virtual const Transform* getTransform() const override;
 
 	//! Get the front transform or null if none
-	virtual Transform* getTransform();
+    virtual Transform* getTransform() override;
 
 	//
 	// Layers.
 	//
 
-	virtual UInt32 getNumSon() const;
+    virtual UInt32 getNumSon() const override;
+
+    //! Has a direct son scene object.
+    virtual Bool hasSon(SceneObject *object) const override;
 
 	//! Find an object/node given its name
-	virtual const SceneObject* findSon(const String &name) const;
+    virtual const SceneObject* findSon(const String &name) const override;
 	//! Find an object/node given its name
-	virtual SceneObject* findSon(const String &name);
+    virtual SceneObject* findSon(const String &name) override;
 
 	//! Find a scene object and return true if found.
-	virtual Bool findSon(SceneObject *object) const;
+    virtual Bool findSon(SceneObject *object) const override;
 
 	/**
 	 * @brief addLayer Add a layer a child object.
@@ -109,4 +112,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_MAP2D_H
-

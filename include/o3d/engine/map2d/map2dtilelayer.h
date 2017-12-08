@@ -29,34 +29,37 @@ public:
 	Map2dTileLayer(BaseObject *parent);
 
 	//! Compute recursively the number of element of this branch
-	virtual UInt32 getNumElt() const;
+    virtual UInt32 getNumElt() const override;
 
-	virtual UInt32 getNumSon() const;
+    virtual UInt32 getNumSon() const override;
+
+    //! Has a direct son scene object.
+    virtual Bool hasSon(SceneObject *object) const override;
 
 	//! Find an object/node given its name
-	virtual const SceneObject* findSon(const String &name) const;
+    virtual const SceneObject* findSon(const String &name) const override;
 	//! Find an object/node given its name
-	virtual SceneObject* findSon(const String &name);
+    virtual SceneObject* findSon(const String &name) override;
 
 	//! Find a scene object and return true if found.
-	virtual Bool findSon(SceneObject *object) const;
+    virtual Bool findSon(SceneObject *object) const override;
 
 	//
 	// Transforms
 	//
 
 	//! Get the front transform or null if none (read only)
-	virtual const Transform* getTransform() const;
+    virtual const Transform* getTransform() const override;
 
 	//! Get the front transform or null if none
-	virtual Transform *getTransform();
+    virtual Transform *getTransform() override;
 
 	//
 	//
 	//
 
 	//! Return false because it is a leaf.
-	virtual Bool isNodeObject() const;
+	virtual Bool isNodeObject() const override;
 
 	//! Get the map size in pixels.
 	const Vector2i& getSize() const;
@@ -66,9 +69,9 @@ public:
 	//! Get the number of columns.
 	inline UInt32 getColumns() const { return m_columns; }
 
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
-    virtual void update();
+    virtual void update() override;
 
 	//! Define the tile set.
 	void setTileSet(Map2dTileSet *tileSet);
@@ -121,4 +124,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MAP2DTILELAYER_H
-

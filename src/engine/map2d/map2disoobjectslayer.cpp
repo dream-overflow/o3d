@@ -212,7 +212,18 @@ void Map2dIsoObjectsLayer::draw(const DrawInfo &drawInfo)
 
 UInt32 Map2dIsoObjectsLayer::getNumSon() const
 {
-	return m_objects.size();
+    return m_objects.size();
+}
+
+Bool Map2dIsoObjectsLayer::hasSon(SceneObject *object) const
+{
+    CIT_Map2dObjectList cit = m_objects.begin();
+    for (; cit != m_objects.cend(); ++cit) {
+        if ((*cit) == object)
+            return True;
+    }
+
+    return False;
 }
 
 SceneObject* Map2dIsoObjectsLayer::findSon(const String &name)
@@ -382,4 +393,3 @@ void Map2dIsoObjectsLayer::deleteAllObjects()
 
 	m_sort = True;
 }
-

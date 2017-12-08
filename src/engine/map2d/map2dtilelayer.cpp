@@ -36,7 +36,12 @@ UInt32 Map2dTileLayer::getNumElt() const
 
 UInt32 Map2dTileLayer::getNumSon() const
 {
-	return 1;
+    return 1;
+}
+
+Bool Map2dTileLayer::hasSon(SceneObject *object) const
+{
+    return False;
 }
 
 const SceneObject *Map2dTileLayer::findSon(const String &name) const
@@ -76,8 +81,7 @@ const Vector2i& Map2dTileLayer::getSize() const
 
 void Map2dTileLayer::setTileSet(Map2dTileSet *tileSet)
 {
-    if (m_tileSet.get() != tileSet)
-    {
+    if (m_tileSet.get() != tileSet) {
         m_tileSet = tileSet;
 
         m_size.set(
@@ -90,8 +94,7 @@ void Map2dTileLayer::setTileSet(Map2dTileSet *tileSet)
 
 void Map2dTileLayer::setBackgroundTile(UInt32 tileId)
 {
-    if (m_backgroundTile != tileId)
-    {
+    if (m_backgroundTile != tileId) {
         m_backgroundTile = tileId;
         setDrawUpdate();
     }
@@ -99,8 +102,7 @@ void Map2dTileLayer::setBackgroundTile(UInt32 tileId)
 
 void Map2dTileLayer::enableBackground()
 {
-    if (!m_background)
-    {
+    if (!m_background) {
         m_background = True;
         setDrawUpdate();
     }
@@ -108,8 +110,7 @@ void Map2dTileLayer::enableBackground()
 
 void Map2dTileLayer::disableBackground()
 {
-    if (m_background)
-    {
+    if (m_background) {
         m_background = False;
         setDrawUpdate();
     }
@@ -494,4 +495,3 @@ void Map2dTileLayer::update()
 
     clearUpdated();
 }
-

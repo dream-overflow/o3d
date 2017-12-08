@@ -548,7 +548,18 @@ void Node::removeSon(SceneObject *object)
 		object->setParent(getScene());
         object->setNode(nullptr);
 		object->setPersistant(False);
-	}
+    }
+}
+
+Bool Node::hasSon(SceneObject *object) const
+{
+    CIT_SonList cit = m_objectList.begin();
+    for (; cit != m_objectList.cend(); ++cit) {
+        if ((*cit) == object)
+            return True;
+    }
+
+    return False;
 }
 
 // Find an object/node given its name

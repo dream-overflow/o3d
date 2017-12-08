@@ -31,11 +31,9 @@ static const Int32 MAX_SKINNING_BONES = 4;
 
 class Primitive;
 
-//---------------------------------------------------------------------------------------
-//! @class GeometryData
-//-------------------------------------------------------------------------------------
-//! A set of elements defining a geometry object.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A set of elements defining a geometry object.
+ */
 class O3D_API GeometryData : public SceneEntity
 {
 public:
@@ -387,4 +385,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_GEOMETRYDATA_H
-

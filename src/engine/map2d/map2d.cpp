@@ -128,6 +128,17 @@ UInt32 Map2d::getNumSon() const
 	return m_layers.size();
 }
 
+Bool Map2d::hasSon(SceneObject *object) const
+{
+    CIT_LayerList cit = m_layers.begin();
+    for (; cit != m_layers.cend(); ++cit) {
+        if ((*cit) == object)
+            return True;
+    }
+
+    return False;
+}
+
 void Map2d::addLayer(Map2dLayer *layer, UInt32 pos)
 {
 	if (layer == nullptr)
@@ -305,4 +316,3 @@ void Map2d::deleteAllLayers()
 
 	m_layers.clear();
 }
-

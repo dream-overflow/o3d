@@ -52,4 +52,3 @@ Geometry::Clipping Map2dLayer::checkFrustum(const Frustum &frustum) const
 {
 	return Geometry::CLIP_INSIDE;
 }
-

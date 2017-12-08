@@ -27,12 +27,12 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(GeometryData, ENGINE_GEOMETRY_DATA, SceneEntity)
 // Default constructor
 GeometryData::GeometryData(BaseObject *parent) :
 	SceneEntity(parent),
-	m_vbo(NULL),
+    m_vbo(nullptr),
 	m_flags(),
 	m_boundingMode(BOUNDING_AUTO),
 	m_lodLvl(100),
-	m_boundFaceArray(NULL),
-	m_vertexBlender(NULL)
+    m_boundFaceArray(nullptr),
+    m_vertexBlender(nullptr)
 {
 	//m_flags.fillTrue();
 
@@ -41,19 +41,19 @@ GeometryData::GeometryData(BaseObject *parent) :
 
 	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
 	{
-		m_elements[i] = NULL;
+        m_elements[i] = nullptr;
 	}
 }
 
 // Build from a primitive object.
 GeometryData::GeometryData(BaseObject *parent, const Primitive &primitive) :
 	SceneEntity(parent),
-	m_vbo(NULL),
+    m_vbo(nullptr),
 	m_flags(),
 	m_boundingMode(BOUNDING_AUTO),
 	m_lodLvl(100),
-	m_boundFaceArray(NULL),
-	m_vertexBlender(NULL)
+    m_boundFaceArray(nullptr),
+    m_vertexBlender(nullptr)
 {
 	//m_flags.fillTrue();
 
@@ -62,7 +62,7 @@ GeometryData::GeometryData(BaseObject *parent, const Primitive &primitive) :
 
 	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
 	{
-		m_elements[i] = NULL;
+        m_elements[i] = nullptr;
 	}
 
 	buildFromPrimitive(primitive);
@@ -1502,4 +1502,3 @@ void GeometryData::computeProgressive()
 	//m_flags.setBit(UPDATE_VERTEX_BUFFER, True);
 	//m_flags.setBit(UPDATE_INDEX_BUFFER, True);
 }
-

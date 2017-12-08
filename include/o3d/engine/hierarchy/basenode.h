@@ -50,7 +50,10 @@ public:
 	//! Find an object/node given its name
 	virtual SceneObject* findSon(const String &name) = 0;
 
-	//! Find a scene object and return true if found.
+    //! Has a direct son scene object.
+    virtual Bool hasSon(SceneObject *object) const = 0;
+
+    //! Find a scene object recursively from this node and return true if found.
 	virtual Bool findSon(SceneObject *object) const = 0;
 
 	//-----------------------------------------------------------------------------------
@@ -61,7 +64,7 @@ public:
 	virtual UInt32 getNumElt() const = 0;
 
 	//! Is a node object (true mean branch object, false mean leaf object)
-	virtual Bool isNodeObject() const;
+    virtual Bool isNodeObject() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Transforms default without transformations
@@ -99,11 +102,11 @@ public:
 	// Drawable
 	//-----------------------------------------------------------------------------------
 
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 
 protected:
 
