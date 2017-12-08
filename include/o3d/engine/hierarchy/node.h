@@ -91,10 +91,11 @@ public:
 	inline const Matrix4& getAnimationMatrix() const
 	{
 		// TODO get previous anim matrix
-		if (m_animTransform.isValid())
+        if (m_animTransform.isValid()) {
 			return m_animTransform->getMatrix();
-		else
+        } else {
 			return Matrix4::getIdentity();
+        }
 	}
 
 
@@ -234,8 +235,7 @@ protected:
 
 	inline void needAnimPart()
 	{
-		if (!m_animTransform)
-		{
+        if (!m_animTransform) {
             m_animTransform = new ATransform;
 			m_prevAnimMatrix = new Matrix4;
 		}
@@ -245,4 +245,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_NODE_H
-

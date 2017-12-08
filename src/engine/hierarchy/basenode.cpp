@@ -110,17 +110,19 @@ Transform *BaseNode::getTransform()
 // Draw the branch
 void BaseNode::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 }
 
 // Check the global bounding box with an AABBox
 Geometry::Clipping BaseNode::checkBounding(const AABBox &bbox) const
 {
-	if (bbox.include(getAbsoluteMatrix().getTranslation()))
+    if (bbox.include(getAbsoluteMatrix().getTranslation())) {
 		return Geometry::CLIP_INSIDE;
-	else
+    } else {
 		return Geometry::CLIP_OUTSIDE;
+    }
 }
 
 // Check the global bounding box with an infinite plane
@@ -128,11 +130,11 @@ Geometry::Clipping BaseNode::checkBounding(const Plane &plane) const
 {
 	Float d = plane * getAbsoluteMatrix().getTranslation();
 
-	if (d > 0.f)
+    if (d > 0.f) {
 		return Geometry::CLIP_INSIDE;
-	else if (d == 0.f)
+    } else if (d == 0.f) {
 		return Geometry::CLIP_INTERSECT;
-	else
+    } else {
 		return Geometry::CLIP_OUTSIDE;
+    }
 }
-

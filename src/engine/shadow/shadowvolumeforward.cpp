@@ -111,7 +111,7 @@ void ShadowVolumeForward::processLight(Light *light)
 	}
 }
 
-void ShadowVolumeForward::draw()
+void ShadowVolumeForward::draw(ViewPort */*viewPort*/)
 {
 	// The camera modelview should be set before draw()
     if (getScene()->getActiveCamera() == nullptr) {
@@ -169,8 +169,7 @@ void ShadowVolumeForward::draw()
 
     const String lights[] = { "light1", "light2", "light3", "light4" };
 
-    for (UInt32 i = 0; i < 4; ++i)
-	{
+    for (UInt32 i = 0; i < 4; ++i) {
 		Light *light = dynamicCast<Light*>(getScene()->getSceneObjectManager()->searchName(lights[i]));
 		processLight(light);
 	}
@@ -197,11 +196,12 @@ void ShadowVolumeForward::draw()
     camera.clearCameraChanged();
 }
 
-void ShadowVolumeForward::drawPicking()
+void ShadowVolumeForward::drawPicking(ViewPort */*viewPort*/)
 {
 	// The camera modelview should be set before draw()
-    if (getScene()->getActiveCamera() == nullptr)
+    if (getScene()->getActiveCamera() == nullptr) {
 		return;
+    }
 
     Camera &camera = *getScene()->getActiveCamera();
 

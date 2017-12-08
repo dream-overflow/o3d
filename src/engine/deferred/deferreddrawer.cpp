@@ -512,7 +512,7 @@ void DeferredDrawer::processLight(Light *light)
     }
 }
 
-void DeferredDrawer::draw()
+void DeferredDrawer::draw(ViewPort */*viewPort*/)
 {
     // The camera modelview should be set before draw()
     if (getScene()->getActiveCamera() == nullptr)
@@ -698,11 +698,12 @@ void DeferredDrawer::draw()
     camera.clearCameraChanged();
 }
 
-void DeferredDrawer::drawPicking()
+void DeferredDrawer::drawPicking(ViewPort *)
 {
     // The camera modelview should be set before draw()
-    if (getScene()->getActiveCamera() == nullptr)
+    if (getScene()->getActiveCamera() == nullptr) {
         return;
+    }
 
     Camera &camera = *getScene()->getActiveCamera();
 

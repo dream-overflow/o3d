@@ -35,10 +35,10 @@ public:
 	virtual void processLight(Light *light);
 
 	//! Draw process.
-	virtual void draw();
+    virtual void draw(ViewPort *viewPort);
 
 	//! Process a simpler draw for the picking pass.
-	virtual void drawPicking();
+    virtual void drawPicking(ViewPort *viewPort);
 
 	//! Define the light management policy
 	//virtual void setLightPolicy(LightPolicy *policy) = 0;

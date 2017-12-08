@@ -36,14 +36,16 @@ Map2dDrawer::Map2dDrawer(BaseObject *parent) :
 
 }
 
-void Map2dDrawer::draw()
+void Map2dDrawer::draw(ViewPort *)
 {
 	// The camera modelview should be set before draw()
-	if (getScene()->getActiveCamera() == NULL)
+    if (getScene()->getActiveCamera() == nullptr) {
 		return;
+    }
 
-	if (!m_map2d.isValid())
+    if (!m_map2d.isValid()) {
 		return;
+    }
 
 	Context &context = *getScene()->getContext();
 	Camera &camera = *getScene()->getActiveCamera();
@@ -74,14 +76,16 @@ void Map2dDrawer::draw()
     camera.clearCameraChanged();
 }
 
-void Map2dDrawer::drawPicking()
+void Map2dDrawer::drawPicking(ViewPort *)
 {
 	// The camera modelview should be set before draw()
-	if (getScene()->getActiveCamera() == NULL)
+    if (getScene()->getActiveCamera() == nullptr) {
 		return;
+    }
 
-	if (!m_map2d.isValid())
+    if (!m_map2d.isValid()) {
 		return;
+    }
 
 	Context &context = *getScene()->getContext();
 	Camera &camera = *getScene()->getActiveCamera();

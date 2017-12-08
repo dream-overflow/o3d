@@ -79,8 +79,8 @@ public:
 	void reshape(UInt32 w, UInt32 h);
 
 	//! Get the viewport manager size (width,height of this)
-	UInt32 getReshapeWidth()const { return m_width; }
-	UInt32 getReshapeHeight()const { return m_height; }
+    UInt32 getReshapeWidth() const { return m_width; }
+    UInt32 getReshapeHeight() const { return m_height; }
 
 	//! Select the drawing mode. Draw the scene normally, with Draw method.
 	inline void setDrawMode() { m_drawPicking = False; }
@@ -88,7 +88,7 @@ public:
 	//! (generally disable landscape rendering, lights, effects...)
 	inline void setDrawPickingMode() { m_drawPicking = True; }
 	//! Is in redraw mode
-	inline Bool isDrawPickingMode()const { return m_drawPicking; }
+    inline Bool isDrawPickingMode() const { return m_drawPicking; }
 
 protected:
 

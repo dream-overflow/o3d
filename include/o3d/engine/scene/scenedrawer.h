@@ -15,6 +15,7 @@
 namespace o3d {
 
 class WorldManager;
+class ViewPort;
 
 /**
  * @brief Draw pipeline abstract class for a scene.
@@ -33,12 +34,19 @@ public:
    //! Constructor.
    SceneDrawer(BaseObject *parent);
 
-   //! Process a draw. This method is generaly called by a viewport draw.
-   virtual void draw() = 0;
+   /**
+    * @brief draw Draw into the given viewport.
+    * @details Process a draw. This method is called by a viewport draw.
+    * @param viewPort Valid current viewport.
+    */
+   virtual void draw(ViewPort *viewPort) = 0;
 
-   //! Process a simpler draw for the picking pass.
-   //! This method is generaly called by a viewport drawPicking.
-   virtual void drawPicking() = 0;
+   /**
+    * @brief Process a simpler draw for the picking pass.
+    * @details Process a draw. This method is called by a viewport drawPicking.
+    * @param viewPort Valid current viewport.
+    */
+   virtual void drawPicking(ViewPort *viewPort) = 0;
 
    //! Add a world manager to display with this drawer instance.
    //! @param wm Valid world manager.

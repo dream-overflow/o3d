@@ -124,7 +124,8 @@ void Gui::init()
 
 void Gui::release()
 {
-    // nothing
+    // disconnect all events
+    disconnect();
 }
 
 std::list<FrameBuffer*>& Gui::getFBOPooler()

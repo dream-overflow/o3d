@@ -55,14 +55,14 @@ ViewPort::~ViewPort()
 void ViewPort::draw()
 {
 	if (m_camera && m_drawer)
-		m_drawer->draw();
+        m_drawer->draw(this);
 }
 
 // draw picking
 void ViewPort::drawPicking()
 {
 	if (m_camera && m_drawer)
-		m_drawer->drawPicking();
+        m_drawer->drawPicking(this);
 }
 
 // define the viewing camera

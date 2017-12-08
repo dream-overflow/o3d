@@ -20,8 +20,7 @@ void DrawInfo::setFromLight(Light *pLight)
 {
 	O3D_ASSERT(pLight);
 
-	if (pLight)
-	{
+    if (pLight) {
 		pass = DrawInfo::LIGHTING_PASS;
 
 		light.type = pLight->getLightType();
@@ -42,13 +41,12 @@ void DrawInfo::setFromLight(Light *pLight)
 
 		light.attenuation = pLight->getAttenuation();
 
-		if (pLight->getShadowCast())
+        if (pLight->getShadowCast()) {
 			light.shadowType = Shadowable::SHADOW_MAP_HARD; // TODO soft...
-		else
+        } else {
 			light.shadowType = Shadowable::SHADOW_NONE;
-	}
-	else
-	{
+        }
+    } else {
 		pass = DrawInfo::AMBIENT_PASS;
     }
 }
@@ -57,9 +55,7 @@ void DrawInfo::setFromCamera(Camera *pCamera)
 {
     O3D_ASSERT(pCamera);
 
-    if (pCamera)
-    {
+    if (pCamera) {
         eyePos = pCamera->getAbsoluteMatrix().getTranslation();
     }
 }
-

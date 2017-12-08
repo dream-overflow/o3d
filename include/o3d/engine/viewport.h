@@ -74,6 +74,18 @@ public:
 	//! Get height of the viewport in pixels or in percent (1 is 100%).
 	inline Float getHeight() const { return m_height; }
 
+    /**
+     * @brief Get the real viewport width in pixel.
+     * @note Valid only during the display.
+     */
+    inline UInt32 getNWidth() const { return m_nWidth; }
+
+    /**
+     * @brief Get the real viewport height in pixel.
+     * @note Valid only during the display.
+     */
+    inline UInt32 getNHeight() const { return m_nHeight; }
+
 	//! Display the viewport.
 	//! @param w Reshape width in pixels.
 	//! @param h Reshape height in pixels.

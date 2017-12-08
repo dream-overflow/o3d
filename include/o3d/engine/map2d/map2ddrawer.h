@@ -33,8 +33,8 @@ public:
 	Map2d* getMap2d() { return m_map2d.get(); }
 	const Map2d* getMap2d() const { return m_map2d.get(); }
 
-	virtual void draw();
-	virtual void drawPicking();
+    virtual void draw(ViewPort *viewPort);
+    virtual void drawPicking(ViewPort *viewPort);
 
 private:
 
