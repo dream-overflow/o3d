@@ -124,7 +124,7 @@ ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 			${VORBISFILE_LIBRARY}
 			${OPENAL_LIBRARY}
 			${FREETYPE_LIBRARIES}
-            -lopengl32
+            opengl32
 			${OPENGL_LIBRARY})
 
     if(${O3D_USE_SDL2})
