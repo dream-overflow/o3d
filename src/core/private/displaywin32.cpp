@@ -1,5 +1,5 @@
 /**
- * @file videowin32.cpp
+ * @file displaywin32.cpp
  * @brief 
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
@@ -13,7 +13,7 @@
 /* ONLY IF O3D_WIN32 IS SELECTED */
 #ifdef O3D_WIN32
 
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 #include "o3d/core/appwindow.h"
 #include "o3d/core/debug.h"
 #include "o3d/core/architecture.h"
@@ -21,7 +21,7 @@
 using namespace o3d;
 
 // change display mode
-void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
+void Display::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 {
     if (mode == m_modes.end()) {
 		O3D_ERROR(E_InvalidParameter("Invalid video mode"));
@@ -60,18 +60,18 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 }
 
 // restore to desktop display mode
-void Video::restoreDisplayMode()
+void Display::restoreDisplayMode()
 {
     if (m_currentMode != m_desktop) {
 		ChangeDisplaySettings(NULL, 0);
 		m_currentMode = m_desktop;
 	}
 
-	m_appWindow = NULL;
+    m_appWindow = nullptr;
 }
 
 // list all display mode for selected device
-void Video::listDisplayModes()
+void Display::listDisplayModes()
 {
 	// store desktop video mode
 	DEVMODE videoMode;

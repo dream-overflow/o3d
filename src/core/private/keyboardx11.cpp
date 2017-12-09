@@ -212,4 +212,3 @@ void Keyboard::release()
 }
 
 #endif // O3D_X11
-

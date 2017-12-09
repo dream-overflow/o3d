@@ -100,7 +100,47 @@ int main(LPSTR lpCmdLine)
 
 	return lExitCode;
 }
-#endif // O3D_WINDOWS
+#elif defined(O3D_ANDROID)
+void android_main(android_app *state)
+{
+    atexit(onExit);
+
+    T_Settings settings;
+
+    try {
+        o3d::Application::init(settings);
+    } catch (o3d::E_BaseException &ex) {
+        Application::message(
+            String("Failed to initialize the application: ") + ex.what(),
+            Application::getAppName(),
+            Application::ICON_ERROR);
+
+        // @todo return state -1 or ?
+        return -1;
+    }
+
+    int lExitCode = 0;
+
+    try {
+        lExitCode = T_Main::main();
+    } catch (E_BaseException &ex) {
+        Application::message(
+            String("Exception not caught during application execution: ") + ex.what(),
+            Application::getAppName(),
+            Application::ICON_ERROR);
+
+        Application::quit();
+
+        // @todo return state -1 or ?
+        return -1;
+    }
+
+    Application::quit();
+
+    // @todo return state lExitCode
+    return lExitCode;
+}
+#endif
 
 //! Helper define that use default settings for the application.
 #define O3D_DEFAULT_CLASS_SETTINGS o3d::AppSettings

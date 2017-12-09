@@ -12,11 +12,12 @@
 
 #include "input.h"
 #include "memorydbg.h"
-#include "keymapsdl.h"
-#include "keymapwin32.h"
-#include "keymapx11.h"
 #include "hashset.h"
 #include "templatebitset.h"
+
+#include "private/keymapsdl.h"
+#include "private/keymapwin32.h"
+#include "private/keymapx11.h"
 
 namespace o3d {
 
@@ -267,4 +268,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_KEYBOARD_H
-

@@ -1,5 +1,5 @@
 /**
- * @file videosdl.cpp
+ * @file displaysdl.cpp
  * @brief 
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
@@ -14,7 +14,7 @@
 #ifdef O3D_SDL2
 
 #include "o3d/core/appwindow.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 #include "o3d/core/debug.h"
 
 #include <SDL2/SDL.h>
@@ -24,7 +24,7 @@
 using namespace o3d;
 
 // change display mode
-void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
+void Display::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 {
     if (mode == m_modes.end()) {
 		O3D_ERROR(E_InvalidParameter("Invalid display mode"));
@@ -70,7 +70,7 @@ void Video::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
 }
 
 // restore to desktop display mode
-void Video::restoreDisplayMode()
+void Display::restoreDisplayMode()
 {
     if (m_currentMode != m_desktop) {
 		m_currentMode = m_desktop;
@@ -84,7 +84,7 @@ void Video::restoreDisplayMode()
 }
 
 // list all display mode for selected device
-void Video::listDisplayModes()
+void Display::listDisplayModes()
 {
 	SDL_DisplayMode mode;
 	int display = 0;

@@ -3,6 +3,8 @@
 #  O3D_USE_SSE2 - 1 if Objective3D is compiled with SSE2 support
 #  O3D_USE_SDL2 - 1 if Objective3D is compiled with SDL2 support
 #  O3D_USE_EGL - 1 if Objective3D is compiled with EGL support
+#  O3D_USE_WAYLAND - 1 if Objective3D is compiled with WAYLAND support
+#  O3D_USE_VULKAN - 1 if Objective3D is compiled with VULKAN support
 #  O3D_VERSION  - Objective3D Version
  
 # SSE2 support
@@ -13,6 +15,12 @@ set(O3D_USE_SDL2 @O3D_USE_SDL2@)
 
 # EGL support
 set(O3D_USE_EGL @O3D_USE_EGL@)
+
+# WAYLAND support
+set(O3D_USE_WAYLAND @O3D_USE_WAYLAND@)
+
+# VULKAN support
+set(O3D_USE_VULKAN @O3D_USE_VULKAN@)
 
 # Objective 3D version
 set(O3D_VERSION @O3D_VERSION@)

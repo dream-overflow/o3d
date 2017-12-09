@@ -416,7 +416,7 @@ void AppWindow::destroy()
 	if (m_hWnd != NULL_HWND)
 	{
 		if (isFullScreen())
-			Video::instance()->restoreDisplayMode();
+            Display::instance()->restoreDisplayMode();
 
 		WinTools::destroyWindow(m_hWnd);
 		WinTools::unregisterWindowClass(NULL, m_title);
@@ -564,7 +564,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 	if (m_hWnd != NULL_HWND)
 	{
 		// window is in fullscreen state
-		if (Video::instance()->getAppWindow() == this)
+        if (Display::instance()->getAppWindow() == this)
 		{
 			VideoMode videoMode;
 			videoMode.width = clientWidth;
@@ -572,11 +572,11 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
             videoMode.bpp = getBpp();
 			videoMode.freq = 0;
 
-			CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-			if (cit == Video::instance()->end())
+            CIT_VideoModeList cit = Display::instance()->findDisplayMode(videoMode);
+            if (cit == Display::instance()->end())
 				O3D_ERROR(E_InvalidParameter("Cannot resize a full screen window with this width/height"));
 
-			Video::instance()->setDisplayMode(this, cit);
+            Display::instance()->setDisplayMode(this, cit);
 
 			WinTools::resizeWindow(m_hWnd, clientWidth, clientHeight);
 			ShowWindow((HWND)m_hWnd, SW_SHOW);
@@ -675,13 +675,13 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 	if (m_hWnd == NULL_HWND)
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
 
-	if ((Video::instance()->getAppWindow() != NULL) &&
-		(Video::instance()->getAppWindow() != this))
+    if ((Display::instance()->getAppWindow() != NULL) &&
+        (Display::instance()->getAppWindow() != this))
 	{
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
 	
-	if (fullScreen && (Video::instance()->getAppWindow() == NULL))
+    if (fullScreen && (Display::instance()->getAppWindow() == NULL))
 	{
 		VideoMode videoMode;
 		videoMode.width = m_clientWidth;
@@ -689,9 +689,9 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
         videoMode.bpp = getBpp();
 		videoMode.freq = 0;
 
-		CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-		if (cit != Video::instance()->end())
-			Video::instance()->setDisplayMode(this, cit);
+        CIT_VideoModeList cit = Display::instance()->findDisplayMode(videoMode);
+        if (cit != Display::instance()->end())
+            Display::instance()->setDisplayMode(this, cit);
 		else
 			O3D_ERROR(E_InvalidParameter("Invalid video mode"));
 
@@ -708,9 +708,9 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 
 		m_posX = m_posY = 0;
 	}
-	else if (!fullScreen && (Video::instance()->getAppWindow() == this))
+    else if (!fullScreen && (Display::instance()->getAppWindow() == this))
 	{
-		Video::instance()->restoreDisplayMode();
+        Display::instance()->restoreDisplayMode();
 
 		Int32 width = m_clientWidth;
 		Int32 height = m_clientHeight;

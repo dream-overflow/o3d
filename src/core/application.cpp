@@ -12,7 +12,7 @@
 
 #include "o3d/core/classfactory.h"
 #include "o3d/core/taskmanager.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/core/thread.h"
 #include "o3d/core/timer.h"
@@ -92,7 +92,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 
         O3D_MESSAGE(String("Choose {0} implementation with a {1} API").arg(GL::getImplementationName()).arg(typeString));
 
-        Video::instance();
+        Display::instance();
     }
 
 	// Active the PostMessage
@@ -139,7 +139,7 @@ void Application::quit()
 	ClassFactory::destroy();
 
     // display manager
-    Video::destroy();
+    Display::destroy();
 
 	// deletion of the main thread
     EvtManager::instance()->unRegisterThread(nullptr);

@@ -1,6 +1,6 @@
 /**
  * @file video.cpp
- * @brief Implementation of Video.h
+ * @brief Implementation of display.h
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-08-01
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -10,14 +10,14 @@
 #include "o3d/core/precompiled.h"
 
 #include "o3d/core/architecture.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 
 using namespace o3d;
 
-Video* Video::m_instance = 0;
+Display* Display::m_instance = 0;
 
 // constructor
-Video::Video() :
+Display::Display() :
     m_appWindow(nullptr),
 	m_desktopFreq(0)
 #ifdef O3D_X11
@@ -32,23 +32,23 @@ Video::Video() :
 }
 
 // destructor
-Video::~Video()
+Display::~Display()
 {
 	restoreDisplayMode();
 }
 
 // Singleton instantiation
-Video* Video::instance()
+Display* Display::instance()
 {
     if (!m_instance) {
-		m_instance = new Video();
+        m_instance = new Display();
     }
 
     return m_instance;
 }
 
 // Singleton destruction
-void Video::destroy()
+void Display::destroy()
 {
     if (m_instance) {
 		delete m_instance;
@@ -57,21 +57,21 @@ void Video::destroy()
 }
 
 // Get current display ratio (width/height).
-Float Video::getCoef()const
+Float Display::getCoef()const
 {
 	return Float(getWidth()) / getHeight();
 }
 
 // get display mode string for n
-String Video::getDisplayModeString(CIT_VideoModeList mode)
+String Display::getDisplayModeString(CIT_DisplayModeList mode)
 {
 	return String::print("%ux%u %ubpp %uhz", mode->width, mode->height, mode->bpp, mode->freq);
 }
 
 // find a display mode by string
-CIT_VideoModeList Video::findDisplayMode(const String &mode) const
+CIT_DisplayModeList Display::findDisplayMode(const String &mode) const
 {
-	VideoMode videomode;
+    DisplayMode videomode;
 
     if (mode.isValid()) {
 		Int32 pos;
@@ -105,13 +105,13 @@ CIT_VideoModeList Video::findDisplayMode(const String &mode) const
     }
 }
 
-CIT_VideoModeList Video::findDisplayMode(const VideoMode &mode) const
+CIT_DisplayModeList Display::findDisplayMode(const DisplayMode &mode) const
 {
     if (mode.freq == 0) {
 		UInt32 freq = 0;
-		CIT_VideoModeList result = m_modes.end();
+        CIT_DisplayModeList result = m_modes.end();
 
-        for (CIT_VideoModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit) {
+        for (CIT_DisplayModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit) {
             if ((cit->width == mode.width) && (cit->height == mode.height) &&
                 (cit->bpp == mode.bpp) && (cit->freq > freq)) {
 
@@ -122,7 +122,7 @@ CIT_VideoModeList Video::findDisplayMode(const VideoMode &mode) const
 
 		return result;
     } else {
-        for (CIT_VideoModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit) {
+        for (CIT_DisplayModeList cit = m_modes.begin(); cit != m_modes.end(); ++cit) {
             if ((cit->width == mode.width) && (cit->height == mode.height) &&
                 (cit->bpp == mode.bpp) && (cit->freq == mode.freq)) {
 

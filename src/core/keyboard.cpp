@@ -28,4 +28,3 @@ void Keyboard::clear()
 {
 	m_keys.clear();
 }
-

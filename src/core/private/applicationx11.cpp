@@ -14,7 +14,7 @@
 
 #include "o3d/core/appwindow.h"
 #include "o3d/core/evtmanager.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 
 // @note X11 defines somes types that overwrite Bool, True and False
 typedef o3d::Bool oBool;
@@ -40,7 +40,7 @@ static Atom XKLAVIER_STATE = 0;
 static Atom WM_PROTOCOLS = 0;
 
 // X11 IO error handler
-static int o3dXIOErrorHandler(Display *display)
+static int o3dXIOErrorHandler(::Display *display)
 {
     // throwing an exception here will cause impredictible results
     O3D_WARNING("Fatal X11 IO error");
@@ -51,7 +51,7 @@ static int o3dXIOErrorHandler(Display *display)
     return 0;
 }
 
-static int o3dXErrorHandler(Display* display, XErrorEvent* error_event)
+static int o3dXErrorHandler(::Display* display, XErrorEvent* error_event)
 {
     String what = String::print(
                       "serial:%u error_code:%u request_code:%u minor_code:%u",
@@ -81,7 +81,7 @@ void Application::apiInitPrivate()
     }
 
 	// enable detectable auto repeat
-	Display *display = reinterpret_cast<Display*>(ms_display);
+    ::Display *display = reinterpret_cast<::Display*>(ms_display);
 
     // capture errors to avoid application killing
     XSetErrorHandler(o3dXErrorHandler);
@@ -107,7 +107,7 @@ void Application::apiInitPrivate()
 void Application::apiQuitPrivate()
 {
 	// restore detectable auto repeat to its old state
-	Display *display = reinterpret_cast<Display*>(ms_display);
+    ::Display *display = reinterpret_cast<::Display*>(ms_display);
 
     if (display) {
         Bool supported_rtrn;
@@ -125,7 +125,7 @@ static Int32 interpretUserEvent(XEvent &event, void *& data)
     return event.xclient.data.l[4];
 }
 
-static Int32 pending(Display *display, UInt32 timeout)
+static Int32 pending(::Display *display, UInt32 timeout)
 {
 	UInt32 sTime = System::getMsTime();
 
@@ -161,7 +161,7 @@ static Int32 pending(Display *display, UInt32 timeout)
 void Application::runPrivate(oBool runOnce)
 {
     Bool quit = False;
-	Display *display = reinterpret_cast<Display*>(ms_display);
+    ::Display *display = reinterpret_cast<::Display*>(ms_display);
 	XEvent event;
     // Bool isEvent = False;
 	AppWindow::EventData eventData;
@@ -380,7 +380,7 @@ void Application::runPrivate(oBool runOnce)
 	            		e->request = 1;
 	            		XRefreshKeyboardMapping(e);
 */
-	            		Display *display = reinterpret_cast<Display*>(ms_display);
+                        ::Display *display = reinterpret_cast<::Display*>(ms_display);
 
 						//Atom atom = 0;
 
@@ -492,7 +492,7 @@ void Application::runPrivate(oBool runOnce)
 // Push a user application event.
 void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 {
-	Display *display = reinterpret_cast<Display*>(ms_display);
+    ::Display *display = reinterpret_cast<::Display*>(ms_display);
     if (display == nullptr) {
         return;
     }

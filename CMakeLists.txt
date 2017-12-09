@@ -62,6 +62,14 @@ option(O3D_USE_WAYLAND "Compile using WAYLAND support" OFF)
 # VULKAN OFF by default
 option(O3D_USE_VULKAN "Compile using VULKAN support" OFF)
 
+# ANDROID OFF by default
+option(O3D_TARGET_ANDROID "Compile for ANDROID target" OFF)
+
+if(${O3D_TARGET_ANDROID})
+    set(O3D_USE_EGL ON)  # necessary
+    include(dreamoverflow_android)
+endif()
+
 #----------------------------------------------------------
 # externals libraries
 #----------------------------------------------------------
@@ -75,7 +83,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_INCLUDE_PATH $ENV{PREFIX}/include ${CMAKE_INCLUDE_PATH})
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-find_package(OpenGL REQUIRED)
+if(!${O3D_TARGET_ANDROID})
+    find_package(OpenGL REQUIRED)
+endif()
+
 find_package(OpenAL REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(JPEG REQUIRED)
@@ -147,6 +158,14 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
     set(LIB_EXT "")
 endif()
 
+# Android GCC cflags
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_EXPORT_DLL")
+    if (O3D_USE_SSE2)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+    endif (O3D_USE_SSE2)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+
 # Linux GCC cflags
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
@@ -210,6 +229,7 @@ add_subdirectory(test)
 #----------------------------------------------------------
 
 file(GLOB CORE_HXX include/o3d/core/*.h)
+file(GLOB CORE_PRIVATE_HXX include/o3d/core/private/*.h)
 file(GLOB GEOM_HXX include/o3d/geom/*.h)
 file(GLOB IMAGE_HXX include/o3d/image/*.h)
 file(GLOB AUDIO_HXX include/o3d/audio/*.h)
@@ -258,6 +278,7 @@ install (FILES ${CMAKE_BINARY_DIR}/src/shaders.zip DESTINATION share/o3d)
 
 # Headers
 install (FILES ${CORE_HXX} DESTINATION include/o3d/core)
+install (FILES ${CORE_PRIVATE_HXX} DESTINATION include/o3d/core/private)
 install (FILES ${IMAGE_HXX} DESTINATION include/o3d/image)
 install (FILES ${GEOM_HXX} DESTINATION include/o3d/geom)
 install (FILES ${AUDIO_HXX} DESTINATION include/o3d/audio)

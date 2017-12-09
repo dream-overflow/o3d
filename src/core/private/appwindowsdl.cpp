@@ -20,7 +20,7 @@
 
 #include "o3d/core/application.h"
 #include "o3d/core/debug.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 
 using namespace o3d;
 
@@ -109,19 +109,19 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 {
     if (m_HDC != NULL_HDC) {
 		// window is in fullscreen state
-        if (Video::instance()->getAppWindow() == this) {
+        if (Display::instance()->getAppWindow() == this) {
 			VideoMode videoMode;
 			videoMode.width = clientWidth;
 			videoMode.height = clientHeight;
             videoMode.bpp = getBpp();
 			videoMode.freq = 0;
 
-			CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-            if (cit == Video::instance()->end()) {
+            CIT_VideoModeList cit = Display::instance()->findDisplayMode(videoMode);
+            if (cit == Display::instance()->end()) {
 				O3D_ERROR(E_InvalidParameter("Cannot resize a full screen window with this width/height"));
             }
 
-			Video::instance()->setDisplayMode(this, cit);
+            Display::instance()->setDisplayMode(this, cit);
 
 			SDL_SetWindowSize(reinterpret_cast<SDL_Window*>(m_HDC), clientWidth, clientHeight);
 			SDL_SetWindowPosition(reinterpret_cast<SDL_Window*>(m_HDC), 0, 0);
@@ -304,7 +304,7 @@ void AppWindow::destroy()
 
     if (m_HDC != NULL_HDC) {
         if (isFullScreen()) {
-			Video::instance()->restoreDisplayMode();
+            Display::instance()->restoreDisplayMode();
         }
 
 		EventData event;
@@ -363,22 +363,22 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
     }
 
-    if ((Video::instance()->getAppWindow() != nullptr) &&
-        (Video::instance()->getAppWindow() != this)) {
+    if ((Display::instance()->getAppWindow() != nullptr) &&
+        (Display::instance()->getAppWindow() != this)) {
 
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
 
-    if (fullScreen && (Video::instance()->getAppWindow() == nullptr)) {
+    if (fullScreen && (Display::instance()->getAppWindow() == nullptr)) {
 		VideoMode videoMode;
 		videoMode.width = m_clientWidth;
 		videoMode.height = m_clientHeight;
         videoMode.bpp = getBpp();
 		videoMode.freq = 0;
 
-		CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-        if (cit != Video::instance()->end()) {
-			Video::instance()->setDisplayMode(this, cit);
+        CIT_VideoModeList cit = Display::instance()->findDisplayMode(videoMode);
+        if (cit != Display::instance()->end()) {
+            Display::instance()->setDisplayMode(this, cit);
         } else {
 			O3D_ERROR(E_InvalidParameter("Invalid video mode"));
         }
@@ -387,8 +387,8 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		SDL_SetWindowPosition(reinterpret_cast<SDL_Window*>(m_HDC), 0, 0);
 
 		m_posX = m_posY = 0;
-    } else if (!fullScreen && (Video::instance()->getAppWindow() == this)) {
-		Video::instance()->restoreDisplayMode();
+    } else if (!fullScreen && (Display::instance()->getAppWindow() == this)) {
+        Display::instance()->restoreDisplayMode();
 
 		SDL_SetWindowSize(reinterpret_cast<SDL_Window*>(m_HDC), m_clientWidth, m_clientHeight);
 		SDL_SetWindowPosition(

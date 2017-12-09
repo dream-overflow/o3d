@@ -13,7 +13,7 @@
 #include "o3d/core/architecture.h"
 #include "o3d/core/wintools.h"
 #include "o3d/core/application.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 
 using namespace o3d;
 
@@ -215,7 +215,7 @@ void AppWindow::grabKeyboard(Bool lock)
 // Is the window is border less (full screen style).
 Bool AppWindow::isFullScreen() const
 {
-	return Video::instance()->getAppWindow() == this;
+    return Display::instance()->getAppWindow() == this;
 }
 
 // Set the window icon.

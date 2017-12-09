@@ -43,9 +43,9 @@ enum VKey
 	KEY_UP             = 0x26,
 	KEY_RIGHT          = 0x27,
 	KEY_DOWN           = 0x28,
-//	KEY_SELECT         = 0x29,
-//	KEY_PRINT          = 0x2A, // KEY_SYSRQ
-//	KEY_EXECUTE        = 0x2B,
+    KEY_SELECT         = 0x29,
+    KEY_PRINT          = 0x2A,
+    KEY_EXECUTE        = 0x2B,
 	KEY_SNAPSHOT       = 0x2C,
 	KEY_INSERT         = 0x2D,
 	KEY_DELETE         = 0x2E,
@@ -107,11 +107,12 @@ enum VKey
 	KEY_NUMPAD9        = 0x69,
 	KEY_NUMPAD_MULTIPLY= 0x6A,
 	KEY_NUMPAD_ADD     = 0x6B,
-	KEY_NUMPAD_SEPARATOR= 0x6C,// TEST
+    KEY_NUMPAD_SEPARATOR = 0x6C,
 	KEY_NUMPAD_SUBTRACT= 0x6D,
 	KEY_NUMPAD_DECIMAL = 0x6E,
 	KEY_NUMPAD_DIVIDE  = 0x6F,
 	KEY_NUMPAD_ENTER   = 0x0E,
+    KEY_NUMPAD_EQUALS  = 0x92,
 
 	KEY_F1             = 0x70,         // F1-F24
 	KEY_F2             = 0x71,
@@ -141,8 +142,6 @@ enum VKey
 	KEY_NUMLOCK        = 0x90,
 	KEY_SCROLL         = 0x91,
 
-	KEY_NUMPAD_EQUALS  = 0x92,
-
 	KEY_LSHIFT         = 0xA0,
 	KEY_RSHIFT         = 0xA1,
 	KEY_LCONTROL       = 0xA2,
@@ -163,7 +162,7 @@ enum VKey
 	KEY_BACKSLASH      = 0xDC,  //  '\|' for US
 	KEY_RIGHTBRACKET   = 0xDD,  //  ']}' for US
 	KEY_QUOTEDBL       = 0xDE,  //  ''"' for US
-	KEY_EXCLAIM        = 0xDF,  //  '!�' for FR
+    KEY_EXCLAIM        = 0xDF,  //  '!§' for FR
 
 	KEY_OEM_102        = 0xE2  //  "<>" or "\|" on RT 102-key kbd.
 };
@@ -173,4 +172,3 @@ enum VKey
 #endif // O3D_WIN32
 
 #endif // _O3D_KEYMAPWIN32_H
-

@@ -61,13 +61,17 @@
     #elif defined(__aarch64__)
         #define O3D_ARM64
     #elif defined(__arm__)
-        #defined O3D_ARM32
+        #define O3D_ARM32
+    #endif
+
+    #ifdef O3D_X11
+        #error "X11 is not supported on Android"
     #endif
 
     #ifdef __ARM_ARCH_6__
-        #defined O3D_ARM_V6
+        #define O3D_ARM_V6
     #elif __ARM_ARCH_7__
-        #defined O3D_ARM_V7
+        #define O3D_ARM_V7
     #endif
 
     #if __BYTE_ORDER == __BIG_ENDIAN
@@ -104,18 +108,18 @@
     // ARM
     #ifdef _M_ARM64
         #if _M_ARM == 6
-            #defined O3D_ARM_V6
+            #define O3D_ARM_V6
         #elif _M_ARM == 7
-            #defined O3D_ARM_V7
+            #define O3D_ARM_V7
         #elif _M_ARM < 6
            #error "Unsupported ARM architecture version"
         #endif
         #define O3D_ARM64
     #elif defined(_M_ARM)
         #if _M_ARM == 6
-            #defined O3D_ARM_V6
+            #define O3D_ARM_V6
         #elif _M_ARM == 7
-            #defined O3D_ARM_V7
+            #define O3D_ARM_V7
         #elif _M_ARM < 6
            #error "Unsupported ARM architecture version"
         #endif
@@ -191,13 +195,13 @@
     #elif defined(__aarch64__)
         #define O3D_ARM64
     #elif defined(__arm__)
-        #defined O3D_ARM32
+        #define O3D_ARM32
     #endif
 
     #ifdef __ARM_ARCH_6__
-        #defined O3D_ARM_V6
+        #define O3D_ARM_V6
     #elif __ARM_ARCH_7__
-        #defined O3D_ARM_V7
+        #define O3D_ARM_V7
     #endif
 
 	#if __BYTE_ORDER == __BIG_ENDIAN

@@ -50,9 +50,10 @@ enum VKey
 	KEY_RIGHT          = XK_Right,
 	KEY_DOWN           = XK_Down,
 	KEY_SELECT         = XK_Select,
-//	KEY_PRINT          = XK_Print,
+    KEY_PRINT          = XK_Print,
 	KEY_EXECUTE        = XK_Execute,
-	KEY_SNAPSHOT       = XK_Print,//XK_3270_PrintScreen
+    KEY_SYSRQ          = XK_Sys_Req,
+    KEY_SNAPSHOT       = XK_Sys_Req, // XK_3270_PrintScreen,
 	KEY_INSERT         = XK_Insert,
 	KEY_DELETE         = XK_Delete,
 	KEY_HELP           = XK_Help,
@@ -99,7 +100,7 @@ enum VKey
 	KEY_RSUPER         = XK_Super_R,
 	KEY_MENU           = XK_Menu,
 
-	//KEY_SLEEP          = ,
+    KEY_SLEEP          = 0,  // undefined
 
 	KEY_NUMPAD0        = XK_KP_0,         // numpad 0-9
 	KEY_NUMPAD1        = XK_KP_1,
@@ -111,13 +112,14 @@ enum VKey
 	KEY_NUMPAD7        = XK_KP_7,
 	KEY_NUMPAD8        = XK_KP_8,
 	KEY_NUMPAD9        = XK_KP_9,
-	KEY_NUMPAD_MULTIPLY= XK_KP_Multiply,
+    KEY_NUMPAD_MULTIPLY = XK_KP_Multiply,
 	KEY_NUMPAD_ADD     = XK_KP_Add,
-//	KEY_NUMPAD_SEPARATOR= ,// TEST
+    KEY_NUMPAD_SEPARATOR = XK_KP_Separator,
 	KEY_NUMPAD_SUBTRACT= XK_KP_Subtract,
 	KEY_NUMPAD_DECIMAL = XK_KP_Decimal,
 	KEY_NUMPAD_DIVIDE  = XK_KP_Divide,
 	KEY_NUMPAD_ENTER   = XK_KP_Enter,
+    KEY_NUMPAD_EQUALS  = XK_KP_Equal,
 
 	KEY_F1             = XK_F1,         // F1-F24
 	KEY_F2             = XK_F2,
@@ -146,8 +148,6 @@ enum VKey
 
 	KEY_NUMLOCK        = XK_Num_Lock,
 	KEY_SCROLL         = XK_Scroll_Lock,
-
-	KEY_NUMPAD_EQUALS  = XK_KP_Equal,
 
 	KEY_LSHIFT         = XK_Shift_L,
 	KEY_RSHIFT         = XK_Shift_R,
@@ -179,4 +179,3 @@ enum VKey
 #endif // O3D_X11
 
 #endif // _O3D_KEYMAPX11_H
-

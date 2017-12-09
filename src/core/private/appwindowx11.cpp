@@ -26,7 +26,7 @@
 
 #include "o3d/core/debug.h"
 #include "o3d/core/application.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 
 #ifdef O3D_EGL
   #include "o3d/core/private/egldefines.h"
@@ -64,7 +64,7 @@ static Atom _NET_WM_ICON = 0;
 static Atom _NET_WM_PID = 0;
 static Atom WM_DELETE_WINDOW = 0;
 
-static void initAtoms(Display *display)
+static void initAtoms(::Display *display)
 {
     Bool atomInitialized = False;
 
@@ -91,7 +91,7 @@ static void initAtoms(Display *display)
 
 }
 
-static void setWindowState(Display *display, Window window, Bool fullScreen)
+static void setWindowState(::Display *display, Window window, Bool fullScreen)
 {
     // Set the window manager state
 	Atom atoms[3];
@@ -261,7 +261,7 @@ static void setWindowState(Display *display, Window window, Bool fullScreen)
 //	return True;
 //}
 
-static void setWMHints(Display *display, Window window, Bool fullScreen)
+static void setWMHints(::Display *display, Window window, Bool fullScreen)
 {
     // WM Hints
     if (fullScreen) {
@@ -376,13 +376,13 @@ void AppWindow::setTitle(const String &title)
 
 		XTextProperty titleProp;
 		Xutf8TextListToTextProperty(
-				reinterpret_cast<Display*>(Application::getDisplay()),
+                reinterpret_cast<::Display*>(Application::getDisplay()),
 				&title,
 				1,
 				XUTF8StringStyle,
 				&titleProp);
 		XSetWMName(
-				reinterpret_cast<Display*>(Application::getDisplay()),
+                reinterpret_cast<::Display*>(Application::getDisplay()),
 				static_cast<Window>(m_hWnd),
 				&titleProp);
 
@@ -396,7 +396,7 @@ void AppWindow::setIcon(const Image &icon)
 		O3D_ERROR(E_InvalidFormat("Icon must be RGB888 or RGBA8888"));
     }
 
-	Display *display = reinterpret_cast<Display*> (Application::getDisplay());
+    ::Display *display = reinterpret_cast<::Display*> (Application::getDisplay());
 	Window window = static_cast<Window> (m_hWnd);
 
 	// set for any sizes
@@ -466,21 +466,21 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 {
     if (m_hWnd) {
 		// window is in fullscreen state
-        if (Video::instance()->getAppWindow() == this) {
-			VideoMode videoMode;
-			videoMode.width = clientWidth;
-			videoMode.height = clientHeight;
-            videoMode.bpp = 24;// or 16
-			videoMode.freq = 0;
+        if (Display::instance()->getAppWindow() == this) {
+            DisplayMode displayMode;
+            displayMode.width = clientWidth;
+            displayMode.height = clientHeight;
+            displayMode.bpp = 24;// or 16
+            displayMode.freq = 0;
 
-			CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-            if (cit == Video::instance()->end()) {
+            CIT_DisplayModeList cit = Display::instance()->findDisplayMode(displayMode);
+            if (cit == Display::instance()->end()) {
                 O3D_ERROR(E_InvalidParameter("Cannot resize a fullscreen window with this width/height"));
             }
 
-			Video::instance()->setDisplayMode(this, cit);
+            Display::instance()->setDisplayMode(this, cit);
 
-            Display *display = reinterpret_cast<Display*> (Application::getDisplay());
+            ::Display *display = reinterpret_cast<::Display*> (Application::getDisplay());
             Window window = static_cast<Window> (m_hWnd);
 
             XSizeHints *sizeHints = XAllocSizeHints();
@@ -518,7 +518,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 			// override_redirect is True so need to manually callback resize
 			callBackResize();
         } else {
-            Display *display = reinterpret_cast<Display*> (Application::getDisplay());
+            ::Display *display = reinterpret_cast<::Display*> (Application::getDisplay());
             Window window = static_cast<Window> (m_hWnd);
 
             // TODO check min/max size
@@ -563,7 +563,7 @@ void AppWindow::applySettings(Bool fullScreen)
 		O3D_ERROR(E_InvalidPrecondition("Window not set"));
     }
 
-	Display *display = reinterpret_cast<Display*> (Application::getDisplay());
+    ::Display *display = reinterpret_cast<::Display*> (Application::getDisplay());
 
     // init X atoms on the first window creation
     initAtoms(display);
@@ -716,7 +716,7 @@ void AppWindow::applySettings(Bool fullScreen)
         if (fullScreen) {
             m_posX = m_posY = 0;
         } else {
-            CIT_VideoModeList videoMode = Video::instance()->getCurrentDisplayMode();
+            CIT_DisplayModeList videoMode = Display::instance()->getCurrentDisplayMode();
             m_posX = Int32(videoMode->width - /*m_width*/m_clientWidth) / 2;
             m_posY = Int32(videoMode->height - /*m_height*/m_clientHeight) / 2;
         }
@@ -853,7 +853,7 @@ void AppWindow::applySettings(Bool fullScreen)
         if (fullScreen) {
             m_posX = m_posY = 0;
         } else {
-            CIT_VideoModeList videoMode = Video::instance()->getCurrentDisplayMode();
+            CIT_DisplayModeList videoMode = Display::instance()->getCurrentDisplayMode();
             m_posX = Int32(videoMode->width - /*m_width*/m_clientWidth) / 2;
             m_posY = Int32(videoMode->height - /*m_height*/m_clientHeight) / 2;
         }
@@ -1028,10 +1028,10 @@ void AppWindow::destroy()
 	m_icon.destroy();
 
     if (m_hWnd != NULL_HWND) {
-		Display *display = reinterpret_cast<Display*> (Application::getDisplay());
+        ::Display *display = reinterpret_cast<::Display*> (Application::getDisplay());
 
         if (isFullScreen()) {
-			Video::instance()->restoreDisplayMode();
+            Display::instance()->restoreDisplayMode();
         }
 
         if (m_ic != nullptr) {
@@ -1076,7 +1076,7 @@ Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
         return False;
     }
 
-    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+    ::Display *display = reinterpret_cast<::Display*>(Application::getDisplay());
     Window window =	static_cast<Window>(m_hWnd);
 
     CString utf8 = text.toUtf8();
@@ -1106,7 +1106,7 @@ Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
     return result;
 }
 
-static Int32 pending(Display *display, UInt32 timeout)
+static Int32 pending(::Display *display, UInt32 timeout)
 {
     UInt32 sTime = System::getMsTime();
 
@@ -1149,7 +1149,7 @@ String AppWindow::copyFromClipboard(Bool primary)
         O3D_ERROR(E_InvalidOperation("The window must be valid"));
     }
 
-    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+    ::Display *display = reinterpret_cast<::Display*>(Application::getDisplay());
     Window window =	static_cast<Window>(m_hWnd);
 
     XLockDisplay(display);
@@ -1251,25 +1251,25 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
     }
 
-    if ((Video::instance()->getAppWindow() != nullptr) && (Video::instance()->getAppWindow() != this)) {
+    if ((Display::instance()->getAppWindow() != nullptr) && (Display::instance()->getAppWindow() != this)) {
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
 
-    if (fullScreen && (Video::instance()->getAppWindow() == nullptr)) {
-		VideoMode videoMode;
-		videoMode.width = m_clientWidth;
-		videoMode.height = m_clientHeight;
-		videoMode.bpp = 24;//m_bpp;
-		videoMode.freq = 0;
+    if (fullScreen && (Display::instance()->getAppWindow() == nullptr)) {
+        DisplayMode displayMode;
+        displayMode.width = m_clientWidth;
+        displayMode.height = m_clientHeight;
+        displayMode.bpp = 24;//m_bpp;
+        displayMode.freq = 0;
 
-        CIT_VideoModeList cit = Video::instance()->findDisplayMode(videoMode);
-        if (cit != Video::instance()->end()) {
-            Video::instance()->setDisplayMode(this, cit);
+        CIT_DisplayModeList cit = Display::instance()->findDisplayMode(displayMode);
+        if (cit != Display::instance()->end()) {
+            Display::instance()->setDisplayMode(this, cit);
         } else {
             O3D_ERROR(E_InvalidParameter("Invalid video mode"));
         }
 
-		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+        ::Display *display = reinterpret_cast<::Display*>(Application::getDisplay());
 		Window window =	static_cast<Window>(m_hWnd);
 
 		// change window style
@@ -1352,11 +1352,11 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
         XMapRaised(display, window);
 
         XFlush(display);
-    } else if (!fullScreen && (Video::instance()->getAppWindow() == this)) {
-		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+    } else if (!fullScreen && (Display::instance()->getAppWindow() == this)) {
+        ::Display *display = reinterpret_cast<::Display*>(Application::getDisplay());
 		Window window =	static_cast<Window>(m_hWnd);
 
-		Video::instance()->restoreDisplayMode();
+        Display::instance()->restoreDisplayMode();
 
 		// change window style
 		XSetWindowAttributes attr;
@@ -1373,9 +1373,9 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
         setWMHints(display, window, False);
 
 		// Center the window
-		CIT_VideoModeList videoMode = Video::instance()->getCurrentDisplayMode();
-		m_posX = Int32(videoMode->width - m_width) / 2;
-		m_posY = Int32(videoMode->height - m_height) / 2;
+        CIT_DisplayModeList displayMode = Display::instance()->getCurrentDisplayMode();
+        m_posX = Int32(displayMode->width - m_width) / 2;
+        m_posY = Int32(displayMode->height - m_height) / 2;
 
         // size hints
         XSizeHints *sizeHints = XAllocSizeHints();
@@ -1427,7 +1427,7 @@ void AppWindow::setMinSize(const Vector2i &minSize)
 	m_minSize = minSize;
 
     if (m_hWnd && m_resizable) {
-        Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+        ::Display *display = reinterpret_cast<::Display*>(Application::getDisplay());
         Window window =	static_cast<Window>(m_hWnd);
 
         XSizeHints *sizeHints = XAllocSizeHints();
@@ -1465,7 +1465,7 @@ void AppWindow::setMaxSize(const Vector2i &maxSize)
 	m_maxSize = maxSize;
 
     if (m_hWnd && m_resizable) {
-        Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+        ::Display *display = reinterpret_cast<::Display*>(Application::getDisplay());
         Window window =	static_cast<Window>(m_hWnd);
 
         XSizeHints *sizeHints = nullptr;
