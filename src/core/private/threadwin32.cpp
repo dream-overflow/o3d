@@ -460,7 +460,7 @@ void ReadWriteLock::lockRead() const
 {
     EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_readerHandle));
 
-    if (++const_cast<Int32>(m_readerCounter) == 1) {
+    if (++*const_cast<Int32*>(&m_readerCounter) == 1) {
         EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_writerHandle));
     }
 
@@ -472,7 +472,7 @@ void ReadWriteLock::unlockRead() const
 {
     EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_readerHandle));
 
-    if (--const_cast<Int32>(m_readerCounter) == 0) {
+    if (--*const_cast<Int32*>(&m_readerCounter) == 0) {
         LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_writerHandle));
     }
 
@@ -486,8 +486,8 @@ Bool ReadWriteLock::tryLockRead() const
     LPCRITICAL_SECTION writer = const_cast<LPCRITICAL_SECTION>(&m_writerHandle);
 
     if (TryEnterCriticalSection(reader)) {
-        if ((++const_cast<Int32>(m_readerCounter) == 1) && !TryEnterCriticalSection(writer)) {
-            --const_cast<Int32>(m_readerCounter);
+        if ((++*const_cast<Int32*>(&m_readerCounter) == 1) && !TryEnterCriticalSection(writer)) {
+            --*const_cast<Int32*>(&m_readerCounter);
             LeaveCriticalSection(reader);
 			return False;
 		}

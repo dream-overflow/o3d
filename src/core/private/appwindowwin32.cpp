@@ -20,7 +20,7 @@
 #include "o3d/core/debug.h"
 #include "o3d/core/architecture.h"
 #include "o3d/core/wintools.h"
-#include "o3d/core/video.h"
+#include "o3d/core/display.h"
 
 using namespace o3d;
 
@@ -561,20 +561,19 @@ void AppWindow::setSize(Int32 width,Int32 height)
 
 void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 {
-	if (m_hWnd != NULL_HWND)
-	{
+    if (m_hWnd != NULL_HWND) {
 		// window is in fullscreen state
-        if (Display::instance()->getAppWindow() == this)
-		{
-			VideoMode videoMode;
-			videoMode.width = clientWidth;
-			videoMode.height = clientHeight;
-            videoMode.bpp = getBpp();
-			videoMode.freq = 0;
+        if (Display::instance()->getAppWindow() == this) {
+            DisplayMode displayMode;
+            displayMode.width = clientWidth;
+            displayMode.height = clientHeight;
+            displayMode.bpp = getBpp();
+            displayMode.freq = 0;
 
-            CIT_VideoModeList cit = Display::instance()->findDisplayMode(videoMode);
-            if (cit == Display::instance()->end())
+            CIT_DisplayModeList cit = Display::instance()->findDisplayMode(displayMode);
+            if (cit == Display::instance()->end()) {
 				O3D_ERROR(E_InvalidParameter("Cannot resize a full screen window with this width/height"));
+            }
 
             Display::instance()->setDisplayMode(this, cit);
 
@@ -583,10 +582,8 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 
 			m_width = m_clientWidth = clientWidth;
 			m_height = m_clientHeight = clientHeight;
-		}
-		// in windowed
-		else
-		{
+        } else {
+            // in windowed
 			WinTools::resizeWindow(m_hWnd, clientWidth, clientHeight);
 			WinTools::centerWindow(m_hWnd);
 
@@ -595,9 +592,7 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 		}
 
 		callBackResize();
-	}
-	else
-	{
+    } else {
 		m_width = m_clientWidth = clientWidth;
 		m_height = m_clientHeight = clientHeight;
 	}
@@ -672,28 +667,28 @@ String AppWindow::copyFromClipboard(Bool primary)
 // Set to full screen
 void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 {
-	if (m_hWnd == NULL_HWND)
+    if (m_hWnd == NULL_HWND) {
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     if ((Display::instance()->getAppWindow() != NULL) &&
-        (Display::instance()->getAppWindow() != this))
-	{
+        (Display::instance()->getAppWindow() != this)) {
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
 	
-    if (fullScreen && (Display::instance()->getAppWindow() == NULL))
-	{
-		VideoMode videoMode;
-		videoMode.width = m_clientWidth;
-		videoMode.height = m_clientHeight;
-        videoMode.bpp = getBpp();
-		videoMode.freq = 0;
+    if (fullScreen && (Display::instance()->getAppWindow() == nullptr)) {
+        DisplayMode displayMode;
+        displayMode.width = m_clientWidth;
+        displayMode.height = m_clientHeight;
+        displayMode.bpp = getBpp();
+        displayMode.freq = 0;
 
-        CIT_VideoModeList cit = Display::instance()->findDisplayMode(videoMode);
-        if (cit != Display::instance()->end())
+        CIT_DisplayModeList cit = Display::instance()->findDisplayMode(displayMode);
+        if (cit != Display::instance()->end()) {
             Display::instance()->setDisplayMode(this, cit);
-		else
+        } else {
 			O3D_ERROR(E_InvalidParameter("Invalid video mode"));
+        }
 
 		Int32 width = m_clientWidth;
 		Int32 height = m_clientHeight;
@@ -707,9 +702,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		m_height = m_clientHeight;
 
 		m_posX = m_posY = 0;
-	}
-    else if (!fullScreen && (Display::instance()->getAppWindow() == this))
-	{
+    } else if (!fullScreen && (Display::instance()->getAppWindow() == this)) {
         Display::instance()->restoreDisplayMode();
 
 		Int32 width = m_clientWidth;
@@ -743,8 +736,7 @@ void AppWindow::swapBuffers()
 // Process internals deferred events
 void AppWindow::processEvent(EventType eventType, EventData &eventData)
 {
-	switch (eventType)
-	{
+    switch (eventType) {
 		case EVT_UPDATE:
 			if (isUpdateNeeded())
 				callBackUpdate(0);

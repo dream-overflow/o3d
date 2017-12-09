@@ -317,6 +317,8 @@ private:
     FastMutex m_mutex;
     Bool m_useCallbacks;
 
+    std::multimap<Int32, Timer*> m_queue;
+
 #ifdef O3D_WIN32
     stdext::hash_map<_Timer, Timer*> m_handlesMap;
 #else
@@ -324,7 +326,6 @@ private:
     Thread m_thread;
     Bool m_running;
 
-    std::multimap<Int32, Timer*> m_queue;
     Timer *m_currentTimer;
 
     struct TimerEvent

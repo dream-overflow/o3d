@@ -22,12 +22,17 @@
 
 /* WGL 1.x function pointer typedefs */
 // typedef PROC
-typedef PROC (* WGLGETPROCADDRESSPROC)(LPCSRT lpszProc);
+typedef PROC (* WGLGETPROCADDRESSPROC)(LPCSTR lpszProc);
 static WGLGETPROCADDRESSPROC _wglGetProcAddress = nullptr;
 
 using namespace o3d;
 
 DynamicLibrary* WGL::ms_wgl = nullptr;
+
+Bool WGL::swapIntervalEXT(Int32 i)
+{
+    return False; // @todo as pointer foo
+}
 
 void WGL::init()
 {

@@ -11,6 +11,7 @@ include/o3d/core/private/keymapsdl.h
 include/o3d/core/private/keymapwin32.h
 include/o3d/core/private/keymapx11.h
 include/o3d/core/private/wgl.h
+include/o3d/core/private/wgldefines.h
 include/o3d/core/sha1.h
 include/o3d/core/wgl.h
 include/o3d/engine/glextdefines.h
@@ -85,6 +86,10 @@ src/core/private/wgl.cpp
 src/core/sha1.cpp
 src/core/wgl.cpp
 src/engine/private/rendererandroid.cpp
+src/engine/private/rendererandroid.cpp
+src/engine/private/renderersdl.cpp
+src/engine/private/rendererwin32.cpp
+src/engine/private/rendererx11.cpp
 src/shaders/330_fp.glsl
 src/shaders/330_fp.glsl
 src/shaders/330_vp.glsl

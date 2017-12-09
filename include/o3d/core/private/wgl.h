@@ -31,7 +31,7 @@ public:
     static void* getProcAddress(const Char *ext);
 
     // @todo
-    // swapIntervalEXT
+    static Bool swapIntervalEXT(Int32 i);
 
 private:
 

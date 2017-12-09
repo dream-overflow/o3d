@@ -13,6 +13,8 @@
 /* ONLY IF O3D_WIN32 IS SELECTED */
 #ifdef O3D_WIN32
 
+#undef KEY_EXECUTE
+
 namespace o3d {
 
 /**

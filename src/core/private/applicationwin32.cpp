@@ -16,6 +16,8 @@
 #include "o3d/core/string.h"
 #include "o3d/core/debug.h"
 #include "o3d/core/architecture.h"
+#include "o3d/core/thread.h"
+#include "o3d/core/filemanager.h"
 #include "o3d/core/appwindow.h"
 
 using namespace o3d;
@@ -234,13 +236,10 @@ void Application::getBaseNamePrivate(Int32 argc, Char **argv)
         if (pos >= 0) {
             ms_appsName = new String(path);
             ms_appsName->remove(0, pos);
-            )
             ms_appsName->fromUtf8(argv[0]);
 
-
-        ms_appsName = new String(buf);
-        ms_appsPath = new String(buf);  // @todo
-
+            ms_appsName = new String(buf);
+            ms_appsPath = new String(buf);  // @todo
 
             String path = ms_appsName->extract(0, pos+1);
             ms_appsPath = new String(FileManager::instance()->getFullFileName(path));

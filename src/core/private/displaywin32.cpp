@@ -21,7 +21,7 @@
 using namespace o3d;
 
 // change display mode
-void Display::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
+void Display::setDisplayMode(AppWindow *appWindow, CIT_DisplayModeList mode)
 {
     if (mode == m_modes.end()) {
 		O3D_ERROR(E_InvalidParameter("Invalid video mode"));
@@ -75,7 +75,7 @@ void Display::listDisplayModes()
 {
 	// store desktop video mode
 	DEVMODE videoMode;
-	videoMode.dmSize = sizeof(VideoMode);
+    videoMode.dmSize = sizeof(DEVMODE);
 
 	// list display mode
 	Int32 i = 0;
@@ -83,15 +83,15 @@ void Display::listDisplayModes()
     while (EnumDisplaySettings(NULL,i++,&videoMode)) {
         // list only 16 or 32bpp video mode
         if (((videoMode.dmBitsPerPel == 16) || (videoMode.dmBitsPerPel == 32))) {
-			VideoMode videomode;
+            DisplayMode displayMode;
 
-			videomode.index = i-1;
-			videomode.width = (UInt32)videoMode.dmPelsWidth;
-			videomode.height = (UInt32)videoMode.dmPelsHeight;
-			videomode.bpp = (UInt32)videoMode.dmBitsPerPel;
-			videomode.freq = (UInt32)videoMode.dmDisplayFrequency;
+            displayMode.index = i-1;
+            displayMode.width = (UInt32)videoMode.dmPelsWidth;
+            displayMode.height = (UInt32)videoMode.dmPelsHeight;
+            displayMode.bpp = (UInt32)videoMode.dmBitsPerPel;
+            displayMode.freq = (UInt32)videoMode.dmDisplayFrequency;
 
-			IT_VideoModeList comp_it = m_modes.begin();
+            IT_DisplayModeList comp_it = m_modes.begin();
 
 			// sort by BPP (32>16)
             while ((comp_it != m_modes.end()) && (comp_it->bpp > videoMode.dmBitsPerPel)) {
@@ -106,14 +106,14 @@ void Display::listDisplayModes()
 					++comp_it;
 			}
 
-			m_modes.insert(comp_it,videomode);
+            m_modes.insert(comp_it, displayMode);
 		}
 	}
 
 	// desktop mode
-	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &videoMode);
+    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &videoMode);
 
-	VideoMode desktop;
+    DisplayMode desktop;
 
 	desktop.width = videoMode.dmPelsWidth;
 	desktop.height = videoMode.dmPelsHeight;

@@ -60,7 +60,7 @@ UInt32 BaseTimer::getRunningThreadId() const
 Timer::Timer(UInt32 timeout, TimerMode mode, Callback *callback, void *data) :
     BaseTimer(timeout, mode, callback, data)
 #ifdef O3D_WIN32
-    ,m_handle(NULL)
+    ,m_handle(0)
 #endif
 {
     if (m_pCallback) {
@@ -299,8 +299,10 @@ TimerManager::TimerManager() :
 {
 	m_instance = (TimerManager*)this;
 
+#ifndef O3D_WIN32
     // listen to himself for asynchronous timer event of non-threaded timer
     onTimerCall.connect(this, &TimerManager::timerCall, EvtHandler::CONNECTION_ASYNCH);
+#endif
 }
 
 // remove a timer by it's Id

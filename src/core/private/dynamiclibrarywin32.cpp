@@ -30,7 +30,7 @@ DynamicLibrary* DynamicLibrary::load(const String &name)
 
 	DynamicLibrary *library = new DynamicLibrary;
 
-    library->m_instance = (_HINSTANCE)LoadLibraryW(nname.getData());
+    library->m_instance = (_HINSTANCE)LoadLibraryW(name.getData());
     if (!library->m_instance) {
 		deletePtr(library);
         O3D_ERROR(E_DynamicLibraryException("Cannot load library " + name));

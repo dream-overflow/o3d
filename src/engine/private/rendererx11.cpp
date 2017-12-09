@@ -365,10 +365,12 @@ void Renderer::destroy()
             Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
             if (m_state.getBit(STATE_EGL)) {
+            #ifdef O3D_EGL
                 EGLDisplay eglDisplay = EGL::getDisplay(display);
                 EGL::makeCurrent(eglDisplay, 0, 0, 0);
 
                 EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
+            #endif
             } else {
                 GLX::makeCurrent(display, None, NULL);
                 GLX::destroyContext(display, reinterpret_cast<GLXContext>(m_HGLRC));
@@ -396,7 +398,9 @@ void Renderer::destroy()
 void *Renderer::getProcAddress(const Char *ext) const
 {
     if (m_state.getBit(STATE_EGL)) {
+    #ifdef O3D_EGL
         return EGL::getProcAddress(ext);
+    #endif
     } else {
         return GLX::getProcAddress(ext);
     }
@@ -410,7 +414,9 @@ Bool Renderer::isCurrent() const
     }
 
     if (m_state.getBit(STATE_EGL)) {
+    #ifdef O3D_EGL
         return EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC);
+    #endif
     } else {
         return GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC);
     }
@@ -426,6 +432,7 @@ void Renderer::setCurrent()
     Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
     if (m_state.getBit(STATE_EGL)) {
+    #ifdef O3D_EGL
         if (EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC)) {
             return;
         }
@@ -439,6 +446,7 @@ void Renderer::setCurrent()
                 reinterpret_cast<EGLContext>(m_HGLRC))) {
             O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
         }
+    #endif
     } else {
         if (GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC)) {
             return;
@@ -472,10 +480,12 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
     }
 
     if (m_state.getBit(STATE_EGL)) {
+    #ifdef O3D_EGL
         EGLDisplay eglDisplay = EGL::getDisplay(display);
         if (!EGL::swapInterval(eglDisplay, value)) {
             return False;
-        }
+        }   
+    #endif
     } else if (GLX::swapIntervalEXT) {
         GLX::swapIntervalEXT(
                     reinterpret_cast<Display*>(Application::getDisplay()),
