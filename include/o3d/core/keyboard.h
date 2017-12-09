@@ -15,9 +15,21 @@
 #include "hashset.h"
 #include "templatebitset.h"
 
+#ifdef O3D_SDL2
 #include "private/keymapsdl.h"
+#endif
+
+#ifdef O3D_WINDOWS
 #include "private/keymapwin32.h"
+#endif
+
+#ifdef O3D_X11
 #include "private/keymapx11.h"
+#endif
+
+#ifdef O3D_ANDROID
+#include "private/keymapandroid.h"
+#endif
 
 namespace o3d {
 

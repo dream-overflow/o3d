@@ -41,15 +41,15 @@ using namespace o3d;
     System::swapBytes4(&S.CompressedSize);     \
     System::swapBytes4(&S.UnCompressedSize);
 
-#define O3DZipHeaderToBIG(S)                   \
-    System::swapBytes4(&S.Sig);                \
-    System::swapBytes2(&S.VersionToExtract);   \
-    System::swapBytes2(&S.BitFlag);            \
-    System::swapBytes2(&S.CompressionMethod);  \
-    System::swapBytes2(&S.LastModFileTime);    \
-    System::swapBytes2(&S.LastModeFileData);   \
-    ZipDataDescriptorToBIG(S.DataDescriptor);  \
-    System::swapBytes2(&S.FileNameLength);     \
+#define O3DZipHeaderToBIG(S)                      \
+    System::swapBytes4(&S.Sig);                   \
+    System::swapBytes2(&S.VersionToExtract);      \
+    System::swapBytes2(&S.BitFlag);               \
+    System::swapBytes2(&S.CompressionMethod);     \
+    System::swapBytes2(&S.LastModFileTime);       \
+    System::swapBytes2(&S.LastModeFileData);      \
+    O3DZipDataDescriptorToBIG(S.DataDescriptor);  \
+    System::swapBytes2(&S.FileNameLength);        \
     System::swapBytes2(&S.ExtraFieldLength);
 
 
@@ -57,8 +57,8 @@ using namespace o3d;
 // extra field (variable size)
 
 // Infos pour chaque fichier
-#define O3DZipTokenToBIG(S) \
-	O3DZipHeaderToBIG(S.FileHeader); \
+#define O3DZipTokenToBIG(S)           \
+    O3DZipHeaderToBIG(S.FileHeader);  \
     System::swapBytes8(&S.FilePos);
 
 

@@ -66,8 +66,10 @@ static void setupThread()
 	pthread_sigmask(SIG_BLOCK, &mask, 0);
 
 	// Allow ourselves to be asynchronously canceled
-	int oldstate;
+#if !defined(O3D_ANDROID)
+    int oldstate;
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldstate);
+#endif
 }
 
 static void* O3D_RunThread(void *data)
@@ -184,7 +186,11 @@ void Thread::kill()
 	if (!m_pThread)
 		return;
 
-	pthread_cancel(m_pThread);//pthread_kill(&m_pThread, SIGKILL);
+#ifdef O3D_ANDROID
+    pthread_kill(m_pThread, SIGINT/*SIGKILL*/);
+#else
+    pthread_cancel(m_pThread);
+#endif
 	pthread_join(m_pThread, NULL);
 
 	// one less thread
@@ -208,14 +214,20 @@ void Thread::setCPUAffinity(const std::list<UInt32> &cpuIds)
 	cpu_set_t cpuset;
 	CPU_ZERO(&cpuset);
 
-	for (std::list<UInt32>::const_iterator it = cpuIds.begin(); it != cpuIds.end(); ++it)
+    for (std::list<UInt32>::const_iterator it = cpuIds.begin(); it != cpuIds.end(); ++it) {
 		CPU_SET(*it, &cpuset);
+    }
 
 	m_cpuAffinity = cpuIds;
 
+#ifdef O3D_ANDROID
+    O3D_WARNING("Unable to define the CPU affinity for the thread");
+#else
 	int result = pthread_setaffinity_np(m_pThread, sizeof(cpu_set_t), &cpuset);
-	if (result != 0)
+    if (result != 0) {
 		O3D_ERROR(E_InvalidOperation("Unable to define the CPU affinity for the thread"));
+    }
+#endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -224,7 +236,7 @@ void Thread::setCPUAffinity(const std::list<UInt32> &cpuIds)
 
 // constructor
 Semaphore::Semaphore(UInt32 initialValue, UInt32 maxValue) :
-	m_handle(NULL)
+    m_handle(nullptr)
 {
 #ifdef __APPLE__
 	char name[16+2];

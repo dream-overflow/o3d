@@ -247,7 +247,7 @@ enum VKey
     KEY_RSUPER         = AKEYCODE_META_RIGHT,
     KEY_MENU           = AKEYCODE_MENU,
 
-    KEY_SLEEP          = AKEYCODE_SLEEP
+    KEY_SLEEP          = AKEYCODE_SLEEP,
 
     KEY_NUMPAD0        = AKEYCODE_NUMPAD_0,         // numpad 0-9
     KEY_NUMPAD1        = AKEYCODE_NUMPAD_1,

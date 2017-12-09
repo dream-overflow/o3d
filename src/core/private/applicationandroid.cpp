@@ -44,9 +44,4 @@ void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 
 }
 
-void Application::getBaseNamePrivate(Int32 argc, Char **argv)
-{
-
-}
-
 #endif // O3D_ANDROID

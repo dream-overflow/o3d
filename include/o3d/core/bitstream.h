@@ -349,11 +349,10 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! @brief push signed 32 bits integer value to the bitstream
-	inline void pushInt32(Int32 val,Int32 nb_bits=32)
+    inline void pushInt32(Int32 val, Int32 nb_bits=32)
 	{
 		#ifdef O3D_BITSTREAM_DEBUG
-		if(debug)
-		{
+        if (debug) {
 			UInt8 type = Type_Int32;
 			addDataDebug(&type,5);
 			addDataDebug((UInt8*)&nb_bits,6);
@@ -361,15 +360,16 @@ public:
 		#endif
 
 		#ifdef O3D_BIG_ENDIAN
-        System::swapBytes4(&a);
+        System::swapBytes4(&val);
 		#endif
 
-		if(val<0)
-		{
+        if (val<0) {
 		   pushBool(0);
 		   val = -val;
-		}
-		else pushBool(1);
+        } else {
+            pushBool(1);
+        }
+
 		addData((UInt8*)&val,nb_bits-1);
 	}
 
@@ -377,8 +377,7 @@ public:
 	inline void pushUInt32(UInt32 val,Int32 nb_bits=32)
 	{
 		#ifdef O3D_BITSTREAM_DEBUG
-		if(debug)
-		{
+        if(debug) {
 			UInt8 type = Type_UInt32;
 			addDataDebug(&type,5);
 			addDataDebug((UInt8*)&nb_bits,6);
@@ -429,23 +428,23 @@ public:
 	}
 
 	//! @brief push signed char value to the bitstream
-	inline void pushChar(Char val,Int32 nb_bits=8)
+    inline void pushChar(Char val, Int32 nb_bits=8)
 	{
 		#ifdef O3D_BITSTREAM_DEBUG
-		if(debug)
-		{
+        if (debug) {
 			UInt8 type = Type_Char;
-			addDataDebug(&type,5);
-			addDataDebug((UInt8*)&nb_bits,4);
+            addDataDebug(&type, 5);
+            addDataDebug((UInt8*)&nb_bits, 4);
 		}
 		#endif
 
-		if(val<0)
-		{
+        if (val < 0) {
 		   pushBool(0);
 		   val = -val;
-		}
-		else pushBool(1);
+        } else {
+            pushBool(1);
+        }
+
 		addData((UInt8*)&val,nb_bits-1);
 	}
 

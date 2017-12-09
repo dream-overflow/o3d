@@ -58,8 +58,14 @@ add_library(${O3D_LIB_NAME} SHARED
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     target_link_libraries(${O3D_LIB_NAME}
-        # @todo
-    )
+            ${ZLIB_LIBRARY}
+            ${JPEG_LIBRARY}
+            ${PNG_LIBRARY}
+            ${OGG_LIBRARY}
+            ${VORBIS_LIBRARY}
+            ${VORBISFILE_LIBRARY}
+            ${OPENAL_LIBRARY}
+            ${FREETYPE_LIBRARIES})
 
     if(${O3D_USE_SDL2})
          target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})

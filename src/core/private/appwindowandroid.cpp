@@ -123,9 +123,9 @@ void AppWindow::applySettings(Bool fullScreen)
 
     }
 
-    if (!window) {
-        O3D_ERROR(E_InvalidResult("Unable to create the window"));
-    }
+//    if (!window) {
+//        O3D_ERROR(E_InvalidResult("Unable to create the window"));
+//    }
 
     // min size hint
     if (m_minSize.x() >= 0 && m_minSize.y() >= 0) {

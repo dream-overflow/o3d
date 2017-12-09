@@ -162,12 +162,13 @@ Int64 System::getTimeFrequency()
 // wait a delay (in ms)
 void System::waitMs(Int32 ms)
 {
-	if (ms == 0)
-	{
-		pthread_yield();
-	}
-	else
-	{
+    if (ms == 0) {
+    #ifdef O3D_ANDROID
+        usleep(0);
+    #else
+        pthread_yield();
+    #endif
+    } else {
 #ifdef O3D_USE_USLEEP
 		usleep(ms*1000);
 #else

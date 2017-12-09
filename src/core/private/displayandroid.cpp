@@ -22,7 +22,7 @@
 using namespace o3d;
 
 // change display mode
-void Display::setDisplayMode(AppWindow *appWindow, CIT_VideoModeList mode)
+void Display::setDisplayMode(AppWindow *appWindow, CIT_DisplayModeList mode)
 {
     if (mode == m_modes.end()) {
         O3D_ERROR(E_InvalidParameter("Invalid display mode"));

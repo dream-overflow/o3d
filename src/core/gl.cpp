@@ -62,7 +62,7 @@ void GL::init(const Char *library)
   #if defined(O3D_EGL)
     try {
         EGL::init();
-        ms_nativeImpl = ms_usedImpt = IMPL_EGL_15;
+        ms_nativeImpl = ms_usedImpl = IMPL_EGL_15;
         return;
     } catch(E_BaseException &e) {}
   #endif
@@ -268,8 +268,14 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
         #ifdef O3D_EGL
         case IMPL_EGL_15:
             {
+            #ifdef O3D_X11
                 EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<Display*>(display));
                 EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
+            #elif defined O3D_ANDROID
+                // @todo
+                // EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<Display*>(display));
+                // EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
+            #endif
             }
             break;
         #endif

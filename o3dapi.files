@@ -32,6 +32,7 @@ src/core/private/appwindowwin32.cpp
 src/core/private/appwindowwin32.cpp
 src/core/private/appwindowx11.cpp
 src/core/private/appwindowx11.cpp
+src/core/private/baseposix.cpp
 src/core/private/basewin32.cpp
 src/core/private/displayandroid.cpp
 src/core/private/displayandroid.cpp
@@ -83,6 +84,7 @@ src/core/private/wgl.cpp
 src/core/private/wgl.cpp
 src/core/sha1.cpp
 src/core/wgl.cpp
+src/engine/private/rendererandroid.cpp
 src/shaders/330_fp.glsl
 src/shaders/330_fp.glsl
 src/shaders/330_vp.glsl

@@ -395,7 +395,11 @@ void Renderer::destroy()
 
 void *Renderer::getProcAddress(const Char *ext) const
 {
-    return GLX::getProcAddress(ext);
+    if (m_state.getBit(STATE_EGL)) {
+        return EGL::getProcAddress(ext);
+    } else {
+        return GLX::getProcAddress(ext);
+    }
 }
 
 // Is it the current OpenGL context.
