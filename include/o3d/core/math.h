@@ -69,21 +69,21 @@ public:
 	}
 
     //! standard C/C++
-    struct _Std
+    struct O3D_API _Std
     {
 		//! standard C/C++ Sqrt
         static Float sqrt(Float);
     };
 
     //! SSE routines
-    struct _SSE
+    struct O3D_API _SSE
     {
 		//! SSE Sqrt
         static Float sqrt(Float);
     };
 
     //! 3DNow routines
-    struct _3DNow
+    struct O3D_API _3DNow
     {
 		//! 3DNow Sqrt
         static Float sqrt(Float);

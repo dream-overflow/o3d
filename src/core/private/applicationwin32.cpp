@@ -232,7 +232,7 @@ void Application::getBaseNamePrivate(Int32 argc, Char **argv)
         String path(buf);
         path.replace('\\', '/');
 
-        Int32 pos = ms_appsName->reverseFind('/');
+        Int32 pos = path.reverseFind('/');
         if (pos >= 0) {
             ms_appsName = new String(path);
             ms_appsName->remove(0, pos);
@@ -244,6 +244,7 @@ void Application::getBaseNamePrivate(Int32 argc, Char **argv)
             String path = ms_appsName->extract(0, pos+1);
             ms_appsPath = new String(FileManager::instance()->getFullFileName(path));
         } else {
+            ms_appsName = new String("undefined");
             ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
         }
     } else {
