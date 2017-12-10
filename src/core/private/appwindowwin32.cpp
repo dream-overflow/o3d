@@ -11,8 +11,8 @@
 #include "o3d/core/base.h"
 #include "o3d/core/wintools.h"
 
-// ONLY IF O3D_WIN32 IS SELECTED
-#ifdef O3D_WIN32
+// ONLY IF O3D_WGL OR O3D_WINDOWS ARE SELECTED
+#if defined(O3D_WGL) || defined(O3D_WINDOWS)
 
 #include "o3d/core/application.h"
 #include "o3d/core/appwindow.h"
@@ -22,89 +22,16 @@
 #include "o3d/core/wintools.h"
 #include "o3d/core/display.h"
 
+#include "o3d/core/gl.h"
+#include "o3d/core/private/wgldefines.h"
+#include "o3d/core/private/wgl.h"
+
+#ifdef O3D_EGL
+  #include "o3d/core/private/egldefines.h"
+  #include "o3d/core/private/egl.h"
+#endif
+
 using namespace o3d;
-
-//
-// WGL addendums
-//
-
-#define WGL_DRAW_TO_WINDOW_ARB         0x2001
-#define WGL_ACCELERATION_ARB           0x2003
-
-#define WGL_SUPPORT_OPENGL_ARB         0x2010
-#define WGL_DOUBLE_BUFFER_ARB          0x2011
-#define WGL_STEREO_ARB                 0x2012
-#define WGL_PIXEL_TYPE_ARB             0x2013
-
-#define WGL_COLOR_BITS_ARB             0x2014
-#define WGL_RED_BITS_ARB               0x2015
-#define WGL_RED_SHIFT_ARB              0x2016
-#define WGL_GREEN_BITS_ARB             0x2017
-#define WGL_GREEN_SHIFT_ARB            0x2018
-#define WGL_BLUE_BITS_ARB              0x2019
-#define WGL_BLUE_SHIFT_ARB             0x201A
-#define WGL_ALPHA_BITS_ARB             0x201B
-#define WGL_ALPHA_SHIFT_ARB            0x201C
-#define WGL_TYPE_RGBA_ARB              0x202B
-
-#define WGL_DEPTH_BITS_ARB             0x2022
-#define WGL_STENCIL_BITS_ARB           0x2023
-
-#define WGL_NO_ACCELERATION_ARB        0x2025
-#define WGL_GENERIC_ACCELERATION_ARB   0x2026
-#define WGL_FULL_ACCELERATION_ARB      0x2027
-
-#define WGL_SAMPLE_BUFFERS_ARB         0x2041
-#define WGL_SAMPLES_ARB                0x2042
-
-#ifndef APIENTRY
-#define APIENTRY
-#endif
-#ifndef APIENTRYP
-#define APIENTRYP APIENTRY *
-#endif
-
-// wglGetExtensionsStringARB prototype.
-typedef const char * (APIENTRYP PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
-
-// wglGetExtensionsStringARB prototype.
-typedef BOOL (APIENTRYP PFNWGLCHOOSEPIXELFORMATARBPROC) (HDC hdc,
-                                                         const int *piAttribIList,
-                                                         const FLOAT *pfAttribFList,
-                                                         UINT nMaxFormats,
-                                                         int *piFormats,
-                                                         UINT *nNumFormats);
-
-static Bool isExtensionSupported(const char *extList, const char *extension)
-{
-    const char *start;
-    const char *where, *terminator;
-
-    // Extension names should not have spaces.
-    where = strchr(extension, ' ');
-    if (where || *extension == '\0')
-        return False;
-
-    // It takes a bit of care to be fool-proof about parsing the
-    // OpenGL extensions string. Don't be fooled by sub-strings, etc.
-    for (start = extList;;)
-    {
-        where = strstr(start, extension);
-
-        if (!where)
-            break;
-
-        terminator = where + strlen(extension);
-
-        if (where == start || *(where - 1) == ' ')
-            if (*terminator == ' ' || *terminator == '\0')
-                return True;
-
-        start = terminator;
-    }
-
-    return False;
-}
 
 //
 // WIN32 addendums
@@ -153,8 +80,9 @@ void AppWindow::setMaxSize(const Vector2i &maxSize)
 // Apply window settings
 void AppWindow::applySettings(Bool fullScreen)
 {
-	if (!isSet())
+    if (!isSet()) {
 		O3D_ERROR(E_InvalidPrecondition("Window not set"));
+    }
 
     m_running = False;
 
@@ -170,8 +98,9 @@ void AppWindow::applySettings(Bool fullScreen)
 		m_resizable,
 		0);
 	
-	if (!m_hWnd)
+    if (!m_hWnd) {
 		O3D_ERROR(E_InvalidAllocation("m_hWnd"));
+    }
 
 	m_HDC = (_HDC)GetDC((HWND)m_hWnd);
 
@@ -198,33 +127,28 @@ void AppWindow::applySettings(Bool fullScreen)
 
     // active composition for Vista and above
 #ifdef PFD_SUPPORT_COMPOSITION
-    if (osvi.dwMajorVersion >= 6)
+    if (osvi.dwMajorVersion >= 6) {
         pfd.dwFlags |= PFD_SUPPORT_COMPOSITION;
+    }
 #endif
 
-    if ((pixelFormat = ChoosePixelFormat((HDC)m_HDC, &pfd)) == 0)
-    {
+    if ((pixelFormat = ChoosePixelFormat((HDC)m_HDC, &pfd)) == 0) {
         WinTools::destroyWindow(m_hWnd);
         WinTools::unregisterWindowClass(NULL, m_title);
 
         O3D_ERROR(E_InvalidResult("Unable to choose the pixel format"));
     }
 
-    if ((SetPixelFormat((HDC)m_HDC, pixelFormat, &pfd)) == FALSE)
-    {
+    if ((SetPixelFormat((HDC)m_HDC, pixelFormat, &pfd)) == FALSE) {
         WinTools::destroyWindow(m_hWnd);
         WinTools::unregisterWindowClass(NULL, m_title);
 
         O3D_ERROR(E_InvalidResult("Unable to set the pixel format"));
     }
 
-    // MSAA path
-    if (m_samples != NO_MSAA)
-    {
-        int r = 8, g = 8, b = 8, a = 8;
+    int r = 8, g = 8, b = 8, a = 8;
 
-        switch (m_colorFormat)
-        {
+    switch (m_colorFormat) {
         case COLOR_RGBA4:
             r = g = b = 4;
             a = 4;
@@ -264,61 +188,53 @@ void AppWindow::applySettings(Bool fullScreen)
             break;
         default:
             break;
-        }
+    }
 
-        HGLRC hGLRC;
+    HGLRC hGLRC;
+
+    if (GL::getImplementation() == GL::IMPL_WGL) {
+        //
+        // WGL
+        //
 
         // we create a dummy OpenGL context into the dummy window,
-        if ((hGLRC = wglCreateContext((HDC)m_HDC)) == NULL)
-        {
+        if ((hGLRC = WGL::createContext((HDC)m_HDC)) == nullptr) {
             WinTools::destroyWindow(m_hWnd);
             WinTools::unregisterWindowClass(NULL, m_title);
 
-            O3D_ERROR(E_InvalidResult("Unable to create the OpenGL context"));
+            O3D_ERROR(E_InvalidResult("Unable to create a dummy OpenGL context"));
         }
 
-        if (wglMakeCurrent((HDC)m_HDC, hGLRC) == False)
-        {
-            wglDeleteContext((HGLRC)hGLRC);
+        if (WGL::makeCurrent((HDC)m_HDC, hGLRC) == False) {
+            WGL::deleteContext((HGLRC)hGLRC);
 
             WinTools::destroyWindow(m_hWnd);
             WinTools::unregisterWindowClass(NULL, m_title);
 
-            O3D_ERROR(E_InvalidResult("Unable to set the new OpenGL context as current"));
+            O3D_ERROR(E_InvalidResult("Unable to set the dummy OpenGL context as current"));
         }
 
-        // get the wgl extensions
-        PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
-        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
-
-        PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
-        wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-
-        if (!wglChoosePixelFormatARB)
-        {
-            wglMakeCurrent((HDC)m_HDC, 0);
-            wglDeleteContext((HGLRC)hGLRC);
+        if (!WGL::choosePixelFormatARB) {
+            WGL::makeCurrent((HDC)m_HDC, 0);
+            WGL::deleteContext((HGLRC)hGLRC);
 
             WinTools::destroyWindow(m_hWnd);
             WinTools::unregisterWindowClass(NULL, m_title);
 
-            O3D_ERROR(E_InvalidResult("Unable to find wglChoosePixelFormatARB"));
+            O3D_ERROR(E_InvalidResult("Missing WGL::choosePixelFormatARB"));
         }
 
-        const char *wglExts = nullptr;
+        if (m_samples != NO_MSAA) {
+            // need WGL_ARB_multisample
+            if (!WGL::getExtensionsStringARB || !WGL::isExtensionSupported("WGL_ARB_multisample", m_HDC)) {
+                WGL::makeCurrent((HDC)m_HDC, 0);
+                WGL::deleteContext((HGLRC)hGLRC);
 
-        if (wglGetExtensionsStringARB)
-            wglExts = wglGetExtensionsStringARB((HDC)m_HDC);
+                WinTools::destroyWindow(m_hWnd);
+                WinTools::unregisterWindowClass(NULL, m_title);
 
-        if (!wglExts || !isExtensionSupported(wglExts, "WGL_ARB_multisample"))
-        {
-            wglMakeCurrent((HDC)m_HDC, 0);
-            wglDeleteContext((HGLRC)hGLRC);
-
-            WinTools::destroyWindow(m_hWnd);
-            WinTools::unregisterWindowClass(NULL, m_title);
-
-            O3D_ERROR(E_InvalidResult("Unable to find WGL_ARB_multisample"));
+                O3D_ERROR(E_InvalidResult("Missing WGL_ARB_multisample extension"));
+            }
         }
 
         // attributes list
@@ -342,60 +258,68 @@ void AppWindow::applySettings(Bool fullScreen)
         float attribsf[] = {0, 0};
 
         // finally get our pixel format
-        BOOL valid = wglChoosePixelFormatARB(
-                    (HDC)m_HDC,
-                    attribsi,
-                    attribsf,
-                    1,
-                    &pixelFormat,
-                    &numFormats);
+        BOOL valid = WGL::choosePixelFormatARB(
+                         (HDC)m_HDC,
+                         attribsi,
+                         attribsf,
+                         1,
+                         &pixelFormat,
+                         &numFormats);
 
         // delete dummy OpenGL context
-        wglMakeCurrent((HDC)m_HDC, 0);
-        wglDeleteContext((HGLRC)hGLRC);
+        WGL::makeCurrent((HDC)m_HDC, 0);
+        WGL::deleteContext((HGLRC)hGLRC);
 
-        // we found at least one
-        if (valid && numFormats > 0)
-        {
-            // destroy the dummy window
-            WinTools::destroyWindow(m_hWnd);
-
-            // and recreate the final window
-            m_hWnd = WinTools::createWindow(
-                NULL,
-                m_title,
-                "",
-                m_clientWidth,
-                m_clientHeight,
-                (_WNDPROC)AppWindow::wndProc,
-                fullScreen,
-                m_resizable,
-                0);
-
-            if (!m_hWnd)
-                O3D_ERROR(E_InvalidAllocation("m_hWnd"));
-
-            m_HDC = (_HDC)GetDC((HWND)m_hWnd);
-
-            // now we can set our customized pixel format
-            if ((SetPixelFormat((HDC)m_HDC, pixelFormat, &pfd)) == FALSE)
-            {
-                WinTools::destroyWindow(m_hWnd);
-                WinTools::unregisterWindowClass(NULL, m_title);
-
-                O3D_ERROR(E_InvalidResult("Unable to set the pixel format"));
-            }
-        }
-        else
+        // we don't found at least one
+        if (!valid || numFormats <= 0) {
             O3D_ERROR(E_InvalidResult("Unable to choose the pixel format"));
+        }
+    } else if (GL::getImplementation() == GL::IMPL_EGL_15) {
+      #ifdef O3D_EGL
+        // @todo
+      #else
+        O3D_ERROR(E_UnsuportedFeature("Support for EGL is missing"));
+      #endif
+    } else {
+        O3D_ERROR(E_UnsuportedFeature("Support for WGL or EGL only"));
+    }
+
+    // destroy the dummy window
+    WinTools::destroyWindow(m_hWnd);
+
+    // and recreate the final window
+    m_hWnd = WinTools::createWindow(
+                 NULL,
+                 m_title,
+                 "",
+                 m_clientWidth,
+                 m_clientHeight,
+                 (_WNDPROC)AppWindow::wndProc,
+                 fullScreen,
+                 m_resizable,
+                 0);
+
+    if (!m_hWnd) {
+        O3D_ERROR(E_InvalidAllocation("m_hWnd"));
+    }
+
+    m_HDC = (_HDC)GetDC((HWND)m_hWnd);
+
+    // now we can set our customized pixel format
+    if ((SetPixelFormat((HDC)m_HDC, pixelFormat, &pfd)) == FALSE) {
+        WinTools::destroyWindow(m_hWnd);
+        WinTools::unregisterWindowClass(NULL, m_title);
+
+        O3D_ERROR(E_InvalidResult("Unable to set the pixel format"));
     }
 
     m_PF = pixelFormat;
 
 	Application::addAppWindow(this);
 
-	if (!fullScreen)
+    if (!fullScreen) {
 		WinTools::centerWindow(m_hWnd);
+    }
 
 	// get window position and client size
 	getWindowPosAndClientSize(m_hWnd, m_posX, m_posY, m_width, m_height, m_clientWidth, m_clientHeight);
@@ -413,13 +337,13 @@ void AppWindow::destroy()
 
 	m_icon.destroy();
 
-	if (m_hWnd != NULL_HWND)
-	{
-		if (isFullScreen())
+    if (m_hWnd != NULL_HWND) {
+        if (isFullScreen()) {
             Display::instance()->restoreDisplayMode();
+        }
 
 		WinTools::destroyWindow(m_hWnd);
-		WinTools::unregisterWindowClass(NULL, m_title);
+        WinTools::unregisterWindowClass(nullptr, m_title);
 
 		m_hWnd = NULL_HWND;
 	}
@@ -434,17 +358,18 @@ void AppWindow::setTitle(const String& title)
 {
 	m_title = title;
 
-	if (m_hWnd != NULL_HWND)
+    if (m_hWnd != NULL_HWND) {
 		SetWindowTextW((HWND)m_hWnd, title.getData());
+    }
 }
 
 void AppWindow::setIcon(const Image &icon)
 {
-	if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8))
+    if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8)) {
 		O3D_ERROR(E_InvalidFormat("Icon must be O3D_RGB_U8 or O3D_RGBA_U8"));
+    }
 
-	if ((m_hWnd != NULL_HWND) && icon.isValid())
-	{
+    if ((m_hWnd != NULL_HWND) && icon.isValid()) {
 		Image localPicture(icon);
 
 		// get the first pixel as color key
@@ -458,13 +383,13 @@ void AppWindow::setIcon(const Image &icon)
 
 		// small icon
 		Image icon16(localPicture);
-		if ((icon16.getWidth() != 16) ||(icon16.getHeight() != 16))
+        if ((icon16.getWidth() != 16) ||(icon16.getHeight() != 16)) {
 			icon16.resize(16, 16, FILTER_NEAREST);
+        }
 
 		const UInt8 *data16 = icon16.getData();
 
-		for (UInt32 i = 0, j = 0; i < 16*16; ++i, j+=4)
-		{
+        for (UInt32 i = 0, j = 0; i < 16*16; ++i, j+=4) {
 			andBits16[i] = (data16[3] > 0) ? 0 : 0xff;
 			xorBits16[j+2] = data16[j];
 			xorBits16[j+1] = data16[j+1];
@@ -474,13 +399,13 @@ void AppWindow::setIcon(const Image &icon)
 
 		// large icon
 		Image icon32(localPicture);
-		if ((icon32.getWidth() != 16) ||(icon32.getHeight() != 16))
+        if ((icon32.getWidth() != 16) ||(icon32.getHeight() != 16)) {
 			icon32.resize(32, 32, FILTER_NEAREST);
+        }
 
 		const UInt8 *data32 = icon32.getData();
 
-		for (UInt32 i = 0, j = 0; i < 32*32; ++i, j+=4)
-		{
+        for (UInt32 i = 0, j = 0; i < 32*32; ++i, j+=4) {
 			andBits32[i] = (data32[3] > 0) ? 0 : 0xff;
 			xorBits32[j+2] = data32[j];
 			xorBits32[j+1] = data32[j+1];
@@ -512,20 +437,20 @@ void AppWindow::setIcon(const Image &icon)
 			xorBits32);
 
 		// Set the icon for the window
-		if (smallIcon)
+        if (smallIcon) {
 			::SendMessage((HWND)m_hWnd, WM_SETICON, ICON_SMALL, (LPARAM)smallIcon);
+        }
 
 		// Set the icon in the task manager
-		if (largeIcon)
+        if (largeIcon) {
 			::SendMessage((HWND)m_hWnd, WM_SETICON, ICON_BIG, (LPARAM)largeIcon);
+        }
 
 		deleteArray(andBits16);
 		deleteArray(andBits32);
 		deleteArray(xorBits16);
 		deleteArray(xorBits32);
-	}
-	else if (m_hWnd != NULL_HWND)
-	{
+    } else if (m_hWnd != NULL_HWND) {
 		// remove icon
 		// If the window exists send a message, otherwise the ApplySettings will use
 		// the value set in m_icon.
@@ -533,12 +458,14 @@ void AppWindow::setIcon(const Image &icon)
 		HICON largeIcon = NULL;
 
 		// Set the icon for the window
-		if (smallIcon)
+        if (smallIcon) {
 			::SendMessage((HWND)m_hWnd, WM_SETICON, ICON_SMALL, (LPARAM)smallIcon);
+        }
 
 		// Set the icon in the task manager
-		if (largeIcon)
+        if (largeIcon) {
 			::SendMessage((HWND)m_hWnd, WM_SETICON, ICON_BIG, (LPARAM)largeIcon);
+        }
 	}
 
 	m_icon = icon;
@@ -549,8 +476,7 @@ void AppWindow::setSize(Int32 width,Int32 height)
 	m_clientWidth = width;
 	m_clientHeight = height;
 
-	if (m_hWnd != NULL_HWND)
-	{
+    if (m_hWnd != NULL_HWND) {
 		RECT rect;
 
 		GetWindowRect((HWND)m_hWnd, &rect);
@@ -729,7 +655,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 void AppWindow::swapBuffers()
 {
     if (m_HDC != NULL_HDC) {
-		::SwapBuffers((HDC)m_HDC);
+        WGL::swapBuffers((HDC)m_HDC);
     }
 }
 
@@ -1264,5 +1190,4 @@ LRESULT CALLBACK AppWindow::wndProc(
 	return DefWindowProcW(hWnd, msg, wParam, lParam);
 }
 
-#endif // O3D_WIN32
-
+#endif // O3D_WGL || O3D_WINDOWS

@@ -30,8 +30,19 @@ public:
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
 
-    // @todo
-    static Bool swapIntervalEXT(Int32 i);
+    //! Is an extension supported (need getExtensionsStringARB to be valid before)
+    static Bool isExtensionSupported(const Char *ext, _HDC hDC);
+
+    static PFNSWAPBUFFERSPROC swapBuffers;
+    static PFNWGLSWAPINTERVALEXTPROC swapIntervalEXT;
+    static PFNWGLGETEXTENSIONSSTRINGARBPROC getExtensionsStringARB;
+    static PFNWGLCREATECONTEXTATTRIBSARBPROC createContextAttribsARB;
+    static PFNWGLCHOOSEPIXELFORMATARBPROC choosePixelFormatARB;
+    static PFNWGLMAKECURRENTPROC makeCurrent;
+    static PFNWGLCREATECONTEXTPROC createContext;
+    static PFNWGLDELETECONTEXTPROC deleteContext;
+    static PFNWGLGETCURRENTCONTEXTPROC getCurrentContext;
+    static PFNWGLSHARELISTSPROC shareLists;
 
 private:
 

@@ -10,11 +10,12 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/types.h"
 
+// ONLY IF O3D_WGL OR O3D_WINDOWS ARE SELECTED
 #if defined(O3D_WGL) || defined(O3D_WINDOWS)
 
 #include "o3d/core/dynamiclibrary.h"
 
-// #include "o3d/core/private/wgldefines.h"
+#include "o3d/core/private/wgldefines.h"
 #include "o3d/core/private/wgl.h"
 
 #include <windows.h>
@@ -29,24 +30,41 @@ using namespace o3d;
 
 DynamicLibrary* WGL::ms_wgl = nullptr;
 
-Bool WGL::swapIntervalEXT(Int32 i)
-{
-    return False; // @todo as pointer foo
-}
+PFNSWAPBUFFERSPROC WGL::swapBuffers = nullptr;
+PFNWGLSWAPINTERVALEXTPROC WGL::swapIntervalEXT = nullptr;
+PFNWGLGETEXTENSIONSSTRINGARBPROC WGL::getExtensionsStringARB = nullptr;
+PFNWGLCREATECONTEXTATTRIBSARBPROC WGL::createContextAttribsARB = nullptr;
+PFNWGLCHOOSEPIXELFORMATARBPROC WGL::choosePixelFormatARB = nullptr;
+PFNWGLMAKECURRENTPROC WGL::makeCurrent = nullptr;
+PFNWGLCREATECONTEXTPROC WGL::createContext = nullptr;
+PFNWGLDELETECONTEXTPROC WGL::deleteContext = nullptr;
+PFNWGLGETCURRENTCONTEXTPROC WGL::getCurrentContext = nullptr;
+PFNWGLSHARELISTSPROC WGL::shareLists = nullptr;
 
 void WGL::init()
 {
     ms_wgl = DynamicLibrary::load("Opengl32.dll");
 
     _wglGetProcAddress = (WGLGETPROCADDRESSPROC)ms_wgl->getFunctionPtr("wglGetProcAddress");
+    swapBuffers = (PFNSWAPBUFFERSPROC)ms_wgl->getFunctionPtr("SwapBuffers");
 
-    // @todo
+    swapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)getProcAddress("wglSwapIntervalEXT");
+    getExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)getProcAddress("wglGetExtensionsStringARB");
+    createContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)getProcAddress("wglCreateContextAttribsARB");
+    choosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)getProcAddress("wglChoosePixelFormatARB");
+    makeCurrent = (PFNWGLMAKECURRENTPROC)getProcAddress("wglMakeCurrent");
+    createContext = (PFNWGLCREATECONTEXTPROC)getProcAddress("wglCreateContext");
+    deleteContext = (PFNWGLDELETECONTEXTPROC)getProcAddress("wglDeleteContext");
+    getCurrentContext = (PFNWGLGETCURRENTCONTEXTPROC)getProcAddress("wglGetCurrentContext");
+    shareLists = (PFNWGLSHARELISTSPROC)getProcAddress("wglShareLists");
 }
 
 void WGL::quit()
 {
     if (ms_wgl) {
         _wglGetProcAddress = nullptr;
+        swapBuffers = nullptr;
+        getExtensionsStringARB = nullptr;
 
         DynamicLibrary::unload(ms_wgl);
         ms_wgl = nullptr;
@@ -60,8 +78,47 @@ Bool WGL::isValid()
 
 void* WGL::getProcAddress(const Char *ext)
 {
-    // return (void*)::_wglGetProcAddress((const char*)ext);
-    return (void*)::wglGetProcAddress((const char*)ext);
+    return (void*)::_wglGetProcAddress((LPCSTR)ext);
+    // return (void*)::wglGetProcAddress((const char*)ext);
+}
+
+Bool WGL::isExtensionSupported(const Char *ext, _HDC hDC)
+{
+    if (!getExtensionsStringARB) {
+        return False;
+    }
+
+    const Char *extList = getExtensionsStringARB((::HDC)hDC);
+    const Char *start;
+    const Char *where, *terminator;
+
+    // Extension names should not have spaces.
+    where = strchr(ext, ' ');
+    if (where || *ext == '\0') {
+        return False;
+    }
+
+    // It takes a bit of care to be fool-proof about parsing the
+    // OpenGL extensions string. Don't be fooled by sub-strings, etc.
+    for (start = extList;;) {
+        where = strstr(start, ext);
+
+        if (!where) {
+            break;
+        }
+
+        terminator = where + strlen(ext);
+
+        if (where == start || *(where - 1) == ' ') {
+            if (*terminator == ' ' || *terminator == '\0') {
+                return True;
+            }
+        }
+
+        start = terminator;
+    }
+
+    return False;
 }
 
 #endif // O3D_WGL || O3D_WINDOWS

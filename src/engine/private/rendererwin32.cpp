@@ -10,8 +10,8 @@
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/renderer.h"
 
-// ONLY IF O3D_WIN32 IS SELECTED
-#ifdef O3D_WIN32
+// ONLY IF O3D_WGL OR O3D_WINDOWS ARE SELECTED
+#if defined(O3D_WGL) || defined(O3D_WINDOWS)
 
 using namespace o3d;
 
@@ -26,9 +26,6 @@ using namespace o3d;
 #include "o3d/core/gl.h"
 #include "o3d/core/private/wgldefines.h"
 #include "o3d/core/private/wgl.h"
-
-// @see WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_PROFILE_MASK_ARB
-// @todo complete WGL class
 
 #ifdef O3D_EGL
   #include "o3d/core/private/egldefines.h"
@@ -45,58 +42,6 @@ extern "C" {
     DWORD NvOptimusEnablement = 0x00000001;
 }
 #endif
-
-// wglGetExtensionsStringARB prototype.
-typedef const char * (APIENTRYP PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
-
-// wglCreateContextAttribsARB prototype.
-typedef HGLRC (APIENTRYP PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC, HGLRC, const int*);
-
-#define WGL_CONTEXT_MAJOR_VERSION_ARB   0x2091
-#define WGL_CONTEXT_MINOR_VERSION_ARB   0x2092
-#define WGL_CONTEXT_LAYER_PLANE_ARB     0x2093
-#define WGL_CONTEXT_FLAGS_ARB           0x2094
-#define WGL_CONTEXT_PROFILE_MASK_ARB    0x9126
-
-#define WGL_CONTEXT_DEBUG_BIT_ARB       0x0001
-#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB  0x0002
-
-#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB    0x00000001
-#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
-
-#define ERROR_INVALID_VERSION_ARB       0x2095
-#define ERROR_INVALID_PROFILE_ARB       0x2096
-
-static Bool isExtensionSupported(const char *extList, const char *extension)
-{
-	const char *start;
-	const char *where, *terminator;
-
-	// Extension names should not have spaces.
-	where = strchr(extension, ' ');
-	if (where || *extension == '\0')
-		return False;
-
-	// It takes a bit of care to be fool-proof about parsing the
-	// OpenGL extensions string. Don't be fooled by sub-strings, etc.
-	for (start = extList;;)
-	{
-		where = strstr(start, extension);
-
-		if (!where)
-			break;
-
-		terminator = where + strlen(extension);
-
-		if (where == start || *(where - 1) == ' ')
-			if (*terminator == ' ' || *terminator == '\0')
-				return True;
-
-		start = terminator;
-	}
-
-	return False;
-}
 
 // Create the OpenGL context.
 void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
@@ -129,16 +74,16 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         // WGL implementation
         //
 
-        if ((m_HGLRC = (_HGLRC)wglCreateContext((HDC)m_HDC)) == nullptr) {
+        if ((m_HGLRC = (_HGLRC)WGL::createContext((HDC)m_HDC)) == nullptr) {
             O3D_ERROR(E_InvalidResult("Unable to create the OpenGL context"));
         }
 
         if (sharing != nullptr) {
-            if (!wglShareLists((HGLRC)sharing->getHGLRC(), (HGLRC)m_HGLRC))
+            if (!WGL::shareLists((HGLRC)sharing->getHGLRC(), (HGLRC)m_HGLRC))
                 O3D_ERROR(E_InvalidResult("Unable to share the OpenGL context"));
         }
 
-        if (wglMakeCurrent((HDC)m_HDC,(HGLRC)m_HGLRC) == False) {
+        if (WGL::makeCurrent((HDC)m_HDC,(HGLRC)m_HGLRC) == False) {
             O3D_ERROR(E_InvalidResult("Unable to set the new OpenGL context as current"));
         }
 
@@ -146,7 +91,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         Int32 queryMinor = 0;
 
         // we can retrieve glGetString now
-        _glGetString = (PFNGLGETSTRINGPROC)wglGetProcAddress("glGetString");
+        _glGetString = (PFNGLGETSTRINGPROC)WGL::getProcAddress("glGetString");
 
         const GLubyte *version = _glGetString(GL_VERSION);
         if (version && (version[0] == '3')) {
@@ -165,11 +110,11 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
 
         // we need at least OpenGL 1.2
         if (version && (version[0] == '1') && (version[2] < '2')) {
-            wglMakeCurrent((HDC)m_HDC, 0);
-            wglDeleteContext((HGLRC)m_HGLRC);
+            WGL::makeCurrent((HDC)m_HDC, 0);
+            WGL::deleteContext((HGLRC)m_HGLRC);
 
-            m_HDC = NULL;
-            m_HGLRC = NULL;
+            m_HDC = nullptr;
+            m_HGLRC = nullptr;
 
             O3D_ERROR(E_InvalidPrecondition("OpenGL 1.2 or greater must be available"));
         }
@@ -178,31 +123,22 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         // Create an OpenGL context with wglGetExtensionsStringARB
         //
 
-        PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
-        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
-
-        PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
-        wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-
-        const char *wglExts = nullptr;
-
-        if (wglGetExtensionsStringARB)
-            wglExts = wglGetExtensionsStringARB((HDC)m_HDC);
-
         // Check for the WGL_ARB_create_context extension string and the function.
         // If either is not present, use old style context creation method.
-        if (!wglExts || !isExtensionSupported(wglExts, "WGL_ARB_create_context") || !wglCreateContextAttribsARB) {
+        if (!WGL::getExtensionsStringARB || !WGL::isExtensionSupported("WGL_ARB_create_context", m_HDC) || !WGL::createContextAttribsARB) {
             O3D_MESSAGE("WGL_ARB_create_context is not present use old style");
         } else {
             O3D_MESSAGE(String::print("Creating an OpenGL %i.%i context...", queryMajor, queryMinor));
 
             int flagsARB = 0;
 
-            if (queryMajor > 2)
+            if (queryMajor > 2) {
                 flagsARB |= WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+            }
 
-            if (debug)
+            if (debug) {
                 flagsARB |= WGL_CONTEXT_DEBUG_BIT_ARB;
+            }
 
             // Ask for the more higher supported GL context
             int attribList[] = {
@@ -216,23 +152,24 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
             _HGLRC prevContext = m_HGLRC;
 
             // And create the new context with attributes
-            if ((m_HGLRC = (_HGLRC)wglCreateContextAttribsARB(
+            if ((m_HGLRC = (_HGLRC)WGL::createContextAttribsARB(
                      (HDC)m_HDC,
                      sharing != nullptr ? (HGLRC)sharing->getHGLRC() : 0,
-                     attribList)) == NULL) {
+                     attribList)) == nullptr) {
+
                 // Delete the previous context
-                wglMakeCurrent((HDC)m_HDC, 0);
-                wglDeleteContext((HGLRC)prevContext);
+                WGL::makeCurrent((HDC)m_HDC, 0);
+                WGL::deleteContext((HGLRC)prevContext);
 
                 O3D_ERROR(E_InvalidResult(String("Unable to create the OpenGL ") +
                                           reinterpret_cast<const Char*>(version) + " context"));
             }
 
             // Delete the previous context
-            wglMakeCurrent((HDC)m_HDC, 0);
-            wglDeleteContext((HGLRC)prevContext);
+            WGL::makeCurrent((HDC)m_HDC, 0);
+            WGL::deleteContext((HGLRC)prevContext);
 
-            if (wglMakeCurrent((HDC)m_HDC, (HGLRC)m_HGLRC) == False) {
+            if (WGL::makeCurrent((HDC)m_HDC, (HGLRC)m_HGLRC) == False) {
                 O3D_ERROR(E_InvalidResult(String("Unable to set the new OpenGL ") +
                                           reinterpret_cast<const Char*>(version) + " context as current"));
             }
@@ -245,8 +182,32 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         //
 
     #ifdef O3D_EGL
-        // @todo
+        // @todo display =
+        EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
+        EGLint contextAttributes[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 3,
+            EGL_NONE
+        };
+
+        EGLContext eglContext = eglCreateContext(
+                                    eglDisplay,
+                                    eglConfig,
+                                    sharing ? reinterpret_cast<EGLContext>(sharing->getHGLRC()) : EGL_NO_CONTEXT,
+                                    contextAttributes);
+
+        if (eglContext == EGL_NO_CONTEXT) {
+            O3D_ERROR(E_InvalidResult("Unable to create the OpenGL context"));
+        }
+
+        EGL::makeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
+
+        m_HDC = appWindow->getHDC();
+        m_HGLRC = reinterpret_cast<_HGLRC>(eglContext);
+        m_state.enable(STATE_DEFINED);
+        m_state.enable(STATE_EGL);
     #else
         O3D_ERROR(E_UnsuportedFeature("Support for EGL is missing"));
     #endif
@@ -317,20 +278,26 @@ void Renderer::destroy()
 
 		deletePtr(m_glContext);
 
-        #ifdef O3D_EGL
-
-        #else
         if (m_HGLRC != NULL_HGLRC) {
-			wglMakeCurrent((HDC)m_HDC, 0);
-			wglDeleteContext((HGLRC)m_HGLRC);
+            if (m_state.getBit(STATE_EGL)) {
+              #ifdef O3D_EGL
+                // @todo
+                // EGLDisplay eglDisplay = EGL::getDisplay(display);
+                // EGL::makeCurrent(eglDisplay, 0, 0, 0);
+
+                // EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
+              #endif
+            } else {
+                WGL::makeCurrent((HDC)m_HDC, 0);
+                WGL::deleteContext((HGLRC)m_HGLRC);
+            }
 
             m_HGLRC = nullptr;
 		}
-        #endif
 
         if (m_HDC != NULL_HDC) {
 			ReleaseDC(reinterpret_cast<HWND>(m_appWindow->getHWND()), (HDC)m_HDC);
-			m_HDC = NULL;
+            m_HDC = nullptr;
 		}
 
         m_depth = m_bpp = m_stencil = m_samples = 0;
@@ -349,33 +316,69 @@ void Renderer::destroy()
 
 void *Renderer::getProcAddress(const Char *ext) const
 {
-#ifdef O3D_EGL
-
-#else
-    // return WGL::getProcAddress(ext);
-    return (void*)wglGetProcAddress((LPCSTR)ext);
-#endif
+    if (m_state.getBit(STATE_EGL)) {
+      #ifdef O3D_EGL
+        return EGL::getProcAddress(ext);
+     #else
+        return nullptr;
+      #endif
+    } else {
+        return WGL::getProcAddress(ext);
+    }
 }
 
 // Is it the current OpenGL context.
 Bool Renderer::isCurrent() const
 {
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return False;
+    }
 
-    return (m_state.getBit(STATE_DEFINED) && (wglGetCurrentContext() == (HGLRC)m_HGLRC));
+    if (m_state.getBit(STATE_EGL)) {
+      #ifdef O3D_EGL
+        return EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC);
+      #else
+        return False;
+      #endif
+    } else {
+        return WGL::getCurrentContext() == (HGLRC)m_HGLRC;
+    }
 }
 
 // Set as current OpenGL context
 void Renderer::setCurrent()
 {
-    #ifdef O3D_EGL
+    if (!m_state.getBit(STATE_DEFINED)) {
+        return;
+    }
 
-    #else
-    if (m_state.getBit(STATE_DEFINED) && (wglGetCurrentContext() != (HGLRC)m_HGLRC)) {
-        if (wglMakeCurrent((HDC)m_HDC,(HGLRC)m_HGLRC) == False) {
-			O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+    if (m_state.getBit(STATE_EGL)) {
+      #ifdef O3D_EGL
+        if (EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC)) {
+            return;
+        }
+
+        EGLDisplay eglDisplay = EGL::getDisplay(display);
+
+        if (EGL::makeCurrent(
+                eglDisplay,
+                reinterpret_cast<EGLSurface>(m_HDC),
+                reinterpret_cast<EGLSurface>(m_HDC),
+                reinterpret_cast<EGLContext>(m_HGLRC))) {
+            O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+        }
+     #else
+        O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+     #endif
+    } else {
+        if (WGL::getCurrentContext() == (HGLRC)m_HGLRC) {
+            return;
+        }
+
+        if (WGL::makeCurrent((HDC)m_HDC,(HGLRC)m_HGLRC) == False) {
+            O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
         }
     }
-    #endif
 }
 
 Bool Renderer::setVSyncMode(VSyncMode mode)
@@ -395,12 +398,15 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
     }
 
     if (m_state.getBit(STATE_EGL)) {
-    #ifdef O3D_EGL
+      #ifdef O3D_EGL
+        // @todo display =
         EGLDisplay eglDisplay = EGL::getDisplay(display);
         if (!EGL::swapInterval(eglDisplay, value)) {
             return False;
         }
-    #endif
+      #else
+        return False;
+      #endif
     } else if (WGL::swapIntervalEXT) {
         if (!WGL::swapIntervalEXT(value)) {
             return False;
@@ -423,4 +429,4 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
     return True;
 }
 
-#endif // O3D_WIN32 
+#endif // O3D_WGL || O3D_WINDOWS

@@ -52,7 +52,7 @@ void GL::init(const Char *library)
         return;
     } catch(E_BaseException &e) {}
   #endif
-  #if defined(O3D_SDL)
+  #if defined(O3D_SDL2)
     // SDL2::init();
     if (SDL_WasInit(SDL_INIT_VIDEO) == SDL_INIT_VIDEO) {
         ms_nativeImpl = ms_usedImpl = IMPL_SDL_2;
@@ -133,7 +133,7 @@ void GL::quit()
     deletePtr(ms_callback);
     ms_nativeImpl = ms_usedImpl = IMPL_NONE;
 
-#if defined(O3D_SDL)
+#if defined(O3D_SDL2)
     if (SDL_WasInit(SDL_INIT_VIDEO) == SDL_INIT_VIDEO) {
         // SDL2::quit();
     }
@@ -148,7 +148,7 @@ void GL::quit()
         GLX::quit();
     }
 #endif
-#if defined(O3D_WIN32) || defined(O3D_WIN64)
+#if defined(O3D_WINDOWS)
     if (WGL::isValid()) {
         WGL::quit();
     }
@@ -290,7 +290,7 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
             SDL_GL_SwapWindow(reinterpret_cast<SDL_Window*>(hdc));
             break;
         #endif
-        #ifdef O3D_WINDOWS
+        #if defined(O3D_WINDOWS)
         case IMPL_WGL:
             ::SwapBuffers((HDC)hdc);
             // WGL::swapBuffers((HDC)hdc);  // @todo

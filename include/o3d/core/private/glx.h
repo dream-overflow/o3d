@@ -30,6 +30,9 @@ public:
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
 
+    //! Is an extension supported (need getExtensionsStringARB to be valid before)
+    static Bool isExtensionSupported(const Char *ext);
+
     static GLXQUERYEXTENSIONSSTRINGPROC queryExtensionsString;
     static GLXCREATECONTEXTPROC createContext;
     static GLXDESTROYCONTEXTPROC destroyContext;
@@ -44,6 +47,7 @@ public:
     static GLXGETFBCONFIGATTRIBPROC getFBConfigAttrib;
     static GLXSWAPBUFFERSPROC swapBuffers;
     static GLXSWAPINTERVALEXTPROC swapIntervalEXT;
+    static GLXCREATECONTEXTATTRIBSARBPROC createContextAttribsARB;
 
 private:
 

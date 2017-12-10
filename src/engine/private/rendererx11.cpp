@@ -45,40 +45,6 @@ static int contextErrorHandler(Display *display, XErrorEvent *event)
     return 0;
 }
 
-static Bool isExtensionSupported(const char *extList, const char *extension)
-{
-	const char *start;
-	const char *where, *terminator;
-
-	// Extension names should not have spaces.
-	where = strchr(extension, ' ');
-    if (where || *extension == '\0') {
-		return False;
-    }
-
-	// It takes a bit of care to be fool-proof about parsing the
-	// OpenGL extensions string. Don't be fooled by sub-strings, etc.
-    for (start = extList;;) {
-		where = strstr(start, extension);
-
-        if (!where) {
-			break;
-        }
-
-		terminator = where + strlen(extension);
-
-        if (where == start || *(where - 1) == ' ') {
-            if (*terminator == ' ' || *terminator == '\0') {
-				return True;
-            }
-        }
-
-		start = terminator;
-	}
-
-	return False;
-}
-
 // Create the OpenGL context.
 void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
 {
@@ -165,16 +131,10 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         // Create an OpenGL context with glXCreateContextAttribsARB
         //
 
-        // Get the default screen's GLX extension list
-        const char *glxExts = GLX::queryExtensionsString(display, DefaultScreen(display));
-
         // It is not necessary to create or make current to a context before calling glXGetProcAddress
-        GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = 0;
-        glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC)GLX::getProcAddress("glXCreateContextAttribsARB");
-
         // Check for the GLX_ARB_create_context extension string and the function.
         // If either is not present, use GLX 1.3 context creation method.
-        if (!isExtensionSupported(glxExts, "GLX_ARB_create_context") || !glXCreateContextAttribsARB) {
+        if (!GLX::isExtensionSupported("GLX_ARB_create_context") || !GLX::createContextAttribsARB) {
             O3D_MESSAGE("GLX_ARB_create_context is not present use old style");
         } else {
             GLX::destroyContext(display, context);
@@ -199,7 +159,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
                 //queryMajor > 2 ? GLX_CONTEXT_PROFILE_MASK_ARB : (int)None, queryMajor > 2 ? GLX_CONTEXT_CORE_PROFILE_BIT_ARB : (int)None,
                 None };
 
-            context = glXCreateContextAttribsARB(
+            context = GLX::createContextAttribsARB(
                           display,
                           bestFbc,
                           sharing != nullptr ? reinterpret_cast<GLXContext>(sharing->m_HGLRC) : 0,
@@ -228,7 +188,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
                                           queryMajor,
                                           queryMinor));
 
-                context = glXCreateContextAttribsARB(
+                context = GLX::createContextAttribsARB(
                               display,
                               bestFbc,
                               sharing != nullptr ? reinterpret_cast<GLXContext>(sharing->m_HGLRC) : 0,
@@ -398,9 +358,11 @@ void Renderer::destroy()
 void *Renderer::getProcAddress(const Char *ext) const
 {
     if (m_state.getBit(STATE_EGL)) {
-    #ifdef O3D_EGL
+      #ifdef O3D_EGL
         return EGL::getProcAddress(ext);
-    #endif
+      #else
+        return nullptr;
+      #endif
     } else {
         return GLX::getProcAddress(ext);
     }
@@ -414,9 +376,11 @@ Bool Renderer::isCurrent() const
     }
 
     if (m_state.getBit(STATE_EGL)) {
-    #ifdef O3D_EGL
+      #ifdef O3D_EGL
         return EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC);
-    #endif
+      #else
+        return False;
+      #endif
     } else {
         return GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC);
     }
@@ -432,7 +396,7 @@ void Renderer::setCurrent()
     Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
     if (m_state.getBit(STATE_EGL)) {
-    #ifdef O3D_EGL
+      #ifdef O3D_EGL
         if (EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC)) {
             return;
         }
@@ -446,7 +410,9 @@ void Renderer::setCurrent()
                 reinterpret_cast<EGLContext>(m_HGLRC))) {
             O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
         }
-    #endif
+      #else
+        O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+      #endif
     } else {
         if (GLX::getCurrentContext() == reinterpret_cast<GLXContext>(m_HGLRC)) {
             return;
@@ -480,12 +446,14 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
     }
 
     if (m_state.getBit(STATE_EGL)) {
-    #ifdef O3D_EGL
+      #ifdef O3D_EGL
         EGLDisplay eglDisplay = EGL::getDisplay(display);
         if (!EGL::swapInterval(eglDisplay, value)) {
             return False;
-        }   
-    #endif
+        }
+      #else
+        return False;
+      #endif
     } else if (GLX::swapIntervalEXT) {
         GLX::swapIntervalEXT(
                     reinterpret_cast<Display*>(Application::getDisplay()),

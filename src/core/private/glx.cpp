@@ -44,6 +44,7 @@ GLXGETVISUALFROMFBCONFIGPROC GLX::getVisualFromFBConfig = nullptr;
 GLXGETFBCONFIGATTRIBPROC GLX::getFBConfigAttrib = nullptr;
 GLXSWAPBUFFERSPROC GLX::swapBuffers = nullptr;
 GLXSWAPINTERVALEXTPROC GLX::swapIntervalEXT = nullptr;
+GLXCREATECONTEXTATTRIBSARBPROC GLX::createContextAttribsARB = nullptr;
 
 void GLX::init()
 {
@@ -65,6 +66,7 @@ void GLX::init()
     getFBConfigAttrib = (GLXGETFBCONFIGATTRIBPROC)getProcAddress("glXGetFBConfigAttrib");
     swapBuffers = (GLXSWAPBUFFERSPROC)getProcAddress("glXSwapBuffers");
     swapIntervalEXT = (GLXSWAPINTERVALEXTPROC)getProcAddress("glXSwapIntervalEXT");
+    createContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC)getProcAddress("glXCreateContextAttribsARB");
 
     Display *display = reinterpret_cast<Display*>(Application::getDisplay());
     int glxMajor, glxMinor;
@@ -95,6 +97,43 @@ Bool GLX::isValid()
 void* GLX::getProcAddress(const Char *ext)
 {
     return (void*)::_glXGetProcAddress((const GLubyte*)ext);
+}
+
+Bool GLX::isExtensionSupported(const Char *ext)
+{
+    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+    const Char *extList = queryExtensionsString(display, DefaultScreen(display));
+
+    const Char *start;
+    const Char *where, *terminator;
+
+    // Extension names should not have spaces.
+    where = strchr(ext, ' ');
+    if (where || *ext == '\0') {
+        return False;
+    }
+
+    // It takes a bit of care to be fool-proof about parsing the
+    // OpenGL extensions string. Don't be fooled by sub-strings, etc.
+    for (start = extList;;) {
+        where = strstr(start, ext);
+
+        if (!where) {
+            break;
+        }
+
+        terminator = where + strlen(ext);
+
+        if (where == start || *(where - 1) == ' ') {
+            if (*terminator == ' ' || *terminator == '\0') {
+                return True;
+            }
+        }
+
+        start = terminator;
+    }
+
+    return False;
 }
 
 #endif // O3D_X11
