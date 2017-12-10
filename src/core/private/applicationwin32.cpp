@@ -123,15 +123,17 @@ Int32 Application::getPID()
 
 #endif // O3D_WINDOWS
 
-// ONLY IF O3D_WIN32 IS SELECTED
-#ifdef O3D_WIN32
+// ONLY IF O3D_WIN32 IS SELECTED @todo need another define
+#if defined(O3D_WIN32) || defined(O3D_WIN64)
 
 void Application::apiInitPrivate()
 {
+    ms_display = nullptr;
 }
 
 void Application::apiQuitPrivate()
 {
+    ms_display = nullptr;
 }
 
 // Run the application main loop.
@@ -147,6 +149,7 @@ void Application::runPrivate(Bool runOnce)
         EvtManager::instance()->processEvent();
 
         while (!quit && PeekMessageW(&message, NULL, 0, 0, PM_REMOVE)) {
+
 			// Retrieve the AppWindow object
 			ms_currAppWindow = getAppWindow(reinterpret_cast<_HWND>(message.hwnd));
 
@@ -212,10 +215,6 @@ void Application::runPrivate(Bool runOnce)
 // Push a user application event.
 void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 {
-    if (ms_display == nullptr) {
-        return;
-    }
-
 	PostThreadMessageW(
 		ThreadManager::getMainThreadId(),
 		WM_USER,
@@ -234,14 +233,14 @@ void Application::getBaseNamePrivate(Int32 argc, Char **argv)
 
         Int32 pos = path.reverseFind('/');
         if (pos >= 0) {
-            ms_appsName = new String(path);
-            ms_appsName->remove(0, pos);
-            ms_appsName->fromUtf8(argv[0]);
+            // ms_appsName = new String(path);
+            // ms_appsName->remove(0, pos);
+            // ms_appsName->fromUtf8(argv[0]);
 
             ms_appsName = new String(buf);
-            ms_appsPath = new String(buf);  // @todo
 
             String path = ms_appsName->extract(0, pos+1);
+            // @todo working dir could not be program dir
             ms_appsPath = new String(FileManager::instance()->getFullFileName(path));
         } else {
             ms_appsName = new String("undefined");

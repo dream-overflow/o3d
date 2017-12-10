@@ -88,7 +88,7 @@ void AppWindow::applySettings(Bool fullScreen)
 
 	// create the window
 	m_hWnd = WinTools::createWindow(
-		NULL,
+        nullptr,
 		m_title,
 		"",
 		m_clientWidth,
@@ -214,6 +214,9 @@ void AppWindow::applySettings(Bool fullScreen)
             O3D_ERROR(E_InvalidResult("Unable to set the dummy OpenGL context as current"));
         }
 
+        // now we can find more functions
+        WGL::initContext(m_HDC);
+
         if (!WGL::choosePixelFormatARB) {
             WGL::makeCurrent((HDC)m_HDC, 0);
             WGL::deleteContext((HGLRC)hGLRC);
@@ -276,6 +279,7 @@ void AppWindow::applySettings(Bool fullScreen)
         }
     } else if (GL::getImplementation() == GL::IMPL_EGL_15) {
       #ifdef O3D_EGL
+        EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
         // @todo
       #else
         O3D_ERROR(E_UnsuportedFeature("Support for EGL is missing"));
@@ -286,10 +290,11 @@ void AppWindow::applySettings(Bool fullScreen)
 
     // destroy the dummy window
     WinTools::destroyWindow(m_hWnd);
+    WinTools::unregisterWindowClass(NULL, m_title);
 
     // and recreate the final window
     m_hWnd = WinTools::createWindow(
-                 NULL,
+                 nullptr,
                  m_title,
                  "",
                  m_clientWidth,
@@ -655,7 +660,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 void AppWindow::swapBuffers()
 {
     if (m_HDC != NULL_HDC) {
-        WGL::swapBuffers((HDC)m_HDC);
+        WGL::swapBuffers(m_HDC);
     }
 }
 
@@ -664,13 +669,19 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 {
     switch (eventType) {
 		case EVT_UPDATE:
-			if (isUpdateNeeded())
+            if (isUpdateNeeded()) {
 				callBackUpdate(0);
+            }
 			break;
 		case EVT_PAINT:
-			if (isPaintNeeded())
+            if (isPaintNeeded()) {
 				callBackPaint(0);
+            }
 			break;
+        case EVT_DESTROY:
+            callBackDestroy();
+            Application::pushEvent(Application::EVENT_CLOSE_WINDOW, nullptr, m_hWnd);
+            break;
 		default:
 			// All is done in the WndProc
 			O3D_ERROR(E_InvalidOperation("Not supported"));

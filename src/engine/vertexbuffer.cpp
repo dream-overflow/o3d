@@ -66,8 +66,7 @@ void VertexBuffer::attributeVertex(
 // Delete VBO.
 void VertexBuffer::deleteVertexBuffer()
 {
-	if (m_bufferId != O3D_UNDEFINED)
-	{
+    if (m_bufferId != O3D_UNDEFINED) {
 		O3D_ASSERT(m_lockCount == 0);
 
 		O3D_GFREE(MemoryManager::GPU_VBO, m_bufferId);
@@ -82,8 +81,7 @@ void VertexBuffer::deleteVertexBuffer()
 // Delete IBO.
 void VertexBuffer::deleteElementArrayBuffer()
 {
-	if (m_bufferId != O3D_UNDEFINED)
-	{
+    if (m_bufferId != O3D_UNDEFINED) {
 		O3D_ASSERT(m_lockCount == 0);
 
 		O3D_GFREE(MemoryManager::GPU_VBO, m_bufferId);
@@ -94,4 +92,3 @@ void VertexBuffer::deleteElementArrayBuffer()
 		m_count = 0;
 	}
 }
-

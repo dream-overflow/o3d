@@ -83,7 +83,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
                 O3D_ERROR(E_InvalidResult("Unable to share the OpenGL context"));
         }
 
-        if (WGL::makeCurrent((HDC)m_HDC,(HGLRC)m_HGLRC) == False) {
+        if (WGL::makeCurrent((HDC)m_HDC, (HGLRC)m_HGLRC) == False) {
             O3D_ERROR(E_InvalidResult("Unable to set the new OpenGL context as current"));
         }
 
@@ -182,9 +182,8 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         //
 
     #ifdef O3D_EGL
-        // @todo display =
         EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
-        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
         EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
         EGLint contextAttributes[] = {
@@ -281,11 +280,10 @@ void Renderer::destroy()
         if (m_HGLRC != NULL_HGLRC) {
             if (m_state.getBit(STATE_EGL)) {
               #ifdef O3D_EGL
-                // @todo
-                // EGLDisplay eglDisplay = EGL::getDisplay(display);
-                // EGL::makeCurrent(eglDisplay, 0, 0, 0);
+                EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
+                EGL::makeCurrent(eglDisplay, 0, 0, 0);
 
-                // EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
+                EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
               #endif
             } else {
                 WGL::makeCurrent((HDC)m_HDC, 0);
@@ -358,7 +356,7 @@ void Renderer::setCurrent()
             return;
         }
 
-        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
 
         if (EGL::makeCurrent(
                 eglDisplay,
@@ -399,8 +397,7 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
 
     if (m_state.getBit(STATE_EGL)) {
       #ifdef O3D_EGL
-        // @todo display =
-        EGLDisplay eglDisplay = EGL::getDisplay(display);
+        EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
         if (!EGL::swapInterval(eglDisplay, value)) {
             return False;
         }

@@ -193,19 +193,17 @@ public:
 	#endif
 
 		// Generate the buffer if necessary
-		if (m_bufferId == O3D_UNDEFINED)
+        if (m_bufferId == O3D_UNDEFINED) {
 			glGenBuffers(1,(GLuint*)&m_bufferId);
+        }
 
 		bindBuffer();
 
 		// simply perform an update
-		if ((count == m_count) && (storageType == m_storageType))
-		{
+        if ((count == m_count) && (storageType == m_storageType)) {
 			glBufferSubData(bufferType, 0, m_count*sizeof(T), data);
-		}
-		// or a create
-		else
-		{
+        } else  {
+            // or a create
 			// Define global parameters
 			m_count = count;
 			m_storageType = storageType;
@@ -220,8 +218,9 @@ public:
 			glBufferData(bufferType, getDataSize(), data, storageType);
 		}
 
-		if (!dontUnbind)
+        if (!dontUnbind) {
 			unbindBuffer();
+        }
 	}
 
 	//! Fill the entire buffer data using a Lock/Unlock.
@@ -231,13 +230,11 @@ public:
 	//! @note Bind the VBO if necessary, then the current VBO is changed.
 	void fill(const T* data, UInt32 count)
 	{
-		if (data)
-		{
+        if (data) {
 			T* bufferPtr = lock(0, 0, WRITE_ONLY);
 
 			// Check if we have a buffer to write to
-			if (bufferPtr)
-			{
+            if (bufferPtr) {
 				memcpy(bufferPtr, data,count*sizeof(T));
 			}
 
@@ -255,8 +252,7 @@ public:
 	{
 		O3D_ASSERT(data);
 
-		if (data)
-		{
+        if (data) {
 			bindBuffer();
 			glGetBufferSubData(bufferType, offset*sizeof(T), count*sizeof(T), data);
 		}
@@ -269,12 +265,12 @@ public:
 	//! @param count Number of elements to fill.
 	//! @note Bind the VBO if necessary, then the current VBO is changed.
 	void update(const T* data, UInt32 offset, UInt32 count)
-	{
-		if (m_lockCount > 0)
+    {
+        if (m_lockCount > 0) {
 			O3D_ERROR(E_InvalidOperation("Cannot update the content of a locked VBO"));
+        }
 
-		if (data)
-		{
+        if (data) {
 			bindBuffer();
 			glBufferSubData(bufferType, offset*sizeof(T), count*sizeof(T), data);
 		}
@@ -292,32 +288,27 @@ public:
 			LockMode flags = READ_WRITE)
 	{
 		// already locked ?
-		if (m_lockCount > 0)
-		{
+        if (m_lockCount > 0) {
 			// with the same mode ?
-			if (flags == m_lockMode)
-			{
+            if (flags == m_lockMode) {
 				++m_lockCount;
 				return m_mapped + offset;
-			}
-			else
+            } else {
 				O3D_ERROR(E_InvalidOperation("Cannot lock twice time the same VBO with different policy"));
-		}
-		else
-		{
+            }
+        } else {
 			bindBuffer();
 			m_mapped = reinterpret_cast<T*>(glMapBuffer(bufferType, flags));
 
 			// Return NULL if buffer is really NULL
-			if (m_mapped)
-			{
+            if (m_mapped) {
 				m_lockMode = flags;
 
 				++m_lockCount;
 				return m_mapped + offset;
-			}
-			else
+            } else {
                 return nullptr;
+            }
 		}
 	}
 
@@ -325,12 +316,10 @@ public:
 	//! @note Bind the VBO if necessary, then the current VBO is changed.
 	inline void unlock()
 	{
-		if (m_lockCount > 0)
-		{
+        if (m_lockCount > 0) {
 			--m_lockCount;
 
-			if (m_lockCount == 0)
-			{
+            if (m_lockCount == 0) {
 				bindBuffer();
 				glUnmapBuffer(bufferType);
 			}
@@ -546,4 +535,3 @@ typedef ElementArrayObject<UInt16>  ElementBufferObjus;
 } // namespace o3d
 
 #endif // _O3D_VERTEXBUFFER_H
-

@@ -87,26 +87,28 @@ GeometryData::~GeometryData()
 // Create and validate all elements and face arrays.
 void GeometryData::create(Bool keepLocalDataForSkinning)
 {
-	if (!isVertices())
+    if (!isVertices()) {
 		O3D_ERROR(E_InvalidPrecondition("Vertices element must be defined"));
+    }
 
 	// compute normals if necessary
-	if (m_flags.getBit(UPDATE_NORMALS) &&
-		(m_flags.getBit(GEN_NORMALS) || m_elements[V_NORMALS_ARRAY]))
+    if (m_flags.getBit(UPDATE_NORMALS) && (m_flags.getBit(GEN_NORMALS) || m_elements[V_NORMALS_ARRAY])) {
 		computeNormals();
+    }
 
 	// auto tangent space computation
 	if (m_flags.getBit(UPDATE_TANGENT_SPACE) &&
-		(m_flags.getBit(GEN_TANGENT_SPACE) || m_elements[V_TANGENT_ARRAY] || m_elements[V_BITANGENT_ARRAY]))
+        (m_flags.getBit(GEN_TANGENT_SPACE) || m_elements[V_TANGENT_ARRAY] || m_elements[V_BITANGENT_ARRAY])) {
 		computeTangentSpace();
+    }
 
 	// compute progressive mesh
-	if (m_flags.getBit(UPDATE_PROGRESSIVE_MESH) && m_flags.getBit(GEN_PROGRESSIVE_MESH))
+    if (m_flags.getBit(UPDATE_PROGRESSIVE_MESH) && m_flags.getBit(GEN_PROGRESSIVE_MESH)) {
 		computeProgressive();
+    }
 
 	// vertex buffer object
-	if (m_flags.getBit(UPDATE_VERTEX_BUFFER))
-	{
+    if (m_flags.getBit(UPDATE_VERTEX_BUFFER)) {
 		// elements
 		Bool keepData;
 		UInt32 size = 0;
@@ -114,8 +116,7 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
         VertexBufferObjf *newVbo = new VertexBufferObjf(getScene()->getContext());
 
 		// interleave data
-        if (m_flags.getBit(INTERLEAVE_ELEMENTS))
-		{
+        if (m_flags.getBit(INTERLEAVE_ELEMENTS)) {
 			UInt32 offset[NUM_VERTEX_ATTRIBUTES];
 			UInt32 stride = 0;
 
@@ -124,10 +125,8 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 
 			const Float *data[NUM_VERTEX_ATTRIBUTES];
 
-			for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-			{
-				if (m_elements[i])
-				{
+            for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+                if (m_elements[i]) {
 					size += m_elements[i]->getNumElements()*m_elements[i]->getElementSize();
 
 					offset[i] = stride;
@@ -141,12 +140,9 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 			Float *vboData = newVbo->lock(0, 0, VertexBuffer::WRITE_ONLY);
 
 			// interleave data into the dst VBO
-			for (UInt32 s = 0; s < numElt; ++s)
-			{
-				for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-				{
-					if (m_elements[i])
-					{
+            for (UInt32 s = 0; s < numElt; ++s) {
+                for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+                    if (m_elements[i]) {
 						memcpy(
 								vboData + dstOfs,
 								data[i] + m_elements[i]->getElementSize() * s,
@@ -157,14 +153,10 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 				}
 			}
 
-			for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-			{
-				if (m_elements[i])
-				{
-					if (keepLocalDataForSkinning)
-					{
-						switch (i)
-						{
+            for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+                if (m_elements[i]) {
+                    if (keepLocalDataForSkinning) {
+                        switch (i) {
 							case V_VERTICES_ARRAY:
 							case V_NORMALS_ARRAY:
 							case V_RIGGING_ARRAY:
@@ -177,9 +169,9 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 								keepData = False;
 								break;
 						}
-					}
-					else
+                    } else {
 						keepData = False;
+                    }
 
 					m_elements[i]->unlockArray();
 
@@ -192,16 +184,12 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 			}
 
 			newVbo->unlock();
-		}
-		// serialize data
-		else
-		{
+        } else {
+            // serialize data
 			UInt32 offset[NUM_VERTEX_ATTRIBUTES];
 
-			for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-			{
-				if (m_elements[i])
-				{
+            for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+                if (m_elements[i]) {
 					offset[i] = size;
 					size += m_elements[i]->getNumElements()*m_elements[i]->getElementSize();
 				}
@@ -209,14 +197,10 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 
             newVbo->create(size, VertexBuffer::STATIC, nullptr, True);
 
-			for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-			{
-				if (m_elements[i])
-				{
-					if (keepLocalDataForSkinning)
-					{
-						switch (i)
-						{
+            for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+                if (m_elements[i]) {
+                    if (keepLocalDataForSkinning) {
+                        switch (i) {
 							case V_VERTICES_ARRAY:
 							case V_NORMALS_ARRAY:
 							case V_RIGGING_ARRAY:
@@ -229,9 +213,9 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 								keepData = False;
 								break;
 						}
-					}
-					else
+                    } else {
 						keepData = False;
+                    }
 
 					const Float *data = m_elements[i]->lockArray(0, 0);
 
@@ -243,7 +227,7 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 					m_elements[i]->unlockArray();
 
 					m_elements[i]->create(*newVbo, offset[i], 0, keepData);
-				}
+                }
 			}
 		}
 
@@ -259,11 +243,9 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 	}
 
 	// index buffer object
-	if (m_flags.getBit(UPDATE_INDEX_BUFFER))
-	{
+    if (m_flags.getBit(UPDATE_INDEX_BUFFER)) {
 		// faces array
-		for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-		{
+        for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
 			it->second->create();
 		}
 

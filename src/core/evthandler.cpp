@@ -35,7 +35,7 @@ EvtHandler::~EvtHandler()
 {
 	disconnect();
 
-	EvtManager::instance()->deletePendingEvents(this);
+    EvtManager::instance()->deletePendingEvents(this);
 }
 
 void EvtHandler::setThread(Thread * _pThread)

@@ -62,17 +62,14 @@ int main(int argc, char *argv[])
 
 #ifdef O3D_WINDOWS
 template <class T_Main, class T_Settings>
-int main(LPSTR lpCmdLine)
+int main(LPCSTR lpCmdLine)
 {
-	//int argc = 0;
-	//LPSTR argv = commandLineToArgv(lpCmdLine, &argc);
-
 	atexit(onExit);
 
 	T_Settings settings;
 
     try {
-		o3d::Application::init(settings);//, argc, argv);
+        o3d::Application::init(settings, 0, nullptr);
     } catch (o3d::E_BaseException &ex) {
 		Application::message(
 			String("Failed to initialize the application: ") + ex.what(),
@@ -108,7 +105,7 @@ void android_main(android_app *state)
     T_Settings settings;
 
     try {
-        o3d::Application::init(settings);
+        o3d::Application::init(settings, 0, nullptr);
     } catch (o3d::E_BaseException &ex) {
         Application::message(
             String("Failed to initialize the application: ") + ex.what(),

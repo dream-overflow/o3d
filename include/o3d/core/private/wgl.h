@@ -27,13 +27,18 @@ public:
 
     static Bool isValid();
 
+    //! Init context dependants functions
+    static void initContext(_HDC hDC);
+
     //! Returns a GL extension pointer address.
     static void* getProcAddress(const Char *ext);
+
+    static Bool swapBuffers(_HDC hDC);
 
     //! Is an extension supported (need getExtensionsStringARB to be valid before)
     static Bool isExtensionSupported(const Char *ext, _HDC hDC);
 
-    static PFNSWAPBUFFERSPROC swapBuffers;
+    static PFNWGLSWAPLAYERBUFFERSPROC swapLayerBuffers;
     static PFNWGLSWAPINTERVALEXTPROC swapIntervalEXT;
     static PFNWGLGETEXTENSIONSSTRINGARBPROC getExtensionsStringARB;
     static PFNWGLCREATECONTEXTATTRIBSARBPROC createContextAttribsARB;

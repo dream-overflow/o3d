@@ -25,9 +25,9 @@ using namespace o3d;
 
 // create a new mutex
 Mutex::Mutex() :
-	m_handle(NULL)
+    m_handle(NULL)
 {
-	if ((m_handle = CreateMutexA(NULL,FALSE,NULL)) == NULL)
+    if ((m_handle = CreateMutexA(NULL,FALSE,NULL)) == NULL)
 		O3D_ERROR(E_InvalidAllocation("Null mutex handle"));
 }
 
@@ -111,12 +111,12 @@ FastMutex::~FastMutex()
 // lock/unlock this mutex
 void FastMutex::lock() const
 {
-	EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
+    EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
 }
 
 void FastMutex::unlock() const
 {
-	LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
+    LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
 }
 
 // Attempts to enter a critical section without blocking
@@ -145,12 +145,12 @@ RecursiveMutex::~RecursiveMutex()
 // lock/unlock this mutex
 void RecursiveMutex::lock() const
 {
-	EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
+    EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
 }
 
 void RecursiveMutex::unlock() const
 {
-	LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
+    LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
 }
 
 // Attempts to enter a critical section without blocking

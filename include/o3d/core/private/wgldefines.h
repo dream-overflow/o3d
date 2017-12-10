@@ -81,4 +81,6 @@ typedef BOOL (*PFNWGLCHOOSEPIXELFORMATARBPROC)(HDC hdc,
 // wglCreateContextAttribsARB prototype.
 typedef HGLRC (*PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int*);
 
+typedef BOOL (*PFNWGLSWAPLAYERBUFFERSPROC)(HDC hdc, UINT fuFlags);
+
 #endif // _O3D_WGLDEFINES_H

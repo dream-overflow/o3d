@@ -38,30 +38,32 @@ _HWND WinTools::createWindow(
 	wndClass.cbSize = sizeof(WNDCLASSEXW);
 	wndClass.lpfnWndProc = wndProc;
 
-	if (hInstance == NULL)
-		wndClass.hInstance = (HINSTANCE)GetModuleHandleW(NULL);
-	else
+    if (hInstance == nullptr) {
+        wndClass.hInstance = (HINSTANCE)GetModuleHandleW(nullptr);
+    } else {
 		wndClass.hInstance = (HINSTANCE)hInstance;
+    }
 
 	wndClass.lpszClassName = title.getData();
 	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wndClass.hIconSm = createIconFromBitmap(icon, 16, 16); // Takes the first pixel as transparent color by default
+
+    // Takes the first pixel as transparent color by default
+    wndClass.hIconSm = createIconFromBitmap(icon, 16, 16);
 	wndClass.hIcon = createIconFromBitmap(icon, 32, 32);
 
-	if (RegisterClassExW(&wndClass) == 0)
+    if (RegisterClassExW(&wndClass) == 0) {
 		O3D_ERROR(E_InvalidResult(String("Error during windows class registration. Code = ") << UInt32(GetLastError())));
+    }
 
-	DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX |
-				  WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+    DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+    DWORD exStyle = WS_EX_APPWINDOW;  // | WS_EX_WINDOWEDGE;
 
-	DWORD exStyle = WS_EX_APPWINDOW;// | WS_EX_WINDOWEDGE;
-
-	if (resizable)
+    if (resizable) {
 		style |= WS_THICKFRAME | WS_MAXIMIZEBOX;
+    }
 
-	if (fullScreen)
-	{
+    if (fullScreen) {
 		style = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 		exStyle = WS_EX_APPWINDOW;
 	}
@@ -103,16 +105,24 @@ _HWND WinTools::createWindow(
 // Destroy a window.
 void WinTools::destroyWindow(_HWND hWnd)
 {
+    if (!hWnd) {
+        return;
+    }
+
+    // WCHAR className[128];
+    // ::GetClassNameW((HWND)hWnd, className, 128);
 	::DestroyWindow((HWND)hWnd);
+    // ::UnregisterClassW(className, (HINSTANCE)GetModuleHandleW(nullptr));
 }
 
 // Unregister Window Class.
 void WinTools::unregisterWindowClass(_HINSTANCE hInstance, const String &wnd)
 {
-	if (hInstance == NULL)
-		UnregisterClassW(wnd.getData(), (HINSTANCE)GetModuleHandleW(NULL));
-	else
+    if (hInstance == nullptr) {
+        UnregisterClassW(wnd.getData(), (HINSTANCE)GetModuleHandleW(nullptr));
+    } else {
 		UnregisterClassW(wnd.getData(), (HINSTANCE)hInstance);
+    }
 }
 
 void WinTools::changeWindowStyle(
@@ -126,15 +136,13 @@ void WinTools::changeWindowStyle(
 	LONG_PTR exStyle;
 	LONG_PTR style;
 
-	if (!fullScreen)
-	{
-		style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX |
-				WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-
+    if (!fullScreen) {
+        style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 		exStyle = WS_EX_APPWINDOW;// | WS_EX_WINDOWEDGE;
 
-		if (resizable)
+        if (resizable) {
 			style |= WS_THICKFRAME | WS_MAXIMIZEBOX;
+        }
 
 		RECT rect;
 		rect.left = 0;
@@ -146,9 +154,7 @@ void WinTools::changeWindowStyle(
 
 		width = rect.right-rect.left;
 		height = rect.bottom-rect.top;
-	}
-	else
-	{
+    } else {
 		style = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 		exStyle = WS_EX_APPWINDOW;
 	}

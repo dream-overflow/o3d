@@ -56,7 +56,6 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
     m_quadColors(getScene()->getContext())
 {
     m_primitives.resize(SOLID_CUBE1+1);
-
 	// TODO remplacer avec des VBO plus globaux
 
 	createPrimitive(WIRE_CYLINDER1, m_wireCylinder1);
@@ -206,7 +205,6 @@ void PrimitiveManager::createPrimitive(PrimitiveManager::Primitives type, Primit
 	}
 
 	geometry->createElement(V_COLOR_ARRAY, colorArray);
-
 	geometry->create();
 	geometry->bindFaceArray(0);
 

@@ -25,12 +25,14 @@
 // typedef PROC
 typedef PROC (* WGLGETPROCADDRESSPROC)(LPCSTR lpszProc);
 static WGLGETPROCADDRESSPROC _wglGetProcAddress = nullptr;
+static PFNSWAPBUFFERSPROC _swapBuffers = nullptr;
 
 using namespace o3d;
 
 DynamicLibrary* WGL::ms_wgl = nullptr;
 
-PFNSWAPBUFFERSPROC WGL::swapBuffers = nullptr;
+// PFNSWAPBUFFERSPROC WGL::swapBuffers = nullptr;
+PFNWGLSWAPLAYERBUFFERSPROC WGL::swapLayerBuffers = nullptr;
 PFNWGLSWAPINTERVALEXTPROC WGL::swapIntervalEXT = nullptr;
 PFNWGLGETEXTENSIONSSTRINGARBPROC WGL::getExtensionsStringARB = nullptr;
 PFNWGLCREATECONTEXTATTRIBSARBPROC WGL::createContextAttribsARB = nullptr;
@@ -46,24 +48,41 @@ void WGL::init()
     ms_wgl = DynamicLibrary::load("Opengl32.dll");
 
     _wglGetProcAddress = (WGLGETPROCADDRESSPROC)ms_wgl->getFunctionPtr("wglGetProcAddress");
-    swapBuffers = (PFNSWAPBUFFERSPROC)ms_wgl->getFunctionPtr("SwapBuffers");
 
-    swapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)getProcAddress("wglSwapIntervalEXT");
-    getExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)getProcAddress("wglGetExtensionsStringARB");
-    createContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)getProcAddress("wglCreateContextAttribsARB");
-    choosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)getProcAddress("wglChoosePixelFormatARB");
+    _swapBuffers = (PFNSWAPBUFFERSPROC)getProcAddress("SwapBuffers");
     makeCurrent = (PFNWGLMAKECURRENTPROC)getProcAddress("wglMakeCurrent");
     createContext = (PFNWGLCREATECONTEXTPROC)getProcAddress("wglCreateContext");
     deleteContext = (PFNWGLDELETECONTEXTPROC)getProcAddress("wglDeleteContext");
     getCurrentContext = (PFNWGLGETCURRENTCONTEXTPROC)getProcAddress("wglGetCurrentContext");
     shareLists = (PFNWGLSHARELISTSPROC)getProcAddress("wglShareLists");
+
+    // depend from a context
+    swapLayerBuffers = nullptr;
+    swapIntervalEXT = nullptr;
+    getExtensionsStringARB = nullptr;
+    createContextAttribsARB = nullptr;
+    choosePixelFormatARB = nullptr;
+}
+
+void WGL::initContext(_HDC hDC)
+{
+    if (!ms_wgl || !hDC) {
+        return;
+    }
+
+    swapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)getProcAddress("wglSwapIntervalEXT");
+
+    getExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)getProcAddress("wglGetExtensionsStringARB");
+    createContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)getProcAddress("wglCreateContextAttribsARB");
+    choosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)getProcAddress("wglChoosePixelFormatARB");
+    swapLayerBuffers = (PFNWGLSWAPLAYERBUFFERSPROC)getProcAddress("wglSwapLayerBuffers");
 }
 
 void WGL::quit()
 {
     if (ms_wgl) {
         _wglGetProcAddress = nullptr;
-        swapBuffers = nullptr;
+        _swapBuffers = nullptr;
         getExtensionsStringARB = nullptr;
 
         DynamicLibrary::unload(ms_wgl);
@@ -77,9 +96,13 @@ Bool WGL::isValid()
 }
 
 void* WGL::getProcAddress(const Char *ext)
-{
-    return (void*)::_wglGetProcAddress((LPCSTR)ext);
-    // return (void*)::wglGetProcAddress((const char*)ext);
+{   
+    void *p = (void*)::_wglGetProcAddress((LPCSTR)ext);
+    if (p == 0 || (p == (void*)0x1) || (p == (void*)0x2) || (p == (void*)0x3) || (p == (void*)-1)) {
+        return ms_wgl->getFunctionPtr(ext);
+    }
+
+    return p;
 }
 
 Bool WGL::isExtensionSupported(const Char *ext, _HDC hDC)
@@ -119,6 +142,16 @@ Bool WGL::isExtensionSupported(const Char *ext, _HDC hDC)
     }
 
     return False;
+}
+
+Bool WGL::swapBuffers(_HDC hDC)
+{
+    return ::SwapBuffers((::HDC)hDC);
+//    if (swapLayerBuffers) {
+//        return swapLayerBuffers((HDC)hDC, WGL_SWAP_MAIN_PLANE);
+//    } else if (swapBuffers) {
+//        _swapBuffers((HDC)hDC);
+//    }
 }
 
 #endif // O3D_WGL || O3D_WINDOWS

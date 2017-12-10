@@ -67,7 +67,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 	// Registration of the main thread to activate events
     EvtManager::instance()->registerThread(nullptr);
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
 	String commandLine(GetCommandLineW());
 	ms_appsCommandLine = new CommandLine(commandLine);
 #else
