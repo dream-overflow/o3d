@@ -274,7 +274,7 @@ void Processor::doCPUID()
 
 		no_features:
 	}
-  #else defined(__GNUC__) || (defined(_MSC_VER) && defined(O3D_IX64))
+  #elif defined(__GNUC__) || (defined(_MSC_VER) && defined(O3D_IX64))
     // GCC compiler and Windows x64
 	cpuid(0x0, &reax, &rebx, &recx, &redx);
     if (reax == 0) {

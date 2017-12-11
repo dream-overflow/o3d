@@ -69,7 +69,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
 	// Registration of the main thread to activate events
     EvtManager::instance()->registerThread(nullptr);
 
-#if O3D_ANDROID
+#ifdef O3D_ANDROID
     // @todo
     ms_appsCommandLine = new CommandLine("");
 #elif defined(O3D_WINDOWS)

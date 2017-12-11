@@ -276,6 +276,9 @@ install (FILES ${PROJECT_SOURCE_DIR}/cmake/Modules/FindObjective3D.cmake DESTINA
 # shaders.zip
 install (FILES ${CMAKE_BINARY_DIR}/src/shaders.zip DESTINATION share/o3d)
 
+# Android specific
+install (FILES ${PROJECT_SOURCE_DIR}/third/android/android_native_app_glue.h DESTINATION include/o3d/android)
+
 # Headers
 install (FILES ${CORE_HXX} DESTINATION include/o3d/core)
 install (FILES ${CORE_PRIVATE_HXX} DESTINATION include/o3d/core/private)

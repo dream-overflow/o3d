@@ -28,6 +28,11 @@ set(nvtristrip
 	../third/nvTriStrip/NvTriStrip.cpp
 	../third/nvTriStrip/NvTriStripObjects.cpp)
 
+# android only
+if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+    set(ANDROID_LIBRARY "-llog -landroid -ldl -lEGL -lGLESv3")
+endif()
+
 if(${O3D_USE_SDL2})
     link_directories(${SDL2_LIBDIR})
 endif()
@@ -54,7 +59,7 @@ add_library(${O3D_LIB_NAME} SHARED
 			${IMAGE_CXX}
 			${ENGINE_CXX}
 			${GUI_CXX}
-			${AUDIO_CXX})		
+            ${AUDIO_CXX})
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     target_link_libraries(${O3D_LIB_NAME}
@@ -65,7 +70,8 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
             ${VORBIS_LIBRARY}
             ${VORBISFILE_LIBRARY}
             ${OPENAL_LIBRARY}
-            ${FREETYPE_LIBRARIES})
+            ${FREETYPE_LIBRARIES}
+            ${ANDROID_LIBRARY})
 
     if(${O3D_USE_SDL2})
          target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})

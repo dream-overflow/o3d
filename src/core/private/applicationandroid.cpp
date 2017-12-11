@@ -1,6 +1,6 @@
 /**
  * @file applicationandroid.cpp
- * @brief
+ * @brief Android application specialization
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2017-12-09
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -18,42 +18,33 @@
 #include "o3d/core/appwindow.h"
 
 // Specific dependencies includes
-// #include <android/>
+#include <android/log.h>
+#include <android/android_native_app_glue.h>
 
 using namespace o3d;
 
-void Application::apiInitPrivate()
-{
-
-}
-
-void Application::apiQuitPrivate()
-{
-
-}
-
 // #include <android/log.h> @todo for Log
-// #define O3D_LOG(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeActivitySimpleExample", __VA_ARGS__))
+#define O3D_ALOG(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeActivitySimpleExample", __VA_ARGS__))
 
-static int32_t handle_input(struct android_app* app, AInputEvent* event)
+static int32_t handleInput(struct android_app* app, AInputEvent* event)
 {
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         size_t pointerCount = AMotionEvent_getPointerCount(event);
 
         for (size_t i = 0; i < pointerCount; ++i) {
-            O3D_LOG("Received motion event from pointer %zu: (%.2f, %.2f)", i, AMotionEvent_getX(event, i), AMotionEvent_getY(event, i));
+            O3D_ALOG("Received motion event from pointer %zu: (%.2f, %.2f)", i, AMotionEvent_getX(event, i), AMotionEvent_getY(event, i));
         }
 
         return 1;
     } else if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-        O3D_LOG("Received key event: %d", AKeyEvent_getKeyCode(event));
+        O3D_ALOG("Received key event: %d", AKeyEvent_getKeyCode(event));
         return 1;
     }
 
     return 0;
 }
 
-static void handle_cmd(struct android_app* app, int32_t cmd)
+static void handleCmd(struct android_app* app, int32_t cmd)
 {
     switch (cmd) {
         case APP_CMD_SAVE_STATE:
@@ -81,11 +72,30 @@ static void handle_cmd(struct android_app* app, int32_t cmd)
     }
 }
 
+void Application::apiInitPrivate()
+{
+    if (ms_app) {
+        // setup app state
+        struct android_app* state = reinterpret_cast<struct android_app*>(ms_app);
+        pthread_mutex_lock(&state->mutex);
+        // state->userData = ;
+        state->onAppCmd = handleCmd;
+        state->onInputEvent = handleInput;
+        pthread_mutex_unlock(&state->mutex);
+    }
+}
+
+void Application::apiQuitPrivate()
+{
+
+}
+
 // Run the application main loop.
 void Application::runPrivate(Bool runOnce)
 {
     Bool quit = False;
     AppWindow::EventData eventData;
+    struct android_app* state = reinterpret_cast<struct android_app*>(ms_app);
 
     while (!quit || EvtManager::instance()->isPendingEvent()) {
         ms_currAppWindow = nullptr;
@@ -129,25 +139,4 @@ void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
     // @todo
 }
 
-/* @todo AndroidManifest.xml
-<?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.dreamoverflow.objective3d" android:versionCode="1" android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="23" />
-    <application android:icon="@drawable/ic_launcher" android:label="@string/app_name">
-        <!-- Our activity is the built-in NativeActivity framework class. This will take care of integrating with our NDK code. -->
-        <activity android:name="android.app.NativeActivity" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden">
-            <!-- Tell NativeActivity the name of or .so -->
-            <meta-data android:name="android.app.lib_name" android:value="NativeActivitySimpleExample" />
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
-</manifest>
-
-app_name : app name
-libname : android.app.lib_name without .so extension
-
-*/
 #endif // O3D_ANDROID

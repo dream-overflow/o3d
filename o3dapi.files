@@ -193,6 +193,8 @@ src/shaders/terrain/heightmap/330/deferredColorPass_vp.glsl
 src/shaders/terrain/heightmap/330/staticLightning_fp.glsl
 src/shaders/terrain/heightmap/330/staticLightning_vp.glsl
 third/CMakeLists.txt
+third/android/android_native_app_glue.c
+third/android/android_native_app_glue.h
 third/uuid/CMakeLists.txt
 third/uuid/include/copyrt.h
 third/uuid/include/copyrt.h

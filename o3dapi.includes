@@ -77,3 +77,4 @@ src/core/private
 include/o3d/core/private
 src/core/private
 src/engine/private
+third/android

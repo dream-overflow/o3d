@@ -14,7 +14,7 @@
 #include "debug.h"
 
 #ifdef O3D_ANDROID
-    #include <android_native_app_glue.h>
+    #include <o3d/android/android_native_app_glue.h>
 #endif
 
 namespace o3d {
@@ -103,11 +103,8 @@ int main(LPCSTR lpCmdLine)
 }
 #elif defined(O3D_ANDROID)
 template <class T_Main, class T_Settings>
-void android_main(android_app *state)
+void main(struct android_app *state)
 {
-    // ensure the android glue is linked
-    app_dummy();
-
     atexit(onExit);
 
     T_Settings settings;
@@ -150,11 +147,11 @@ void android_main(android_app *state)
 #ifdef O3D_ANDROID
     //! Call the main object with a console (Android version).
     #define O3D_CONSOLE_MAIN(CLASS_NAME, CLASS_SETTINGS) \
-        void android_main(android_app *state) { o3d::main<CLASS_NAME, CLASS_SETTINGS>(state); }
+        extern void android_main(struct android_app *state) { o3d::main<CLASS_NAME, CLASS_SETTINGS>(state); }
 
     //! Call the main object without a console (Android version).
     #define O3D_NOCONSOLE_MAIN(CLASS_NAME, CLASS_SETTINGS) \
-        void android_main(android_app *state) { o3d::main<CLASS_NAME, CLASS_SETTINGS>(state); }
+        extern void android_main(struct android_app *state) { o3d::main<CLASS_NAME, CLASS_SETTINGS>(state); }
 #elif defined(O3D_WINDOWS)
     //! Call the main object with a console (Standard version).
     #define O3D_CONSOLE_MAIN(CLASS_NAME, CLASS_SETTINGS) \
