@@ -46,14 +46,12 @@ AnimationManager::~AnimationManager()
 Bool AnimationManager::deleteChild(BaseObject *child)
 {
     if (child) {
-		if (child->getParent() != this)
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			// is it a material, and is it managed by this
 			Animation *animation = o3d::dynamicCast<Animation*>(child);
-			if (animation && (animation->getManager() == this))
-			{
+            if (animation && (animation->getManager() == this)) {
 				deleteAnimation(animation);
 				return True;
 			}
@@ -81,18 +79,19 @@ Animation* AnimationManager::addAnimation(const String &filename)
 	String absFilename = getFullFileName(filename);
 
 	Animation *foundAnimation = findAnimation(0, absFilename);
-	if (foundAnimation)
+    if (foundAnimation) {
 		return foundAnimation;
+    }
 
     InStream* is = FileManager::instance()->openInStream(absFilename);
-    if (!is)
+    if (!is) {
         return nullptr;
+    }
 
     O3D_MESSAGE("Import animation file \"" + filename + "\"");
 
     Animation *animation = reinterpret_cast<Animation*>(ClassFactory::readFromFile(*is, this));
-	if (!animation)
-	{
+    if (!animation) {
         deletePtr(is);
         return nullptr;
 	}
@@ -110,81 +109,88 @@ Animation* AnimationManager::addAnimation(const String &filename)
 // Insert an existing animation in the manager.
 void AnimationManager::addAnimation(Animation *animation)
 {
-	if (animation->getManager() != NULL)
+    if (animation->getManager() != nullptr) {
 		O3D_ERROR(E_InvalidOperation("The given animation already have a manager"));
+    }
 
 	// resource name must be defined
-	if (animation->getResourceName().isEmpty())
+    if (animation->getResourceName().isEmpty()) {
 		O3D_ERROR(E_InvalidPrecondition("Resource name must be defined"));
+    }
 
 	addResource(animation->getResourceName());
 
-    FastMutexLocker locker(m_mutex);
+    {
+        FastMutexLocker locker(m_mutex);
 
-	if (animation->getFileName().isEmpty())
-		animation->setFileName(m_path + '/' + animation->getResourceName());
+        if (animation->getFileName().isEmpty()) {
+            animation->setFileName(m_path + '/' + animation->getResourceName());
+        }
 
-	// search for the animation
-    IT_FindMap it = m_findMap.find(animation->getResourceName());
-	if (it != m_findMap.end())
-		O3D_ERROR(E_InvalidParameter("A same animation with the same name already exists"));
-	else
-        m_findMap.insert(std::make_pair(animation->getResourceName(), animation));
+        // search for the animation
+        IT_FindMap it = m_findMap.find(animation->getResourceName());
+        if (it != m_findMap.end()) {
+            O3D_ERROR(E_InvalidParameter("A same animation with the same name already exists"));
+        } else {
+            m_findMap.insert(std::make_pair(animation->getResourceName(), animation));
+        }
 
-    O3D_MESSAGE("Add animation \"" + animation->getResourceName() + "\"");
+        O3D_MESSAGE("Add animation \"" + animation->getResourceName() + "\"");
 
-	// this is the manager and its parent
-	animation->setManager(this);
-	animation->setParent(this);
-	animation->setId(m_IDManager.getID());
+        // this is the manager and its parent
+        animation->setManager(this);
+        animation->setParent(this);
+        animation->setId(m_IDManager.getID());
+    }
 }
 
 // Remove an existing animation from the manager.
 void AnimationManager::removeAnimation(Animation *animation)
 {
-	if (animation->getManager() != this)
+    if (animation->getManager() != this) {
 		O3D_ERROR(E_InvalidParameter("Animation manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-    FastMutexLocker locker(m_mutex);
+        // remove the animation object from the manager.
+        IT_FindMap it = m_findMap.find(animation->getResourceName());
+        if (it != m_findMap.end()) {
+            animation->setManager(nullptr);
+            animation->setParent(getScene());
 
-	// remove the animation object from the manager.
-    IT_FindMap it = m_findMap.find(animation->getResourceName());
-	if (it != m_findMap.end())
-	{
-        animation->setManager(nullptr);
-		animation->setParent(getScene());
+            m_IDManager.releaseID(animation->getId());
+            animation->setId(-1);
 
-		m_IDManager.releaseID(animation->getId());
-		animation->setId(-1);
+            m_findMap.erase(it);
 
-		m_findMap.erase(it);
-
-        O3D_MESSAGE("Remove (not delete) existing animation : " + animation->getResourceName());
-	}
+            O3D_MESSAGE("Remove (not delete) existing animation : " + animation->getResourceName());
+        }
+    }
 }
 
 // Delete an existing animation from the manager.
 void AnimationManager::deleteAnimation(Animation *animation)
 {
-	if (animation->getManager() != this)
+    if (animation->getManager() != this) {
 		O3D_ERROR(E_InvalidParameter("Animation manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-    FastMutexLocker locker(m_mutex);
+        // remove the animation object from the manager.
+        IT_FindMap it = m_findMap.find(animation->getResourceName());
+        if (it != m_findMap.end()) {
+            m_garbageManager.add(animation->getResourceName(), animation);
 
-	// remove the animation object from the manager.
-    IT_FindMap it = m_findMap.find(animation->getResourceName());
-    if (it != m_findMap.end()) {
-        m_garbageManager.add(animation->getResourceName(), animation);
+            animation->setManager(nullptr);
 
-        animation->setManager(nullptr);
+            m_IDManager.releaseID(animation->getId());
+            animation->setId(-1);
 
-		m_IDManager.releaseID(animation->getId());
-		animation->setId(-1);
+            m_findMap.erase(it);
 
-		m_findMap.erase(it);
-
-        O3D_MESSAGE("Delete (to GC) animation: " + animation->getResourceName());
-	}
+            O3D_MESSAGE("Delete (to GC) animation: " + animation->getResourceName());
+        }
+    }
 }
 
 // Is an animation exists.
@@ -204,27 +210,27 @@ Animation* AnimationManager::findAnimation(
         UInt32 type,
         const String &resourceName)
 {
-    FastMutexLocker locker(m_mutex);
-
-	// search the key name into the map, next the animation given parameters into the element
-    CIT_FindMap cit = m_findMap.find(resourceName);
-	if (cit != m_findMap.end())
-	{
-		// found it ?
-		return cit->second;
-	}
-
-	// maybe the asked animation was just deleted, so search it into the garbage collector
     Animation *animation = nullptr;
-    m_garbageManager.remove(resourceName, animation);
+    {
+        FastMutexLocker locker(m_mutex);
 
-    locker.unlock();
+        // search the key name into the map, next the animation given parameters into the element
+        CIT_FindMap cit = m_findMap.find(resourceName);
+        if (cit != m_findMap.end()) {
+            // found it ?
+            return cit->second;
+        }
 
-	// if found, reinsert it into the manager
-	if (animation)
+        // maybe the asked animation was just deleted, so search it into the garbage collector
+        m_garbageManager.remove(resourceName, animation);
+    }
+
+    // if found, reinsert it into the manager
+    if (animation) {
 		addAnimation(animation);
+    }
 
-	return animation;
+    return animation;
 }
 
 // Export complete animation a single file

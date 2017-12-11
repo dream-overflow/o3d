@@ -26,14 +26,11 @@ SndBufferManager::SndBufferManager(BaseObject *parent, const String &path) :
 // Virtual destructor
 SndBufferManager::~SndBufferManager()
 {
-	if (!m_findMap.empty())
-	{
+    if (!m_findMap.empty()) {
 		String message("Sound buffers still exists into the manager :\n");
 
-		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-		{
-			for (std::list<SndBuffer*>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
-			{
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
+            for (std::list<SndBuffer*>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
                 message += "    |- " + (*it2)->getResourceName() + "\n";
 				deletePtr(*it2);
 			}
@@ -46,16 +43,13 @@ SndBufferManager::~SndBufferManager()
 // Delete child .
 Bool SndBufferManager::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
-		if (child->getParent() != this)
+    if (child) {
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			// is it a material, and is it managed by this
 			SndBuffer *sndBuffer = o3d::dynamicCast<SndBuffer*>(child);
-			if (sndBuffer && (sndBuffer->getManager() == this))
-			{
+            if (sndBuffer && (sndBuffer->getManager() == this)) {
 				deleteSndBuffer(sndBuffer);
 				return True;
 			}
@@ -73,37 +67,34 @@ SndBuffer* SndBufferManager::findSndBuffer(
         UInt32 type,
         Float decodeMaxDuration)
 {
-	FastMutexLocker locker(m_mutex);
-
-	// search the key name into the map, next the sound buffer given parameters into the element
-    CIT_FindMap cit = m_findMap.find(resourceName);
-	if (cit != m_findMap.end())
-	{
-		// search into the list
-		for (std::list<SndBuffer*>::const_iterator it2 = cit->second.begin(); it2 != cit->second.end(); ++it2)
-		{
-			SndBuffer *sndBuffer = *it2;
-
-			if ((sndBuffer->getType() == type) &&
-				(sndBuffer->getDecodeMaxDuration() == decodeMaxDuration))
-			{
-				// found it ?
-				return sndBuffer;
-			}
-		}
-	}
-
-	// maybe the asked sound buffer was just deleted, so search it into the garbage collector
     SndBuffer *sndBuffer = nullptr;
-	m_garbageManager.remove(
-            GarbageKey(resourceName, type, decodeMaxDuration),
-			sndBuffer);
+    {
+        FastMutexLocker locker(m_mutex);
 
-	locker.unlock();
+        // search the key name into the map, next the sound buffer given parameters into the element
+        CIT_FindMap cit = m_findMap.find(resourceName);
+        if (cit != m_findMap.end()) {
+            // search into the list
+            for (std::list<SndBuffer*>::const_iterator it2 = cit->second.begin(); it2 != cit->second.end(); ++it2) {
+                SndBuffer *sndBuffer = *it2;
+
+                if ((sndBuffer->getType() == type) && (sndBuffer->getDecodeMaxDuration() == decodeMaxDuration)) {
+                    // found it ?
+                    return sndBuffer;
+                }
+            }
+        }
+
+        // maybe the asked sound buffer was just deleted, so search it into the garbage collector
+        m_garbageManager.remove(
+                    GarbageKey(resourceName, type, decodeMaxDuration),
+                    sndBuffer);
+    }
 
 	// if found, reinsert it into the manager
-	if (sndBuffer)
+    if (sndBuffer) {
 		addSndBuffer(sndBuffer);
+    }
 
 	return sndBuffer;
 }
@@ -111,116 +102,114 @@ SndBuffer* SndBufferManager::findSndBuffer(
 // Add a sound buffer to the manager.
 void SndBufferManager::addSndBuffer(SndBuffer *sndBuffer)
 {
-    if (sndBuffer->getManager() != nullptr)
+    if (sndBuffer->getManager() != nullptr) {
 		O3D_ERROR(E_InvalidOperation("The given sound buffer already have a manager"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // search for the sound buffer
+        IT_FindMap it = m_findMap.find(sndBuffer->getResourceName());
+        if (it != m_findMap.end()) {
+            it->second.push_back(sndBuffer);
+        } else {
+            std::list<SndBuffer*> entry;
+            entry.push_back(sndBuffer);
 
-    // search for the sound buffer
-    IT_FindMap it = m_findMap.find(sndBuffer->getResourceName());
-	if (it != m_findMap.end())
-	{
-		it->second.push_back(sndBuffer);
-	}
-	else
-	{
-		std::list<SndBuffer*> entry;
-		entry.push_back(sndBuffer);
+            m_findMap.insert(std::make_pair(sndBuffer->getResourceName(), entry));
+        }
 
-        m_findMap.insert(std::make_pair(sndBuffer->getResourceName(), entry));
-	}
+        O3D_MESSAGE("Add sound buffer \"" + sndBuffer->getResourceName() + "\"");
 
-    O3D_MESSAGE("Add sound buffer \"" + sndBuffer->getResourceName() + "\"");
-
-	// this is the manager
-	sndBuffer->setManager(this);
-	sndBuffer->setParent(this);
-	sndBuffer->setId(m_IDManager.getID());
+        // this is the manager
+        sndBuffer->setManager(this);
+        sndBuffer->setParent(this);
+        sndBuffer->setId(m_IDManager.getID());
+    }
 }
 
 // Remove a sound buffer from the manager.
 void SndBufferManager::removeSndBuffer(SndBuffer *sndBuffer)
 {
-	if (sndBuffer->getManager() != this)
+    if (sndBuffer->getManager() != this) {
 		O3D_ERROR(E_InvalidParameter("Sound buffer manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // remove the sound buffer object from the manager.
+        IT_FindMap it = m_findMap.find(sndBuffer->getResourceName());
+        if (it != m_findMap.end()) {
+            std::list<SndBuffer*>::iterator it2 =  it->second.begin();
 
-	// remove the sound buffer object from the manager.
-    IT_FindMap it = m_findMap.find(sndBuffer->getResourceName());
-	if (it != m_findMap.end())
-	{
-		std::list<SndBuffer*>::iterator it2 =  it->second.begin();
+            // search into the list
+            for (; it2 != it->second.end(); ++it2) {
+                // found it ?
+                if (*it2 == sndBuffer) {
+                    break;
+                }
+            }
 
-		// search into the list
-		for (; it2 != it->second.end(); ++it2)
-		{
-			// found it ?
-			if (*it2 == sndBuffer)
-				break;
-		}
+            // if sound buffer found erase it from the list
+            if (it2 != it->second.end()) {
+                it->second.erase(it2);
 
-		// if sound buffer found erase it from the list
-		if (it2 != it->second.end())
-		{
-			it->second.erase(it2);
+                sndBuffer->setManager(nullptr);
+                sndBuffer->setParent(getScene());
 
-            sndBuffer->setManager(nullptr);
-			sndBuffer->setParent(getScene());
+                m_IDManager.releaseID(sndBuffer->getId());
+                sndBuffer->setId(-1);
 
-			m_IDManager.releaseID(sndBuffer->getId());
-			sndBuffer->setId(-1);
+                O3D_MESSAGE("Remove (not delete) existing sound buffer : " + sndBuffer->getResourceName());
+            }
 
-            O3D_MESSAGE("Remove (not delete) existing sound buffer : " + sndBuffer->getResourceName());
-		}
-
-		// erase the list if empty
-		if (it->second.empty())
-			m_findMap.erase(it);
-	}
+            // erase the list if empty
+            if (it->second.empty()) {
+                m_findMap.erase(it);
+            }
+        }
+    }
 }
 
 // Delete a sound buffer from the manager.
 void SndBufferManager::deleteSndBuffer(SndBuffer *sndBuffer)
 {
-	if (sndBuffer->getManager() != this)
+    if (sndBuffer->getManager() != this) {
 		O3D_ERROR(E_InvalidParameter("Sound buffer manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // remove the sound buffer object from the manager.
+        IT_FindMap it = m_findMap.find(sndBuffer->getResourceName());
+        if (it != m_findMap.end()) {
+            std::list<SndBuffer*>::iterator it2 =  it->second.begin();
 
-	// remove the sound buffer object from the manager.
-    IT_FindMap it = m_findMap.find(sndBuffer->getResourceName());
-	if (it != m_findMap.end())
-	{
-		std::list<SndBuffer*>::iterator it2 =  it->second.begin();
+            // search into the list
+            for (; it2 != it->second.end(); ++it2) {
+                // found it ?
+                if (*it2 == sndBuffer) {
+                    break;
+                }
+            }
 
-		// search into the list
-		for (; it2 != it->second.end(); ++it2)
-		{
-			// found it ?
-			if (*it2 == sndBuffer)
-				break;
-		}
+            // if sound buffer found erase it from the list
+            // and adding it for a deferred deletion
+            if (it2 != it->second.end()) {
+                it->second.erase(it2);
+                m_garbageManager.add(GarbageKey(sndBuffer), sndBuffer);
 
-		// if sound buffer found erase it from the list
-		// and adding it for a deferred deletion
-		if (it2 != it->second.end())
-		{
-			it->second.erase(it2);
-			m_garbageManager.add(GarbageKey(sndBuffer), sndBuffer);
+                sndBuffer->setManager(nullptr);
 
-            sndBuffer->setManager(nullptr);
+                m_IDManager.releaseID(sndBuffer->getId());
+                sndBuffer->setId(-1);
 
-			m_IDManager.releaseID(sndBuffer->getId());
-			sndBuffer->setId(-1);
+                O3D_MESSAGE("Delete existing sound buffer : " + sndBuffer->getResourceName());
+            }
 
-            O3D_MESSAGE("Delete existing sound buffer : " + sndBuffer->getResourceName());
-		}
-
-		// erase the list if empty
-		if (it->second.empty())
-			m_findMap.erase(it);
-	}
+            // erase the list if empty
+            if (it->second.empty()) {
+                m_findMap.erase(it);
+            }
+        }
+    }
 }
 
 // Purge immediately the garbage manager of its content.
@@ -240,8 +229,9 @@ SndBuffer* SndBufferManager::addSndBuffer(const String &filename, Float decodeMa
 			AUDIO_SND_BUFFER,
 			decodeMaxDuration);
 
-	if (sndBuffer)
+    if (sndBuffer) {
 		return sndBuffer;
+    }
 
     String absFileName = getFullFileName(filename);
 
@@ -250,24 +240,20 @@ SndBuffer* SndBufferManager::addSndBuffer(const String &filename, Float decodeMa
     sndBuffer->setResourceName(filename);
 
 	// asynchronous loading
-	if (m_isAsynchronous)
-	{
+    if (m_isAsynchronous) {
 		SndBufferTask *task = new SndBufferTask(
 				sndBuffer,
 				absFileName,
 				decodeMaxDuration);
 
 		TaskManager::instance()->addTask(task);
-	}
-	// synchronous loading
-    else
-    {
+    } else {
+        // synchronous loading
         Sound sound;
         sound.load(absFileName, decodeMaxDuration);
 
         sndBuffer->setSound(sound);
-        if (!sndBuffer->create())
-        {
+        if (!sndBuffer->create()) {
             deletePtr(sndBuffer);
             return nullptr;
         }
@@ -290,15 +276,13 @@ SndBuffer* SndBufferManager::readSndBuffer(InStream &is)
 	SndBuffer *sndBuffer = new SndBuffer(this);
 
 	// read sound buffer info from file
-    if (!sndBuffer->readFromFile(is))
-	{
+    if (!sndBuffer->readFromFile(is)) {
 		deletePtr(sndBuffer);
         return nullptr;
 	}
 
 	// default sound buffer TODO (silent)
-	/*if (sndBuffer->getFileName() == "<o3d::soundbuffer::default>")
-	{
+    /*if (sndBuffer->getFileName() == "<o3d::soundbuffer::default>") {
 		deletePtr(sndBuffer);
 		return m_defaultSndBuffer;
 	}*/
@@ -310,8 +294,7 @@ SndBuffer* SndBufferManager::readSndBuffer(InStream &is)
 			sndBuffer->getDecodeMaxDuration());
 
 	// already exists ?
-	if (foundSndBuffer)
-	{
+    if (foundSndBuffer) {
 		deletePtr(sndBuffer);
 		return foundSndBuffer;
 	}
@@ -319,24 +302,20 @@ SndBuffer* SndBufferManager::readSndBuffer(InStream &is)
     String absFileName = getFullFileName(sndBuffer->getResourceName());
 
 	// asynchronous loading
-	if (m_isAsynchronous)
-	{
+    if (m_isAsynchronous) {
 		SndBufferTask *task = new SndBufferTask(
 				sndBuffer,
                 absFileName,
 				sndBuffer->getDecodeMaxDuration());
 
 		TaskManager::instance()->addTask(task);
-	}
-	// synchronous loading
-    else
-    {
+    } else {
+        // synchronous loading
         Sound snd;
         snd.load(absFileName, sndBuffer->getDecodeMaxDuration());
 
         sndBuffer->setSound(snd);
-        if (!sndBuffer->create())
-        {
+        if (!sndBuffer->create()) {
             deletePtr(sndBuffer);
             return nullptr;
         }
@@ -351,8 +330,9 @@ void SndBufferManager::enableAsynchronous()
 {
 	FastMutexLocker locker(m_mutex);
 
-	if (!m_isAsynchronous)
+    if (!m_isAsynchronous) {
 		m_isAsynchronous = True;
+    }
 }
 
 // Disable an asynchronous sound query manager
@@ -360,8 +340,9 @@ void SndBufferManager::disableAsynchronous()
 {
 	FastMutexLocker locker(m_mutex);
 
-	if (m_isAsynchronous)
+    if (m_isAsynchronous) {
 		m_isAsynchronous = False;
+    }
 }
 
 // Is asynchronous texture sound is enabled.

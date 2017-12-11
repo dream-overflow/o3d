@@ -87,27 +87,29 @@ void MeshDataManager::addMeshData(MeshData *meshData)
 
 	addResource(meshData->getResourceName());
 
-    FastMutexLocker locker(m_mutex);
+    {
+        FastMutexLocker locker(m_mutex);
 
-	// define the file name if necessary.
-    if (meshData->getFileName().isEmpty()) {
-        meshData->setFileName(m_path + '/' + meshData->getResourceName());
+        // define the file name if necessary.
+        if (meshData->getFileName().isEmpty()) {
+            meshData->setFileName(m_path + '/' + meshData->getResourceName());
+        }
+
+        // search for the mesh data
+        IT_FindMap it = m_findMap.find(meshData->getResourceName());
+        if (it != m_findMap.end()) {
+            O3D_ERROR(E_InvalidParameter("A same mesh data with the same name already exists"));
+        } else {
+            m_findMap.insert(std::make_pair(meshData->getResourceName(), meshData));
+        }
+
+        O3D_MESSAGE("Add mesh data \"" + meshData->getResourceName() + "\"");
+
+        // this is the manager and its parent
+        meshData->setManager(this);
+        meshData->setParent(this);
+        meshData->setId(m_IDManager.getID());
     }
-
-	// search for the mesh data
-    IT_FindMap it = m_findMap.find(meshData->getResourceName());
-    if (it != m_findMap.end()) {
-		O3D_ERROR(E_InvalidParameter("A same mesh data with the same name already exists"));
-    } else {
-        m_findMap.insert(std::make_pair(meshData->getResourceName(), meshData));
-    }
-
-    O3D_MESSAGE("Add mesh data \"" + meshData->getResourceName() + "\"");
-
-	// this is the manager and its parent
-	meshData->setManager(this);
-	meshData->setParent(this);
-	meshData->setId(m_IDManager.getID());
 }
 
 // Remove an existing mesh data from the manager.
@@ -115,23 +117,23 @@ void MeshDataManager::removeMeshData(MeshData *meshData)
 {
     if (meshData->getManager() != this) {
         O3D_ERROR(E_InvalidParameter("Mesh data manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
+
+        // remove the mesh data object from the manager.
+        IT_FindMap it = m_findMap.find(meshData->getResourceName());
+        if (it != m_findMap.end()) {
+            meshData->setManager(nullptr);
+            meshData->setParent(getScene());
+
+            m_IDManager.releaseID(meshData->getId());
+            meshData->setId(-1);
+
+            m_findMap.erase(it);
+
+            O3D_MESSAGE("Remove (not delete) existing mesh data: " + meshData->getResourceName());
+        }
     }
-
-    FastMutexLocker locker(m_mutex);
-
-	// remove the mesh data object from the manager.
-    IT_FindMap it = m_findMap.find(meshData->getResourceName());
-    if (it != m_findMap.end()) {
-        meshData->setManager(nullptr);
-		meshData->setParent(getScene());
-
-		m_IDManager.releaseID(meshData->getId());
-		meshData->setId(-1);
-
-		m_findMap.erase(it);
-
-        O3D_MESSAGE("Remove (not delete) existing mesh data: " + meshData->getResourceName());
-	}
 }
 
 // Delete an existing mesh data from the manager.
@@ -139,24 +141,24 @@ void MeshDataManager::deleteMeshData(MeshData *meshData)
 {
     if (meshData->getManager() != this) {
         O3D_ERROR(E_InvalidParameter("Mesh data manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
+
+        // remove the texture object from the manager.
+        IT_FindMap it = m_findMap.find(meshData->getResourceName());
+        if (it != m_findMap.end()) {
+            m_garbageManager.add(meshData->getResourceName(), meshData);
+
+            meshData->setManager(nullptr);
+
+            m_IDManager.releaseID(meshData->getId());
+            meshData->setId(-1);
+
+            m_findMap.erase(it);
+
+            O3D_MESSAGE("Delete (to GC) mesh data: " + meshData->getResourceName());
+        }
     }
-
-    FastMutexLocker locker(m_mutex);
-
-	// remove the texture object from the manager.
-    IT_FindMap it = m_findMap.find(meshData->getResourceName());
-    if (it != m_findMap.end()) {
-        m_garbageManager.add(meshData->getResourceName(), meshData);
-
-        meshData->setManager(nullptr);
-
-		m_IDManager.releaseID(meshData->getId());
-		meshData->setId(-1);
-
-		m_findMap.erase(it);
-
-        O3D_MESSAGE("Delete (to GC) mesh data: " + meshData->getResourceName());
-	}
 }
 
 // Purge immediately the garbage manager of its content.
@@ -168,20 +170,21 @@ void MeshDataManager::purgeGarbage()
 
 MeshData* MeshDataManager::findMeshData(UInt32 type, const String &resourceName)
 {
-    FastMutexLocker locker(m_mutex);
-
-	// search the key name into the map, next the mesh data given parameters into the element
-    CIT_FindMap cit = m_findMap.find(resourceName);
-    if (cit != m_findMap.end()) {
-		// found it ?
-		return cit->second;
-	}
-
-	// maybe the asked mesh data was just deleted, so search it into the garbage collector
     MeshData *meshData = nullptr;
-    m_garbageManager.remove(resourceName, meshData);
 
-    locker.unlock();
+    {
+        FastMutexLocker locker(m_mutex);
+
+        // search the key name into the map, next the mesh data given parameters into the element
+        CIT_FindMap cit = m_findMap.find(resourceName);
+        if (cit != m_findMap.end()) {
+            // found it ?
+            return cit->second;
+        }
+
+        // maybe the asked mesh data was just deleted, so search it into the garbage collector
+        m_garbageManager.remove(resourceName, meshData);
+    }
 
 	// if found, reinsert it into the manager
     if (meshData) {

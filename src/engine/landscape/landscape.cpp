@@ -66,12 +66,10 @@ TerrainManager::TerrainManager(BaseObject *parent) :
 
 TerrainManager::~TerrainManager()
 {
-	if (!m_findMap.empty())
-	{
+    if (!m_findMap.empty()) {
 		String message("Terrains still exists into the manager :\n");
 
-		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-		{
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
             message += "    |- " + it->second->getName() + "\n";
 			deletePtr(it->second);
 		}
@@ -83,16 +81,13 @@ TerrainManager::~TerrainManager()
 // Delete child .
 Bool TerrainManager::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
-		if (child->getParent() != this)
+    if (child) {
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			// is it a terrain, and is it managed by this
 			TerrainBase *terrain = o3d::dynamicCast<TerrainBase*>(child);
-			if (terrain && (terrain->m_manager == this))
-			{
+            if (terrain && (terrain->m_manager == this)) {
 				deleteTerrain(terrain);
 				return True;
 			}
@@ -107,113 +102,108 @@ Bool TerrainManager::deleteChild(BaseObject *child)
 
 void TerrainManager::addTerrain(TerrainBase *terrain)
 {
-	if (terrain->m_manager != NULL)
+    if (terrain->m_manager != nullptr) {
 		O3D_ERROR(E_InvalidOperation("The given terrain already have a manager"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        String keyName = terrain->getName();
 
-	String keyName = terrain->getName();
+        // search for the terrain
+        IT_FindMap it = m_findMap.find(keyName);
+        if (it != m_findMap.end()) {
+            O3D_ERROR(E_InvalidParameter("A same terrain with the same name already exists"));
+        } else {
+            m_findMap.insert(std::make_pair(keyName, terrain));
+        }
 
-	// search for the terrain
-	IT_FindMap it = m_findMap.find(keyName);
-	if (it != m_findMap.end())
-	{
-		O3D_ERROR(E_InvalidParameter("A same terrain with the same name already exists"));
-	}
-	else
-	{
-		m_findMap.insert(std::make_pair(keyName, terrain));
-	}
+        O3D_MESSAGE("Add terrain \"" + keyName + "\"");
 
-	O3D_MESSAGE("Add terrain \"" + keyName + "\"");
-
-	// this is the manager and its parent
-	terrain->m_manager = this;
-	terrain->setParent(this);
-	terrain->setId(m_IDManager.getID());
+        // this is the manager and its parent
+        terrain->m_manager = this;
+        terrain->setParent(this);
+        terrain->setId(m_IDManager.getID());
+    }
 }
 
 void TerrainManager::removeTerrain(TerrainBase *terrain)
 {
-	if (terrain->m_manager != this)
+    if (terrain->m_manager != this) {
 		O3D_ERROR(E_InvalidParameter("Terrain manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        String keyName = terrain->getName();
 
-	String keyName = terrain->getName();
+        // remove the terrain object from the manager.
+        IT_FindMap it = m_findMap.find(keyName);
+        if (it != m_findMap.end()) {
+            terrain->m_manager = nullptr;
+            terrain->setParent(getScene());
 
-	// remove the terrain object from the manager.
-	IT_FindMap it = m_findMap.find(keyName);
-	if (it != m_findMap.end())
-	{
-		terrain->m_manager = NULL;
-		terrain->setParent(getScene());
+            m_IDManager.releaseID(terrain->getId());
 
-		m_IDManager.releaseID(terrain->getId());
+            terrain->setId(-1);
 
-		terrain->setId(-1);
+            m_findMap.erase(it);
 
-		m_findMap.erase(it);
-
-		O3D_MESSAGE("Remove (not delete) existing terrain : " + keyName);
-	}
+            O3D_MESSAGE("Remove (not delete) existing terrain : " + keyName);
+        }
+    }
 }
 
 void TerrainManager::deleteTerrain(TerrainBase *terrain)
 {
-	if (terrain->m_manager != this)
+    if (terrain->m_manager != this) {
 		O3D_ERROR(E_InvalidParameter("Terrain manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        String keyName = terrain->getName();
 
-	String keyName = terrain->getName();
+        // remove the terrain object from the manager.
+        IT_FindMap it = m_findMap.find(keyName);
+        if (it != m_findMap.end()) {
+            m_IDManager.releaseID(terrain->getId());
 
-	// remove the terrain object from the manager.
-	IT_FindMap it = m_findMap.find(keyName);
-	if (it != m_findMap.end())
-	{
-		m_IDManager.releaseID(terrain->getId());
+            deletePtr(terrain);
 
-		deletePtr(terrain);
+            m_findMap.erase(it);
 
-		m_findMap.erase(it);
-
-		O3D_MESSAGE("Delete existing terrain : " + keyName);
-	}
+            O3D_MESSAGE("Delete existing terrain : " + keyName);
+        }
+    }
 }
 
-TerrainBase* TerrainManager::findTerrain(
-		UInt32 type,
-		const String &keyName)
+TerrainBase* TerrainManager::findTerrain(UInt32 type, const String &keyName)
 {
 	FastMutexLocker locker(m_mutex);
 
 	// search the key name into the map, next the terrain given parameters into the element
 	CIT_FindMap cit = m_findMap.find(keyName);
-	if (cit != m_findMap.end())
-	{
+    if (cit != m_findMap.end()) {
 		// found it ?
 		return cit->second;
 	}
 
 	// not found
-	return NULL;
+    return nullptr;
 }
 
 Bool TerrainManager::isTerrain(const String &name)
 {
 	String keyName = name;
-	return (findTerrain(0, keyName) != NULL);
+    return (findTerrain(0, keyName) != nullptr);
 }
 
 void TerrainManager::draw()
 {
 	FastMutexLocker locker(m_mutex);
 
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-	{
-		if (getScene()->getActiveCamera() == it->second->getCamera())
+    for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
+        if (getScene()->getActiveCamera() == it->second->getCamera()) {
 			(*it).second->draw();
+        }
 	}
 }
 
@@ -222,11 +212,12 @@ void TerrainManager::update()
 	FastMutexLocker locker(m_mutex);
 
 	// process deferred objects deletion
-	//ProcessDeferred();
+    // processDeferred();
 
 	// process all terrain updates
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
+    for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
 		(*it).second->update();
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -244,12 +235,10 @@ TerrainDefManager::TerrainDefManager(
 
 TerrainDefManager::~TerrainDefManager()
 {
-	if (!m_findMap.empty())
-	{
+    if (!m_findMap.empty()) {
 		String message("Terrain definition still exists into the manager:\n");
 
-		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-		{
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
             message += "    |- " + it->second->getKeyName() + "\n";
 			deletePtr(it->second);
 		}
@@ -261,16 +250,13 @@ TerrainDefManager::~TerrainDefManager()
 // Delete child .
 Bool TerrainDefManager::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
-		if (child->getParent() != this)
+    if (child) {
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			// is it a terrain def, and is it managed by this
 			TerrainDef *terrainDef = o3d::dynamicCast<TerrainDef*>(child);
-			if (terrainDef && (terrainDef->getManager() == this))
-			{
+            if (terrainDef && (terrainDef->getManager() == this)) {
 				deleteTerrainDef(terrainDef);
 				return True;
 			}
@@ -289,84 +275,85 @@ TerrainDef* TerrainDefManager::findTerrainDef(const String &keyName)
 
 	// search the key name into the map, next the texture given parameters into the element
 	CIT_FindMap cit = m_findMap.find(keyName);
-	if (cit != m_findMap.end())
-	{
+    if (cit != m_findMap.end()) {
 		return cit->second;
-	}
-	else
-		return NULL;
+    } else {
+        return nullptr;
+    }
 }
 
 // Manage an existing terrain definition.
 void TerrainDefManager::addTerrainDef(TerrainDef *terrainDef)
 {
-	if (terrainDef->getManager() != NULL)
+    if (terrainDef->getManager() != nullptr) {
 		O3D_ERROR(E_InvalidOperation("The given terrain definition already have a manager"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // search for the terrain definition key
+        IT_FindMap it = m_findMap.find(terrainDef->getKeyName());
+        if (it != m_findMap.end()) {
+            O3D_ERROR(E_InvalidParameter("The given terrain definition already exists into this manager"));
+        }
 
-	// search for the terrain definition key
-	IT_FindMap it = m_findMap.find(terrainDef->getKeyName());
-	if (it != m_findMap.end())
-		O3D_ERROR(E_InvalidParameter("The given terrain definition already exists into this manager"));
-	
-	m_findMap.insert(std::pair<String, TerrainDef*>(terrainDef->getKeyName(), terrainDef));
+        m_findMap.insert(std::pair<String, TerrainDef*>(terrainDef->getKeyName(), terrainDef));
 
-	O3D_MESSAGE("Add terrain definition \"" + terrainDef->getKeyName() + "\"");
+        O3D_MESSAGE("Add terrain definition \"" + terrainDef->getKeyName() + "\"");
 
-	// this is the manager and its parent
-	terrainDef->setManager(this);
-	terrainDef->setParent(this);
-	terrainDef->setId(m_IDManager.getID());
+        // this is the manager and its parent
+        terrainDef->setManager(this);
+        terrainDef->setParent(this);
+        terrainDef->setId(m_IDManager.getID());
+    }
 }
 
 // Remove an existing terrain definition from the manager.
 void TerrainDefManager::removeTerrainDef(TerrainDef *terrainDef)
 {
-	if (terrainDef->getManager() != this)
+    if (terrainDef->getManager() != this) {
 		O3D_ERROR(E_InvalidParameter("Terrain definition manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // remove the terrain definition object from the manager.
+        IT_FindMap it = m_findMap.find(terrainDef->getKeyName());
+        if (it != m_findMap.end()) {
+            terrainDef->setManager(nullptr);
+            terrainDef->setParent(getScene());
 
-	// remove the terrain definition object from the manager.
-	IT_FindMap it = m_findMap.find(terrainDef->getKeyName());
-	if (it != m_findMap.end())
-	{
-		terrainDef->setManager(NULL);
-		terrainDef->setParent(getScene());
+            m_IDManager.releaseID(terrainDef->getId());
+            terrainDef->setId(-1);
 
-		m_IDManager.releaseID(terrainDef->getId());
-		terrainDef->setId(-1);
+            O3D_MESSAGE("Remove (not delete) existing terrain definition: " + terrainDef->getKeyName());
 
-		O3D_MESSAGE("Remove (not delete) existing terrain definition: " + terrainDef->getKeyName());
-
-		m_findMap.erase(it);
-	}
+            m_findMap.erase(it);
+        }
+    }
 }
 
 // Delete a managed terrain definition.
 void TerrainDefManager::deleteTerrainDef(TerrainDef *terrainDef)
 {
-	if (terrainDef->getManager() != this)
+    if (terrainDef->getManager() != this) {
 		O3D_ERROR(E_InvalidParameter("Terrain definition manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // remove the terrain definition object from the manager.
+        IT_FindMap it = m_findMap.find(terrainDef->getKeyName());
+        if (it != m_findMap.end()) {
+            terrainDef->setManager(nullptr);
 
-	// remove the terrain definition object from the manager.
-	IT_FindMap it = m_findMap.find(terrainDef->getKeyName());
-	if (it != m_findMap.end())
-	{
-		terrainDef->setManager(NULL);
+            m_IDManager.releaseID(terrainDef->getId());
+            terrainDef->setId(-1);
 
-		m_IDManager.releaseID(terrainDef->getId());
-		terrainDef->setId(-1);
+            O3D_MESSAGE("Delete terrain definition: " + terrainDef->getKeyName());
 
-		O3D_MESSAGE("Delete terrain definition: " + terrainDef->getKeyName());
+            deletePtr(terrainDef);
 
-		deletePtr(terrainDef);
-		
-		m_findMap.erase(it);
-	}
+            m_findMap.erase(it);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -380,7 +367,8 @@ TerrainBase::TerrainBase(const TerrainBase &dup) :
     SceneEntity(dup),
     m_pCamera(this,dup.m_pCamera),
     m_manager(nullptr)
-{}
+{
+}
 
 TerrainBase::TerrainBase(BaseObject *parent, Camera *camera) :
 	SceneEntity(parent),
@@ -416,4 +404,3 @@ void TerrainBase::removeLight(Light *)
 void TerrainBase::updateLight(Light *)
 {
 }
-
