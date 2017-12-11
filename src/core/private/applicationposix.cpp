@@ -117,18 +117,35 @@ Int32 Application::getPID()
 }
 
 void Application::getBaseNamePrivate(Int32 argc, Char **argv)
-{
-    if (argv && (argc >= 1) && argv[0])	{
+{   
+    #ifdef PATH_MAX
+    const ssize_t MAX_PATH = PATH_MAX;
+    #else
+    const ssize_t MAX_PATH = 1024;
+    #endif
+
+    Char szTmp[32];
+    Char *pBuf = (char*)malloc(MAX_PATH);
+    pBuf[0] = '\0';
+
+    sprintf(szTmp, "/proc/%d/exe", getpid());
+    ssize_t size = o3d::min<ssize_t>(readlink(szTmp, pBuf, MAX_PATH), MAX_PATH-1);
+    if (size >= 0) {
+        pBuf[size] = '\0';
+
+        ms_appsName = new String;
+        ms_appsName->fromUtf8(pBuf);
+
+        Int32 pos = ms_appsName->reverseFind('/');
+        if (pos >= 0) {
+            String path = ms_appsName->extract(0, pos+1);
+            ms_appsPath = new String(FileManager::instance()->getFullFileName(path));
+        } else {
+            ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
+        }
+    } else if (argv && (argc >= 1) && argv[0])	{
         ms_appsName = new String;
         ms_appsName->fromUtf8(argv[0]);
-
-//        char szTmp[32];
-//        sprintf(szTmp, "/proc/%d/exe", getpid());
-//        int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
-//        if(bytes >= 0) {
-//            pBuf[bytes] = '\0';
-//        }
-//        String path = String::fromUtf8(bytes);
 
         Int32 pos = ms_appsName->reverseFind('/');
         if (pos >= 0) {
@@ -141,6 +158,8 @@ void Application::getBaseNamePrivate(Int32 argc, Char **argv)
         ms_appsName = new String("undefined");
         ms_appsPath = new String(FileManager::instance()->getWorkingDirectory());
     }
+
+    free(pBuf);
 }
 
 #endif // O3D_POSIX_SYS

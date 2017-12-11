@@ -23,9 +23,9 @@ class AppWindow;
  * @brief Base application object settings.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-08-12
- * The Application class need somes parameters, that is. This class defines the necessary
- * parameters with defaults values that should be suffiscient for most of the usage, but
- * if you want to customize this settings, you just have to inherit from this class and
+ * @details The Application class need somes parameters, that is. This class defines the
+ * necessary parameters with defaults values that should be suffiscient for most of the usage,
+ * but if you want to customize this settings, you just have to inherit from this class and
  * resettings the values.
  * The fast allocator is essentially used for allocation of mathematics objects like
  * matrice, vector and quaternion. There is a versions for array of such objects :
@@ -35,7 +35,10 @@ class O3D_API AppSettings
 {
 public:
 
-	//! Default constructor
+    /**
+     * @brief Default constructor
+     * Offers a common settings for most of the usages.
+     */
     AppSettings() :
         sizeOfFastAlloc16(16384),
         sizeOfFastAlloc32(16384),
@@ -48,12 +51,14 @@ public:
     size_t sizeOfFastAlloc32;  //!< Fast allocator chunk sizes for block of 32 bytes
     size_t sizeOfFastAlloc64;  //!< Fast allocator chunk sizes for block of 64 bytes
 
-    //! If True the display part containing the main event loop and support
-    //! for application window is initialized.
-    //! @note This can be usefull when you want to use O3D API for non graphic client, or
-    //! for services and don't need of a display support. If you disable the display
-    //! support and need a main event loop, you have to initiate the EvtManager with the
-    //! main thread (as nullptr), and to call its update in your own main loop.
+    /**
+     * @details If True the display part containing the main event loop and support
+     * for application window is initialized.
+     * @note This can be usefull when you want to use O3D API for non graphic client, or
+     * for services and don't need of a display support. If you disable the display
+     * support and need a main event loop, you have to initiate the EvtManager with the
+     * main thread (as nullptr), and to call its update in your own main loop.
+     */
     Bool useDisplay;
 };
 
@@ -62,7 +67,7 @@ public:
  * @brief Application entry
  * @date 2010-08-12
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
- * Application is a static class offering support for :
+ * @details Application is a static class offering support for :
  * - the command line interface (CLI),
  * - application initialization and terminaison (init, quit)
  * - file mapping (usefull for making single instance of an application)
@@ -94,14 +99,14 @@ public:
         EVENT_EVT_MANAGER = 0xffff     //!< EvtManger as a new event to process
     };
 
-	//! Initialize the application.
-	//! For O3D_WIN32 application, argc and argv are ignored.
-	//! @param argc Number of argument in argv or -1 if unknown
-	//! @param argv Array of char*
-	static void init(
-		AppSettings settings,
-        Int32 argc = -1,
-        Char **argv = nullptr);
+    /**
+     * @brief Initialize the application.
+     * @note argc and argv are only for Unixes and Windows on console main.
+     * @param argc Command line argument count or -1.
+     * @param argv Command line argument values (array of Char*) or null.
+     * @param app Extra pointer on specific strucure (for Android it is the app).
+     */
+    static void init(AppSettings settings, Int32 argc = -1, Char **argv = nullptr, void *app = nullptr);
 
 	//! Terminate the application.
 	static void quit();
@@ -200,6 +205,7 @@ protected:
 	static T_AppWindowMap ms_appWindowMap;
 
 	static _DISP ms_display;
+    static void* ms_app;
     static Bool ms_displayError;
 
 	static AppWindow *ms_currAppWindow;

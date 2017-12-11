@@ -34,6 +34,7 @@ String *Application::ms_appsName = nullptr;
 String *Application::ms_appsPath = nullptr;
 Application::T_AppWindowMap Application::ms_appWindowMap;
 _DISP Application::ms_display = NULL_DISP;
+void* Application::ms_app = nullptr;
 AppWindow* Application::ms_currAppWindow = nullptr;
 CommandLine *Application::ms_appsCommandLine = nullptr;
 Bool Application::ms_init = False;
@@ -42,12 +43,13 @@ StringMap<BaseObject*> *ms_mappedObject = nullptr;
 Bool Application::ms_displayError = False;
 
 // Objective-3D initialization
-void Application::init(AppSettings settings, Int32 argc, Char **argv)
+void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
 {
     if (ms_init) {
 		return;
     }
 
+    ms_app = app;
     ms_mappedObject = new StringMap<BaseObject*>;
 
 	System::initTime();
@@ -67,7 +69,10 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv)
 	// Registration of the main thread to activate events
     EvtManager::instance()->registerThread(nullptr);
 
-#ifdef O3D_WINDOWS
+#if O3D_ANDROID
+    // @todo
+    ms_appsCommandLine = new CommandLine("");
+#elif defined(O3D_WINDOWS)
 	String commandLine(GetCommandLineW());
 	ms_appsCommandLine = new CommandLine(commandLine);
 #else
@@ -172,7 +177,9 @@ void Application::quit()
         GL::quit();
 
         ms_displayInit = False;
-    }   
+    }
+
+    ms_app = nullptr;
 }
 
 Bool Application::isInit()
