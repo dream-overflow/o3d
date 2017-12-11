@@ -452,4 +452,3 @@ void FileManager::setSpeedManager(FileSpeedManager type, UInt32 delay,UInt32 blo
 	m_FileSpeedManager[type].m_size = blocksize;
 	m_FileSpeedManager[type].m_bytesec = (UInt32)(blocksize * (1000.f / (Float)delay));
 }
-

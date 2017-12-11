@@ -122,7 +122,7 @@ void FastMutex::unlock() const
 // Attempts to enter a critical section without blocking
 Bool FastMutex::tryLock() const
 {
-	return TryEnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
+    return TryEnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle)) != 0;
 }
 
 
@@ -156,7 +156,7 @@ void RecursiveMutex::unlock() const
 // Attempts to enter a critical section without blocking
 Bool RecursiveMutex::tryLock() const
 {
-	return TryEnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle));
+    return TryEnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle)) != 0;
 }
 
 #endif // O3D_WIN32_SYS

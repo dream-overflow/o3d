@@ -183,12 +183,9 @@ Bool Ms3d::load(InStream &is, const String& baseName, const String &path)
     String meshDataName = rootName;
 
 	// find the mesh data
-	if (m_scene->getMeshDataManager()->isMeshData(meshDataName + ".o3dms"))
-	{
+    if (m_scene->getMeshDataManager()->isMeshData(meshDataName + ".o3dms")) {
 		meshData = m_scene->getMeshDataManager()->addMeshData(meshDataName + ".o3dms");
-	}
-	else
-	{
+    } else {
 		createMeshData = True;
 		meshData = new MeshData(m_scene);
 		meshData->setName(meshDataName);
@@ -197,17 +194,17 @@ Bool Ms3d::load(InStream &is, const String& baseName, const String &path)
 		meshData->setGeometry(new GeometryData(meshData));
 
 		m_scene->getMeshDataManager()->addMeshData(meshData);
-	}
+    }
 
 	UInt32 vertexLimit = 0;
 
 	// result
-	if (m_settings.m_result)
+    if (m_settings.m_result) {
 			m_settings.m_result->m_numFaces = 0;
+    }
 
 	// for each group element (material+faceArray)
-	for (UInt32 k = 0; k < m_numGroups; ++k)
-	{
+    for (UInt32 k = 0; k < m_numGroups; ++k) {
         is >> flag;
         is.read(name, 32);
 

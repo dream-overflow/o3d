@@ -23,11 +23,10 @@ ResourceManager::ResourceManager(
 		BaseObject *parent,
 		const String &path,
 		const String &extList) :
-	BaseObject(parent),
-	m_extList(extList)
+    BaseObject(parent),
+    m_extList(extList)
 {
-	if (path.isValid())
-	{
+    if (path.isValid()) {
 		String myPath(path);
 		myPath.replace('\\', '/');
 		myPath.trimRight('/');
@@ -48,37 +47,40 @@ ResourceManager::~ResourceManager()
 // Check for the existence of a resource.
 Bool ResourceManager::isResourceExists(const String &resourceName) const
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	CIT_FilesMap cit = m_filesMap.find(resourceName);
-	if (cit != m_filesMap.end())
+    if (cit != m_filesMap.end()) {
 		return True;
-	else
+    } else {
 		return False;
+    }
 }
 
 // Add manually a resource.
 void ResourceManager::addResource(const String &resourceName)
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	IT_FilesMap it = m_filesMap.find(resourceName);
-	if (it == m_filesMap.end())
+    if (it == m_filesMap.end()) {
 		m_filesMap.insert(std::make_pair(resourceName, m_path + '/' + resourceName));
-	else
+    } else {
 		O3D_ERROR(E_InvalidParameter("Resource name already exists"));
+    }
 }
 
 // Remove manually a resource.
 void ResourceManager::removeResource(const String &resourceName)
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	IT_FilesMap it = m_filesMap.find(resourceName);
-	if (it != m_filesMap.end())
+    if (it != m_filesMap.end()) {
 		m_filesMap.erase(it);
-	else
+    } else {
 		O3D_ERROR(E_InvalidParameter("Invalid resource name"));
+    }
 }
 
 // Browse a sub directory.
@@ -91,14 +93,10 @@ void ResourceManager::browseFolder(const String &path)
 	fileListing.searchFirstFile();
 
     FLItem *flItem = nullptr;
-    while ((flItem = fileListing.searchNextFile()) != nullptr)
-	{
-		if (flItem->FileType == FILE_DIR)
-		{
+    while ((flItem = fileListing.searchNextFile()) != nullptr) {
+        if (flItem->FileType == FILE_DIR) {
 			// sub-directories are ignored
-		}
-		else if (flItem->FileType == FILE_FILE)
-		{
+        } else if (flItem->FileType == FILE_FILE) {
 			// add a resource entry
 			m_filesMap.insert(std::make_pair(flItem->FileName, fileListing.getFileFullName()));
 		}
@@ -112,15 +110,15 @@ String ResourceManager::getResourceName(const String &filename)
     String name = filename;
 
     // absolute but reference a file of the managed folder
-    if (filename.startsWith(m_path + '/'))
+    if (filename.startsWith(m_path + '/')) {
         name.remove(0, m_path.length() + 1);
+    }
 
      // search into the registered file name
     IT_FilesMap it = m_filesMap.find(name);
-    if (it != m_filesMap.end())
+    if (it != m_filesMap.end()) {
         return name;
-    else
-    {
+    } else {
         // check if the file was recently added into the folder
         // TODO
         return name;
@@ -130,40 +128,35 @@ String ResourceManager::getResourceName(const String &filename)
 // Get the absolute file name for a relative one's.
 String ResourceManager::getFullFileName(const String &filename)
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	String result;
 
-	if (FileManager::instance()->isRelativePath(filename))
-	{
+    if (FileManager::instance()->isRelativePath(filename)) {
 		// search into the registered file name
 		IT_FilesMap it = m_filesMap.find(filename);
-		if (it != m_filesMap.end())
+        if (it != m_filesMap.end()) {
 			return it->second;
-		else
+        } else {
 			// we will try with the relative path...
 			return FileManager::instance()->getFullFileName(filename);
-	}
-	else
-    {
+        }
+    } else {
         // absolute but reference a file of the managed folder
-        if (filename.startsWith(m_path + '/'))
-        {
+        if (filename.startsWith(m_path + '/')) {
             String name = filename;
             name.remove(0, m_path.length() + 1);
 
             // search into the registered file name
             IT_FilesMap it = m_filesMap.find(name);
-            if (it != m_filesMap.end())
+            if (it != m_filesMap.end()) {
                 return it->second;
-            else
+            } else {
                 return name;
-        }
-        else
-        {
+            }
+        } else {
             // absolute file name stay unchanged
             return filename;
         }
     }
 }
-

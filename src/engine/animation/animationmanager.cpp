@@ -30,12 +30,10 @@ AnimationManager::AnimationManager(BaseObject *parent, const String &path) :
 // Destructor
 AnimationManager::~AnimationManager()
 {
-	if (!m_findMap.empty())
-	{
+    if (!m_findMap.empty()) {
 		String message("Animations still exists into the manager :\n");
 
-		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-		{
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
             message += "    |- " + it->second->getFileName() + "\n";
 			deletePtr(it->second);
 		}
@@ -47,8 +45,7 @@ AnimationManager::~AnimationManager()
 // Delete child .
 Bool AnimationManager::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
+    if (child) {
 		if (child->getParent() != this)
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
 		else
@@ -72,7 +69,7 @@ Bool AnimationManager::deleteChild(BaseObject *child)
 // update all dynamic materials
 void AnimationManager::update()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// process deferred objects deletion
 	m_garbageManager.update();
@@ -122,7 +119,7 @@ void AnimationManager::addAnimation(Animation *animation)
 
 	addResource(animation->getResourceName());
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	if (animation->getFileName().isEmpty())
 		animation->setFileName(m_path + '/' + animation->getResourceName());
@@ -148,7 +145,7 @@ void AnimationManager::removeAnimation(Animation *animation)
 	if (animation->getManager() != this)
 		O3D_ERROR(E_InvalidParameter("Animation manager is not this"));
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// remove the animation object from the manager.
     IT_FindMap it = m_findMap.find(animation->getResourceName());
@@ -172,13 +169,11 @@ void AnimationManager::deleteAnimation(Animation *animation)
 	if (animation->getManager() != this)
 		O3D_ERROR(E_InvalidParameter("Animation manager is not this"));
 
-	FastMutexLocker locker(m_mutex);
-
+    FastMutexLocker locker(m_mutex);
 
 	// remove the animation object from the manager.
     IT_FindMap it = m_findMap.find(animation->getResourceName());
-	if (it != m_findMap.end())
-	{
+    if (it != m_findMap.end()) {
         m_garbageManager.add(animation->getResourceName(), animation);
 
         animation->setManager(nullptr);
@@ -201,7 +196,7 @@ Bool AnimationManager::isAnimation(const String &filename)
 // Purge immediately the garbage manager of its content.
 void AnimationManager::purgeGarbage()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 	m_garbageManager.destroy();
 }
 
@@ -209,7 +204,7 @@ Animation* AnimationManager::findAnimation(
         UInt32 type,
         const String &resourceName)
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// search the key name into the map, next the animation given parameters into the element
     CIT_FindMap cit = m_findMap.find(resourceName);
@@ -223,7 +218,7 @@ Animation* AnimationManager::findAnimation(
     Animation *animation = nullptr;
     m_garbageManager.remove(resourceName, animation);
 
-	locker.unlock();
+    locker.unlock();
 
 	// if found, reinsert it into the manager
 	if (animation)
@@ -235,26 +230,24 @@ Animation* AnimationManager::findAnimation(
 // Export complete animation a single file
 Int32 AnimationManager::exportAnimation()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 	Int32 count = 0;
 
 	String absFileName, resourceName;
 
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-	{
+    for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
 		Animation *animation = it->second;
 
 		// if the file name is not defined
-		if (animation->getFileName().isEmpty())
-		{
+        if (animation->getFileName().isEmpty()) {
 			absFileName = getFullFileName(animation->getResourceName());
 			animation->setFileName(absFileName);
 		}
 
-		if (animation->save())
+        if (animation->save()) {
 			count++;
+        }
 	}
 
     return count;
 }
-

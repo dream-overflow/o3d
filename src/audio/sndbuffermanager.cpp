@@ -382,4 +382,3 @@ void SndBufferManager::update()
 	// process garbage checking
 	m_garbageManager.update();
 }
-

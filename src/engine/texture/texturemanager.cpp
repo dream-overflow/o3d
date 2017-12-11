@@ -134,20 +134,16 @@ Texture* TextureManager::findTexture(
         UInt32 type,
         Bool mipMaps)
 {
-	FastMutexLocker locker(m_mutex);
+   FastMutexLocker locker(m_mutex);
 
     // search the name into the map, next the texture given parameters into the element
     CIT_FindMap cit = m_findMap.find(resourceName);
-	if (cit != m_findMap.end())
-	{
+    if (cit != m_findMap.end()) {
 		// search into the list
-		for (std::list<Texture*>::const_iterator it2 = cit->second.begin(); it2 != cit->second.end(); ++it2)
-		{
+        for (std::list<Texture*>::const_iterator it2 = cit->second.begin(); it2 != cit->second.end(); ++it2) {
 			Texture *texture = *it2;
 
-			if ((texture->getType() == type) &&
-				(texture->isMipMaps() == mipMaps))
-			{
+            if ((texture->getType() == type) && (texture->isMipMaps() == mipMaps)) {
 				// found it ?
                 O3D_LOG(Logger::INFO, "Reuse texture " + texture->getResourceName());
 				return texture;
@@ -161,11 +157,10 @@ Texture* TextureManager::findTexture(
             GarbageKey(resourceName, type, mipMaps),
 			texture);
 
-	locker.unlock();
+    locker.unlock();
 
 	// if found, reinsert it into the manager
-	if (texture)
-    {
+    if (texture) {
 		addTexture(texture);
         O3D_LOG(Logger::INFO, "Ungarbage texture " + texture->getResourceName());
     }
@@ -176,19 +171,17 @@ Texture* TextureManager::findTexture(
 // Manage an existing texture.
 void TextureManager::addTexture(Texture *texture)
 {
-    if (texture->getManager() != nullptr)
+    if (texture->getManager() != nullptr) {
 		O3D_ERROR(E_InvalidOperation("The given texture already have a manager"));
+    }
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
     // search for the texture name
     IT_FindMap it = m_findMap.find(texture->getResourceName());
-	if (it != m_findMap.end())
-	{
+    if (it != m_findMap.end()) {
 		it->second.push_back(texture);
-	}
-	else
-	{
+    } else {
 		std::list<Texture*> entry;
 		entry.push_back(texture);
 
@@ -209,7 +202,7 @@ void TextureManager::removeTexture(Texture *texture)
 	if (texture->getManager() != this)
 		O3D_ERROR(E_InvalidParameter("Texture manager is not this"));
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// remove the texture object from the manager.
     IT_FindMap it = m_findMap.find(texture->getResourceName());
@@ -253,7 +246,7 @@ void TextureManager::deleteTexture(Texture *texture)
 	if (texture->getManager() != this)
 		O3D_ERROR(E_InvalidParameter("Texture manager is not this"));
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
     // remove the textures objects from the manager.
     IT_FindMap it = m_findMap.find(texture->getResourceName());
@@ -293,7 +286,7 @@ void TextureManager::deleteTexture(Texture *texture)
 // Purge immediately the garbage manager of its content.
 void TextureManager::purgeGarbage()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 	m_garbageManager.destroy();
 }
 
@@ -834,7 +827,7 @@ AttenuationTex3D* TextureManager::readTextureAtt3D(InStream &is)
 // Enable an asynchronous texture query manager
 void TextureManager::enableAsynchronous()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	if (!m_isAsynchronous)
 		m_isAsynchronous = True;
@@ -843,7 +836,7 @@ void TextureManager::enableAsynchronous()
 // Disable an asynchronous texture query manager
 void TextureManager::disableAsynchronous()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	if (m_isAsynchronous)
 		m_isAsynchronous = False;
@@ -852,9 +845,9 @@ void TextureManager::disableAsynchronous()
 // Is asynchronous texture loading is enabled.
 Bool TextureManager::isAsynchronous() const
 {
-	m_mutex.lock();
+    m_mutex.lock();
 	Bool result = m_isAsynchronous;
-	m_mutex.unlock();
+    m_mutex.unlock();
 
 	return result;
 }
@@ -862,7 +855,7 @@ Bool TextureManager::isAsynchronous() const
 // Update the manager
 void TextureManager::update()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// process garbage checking
 	m_garbageManager.update();

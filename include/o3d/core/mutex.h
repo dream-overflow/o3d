@@ -33,11 +33,9 @@ namespace o3d {
 #define O3D_WAIT_SIGNAL 0
 #define O3D_TIMEOUT     1
 
-//---------------------------------------------------------------------------------------
-//! @class Mutex
-//-------------------------------------------------------------------------------------
-//! Simple mutex with time out. 
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Simple mutex with time out.
+ */
 class O3D_API Mutex : NonCopyable<>
 {
 public:
@@ -71,13 +69,10 @@ private:
 	_Mutex m_handle;  //!< mutex handle
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class FastMutex
-//-------------------------------------------------------------------------------------
-//! A fast mutex. This kind of mutex is the faster and is non recursive.
-//! (On WIN32 it use CriticalSection and it is recursive)
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A fast mutex. This kind of mutex is the faster and is non recursive.
+ * @note On Windows it use CriticalSection and it is recursive.
+ */
 class O3D_API FastMutex : NonCopyable<>
 {
 	friend class WaitCondition;
@@ -102,8 +97,7 @@ public:
 	//! if it cannot so it is locked. If it can it unlock just after.
 	inline Bool isLocked() const
 	{
-		if (tryLock())
-		{
+        if (tryLock()) {
 			unlock();
 			return False;
 		}
@@ -115,14 +109,10 @@ private:
 	_FastMutex m_handle;  //!< mutex handle
 };
 
-
-
-//---------------------------------------------------------------------------------------
-//! @class RecursiveMutex
-//-------------------------------------------------------------------------------------
-//! A recursive mutex.
-//! (On WIN32 it use CriticalSection)
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A recursive mutex.
+ * @note On Windows it use CriticalSection
+ */
 class O3D_API RecursiveMutex : NonCopyable<>
 {
 public:
@@ -145,8 +135,7 @@ public:
 	//! if it cannot so it is locked. If it can it unlock just after.
 	inline Bool isLocked() const
 	{
-		if (tryLock())
-		{
+        if (tryLock()) {
 			unlock();
 			return False;
 		}
@@ -158,12 +147,9 @@ private:
 	_FastMutex m_handle;  //!< mutex handle
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class MutexLocker
-//-------------------------------------------------------------------------------------
-//! object in charge of Locking and Unlocking an O3DMutex (useful with C++ exceptions)
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Object in charge of Locking and Unlocking an O3DMutex (useful with C++ exceptions)
+ */
 class O3D_API MutexLocker : NonCopyable<>
 {
 public:
@@ -189,7 +175,7 @@ public:
 	Bool isOk() const { return m_acquired; }
 
 	//! Get the locker mutex
-	const Mutex& GetMutex() const { return m_mutex; }
+    const Mutex& getMutex() const { return m_mutex; }
 
 private:
 
@@ -197,12 +183,9 @@ private:
 	Bool m_acquired;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class FastMutexLocker
-//-------------------------------------------------------------------------------------
-//! Object in charge of Locking and Unlocking an FastMutex.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Object in charge of Locking and Unlocking an FastMutex.
+ */
 class O3D_API FastMutexLocker : NonCopyable<>
 {
 public:
@@ -224,19 +207,16 @@ public:
 	void relock() { m_mutex.lock(); }
 
 	//! Get the locked mutex.
-	const FastMutex& GetMutex() const { return m_mutex; }
+    const FastMutex& getMutex() const { return m_mutex; }
 
 private:
 
 	const FastMutex &m_mutex;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class RecurMutexLocker
-//-------------------------------------------------------------------------------------
-//! Object in charge of Locking and Unlocking an RecursiveMutex.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Object in charge of Locking and Unlocking an RecursiveMutex.
+ */
 class O3D_API RecurMutexLocker : NonCopyable<>
 {
 public:
@@ -258,19 +238,17 @@ public:
 	void relock() { m_mutex.lock(); }
 
 	//! Get the locked mutex.
-	const RecursiveMutex& GetMutex() const { return m_mutex; }
+    const RecursiveMutex& getMutex() const { return m_mutex; }
 
 private:
 
 	const RecursiveMutex &m_mutex;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class PMutex
-//-------------------------------------------------------------------------------------
-//! Class to simplify the use of mutexed data using Mutex.
-//---------------------------------------------------------------------------------------
+/**
+ * @class PMutex
+ * Class to simplify the use of mutexed data using Mutex.
+ */
 template <class T>
 class O3D_API_TEMPLATE PMutex
 {
@@ -347,12 +325,10 @@ private:
 	T* m_obj;          //!< the mutexed object
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class PFastMutex
-//-------------------------------------------------------------------------------------
-//! Class to simplify the use of mutexed data using FastMutex.
-//---------------------------------------------------------------------------------------
+/**
+ * @class PFastMutex
+ * Class to simplify the use of mutexed data using FastMutex.
+ */
 template <class T>
 class O3D_API_TEMPLATE PFastMutex
 {

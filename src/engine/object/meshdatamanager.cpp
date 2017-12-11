@@ -30,12 +30,10 @@ MeshDataManager::MeshDataManager(BaseObject *parent, const String &path) :
 // Virtual destructor.
 MeshDataManager::~MeshDataManager()
 {
-	if (!m_findMap.empty())
-	{
+    if (!m_findMap.empty()) {
 		String message("MeshData still exists into the manager :\n");
 
-		for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-		{
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
             message += "    |- " + it->second->getResourceName() + "\n";
 			deletePtr(it->second);
 		}
@@ -47,16 +45,13 @@ MeshDataManager::~MeshDataManager()
 // Delete child .
 Bool MeshDataManager::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
-		if (child->getParent() != this)
+    if (child) {
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			// is it a material, and is it managed by this
 			MeshData *meshData = o3d::dynamicCast<MeshData*>(child);
-			if (meshData && (meshData->getManager() == this))
-			{
+            if (meshData && (meshData->getManager() == this)) {
 				deleteMeshData(meshData);
 				return True;
 			}
@@ -72,7 +67,7 @@ Bool MeshDataManager::deleteChild(BaseObject *child)
 // update all dynamic materials
 void MeshDataManager::update()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// process deferred objects deletion
 	m_garbageManager.update();
@@ -81,27 +76,31 @@ void MeshDataManager::update()
 // Insert an existing mesh data in the manager.
 void MeshDataManager::addMeshData(MeshData *meshData)
 {
-	if (meshData->getManager() != NULL)
-		O3D_ERROR(E_InvalidOperation("The given mesh data already have a manager"));
+    if (meshData->getManager() != nullptr) {
+        O3D_ERROR(E_InvalidOperation("The given mesh data already have a manager"));
+    }
 
-	// resource name must be defined
-	if (meshData->getResourceName().isEmpty())
-		O3D_ERROR(E_InvalidPrecondition("Resource name must be defined"));
+    // resource name must be defined
+    if (meshData->getResourceName().isEmpty()) {
+        O3D_ERROR(E_InvalidPrecondition("Resource name must be defined"));
+    }
 
 	addResource(meshData->getResourceName());
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// define the file name if necessary.
-	if (meshData->getFileName().isEmpty())
-		meshData->setFileName(m_path + '/' + meshData->getResourceName());
+    if (meshData->getFileName().isEmpty()) {
+        meshData->setFileName(m_path + '/' + meshData->getResourceName());
+    }
 
 	// search for the mesh data
     IT_FindMap it = m_findMap.find(meshData->getResourceName());
-	if (it != m_findMap.end())
+    if (it != m_findMap.end()) {
 		O3D_ERROR(E_InvalidParameter("A same mesh data with the same name already exists"));
-	else
+    } else {
         m_findMap.insert(std::make_pair(meshData->getResourceName(), meshData));
+    }
 
     O3D_MESSAGE("Add mesh data \"" + meshData->getResourceName() + "\"");
 
@@ -114,16 +113,16 @@ void MeshDataManager::addMeshData(MeshData *meshData)
 // Remove an existing mesh data from the manager.
 void MeshDataManager::removeMeshData(MeshData *meshData)
 {
-	if (meshData->getManager() != this)
-		O3D_ERROR(E_InvalidParameter("Mesh data manager is not this"));
+    if (meshData->getManager() != this) {
+        O3D_ERROR(E_InvalidParameter("Mesh data manager is not this"));
+    }
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// remove the mesh data object from the manager.
     IT_FindMap it = m_findMap.find(meshData->getResourceName());
-	if (it != m_findMap.end())
-	{
-		meshData->setManager(NULL);
+    if (it != m_findMap.end()) {
+        meshData->setManager(nullptr);
 		meshData->setParent(getScene());
 
 		m_IDManager.releaseID(meshData->getId());
@@ -138,18 +137,18 @@ void MeshDataManager::removeMeshData(MeshData *meshData)
 // Delete an existing mesh data from the manager.
 void MeshDataManager::deleteMeshData(MeshData *meshData)
 {
-	if (meshData->getManager() != this)
-		O3D_ERROR(E_InvalidParameter("Mesh data manager is not this"));
+    if (meshData->getManager() != this) {
+        O3D_ERROR(E_InvalidParameter("Mesh data manager is not this"));
+    }
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// remove the texture object from the manager.
     IT_FindMap it = m_findMap.find(meshData->getResourceName());
-	if (it != m_findMap.end())
-	{
+    if (it != m_findMap.end()) {
         m_garbageManager.add(meshData->getResourceName(), meshData);
 
-		meshData->setManager(NULL);
+        meshData->setManager(nullptr);
 
 		m_IDManager.releaseID(meshData->getId());
 		meshData->setId(-1);
@@ -163,33 +162,31 @@ void MeshDataManager::deleteMeshData(MeshData *meshData)
 // Purge immediately the garbage manager of its content.
 void MeshDataManager::purgeGarbage()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 	m_garbageManager.destroy();
 }
 
-MeshData* MeshDataManager::findMeshData(
-		UInt32 type,
-        const String &resourceName)
+MeshData* MeshDataManager::findMeshData(UInt32 type, const String &resourceName)
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// search the key name into the map, next the mesh data given parameters into the element
     CIT_FindMap cit = m_findMap.find(resourceName);
-	if (cit != m_findMap.end())
-	{
+    if (cit != m_findMap.end()) {
 		// found it ?
 		return cit->second;
 	}
 
 	// maybe the asked mesh data was just deleted, so search it into the garbage collector
-	MeshData *meshData = NULL;
+    MeshData *meshData = nullptr;
     m_garbageManager.remove(resourceName, meshData);
 
-	locker.unlock();
+    locker.unlock();
 
 	// if found, reinsert it into the manager
-	if (meshData)
-		addMeshData(meshData);
+    if (meshData) {
+        addMeshData(meshData);
+    }
 
 	return meshData;
 }
@@ -198,8 +195,9 @@ MeshData* MeshDataManager::findMeshData(
 MeshData* MeshDataManager::addMeshData(const String &filename)
 {
     MeshData *meshData = findMeshData(0, filename);
-	if (meshData)
+    if (meshData) {
 		return meshData;
+    }
 
 	// create and load the new mesh-data
 	meshData = new MeshData(this);
@@ -209,16 +207,13 @@ MeshData* MeshDataManager::addMeshData(const String &filename)
     String absFilename = getFullFileName(meshData->getResourceName());
 
 	// asynchronous loading
-	if (m_isAsynchronous)
-	{
+    if (m_isAsynchronous) {
         MeshDataTask *task = new MeshDataTask(meshData, absFilename);
 
 		TaskManager::instance()->addTask(task);
-	}
-	// synchronous loading
-    else if (!meshData->load(absFilename))
-	{
-		deletePtr(meshData);
+    } else if (!meshData->load(absFilename)) {
+        // synchronous loading
+        deletePtr(meshData);
         O3D_ERROR(E_InvalidFormat("Invalid mesh data file " + absFilename));
 	}
 
@@ -241,8 +236,7 @@ MeshData* MeshDataManager::readMeshData(InStream &is)
     is >> *meshData;
 
     MeshData *found = findMeshData(0, meshData->getResourceName());
-	if (found)
-	{
+    if (found) {
 		deletePtr(meshData);
 		return found;
 	}
@@ -251,22 +245,17 @@ MeshData* MeshDataManager::readMeshData(InStream &is)
     String absFilename = getFullFileName(meshData->getResourceName());
 
 	// asynchronous loading
-	if (m_isAsynchronous)
-	{
+    if (m_isAsynchronous) {
         MeshDataTask *task = new MeshDataTask(meshData, absFilename);
-
 		TaskManager::instance()->addTask(task);
-	}
-	// synchronous loading
-	else
-	{
-		if (!meshData->load(absFilename))
-		{
+    } else {
+        // synchronous loading
+        if (!meshData->load(absFilename)) {
 			deletePtr(meshData);
             O3D_ERROR(E_InvalidFormat("Invalid mesh data file \"" + absFilename + "\""));
-		}
-		else
+        } else {
 			meshData->createGeometry();
+        }
 	}
 
 	meshData->setFileName(absFilename);
@@ -278,11 +267,10 @@ MeshData* MeshDataManager::readMeshData(InStream &is)
 // count the total number of vertices of the manager
 UInt32 MeshDataManager::countTotalNumVerts()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 	UInt32 n = 0;
 
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-	{
+    for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
 		n += it->second->getNumVertices();
 	}
 
@@ -292,11 +280,10 @@ UInt32 MeshDataManager::countTotalNumVerts()
 // count the total number of faces of the manager
 UInt32 MeshDataManager::countTotalNumFaces()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 	UInt32 n = 0;
 
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-	{
+    for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
 		n += it->second->getNumFaces();
 	}
 
@@ -306,24 +293,23 @@ UInt32 MeshDataManager::countTotalNumFaces()
 // Data export
 Int32 MeshDataManager::exportMeshData()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 	Int32 count = 0;
 
 	String absFileName, resourceName;
 
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-	{
+    for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
 		MeshData* meshData = it->second;
 
 		// if the file name is not defined
-		if (meshData->getFileName().isEmpty())
-		{
+        if (meshData->getFileName().isEmpty()) {
 			absFileName = getFullFileName(meshData->getResourceName());
 			meshData->setFileName(absFileName);
 		}
 
-		if (meshData->save())
-			count++;
+        if (meshData->save()) {
+            count++;
+        }
 	}
 
     return count;
@@ -332,28 +318,29 @@ Int32 MeshDataManager::exportMeshData()
 // Enable an asynchronous texture query manager
 void MeshDataManager::enableAsynchronous()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
-	if (!m_isAsynchronous)
-		m_isAsynchronous = True;
+    if (!m_isAsynchronous) {
+        m_isAsynchronous = True;
+    }
 }
 
 // Disable an asynchronous texture query manager
 void MeshDataManager::disableAsynchronous()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
-	if (m_isAsynchronous)
-		m_isAsynchronous = False;
+    if (m_isAsynchronous) {
+        m_isAsynchronous = False;
+    }
 }
 
 // Is asynchronous mesh-data loading enabled.
 Bool MeshDataManager::isAsynchronous() const
 {
-	m_mutex.lock();
+    m_mutex.lock();
 	Bool result = m_isAsynchronous;
-	m_mutex.unlock();
+    m_mutex.unlock();
 
 	return result;
 }
-
