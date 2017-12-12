@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/base.h"
 
-/* ONLY IF O3D_WIN32 IS SELECTED */
-#ifdef O3D_WIN32
+/* ONLY IF O3D_WINAPI IS SELECTED */
+#ifdef O3D_WINAPI
 
 #include "o3d/core/display.h"
 #include "o3d/core/appwindow.h"
@@ -123,4 +123,4 @@ void Display::listDisplayModes()
 	m_desktop = m_currentMode = findDisplayMode(desktop);
 }
 
-#endif // O3D_WIN32
+#endif // O3D_WINAPI

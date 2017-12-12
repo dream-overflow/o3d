@@ -19,7 +19,7 @@
 #include "private/keymapsdl.h"
 #endif
 
-#ifdef O3D_WINDOWS
+#ifdef O3D_WINAPI
 #include "private/keymapwin32.h"
 #endif
 
@@ -101,12 +101,12 @@ public:
     template <class T>
     inline T action(VKey key, T onPress, T onRelease, T def) const
     {
-        if (m_key == key)
-        {
-            if (m_state & PRESSED)
+        if (m_key == key) {
+            if (m_state & PRESSED) {
                 return onPress;
-            else if (m_state & RELEASED)
+            } else if (m_state & RELEASED) {
                 return onRelease;
+            }
         }
 
         return def;

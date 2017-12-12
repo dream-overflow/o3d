@@ -134,7 +134,7 @@ void Processor::reportLog()
 	cpu_name_string[start+15] = Char((redx & 0xff000000) >> 24);
 
 #ifdef _MSC_VER
-    #if defined(O3D_WIN32) || defined(O3D_WIN64)
+    #if defined(O3D_IX32) || defined(O3D_IX64)
         void cpuid(UInt32 func, UInt32* a, UInt32* b, UInt32* c, UInt32* d)
         {
             Int32 info[4];

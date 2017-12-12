@@ -156,6 +156,9 @@ public:
 	//! Get the default display server.
 	static _DISP getDisplay();
 
+    //! On some implementation this can returns an specific structure.
+    static void* getApp();
+
     //! Is an error on display server.
     static Bool isDisplayError();
 

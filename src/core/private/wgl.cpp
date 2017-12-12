@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/types.h"
 
-// ONLY IF O3D_WGL OR O3D_WINDOWS ARE SELECTED
-#if defined(O3D_WGL) || defined(O3D_WINDOWS)
+// ONLY IF O3D_WINAPI ARE SELECTED
+#ifdef O3D_WINAPI
 
 #include "o3d/core/dynamiclibrary.h"
 
@@ -154,4 +154,4 @@ Bool WGL::swapBuffers(_HDC hDC)
 //    }
 }
 
-#endif // O3D_WGL || O3D_WINDOWS
+#endif // O3D_WINAPI

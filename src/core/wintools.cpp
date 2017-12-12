@@ -12,7 +12,7 @@
 #include "o3d/core/architecture.h"
 #include "o3d/core/wintools.h"
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
 
 #include "o3d/core/debug.h"
 #include "o3d/core/diskfileinfo.h"
@@ -384,5 +384,4 @@ HICON WinTools::createIconFromBitmap(
 	return hIcon;
 }
 
-#endif // O3D_WIN32
-
+#endif // O3D_WINDOWS

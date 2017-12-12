@@ -10,7 +10,7 @@
 #ifndef _O3D_WGL_H
 #define _O3D_WGL_H
 
-#if defined(O3D_WGL) || defined(O3D_WINDOWS)
+#ifdef O3D_WINAPI
 
 #include "o3d/core/types.h"
 
@@ -56,6 +56,6 @@ private:
 
 } // namespace o3d
 
-#endif // O3D_WGL || O3D_WINDOWS
+#endif // O3D_WINAPI
 
 #endif // _O3D_WGL_H

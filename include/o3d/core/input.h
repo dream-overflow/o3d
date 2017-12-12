@@ -27,11 +27,9 @@ struct MouseData
 	UInt8 rgbButtons[8];     //!< Mouse buttons
 };
 
-//---------------------------------------------------------------------------------------
-//! @class Input
-//-------------------------------------------------------------------------------------
-//! Base class for input device such as keyboard, mouse, joystick and also webcam.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Base class for input device such as keyboard, mouse, joystick and also webcam.
+ */
 class O3D_API Input : public BaseObject
 {
 public:
@@ -59,10 +57,11 @@ public:
 	//! toggle input state
 	inline Bool toggle()
 	{
-		if (m_isActive)
+        if (m_isActive) {
 			return disable();
-		else
+        } else {
 			return enable();
+        }
 	}
 
 	//! Enable the state
@@ -104,4 +103,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_INPUT_H
-

@@ -40,11 +40,11 @@
 //! DLL export is default setting
 //! Use one of the following in your makefile or project settings
 //! O3D_EXPORT_DLL is set in the VC project Debug and Release mode. And O3D_STATIC_LIB is set
-//! in the VC project in DebugStatic mode, and with the Makefile.
+//! in the VC project in (Relase|Debug)Static mode, and with the Makefile.
 //! If none is defined O3D_IMPORT_DLL is set.
-//#define O3D_EXPORT_DLL
-//#define O3D_IMPORT_DLL
-//#define O3D_STATIC_LIB
+// #define O3D_EXPORT_DLL
+// #define O3D_IMPORT_DLL
+// #define O3D_STATIC_LIB
 
 //
 // Android
@@ -68,6 +68,10 @@
         #error "X11 is not supported on Android"
     #endif
 
+    #if !defined(O3D_USE_EGL) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND)
+        #define O3D_USE_EGL
+    #endif
+
     #ifdef __ARM_ARCH_6__
         #define O3D_ARM_V6
     #elif __ARM_ARCH_7__
@@ -82,9 +86,10 @@
     #define O3D_POSIX_SYS
 
 //
-// Windows
+// Windows Visual C++ or GCC
 //
-#elif defined(_MSC_VER) || defined(WIN32) || defined(__MINGW32__)
+#elif (defined(_MSC_VER) && (defined(_WIN32) || defined(_WIN64))) || \
+      (defined(__GNUC__) && (defined(__MINGW32__) || defined(__MINGW64__)))
 
 	#define O3D_WINDOWS
 	#if defined(WIN32) && !defined(_WINDOWS)
@@ -136,12 +141,13 @@
 		#error "X11 is not supported on Windows"
 	#endif
 
-    #if !defined(O3D_WIN32) && !defined(O3D_USE_SDL2)
-		#define O3D_WIN32
+    //! Default to Windows API
+    #if !defined(O3D_WINAPI) && !defined(O3D_USE_SDL2)
+        #define O3D_WINAPI
 	#endif
 
 	//! System API (for thread, mutex, semaphore, timers...)
-	#define O3D_WIN32_SYS
+    #define O3D_WINAPI_SYS
 
 	//! No memory manager allocation/free/leaks detection for global memory.
 	#ifdef _DEBUG
@@ -286,6 +292,27 @@
     #define O3D_VULKAN
 #endif
 
+// SIMD
+#ifdef O3D_USE_SSE2
+    #define O3D_SSE2
+#endif
+
+// Checking...
+#ifdef O3D_WINDOWS
+	#ifdef O3D_POSIX_SYS
+    #error "O3D_POSIX_SYS is not supported on Windows platforms"
+	#endif
+#else
+    #ifdef O3D_WINAPI_SYS
+    #error "O3D_WINAPI_SYS is not supported on non Windows platforms"
+	#endif
+#endif
+
+// EAX sound support only on Windows
+#if defined(O3D_BUILD_EAX) && !defined(O3D_WINDOWS)
+	#error "EAX is only supported on Windows"
+#endif
+
 //! CRT window report. Incompatibility when using timers and wnd assert reports.
 //! Preferred value is 0.
 #define O3D_USE_CRT_WNDREPORT 0
@@ -298,26 +325,5 @@
 
 //! Max number of supported matrix for GPU skinning/rigging array
 #define O3D_MAX_SKINNING_MATRIX_ARRAY 50
-
-// SIMD
-#ifdef O3D_USE_SSE2
-    #define O3D_SSE2
-#endif
-
-// Checking...
-#ifdef O3D_WINDOWS
-	#ifdef O3D_POSIX_SYS
-	#error "O3D_POSIX_SYS is unsupported on Windows platforms"
-	#endif
-#else
-	#ifdef O3D_WIN32_SYS
-	#error "O3D_WIN32_SYS is not supported on non Windows platforms"
-	#endif
-#endif
-
-// EAX sound support only on Windows
-#if defined(O3D_BUILD_EAX) && !defined(O3D_WINDOWS)
-	#error "EAX is only supported on Windows"
-#endif
 
 #endif // _O3D_CONFIG_H

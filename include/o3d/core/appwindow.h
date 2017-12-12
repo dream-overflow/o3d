@@ -231,7 +231,7 @@ public:
 	//-------------------------------------------------------------------------------
 
 	//! Grab/ungrab the mouse.
-	//! Infinite mouse area using raw input on O3D_WIN32.
+    //! Infinite mouse area using raw input on O3D_WINAPI.
 	//! In grab mode you can benefit of the mouse smoother and internal mouse acceleration.
 	//! @note The window must be initialized.
 	void grabMouse(Bool lock = True);
@@ -397,7 +397,7 @@ public:
 
 public:
 
-	//! Internal event type (useless for O3D_WIN32).
+    //! Internal event type.
 	enum EventType
 	{
 		EVT_CREATE,
@@ -424,7 +424,7 @@ public:
 		EVT_MOUSE_WHEEL
 	};
 
-	//! Internal event struct (useless for O3D_WIN32).
+    //! Internal event struct.
 	struct EventData
 	{
 		Int32 x, y;
@@ -435,7 +435,7 @@ public:
         UInt32 character;
 	};
 
-	//! Internally process a window event (useless for O3D_WIN32).
+    //! Internally process a window event.
 	void processEvent(EventType eventType, EventData &eventData);
 
 protected:
@@ -533,7 +533,7 @@ protected:
 	Int64 m_lastFpsOut;     //!< time of the last FPS out
 	Float m_lastFps;        //!< the last FPS to return (update at m_timeToFps speed)
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINAPI
 	static LRESULT CALLBACK wndProc(HWND hWnd, UInt32 Msg, WPARAM wParam, LPARAM lParam);
 #endif
 };

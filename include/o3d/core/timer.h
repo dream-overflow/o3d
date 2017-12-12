@@ -21,9 +21,9 @@
 
 namespace o3d {
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
 	typedef unsigned int _Timer;
-#endif // O3D_WIN32
+#endif // O3D_WINDOWS
 
 class TimerManager;
 
@@ -209,7 +209,7 @@ public:
 
 private:
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
 	_Timer m_handle;         //!< Timer handle.
 #else
     FastMutex m_mutex;
@@ -288,7 +288,7 @@ public:
     //! Get the bypass state of calling timer callback
     Bool getActivity() const;
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
     //! Get timer by its internal WIN32 handler
     Timer* getTimerByHandleInternal(_Timer h);
 #else
@@ -319,7 +319,7 @@ private:
 
     std::multimap<Int32, Timer*> m_queue;
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
     stdext::hash_map<_Timer, Timer*> m_handlesMap;
 #else
     //! For non threaded timers

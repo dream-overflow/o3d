@@ -17,6 +17,7 @@ typedef EGLBoolean (*EGLINITIALIZEPROC)(EGLDisplay dpy, EGLint *major, EGLint *m
 typedef EGLBoolean (*EGLBINDAPIPROC)(EGLenum api);
 typedef EGLBoolean (*EGLCHOOSECONFIGPROC)(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *configs, EGLint config_size, EGLint *num_config);
 typedef EGLSurface (*EGLCREATEWINDOWSURFACEPROC)(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType win, const EGLint *attrib_list);
+typedef EGLBoolean (*EGLQUERYSURFACEPROC)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value);
 typedef EGLContext (*EGLCREATECONTEXTPROC)(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list);
 typedef EGLBoolean (*EGLMAKECURRENTPROC)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
 typedef EGLBoolean (*EGLSWAPBUFFERSPROC)(EGLDisplay dpy, EGLSurface surface);

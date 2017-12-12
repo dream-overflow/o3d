@@ -10,8 +10,8 @@
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/renderer.h"
 
-// ONLY IF O3D_WGL OR O3D_WINDOWS ARE SELECTED
-#if defined(O3D_WGL) || defined(O3D_WINDOWS)
+// ONLY IF O3D_WINAPI IS SELECTED
+#ifdef O3D_WINAPI
 
 using namespace o3d;
 
@@ -426,4 +426,4 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
     return True;
 }
 
-#endif // O3D_WGL || O3D_WINDOWS
+#endif // O3D_WINAPI

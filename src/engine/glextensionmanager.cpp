@@ -409,19 +409,7 @@ PFNGLSAMPLEMASKIPROC glSampleMaski = nullptr;
 #endif // GL_ARB_texture_multisample
 
 #endif // O3D_GL_PROTOTYPES
-/*
-// Get OpenGL extension procedure address
-#ifdef O3D_WIN32
-    #define O3D_GET_OPENGL_PROC(ext) wglGetProcAddress(ext)
-#endif
-#ifdef O3D_X11
-    #define O3D_GET_OPENGL_PROC(ext) GLX::getProcAddress(ext)
-#endif
-#ifdef O3D_SDL2
-	#include <SDL2/SDL_video.h>
-    #define O3D_GET_OPENGL_PROC(ext) SDL_GL_GetProcAddress(ext)
-#endif
-*/
+
 #undef Bool
 
 // statics members

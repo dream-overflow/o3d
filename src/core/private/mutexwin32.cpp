@@ -11,8 +11,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/mutex.h"
 
-// ONLY IF O3D_WIN32_SYS IS SELECTED
-#ifdef O3D_WIN32_SYS
+// ONLY IF O3D_WINAPI_SYS IS SELECTED
+#ifdef O3D_WINAPI_SYS
 
 #include "o3d/core/debug.h"
 #include "o3d/core/architecture.h"
@@ -159,4 +159,4 @@ Bool RecursiveMutex::tryLock() const
     return TryEnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&m_handle)) != 0;
 }
 
-#endif // O3D_WIN32_SYS
+#endif // O3D_WINAPI_SYS

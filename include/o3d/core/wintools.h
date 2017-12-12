@@ -13,7 +13,7 @@
 #include "string.h"
 #include "memorydbg.h"
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
 #include <windows.h>
 //#include <WinDef.h>
 
@@ -21,11 +21,9 @@ namespace o3d {
 
 typedef WNDPROC _WNDPROC;
 
-//---------------------------------------------------------------------------------------
-//! @class WinTool
-//-------------------------------------------------------------------------------------
-//! Contain static methods useful to manage winapi.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Contain static methods useful to manage winapi.
+ */
 class O3D_API WinTools
 {
 public:
@@ -114,7 +112,6 @@ public:
 
 } // namespace o3d
 
-#endif // O3D_WIN32
+#endif // O3D_WINDOWS
 
 #endif // _O3D_WINTOOLS_H
-

@@ -2052,7 +2052,7 @@ CString String::toUtf8() const
 	if (m_size == 1)
 		return CString("");
 
-#ifndef O3D_WIN32_SYS
+#ifndef O3D_WINAPI_SYS
 	ArrayChar temp(m_size*2, m_size);
     WChar c;
 
@@ -2105,7 +2105,7 @@ CString String::toUtf8() const
 	O3D_ASSERT(len != 0);
 
 	return utf8String;
-#endif // O3D_WIN32_SYS
+#endif // O3D_WINAPI_SYS
 }
 
 void String::fromUtf8(const Char* utf8, UInt32 maxSize)
@@ -2122,7 +2122,7 @@ void String::fromUtf8(const Char* utf8, UInt32 maxSize)
 	else
 		utf8Len = maxSize;
 
-#ifndef O3D_WIN32_SYS
+#ifndef O3D_WINAPI_SYS
 	//WIDECHAR size is 4
     for (UInt32 i = 0; i < utf8Len; ++i)
 	{
@@ -2174,7 +2174,7 @@ void String::fromUtf8(const Char* utf8, UInt32 maxSize)
 
 	m_data[len] = 0;
 	m_size = len + 1;
-#endif // O3D_WIN32_SYS
+#endif // O3D_WINAPI_SYS
 }
 
 //--------------------------------------------------------------------------------------

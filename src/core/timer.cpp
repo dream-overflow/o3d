@@ -59,7 +59,7 @@ UInt32 BaseTimer::getRunningThreadId() const
 // constructor
 Timer::Timer(UInt32 timeout, TimerMode mode, Callback *callback, void *data) :
     BaseTimer(timeout, mode, callback, data)
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
     ,m_handle(0)
 #endif
 {
@@ -263,7 +263,7 @@ void TimerManager::destroy()
 
 TimerManager::~TimerManager()
 {
-#ifndef O3D_WIN32
+#ifndef O3D_WINDOWS
     m_mutex.lock();
     m_running = False;
     m_mutex.unlock();
@@ -282,7 +282,7 @@ TimerManager::~TimerManager()
     };
     m_mutex.unlock();
 
-#ifndef O3D_WIN32
+#ifndef O3D_WINDOWS
     m_thread.waitFinish();
 #endif
 }
@@ -291,7 +291,7 @@ TimerManager::~TimerManager()
 TimerManager::TimerManager() :
     TemplateManager<BaseTimer>(nullptr),
     m_useCallbacks(true)
-#ifndef O3D_WIN32
+#ifndef O3D_WINDOWS
     ,m_thread(this),
     m_running(False),
     m_currentTimer(nullptr)
@@ -299,7 +299,7 @@ TimerManager::TimerManager() :
 {
 	m_instance = (TimerManager*)this;
 
-#ifndef O3D_WIN32
+#ifndef O3D_WINDOWS
     // listen to himself for asynchronous timer event of non-threaded timer
     onTimerCall.connect(this, &TimerManager::timerCall, EvtHandler::CONNECTION_ASYNCH);
 #endif
@@ -338,7 +338,7 @@ void TimerManager::addTimerInternal(BaseTimer* pTimer)
 
     m_mutex.unlock();
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
     if (pTimer->getTimerType() == Timer::NON_THREADED) {
         Timer *timer = static_cast<Timer*>(pTimer);
         m_handlesMap[timer->m_handle] = timer;
@@ -374,7 +374,7 @@ void TimerManager::removeTimerInternal(BaseTimer* pTimer)
         }
     }
 
-#ifdef O3D_WIN32
+#ifdef O3D_WINDOWS
     if (pTimer->getTimerType() == Timer::NON_THREADED) {
         Timer *timer = static_cast<Timer*>(pTimer);
 

@@ -11,8 +11,8 @@
 #include "o3d/core/string.h"
 #include "o3d/core/debug.h"
 
-// ONLY IF O3D_WIN32_SYS IS SELECTED
-#ifdef O3D_WIN32_SYS
+// ONLY IF O3D_WINAPI_SYS IS SELECTED
+#ifdef O3D_WINAPI_SYS
 
 #include "o3d/core/architecture.h"
 
@@ -55,16 +55,17 @@ Int64 System::getTime(TimeUnit unit)
 
     Int64 diffT = time.QuadPart - timerStartTime;
 
-    if (unit == TIME_SECOND)
+    if (unit == TIME_SECOND) {
         return diffT / timerFrequency;
-    else if (unit == TIME_MILLISECOND)
+    } else if (unit == TIME_MILLISECOND) {
         return diffT / (timerFrequency * 1000);
-    else if (unit == TIME_MICROSECOND)
+    } else if (unit == TIME_MICROSECOND) {
         return diffT / (timerFrequency * 1000000);
-    else if (unit == TIME_NANOSECOND)
+    } else if (unit == TIME_NANOSECOND) {
         return diffT / (timerFrequency * 1000000000);
-    else
+    } else {
         return diffT;
+    }
 }
 
 // get time width a precision of 1ms
@@ -104,8 +105,7 @@ void System::print(
 
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    switch (level)
-	{
+    switch (level){
         case MSG_DEBUG:
             out << "[DEBUG] " << title << ": " << content << "\n";
 			break;
@@ -135,4 +135,4 @@ void System::print(
 	WriteConsoleW(console, out.getData(), out.length()+1, &ignore, NULL);
 }
 
-#endif // O3D_WIN32_SYS
+#endif // O3D_WINAPI_SYS

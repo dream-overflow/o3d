@@ -37,12 +37,12 @@ Mouse::Mouse(
 {
 	commonInit(xlimit, ylimit);
 
-	if (!m_appWindow)
+    if (!m_appWindow) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
 
 	// for windowed mode, start with current absolute mouse position
-	if (!lock)
-	{
+    if (!lock) {
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window rootWin, childWin;
 		unsigned int mask;
@@ -63,9 +63,9 @@ Mouse::Mouse(
 		m_windowPos = m_window.clamp(m_windowPos);
 
 		m_grab = False;
-	}
-	else
+    } else {
 		setGrab();
+    }
 
 	m_isActive = True;
 	m_aquired = False;
@@ -84,10 +84,10 @@ Mouse::~Mouse()
 // draw cursor drawing state
 void Mouse::enableCursor()
 {
-	if (!m_cursor)
-	{
-		if (!m_appWindow->getHWND())
+    if (!m_cursor) {
+        if (!m_appWindow->getHWND()) {
 			O3D_ERROR(E_InvalidOperation("Related application window must be active"));
+        }
 
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window window = static_cast<Window>(m_appWindow->getHWND());
@@ -108,10 +108,10 @@ void Mouse::enableCursor()
 // hide cursor drawing state
 void Mouse::disableCursor()
 {
-	if (m_cursor)
-	{
-		if (!m_appWindow->getHWND())
+    if (m_cursor) {
+        if (!m_appWindow->getHWND()) {
 			O3D_ERROR(E_InvalidOperation("Related application window must be active"));
+        }
 
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window window = static_cast<Window>(m_appWindow->getHWND());
@@ -137,12 +137,12 @@ void Mouse::disableCursor()
 // lock the mouse position
 void Mouse::setGrab(Bool lock)
 {
-	if (!m_appWindow->getHWND())
+    if (!m_appWindow->getHWND()) {
 		O3D_ERROR(E_InvalidOperation("Related application window must be active"));
+    }
 
 	// enable
-	if (!m_grab && lock)
-	{
+    if (!m_grab && lock) {
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window window = static_cast<Window>(m_appWindow->getHWND());
 
@@ -163,8 +163,7 @@ void Mouse::setGrab(Bool lock)
 	}
 
 	// disable
-	if (m_grab && !lock)
-	{
+    if (m_grab && !lock) {
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
 		XUngrabPointer(display, CurrentTime);
@@ -176,11 +175,13 @@ void Mouse::setGrab(Bool lock)
 // update input data (only if acquired)
 void Mouse::update()
 {
-	if (!m_isActive)
+    if (!m_isActive) {
 		return;
+    }
 
-	if (!m_aquired)
+    if (!m_aquired) {
 		acquire();
+    }
 
 	// update the wheel speed
 	wheelUpdate();
@@ -192,15 +193,13 @@ void Mouse::update()
 // acquire mouse position and buttons states
 void Mouse::acquire()
 {
-	if (m_isActive && !m_aquired)
-	{
+    if (m_isActive && !m_aquired) {
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window rootWin, childWin;
 		unsigned int mask;
 
 		// if the mouse was previously grabed, force to grab
-		if (m_grab)
-		{
+        if (m_grab) {
 			m_grab = False;
 			setGrab();
 		}
@@ -218,8 +217,7 @@ void Mouse::acquire()
 				&mask);
 
 		// reset to current mouse pos when the mouse is grabbed
-		if (m_grab)
-		{
+        if (m_grab) {
 			m_windowPos.set(x, y);
 			m_pos = m_oldPos = m_posNoAccel = m_windowPos;
 			m_deltaPos.zero();
@@ -236,8 +234,7 @@ void Mouse::acquire()
 // un-acquire mouse hardware
 void Mouse::release()
 {
-	if (m_aquired)
-	{
+    if (m_aquired) {
 		m_wheel = 0; // wheel position is reset
 
 		m_aquired = False;
@@ -245,4 +242,3 @@ void Mouse::release()
 }
 
 #endif // O3D_X11
-

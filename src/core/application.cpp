@@ -254,6 +254,11 @@ _DISP Application::getDisplay()
     return ms_display;
 }
 
+void *Application::getApp()
+{
+    return ms_app;
+}
+
 Bool Application::isDisplayError()
 {
     return ms_displayError;

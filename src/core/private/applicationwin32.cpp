@@ -20,9 +20,14 @@
 #include "o3d/core/filemanager.h"
 #include "o3d/core/appwindow.h"
 
+#endif
+
 using namespace o3d;
 
-// Show a message. On win32 application it draw a standard message box,
+// ONLY IF O3D_WINDOWS IS SELECTED
+#ifdef O3D_WINDOWS
+
+// Show a message. On Windows application it draw a standard message box,
 void Application::message(
 		const String &content,
 		const String &title,
@@ -30,8 +35,7 @@ void Application::message(
 {
 	Int32 ico = 0;
 
-	switch (icon)
-	{
+    switch (icon) {
 		case Application::ICON_HELP:
 			ico = MB_HELP;
 			break;
@@ -84,15 +88,15 @@ void Application::mapSingleFile(const String &name)
 			PAGE_READWRITE,
 			0,
 			4,
-			name.getData())) == NULL)
-	{
+            name.getData())) == NULL) {
 		O3D_ERROR(E_InvalidOperation("Unable to create the file lock (mapped file)"));
 	}
 
 	pmem = ::MapViewOfFile(hmap, FILE_MAP_WRITE, 0, 0, 0);
 
-	if (pmem == NULL)
+    if (pmem == NULL) {
 		O3D_ERROR(E_InvalidOperation("The single file is already mapped by another instance"));
+    }
 }
 
 // Check for a mapped file existence.
@@ -101,11 +105,11 @@ Bool Application::isMappedFileExists(const String &name)
 	HANDLE hmap;
 	LPVOID pmem;
 
-	if ((hmap = ::OpenFileMappingW(FILE_MAP_READ, 0, name.getData())) == NULL)
+    if ((hmap = ::OpenFileMappingW(FILE_MAP_READ, 0, name.getData())) == NULL) {
 		return False;
+    }
 
-	if ((pmem = ::MapViewOfFile(hmap, FILE_MAP_READ, 0, 0, 0)) == NULL)
-	{
+    if ((pmem = ::MapViewOfFile(hmap, FILE_MAP_READ, 0, 0, 0)) == NULL) {
 		::CloseHandle(hmap);
 		return False;
 	}
@@ -123,8 +127,8 @@ Int32 Application::getPID()
 
 #endif // O3D_WINDOWS
 
-// ONLY IF O3D_WIN32 IS SELECTED @todo need another define
-#if defined(O3D_WIN32) || defined(O3D_WIN64)
+// ONLY IF O3D_WINAPI IS SELECTED
+#ifdef O3D_WINAPI
 
 void Application::apiInitPrivate()
 {
@@ -252,4 +256,4 @@ void Application::getBaseNamePrivate(Int32 argc, Char **argv)
     }
 }
 
-#endif // O3D_WIN32
+#endif // O3D_WINAPI

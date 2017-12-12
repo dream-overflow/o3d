@@ -15,7 +15,7 @@
 
 namespace o3d {
 
-#ifdef O3D_WIN32_SYS
+#ifdef O3D_WINAPI_SYS
 	#include "architecture.h"
 	typedef void* _Mutex;
 	typedef CRITICAL_SECTION _FastMutex;
@@ -25,7 +25,7 @@ namespace o3d {
 	typedef pthread_mutex_t _FastMutex;
 #else
 	#error "<< Unknown architecture ! >>"
-#endif // O3D_WIN32
+#endif // O3D_WINAPI_SYS
 
 // locking return codes
 #define O3D_ABANDONED  -1

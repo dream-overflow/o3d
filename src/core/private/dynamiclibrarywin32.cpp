@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/dynamiclibrary.h"
 
-/* ONLY IF O3D_WIN32_SYS IS SELECTED */
-#ifdef O3D_WIN32_SYS
+/* ONLY IF O3D_WINAPI_SYS IS SELECTED */
+#ifdef O3D_WINAPI_SYS
 
 #include <list>
 #include "o3d/core/filemanager.h"
@@ -73,4 +73,4 @@ void* DynamicLibrary::getFunctionPtr(const CString &foo) const
     return (void*)GetProcAddress((HMODULE)m_instance, foo.getData());
 }
 
-#endif // O3D_WIN32_SYS
+#endif // O3D_WINAPI_SYS

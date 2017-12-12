@@ -32,6 +32,7 @@ EGLBINDAPIPROC EGL::bindAPI = nullptr;
 EGLCHOOSECONFIGPROC EGL::chooseConfig = nullptr;
 EGLCREATEWINDOWSURFACEPROC EGL::createWindowSurface = nullptr;
 EGLCREATECONTEXTPROC EGL::createContext = nullptr;
+EGLQUERYSURFACEPROC EGL::querySurface = nullptr;
 EGLMAKECURRENTPROC EGL::makeCurrent = nullptr;
 EGLSWAPBUFFERSPROC EGL::swapBuffers = nullptr;
 EGLDESTROYCONTEXTPROC EGL::destroyContext = nullptr;
@@ -67,6 +68,7 @@ void EGL::init()
     bindAPI = (EGLBINDAPIPROC)getProcAddress("eglBindAPI");
     chooseConfig = (EGLCHOOSECONFIGPROC)getProcAddress("eglChooseConfig");
     createWindowSurface = (EGLCREATEWINDOWSURFACEPROC)getProcAddress("eglCreateWindowSurface");
+    querySurface = (EGLQUERYSURFACEPROC)getProcAddress("eglQuerySurface");
     createContext = (EGLCREATECONTEXTPROC)getProcAddress("eglCreateContext");
     makeCurrent = (EGLMAKECURRENTPROC)getProcAddress("eglMakeCurrent");
     swapBuffers = (EGLSWAPBUFFERSPROC)getProcAddress("eglSwapBuffers");

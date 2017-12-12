@@ -12,7 +12,7 @@
 #include "o3d/core/thread.h"
 #include "o3d/core/application.h"
 
-#ifndef O3D_WIN32
+#ifndef O3D_WINDOWS
 
 #include "o3d/core/debug.h"
 
@@ -211,4 +211,4 @@ Int32 TimerManager::run(void*)
     return 0;
 }
 
-#endif // !O3D_WIN32
+#endif // !O3D_WINDOWS

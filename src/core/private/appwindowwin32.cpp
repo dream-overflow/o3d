@@ -11,8 +11,8 @@
 #include "o3d/core/base.h"
 #include "o3d/core/wintools.h"
 
-// ONLY IF O3D_WGL OR O3D_WINDOWS ARE SELECTED
-#if defined(O3D_WGL) || defined(O3D_WINDOWS)
+// ONLY IF O3D_WINAPI IS SELECTED
+#ifdef O3D_WINAPI
 
 #include "o3d/core/application.h"
 #include "o3d/core/appwindow.h"
@@ -531,17 +531,18 @@ void AppWindow::resize(Int32 clientWidth, Int32 clientHeight)
 
 Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
 {
-    if (!m_hWnd)
+    if (!m_hWnd) {
         O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     // nothing to paste
-    if (text.isEmpty())
+    if (text.isEmpty()) {
         return False;
+    }
 
     Bool result = False;
 
-    if (OpenClipboard(nullptr))
-    {
+    if (OpenClipboard(nullptr)) {
         EmptyClipboard();
 
         // Convert unix newlines to windows one's
@@ -549,8 +550,7 @@ Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
         ltext.replace("\n", "\r\n");
 
         const HGLOBAL hglb = GlobalAlloc(GMEM_MOVEABLE, (ltext.length()+1) * sizeof(WChar));
-        if(hglb)
-        {
+        if(hglb) {
             WCHAR *buffer = (WCHAR*)GlobalLock(hglb);
             memcpy(buffer, ltext.getData(), (ltext.length()+1) * sizeof(WChar));
 
@@ -568,19 +568,19 @@ Bool AppWindow::pasteToClipboard(const String &text, Bool primary)
 
 String AppWindow::copyFromClipboard(Bool primary)
 {
-    if (!m_hWnd)
+    if (!m_hWnd) {
         O3D_ERROR(E_InvalidOperation("The window must be valid"));
+    }
 
     String text;  // result
 
-    if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
+    if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
         return text;
+    }
 
-    if (!OpenClipboard(nullptr))
-    {
+    if (!OpenClipboard(nullptr)) {
         HGLOBAL hglb = GetClipboardData(CF_UNICODETEXT);
-        if (hglb)
-        {
+        if (hglb) {
             WCHAR *buffer = (WCHAR*)(GlobalLock(hglb));
             if (buffer) {
                 text = (WChar*)buffer;
@@ -808,21 +808,24 @@ LRESULT CALLBACK AppWindow::wndProc(
 		case WM_NCLBUTTONDOWN:
 		case WM_NCRBUTTONDOWN:
 		case WM_NCMBUTTONDOWN:
-			if (inst->m_hasMouse)
+            if (inst->m_hasMouse) {
 				inst->callBackMouseLost();
+            }
 			break;
 
 		case WM_CAPTURECHANGED:
-			if (inst->m_hasMouse)
+            if (inst->m_hasMouse) {
 				inst->callBackMouseLost();
+            }
 			break;
 		//case WM_MOUSELEAVE:
 		//	inst->getInput().getMouse()->enableCursor();
 		///	break;
 
 		case WM_MOUSEACTIVATE:
-			if (inst->m_hasMouse)
+            if (inst->m_hasMouse) {
 				inst->callBackMouseGain();
+            }
 			break;
 
 		case WM_MOVE:
@@ -846,8 +849,7 @@ LRESULT CALLBACK AppWindow::wndProc(
 				}
 
 				// max size hint
-				if (inst->m_maxSize.x() >= 0 && inst->m_maxSize.y() >= 0)
-				{
+                if (inst->m_maxSize.x() >= 0 && inst->m_maxSize.y() >= 0) {
 					minMaxInfo->ptMaxTrackSize.x = inst->m_maxSize.x();
 					minMaxInfo->ptMaxTrackSize.y = inst->m_maxSize.y();
 				}
@@ -858,8 +860,7 @@ LRESULT CALLBACK AppWindow::wndProc(
 			eventData.w = LOWORD(lParam);
 			eventData.h = HIWORD(lParam);
 
-			switch(wParam)
-			{
+            switch(wParam) {
 				case SIZE_MAXIMIZED:
 					inst->setSize(LOWORD(lParam), HIWORD(lParam));
 					inst->callBackMaximize();
@@ -886,8 +887,9 @@ LRESULT CALLBACK AppWindow::wndProc(
 			UINT bufferSize;
 			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &bufferSize, sizeof (RAWINPUTHEADER));
 
-			if (bufferSize > 4096)
+            if (bufferSize > 4096) {
 				O3D_ERROR(E_InvalidOperation("Raw input buffer size is too big"));
+            }
 
 			GetRawInputData(
 				(HRAWINPUT)lParam,
@@ -899,239 +901,217 @@ LRESULT CALLBACK AppWindow::wndProc(
 			RAWINPUT *raw = (RAWINPUT*)rawInputBuf;
 
 			// mouse
-			if (raw->header.dwType == RIM_TYPEMOUSE)
-			{
-				if (raw->header.dwType == RIM_TYPEMOUSE)
-				{
-					if (!inst->m_hasMouse)
+            if (raw->header.dwType == RIM_TYPEMOUSE) {
+                if (raw->header.dwType == RIM_TYPEMOUSE) {
+                    if (!inst->m_hasMouse) {
 						inst->callBackMouseGain();
+                    }
 
 					LONG mx = raw->data.mouse.lLastX;
 					LONG my = raw->data.mouse.lLastY;
 
 					// mouse motion
-					if (mx || my)
-					{
+                    if (mx || my) {
 						inst->getInput().getMouse()->setMouseDelta(mx, my);
 						inst->callBackMouseMotion();
 					}
 
 					// left
-					if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN)
-					{
+                    if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN) {
 						Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::LEFT, True);
 						inst->callBackMouseButton(Mouse::LEFT, True, dblClick);
-					}
-					else if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_UP)
-					{
+                    } else if (raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_UP) {
 						inst->getInput().getMouse()->setMouseButton(Mouse::LEFT, False);
 						inst->callBackMouseButton(Mouse::LEFT, False, False);
 					}
+
 					// right
 					if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_DOWN)
 					{
 						Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::RIGHT, True);
 						inst->callBackMouseButton(Mouse::RIGHT, True, dblClick);
-					}
-					else if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_UP)
-					{
+                    } else if (raw->data.mouse.ulButtons & RI_MOUSE_RIGHT_BUTTON_UP) {
 						inst->getInput().getMouse()->setMouseButton(Mouse::RIGHT, False);
 						inst->callBackMouseButton(Mouse::RIGHT, False, False);
 					}
+
 					// middle
-					if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_DOWN)
-					{
+                    if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_DOWN) {
 						Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::MIDDLE, True);
 						inst->callBackMouseButton(Mouse::MIDDLE, True, dblClick);
-					}
-					else if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_UP)
-					{
+                    } else if (raw->data.mouse.ulButtons & RI_MOUSE_MIDDLE_BUTTON_UP) {
 						inst->getInput().getMouse()->setMouseButton(Mouse::MIDDLE, False);
 						inst->callBackMouseButton(Mouse::MIDDLE, False, False);
 					}
+
 					// 4
-					if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_DOWN)
-					{
+                    if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_DOWN) {
 						Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::X1, True);
 						inst->callBackMouseButton(Mouse::X1, True, dblClick);
-					}
-					else if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_UP)
-					{
+                    } else if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_UP) {
 						inst->getInput().getMouse()->setMouseButton(Mouse::X1, False);
 						inst->callBackMouseButton(Mouse::X1, False, False);
 					}
+
 					// 5
-					if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_DOWN)
-					{
+                    if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_DOWN) {
 						Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::X2, True);
 						inst->callBackMouseButton(Mouse::X2, True, dblClick);
-					}
-					else if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_UP)
-					{
+                    } else if (raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_UP) {
 						inst->getInput().getMouse()->setMouseButton(Mouse::X2, False);
 						inst->callBackMouseButton(Mouse::X2, False, False);
 					}
 
 					// wheel
-					if (raw->data.mouse.ulButtons & RI_MOUSE_WHEEL)
-					{
+                    if (raw->data.mouse.ulButtons & RI_MOUSE_WHEEL) {
 						SHORT wheel = (SHORT)raw->data.mouse.usButtonData;
 						inst->getInput().getMouse()->setMouseWheel(-wheel);
 						inst->callBackMouseWheel();
 					}
 				}
-			}
-			// keyboard
-			else if ((raw->header.dwType == RIM_TYPEKEYBOARD))
-			{
+            } else if ((raw->header.dwType == RIM_TYPEKEYBOARD)) {
+                // keyboard
 				Bool state = !(raw->data.keyboard.Flags & RI_KEY_BREAK);
 
 				VKey key = VKey(translateRawInputKey(raw->data.keyboard.VKey, raw->data.keyboard.Flags));
                 Bool pressed = inst->getInput().getKeyboard()->setKeyState(key, state);
 
-				if (state)
+                if (state) {
                     inst->callBackKey(key, key, pressed, !pressed);
-				else
+                } else {
                     inst->callBackKey(key, key, False, False);
+                }
 			}
 		}
 		return 0;
 
 		case WM_MOUSEMOVE:
-			if (!inst->m_hasMouse)
+            if (!inst->m_hasMouse) {
 				inst->callBackMouseGain();
+            }
 
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				inst->getInput().getMouse()->setMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 				inst->callBackMouseMotion();
 			}
 			return 0;
 
 		case WM_LBUTTONDOWN:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::LEFT, True);
 				inst->callBackMouseButton(Mouse::LEFT, True, dblClick);
 
 				// mouse capture move outside the window
-				if (inst->m_captureMouse == 0)
+                if (inst->m_captureMouse == 0) {
 					::SetCapture((HWND)inst->m_hWnd);
+                }
 				++inst->m_captureMouse;
 			}
 			return 0;
 		case WM_LBUTTONUP:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				inst->getInput().getMouse()->setMouseButton(Mouse::LEFT, False);
 				inst->callBackMouseButton(Mouse::LEFT, False, False);
 
 				// mouse move outside window capture release
 				--inst->m_captureMouse;
-				if (inst->m_captureMouse == 0)
-					::ReleaseCapture();
+                if (inst->m_captureMouse == 0) {
+                    ::ReleaseCapture();
+                }
 			}
 			return 0;
 
 		case WM_RBUTTONDOWN:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::RIGHT, True);
 				inst->callBackMouseButton(Mouse::RIGHT, True, dblClick);
 
 				// mouse capture move outside the window
-				if (inst->m_captureMouse == 0)
+                if (inst->m_captureMouse == 0) {
 					::SetCapture((HWND)inst->m_hWnd);
+                }
 				++inst->m_captureMouse;
 			}
 			return 0;
 		case WM_RBUTTONUP:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				inst->getInput().getMouse()->setMouseButton(Mouse::RIGHT, False);
 				inst->callBackMouseButton(Mouse::RIGHT, False, False);
 
 				--inst->m_captureMouse;
-				if (inst->m_captureMouse == 0)
+                if (inst->m_captureMouse == 0) {
 					::ReleaseCapture();
+                }
 			}
 			return 0;
 
 		case WM_MBUTTONDOWN:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::MIDDLE, True);
 				inst->callBackMouseButton(Mouse::MIDDLE, True, dblClick);
 
 				// mouse capture move outside the window
-				if (inst->m_captureMouse == 0)
+                if (inst->m_captureMouse == 0) {
 					::SetCapture((HWND)inst->m_hWnd);
+                }
 				++inst->m_captureMouse;
 			}
 			return 0;
 		case WM_MBUTTONUP:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				inst->getInput().getMouse()->setMouseButton(Mouse::MIDDLE, False);
 				inst->callBackMouseButton(Mouse::MIDDLE, False, False);
 
 				--inst->m_captureMouse;
-				if (inst->m_captureMouse == 0)
+                if (inst->m_captureMouse == 0) {
 					::ReleaseCapture();
+                }
 			}
 			return 0;
 
 		case WM_XBUTTONDOWN:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
-				if (HIWORD(wParam) == XBUTTON1)
-				{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
+                if (HIWORD(wParam) == XBUTTON1) {
 					Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::X1, True);
 					inst->callBackMouseButton(Mouse::X1, True, dblClick);
-				}
-				else if (HIWORD(wParam) == XBUTTON2)
-				{
+                } else if (HIWORD(wParam) == XBUTTON2) {
 					Bool dblClick = inst->getInput().getMouse()->setMouseButton(Mouse::X2, True);
 					inst->callBackMouseButton(Mouse::X2, True, dblClick);
 				}
 
 				// mouse capture move outside the window
-				if (inst->m_captureMouse == 0)
+                if (inst->m_captureMouse == 0) {
 					::SetCapture((HWND)inst->m_hWnd);
+                }
 				++inst->m_captureMouse;
 			}
 			return 0;
 		case WM_XBUTTONUP:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
-				if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-				{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
+                if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1) {
 					inst->getInput().getMouse()->setMouseButton(Mouse::X1, False);
 					inst->callBackMouseButton(Mouse::X1, False, False);
-				}
-				else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-				{
+                } else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2) {
 					inst->getInput().getMouse()->setMouseButton(Mouse::X2, False);
 					inst->callBackMouseButton(Mouse::X1, False, False);
 				}
 
 				--inst->m_captureMouse;
-				if (inst->m_captureMouse == 0)
+                if (inst->m_captureMouse == 0) {
 					::ReleaseCapture();
+                }
 			}
 			return 0;
 
 		case WM_MOUSEWHEEL:
-			if (!inst->getInput().getMouse()->isGrabbed())
-			{
+            if (!inst->getInput().getMouse()->isGrabbed()) {
 				inst->getInput().getMouse()->setMouseWheel(-GET_WHEEL_DELTA_WPARAM(wParam));
 				inst->callBackMouseWheel();
 			}
 			return 0;
 
 		case WM_KEYDOWN:
-			if (!inst->getInput().getKeyboard()->isGrabbed())// && !(lParam & (1 << 30)))
-			{
+            if (!inst->getInput().getKeyboard()->isGrabbed()) { // && !(lParam & (1 << 30))) {
 				VKey key = VKey(translateWmKey(wParam, lParam));
                 Bool pressed = inst->m_inputManager.getKeyboard()->setKeyState(key, True);
 
@@ -1141,16 +1121,16 @@ LRESULT CALLBACK AppWindow::wndProc(
                 inst->callBackKey(key, key, pressed, !pressed);
 
 				// need delete and new line caracters
-				if (key == KEY_DELETE)
+                if (key == KEY_DELETE) {
                     inst->callBackCharacter(key, key, static_cast<WChar>(127), !pressed);
-				else if (key == KEY_RETURN || key == KEY_NUMPAD_ENTER)
+                } else if (key == KEY_RETURN || key == KEY_NUMPAD_ENTER) {
                     inst->callBackCharacter(key, key, L'\n', !pressed);
+                }
 			}
 			return 0;
 		
 		case WM_KEYUP:
-			if (!inst->getInput().getKeyboard()->isGrabbed())
-			{
+            if (!inst->getInput().getKeyboard()->isGrabbed()) {
 				VKey key = VKey(translateWmKey(wParam, lParam));
                 inst->getInput().getKeyboard()->setKeyState(key, False);
 
@@ -1160,8 +1140,7 @@ LRESULT CALLBACK AppWindow::wndProc(
 
 //		case WM_UNICHAR:
 		case WM_CHAR:
-			switch (wParam)
-			{
+            switch (wParam) {
 				case 0x00:
 					break;
 				case 0x0A:
@@ -1193,12 +1172,13 @@ LRESULT CALLBACK AppWindow::wndProc(
 			break;*/
 
 		/*case WM_ACTIVATE:
-			if (LOWORD(wParam) != WA_INACTIVE)
+            if (LOWORD(wParam) != WA_INACTIVE) {
 				inst->processEvent(EVT_INPUT_FOCUS_GAIN, eventData);
+            }
 			return 0;*/
 	}
 
 	return DefWindowProcW(hWnd, msg, wParam, lParam);
 }
 
-#endif // O3D_WGL || O3D_WINDOWS
+#endif // O3D_WINAPI

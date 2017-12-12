@@ -81,8 +81,9 @@ void AppWindow::create(Int32 width,
     Bool fullScreen,
     Bool resizable)
 {
-	if (m_hWnd)
+    if (m_hWnd) {
 		O3D_ERROR(E_InvalidOperation("The window already exists"));
+    }
 
 	m_width  = m_clientWidth = width;
 	m_height = m_clientHeight = height;
@@ -109,57 +110,54 @@ Bool AppWindow::isSet() const
 
 UInt32 AppWindow::getBpp() const
 {
-    switch (m_colorFormat)
-    {
-    case COLOR_RGBA4:
-    case COLOR_RGB5A1:
-    case COLOR_RGB565:
-        return 16;
-    case COLOR_RGB8:
-        return 3*8;
-    case COLOR_RGBA8:
-        return 4*8;
-    case COLOR_RGB16:
-        return 3*16;
-    case COLOR_RGBA16:
-        return 4*16;
-    case COLOR_RGB32:
-        return 3*32;
-    case COLOR_RGBA32:
-        return 4*32;
-    default:
-        return 0;
+    switch (m_colorFormat) {
+        case COLOR_RGBA4:
+        case COLOR_RGB5A1:
+        case COLOR_RGB565:
+            return 16;
+        case COLOR_RGB8:
+            return 3*8;
+        case COLOR_RGBA8:
+            return 4*8;
+        case COLOR_RGB16:
+            return 3*16;
+        case COLOR_RGBA16:
+            return 4*16;
+        case COLOR_RGB32:
+            return 3*32;
+        case COLOR_RGBA32:
+            return 4*32;
+        default:
+            return 0;
     }
 }
 
 UInt32 AppWindow::getDepth() const
 {
-    switch (m_depthStencilFormat)
-    {
-    case DEPTH_16:
-    case DEPTH_16_STENCIL_8:
-        return 16;
-    case DEPTH_24_STENCIL_8:
-        return 24;
-    case DEPTH_32:
-        return 32;
-    default:
-        return 0;
+    switch (m_depthStencilFormat) {
+        case DEPTH_16:
+        case DEPTH_16_STENCIL_8:
+            return 16;
+        case DEPTH_24_STENCIL_8:
+            return 24;
+        case DEPTH_32:
+            return 32;
+        default:
+            return 0;
     }
 }
 
 UInt32 AppWindow::getStencil() const
 {
-    switch (m_depthStencilFormat)
-    {
-    case DEPTH_16:
-    case DEPTH_32:
-        return 0;
-    case DEPTH_16_STENCIL_8:
-    case DEPTH_24_STENCIL_8:
-        return 8;
-    default:
-        return 0;
+    switch (m_depthStencilFormat) {
+        case DEPTH_16:
+        case DEPTH_32:
+            return 0;
+        case DEPTH_16_STENCIL_8:
+        case DEPTH_24_STENCIL_8:
+            return 8;
+        default:
+            return 0;
     }
 }
 
@@ -191,11 +189,13 @@ Bool AppWindow::isKeyboardGrabbed() const
 // Lock/unlock the mouse. Infinite mouse area using raw input.
 void AppWindow::grabMouse(Bool lock)
 {
-	if (!m_hWnd)
+    if (!m_hWnd) {
 		O3D_ERROR(E_InvalidOperation("The window is not valid"));
+    }
 
-	if (!m_inputManager.isMouse())
+    if (!m_inputManager.isMouse()) {
 		O3D_ERROR(E_InvalidOperation("The mouse is not valid"));
+    }
 
 	m_inputManager.getMouse()->setGrab(lock);
 }
@@ -203,11 +203,13 @@ void AppWindow::grabMouse(Bool lock)
 // Lock/unlock the keyboard.
 void AppWindow::grabKeyboard(Bool lock)
 {
-	if (!m_hWnd)
+    if (!m_hWnd) {
 		O3D_ERROR(E_InvalidOperation("The window is not valid"));
+    }
 
-	if (!m_inputManager.isKeyboard())
+    if (!m_inputManager.isKeyboard()) {
 		O3D_ERROR(E_InvalidOperation("The keyboard is not valid"));
+    }
 
 	m_inputManager.getKeyboard()->setGrab(lock);
 }
@@ -221,14 +223,11 @@ Bool AppWindow::isFullScreen() const
 // Set the window icon.
 void AppWindow::setIcon(const String &icon)
 {
-	if (icon.isValid())
-	{
+    if (icon.isValid()) {
 		// set the icon
 		Image newIcon(icon);
 		setIcon(newIcon);
-	}
-	else
-	{
+    } else {
 		// remove the icon
 		setIcon(Image());
 	}
@@ -246,8 +245,7 @@ void AppWindow::callBackKey(VKey key, VKey character, Bool pressed, Bool repeat)
 {
 	Keyboard* pKeyboard = m_inputManager.getKeyboard();
 	// DEFAULT
-	if (pKeyboard)
-	{
+    if (pKeyboard) {
         KeyEvent event(key, character, pressed, repeat);
 		onKey(pKeyboard, event);
 	}
@@ -257,8 +255,7 @@ void AppWindow::callBackCharacter(VKey key, VKey character, WChar unicode, Bool 
 {
 	Keyboard* pKeyboard = m_inputManager.getKeyboard();
 	// DEFAULT
-	if (pKeyboard)
-	{
+    if (pKeyboard) {
         CharacterEvent event(key, character, unicode, repeat);
 		onCharacter(pKeyboard, event);
 	}
@@ -268,8 +265,7 @@ void AppWindow::callBackMouseMotion()
 {
 	Mouse* pMouse = m_inputManager.getMouse();
 	// DEFAULT
-	if (pMouse)
-	{
+	if (pMouse)	{
 		onMouseMotion(pMouse);
 	}
 }
@@ -278,8 +274,7 @@ void AppWindow::callBackMouseWheel()
 {
 	Mouse* pMouse = m_inputManager.getMouse();
 	// DEFAULT
-	if (pMouse)
-	{
+	if (pMouse)	{
 		onMouseWheel(pMouse);
 	}
 }
@@ -291,8 +286,7 @@ void AppWindow::callBackMouseButton(
 {
 	Mouse* pMouse = m_inputManager.getMouse();
 	// DEFAULT
-	if (pMouse)
-	{
+    if (pMouse) {
 		ButtonEvent event(button, pressed, dblClick);
 		onMouseButton(pMouse, event);
 	}
@@ -326,8 +320,7 @@ void AppWindow::callBackMaximize()
 {
 	// DEFAULT
 	Mouse* mouse = m_inputManager.getMouse();
-	if (mouse)
-	{
+    if (mouse) {
 		mouse->release();
 		mouse->setMouseRegion(Box2i(0, 0, m_clientWidth, m_clientHeight));
 		mouse->acquire();
@@ -341,8 +334,7 @@ void AppWindow::callBackMinimize()
 {
 	// DEFAULT
 	Mouse* mouse = m_inputManager.getMouse();
-	if (mouse)
-	{
+    if (mouse) {
 		mouse->release();
 		mouse->setMouseRegion(Box2i(0, 0, 0, 0));
 		onMouseMotion(mouse);
@@ -355,8 +347,7 @@ void AppWindow::callBackRestore()
 {
 	// DEFAULT
 	Mouse* mouse = m_inputManager.getMouse();
-	if (mouse)
-	{
+    if (mouse) {
 		mouse->release();
 		mouse->setMouseRegion(Box2i(0, 0, m_clientWidth, m_clientHeight));
 		mouse->acquire();
@@ -370,10 +361,9 @@ void AppWindow::callBackResize()
 {
 	// DEFAULT
 	Mouse* mouse = m_inputManager.getMouse();
-	if (mouse)
-	{
+    if (mouse) {
 		mouse->release();
-		mouse->setMouseRegion(Box2i(0,0,m_clientWidth,m_clientHeight));
+        mouse->setMouseRegion(Box2i(0, 0, m_clientWidth, m_clientHeight));
 		mouse->acquire();
 		onMouseMotion(mouse);
 	}
@@ -386,8 +376,7 @@ Int32 AppWindow::callBackPaint(void*)
 	// DEFAULT
 	TimeMesure mesure(m_lastPaintDuration);
 
-	if (m_clientWidth && m_clientHeight)
-	{
+    if (m_clientWidth && m_clientHeight) {
 		callBackClear();
 		callBackDraw();
 		callBackDisplay();
@@ -447,8 +436,7 @@ void AppWindow::callBackMouseGain()
 {
 	// DEFAULT acquire the mouse
 	Mouse* pMouse = m_inputManager.getMouse();
-	if (pMouse)
-	{
+    if (pMouse) {
 		pMouse->acquire();
 		pMouse->disableCursor();
 
@@ -461,8 +449,7 @@ void AppWindow::callBackMouseLost()
 {
 	// DEFAULT acquire the mouse
 	Mouse* pMouse = m_inputManager.getMouse();
-	if (pMouse)
-	{
+    if (pMouse) {
 		pMouse->release();
 		pMouse->enableCursor();
 
@@ -475,24 +462,21 @@ void AppWindow::callBackMouseLost()
 Float AppWindow::getLastFps()
 {
 	// first time: init
-	if (m_lastFpsOut == 0)
-	{
+    if (m_lastFpsOut == 0) {
 		m_lastFpsOut = System::getTime();
-		if (m_interval != 0)
+        if (m_interval != 0) {
 			m_lastFps = m_framesList[m_interval-1];
-	}
-	else
-	{
+        }
+    } else {
 		Int64 curTime = System::getTime();
 
 		// update the FPS if time is elapsed
-		if ( ((Float)(curTime - m_lastFpsOut) /
-					(Float)System::getTimeFrequency()) >= m_timeToFps)
-		{
+        if ( ((Float)(curTime - m_lastFpsOut) / (Float)System::getTimeFrequency()) >= m_timeToFps) {
 			m_lastFpsOut = curTime;
 
-			if (m_interval != 0)
+            if (m_interval != 0) {
 				m_lastFps = m_framesList[m_interval-1];
+            }
 		}
 	}
 
@@ -503,8 +487,7 @@ Float AppWindow::getLastFps()
 // Compute FPS.
 void AppWindow::computeFPS()
 {
-	if (m_frame == 0 && m_interval == 0)
-	{
+    if (m_frame == 0 && m_interval == 0) {
 		// initialization
 		m_totalTime = 0;
 		m_totalFrame = 0;
@@ -514,8 +497,7 @@ void AppWindow::computeFPS()
 	++m_frame;
 	++m_totalFrame;
 
-	if (m_frame == FPS_INTERVAL_SIZE)
-	{
+    if (m_frame == FPS_INTERVAL_SIZE) {
 		Int64 time = System::getTime();
 		m_totalTime += time - m_lastTime;
 
@@ -526,8 +508,7 @@ void AppWindow::computeFPS()
 		++m_interval;
 		m_frame = 0;
 
-        if (m_interval == FPS_MAX_INTERVAL)
-		{
+        if (m_interval == FPS_MAX_INTERVAL) {
 			m_interval = 1;
 			m_framesList[0] = m_framesList[FPS_MAX_INTERVAL-1];
 		}
@@ -543,12 +524,8 @@ void AppWindow::logFps()
 	str.concat(m_interval);
 	str += " frames :\n";
 
-	for (UInt32 i = 0; i < m_interval; ++i)
-	{
-		str += String::print
-                ("    |- %i -> %.4f fps\n",
-				i,
-				m_framesList[i]);
+    for (UInt32 i = 0; i < m_interval; ++i) {
+        str += String::print("    |- %i -> %.4f fps\n", i, m_framesList[i]);
 	}
 
 	O3D_MESSAGE(str);
@@ -568,8 +545,7 @@ String AppWindow::report() const
 	msg.concat(m_interval);
 	msg += "\n\n";
 
-	for (i = 0; i < m_interval; ++i)
-	{
+    for (i = 0; i < m_interval; ++i) {
 		msg += "Interval ";
 		msg.concat(i);
 		msg += " : FPS=";
@@ -579,16 +555,17 @@ String AppWindow::report() const
 		sum += m_framesList[i];
 	}
 
-	if (m_interval !=0)
+    if (m_interval !=0) {
 		moy = sum / m_interval;
+    }
 
-	for (i = 0; i < m_interval; ++i)
-	{
+    for (i = 0; i < m_interval; ++i) {
 		equart += (m_framesList[i] - moy) * (m_framesList[i] - moy);
 	}
 
-	if (m_interval != 0)
+    if (m_interval != 0) {
         equart = Math::sqrt(equart/m_interval);
+    }
 
 	msg += "\n- Esperance=";
 	msg.concat(moy);
@@ -601,8 +578,7 @@ String AppWindow::report() const
 // Get the average FPS.
 Float AppWindow::getAverageFps() const
 {
-	return ((Float)System::getTimeFrequency() *
-		((Float)m_totalFrame/(Float)m_totalTime));
+    return ((Float)System::getTimeFrequency() * ((Float)m_totalFrame/(Float)m_totalTime));
 }
 
 // Is it need to paint.
@@ -610,14 +586,12 @@ Bool AppWindow::isPaintNeeded()
 {
 	Int64 time = System::getTime();
 
-	if (m_lastPaint == 0)
-	{
+    if (m_lastPaint == 0) {
 		m_lastPaint = time;
 		return True;
 	}
 
-	if ((time - m_lastPaint) >= (m_paintFreq * System::getTimeFrequency()) / 1000)
-	{
+    if ((time - m_lastPaint) >= (m_paintFreq * System::getTimeFrequency()) / 1000) {
 		m_lastPaint = time;
 		return True;
 	}
@@ -630,14 +604,12 @@ Bool AppWindow::isUpdateNeeded()
 {
 	Int64 time = System::getTime();
 
-	if (m_lastUpdate == 0)
-	{
+    if (m_lastUpdate == 0) {
 		m_lastUpdate = time;
 		return True;
 	}
 
-	if ((time - m_lastUpdate) >= (m_updateFreq * System::getTimeFrequency()) / 1000)
-	{
+    if ((time - m_lastUpdate) >= (m_updateFreq * System::getTimeFrequency()) / 1000) {
 		m_lastUpdate = time;
 		return True;
 	}

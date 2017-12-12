@@ -24,4 +24,3 @@ Input::Input(BaseObject *parent) :
 {
     m_isActive = True;
 }
-

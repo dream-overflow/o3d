@@ -293,4 +293,3 @@ void Mouse::clear()
 
 	m_wheelDelta = 0;
 }
-

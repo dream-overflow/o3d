@@ -17,7 +17,7 @@
 #include "o3d/core/filemanager.h"
 #include "o3d/core/debug.h"
 
-#ifdef O3D_WIN32_SYS
+#ifdef O3D_WINAPI_SYS
 	#include <direct.h>
 #else
 	#include <sys/stat.h>
@@ -385,7 +385,7 @@ String FileListing::getFileFullName() const
 }
 
 // initialize the file search
-#ifdef O3D_WIN32_SYS
+#ifdef O3D_WINAPI_SYS
 
 void FileListing::searchFirstFile()   // Version windows du file listing
 {

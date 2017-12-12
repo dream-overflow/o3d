@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/mouse.h"
 
-// ONLY IF O3D_WIN32 IS SELECTED
-#ifdef O3D_WIN32
+// ONLY IF O3D_WINAPI IS SELECTED
+#ifdef O3D_WINAPI
 
 #include <math.h>
 #include "o3d/core/architecture.h"
@@ -32,12 +32,12 @@ Mouse::Mouse(
 {
 	commonInit(xlimit, ylimit);
 
-	if (!m_appWindow)
+    if (!m_appWindow) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
 
 	// for windowed mode, start with current absolute mouse position
-	if (!lock)
-	{
+    if (!lock) {
 		POINT mousePos;
 		GetCursorPos(&mousePos);
 		ScreenToClient(reinterpret_cast<HWND>(m_appWindow->getHWND()), &mousePos);
@@ -46,9 +46,9 @@ Mouse::Mouse(
 		m_windowPos = m_window.clamp(m_windowPos);
 
 		m_grab = False;
-	}
-	else
+    } else {
 		setGrab();
+    }
 
 	m_isActive = True;
 	m_aquired = False;
@@ -64,8 +64,7 @@ Mouse::~Mouse()
 // draw/hide cursor drawing state
 void Mouse::enableCursor()
 {
-	if (!m_cursor)
-	{
+    if (!m_cursor) {
 		ShowCursor(True);
 		m_cursor = True;
 	}
@@ -73,8 +72,7 @@ void Mouse::enableCursor()
 
 void Mouse::disableCursor()
 {
-	if (m_cursor)
-	{
+    if (m_cursor) {
 		ShowCursor(False);
 		m_cursor = False;
 	}
@@ -90,12 +88,12 @@ void Mouse::disableCursor()
 // lock/unlock the mouse position
 void Mouse::setGrab(Bool lock)
 {
-	if (!m_appWindow->getHWND())
+    if (!m_appWindow->getHWND()) {
 		O3D_ERROR(E_InvalidOperation("Related application window must be active"));
+    }
 
 	// enable
-	if (!m_grab && lock)
-	{
+    if (!m_grab && lock) {
 		RAWINPUTDEVICE Rid[1];
 		Rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC; 
 		Rid[0].usUsage = HID_USAGE_GENERIC_MOUSE; 
@@ -121,8 +119,7 @@ void Mouse::setGrab(Bool lock)
 	}
 	
 	// disable
-	if (m_grab && !lock)
-	{
+    if (m_grab && !lock) {
 		RAWINPUTDEVICE Rid[1];
 		Rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC; 
 		Rid[0].usUsage = HID_USAGE_GENERIC_MOUSE; 
@@ -148,11 +145,13 @@ void Mouse::setGrab(Bool lock)
 // update input data (only if acquired)
 void Mouse::update()
 {
-	if (!m_isActive)
+    if (!m_isActive) {
 		return;
+    }
 
-	if (!m_aquired)
+    if (!m_aquired) {
 		acquire();
+    }
 
 	// update the wheel speed
 	wheelUpdate();
@@ -164,8 +163,7 @@ void Mouse::update()
 // acquire mouse position and buttons states
 void Mouse::acquire()
 {
-	if (m_isActive && !m_aquired)
-	{
+    if (m_isActive && !m_aquired) {
 		POINT point;
 		GetCursorPos(&point);
 
@@ -173,20 +171,25 @@ void Mouse::acquire()
 		GetWindowRect(reinterpret_cast<HWND>(m_appWindow->getHWND()), &rect);
 
 		// clamp with a [-4;+4] tolerance
-		if (point.x < rect.left)
+        if (point.x < rect.left) {
 			point.x = point.x + 4;
-		if (point.y < rect.top)
+        }
+        if (point.y < rect.top) {
 			point.y = point.y + 4;
-		if (point.x > rect.right)
+        }
+        if (point.x > rect.right) {
 			point.x = point.x - 4;
-		if (point.y > rect.bottom)
+        }
+        if (point.y > rect.bottom) {
 			point.y = point.y - 4;
+        }
 
 		ScreenToClient(reinterpret_cast<HWND>(m_appWindow->getHWND()), &point);
 
 		// cursor outside of the window so not acquiered
-		if ((point.x < 0) || point.y < 0)
+        if ((point.x < 0) || point.y < 0) {
 			return;
+        }
 
 		m_windowPos.set(point.x, point.y);
 
@@ -204,13 +207,11 @@ void Mouse::acquire()
 // release mouse hardware
 void Mouse::release()
 {
-	if (m_aquired)
-	{
+    if (m_aquired) {
 		m_wheel = 0; // wheel position is reset
 
 		m_aquired = False;
 	}
 }
 
-#endif // O3D_WIN32
-
+#endif // O3D_WINAPI

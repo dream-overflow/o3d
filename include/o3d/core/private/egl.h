@@ -38,6 +38,7 @@ public:
     static EGLCHOOSECONFIGPROC chooseConfig;
     static EGLCREATEWINDOWSURFACEPROC createWindowSurface;
     static EGLCREATECONTEXTPROC createContext;
+    static EGLQUERYSURFACEPROC querySurface;
     static EGLMAKECURRENTPROC makeCurrent;
     static EGLSWAPBUFFERSPROC swapBuffers;
     static EGLDESTROYCONTEXTPROC destroyContext;

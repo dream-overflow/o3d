@@ -219,12 +219,13 @@ public:
 	//! @note Wheel unit is 120.
 	inline Float getSmoothedWheel() const
 	{
-		if (m_wheelSpeed < 0)
+        if (m_wheelSpeed < 0) {
 			return -120.f;
-		else if (m_wheelSpeed > 0)
+        } else if (m_wheelSpeed > 0) {
 			return 120.f;
-		else
+        } else {
 			return 0.f;
+        }
 	}
 
 	//-------------------------------------------------------------------------------

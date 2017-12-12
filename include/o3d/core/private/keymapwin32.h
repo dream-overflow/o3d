@@ -10,8 +10,8 @@
 #ifndef _O3D_KEYMAPWIN32_H
 #define _O3D_KEYMAPWIN32_H
 
-/* ONLY IF O3D_WIN32 IS SELECTED */
-#ifdef O3D_WIN32
+/* ONLY IF O3D_WINAPI IS SELECTED */
+#ifdef O3D_WINAPI
 
 #undef KEY_EXECUTE
 
@@ -171,6 +171,6 @@ enum VKey
 
 } // namespace o3d
 
-#endif // O3D_WIN32
+#endif // O3D_WINAPI
 
 #endif // _O3D_KEYMAPWIN32_H

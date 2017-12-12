@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/timer.h"
 
-// ONLY IF O3D_WIN32 IS SELECTED
-#ifdef O3D_WIN32
+// ONLY IF O3D_WINDOWS IS SELECTED
+#ifdef O3D_WINDOWS
 
 #include "o3d/core/debug.h"
 #include "o3d/core/architecture.h"
@@ -125,4 +125,4 @@ Int32 TimerManager::run(void*)
     return 0;
 }
 
-#endif // O3D_WIN32
+#endif // O3D_WINDOWS

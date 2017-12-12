@@ -75,6 +75,8 @@ static void handleCmd(struct android_app* app, int32_t cmd)
 void Application::apiInitPrivate()
 {
     if (ms_app) {
+        ms_display = reinterpret_cast<_DISPLAY>(EGL_DEFAULT_DISPLAY);
+
         // setup app state
         struct android_app* state = reinterpret_cast<struct android_app*>(ms_app);
         pthread_mutex_lock(&state->mutex);
@@ -87,7 +89,13 @@ void Application::apiInitPrivate()
 
 void Application::apiQuitPrivate()
 {
+    if (ms_display) {
+        ms_display = NULL_DISP;
 
+        // is there something todo here ?
+
+        ms_app = nullptr;
+    }
 }
 
 // Run the application main loop.

@@ -10,8 +10,8 @@
 #include "o3d/core/precompiled.h"
 #include "o3d/core/keyboard.h"
 
-/* ONLY IF O3D_WIN32 IS SELECTED */
-#ifdef O3D_WIN32
+/* ONLY IF O3D_WINAPI IS SELECTED */
+#ifdef O3D_WINAPI
 
 #include "o3d/core/architecture.h"
 #include "o3d/core/debug.h"
@@ -231,4 +231,4 @@ void Keyboard::release()
 	}
 }
 
-#endif // O3D_WIN32
+#endif // O3D_WINAPI

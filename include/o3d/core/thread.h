@@ -21,7 +21,7 @@
 
 namespace o3d {
 
-#ifdef O3D_WIN32_SYS
+#ifdef O3D_WINAPI_SYS
 	typedef void* _Thread;
 	typedef void* _Semaphore;
 	typedef void* _WaitCondition;
@@ -35,7 +35,7 @@ namespace o3d {
 	typedef pthread_rwlock_t _ReaderHandle;
 #else
 	#error "<< Unknown architecture ! >>"
-#endif // O3D_WIN32_SYS
+#endif // O3D_WINAPI_SYS
 
 
 //---------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ public:
 
 private:
 
-#ifdef O3D_WIN32_SYS
+#ifdef O3D_WINAPI_SYS
 	UInt32 volatile m_value;     //!< current value (only for win32)
 #endif
 
@@ -234,7 +234,7 @@ public:
 
 private:
 
-#ifdef O3D_WIN32_SYS
+#ifdef O3D_WINAPI_SYS
 	FastMutex m_mutex;
 	Semaphore m_semWait;
 	Semaphore m_semDone;

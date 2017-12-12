@@ -1045,8 +1045,10 @@ void AppWindow::destroy()
 
         // destroy surface
         if (GL::getImplementation() == GL::IMPL_EGL_15) {
+        #ifdef O3D_EGL
             EGLDisplay eglDisplay = EGL::getDisplay(display);
             EGL::destroySurface(eglDisplay, reinterpret_cast<EGLSurface>(m_HDC));
+        #endif
         }
 
 		// get the colormap from attribute
@@ -1057,7 +1059,7 @@ void AppWindow::destroy()
 		XDestroyWindow(display, static_cast<Window> (m_hWnd));
 	}
 
-	m_ic = NULL;
+    m_ic = nullptr;
 	m_hWnd = NULL_HWND;
 	m_PF = NULL_PF;
 	m_HDC = NULL_HDC;
@@ -1518,12 +1520,14 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			break;
 
 		case EVT_UPDATE:
-			if (isUpdateNeeded())
+            if (isUpdateNeeded()) {
 				callBackUpdate(0);
+            }
 			break;
 		case EVT_PAINT:
-			if (isPaintNeeded())
+            if (isPaintNeeded()) {
 				callBackPaint(0);
+            }
 			break;
 
 		case EVT_MOVE:
@@ -1580,41 +1584,31 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
                 switch (eventData.button) {
 					// left button
 					case Button1:
-						dblClick = m_inputManager.getMouse()->setMouseButton(
-								Mouse::LEFT,
-								True);
+                        dblClick = m_inputManager.getMouse()->setMouseButton(Mouse::LEFT, True);
 						callBackMouseButton(Mouse::LEFT, True, dblClick);
 						break;
 
 						// right button
 					case Button3:
-						dblClick = m_inputManager.getMouse()->setMouseButton(
-								Mouse::RIGHT,
-								True);
+                        dblClick = m_inputManager.getMouse()->setMouseButton(Mouse::RIGHT, True);
 						callBackMouseButton(Mouse::RIGHT, True, dblClick);
 						break;
 
 						// middle button
 					case Button2:
-						dblClick = m_inputManager.getMouse()->setMouseButton(
-								Mouse::MIDDLE,
-								True);
+                        dblClick = m_inputManager.getMouse()->setMouseButton(Mouse::MIDDLE, True);
 						callBackMouseButton(Mouse::MIDDLE, True, dblClick);
 						break;
 
 						// X1 button
 					case 8:
-						dblClick = m_inputManager.getMouse()->setMouseButton(
-								Mouse::X1,
-								True);
+                        dblClick = m_inputManager.getMouse()->setMouseButton(Mouse::X1, True);
 						callBackMouseButton(Mouse::X1, True, dblClick);
 						break;
 
 						// X2 button
 					case 9:
-						dblClick = m_inputManager.getMouse()->setMouseButton(
-								Mouse::X2,
-								True);
+                        dblClick = m_inputManager.getMouse()->setMouseButton(Mouse::X2, True);
 						callBackMouseButton(Mouse::X2, True, dblClick);
 						break;
 

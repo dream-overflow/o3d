@@ -20,7 +20,7 @@
   #include "o3d/core/private/glxdefines.h"
   #include "o3d/core/private/glx.h"
 #endif
-#if defined(O3D_WINDOWS)
+#if defined(O3D_WINAPI)
   #include "o3d/core/private/wgldefines.h"
   #include "o3d/core/private/wgl.h"
 #endif
@@ -104,7 +104,7 @@ void GL::init(const Char *library)
     }
   #endif
 #elif defined(O3D_WINDOWS)
-  #if defined(O3D_WIN32) || defined(O3D_WIN64)
+  #if defined(O3D_WINAPI)
     try {
         WGL::init();
         ms_nativeImpl = ms_usedImpl = IMPL_WGL;
@@ -148,7 +148,7 @@ void GL::quit()
         GLX::quit();
     }
 #endif
-#if defined(O3D_WINDOWS)
+#if defined(O3D_WINAPI)
     if (WGL::isValid()) {
         WGL::quit();
     }
@@ -191,7 +191,7 @@ void *GL::getProcAddress(const Char *ext)
         case IMPL_SDL_2:
             return ::SDL_GL_GetProcAddress(ext);
         #endif
-        #ifdef O3D_WINDOWS
+        #ifdef O3D_WINAPI
         case IMPL_WGL:
             return WGL::getProcAddress(ext);
         #endif
@@ -272,9 +272,8 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
                 EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<Display*>(display));
                 EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
             #elif defined O3D_ANDROID
-                // @todo
-                // EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<Display*>(display));
-                // EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
+                EGLDisplay display = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
+                EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
             #endif
             }
             break;
@@ -290,10 +289,9 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
             SDL_GL_SwapWindow(reinterpret_cast<SDL_Window*>(hdc));
             break;
         #endif
-        #if defined(O3D_WINDOWS)
+        #if defined(O3D_WINAPI)
         case IMPL_WGL:
-            ::SwapBuffers((HDC)hdc);
-            // WGL::swapBuffers((HDC)hdc);  // @todo
+            WGL::swapBuffers((HDC)hdc);
             break;
         #endif
         default:
