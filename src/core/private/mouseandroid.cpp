@@ -139,6 +139,14 @@ void Mouse::update()
     updateSmoother(-1.f);
 }
 
+void Mouse::wrapPrivate()
+{
+    // make mouse infinite
+    if (m_grab) {
+        // @todo
+    }
+}
+
 // acquire mouse position and buttons states
 void Mouse::acquire()
 {

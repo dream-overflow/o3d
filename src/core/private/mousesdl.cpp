@@ -35,12 +35,12 @@ Mouse::Mouse(
 {
 	commonInit(xlimit, ylimit);
 
-	if (!m_appWindow)
+    if (!m_appWindow) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
 
 	// for windowed mode, start with current absolute mouse position
-	if (!lock)
-	{
+    if (!lock) {
 		Int32 x, y;
 		SDL_GetMouseState(&x, &y);
 
@@ -48,9 +48,9 @@ Mouse::Mouse(
 		m_windowPos = m_window.clamp(m_windowPos);
 
 		m_grab = False;
-	}
-	else
+    } else {
 		setGrab();
+    }
 
 	m_isActive = True;
 	m_aquired = False;
@@ -69,8 +69,7 @@ Mouse::~Mouse()
 // draw cursor drawing state
 void Mouse::enableCursor()
 {
-	if (!m_cursor)
-	{
+    if (!m_cursor) {
 		SDL_ShowCursor(1);
 		m_cursor = True;
 	}
@@ -79,8 +78,7 @@ void Mouse::enableCursor()
 // hide cursor drawing state
 void Mouse::disableCursor()
 {
-	if (m_cursor)
-	{
+    if (m_cursor) {
 		SDL_ShowCursor(0);
 		m_cursor = False;
 	}
@@ -90,17 +88,15 @@ void Mouse::disableCursor()
 void Mouse::setGrab(Bool lock)
 {
 	// enable
-	if (!m_grab && lock)
-	{
-		//SDL_SetRelativeMouseMode(SDL_TRUE);
+    if (!m_grab && lock) {
+        SDL_SetRelativeMouseMode(SDL_TRUE);
 		SDL_SetWindowGrab(reinterpret_cast<SDL_Window*>(m_appWindow->getHWND()), SDL_TRUE);
 		m_grab = True;
 	}
 
 	// disable
-	if (m_grab && !lock)
-	{
-		//SDL_SetRelativeMouseMode(SDL_FALSE);
+    if (m_grab && !lock) {
+        SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_SetWindowGrab(reinterpret_cast<SDL_Window*>(m_appWindow->getHWND()), SDL_FALSE);
 		m_grab = False;
 	}
@@ -109,30 +105,44 @@ void Mouse::setGrab(Bool lock)
 // update input data (only if acquired)
 void Mouse::update()
 {
-	if (!m_isActive)
+    if (!m_isActive) {
 		return;
+    }
 
-	if (!m_aquired)
+    if (!m_aquired) {
 		acquire();
+    }
 
 	// update the wheel speed
 	wheelUpdate();
 
     // must update the mouse smoother to have a correct effect
     updateSmoother(-1.f);
+
+    // if (m_grab) {
+    //     wrapPrivate();
+    // }
+}
+
+void Mouse::wrapPrivate()
+{
+    // make mouse infinite
+    if (m_grab) {
+        // nothing todo with relative mode
+    }
 }
 
 // acquire mouse position and buttons states
 void Mouse::acquire()
 {
-	if (m_isActive && !m_aquired)
-	{
+    if (m_isActive && !m_aquired) {
 		Int32 x, y;
 		SDL_GetMouseState(&x, &y);
 
 		// cursor outside of the window so not acquiered
-		//if ((x < 0) || (y < 0))
+        //if ((x < 0) || (y < 0)) {
 		//	return;
+        // }
 
 		m_windowPos.set(x, y);
 
@@ -150,8 +160,7 @@ void Mouse::acquire()
 // un-acquire mouse hardware
 void Mouse::release()
 {
-	if (m_aquired)
-	{
+    if (m_aquired) {
 		m_wheel = 0; // wheel position is reset
 
 		m_aquired = False;

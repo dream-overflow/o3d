@@ -153,11 +153,12 @@ void Mouse::setGrab(Bool lock)
 			ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
 			GrabModeAsync,
 			GrabModeAsync,
-			window,
+            window,
 			None,
 			CurrentTime);
 
         //XWarpPointer(display, None, window, 0, 0, 0, 0, 0, 0);
+        XSync(display, False);
 
 		m_grab = True;
 	}
@@ -167,6 +168,7 @@ void Mouse::setGrab(Bool lock)
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
 		XUngrabPointer(display, CurrentTime);
+        XSync(display, False);
 
 		m_grab = False;
 	}
@@ -188,6 +190,25 @@ void Mouse::update()
 
     // must update the mouse smoother to have a correct effect
     updateSmoother(-1.f);
+
+    if (m_grab) {
+        wrapPrivate();
+    }
+}
+
+void Mouse::wrapPrivate()
+{
+    // make mouse infinite
+    if (m_grab) {
+        Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+        Window window = static_cast<Window>(m_appWindow->getHWND());
+
+        XWarpPointer(display, None, window, 0, 0, 0, 0, m_center.x(), m_center.y());
+        // XSync(display, True);   // could be False if called during update
+        XSync(display, False);
+
+        m_oldPos = m_posNoAccel = m_pos = m_center;
+    }
 }
 
 // acquire mouse position and buttons states

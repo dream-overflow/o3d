@@ -118,10 +118,11 @@ public:
 	//! Toggle the system (or SDL) cursor drawing state.
 	inline void toggleCursor()
 	{
-		if (m_cursor)
+        if (m_cursor) {
 			disableCursor();
-		else
+        } else {
 			enableCursor();
+        }
 	}
 
 	//! Set the smoothed wheel speed.
@@ -315,6 +316,9 @@ protected:
 
     //! Update the mouse smoother using a specified time, or current time if negative.
     void updateSmoother(Float time);
+
+    //! Internally wrap mouse.
+    void wrapPrivate();
 };
 
 /**

@@ -158,6 +158,19 @@ void Mouse::update()
 
     // must update the mouse smoother to have a correct effect
     updateSmoother(-1.f);
+
+    // if (m_grab) { @todo test
+    //     wrapPrivate();
+    // }
+}
+
+void Mouse::wrapPrivate()
+{
+    // make mouse infinite
+    if (m_grab) {
+        SetCursorPos(m_center.x(), m_center.y());
+        m_oldPos = m_posNoAccel = m_pos = m_center;
+    }
 }
 
 // acquire mouse position and buttons states
