@@ -24,3 +24,17 @@ Input::Input(BaseObject *parent) :
 {
     m_isActive = True;
 }
+
+Bool Input::enable()
+{
+    Bool old = m_isActive;
+    m_isActive = True;
+    return old;
+}
+
+Bool Input::disable()
+{
+    Bool old = m_isActive;
+    m_isActive = False;
+    return old;
+}

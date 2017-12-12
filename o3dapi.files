@@ -13,6 +13,7 @@ include/o3d/core/private/keymapx11.h
 include/o3d/core/private/wgl.h
 include/o3d/core/private/wgldefines.h
 include/o3d/core/sha1.h
+include/o3d/core/touchscreen.h
 include/o3d/core/wgl.h
 include/o3d/engine/glextdefines.h
 src/core/display.cpp
@@ -80,10 +81,12 @@ src/core/private/mutexwin32.cpp
 src/core/private/threadposix.cpp
 src/core/private/threadwin32.cpp
 src/core/private/timerwin32.cpp
+src/core/private/touchscreenandroid.cpp
 src/core/private/wgl.cpp
 src/core/private/wgl.cpp
 src/core/private/wgl.cpp
 src/core/sha1.cpp
+src/core/touchscreen.cpp
 src/core/wgl.cpp
 src/engine/private/rendererandroid.cpp
 src/engine/private/rendererandroid.cpp

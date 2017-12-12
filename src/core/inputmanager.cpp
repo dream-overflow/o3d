@@ -13,106 +13,169 @@
 #include "o3d/core/classfactory.h"
 #include "o3d/core/debug.h"
 
+#include "o3d/core/appwindow.h"
+#include "o3d/core/touchscreen.h"
+
 using namespace o3d;
 
-/*---------------------------------------------------------------------------------------
-  destructor
----------------------------------------------------------------------------------------*/
+InputManager::InputManager() :
+    m_appWindow(nullptr),
+    m_keyboard(nullptr),
+    m_mouse(nullptr),
+    m_touchScreen(nullptr)
+{
+}
+
 InputManager::~InputManager()
 {
 	destroy();
 }
 
-/*---------------------------------------------------------------------------------------
-  destroy keyboard/mouse and directx object
----------------------------------------------------------------------------------------*/
 void InputManager::destroy()
 {
-	o3d::deletePtr(m_Keyboard);
-	o3d::deletePtr(m_Mouse);
-
-	releaseInput();
+    deletePtr(m_keyboard);
+    deletePtr(m_mouse);
+    deletePtr(m_touchScreen);
 }
 
-/*---------------------------------------------------------------------------------------
-  create directinput object
----------------------------------------------------------------------------------------*/
-Bool InputManager::initInput(AppWindow *appWindow)
+Bool InputManager::initInput(Input::InputType type)
+{
+    switch (type) {
+        case Input::INPUT_KEYBOARD:
+            m_keyboard = new Keyboard(m_appWindow);
+            return True;
+        case Input::INPUT_MOUSE:
+            m_mouse = new Mouse(m_appWindow, m_appWindow->getSize().x(), m_appWindow->getSize().y(), False);
+            return True;
+        case Input::INPUT_TOUCHSCREEN:
+            m_touchScreen = new TouchScreen(m_appWindow, m_appWindow->getSize().x(), m_appWindow->getSize().y());
+            return True;
+        default:
+            return False;
+    }
+}
+
+void InputManager::releaseInput(Input::InputType type)
+{
+    switch (type) {
+        case Input::INPUT_KEYBOARD:
+            o3d::deletePtr(m_keyboard);
+            break;
+        case Input::INPUT_MOUSE:
+            o3d::deletePtr(m_mouse);
+            break;
+        case Input::INPUT_TOUCHSCREEN:
+            o3d::deletePtr(m_touchScreen);
+            break;
+        default:
+            break;
+    }
+}
+
+Bool InputManager::isInput(Input::InputType type) const
+{
+    switch (type) {
+        case Input::INPUT_KEYBOARD:
+            return m_keyboard != nullptr;
+        case Input::INPUT_MOUSE:
+            return m_mouse != nullptr;
+        case Input::INPUT_TOUCHSCREEN:
+            return m_touchScreen != nullptr;
+        default:
+            return False;
+    }
+}
+
+Input *InputManager::getInput(Input::InputType type)
+{
+   switch (type) {
+        case Input::INPUT_KEYBOARD:
+            return m_keyboard;
+        case Input::INPUT_MOUSE:
+            return m_mouse;
+        case Input::INPUT_TOUCHSCREEN:
+            return m_touchScreen;
+        default:
+            return nullptr;
+    }
+}
+
+Input *InputManager::getInput(Input::InputType type) const
+{
+   switch (type) {
+        case Input::INPUT_KEYBOARD:
+            return m_keyboard;
+        case Input::INPUT_MOUSE:
+            return m_mouse;
+        case Input::INPUT_TOUCHSCREEN:
+            return m_touchScreen;
+        default:
+            return nullptr;
+    }
+}
+
+Bool InputManager::setAppWindow(AppWindow *appWindow)
 {
 	m_appWindow = appWindow;
 	return True;
 }
 
-/*---------------------------------------------------------------------------------------
-  release directinput object
----------------------------------------------------------------------------------------*/
-void InputManager::releaseInput()
-{
-}
-
-/*---------------------------------------------------------------------------------------
-  init keyboard
----------------------------------------------------------------------------------------*/
-Bool InputManager::initKeyboard()
-{
-	m_Keyboard = new Keyboard(m_appWindow);
-	return True;
-}
-
-/*---------------------------------------------------------------------------------------
-  init mouse
----------------------------------------------------------------------------------------*/
-Bool InputManager::initMouse(Int32 xlimit, Int32 ylimit, Bool lock)
-{
-	m_Mouse = new Mouse(m_appWindow, xlimit, ylimit, lock);
-	return True;
-}
-
-/*---------------------------------------------------------------------------------------
-  acquire input data
----------------------------------------------------------------------------------------*/
 void InputManager::acquire()
 {
-	if (m_Mouse)
-		m_Mouse->acquire();
+    if (m_mouse) {
+        m_mouse->acquire();
+    }
 
-	if (m_Keyboard)
-		m_Keyboard->acquire();
+    if (m_keyboard) {
+        m_keyboard->acquire();
+    }
+
+    if (m_touchScreen) {
+        m_touchScreen->acquire();
+    }
 }
 
-/*---------------------------------------------------------------------------------------
-  unacquire input data
----------------------------------------------------------------------------------------*/
 void InputManager::release()
 {
-	if (m_Mouse)
-		m_Mouse->release();
+    if (m_mouse) {
+        m_mouse->release();
+    }
 
-	if (m_Keyboard)
-		m_Keyboard->release();
+    if (m_keyboard) {
+        m_keyboard->release();
+    }
+
+    if (m_touchScreen) {
+        m_touchScreen->release();
+    }
 }
 
-/*---------------------------------------------------------------------------------------
-  update input data
----------------------------------------------------------------------------------------*/
 void InputManager::update()
 {
-	if (m_Mouse)
-		m_Mouse->update();
+    if (m_mouse) {
+        m_mouse->update();
+    }
 
-	if (m_Keyboard)
-		m_Keyboard->update();
+    if (m_keyboard) {
+        m_keyboard->update();
+    }
+
+    if (m_touchScreen) {
+        m_touchScreen->update();
+    }
 }
 
-/*---------------------------------------------------------------------------------------
-  force input data value
----------------------------------------------------------------------------------------*/
 void InputManager::clear()
 {
-	if (m_Mouse)
-		m_Mouse->clear();
+    if (m_mouse) {
+        m_mouse->clear();
+    }
 
-	if (m_Keyboard)
-		m_Keyboard->clear();
+    if (m_keyboard) {
+        m_keyboard->clear();
+    }
+
+    if (m_touchScreen) {
+        m_touchScreen->clear();
+    }
 }
-

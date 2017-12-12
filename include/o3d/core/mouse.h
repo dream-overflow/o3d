@@ -46,17 +46,18 @@ public:
 	//! Default constructor.
     Mouse(BaseObject *parent = nullptr);
 
-	//! Extended constructor.
-	//! @param appWindow A valid application window.
-	//! @param width Width of the initial window region.
-	//! @param height Height of the initial window region.
-	//! @param lock Lock the mouse to the center of the window's application to provide
-	//!             an exclusive mode.
-	Mouse(
-		AppWindow *appWindow,
-		Int32 xlimit = 800,
-		Int32 ylimit = 600,
-		Bool lock = False);
+    /**
+     * @brief Extended constructor.
+     * @param appWindow A valid application window.
+     * @param width Width of the initial window region.
+     * @param height Height of the initial window region.
+     * @param lock Lock the mouse to the center of the window's application to provide
+     * an exclusive mode.
+     */
+    Mouse(AppWindow *appWindow,
+          Int32 xlimit = 800,
+          Int32 ylimit = 600,
+          Bool lock = False);
 
 	//! Virtual destructor.
 	virtual ~Mouse();
@@ -233,17 +234,19 @@ public:
 	// virtual
 	//-------------------------------------------------------------------------------
 
+    virtual InputType getInputType() const override;
+
 	//! Clear current mouse states.
-	virtual void clear();
+    virtual void clear() override;
 
 	//! Update input data (only if acquired).
-	virtual void update();
+    virtual void update() override;
 
 	//! Acquire mouse position and buttons states.
-	virtual void acquire();
+    virtual void acquire() override;
 
 	//! Release mouse hardware.
-	virtual void release();
+    virtual void release() override;
 
 	//! Set a mouse button change (on mouse event).
 	//! @param button The mouse button.
@@ -268,11 +271,11 @@ protected:
 	UInt32 m_wheelLastTime;    //!< last time of a wheel event
 	UInt32 m_wheelDelay;       //!< inertia delay (in ms : default 50ms)
 
-	Vector2i m_pos;             //!< Mouse absolute position.
-	Vector2i m_oldPos;          //!< Mouse previous absolute position.
-	Vector2i m_posNoAccel;      //!< Mouse position without acceleration.
-	Vector2i m_deltaPos;        //!< Mouse delta position since last update.
-	Vector2i m_center;          //!< Mouse centering position.
+    Vector2i m_pos;            //!< Mouse absolute position.
+    Vector2i m_oldPos;         //!< Mouse previous absolute position.
+    Vector2i m_posNoAccel;     //!< Mouse position without acceleration.
+    Vector2i m_deltaPos;       //!< Mouse delta position since last update.
+    Vector2i m_center;         //!< Mouse centering position.
 
 	Int32 m_wheel;             //!< wheel coords (]-oo,-120] down,0 null,[120,+oo[ up)
 	Int32 m_wheelOld;          //!< old wheel coords
@@ -282,25 +285,25 @@ protected:
 
 	Bool m_aquired;            //!< input acquired by direct input
 
-	AppWindow *m_appWindow;        //!< Related application window.
-	Bool m_cursor;             //!< cursor drawing state
+    AppWindow *m_appWindow;    //!< Related application window.
+    Bool m_cursor;             //!< cursor drawing state
 
 	UInt8 m_dblClick[8];          //!< double clicked buttons arrays
 	UInt32 m_dblClickTime;        //!< max time between to click for have a double click
 	UInt32 m_lastDblClickTime[8]; //!< last time that a button have been clicked
 
-	MouseData m_data;              //!< mouse data
+    MouseData m_data;           //!< mouse data
 
-	Int32 m_accelTable[512];   //!< accelerator array
+    Int32 m_accelTable[512];    //!< accelerator array
 
-	Bool m_grab;               //!< Locked mouse position.
+    Bool m_grab;                //!< Locked mouse position.
 
-	Box2i m_window;             //!< Mapping region.
+    Box2i m_window;             //!< Mapping region.
 	Vector2i m_windowPos;       //!< Mapped to window coordinates.
 
-	Bool m_isSmoother;         //!< Is the smoother enabled
-	Bool m_isSmootherUseAccel; //!< Is the smoother use accelerator
-	MouseSmoother m_smoother;      //!< mouse smoother
+    Bool m_isSmoother;          //!< Is the smoother enabled
+    Bool m_isSmootherUseAccel;  //!< Is the smoother use accelerator
+    MouseSmoother m_smoother;   //!< mouse smoother
 
 	//! Called by the constructor.
 	void commonInit(Int32 xlimit, Int32 ylimit);

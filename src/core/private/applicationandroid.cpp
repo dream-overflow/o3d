@@ -17,9 +17,13 @@
 #include "o3d/core/debug.h"
 #include "o3d/core/appwindow.h"
 
+#ifdef O3D_EGL
+#include "o3d/core/private/egldefines.h"
+#endif
+
 // Specific dependencies includes
 #include <android/log.h>
-#include <android/android_native_app_glue.h>
+#include "android/android_native_app_glue.h"
 
 using namespace o3d;
 
@@ -75,7 +79,7 @@ static void handleCmd(struct android_app* app, int32_t cmd)
 void Application::apiInitPrivate()
 {
     if (ms_app) {
-        ms_display = reinterpret_cast<_DISPLAY>(EGL_DEFAULT_DISPLAY);
+        ms_display = reinterpret_cast<_DISP>(EGL_DEFAULT_DISPLAY);
 
         // setup app state
         struct android_app* state = reinterpret_cast<struct android_app*>(ms_app);

@@ -242,17 +242,19 @@ public:
 	// virtual
 	//-----------------------------------------------------------------------------------
 
+    virtual InputType getInputType() const override;
+
 	//! Clear current keys state.
-	virtual void clear();
+    virtual void clear() override;
 
 	//! Update input data (only if acquired).
-	virtual void update();
+    virtual void update() override;
 
 	//! Acquire keyboard hardware.
-	virtual void acquire();
+    virtual void acquire() override;
 
 	//! Release keyboard hardware.
-	virtual void release();
+    virtual void release() override;
 
     /**
      * @brief setKeyState Update on key change (on keyboard event).

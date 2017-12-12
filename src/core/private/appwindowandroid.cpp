@@ -15,11 +15,16 @@
 // ONLY IF O3D_ANDROID IS SELECTED
 #ifdef O3D_ANDROID
 
-// #include <android/
+#include "android/android_native_app_glue.h"
 
 #include "o3d/core/application.h"
 #include "o3d/core/debug.h"
 #include "o3d/core/display.h"
+
+#ifdef O3D_EGL
+#include "o3d/core/private/egldefines.h"
+#include "o3d/core/private/egl.h"
+#endif
 
 using namespace o3d;
 
@@ -91,7 +96,7 @@ void AppWindow::applySettings(Bool fullScreen)
         O3D_ERROR(E_InvalidPrecondition("Window not set"));
     }
 
-    struct android_app *state reinterpret_cast<struct android_app*>(Application::getApp());
+    android_app *state reinterpret_cast<android_app*>(Application::getApp());
     if (!state || !state->window) {
         O3D_ERROR(E_InvalidPrecondition("Invalid application state or window"));
     }

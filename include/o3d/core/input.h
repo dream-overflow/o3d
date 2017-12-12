@@ -10,14 +10,12 @@
 #ifndef _O3D_INPUT_H
 #define _O3D_INPUT_H
 
-#include "file.h"
-#include "templatemanager.h"
 #include "baseobject.h"
 #include "memorydbg.h"
 
 namespace o3d {
 
-#define O3D_ISKEYDOWN(value)  ((value)>0?True:False)
+#define O3D_ISKEYDOWN(value) ((value)>0?True:False)
 
 /* Mouse Data structure */
 struct MouseData
@@ -35,6 +33,17 @@ class O3D_API Input : public BaseObject
 public:
 
 	O3D_DECLARE_ABSTRACT_CLASS(Input)
+
+    enum InputType
+    {
+        INPUT_UNKNOWN = 0,
+        INPUT_KEYBOARD = 1,
+        INPUT_MOUSE = 2,
+        INPUT_TOUCHSCREEN = 3,
+        INPUT_CAMERA = 4,
+        INPUT_JOYSTICK = 5,
+        INPUT_JOYPAD = 6
+    };
 
 	//! constructor
     Input(BaseObject *parent = nullptr);
@@ -65,23 +74,16 @@ public:
 	}
 
 	//! Enable the state
-	virtual Bool enable()
-	{
-		Bool old = m_isActive;
-		m_isActive = True;
-		return old;
-	}
+    virtual Bool enable();
 	//! Disable the state
-	virtual Bool disable()
-	{
-		Bool old = m_isActive;
-		m_isActive = False;
-		return old;
-	}
+    virtual Bool disable();
 
 	//
 	// virtual methods
 	//
+
+    //! Get input type.
+    virtual InputType getInputType() const = 0;
 
 	//! Clear some data before process the SetMouseButton and next call Update.
 	virtual void clear() = 0;

@@ -272,7 +272,7 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
                 EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<Display*>(display));
                 EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
             #elif defined O3D_ANDROID
-                EGLDisplay display = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
+                EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
                 EGL::swapBuffers(eglDisplay, reinterpret_cast<EGLSurface>(hdc));
             #endif
             }
@@ -291,7 +291,7 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
         #endif
         #if defined(O3D_WINAPI)
         case IMPL_WGL:
-            WGL::swapBuffers((HDC)hdc);
+            WGL::swapBuffers(hdc);
             break;
         #endif
         default:

@@ -39,11 +39,12 @@ enum CoreObjectType
 	CORE_INPUT,                      //!< void input
 	CORE_KEYBOARD,                   //!< the keyboard input
 	CORE_MOUSE,                      //!< the mouse input
-	CORE_WEBCAM,                     //!< the webcam input (not implemented)
+    CORE_CAMERA,                     //!< the camera input (not implemented)
 	CORE_JOYPAD,                     //!< the joypad input (not implemented)
 	CORE_JOYPAD_VIBRATE,             //!< the vibrate joypad input (not implemented)
 	CORE_JOYSTICK,                   //!< the joystick input (not implemented)
     CORE_JOYSTICK_FORCE_FEEDBACK,    //!< the joystick force feedback input (not implemented)
+    CORE_TOUCHSCREEN,                //!< the touch-screen input
 
     CORE_SERVICE,                    //!< abstract service
     CORE_SERVICE_MANAGER             //!< service manager

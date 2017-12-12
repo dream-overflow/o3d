@@ -17,13 +17,16 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(Keyboard, CORE_KEYBOARD, Input)
 
-// Default constructor
 Keyboard::Keyboard(BaseObject *parent) :
 	Input(parent)
 {
 }
 
-// clear
+Input::InputType Keyboard::getInputType() const
+{
+    return INPUT_KEYBOARD;
+}
+
 void Keyboard::clear()
 {
 	m_keys.clear();

@@ -127,9 +127,7 @@ void Mouse::update()
 void Mouse::wrapPrivate()
 {
     // make mouse infinite
-    if (m_grab) {
-        // nothing todo with relative mode
-    }
+    // nothing todo with relative mode
 }
 
 // acquire mouse position and buttons states

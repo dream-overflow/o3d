@@ -131,7 +131,7 @@ void Mouse::disableCursor()
         XFreePixmap(display, bitmapNoData);
 
 		m_cursor = False;
-	}
+    }
 }
 
 // lock the mouse position

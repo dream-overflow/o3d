@@ -76,6 +76,9 @@
 	#undef FILE_READ_ONLY
 	#undef FILE_DIR_DISALLOWED  
 
+    #undef INPUT_KEYBOARD
+    #undef INPUT_MOUSE
+
 	#undef min
 	#undef max
 

@@ -13,6 +13,8 @@
 #include "debug.h"
 #include "evt.h"
 #include "inputmanager.h"
+#include "keyboard.h"
+#include "mouse.h"
 #include "objects.h"
 #include "memorydbg.h"
 #include "vector2.h"

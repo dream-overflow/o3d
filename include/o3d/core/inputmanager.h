@@ -10,93 +10,90 @@
 #ifndef _O3D_INPUTMANAGER_H
 #define _O3D_INPUTMANAGER_H
 
-#include "base.h"
 #include "input.h"
 #include "memorydbg.h"
-#include "keyboard.h"
-#include "mouse.h"
-#include "file.h"
 
 namespace o3d {
 
 class AppWindow;
+class Keyboard;
+class Mouse;
+class TouchScreen;
 
-//---------------------------------------------------------------------------------------
-//! @class InputManager
-//-------------------------------------------------------------------------------------
-//! Manager for inputs like keyboard, mouse, joystick and more.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Manager for inputs like keyboard, mouse, joystick and more.
+ * @todo Joypad, joystick and camera.
+ */
 class O3D_API InputManager
 {
 public:
 
-	//! constructor
-	InputManager() :
-        m_Keyboard(nullptr),
-        m_Mouse(nullptr),
-        m_appWindow(nullptr)
-	{}
+    //! Default constructor
+    InputManager();
 
 	//! destructor
 	~InputManager();
 
-	//! create directinput object
-	Bool initInput(AppWindow *appWindow);
-	//! release directinput object
-	void releaseInput();
-
-	//! destroy keyboard/mouse (and directx object)
+    //! Setup the related application window.
+    Bool setAppWindow(AppWindow *appWindow);
+    //! Destroy all previously created input.
 	void destroy();
 
-	//! init/release/get keyboard
-	Bool initKeyboard();
-	inline void releaseKeyboard() { o3d::deletePtr(m_Keyboard); }
-    inline Bool isKeyboard() const { return (m_Keyboard != nullptr); }
-
-	//! init/release/get mouse
-	Bool initMouse(Int32 xlimit = 800, Int32 ylimit = 600, Bool lock = False);
-	inline void releaseMouse() { o3d::deletePtr(m_Mouse); }
-    inline Bool isMouse() const { return (m_Mouse != nullptr); }
-
+    //! Init an input support.
+    Bool initInput(Input::InputType type);
+    //! Release an input support.
+    void releaseInput(Input::InputType type);
+    //! Is input support init.
+    Bool isInput(Input::InputType type) const;
+    //! Get input support.
+    Input* getInput(Input::InputType type);
+    //! Get input support (read-only).
+    Input* getInput(Input::InputType type) const;
 
 	//-----------------------------------------------------------------------------------
-	// Getter
+    // Helpers
 	//-----------------------------------------------------------------------------------
 
 	//! Keyboard accessor.
-	inline Keyboard* getKeyboard() { return m_Keyboard; }
+    inline Keyboard* getKeyboard() { return m_keyboard; }
 	//! Keyboard accessor (read only).
-	inline const Keyboard* getKeyboard() const { return m_Keyboard; }
+    inline const Keyboard* getKeyboard() const { return m_keyboard; }
+
 	//! Mouse accessor.
-	inline Mouse* getMouse() { return m_Mouse; }
+    inline Mouse* getMouse() { return m_mouse; }
 	//! Mouse accessor (read only).
-	inline const Mouse* getMouse() const { return m_Mouse; }
+    inline const Mouse* getMouse() const { return m_mouse; }
+
+    //! TouchScreen accessor.
+    inline TouchScreen* getTouchScreen() { return m_touchScreen; }
+    //! TouchScreen accessor (read only).
+    inline const TouchScreen* getTouchScreen() const { return m_touchScreen; }
 
 	//-----------------------------------------------------------------------------------
 	// Acquisition
 	//-----------------------------------------------------------------------------------
 
-	//! force input data value
+    //! Clear input data value.
 	void clear();
 
-	//! acquire input data
+    //! Acquire all inputs data.
 	void acquire();
 
-	//! release input data
+    //! Release all inputs data.
 	void release();
 
-	//! update input data
+    //! Update all input data.
 	void update();
 
 private:
 
-	Keyboard *m_Keyboard;    //!< keyboard
-	Mouse    *m_Mouse;       //!< mouse
+    AppWindow *m_appWindow;      //!< Related application window.
 
-	AppWindow *m_appWindow;  //!< Related application window.
+    Keyboard *m_keyboard;        //!< Keyboard
+    Mouse *m_mouse;              //!< Mouse
+    TouchScreen *m_touchScreen;  //!< Touch-screen
 };
 
 } // namespace o3d
 
 #endif // _O3D_INPUTMANAGER_H
-

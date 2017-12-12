@@ -15,6 +15,10 @@
 #include "o3d/core/application.h"
 #include "o3d/core/display.h"
 
+#include "o3d/core/keyboard.h"
+#include "o3d/core/mouse.h"
+#include "o3d/core/touchscreen.h"
+
 using namespace o3d;
 
 // Constructor
@@ -169,21 +173,34 @@ UInt32 AppWindow::getSamples() const
 // init inputs
 void AppWindow::initInputs()
 {
-	m_inputManager.initInput(this);
-	m_inputManager.initKeyboard();
-	m_inputManager.initMouse(m_width, m_height);
+	m_inputManager.setAppWindow(this);
+
+    // @todo a detection
+    m_inputManager.initInput(Input::INPUT_KEYBOARD);
+    m_inputManager.initInput(Input::INPUT_MOUSE);
+    m_inputManager.initInput(Input::INPUT_TOUCHSCREEN);
 }
 
 // Is the mouse locked.
 Bool AppWindow::isMouseGrabbed() const
 {
-	return m_inputManager.isMouse() && m_inputManager.getMouse()->isGrabbed();
+    if (!m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        return False;
+    }
+
+    Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+    return mouse->isGrabbed();
 }
 
 // Is the mouse locked.
 Bool AppWindow::isKeyboardGrabbed() const
 {
-	return m_inputManager.isKeyboard() && m_inputManager.getKeyboard()->isGrabbed();
+    if (!m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
+        return False;
+    }
+
+    Keyboard *keyboard = static_cast<Keyboard*>(m_inputManager.getInput(Input::INPUT_KEYBOARD));
+    return keyboard->isGrabbed();
 }
 
 // Lock/unlock the mouse. Infinite mouse area using raw input.
@@ -193,11 +210,12 @@ void AppWindow::grabMouse(Bool lock)
 		O3D_ERROR(E_InvalidOperation("The window is not valid"));
     }
 
-    if (!m_inputManager.isMouse()) {
+    if (!m_inputManager.isInput(Input::INPUT_MOUSE)) {
 		O3D_ERROR(E_InvalidOperation("The mouse is not valid"));
     }
 
-	m_inputManager.getMouse()->setGrab(lock);
+    Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+    mouse->setGrab(lock);
 }
 
 // Lock/unlock the keyboard.
@@ -207,11 +225,12 @@ void AppWindow::grabKeyboard(Bool lock)
 		O3D_ERROR(E_InvalidOperation("The window is not valid"));
     }
 
-    if (!m_inputManager.isKeyboard()) {
+    if (!m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
 		O3D_ERROR(E_InvalidOperation("The keyboard is not valid"));
     }
 
-	m_inputManager.getKeyboard()->setGrab(lock);
+    Keyboard *keyboard = static_cast<Keyboard*>(m_inputManager.getInput(Input::INPUT_KEYBOARD));
+    keyboard->setGrab(lock);
 }
 
 // Is the window is border less (full screen style).
@@ -243,52 +262,53 @@ void AppWindow::callBackCreate()
 
 void AppWindow::callBackKey(VKey key, VKey character, Bool pressed, Bool repeat)
 {
-	Keyboard* pKeyboard = m_inputManager.getKeyboard();
+    if (!m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
+        return;
+    }
+
+    Keyboard *keyboard = static_cast<Keyboard*>(m_inputManager.getInput(Input::INPUT_KEYBOARD));
 	// DEFAULT
-    if (pKeyboard) {
-        KeyEvent event(key, character, pressed, repeat);
-		onKey(pKeyboard, event);
-	}
+    KeyEvent event(key, character, pressed, repeat);
+    onKey(keyboard, event);
 }
 
 void AppWindow::callBackCharacter(VKey key, VKey character, WChar unicode, Bool repeat)
 {
-	Keyboard* pKeyboard = m_inputManager.getKeyboard();
-	// DEFAULT
-    if (pKeyboard) {
-        CharacterEvent event(key, character, unicode, repeat);
-		onCharacter(pKeyboard, event);
-	}
+    if (!m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
+        return;
+    }
+
+    Keyboard *keyboard = static_cast<Keyboard*>(m_inputManager.getInput(Input::INPUT_KEYBOARD));
+    // DEFAULT
+    CharacterEvent event(key, character, unicode, repeat);
+    onCharacter(keyboard, event);
 }
 
 void AppWindow::callBackMouseMotion()
 {
-	Mouse* pMouse = m_inputManager.getMouse();
-	// DEFAULT
-	if (pMouse)	{
-		onMouseMotion(pMouse);
-	}
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT
+        onMouseMotion(mouse);
+    }
 }
 
 void AppWindow::callBackMouseWheel()
 {
-	Mouse* pMouse = m_inputManager.getMouse();
-	// DEFAULT
-	if (pMouse)	{
-		onMouseWheel(pMouse);
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT
+        onMouseWheel(mouse);
 	}
 }
 
-void AppWindow::callBackMouseButton(
-	Mouse::Buttons button,
-	Bool pressed,
-	Bool dblClick)
+void AppWindow::callBackMouseButton(Mouse::Buttons button, Bool pressed, Bool dblClick)
 {
-	Mouse* pMouse = m_inputManager.getMouse();
-	// DEFAULT
-    if (pMouse) {
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT
 		ButtonEvent event(button, pressed, dblClick);
-		onMouseButton(pMouse, event);
+        onMouseButton(mouse, event);
 	}
 }
 
@@ -318,12 +338,13 @@ void AppWindow::callBackMove()
 
 void AppWindow::callBackMaximize()
 {
-	// DEFAULT
-	Mouse* mouse = m_inputManager.getMouse();
-    if (mouse) {
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT
 		mouse->release();
 		mouse->setMouseRegion(Box2i(0, 0, m_clientWidth, m_clientHeight));
 		mouse->acquire();
+
 		onMouseMotion(mouse);
 	}
 
@@ -332,11 +353,12 @@ void AppWindow::callBackMaximize()
 
 void AppWindow::callBackMinimize()
 {
-	// DEFAULT
-	Mouse* mouse = m_inputManager.getMouse();
-    if (mouse) {
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT
 		mouse->release();
 		mouse->setMouseRegion(Box2i(0, 0, 0, 0));
+
 		onMouseMotion(mouse);
 	}
 
@@ -345,12 +367,13 @@ void AppWindow::callBackMinimize()
 
 void AppWindow::callBackRestore()
 {
-	// DEFAULT
-	Mouse* mouse = m_inputManager.getMouse();
-    if (mouse) {
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT
 		mouse->release();
 		mouse->setMouseRegion(Box2i(0, 0, m_clientWidth, m_clientHeight));
 		mouse->acquire();
+
 		onMouseMotion(mouse);
 	}
 
@@ -360,11 +383,13 @@ void AppWindow::callBackRestore()
 void AppWindow::callBackResize()
 {
 	// DEFAULT
-	Mouse* mouse = m_inputManager.getMouse();
-    if (mouse) {
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT
 		mouse->release();
         mouse->setMouseRegion(Box2i(0, 0, m_clientWidth, m_clientHeight));
 		mouse->acquire();
+
 		onMouseMotion(mouse);
 	}
 
@@ -418,43 +443,51 @@ void AppWindow::callBackDisplay()
 
 void AppWindow::callBackFocus()
 {
-	// DEFAULT acquire the keyboard and mouse
-	m_inputManager.getKeyboard()->acquire();
+    if (m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
+        Keyboard *keyboard = static_cast<Keyboard*>(m_inputManager.getInput(Input::INPUT_KEYBOARD));
+        // DEFAULT acquire the keyboard (and mouse)
+        keyboard->acquire();
+    }
 
 	onFocus();
 }
 
 void AppWindow::callBackLostFocus()
 {
-	// DEFAULT release the keyboard and mouse
-	m_inputManager.getKeyboard()->release();
+    if (m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
+        Keyboard *keyboard = static_cast<Keyboard*>(m_inputManager.getInput(Input::INPUT_KEYBOARD));
+        // DEFAULT acquire the keyboard (and mouse)
+        keyboard->release();
+    }
 
 	onLostFocus();
 }
 
 void AppWindow::callBackMouseGain()
 {
-	// DEFAULT acquire the mouse
-	Mouse* pMouse = m_inputManager.getMouse();
-    if (pMouse) {
-		pMouse->acquire();
-		pMouse->disableCursor();
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT acquire the mouse
+        mouse->acquire();
+        mouse->disableCursor();
 
-		m_hasMouse = True;
-	}
+        m_hasMouse = True;
+    }
+
 	onMouseGain();
 }
 
 void AppWindow::callBackMouseLost()
 {
-	// DEFAULT acquire the mouse
-	Mouse* pMouse = m_inputManager.getMouse();
-    if (pMouse) {
-		pMouse->release();
-		pMouse->enableCursor();
+    if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+        Mouse *mouse = static_cast<Mouse*>(m_inputManager.getInput(Input::INPUT_MOUSE));
+        // DEFAULT relase the mouse
+        mouse->release();
+        mouse->enableCursor();
 
-		m_hasMouse = False;
-	}
+        m_hasMouse = False;
+    }
+
     onMouseLost();
 }
 

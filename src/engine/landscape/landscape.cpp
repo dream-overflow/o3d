@@ -199,6 +199,7 @@ Bool TerrainManager::isTerrain(const String &name)
 void TerrainManager::draw()
 {
 	FastMutexLocker locker(m_mutex);
+    // @todo should lock copy list and then draw
 
     for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
         if (getScene()->getActiveCamera() == it->second->getCamera()) {
@@ -210,6 +211,7 @@ void TerrainManager::draw()
 void TerrainManager::update()
 {
 	FastMutexLocker locker(m_mutex);
+    // @todo should lock copy list and then update
 
 	// process deferred objects deletion
     // processDeferred();

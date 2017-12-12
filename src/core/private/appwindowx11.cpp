@@ -1558,27 +1558,35 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			break;
 
 		case EVT_INPUT_FOCUS_GAIN:
-			m_inputManager.getKeyboard()->acquire();
+            if (m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
+                m_inputManager.getKeyboard()->acquire();
+            }
 			XSetICFocus((XIC)m_ic);
 			callBackFocus();
 			break;
 		case EVT_INPUT_FOCUS_LOST:
-			m_inputManager.getKeyboard()->release();
+            if (m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
+                m_inputManager.getKeyboard()->release();
+            }
 			XUnsetICFocus((XIC)m_ic);
 			callBackLostFocus();
 			break;
 
 		case EVT_MOUSE_GAIN:
-			m_inputManager.getMouse()->acquire();
-			callBackMouseGain();
+            if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+                m_inputManager.getMouse()->acquire();
+                callBackMouseGain();
+            }
 			break;
 		case EVT_MOUSE_LOST:
-			m_inputManager.getMouse()->release();
-			callBackMouseLost();
+            if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+                m_inputManager.getMouse()->release();
+                callBackMouseLost();
+            }
 			break;
 
 		case EVT_MOUSE_BUTTON_DOWN:
-			{
+            if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
 				Bool dblClick;
 
                 switch (eventData.button) {
@@ -1629,55 +1637,59 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			}
 			break;
 		case EVT_MOUSE_BUTTON_UP:
-            switch (eventData.button) {
-				// left button
-				case Button1:
-					m_inputManager.getMouse()->setMouseButton(Mouse::LEFT, False);
-					callBackMouseButton(Mouse::LEFT, False, False);
-					break;
+            if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+                switch (eventData.button) {
+                    // left button
+                    case Button1:
+                        m_inputManager.getMouse()->setMouseButton(Mouse::LEFT, False);
+                        callBackMouseButton(Mouse::LEFT, False, False);
+                        break;
 
-					// right button
-				case Button3:
-					m_inputManager.getMouse()->setMouseButton(Mouse::RIGHT, False);
-					callBackMouseButton(Mouse::RIGHT, False, False);
-					break;
+                        // right button
+                    case Button3:
+                        m_inputManager.getMouse()->setMouseButton(Mouse::RIGHT, False);
+                        callBackMouseButton(Mouse::RIGHT, False, False);
+                        break;
 
-					// middle button
-				case Button2:
-					m_inputManager.getMouse()->setMouseButton(Mouse::MIDDLE, False);
-					callBackMouseButton(Mouse::MIDDLE, False, False);
-					break;
+                        // middle button
+                    case Button2:
+                        m_inputManager.getMouse()->setMouseButton(Mouse::MIDDLE, False);
+                        callBackMouseButton(Mouse::MIDDLE, False, False);
+                        break;
 
-					// X1 button
-				case 8:
-					m_inputManager.getMouse()->setMouseButton(Mouse::X1, False);
-					callBackMouseButton(Mouse::X1, False, False);
-					break;
+                        // X1 button
+                    case 8:
+                        m_inputManager.getMouse()->setMouseButton(Mouse::X1, False);
+                        callBackMouseButton(Mouse::X1, False, False);
+                        break;
 
-					// X2 button
-				case 9:
-					m_inputManager.getMouse()->setMouseButton(Mouse::X2, False);
-					callBackMouseButton(Mouse::X2, False, False);
-					break;
+                        // X2 button
+                    case 9:
+                        m_inputManager.getMouse()->setMouseButton(Mouse::X2, False);
+                        callBackMouseButton(Mouse::X2, False, False);
+                        break;
 
-				default:
-					break;
-			}
+                    default:
+                        break;
+                }
+            }
 			break;
 		case EVT_MOUSE_MOTION:
-            if (eventData.x || eventData.y) {
-				//m_inputManager.Mouse()->setMouseDelta(eventData.x, eventData.y);
-				m_inputManager.getMouse()->setMousePos(eventData.x, eventData.y);
-				callBackMouseMotion();
-			}
-			break;
-			//case EVT_MOUSE_WHEEL:
-			//	m_inputManager.Mouse()->setMouseWheel(eventData.x);
-			//	callBackMouseWheel();
-			//	break;
+            if (m_inputManager.isInput(Input::INPUT_MOUSE)) {
+                if (eventData.x || eventData.y) {
+                    //m_inputManager.Mouse()->setMouseDelta(eventData.x, eventData.y);
+                    m_inputManager.getMouse()->setMousePos(eventData.x, eventData.y);
+                    callBackMouseMotion();
+                }
+            }
+            break;
+        //case EVT_MOUSE_WHEEL:
+        //	m_inputManager.Mouse()->setMouseWheel(eventData.x);
+        //	callBackMouseWheel();
+        //	break;
 
 		case EVT_KEYDOWN:
-			{
+            if (m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
                 VKey vkey = VKey(eventData.key);
                 VKey character = VKey(eventData.character);
 
@@ -1709,7 +1721,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			}
 			break;
 		case EVT_KEYUP:
-			{
+            if (m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
                 VKey vkey = VKey(eventData.key);
                 VKey character = VKey(eventData.character);
 
@@ -1719,7 +1731,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 			}
 			break;
 		case EVT_CHARDOWN:
-			{
+            if (m_inputManager.isInput(Input::INPUT_KEYBOARD)) {
                 VKey vkey = VKey(eventData.key);
                 VKey character = VKey(eventData.character);
 

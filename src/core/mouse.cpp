@@ -19,8 +19,8 @@ using namespace o3d;
 O3D_IMPLEMENT_DYNAMIC_CLASS1(Mouse, CORE_MOUSE, Input)
 
 // Default constructor.
-Mouse::Mouse(BaseObject *parent)
-	: Input(parent)
+Mouse::Mouse(BaseObject *parent) :
+    Input(parent)
 {
 }
 
@@ -265,6 +265,11 @@ void Mouse::updateSmoother(Float time)
                         time);
         }
     }
+}
+
+Input::InputType Mouse::getInputType() const
+{
+    return INPUT_MOUSE;
 }
 
 void Mouse::clear()
