@@ -30,40 +30,6 @@
 
 using namespace o3d;
 
-static Bool isExtensionSupported(const char *extList, const char *extension)
-{
-    const char *start;
-    const char *where, *terminator;
-
-    // Extension names should not have spaces.
-    where = strchr(extension, ' ');
-    if (where || *extension == '\0') {
-        return False;
-    }
-
-    // It takes a bit of care to be fool-proof about parsing the
-    // OpenGL extensions string. Don't be fooled by sub-strings, etc.
-    for (start = extList;;) {
-        where = strstr(start, extension);
-
-        if (!where) {
-            break;
-        }
-
-        terminator = where + strlen(extension);
-
-        if (where == start || *(where - 1) == ' ') {
-            if (*terminator == ' ' || *terminator == '\0') {
-                return True;
-            }
-        }
-
-        start = terminator;
-    }
-
-    return False;
-}
-
 // Create the OpenGL context.
 void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
 {
@@ -79,44 +45,44 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         O3D_ERROR(E_InvalidOperation("A shared renderer cannot be sharing"));
     }
 
-    O3D_MESSAGE("Creating a new OpenGL context...");
+    O3D_MESSAGE("Creating a new OpenGLES context...");
 
     if (GL::getImplementation() == GL::IMPL_EGL_15) {
-//        //
-//        // EGL implementation
-//        //
+        //
+        // EGL implementation
+        //
 
-//    #ifdef O3D_EGL
-//        EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
-//        EGLDisplay eglDisplay = EGL::getDisplay(display);
-//        EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
+    #ifdef O3D_EGL
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+        EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
+        EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
-//        EGLint contextAttributes[] = {
-//            EGL_CONTEXT_CLIENT_VERSION, 3,
-//            EGL_NONE
-//        };
+        EGLint contextAttributes[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 3,
+            EGL_NONE
+        };
 
-//        EGLContext eglContext = eglCreateContext(
-//                                    eglDisplay,
-//                                    eglConfig,
-//                                    sharing ? reinterpret_cast<EGLContext>(sharing->getHGLRC()) : EGL_NO_CONTEXT,
-//                                    contextAttributes);
+        EGLContext eglContext = eglCreateContext(
+                        eglDisplay,
+                        eglConfig,
+                        sharing ? reinterpret_cast<EGLContext>(sharing->getHGLRC()) : EGL_NO_CONTEXT,
+                        contextAttributes);
 
-//        if (eglContext == EGL_NO_CONTEXT) {
-//            O3D_ERROR(E_InvalidResult("Unable to create the OpenGL context"));
-//        }
+        if (eglContext == EGL_NO_CONTEXT) {
+            O3D_ERROR(E_InvalidResult("Unable to create the OpenGLES context"));
+        }
 
-//        EGL::makeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
+        EGL::makeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
 
-//        m_HDC = appWindow->getHDC();
-//        m_HGLRC = reinterpret_cast<_HGLRC>(eglContext);
-//        m_state.enable(STATE_DEFINED);
-//        m_state.enable(STATE_EGL);
-//    #else
-//        O3D_ERROR(E_UnsuportedFeature("Support for EGL is missing"));
-//    #endif
-//    } else {
-//        O3D_ERROR(E_UnsuportedFeature("Support for GLX or EGL only"));
+        m_HDC = appWindow->getHDC();
+        m_HGLRC = reinterpret_cast<_HGLRC>(eglContext);
+        m_state.enable(STATE_DEFINED);
+        m_state.enable(STATE_EGL);
+    #else
+        O3D_ERROR(E_UnsuportedFeature("Support for EGL is missing"));
+    #endif
+    } else {
+        O3D_ERROR(E_UnsuportedFeature("Support for EGL only"));
     }
 
     GLExtensionManager::init();
@@ -126,7 +92,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
 
     const GLubyte *version = _glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
-        O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
+        O3D_WARNING("OpenGLES 2.0 or greater is not available, try to found ARB/EXT");
     }
 
     // compute the gl version
@@ -184,17 +150,14 @@ void Renderer::destroy()
         deletePtr(m_glContext);
 
         if (m_HGLRC && m_appWindow) {
-//            Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+            if (m_state.getBit(STATE_EGL)) {
+            #ifdef O3D_EGL
+                EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+                EGL::makeCurrent(eglDisplay, 0, 0, 0);
 
-//            if (m_state.getBit(STATE_EGL)) {
-//                EGLDisplay eglDisplay = EGL::getDisplay(display);
-//                EGL::makeCurrent(eglDisplay, 0, 0, 0);
-
-//                EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
-//            } else {
-//                GLX::makeCurrent(display, None, NULL);
-//                GLX::destroyContext(display, reinterpret_cast<GLXContext>(m_HGLRC));
-//            }
+                EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
+            #endif
+            }
 
             m_HGLRC = NULL_HGLRC;
         }
@@ -228,7 +191,11 @@ Bool Renderer::isCurrent() const
     }
 
     if (m_state.getBit(STATE_EGL)) {
+    #ifdef O3D_EGL
         return EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC);
+    #endif
+    } else {
+        return False;
     }
 }
 
@@ -239,23 +206,27 @@ void Renderer::setCurrent()
         return;
     }
 
-//    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
+    if (m_state.getBit(STATE_EGL)) {
+    #ifdef O3D_EGL
+        if (EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC)) {
+            return;
+        }
 
-//    if (m_state.getBit(STATE_EGL)) {
-//        if (EGL::getCurrentContext() == reinterpret_cast<EGLContext>(m_HGLRC)) {
-//            return;
-//        }
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
 
-//        EGLDisplay eglDisplay = EGL::getDisplay(display);
-
-//        if (EGL::makeCurrent(
-//                eglDisplay,
-//                reinterpret_cast<EGLSurface>(m_HDC),
-//                reinterpret_cast<EGLSurface>(m_HDC),
-//                reinterpret_cast<EGLContext>(m_HGLRC))) {
-//            O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
-//        }
-//    }
+        if (EGL::makeCurrent(
+                eglDisplay,
+                reinterpret_cast<EGLSurface>(m_HDC),
+                reinterpret_cast<EGLSurface>(m_HDC),
+                reinterpret_cast<EGLContext>(m_HGLRC))) {
+            O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+        }
+    #else
+        O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+    #endif
+    } else {
+        O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
+    }
 }
 
 Bool Renderer::setVSyncMode(VSyncMode mode)
@@ -263,8 +234,6 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
     if (!m_state.getBit(STATE_DEFINED)) {
         return False;
     }
-
-//    Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
     int value = 0;
 
@@ -277,10 +246,14 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
     }
 
     if (m_state.getBit(STATE_EGL)) {
-//        EGLDisplay eglDisplay = EGL::getDisplay(display);
-//        if (!EGL::swapInterval(eglDisplay, value)) {
-//            return False;
-//        }
+    #ifdef O3D_EGL
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+        if (!EGL::swapInterval(eglDisplay, value)) {
+            return False;
+        }
+    #else
+        return False;
+    #endif
     } else {
         return False;
     }

@@ -182,8 +182,8 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         //
 
     #ifdef O3D_EGL
-        EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
         EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
+        EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
         EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
         EGLint contextAttributes[] = {
