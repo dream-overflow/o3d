@@ -17,12 +17,6 @@
 
 using namespace o3d;
 
-// Default constructor.
-TouchScreen::TouchScreen(BaseObject *parent) :
-    Input(parent)
-{
-}
-
 TouchScreen::TouchScreen(AppWindow *appWindow, Int32 xlimit, Int32 ylimit) :
     Input(),
     m_appWindow(appWindow)

@@ -15,16 +15,16 @@
 // ONLY IF O3D_ANDROID IS SELECTED
 #ifdef O3D_ANDROID
 
-#include "android/android_native_app_glue.h"
-
 #include "o3d/core/application.h"
 #include "o3d/core/debug.h"
 #include "o3d/core/display.h"
 
-#ifdef O3D_EGL
+//#ifdef O3D_EGL
 #include "o3d/core/private/egldefines.h"
 #include "o3d/core/private/egl.h"
-#endif
+//#endif
+
+#include "android/android_native_app_glue.h"
 
 using namespace o3d;
 
@@ -96,8 +96,8 @@ void AppWindow::applySettings(Bool fullScreen)
         O3D_ERROR(E_InvalidPrecondition("Window not set"));
     }
 
-    android_app *state reinterpret_cast<android_app*>(Application::getApp());
-    if (!state || !state->window) {
+    struct android_app *appState = reinterpret_cast<android_app*>(Application::getApp());
+    if (!appState || !appState->window) {
         O3D_ERROR(E_InvalidPrecondition("Invalid application state or window"));
     }
 
@@ -149,7 +149,7 @@ void AppWindow::applySettings(Bool fullScreen)
     #ifdef O3D_EGL
         EGLint apiType = EGL_OPENGL_BIT;
         if (GL::getType() == GL::GLAPI_GLES_3) {
-            apiType = EGL_OPENGL_ES3_BIT;
+            apiType = EGL_OPENGL_ES2_BIT;  // not 3 defined in Android
         }
 
         // Get a matching config, double buffer is a default with EGL on Surface
@@ -180,7 +180,7 @@ void AppWindow::applySettings(Bool fullScreen)
             EGL_NONE
         };
 
-        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay()));
         // EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
 
         // Selection of the visual config
@@ -235,7 +235,7 @@ void AppWindow::applySettings(Bool fullScreen)
 
         // Create a window surface (EGL_RENDER_BUFFER is default to EGL_BACK_BUFFER if possible)
         EGLint surfaceAttributes[] = { EGL_NONE };
-        EGLSurface eglSurface = EGL::createWindowSurface(display, eglConfig, state->window, surfaceAttributes);
+        EGLSurface eglSurface = EGL::createWindowSurface(eglDisplay, eglConfig, appState->window, surfaceAttributes);
 
         if (eglSurface == EGL_NO_SURFACE) {
             O3D_ERROR(E_InvalidResult("Failed to create a GLES surface"));
@@ -249,7 +249,7 @@ void AppWindow::applySettings(Bool fullScreen)
         m_clientWidth = w;
         m_clientHeight = h;
 
-        m_hWnd = static_cast<_HWND>(state->window);
+        m_hWnd = reinterpret_cast<_HWND>(appState->window);
         m_HDC = reinterpret_cast<_HDC>(eglSurface);
         m_PF = reinterpret_cast<_PF>(eglConfig);
     #else
@@ -446,7 +446,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
         case EVT_MOUSE_BUTTON_DOWN:
             {
                 Bool dblClick;
-
+/*
                 switch (eventData.button) {
                     // left button
                     case Button1:
@@ -491,11 +491,11 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 
                     default:
                         break;
-                }
+                }*/
             }
             break;
         case EVT_MOUSE_BUTTON_UP:
-            switch (eventData.button) {
+         /*   switch (eventData.button) {
                 // left button
                 case Button1:
                     m_inputManager.getMouse()->setMouseButton(Mouse::LEFT, False);
@@ -528,7 +528,7 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 
                 default:
                     break;
-            }
+            }*/
             break;
         case EVT_MOUSE_MOTION:
             if (eventData.x || eventData.y) {

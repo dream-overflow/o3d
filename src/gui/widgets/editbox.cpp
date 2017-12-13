@@ -466,35 +466,28 @@ Bool EditBox::mouseLeftReleased(Int32 x, Int32 y)
 void EditBox::applySelection()
 {
     // defines the highlighted text
-    if (m_selection[0] != m_selection[1] && m_getText.text().isValid())
-    {
-        Int32 min, max;
+    if (m_selection[0] != m_selection[1] && m_getText.text().isValid()) {
+        Int32 min = 0, max = 0;
 
-        if (m_selection[0] > m_selection[1])
-        {
+        if (m_selection[0] > m_selection[1]) {
             min = m_selection[1];
             max = m_selection[0];
-        }
-        else if (m_selection[1] > m_selection[0])
-        {
+        } else if (m_selection[1] > m_selection[0]) {
             min = m_selection[0];
             max = m_selection[1];
         }
 
         // intersects with visible part or surround
-        if ((min >= m_visible[0]) || (max <= m_visible[1]) || (min < m_visible[0] && max > m_visible[1]))
-        {
+        if ((min >= m_visible[0]) || (max <= m_visible[1]) || (min < m_visible[0] && max > m_visible[1])) {
             m_textZone.setHighlight(
                         o3d::max(0 , min-m_visible[0]),
                         o3d::max(max-m_visible[0], 0));
-        }
-        else
+        } else {
             m_textZone.resetHighlight();
+        }
 
         setDirty();
-    }
-    else
-    {
+    } else {
         m_textZone.resetHighlight();
         setDirty();
     }

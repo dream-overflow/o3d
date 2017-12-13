@@ -45,6 +45,10 @@ else()
     set(CMAKE_C_FLAGS_DEBUG            "-O0 -ggdb -D_DEBUG")
     set(CMAKE_C_FLAGS_DEBUGFULL        "-O0 -ggdb -D_DEBUG -DO3D_RAM_MEMORY_MANAGER -DO3D_FAST_MEMORY_MANAGER -fvisibility=hidden")
 
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+        set(CMAKE_CXX_FLAGS_RELEASE    "-g0 -Os -DNDEBUG -ffunction-sections")
+    endif()
+
     # linker options
     set(CMAKE_SHARED_LINKER_FLAGS_RELEASE  "-Wl,--gc-sections")
     set(CMAKE_MODULE_LINKER_FLAGS_RELEASE  "-Wl,--gc-sections")

@@ -53,7 +53,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         //
 
     #ifdef O3D_EGL
-        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay()));
         EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
         EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
@@ -152,7 +152,7 @@ void Renderer::destroy()
         if (m_HGLRC && m_appWindow) {
             if (m_state.getBit(STATE_EGL)) {
             #ifdef O3D_EGL
-                EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+                EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay()));
                 EGL::makeCurrent(eglDisplay, 0, 0, 0);
 
                 EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
@@ -212,7 +212,7 @@ void Renderer::setCurrent()
             return;
         }
 
-        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay()));
 
         if (EGL::makeCurrent(
                 eglDisplay,
@@ -247,7 +247,7 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
 
     if (m_state.getBit(STATE_EGL)) {
     #ifdef O3D_EGL
-        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
+        EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay()));
         if (!EGL::swapInterval(eglDisplay, value)) {
             return False;
         }
