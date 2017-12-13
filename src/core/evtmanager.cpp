@@ -23,7 +23,7 @@ EvtManager * EvtManager::m_pInstance = nullptr;
 
 EvtManager::EvtManager():
 	m_poolMap(),
-	m_mutex(),
+    m_mutex(),
     m_mainMessage(False),
     m_isAutoWakeUp(True),
     m_wakeUpCallback(nullptr)
@@ -57,34 +57,35 @@ void EvtManager::postEvent(EvtFunctionAsyncBase * _pFunction)
 
 	// On détermine dans quel thread il faut placer l'événement
 	Thread * lThread = _pFunction->getThread();
+    Bool hasEvents = False;
+    {
+        FastMutexLocker lLocker(m_mutex);
 
-	FastMutexLocker lLocker(m_mutex);
+        IT_PoolMap it = m_poolMap.find(lThread);
 
-	IT_PoolMap it = m_poolMap.find(lThread);
-	
-    if (it != m_poolMap.end()) {
-		it->second.push_back(_pFunction);
+        if (it != m_poolMap.end()) {
+            hasEvents = True;
+            it->second.push_back(_pFunction);
 
-		// Event for the main thread
-        if ((lThread == nullptr) && m_isAutoWakeUp && !m_mainMessage) {
-            Application::pushEvent(Application::EVENT_EVT_MANAGER, 0, 0);
-            m_mainMessage = True;
+            // Event for the main thread
+            if ((lThread == nullptr) && m_isAutoWakeUp && !m_mainMessage) {
+                Application::pushEvent(Application::EVENT_EVT_MANAGER, 0, 0);
+                m_mainMessage = True;
+            }
+        } else {
+            deletePtr(_pFunction);
+            O3D_ERROR(E_InvalidOperation("Thread not registered in the EvtManager"));
         }
+    }
 
-        lLocker.unlock();
-
-        if (m_wakeUpCallback) {
-            m_wakeUpCallback->call(nullptr);
-        }
-    } else {
-		deletePtr(_pFunction);
-		O3D_ERROR(E_InvalidOperation("Thread not registered in the EvtManager"));
-	}
+    if (hasEvents && m_wakeUpCallback) {
+        m_wakeUpCallback->call(nullptr);
+    }
 }
 
 void EvtManager::registerThread(Thread * _pThread)
 {
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
 
 	IT_PoolMap it = m_poolMap.find(_pThread);
 
@@ -97,7 +98,7 @@ void EvtManager::registerThread(Thread * _pThread)
 
 void EvtManager::unRegisterThread(Thread * _pThread)
 {
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
 
 	IT_PoolMap it = m_poolMap.find(_pThread);
     if (it != m_poolMap.end()) {
@@ -114,7 +115,7 @@ void EvtManager::unRegisterThread(Thread * _pThread)
 
 Bool EvtManager::isThreadRegistered(Thread * _pThread) const
 {
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
 
 	CIT_PoolMap it = m_poolMap.find(_pThread);
     if (it != m_poolMap.end()) {
@@ -160,7 +161,7 @@ UInt32 EvtManager::processEvent(Thread * _pThread)
 	T_EventList lList;
 
 	{
-		FastMutexLocker lLocker(m_mutex);
+        FastMutexLocker lLocker(m_mutex);
 
 		IT_PoolMap itMap = m_poolMap.find(_pThread);
 
@@ -193,7 +194,7 @@ UInt32 EvtManager::processEvent(EvtHandler * _pHandler)
 
 	T_EventList lList;
 	{
-		FastMutexLocker lLocker(m_mutex);
+        FastMutexLocker lLocker(m_mutex);
 
 		T_EventList & lListCpy = getPoolMap(lCurrentThreadId)->second;
 		IT_EventList it = lListCpy.begin();
@@ -230,7 +231,7 @@ UInt32 EvtManager::processEvent(EvtHandler * _pHandler, Thread * _pThread)
 
 	T_EventList lList;
 	{
-		FastMutexLocker lLocker(m_mutex);
+        FastMutexLocker lLocker(m_mutex);
 
 		IT_PoolMap itMap = m_poolMap.find(_pThread);
 
@@ -266,7 +267,7 @@ UInt32 EvtManager::processEvent(EvtHandler * _pHandler, Thread * _pThread)
 
 void EvtManager::deletePendingEvents()
 {
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
 
 	T_EventList & lList = getPoolMap(ThreadManager::getThreadId())->second;
 
@@ -281,7 +282,7 @@ void EvtManager::deletePendingEvents(EvtHandler* _pHandler)
 {
     O3D_ASSERT(_pHandler != nullptr);
 
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
 
 	for (IT_PoolMap itMap = m_poolMap.begin() ; itMap != m_poolMap.end() ; itMap++)	{
 		T_EventList & lList = itMap->second;
@@ -301,7 +302,7 @@ void EvtManager::deletePendingEvents(EvtHandler* _pHandler)
 
 Bool EvtManager::isPendingEvent() const
 {
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
 
 	return !(getPoolMap(ThreadManager::getThreadId())->second.empty());
 }
@@ -309,7 +310,7 @@ Bool EvtManager::isPendingEvent() const
 Bool EvtManager::isPendingEvent(Thread * _pThread) const
 {
     if (isThreadRegistered(_pThread)) {
-		FastMutexLocker lLocker(m_mutex);
+        FastMutexLocker lLocker(m_mutex);
         const UInt32 lThreadId = (_pThread == nullptr ? ThreadManager::getMainThreadId() : _pThread->getThreadID());
 
 		return !(getPoolMap(lThreadId)->second.empty());
@@ -322,7 +323,7 @@ Bool EvtManager::isPendingEvent(EvtHandler * _pHandler) const
 {
     O3D_ASSERT(_pHandler != nullptr);
 
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
 
 	const T_EventList & lListCpy = getPoolMap(ThreadManager::getThreadId())->second;
 
@@ -340,7 +341,7 @@ Bool EvtManager::isPendingEvent(EvtHandler * _pHandler, Thread * _pThread) const
     O3D_ASSERT(_pHandler != nullptr);
 
     if (isThreadRegistered(_pThread)) {
-		FastMutexLocker lLocker(m_mutex);
+        FastMutexLocker lLocker(m_mutex);
 
         const UInt32 lThreadId = (_pThread == nullptr ? ThreadManager::getMainThreadId() : _pThread->getThreadID());
 		const T_EventList & lListCpy = getPoolMap(lThreadId)->second;
@@ -392,14 +393,14 @@ EvtManager::CIT_PoolMap EvtManager::getPoolMap(UInt32 _threadId) const
 // Enable PostMessage for the main thread
 void EvtManager::enableAutoWakeUp()
 {
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
     m_isAutoWakeUp = True;
 }
 
 // Disable PostMessage for the main thread
 void EvtManager::disableAutoWakeUp()
 {
-	FastMutexLocker lLocker(m_mutex);
+    FastMutexLocker lLocker(m_mutex);
     m_isAutoWakeUp = False;
 }
 
@@ -408,7 +409,7 @@ Bool EvtManager::isAutoWakeUp() const
 {
 	Bool ret = False;
 	{
-		FastMutexLocker lLocker(m_mutex);
+        FastMutexLocker lLocker(m_mutex);
         ret = m_isAutoWakeUp;
 	}
     return ret;

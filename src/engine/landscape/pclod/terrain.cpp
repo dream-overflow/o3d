@@ -117,21 +117,24 @@ void PCLODTerrain::draw()
 
 void PCLODTerrain::update()
 {
-    if (m_pZoneManager == nullptr)
+    if (m_pZoneManager == nullptr) {
 		PCLOD_WARNING(String("Terrain : Attempt to update the terrain, but you must initialize it before"));
-	else
+    } else {
 		m_pZoneManager->mtUpdate();
+    }
 
-	if (m_pSky)
-		m_pSky->update();
+    if (m_pSky) {
+        m_pSky->update();
+    }
 }
 
 void PCLODTerrain::addLight(const LightInfos & _infos)
 {
-    if (m_pZoneManager == nullptr)
+    if (m_pZoneManager == nullptr) {
 		PCLOD_WARNING(String("Terrain : Attempt do add a light but the terrain is not initialized"));
-	else
+    } else {
 		m_pZoneManager->getTextureManager()->mtAddLight(_infos);
+    }
 }
 
 void PCLODTerrain::removeLight(Light * _pLight)

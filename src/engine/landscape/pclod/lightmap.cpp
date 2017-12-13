@@ -335,7 +335,7 @@ void PCLODLightmap::addNeighbor(ZoneDirection _dir, PCLODLightmap * _pLightmap)
 	// La normalMap doit etre récalculée, donc on la supprime pour forcer sa génération
 	// @todo Faire un événement en spécifiant la zone à recalculer. Inutile de tout refaire...
 	// On désactive ca pour le moment
-	//O3DFastMutexLocker lLocker(m_mutex);
+    // FastMutexLocker lLocker(m_mutex);
 	//m_normalMap.destroy();
 
 #ifdef _DEBUG

@@ -515,14 +515,12 @@ void PCLODZoneManager::init(const Vector3 & _position)
 	m_worldPosition = _position;
 	m_pTextureManager->init();
 
-	if (getTerrain()->getCurrentConfigs().asynchRefresh())
-	{
+    if (getTerrain()->getCurrentConfigs().asynchRefresh()) {
 		EvtManager::instance()->registerThread(&m_thread);
-
 		run();
-	}
-	else
+    } else {
 		rtRefreshOnce(True);
+    }
 }
 
 void PCLODZoneManager::draw()
@@ -614,24 +612,27 @@ void PCLODZoneManager::draw()
 
 void PCLODZoneManager::mtUpdate()
 {
-	if (!isInit())
+    if (!isInit()) {
 		return;
+    }
 
 	// Mise à jour de la position de la caméra
     onMainUpdate(getTerrain()->getCamera()->getAbsoluteMatrix().getTranslation());
 
-	if (!getTerrain()->getCurrentConfigs().asynchRefresh())
+    if (!getTerrain()->getCurrentConfigs().asynchRefresh()) {
 		rtUpdate();
+    }
 
 //	m_pTextureManager->MT_Update(); Le manager update seulement avec un draw
-	m_pRenderManager->update();
+    m_pRenderManager->update();
 }
 
 /* Update the refresh thread */
 void PCLODZoneManager::rtUpdate()
 {
-	if (!isInit())
+    if (!isInit()) {
 		return;
+    }
 
 	// Pour le moment, la fonction RefreshOnce est dans la thread principal
 	rtRefreshOnce();
@@ -645,7 +646,7 @@ void PCLODZoneManager::run()
     if (m_thread.isThread()) {
         if (m_threadOrder == THREAD_PAUSE) {
 			m_threadOrder = THREAD_RUN;
-			m_pauseMutex.unlock();
+            m_pauseMutex.unlock();
 			return;
 		}
 
@@ -678,7 +679,7 @@ void PCLODZoneManager::pause()
     if (!m_pauseMutex.tryLock()) {
 		PCLOD_ERROR(String("ZoneManager : Attempt to pause the ZoneManager but it's already paused"));
 		return;
-	}
+    }
 
 	m_threadOrder = THREAD_PAUSE;
 }
@@ -872,7 +873,7 @@ Int32 PCLODZoneManager::run(void *)
 
 	while (m_threadOrder != THREAD_STOP)
 	{
-		if (m_threadOrder == THREAD_PAUSE)
+        if (m_threadOrder == THREAD_PAUSE)
 			m_pauseMutex.lock();
 
 		timeCounter.update();

@@ -256,42 +256,44 @@ void ScheduledThreadPool::put(ScheduledRunnable *putTask)
     Int64 timestamp = System::getTime(TIME_MICROSECOND) + putTask->getDelay();
     putTask->setTimestamp(timestamp);
 
-    RecurMutexLocker locker(m_mutex);
-    if (!m_running)
-        return;
-
-    if (putTask->isCanceled())
-        return;
-
-    if (m_pendingTasks.empty())
     {
-        m_pendingTasks.push_back(putTask);
+        RecurMutexLocker locker(m_mutex);
 
-        // send a signal to consumers
-        m_waitingTask.postSignal();
+        if (!m_running) {
+            return;
+        }
 
-        return;
-    }
+        if (putTask->isCanceled()) {
+            return;
+        }
 
-    for (IT_ScheduledRunnableList it = m_pendingTasks.begin(); it != m_pendingTasks.end(); ++it)
-    {
-        ScheduledRunnable *task = *it;
-        if (task->getTimestamp() > putTask->getTimestamp())
-        {
-            // insert before a task with a later timestamp
-            m_pendingTasks.insert(it, putTask);
+        if (m_pendingTasks.empty()) {
+            m_pendingTasks.push_back(putTask);
 
             // send a signal to consumers
             m_waitingTask.postSignal();
 
             return;
         }
+
+        for (IT_ScheduledRunnableList it = m_pendingTasks.begin(); it != m_pendingTasks.end(); ++it) {
+            ScheduledRunnable *task = *it;
+            if (task->getTimestamp() > putTask->getTimestamp()) {
+                // insert before a task with a later timestamp
+                m_pendingTasks.insert(it, putTask);
+
+                // send a signal to consumers
+                m_waitingTask.postSignal();
+
+                return;
+            }
+        }
+
+        m_pendingTasks.push_back(putTask);
+
+        // send a signal to consumers
+        m_waitingTask.postSignal();
     }
-
-    m_pendingTasks.push_back(putTask);
-
-    // send a signal to consumers
-    m_waitingTask.postSignal();
 }
 
 Bool ScheduledThreadPool::isRunning() const
@@ -397,43 +399,41 @@ ScheduledThreadPool::Scheduler::Scheduler(ScheduledThreadPool *pool) :
 
 Int32 ScheduledThreadPool::Scheduler::run(void *p)
 {
-    FastMutexLocker locker(m_mutex);
-    Bool run = m_pool->isRunning();
+    Bool run = False;
     Bool terminate = False;
 
-    while (run)
-    {
-        locker.unlock();
+    m_mutex.lock();
+    run = m_pool->isRunning();
+
+    while (run) {
+        m_mutex.unlock();
 
         m_pool->poll();
         m_task = m_pool->getNextTask();
 
         // running
-        if (m_task)
-        {
+        if (m_task) {
             // run
             Int32 r = m_task->run(p);
 
             // if not canceled do it again
-            if ((r >= 0) && !m_task->isCanceled() && !terminate)
+            if ((r >= 0) && !m_task->isCanceled() && !terminate) {
                 m_pool->put(m_task);
-            else
+            } else {
                 deletePtr(m_task);
+            }
 
             m_task = nullptr;
-        }
-        else
-        {
+        } else {
             // wait for a task during 100 ms
             m_pool->waitForNewTask();
         }
 
-        locker.relock();
+        m_mutex.lock();
         run = m_pool->isRunning();
         terminate = m_pool->isTerminate();
-        locker.unlock();
     }
+    m_mutex.unlock();
 
     return 0;
 }
-

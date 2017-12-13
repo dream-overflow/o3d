@@ -174,8 +174,7 @@ Bool FileManager::restoreWorkingDirectory()
 {
 	FastMutexLocker locker(O3D_FileManagerMutex);
 
-	if (m_oldWorkingDir.isValid())
-	{
+    if (m_oldWorkingDir.isValid()) {
 		m_workingDir = m_oldWorkingDir;
 		m_oldWorkingDir.destroy();
 
@@ -217,8 +216,7 @@ String FileManager::getFullFileName(const String &filename)
 	String lFilename(filename);
 	lFilename.replace('\\','/');
 
-	if (isRelativePath(lFilename))
-	{
+    if (isRelativePath(lFilename)) {
 		O3D_FileManagerMutex.lock();
 		lFilename = m_workingDir + '/' + lFilename;
 		O3D_FileManagerMutex.unlock();
@@ -235,27 +233,25 @@ InStream *FileManager::openInStream(const String &filename)
     InStream *lis = nullptr;
 
     // on parcourt tous les fichiers pack
-    FastMutexLocker locker(O3D_FileManagerMutex);
-
-    for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it)
     {
-        Int32 index;
-        // search for the file
-        if ((index = (*it)->findFile(lfilename)) != -1)
-        {
-            // If found, try to open it
-            return (*it)->openInStream(index);
+        FastMutexLocker locker(O3D_FileManagerMutex);
+
+        for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
+            Int32 index;
+            // search for the file
+            if ((index = (*it)->findFile(lfilename)) != -1) {
+                // If found, try to open it
+                return (*it)->openInStream(index);
+            }
         }
-    }
 
-    // On cherche le fichier sur le disk
-    try {
-        lis = new FileInStream(lfilename);
-    }
-    catch(const E_FileNotFoundOrInvalidRights &)
-    {
-        deletePtr(lis);
-        throw;
+        // On cherche le fichier sur le disk
+        try {
+            lis = new FileInStream(lfilename);
+        } catch(const E_FileNotFoundOrInvalidRights &) {
+            deletePtr(lis);
+            throw;
+        }
     }
 
     return lis;
@@ -372,8 +368,7 @@ Int32 FileManager::removeAllArchives()
 
 	Int32 ret = (Int32)m_packList.size();
 
-	for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it)
-	{
+    for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
 		deletePtr(*it);
 	}
 
@@ -397,21 +392,18 @@ String FileManager::searchNextVirtualFile(FileTypes *fileType)
 	FastMutexLocker locker(O3D_FileManagerMutex);
 	String result;
 
-	while (m_curPackPos != m_packList.end())
-	{
-		if (m_curFilePos < (*m_curPackPos)->getNumFiles())
-		{
+    while (m_curPackPos != m_packList.end()) {
+        if (m_curFilePos < (*m_curPackPos)->getNumFiles()) {
 			result = (*m_curPackPos)->getFileName(m_curFilePos);
 
-			if (fileType)
+            if (fileType) {
 				*fileType = (*m_curPackPos)->getFileType(m_curFilePos);
+            }
 
 			++m_curFilePos;
 
 			return result;
-		}
-		else
-		{
+        } else {
 			// this case when a package contain no files
 			m_curFilePos = 0;
 			++m_curPackPos;
@@ -427,10 +419,8 @@ Zip* FileManager::getArchive(const String& archiveName)
 	String lPackName = getFullFileName(archiveName);
 
 	O3D_FileManagerMutex.lock();
-	for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it)
-	{
-		if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName)
-		{
+    for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
+        if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName) {
 			O3D_FileManagerMutex.unlock();
 			return *it;
 		}
@@ -438,7 +428,7 @@ Zip* FileManager::getArchive(const String& archiveName)
 	O3D_FileManagerMutex.unlock();
 
 	O3D_ERROR(E_InvalidParameter(archiveName));
-	return NULL;
+    return nullptr;
 }
 
 // set the speed in delay and chunk-size

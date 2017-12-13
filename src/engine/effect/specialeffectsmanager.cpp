@@ -67,81 +67,80 @@ Bool SpecialEffectsManager::deleteChild(BaseObject *child)
 // Insert an existing special effect in the manager.
 void SpecialEffectsManager::addSpecialEffects(SpecialEffects *specialEffect)
 {
-	if (specialEffect->m_manager != NULL)
+    if (specialEffect->m_manager != nullptr) {
 		O3D_ERROR(E_InvalidOperation("The given special effects already have a manager"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        String keyName = specialEffect->getName();
 
-	String keyName = specialEffect->getName();
+        // search for the special effects
+        IT_FindMap it = m_findMap.find(keyName);
+        if (it != m_findMap.end()) {
+            O3D_ERROR(E_InvalidParameter("A same special effects with the same name already exists"));
+        } else {
+            m_findMap.insert(std::make_pair(keyName, specialEffect));
+        }
 
-	// search for the special effects
-	IT_FindMap it = m_findMap.find(keyName);
-	if (it != m_findMap.end())
-	{
-		O3D_ERROR(E_InvalidParameter("A same special effects with the same name already exists"));
-	}
-	else
-	{
-		m_findMap.insert(std::make_pair(keyName, specialEffect));
-	}
+        O3D_MESSAGE("Add special effects \"" + keyName + "\"");
 
-	O3D_MESSAGE("Add special effects \"" + keyName + "\"");
-
-	// this is the manager and its parent
-	specialEffect->m_manager = this;
-	specialEffect->setParent(this);
+        // this is the manager and its parent
+        specialEffect->m_manager = this;
+        specialEffect->setParent(this);
+    }
 }
 
 // Remove an existing special effect from the manager.
 void SpecialEffectsManager::removeSpecialEffects(SpecialEffects *specialEffect)
 {
-	if (specialEffect->m_manager != this)
+    if (specialEffect->m_manager != this) {
 		O3D_ERROR(E_InvalidParameter("Special effects manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        String keyName = specialEffect->getName();
 
-	String keyName = specialEffect->getName();
+        // remove the special effects object from the manager.
+        IT_FindMap it = m_findMap.find(keyName);
+        if (it != m_findMap.end()) {
+            specialEffect->m_manager = nullptr;
+            specialEffect->setParent(getScene());
 
-	// remove the special effects object from the manager.
-	IT_FindMap it = m_findMap.find(keyName);
-	if (it != m_findMap.end())
-	{
-		specialEffect->m_manager = NULL;
-		specialEffect->setParent(getScene());
+            m_findMap.erase(it);
 
-		m_findMap.erase(it);
-
-		O3D_MESSAGE("Remove (not delete) existing specials effect : " + keyName);
-	}
+            O3D_MESSAGE("Remove (not delete) existing specials effect : " + keyName);
+        }
+    }
 }
 
 // Delete an existing special effect from the manager.
 void SpecialEffectsManager::deleteSpecialEffects(SpecialEffects *specialEffect)
 {
-	if (specialEffect->m_manager != this)
+    if (specialEffect->m_manager != this) {
 		O3D_ERROR(E_InvalidParameter("Special effects manager is not this"));
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        String keyName = specialEffect->getName();
 
-	String keyName = specialEffect->getName();
+        // remove the special effects object from the manager.
+        IT_FindMap it = m_findMap.find(keyName);
+        if (it != m_findMap.end())
+        {
+            deletePtr(specialEffect);
 
-	// remove the special effects object from the manager.
-	IT_FindMap it = m_findMap.find(keyName);
-	if (it != m_findMap.end())
-	{
-		deletePtr(specialEffect);
+            m_findMap.erase(it);
 
-		m_findMap.erase(it);
-
-		O3D_MESSAGE("Delete existing special effects : " + keyName);
-	}
+            O3D_MESSAGE("Delete existing special effects : " + keyName);
+        }
+    }
 }
 
 // Is a special effect exists.
 Bool SpecialEffectsManager::isSpecialEffects(const String &name)
 {
 	String keyName = name;
-	return (findSpecialEffect(0, keyName) != NULL);
+    return (findSpecialEffect(0, keyName) != nullptr);
 }
 
 // update all managed effects
@@ -150,10 +149,10 @@ void SpecialEffectsManager::update()
 	FastMutexLocker locker(m_mutex);
 
 	// process some effects updates
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-	{
-		if (it->second->getActivity())
+    for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
+        if (it->second->getActivity()) {
 			(*it).second->update();
+        }
 	}
 }
 
@@ -161,16 +160,17 @@ void SpecialEffectsManager::update()
 void SpecialEffectsManager::draw(const DrawInfo &drawInfo)
 {
 	// doesn't work with override drawing mode
-	if (getScene()->getContext()->isOverrideDrawingMode())
+    if (getScene()->getContext()->isOverrideDrawingMode()) {
 		return;
+    } else {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
-
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-	{
-		if (it->second->getActivity() && it->second->getVisibility())
-			(*it).second->draw(drawInfo);
-	}
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
+            if (it->second->getActivity() && it->second->getVisibility()) {
+                (*it).second->draw(drawInfo);
+            }
+        }
+    }
 }
 
 // Resize the list of currently importing special effects.
@@ -189,16 +189,19 @@ Bool SpecialEffectsManager::writeToFile(OutStream &os)
     os << (Int32)m_findMap.size();
 
 	Int32 serializeId = 0;
+    {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // attribute id to all effects
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
+            (*it).second->setSerializeId(serializeId++);
+        }
 
-	// attribute id to all effects
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-		(*it).second->setSerializeId(serializeId++);
-
-	// export all effects
-	for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it)
-        ClassFactory::writeToFile(os, *(*it).second);
+        // export all effects
+        for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
+            ClassFactory::writeToFile(os, *(*it).second);
+        }
+    }
 
 	return True;
 }
@@ -210,24 +213,26 @@ Bool SpecialEffectsManager::readFromFile(InStream &is)
 	Int32 size;
     is >> size;
 
-	FastMutexLocker locker(m_mutex);
+    {
+        FastMutexLocker locker(m_mutex);
 
-	resizeImportedSpecialEffects(size);
+        resizeImportedSpecialEffects(size);
 
- 	// import all effects
-	for (Int32 i = 0; i < size; ++i)
-	{
-        SpecialEffects* specialEffects = (SpecialEffects*)ClassFactory::readFromFile(is, this);
+        // import all effects
+        for (Int32 i = 0; i < size; ++i) {
+            SpecialEffects* specialEffects = (SpecialEffects*)ClassFactory::readFromFile(is, this);
 
-		if (!specialEffects)
-			return False;
+            if (!specialEffects)
+                return False;
 
-		setImportedSpecialEffects(i, specialEffects);
-	}
+            setImportedSpecialEffects(i, specialEffects);
+        }
 
-	// post import pass
-	for (Int32 i = 0; i < size; ++i)
-		getImportedSpecialEffects(i)->postImportPass();
+        // post import pass
+        for (Int32 i = 0; i < size; ++i) {
+            getImportedSpecialEffects(i)->postImportPass();
+        }
+    }
 
 	return True;
 }
@@ -240,8 +245,7 @@ SpecialEffects* SpecialEffectsManager::findSpecialEffect(
 
 	// search the key name into the map, next the special effects given parameters into the element
 	CIT_FindMap cit = m_findMap.find(keyName);
-	if (cit != m_findMap.end())
-	{
+    if (cit != m_findMap.end()) {
 		// found it ?
 		return cit->second;
 	}

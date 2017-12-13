@@ -151,26 +151,28 @@ UInt32 ShaderManager::addPath(const String &path)
 
 	lPath = FileManager::instance()->getFullFileName(lPath);
 
-	FastMutexLocker locker(m_mutex);
+    {
+        FastMutexLocker locker(m_mutex);
 
-	IT_StringList it = std::find(
-			m_searchPathList.begin(),
-			m_searchPathList.end(),
-			lPath);
+        IT_StringList it = std::find(
+                               m_searchPathList.begin(),
+                               m_searchPathList.end(),
+                               lPath);
 
-	// already include path
-    if (it != m_searchPathList.end()) {
-		O3D_ERROR(E_InvalidParameter(String("The path is already registered <") + lPath + ">"));
-    }
-
-	// check if a similar path already contain 'path'
-    for (it = m_searchPathList.begin(); it != m_searchPathList.end(); ++it) {
-        if (it->startsWith(lPath)) {
-			O3D_ERROR(E_InvalidParameter(String("The path is already partially registered <") + lPath + ">"));
+        // already include path
+        if (it != m_searchPathList.end()) {
+            O3D_ERROR(E_InvalidParameter(String("The path is already registered <") + lPath + ">"));
         }
-	}
 
-	return browseFolder(lPath);
+        // check if a similar path already contain 'path'
+        for (it = m_searchPathList.begin(); it != m_searchPathList.end(); ++it) {
+            if (it->startsWith(lPath)) {
+                O3D_ERROR(E_InvalidParameter(String("The path is already partially registered <") + lPath + ">"));
+            }
+        }
+
+        return browseFolder(lPath);
+    }
 }
 
 // Load a program from a path.
@@ -392,42 +394,43 @@ UInt32 ShaderManager::deleteAll(const String &path)
 	lPath = FileManager::instance()->getFullFileName(lPath);
 
 	UInt32 count = 0;
+    {
+        FastMutexLocker locker(m_mutex);
 
-	FastMutexLocker locker(m_mutex);
+        // erase the entry of the browse path list
+        IT_StringList strIt = std::find(m_searchPathList.begin(), m_searchPathList.end(), lPath);
+        if (strIt != m_searchPathList.end())
+            m_searchPathList.erase(strIt);
+        else
+            O3D_ERROR(E_InvalidParameter("The path \"" + lPath + "\" is not known of the database"));
 
-	// erase the entry of the browse path list
-	IT_StringList strIt = std::find(m_searchPathList.begin(), m_searchPathList.end(), lPath);
-	if (strIt != m_searchPathList.end())
-		m_searchPathList.erase(strIt);
-	else
-		O3D_ERROR(E_InvalidParameter("The path \"" + lPath + "\" is not known of the database"));
+        // find any program contained into the given path
+        for (it = m_programs.begin(); it != m_programs.end(); ++it)
+        {
+            if (it->second && (it->second->path == lPath))
+                eraseList.push_back(it->first);
+        }
 
-	// find any program contained into the given path
-	for (it = m_programs.begin(); it != m_programs.end(); ++it)
-	{
-		if (it->second && (it->second->path == lPath))
-			eraseList.push_back(it->first);
-	}
+        // erase map entries
+        for (IT_StringList it2 = eraseList.begin(); it2 != eraseList.end(); ++it2)
+        {
+            it = m_programs.find(*it2);
+            if (it != m_programs.end())
+            {
+                for (UInt32 i = 0; i < NUM_VERSIONS; ++i)
+                {
+                    // delete any valid program
+                    if (it->second->versions[i].shader)
+                        TemplateManager<Shader>::deleteElementPtr(it->second->versions[i].shader);
+                }
 
-	// erase map entries
-	for (IT_StringList it2 = eraseList.begin(); it2 != eraseList.end(); ++it2)
-	{
-		it = m_programs.find(*it2);
-		if (it != m_programs.end())
-		{
-			for (UInt32 i = 0; i < NUM_VERSIONS; ++i)
-			{
-				// delete any valid program
-				if (it->second->versions[i].shader)
-					TemplateManager<Shader>::deleteElementPtr(it->second->versions[i].shader);
-			}
+                // and erase the program entry
+                m_programs.erase(it);
+                ++count;
+            }
 
-			// and erase the program entry
-			m_programs.erase(it);
-			++count;
-		}
-
-	}
+        }
+    }
 
 	return count;
 }

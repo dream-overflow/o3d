@@ -210,7 +210,7 @@ void TerrainManager::draw()
 
 void TerrainManager::update()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
     // @todo should lock copy list and then update
 
 	// process deferred objects deletion

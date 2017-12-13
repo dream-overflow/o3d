@@ -96,7 +96,7 @@ Bool PCLODZoneRenderer::isReady()
  * Used for opengl initialisation */
 void PCLODZoneRenderer::init()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// On effectue certain test sur la validite des donnees
 
@@ -172,7 +172,7 @@ void PCLODZoneRenderer::draw()
 /* Used to release the zone instance and avoid circular SmartPtr reference */
 void PCLODZoneRenderer::clean()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	// On detruit les donnees en RAM
 	destroyData();
@@ -218,7 +218,7 @@ void PCLODZoneRenderer::setData(	const SmartArrayFloat & _vertexBuffer,
 	// Pour chaque buffer, si il est non nul, on le copie
 	// Par ailleurs, la taille de chaque buffer doit respecter certaines conditions.
 
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	if (_vertexBuffer.getData() != NULL)
 	{
@@ -286,7 +286,7 @@ void PCLODZoneRenderer::setData(	const SmartArrayFloat & _vertexBuffer,
 /* Update the GL datas if there are waiting datas */
 void PCLODZoneRenderer::update()
 {
-	FastMutexLocker locker(m_mutex);
+    FastMutexLocker locker(m_mutex);
 
 	if (!needUpdate())
 		return;

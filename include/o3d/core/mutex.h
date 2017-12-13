@@ -194,11 +194,11 @@ public:
 	FastMutexLocker(const FastMutex & _mutex) :
 		m_mutex(_mutex)
 	{
-		_mutex.lock();
+        _mutex.lock();
 	}
 
 	//! Destructor. Unlock the mutex.
-	~FastMutexLocker() { unlock(); }
+    ~FastMutexLocker() { unlock(); }
 
 	//! Release a locked mutex
 	void unlock() { m_mutex.unlock(); }

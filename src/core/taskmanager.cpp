@@ -80,41 +80,36 @@ TaskManager::~TaskManager()
 void TaskManager::addTask(Task *task)
 {
 	O3D_ASSERT(task);
-	if (!task)
+    if (!task) {
 		return;
+    } else {
+        RecurMutexLocker locker(m_mutex);
 
-	RecurMutexLocker locker(m_mutex);
+        // to start the next pending task at finish, for finalize and next for auto deletion
+        task->onTaskFinished.connect(this, &TaskManager::taskFinished, EvtHandler::CONNECTION_ASYNCH);
 
-	// to start the next pending task at finish, for finalize and next for auto deletion
-    task->onTaskFinished.connect(this, &TaskManager::taskFinished, EvtHandler::CONNECTION_ASYNCH);
+        // or when the task execution failed, call for its auto deletion without finalize
+        task->onTaskFailed.connect(this, &TaskManager::taskFailed, EvtHandler::CONNECTION_ASYNCH);
 
-	// or when the task execution failed, call for its auto deletion without finalize
-    task->onTaskFailed.connect(this, &TaskManager::taskFailed, EvtHandler::CONNECTION_ASYNCH);
+        // process immediately by this thread
+        if (m_maxTask == 0) {
+            m_runningTasksList.push_back(task);
 
-	// process immediately by this thread
-	if (m_maxTask == 0)
-	{
-		m_runningTasksList.push_back(task);
+            // process the task
+            task->start(False);
+        } else {
+            // empty slot ?
+            if (m_runningTasksList.size() < m_maxTask) {
+                m_runningTasksList.push_back(task);
 
-		// process the task
-		task->start(False);
-	}
-	else
-	{
-		// empty slot ?
-		if (m_runningTasksList.size() < m_maxTask)
-		{
-			m_runningTasksList.push_back(task);
-
-			// and start it
-			task->start(True);
-		}
-		else
-		{
-			// pending queue
-			m_pendingTasksList.push_back(task);
-		}
-	}
+                // and start it
+                task->start(True);
+            } else {
+                // pending queue
+                m_pendingTasksList.push_back(task);
+            }
+        }
+    }
 }
 
 // Define the number of maximum simultaneous running tasks.
@@ -125,8 +120,7 @@ void TaskManager::setNumMaxTasks(UInt32 max)
 	m_maxTask = max;
 
 	// start many others tasks as possible
-	while ((m_runningTasksList.size() < m_maxTask) && !m_pendingTasksList.empty())
-	{
+    while ((m_runningTasksList.size() < m_maxTask) && !m_pendingTasksList.empty()) {
 		Task *task = m_pendingTasksList.front();
 		m_pendingTasksList.pop_front();
 
@@ -172,25 +166,21 @@ void TaskManager::taskFailed(Task* task)
 {
 	O3D_ASSERT(task);
 
-	if (task)
-	{
-		RecurMutexLocker locker(m_mutex);
+    RecurMutexLocker locker(m_mutex);
 
+    if (task) {
 		IT_TaskList it = std::find(m_runningTasksList.begin(), m_runningTasksList.end(), task);
-		if (it != m_runningTasksList.end())
-		{
+        if (it != m_runningTasksList.end()) {
 			m_runningTasksList.erase(it);
 			onDeleteTask(task);
-		}
-		else
+        }  else {
 			O3D_ERROR(E_InvalidParameter("Unknown running task"));
+        }
 	}
 
 	// start a new task if necessary
-	if (m_runningTasksList.size() < m_maxTask)
-	{
-		if (!m_pendingTasksList.empty())
-		{
+    if (m_runningTasksList.size() < m_maxTask) {
+        if (!m_pendingTasksList.empty()) {
 			Task *task = m_pendingTasksList.front();
 			m_pendingTasksList.pop_front();
 
@@ -207,8 +197,9 @@ void TaskManager::taskFinished(Task* task)
 {
 	O3D_ASSERT(task);
 
-	if (task)
+    if (task) {
 		onFinalizeTask(task);
+    }
 }
 
 // When a task is finalized it call for its deletion.
@@ -216,28 +207,24 @@ void TaskManager::finalizeTask(Task* task)
 {
 	O3D_ASSERT(task);
 
-	if (task)
-	{
+    if (task) {
 		// finalize
 		task->synchronize();
 
 		RecurMutexLocker locker(m_mutex);
 
 		IT_TaskList it = std::find(m_runningTasksList.begin(), m_runningTasksList.end(), task);
-		if (it != m_runningTasksList.end())
-		{
+        if (it != m_runningTasksList.end()) {
 			m_runningTasksList.erase(it);
 			onDeleteTask(task);
-		}
-		else
+        } else {
 			O3D_ERROR(E_InvalidParameter("Unknown running task"));
+        }
 	}
 
 	// start a new task if necessary
-	if (m_runningTasksList.size() < m_maxTask)
-	{
-		if (!m_pendingTasksList.empty())
-		{
+    if (m_runningTasksList.size() < m_maxTask) {
+        if (!m_pendingTasksList.empty()) {
 			Task *task = m_pendingTasksList.front();
 			m_pendingTasksList.pop_front();
 
@@ -254,7 +241,7 @@ void TaskManager::deleteTask(Task* task)
 {
 	O3D_ASSERT(task);
 
-	if (task)
+    if (task) {
 		o3d::deletePtr(task);
+    }
 }
-
