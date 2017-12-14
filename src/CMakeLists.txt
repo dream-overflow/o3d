@@ -50,28 +50,28 @@ if(${O3D_USE_EGL})
 endif()
 
 add_library(${O3D_LIB_NAME} SHARED
-			${tinyxml}
-			${tristripper}
-			${nvtristrip}
-			${CORE_CXX}
-			${GEOM_CXX}
-			${PHYSIC_CXX}
-			${IMAGE_CXX}
-			${ENGINE_CXX}
-			${GUI_CXX}
-            ${AUDIO_CXX})
+    ${tinyxml}
+    ${tristripper}
+    ${nvtristrip}
+    ${CORE_CXX}
+    ${GEOM_CXX}
+    ${PHYSIC_CXX}
+    ${IMAGE_CXX}
+    ${ENGINE_CXX}
+    ${GUI_CXX}
+    ${AUDIO_CXX})
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     target_link_libraries(${O3D_LIB_NAME}
-            ${ZLIB_LIBRARY}
-            ${JPEG_LIBRARY}
-            ${PNG_LIBRARY}
-            ${OGG_LIBRARY}
-            ${VORBIS_LIBRARY}
-            ${VORBISFILE_LIBRARY}
-            ${OPENAL_LIBRARY}
-            ${FREETYPE_LIBRARIES}
-            ${ANDROID_LIBRARY})
+        ${ZLIB_LIBRARY}
+        ${JPEG_LIBRARY}
+        ${PNG_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${OPENAL_LIBRARY}
+        ${FREETYPE_LIBRARIES}
+        ${ANDROID_LIBRARY})
 
     if(${O3D_USE_SDL2})
          target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
@@ -82,18 +82,18 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     endif()
 
 ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	target_link_libraries(${O3D_LIB_NAME}
-			pthread
-			${ZLIB_LIBRARY}
-			${JPEG_LIBRARY}
-            rt
-            ${XRANDR_LIBRARY}
-            ${PNG_LIBRARY}
-            ${OGG_LIBRARY}
-            ${VORBIS_LIBRARY}
-            ${VORBISFILE_LIBRARY}
-            ${OPENAL_LIBRARY}
-            ${FREETYPE_LIBRARIES})
+    target_link_libraries(${O3D_LIB_NAME}
+        pthread
+        ${ZLIB_LIBRARY}
+        ${JPEG_LIBRARY}
+        rt
+        ${XRANDR_LIBRARY}
+        ${PNG_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${OPENAL_LIBRARY}
+        ${FREETYPE_LIBRARIES})
 
    if(${O3D_USE_SDL2})
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
@@ -104,34 +104,34 @@ ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     endif()
 
 ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	target_link_libraries(${O3D_LIB_NAME}
-			pthread
-			z
-			jpeg
-			rt
-			Xrandr	
-			png
-			vorbis
-			vorbisfile
-			openal
-			${FREETYPE_LIBRARIES})
+    target_link_libraries(${O3D_LIB_NAME}
+        pthread
+        z
+        jpeg
+        rt
+        Xrandr
+        png
+        vorbis
+        vorbisfile
+        openal
+        ${FREETYPE_LIBRARIES})
 
     if(${O3D_USE_SDL2})
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
     endif()
 
 ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	target_link_libraries(${O3D_LIB_NAME}
-			${PNG_LIBRARY}
-			${ZLIB_LIBRARY}
-			${JPEG_LIBRARY}
-			${OGG_LIBRARY}
-			${VORBIS_LIBRARY}
-			${VORBISFILE_LIBRARY}
-			${OPENAL_LIBRARY}
-			${FREETYPE_LIBRARIES}
-            opengl32
-			${OPENGL_LIBRARY})
+    target_link_libraries(${O3D_LIB_NAME}
+        ${PNG_LIBRARY}
+        ${JPEG_LIBRARY}
+        ${OGG_LIBRARY}
+        ${VORBIS_LIBRARY}
+        ${VORBISFILE_LIBRARY}
+        ${OPENAL_LIBRARY}
+        ${FREETYPE_LIBRARIES}
+        ${ZLIB_LIBRARY}
+        opengl32
+        ${OPENGL_LIBRARY})
 
     if(${O3D_USE_SDL2})
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
@@ -140,15 +140,15 @@ ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # todo upgrade and more cmake like
     target_link_libraries({O3D_LIB_NAME}
-            ${OPENGL_gl_LIBRARY}
-            zlib
-            libjpeg
-            libpng
-            libogg
-            libvorbis
-            libvorbisfile
-            freetype235MT
-            OpenAL32)
+        ${OPENGL_gl_LIBRARY}
+        libjpeg
+        libpng
+        libogg
+        libvorbis
+        libvorbisfile
+        freetype235MT
+        zlib
+        OpenAL32)
 
     if(${O3D_USE_SDL2})
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
@@ -159,12 +159,10 @@ ENDIF()
 # build shaders
 add_custom_target(copy_shaders 
 	COMMAND	${CMAKE_COMMAND} -E copy_directory
-			"${CMAKE_CURRENT_SOURCE_DIR}/shaders"
-    		"${CMAKE_CURRENT_BINARY_DIR}/shaders/")
+            "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+            "${CMAKE_CURRENT_BINARY_DIR}/shaders/")
 
-add_custom_target(zip_shaders
-	COMMAND	zip -r shaders.zip
-    	"shaders")
+add_custom_target(zip_shaders COMMAND zip -r shaders.zip "shaders")
 
 #execute_process(
 #    COMMAND ${CMAKE_COMMAND} -E copy_directory
