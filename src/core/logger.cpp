@@ -37,11 +37,13 @@ FileLogger::~FileLogger()
 void FileLogger::log(LogLevel level, const String &str)
 {
     // minimal log level
-    if (level < m_logLevel)
+    if (level < m_logLevel) {
         return;
+    }
 
-    if (m_absolutefname.isEmpty())
+    if (m_absolutefname.isEmpty()) {
         m_absolutefname = FileManager::instance()->getFullFileName(m_logFilename);
+    }
 
     if (!m_os) {
         m_os = FileManager::instance()->openOutStream(
@@ -61,9 +63,6 @@ void FileLogger::log(LogLevel level, const String &str)
     m_os->flush();
 }
 
-/*---------------------------------------------------------------------------------------
-  set/get log file name
----------------------------------------------------------------------------------------*/
 void FileLogger::setLogFileName(const String &name)
 {
 	m_logFilename = name;
@@ -87,9 +86,6 @@ const String &FileLogger::getDateFormat() const
     return m_dateFormat;
 }
 
-/*---------------------------------------------------------------------------------------
-  write header banner to log file
----------------------------------------------------------------------------------------*/
 void FileLogger::writeHeaderLog()
 {
     if (m_absolutefname.isEmpty())
@@ -101,33 +97,19 @@ void FileLogger::writeHeaderLog()
                     FileOutStream::APPEND);
     }
 
-	Date current(True);
+    DateTime current(True);
+    String date = current.buildString(m_dateFormat);
+    if (!date.isEmpty()) {
+        date += ' ';
+    }
 
-	String date = current.buildString("%m %D %y  %h:%i");
-	String dateLine = ("-");
+    String str = "Starting of application on " + current.buildString("%y-%M-%D at %h:%i:%s.%l");
+    String time = String::print("[%.5f] ", ((Float)System::getTime() / System::getTimeFrequency()));
 
-	UInt32 numSpace = ((90 - 2) - date.length()) / 2;
-
-	for (UInt32 i = 0; i < numSpace; ++i)
-		dateLine += ' ';
-
-	dateLine += date;
-	while (dateLine.length() < 89)
-		dateLine += ' ';
-
-	dateLine += '-';
-
-    m_os->writeLine("-------------------------------------- Objective-3D --------------------------------------");
-    m_os->writeLine("-                                     Startup Banner                                     -");
-    m_os->writeLine(dateLine);
-    m_os->writeLine("------------------------------------------------------------------------------------------");
-
+    m_os->writeLine(String(date + time + str));
     m_os->flush();
 }
 
-/*---------------------------------------------------------------------------------------
-  write footer banner to log file
----------------------------------------------------------------------------------------*/
 void FileLogger::writeFooterLog()
 {
     if (m_absolutefname.isEmpty())
@@ -139,27 +121,16 @@ void FileLogger::writeFooterLog()
                     FileOutStream::APPEND);
     }
 
-	Date current(True);
+    DateTime current(True);
+    String date = current.buildString(m_dateFormat);
+    if (!date.isEmpty()) {
+        date += ' ';
+    }
 
-	String date = current.buildString("%m %D %y  %h:%i");
-	String dateLine = ("-");
+    String str = "Terminating application on " + current.buildString("%y-%M-%D at %h:%i:%s.%l");
+    String time = String::print("[%.5f] ", ((Float)System::getTime() / System::getTimeFrequency()));
 
-	UInt32 numSpace = ((90 - 2) - date.length()) / 2;
-
-	for (UInt32 i = 0; i < numSpace; ++i)
-		dateLine += ' ';
-
-	dateLine += date;
-	while (dateLine.length() < 89)
-		dateLine += ' ';
-
-	dateLine += '-';
-
-    m_os->writeLine("------------------------------------------------------------------------------------------");
-    m_os->writeLine("-                                      Ending Banner                                     -");
-    m_os->writeLine(dateLine);
-    m_os->writeLine("------------------------------------------------------------------------------------------");
-
+    m_os->writeLine(String(date + time + str));
     m_os->flush();
 }
 
