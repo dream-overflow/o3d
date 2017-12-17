@@ -13,10 +13,9 @@
 #include "base.h"
 
 #include <map>
-#include <string>
-#include <fstream>
 #include <list>
 #include <stack>
+#include <string>
 
 #ifdef _MSC_VER
 #pragma warning(disable:4251)
@@ -24,13 +23,25 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class MemoryManager
-//-------------------------------------------------------------------------------------
-//! Memory manager for log, reports memories allocations and to detect memory
-//! leaks. It also provide some current value like allocations total size, peaks, and
-//! a fast memory allocator for small memory blocks of fixed size (16,32,64bytes)
-//---------------------------------------------------------------------------------------
+class Logger;
+
+/**
+ * @brief Memory manager for log, reports memories allocations and to detect memory
+ * leaks. It also provide some current value like allocations total size, peaks, and
+ * a fast memory allocator for small memory blocks of fixed size (16,32,64bytes)
+ * @details Log details meaning :
+ * ++ mean central memory allocation (malloc, new, new [])");
+ * -- mean central memory free (free, delete, delete [])");
+ * ** mean central memory re-allocation (realloc)");
+ *
+ * +G mean graphical memory allocation");
+ * -G mean graphical memory free");
+ * *G mean graphical memory re-allocation");
+ *
+ * +A mean audio memory allocation");
+ * -A mean audio memory free");
+ * *A mean audio memory re-allocation");
+ */
 class O3D_API MemoryManager
 {
 public:
@@ -195,6 +206,9 @@ public:
 	//! is log new/delete
 	Bool isLogging(MemoryType type);
 
+    //! Set the logger
+    void setLogger(Logger *logger);
+
 	//! get the memory evolution
 	MemoryState getMemoryState(MemoryType type);
 
@@ -237,14 +251,12 @@ private:
 	//! write memory leak report
 	void reportLeaks();
 
-	std::ofstream m_file;        //!< output file
-
 	//! memory block structure
     struct TBlock
 	{
 		size_t Size;      //!< memory size allocated.
 		size_t Align;     //!< memory alignment (0 mean default alignment).
-		std::string File; //!< file where the allocation is processed.
+        std::string File; //!< file where the allocation is processed.
 		Int32 Line;   //!< allocation line code
 		Bool Array;   //!< array or single item ?
 	};
@@ -261,7 +273,8 @@ private:
 		TKey(T target, UInt32 id) :
 			Target(target),
 			Id(id)
-		{}
+        {
+        }
 
 		inline Bool operator== (const TKey& cmp)const
 		{
@@ -270,8 +283,9 @@ private:
 
 		inline Bool operator< (const TKey& cmp)const
 		{
-			if (Target == cmp.Target)
+            if (Target == cmp.Target) {
 				return (Id < cmp.Id);
+            }
 
 			return (Target < cmp.Target);
 		}
@@ -283,9 +297,9 @@ private:
 	//! simple memory block structure
     struct TGBlock
 	{
-		size_t Size;      //!< memory size allocated
-		std::string File; //!< file where the allocation is processed.
-		Int32 Line;   //!< allocation line code
+        size_t Size;        //!< memory size allocated
+        std::string File;   //!< file where the allocation is processed.
+        Int32 Line;         //!< allocation line code
 	};
 
     typedef TGBlock TSBlock;
@@ -339,23 +353,24 @@ private:
 		//! fast memory pool block structure
 		struct BlockInfo
 		{
-			size_t Size;       //!< memory size allocated
-			std::string File;  //!< allocation file code
-			Int32  Line;   //!< allocation line code
+            size_t Size;        //!< memory size allocated
+            std::string File;   //!< allocation file code
+            Int32  Line;        //!< allocation line code
 		};
 
-		typedef std::map<void*,BlockInfo> BlockInfoMap;
+        typedef std::map<void*, BlockInfo> BlockInfoMap;
 
 		FastMemoryPool() :
 			m_status(False),
             m_pool16(nullptr),
             m_pool32(nullptr),
             m_pool64(nullptr)
-		{}
+        {
+        }
 
 		~FastMemoryPool();
 
-		void reportLeaks(std::ofstream &file);
+        void reportLeaks(Logger *logger);
 
 		Bool m_status;
 
@@ -370,6 +385,8 @@ private:
 
 	MemoryModule m_memory[NUM_MEMORY_TYPE];   //!< memory volumes
 
+    Logger *m_logger;
+
 	//! Conversion from graphic target to string.
 	const Char* gfxType2String(GraphicTarget target);
 
@@ -380,4 +397,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MEMORYMANAGER_H
-

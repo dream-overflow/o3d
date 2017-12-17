@@ -86,16 +86,12 @@ TextureManager::~TextureManager()
 	deletePtr(m_defaultTextureCubeMap);
 
     if (!m_findMap.empty()) {
-		String message("Textures still exists into the manager:\n");
-
         for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
             for (std::list<Texture*>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
-                message += "    |- " + (*it2)->getResourceName() + "\n";
-				deletePtr(*it2);
+                O3D_WARNING(String("Remaining texture : ") + (*it2)->getResourceName());
+                deletePtr(*it2);
 			}
-		}
-
-		O3D_WARNING(message);
+        }
 	}
 }
 
@@ -139,7 +135,7 @@ Texture* TextureManager::findTexture(
 
                 if ((texture->getType() == type) && (texture->isMipMaps() == mipMaps)) {
                     // found it ?
-                    O3D_LOG(Logger::INFO, "Reuse texture " + texture->getResourceName());
+                    O3D_MESSAGE("Reuse texture " + texture->getResourceName());
                     return texture;
                 }
             }
@@ -154,7 +150,7 @@ Texture* TextureManager::findTexture(
 	// if found, reinsert it into the manager
     if (texture) {
 		addTexture(texture);
-        O3D_LOG(Logger::INFO, "Ungarbage texture " + texture->getResourceName());
+        O3D_MESSAGE("Ungarbage texture " + texture->getResourceName());
     }
 
 	return texture;

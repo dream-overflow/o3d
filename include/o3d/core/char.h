@@ -11,6 +11,7 @@
 #define _O3D_CHAR_H
 
 #include "string.h"
+#include <wctype.h>
 
 namespace o3d {
 

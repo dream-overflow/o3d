@@ -20,6 +20,8 @@
 #include <unistd.h>
 #endif
 
+#include <wchar.h>
+
 namespace o3d
 {
 
@@ -763,7 +765,7 @@ public:
     String& arg(const Double &d, Int32 decimals = -1, WChar separator = '.');
 
     //! Set the nth argument of type string.
-    String& arg(const String& s);
+    String& arg(const String& s, Int32 fieldWidth = 0, WChar fillChar = 0);
 
     //
     // To <type> conversion.

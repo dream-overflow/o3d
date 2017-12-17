@@ -28,18 +28,20 @@ Bool WideChar::isStringAlpha(const String &value)
     WChar c;
     UInt32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z'))
+        if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z')) {
             return False;
+        }
 
-        //if (!iswalpha(c))
+        //if (!iswalpha(c)) {
         //    return False;
+        //}
     }
 
     return True;
@@ -50,15 +52,16 @@ Bool WideChar::isStringDigit(const String &value)
     WChar c;
     UInt32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (!iswdigit(c))
+        if (!iswdigit(c)) {
             return False;
+        }
     }
 
     return True;

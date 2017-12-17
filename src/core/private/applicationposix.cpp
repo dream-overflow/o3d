@@ -12,7 +12,6 @@
 
 #ifdef O3D_POSIX_SYS
 
-#include <iostream>
 #include <fcntl.h>
 
 #include "o3d/core/filemanager.h"
@@ -26,41 +25,48 @@ void Application::message(
 		const String &title,
 		Application::IconStyle icon)
 {
-	CString c = content.isValid() ? content.toUtf8() : "<undefined>";
-	CString t = title.isValid() ? title.toUtf8() : "<untitled>";
+    String msg;
 
     switch (icon) {
 		case ICON_HELP:
-			std::cout << "[HELP] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[HELP] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case ICON_OK:
-			std::cout << "[OK] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[OK] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case ICON_WARNING:
-			std::cout << "[WARNING] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[WARNING] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case ICON_INFORMATION:
-			std::cout << "[INFO] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[INFO] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case ICON_NOTICE:
-			std::cout << "[NOTICE] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[NOTICE] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case ICON_QUESTION:
-			std::cout << "[QUESTION] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[QUESTION] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case ICON_ERROR:
-			std::cout << "[ERROR] " << t.getData() << ": " << c.getData() << std::endl;
-			return;
+            msg = String("[ERROR] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
+            return;
 
 		default:
-			std::cout << "[NOTICE] " << t.getData() << ": " << c.getData() << std::endl;
-			return;
+            msg = String("[NOTICE] ") + title + ": " + content + "\n";
+            printf(msg.toUtf8().getData());
+            return;
 	}
 }
 

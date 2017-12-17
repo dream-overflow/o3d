@@ -80,25 +80,27 @@ String Processor::getVendorName() const
 
 void Processor::reportLog()
 {
-	String tmp;
+    O3D_MESSAGE(String("CPU Information : ") << m_cpu_name);
 
-	tmp << "CPU Information : " << m_cpu_name << "\n"
-        << "    |- Vendor: " << getVendorName() << "\n"
-        << "    |- Speed: "  << m_cpu_speed << "Mhz\n"
-        << "    |- Family: " << m_family << "(" << m_ext_family << ")\n"
-        << "    |- Model: " << m_model << "(" << m_ext_model << ")\n"
-        << "    |- Stepping: " << m_stepping << "\n"
-        << "    |- MMX: " << (m_has_mmx?"YES":"NO") << (m_has_mmx_ext?"(+)\n":"\n")
-        << "    |- 3DNOW: " << (m_has_3dnow?"YES":"NO") << (m_has_3dnow_ext?"(+)\n":"\n")
-        << "    |- SSE: " << (m_has_sse?"SSE ":"NO") << (m_has_sse2?"SSE2 ":"") <<
-                             (m_has_sse3?"SSE3 ":"") << (m_has_ssse3?"SSSE3 ":"") <<
-                             (m_has_sse4_1?"SSE4_1 ":"") << (m_has_sse4_2?"SSE4_2 \n":"\n")
-        << "    |- HTT: " << (m_is_htt?"YES\n":"NO\n")
-        << "    |- NumCPU: " << m_num_cpu << "\n"
-        << "    |- CacheLineSize: " << m_cache_line_size << "\n"
-        << "    |- SystemRAMSize: " << m_system_ram_size << "\n";
+    O3D_MESSAGE(String("- Vendor: ") << getVendorName());
+    O3D_MESSAGE(String("- Speed: ")  << m_cpu_speed << "Mhz");
+    O3D_MESSAGE(String("- Family: ") << m_family << "(" << m_ext_family << ")");
+    O3D_MESSAGE(String("- Model: ") << m_model << "(" << m_ext_model << ")");
+    O3D_MESSAGE(String("- Stepping: ") << m_stepping);
 
-	O3D_MESSAGE(tmp);
+    O3D_MESSAGE(String("- MMX: ") << (m_has_mmx?"YES":"NO") << (m_has_mmx_ext?"(+)":""));
+    O3D_MESSAGE(String("- 3DNOW: ") << (m_has_3dnow?"YES":"NO") << (m_has_3dnow_ext?"(+)":""));
+
+    O3D_MESSAGE(String("- SSE: ") <<
+                (m_has_sse?"SSE ":"NO") << (m_has_sse2?"SSE2 ":"") <<
+                (m_has_sse3?"SSE3 ":"") << (m_has_ssse3?"SSSE3 ":"") <<
+                (m_has_sse4_1?"SSE4_1 ":"") << (m_has_sse4_2?"SSE4_2":""));
+
+    O3D_MESSAGE(String("- HTT: ") << (m_is_htt?"YES":"NO"));
+
+    O3D_MESSAGE(String("- NumCPU: ") << m_num_cpu);
+    O3D_MESSAGE(String("- CacheLineSize: ") << m_cache_line_size);
+    O3D_MESSAGE(String("- SystemRAMSize: ") << m_system_ram_size);
 }
 
 #define SET_TRICHAR                                             \

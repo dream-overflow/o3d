@@ -67,14 +67,10 @@ TerrainManager::TerrainManager(BaseObject *parent) :
 TerrainManager::~TerrainManager()
 {
     if (!m_findMap.empty()) {
-		String message("Terrains still exists into the manager :\n");
-
         for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
-            message += "    |- " + it->second->getName() + "\n";
+            O3D_WARNING(String("Remaining terrain : ") + it->second->getName());
 			deletePtr(it->second);
-		}
-
-		O3D_WARNING(message);
+        }
 	}
 }
 
@@ -238,14 +234,10 @@ TerrainDefManager::TerrainDefManager(
 TerrainDefManager::~TerrainDefManager()
 {
     if (!m_findMap.empty()) {
-		String message("Terrain definition still exists into the manager:\n");
-
         for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
-            message += "    |- " + it->second->getKeyName() + "\n";
-			deletePtr(it->second);
-		}
-
-		O3D_WARNING(message);
+            O3D_WARNING(String("Remaining terrain definition : ") + it->second->getKeyName());
+            deletePtr(it->second);
+        }
 	}
 }
 

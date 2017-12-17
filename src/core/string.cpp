@@ -1497,7 +1497,11 @@ void String::concat(Int32 i, Int32 radix)
 #ifdef _MSC_VER
     _itow(i, str, radix);
 #else
-	swprintf(str, 16, L"%i", i);
+    if (radix == 16 ) {
+        swprintf(str, 16, L"%x", i);
+    } else {
+        swprintf(str, 16, L"%i", i);
+    }
 #endif
 	(*this) += str;
 }
@@ -1509,7 +1513,11 @@ void String::concat(UInt32 i, Int32 radix)
 #ifdef _MSC_VER
 	_ultow(i, str, radix);
 #else
-	swprintf(str, 16, L"%u", i);
+    if (radix == 16 ) {
+        swprintf(str, 16, L"%x", i);
+    } else {
+        swprintf(str, 16, L"%u", i);
+    }
 #endif
 	(*this) += str;
 }
@@ -1521,7 +1529,11 @@ void String::concat(Int64 i, Int32 radix)
 #ifdef _MSC_VER
 	_i64tow(i,str,radix);
 #else
-	swprintf(str, 32, L"%lld", i);
+    if (radix == 16 ) {
+        swprintf(str, 32, L"%llx", i);
+    } else {
+        swprintf(str, 32, L"%lld", i);
+    }
 #endif
 	(*this) += str;
 }
@@ -1533,7 +1545,11 @@ void String::concat(UInt64 i, Int32 radix)
 #ifdef _MSC_VER
 	_ui64tow(i, str, radix);
 #else
-	swprintf(str, 32, L"%llu", i);
+    if (radix == 16 ) {
+        swprintf(str, 32, L"%llx", i);
+    } else {
+        swprintf(str, 32, L"%llu", i);
+    }
 #endif
 	(*this) += str;
 }
@@ -1753,7 +1769,13 @@ String& String::arg(const Int32 &i, Int32 fieldWidth, Int32 base, WChar fillChar
     }
 
     String s;
-    s.concat(i, base);  // @todo fillChar
+    s.concat(i, base);
+
+    if (fieldWidth > 0 && s.length() < (UInt32)fieldWidth) {
+        String p;
+        p.setFill(fillChar, fieldWidth - s.length());
+        s = p + s;
+    }
 
     replaceArg(placeholder, placeholderSize, s);
 
@@ -1785,7 +1807,13 @@ String& String::arg(const UInt32 &i, Int32 fieldWidth, Int32 base, WChar fillCha
     }
 
     String s;
-    s.concat(i, base);  // @todo fillChar
+    s.concat(i, base);
+
+    if (fieldWidth > 0 && s.length() < (UInt32)fieldWidth) {
+        String p;
+        p.setFill(fillChar, fieldWidth - s.length());
+        s = p + s;
+    }
 
     replaceArg(placeholder, placeholderSize, s);
 
@@ -1817,7 +1845,13 @@ String& String::arg(const Int64 &i, Int32 fieldWidth, Int32 base, WChar fillChar
     }
 
     String s;
-    s.concat(i, base);  // @todo fillChar
+    s.concat(i, base);
+
+    if (fieldWidth > 0 && s.length() < (UInt32)fieldWidth) {
+        String p;
+        p.setFill(fillChar, fieldWidth - s.length());
+        s = p + s;
+    }
 
     replaceArg(placeholder, placeholderSize, s);
 
@@ -1849,7 +1883,13 @@ String& String::arg(const UInt64 &i, Int32 fieldWidth, Int32 base, WChar fillCha
     }
 
     String s;
-    s.concat(i, base);  // @todo fillChar
+    s.concat(i, base);
+
+    if (fieldWidth > 0 && s.length() < (UInt32)fieldWidth) {
+        String p;
+        p.setFill(fillChar, fieldWidth - s.length());
+        s = p + s;
+    }
 
     replaceArg(placeholder, placeholderSize, s);
 
@@ -1921,7 +1961,7 @@ String& String::arg(const Double &d, Int32 decimals, WChar separator)
     return *this;
 }
 
-String& String::arg(const String &s)
+String& String::arg(const String &s, Int32 fieldWidth, WChar fillChar)
 {
     if (isEmpty()) {
         return *this;
@@ -1944,7 +1984,15 @@ String& String::arg(const String &s)
         ++placeholderSize;
     }
 
-    replaceArg(placeholder, placeholderSize, s);
+    if (fieldWidth > 0 && s.length() < (UInt32)fieldWidth) {
+        String p;
+        p.setFill(fillChar, fieldWidth - s.length());
+        p = p + s;
+
+        replaceArg(placeholder, placeholderSize, p);
+    } else {
+        replaceArg(placeholder, placeholderSize, s);
+    }
 
     incArg(m_data, m_maxsize, arg);
     return *this;

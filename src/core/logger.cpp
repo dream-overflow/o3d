@@ -86,54 +86,6 @@ const String &FileLogger::getDateFormat() const
     return m_dateFormat;
 }
 
-void FileLogger::writeHeaderLog()
-{
-    if (m_absolutefname.isEmpty())
-        m_absolutefname = FileManager::instance()->getFullFileName(m_logFilename);
-
-    if (!m_os) {
-        m_os = FileManager::instance()->openOutStream(
-                    m_absolutefname,
-                    FileOutStream::APPEND);
-    }
-
-    DateTime current(True);
-    String date = current.buildString(m_dateFormat);
-    if (!date.isEmpty()) {
-        date += ' ';
-    }
-
-    String str = "Starting of application on " + current.buildString("%y-%M-%D at %h:%i:%s.%l");
-    String time = String::print("[%.5f] ", ((Float)System::getTime() / System::getTimeFrequency()));
-
-    m_os->writeLine(String(date + time + str));
-    m_os->flush();
-}
-
-void FileLogger::writeFooterLog()
-{
-    if (m_absolutefname.isEmpty())
-        m_absolutefname = FileManager::instance()->getFullFileName(m_logFilename);
-
-    if (!m_os) {
-        m_os = FileManager::instance()->openOutStream(
-                    m_absolutefname,
-                    FileOutStream::APPEND);
-    }
-
-    DateTime current(True);
-    String date = current.buildString(m_dateFormat);
-    if (!date.isEmpty()) {
-        date += ' ';
-    }
-
-    String str = "Terminating application on " + current.buildString("%y-%M-%D at %h:%i:%s.%l");
-    String time = String::print("[%.5f] ", ((Float)System::getTime() / System::getTimeFrequency()));
-
-    m_os->writeLine(String(date + time + str));
-    m_os->flush();
-}
-
 void FileLogger::clearLog()
 {
     if (m_absolutefname.isEmpty()) {
@@ -141,10 +93,13 @@ void FileLogger::clearLog()
     }
 
     if (!m_os) {
-        m_os = FileManager::instance()->openOutStream(
-                    m_absolutefname,
-                    FileOutStream::CREATE);
+        delete m_os;
+        m_os = nullptr;
     }
+
+    m_os = FileManager::instance()->openOutStream(
+               m_absolutefname,
+               FileOutStream::CREATE);
 }
 
 void FileLogger::setLogLevel(FileLogger::LogLevel minLevel)
@@ -156,3 +111,102 @@ FileLogger::LogLevel FileLogger::getLogLevel() const
 {
     return m_logLevel;
 }
+
+#ifdef O3D_ANDROID
+
+#include "o3d/core/application.h"
+#include "o3d/android/android_native_app_glue.h"
+
+#include <android/log.h>
+
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "threaded_app", __VA_ARGS__))
+#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "threaded_app", __VA_ARGS__))
+
+AndroidLogger::AndroidLogger(const String &prefix) :
+    m_logLevel(INFO),
+    m_prefix(prefix)
+{
+}
+
+AndroidLogger::~AndroidLogger()
+{
+}
+
+void AndroidLogger::log(LogLevel level, const String &str)
+{
+    // minimal log level
+    if (level < m_logLevel) {
+        return;
+    }
+
+    DateTime current(True);
+    String date = current.buildString(m_dateFormat);
+    if (!date.isEmpty()) {
+        date += ' ';
+    }
+
+    String time = String::print("[%.5f] ", ((Float)System::getTime() / System::getTimeFrequency()) );
+    String msg = date + time + str;
+
+    int alvl;
+
+    // ANDROID_LOG_DEFAULT
+    // ANDROID_LOG_VERBOSE
+    // ANDROID_LOG_DEBUG
+    // ANDROID_LOG_SILENT
+
+    switch (level) {
+        case TRACE:
+            alvl = ANDROID_LOG_VERBOSE;
+            break;
+        case INFO:
+            alvl = ANDROID_LOG_INFO;
+            break;
+        case WARNING:
+            alvl = ANDROID_LOG_WARN;
+            break;
+        case ERROR:
+            alvl = ANDROID_LOG_ERROR;
+            break;
+        case CRITICAL:
+            alvl = ANDROID_LOG_FATAL;
+            break;
+        default:
+            alvl = ANDROID_LOG_INFO;
+            break;
+    }
+
+    String tag = Application::getAppName();
+    if (m_prefix.isValid()) {
+        tag += " " + m_prefix;
+    }
+
+    __android_log_write(alvl, tag.toUtf8().getData(), msg.toUtf8().getData());
+}
+
+void AndroidLogger::setDateFormat(const String &format)
+{
+    m_dateFormat = format;
+}
+
+const String &AndroidLogger::getDateFormat() const
+{
+    return m_dateFormat;
+}
+
+void AndroidLogger::clearLog()
+{
+
+}
+
+void AndroidLogger::setLogLevel(AndroidLogger::LogLevel minLevel)
+{
+    m_logLevel = minLevel;
+}
+
+AndroidLogger::LogLevel AndroidLogger::getLogLevel() const
+{
+    return m_logLevel;
+}
+
+#endif // O3D_ANDROID

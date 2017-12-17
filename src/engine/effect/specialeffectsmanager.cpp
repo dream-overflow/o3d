@@ -32,14 +32,10 @@ SpecialEffectsManager::~SpecialEffectsManager()
 	deleteArray(m_indexToEffect);
 
     if (!m_findMap.empty()) {
-		String message("Specials effects still exists into the manager :\n");
-
         for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
-            message += "    |- " + it->second->getName() + "\n";
-			deletePtr(it->second);
-		}
-
-		O3D_WARNING(message);
+            O3D_WARNING(String("Remaining special effect : ") + it->second->getName());
+            deletePtr(it->second);
+        }
 	}
 }
 

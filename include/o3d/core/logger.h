@@ -47,12 +47,6 @@ public:
     //! get the date format, can be empty.
     virtual const String& getDateFormat() const = 0;
 
-    //! write header banner to log file
-    virtual void writeHeaderLog() = 0;
-
-    //! write footer banner to log file
-    virtual void writeFooterLog() = 0;
-
     //! clean log (if supported by the stream)
     virtual void clearLog() = 0;
 
@@ -64,7 +58,7 @@ public:
 };
 
 /**
- * @brief Base file system logger.
+ * @brief File system logger.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-11-04
  */
@@ -91,12 +85,6 @@ public:
     //! get the date format, can be empty.
     virtual const String& getDateFormat() const;
 
-	//! write header banner to log file
-    virtual void writeHeaderLog();
-
-	//! write footer banner to log file
-    virtual void writeFooterLog();
-
 	//! clean log file
     virtual void clearLog();
 
@@ -116,6 +104,48 @@ protected:
 
     OutStream *m_os;        //!< file output stream
 };
+
+#ifdef O3D_ANDROID
+/**
+ * @brief Android logcat logger.
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
+ * @date 2017-12-16
+ */
+class O3D_API AndroidLogger : public Logger
+{
+public:
+
+    //! constructor
+    AndroidLogger(const String &prefix);
+
+    virtual ~AndroidLogger();
+
+    //! write a message in the log file
+    //! @param str The message to write
+    virtual void log(LogLevel level, const String &str);
+
+    //! set the date format, default is no date, empty string mean none.
+    virtual void setDateFormat(const String &format);
+    //! get the date format, can be empty.
+    virtual const String& getDateFormat() const;
+
+    //! clean log file
+    virtual void clearLog();
+
+    //! set the minimal log level.
+    virtual void setLogLevel(LogLevel minLevel);
+
+    //! get the minimal log level.
+    virtual LogLevel getLogLevel() const;
+
+protected:
+
+    LogLevel m_logLevel;    //!< minimal log level
+
+    String m_prefix;        //!< Tag
+    String m_dateFormat;    //!< date format
+};
+#endif // O3D_ANDROID
 
 } // namespace o3d
 

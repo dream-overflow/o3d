@@ -17,7 +17,6 @@
 
 #include <sys/time.h>
 #include <errno.h>
-#include <iostream>
 #include <endian.h>
 
 using namespace o3d;
@@ -198,33 +197,40 @@ void System::print(
 		const String &title,
         MessageLevel level)
 {
-	CString c = content.isValid() ? content.toUtf8() : "<undefined>";
-	CString t = title.isValid() ? title.toUtf8() : "<untitled>";
+    String c = content.isValid() ? content : "<undefined>";
+    String t = title.isValid() ? title : "<untitled>";
+    String msg;
 
     switch (level)
 	{
         case MSG_DEBUG:
-            std::cout << "[DEBUG] " << t.getData() << ": " << c.getData() << std::endl;
-			return;
+            msg = String("[DEBUG] ") + t + ": " + c + "\n";
+            printf(msg.toUtf8().getData());
+            return;
 
         case MSG_INFO:
-            std::cout << "[INFO] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[INFO] ") + t + ": " + c + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case MSG_WARNING:
-			std::cout << "[WARNING] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[WARNING] ") + t + ": " + c + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
 		case MSG_ERROR:
-			std::cout << "[ERROR] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[ERROR] ") + t + ": " + c + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 
         case MSG_CRITICAL:
-            std::cout << "[CRITICAL] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[CRITICAL] ") + t + ": " + c + "\n";
+            printf(msg.toUtf8().getData());
             return;
 
 		default:
-            std::cout << "[DEBUG] " << t.getData() << ": " << c.getData() << std::endl;
+            msg = String("[DEBUG] ") + t + ": " + c + "\n";
+            printf(msg.toUtf8().getData());
 			return;
 	}
 }

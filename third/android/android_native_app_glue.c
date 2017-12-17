@@ -421,7 +421,8 @@ static void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 }
 
 JNIEXPORT
-void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState,
+void ANativeActivity_onCreate(ANativeActivity* activity,
+                              void* savedState,
                               size_t savedStateSize) {
     LOGV("Creating: %p\n", activity);
     activity->callbacks->onDestroy = onDestroy;

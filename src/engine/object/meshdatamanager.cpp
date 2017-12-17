@@ -31,14 +31,10 @@ MeshDataManager::MeshDataManager(BaseObject *parent, const String &path) :
 MeshDataManager::~MeshDataManager()
 {
     if (!m_findMap.empty()) {
-		String message("MeshData still exists into the manager :\n");
-
         for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
-            message += "    |- " + it->second->getResourceName() + "\n";
-			deletePtr(it->second);
+            O3D_WARNING(String("Remaining mesh data : ") + it->second->getResourceName());
+            deletePtr(it->second);
 		}
-
-		O3D_WARNING(message);
 	}
 }
 

@@ -129,29 +129,26 @@ Context::Context(Renderer *renderer) :
 	m_modelview.addObserver(this);
 	m_projection.addObserver(this);
 
-	// Print a beautiful log message
-	String message;
-	message << "OpenGL capacities:\n"
-            << String("    |- Aliased line width range = {0} to {1}").arg(m_aliasedLineWidthRange[0], 2).arg(m_aliasedLineWidthRange[1], 2) << "\n"
-            << String("    |- Smooth line width range = {0} to {1}").arg(m_smoothLineWidthRange[0], 2).arg(m_smoothLineWidthRange[1], 2) << "\n"
-            << "    |- Texture max size = " << m_textureMaxSize << "\n"
-            << "    |- Texture max size = " << m_textureMaxSize << "\n"
-            << "    |- Texture 3D max size = " << m_texture3dMaxSize << "\n"
-            << "    |- Texture max samples = " << m_textureMaxSamples << "\n"
-            << "    |- Max texture layers = " << m_textureMaxLayers << "\n"
-            << "    |- Max fragment texture image units = " << m_maxTextureImageUnits << "\n"
-            << "    |- Max vertex texture image units = " << m_maxVertexTextureImageUnits << "\n"
-            << "    |- Max geometry texture image units = " << m_maxGeometryTextureImageUnits << "\n"
-            << "    |- Max tessellation eval texture image units = " << m_maxTessEvalTextureImageUnits << "\n"
-            << "    |- Max tessellation control texture image units = " << m_maxTessControlTextureImageUnits << "\n"
-            << "    |- Max combined texture image units = " << m_maxCombinedTextureImageUnits << "\n"
-            << "    |- Max vertex attribs = " << m_maxVertexAttribs << "\n"
-            << "    |- Max draw buffers = " << m_maxDrawBuffers << "\n"
-            << String("    |- Max anisotropy lvl = {0}").arg(m_maxAnisotropy, 2) << "\n"
-            << "    |- Max view-ports = " << m_maxViewports << "\n"
-            << "    |- GLSL version = " << (version?(const Char*)version:"1.10") << "\n";
-
-    O3D_MESSAGE(message);
+    // Log
+    O3D_MESSAGE("OpenGL capacities:");
+    O3D_MESSAGE(String("- Aliased line width range = {0} to {1}").arg(m_aliasedLineWidthRange[0], 2).arg(m_aliasedLineWidthRange[1], 2));
+    O3D_MESSAGE(String("- Smooth line width range = {0} to {1}").arg(m_smoothLineWidthRange[0], 2).arg(m_smoothLineWidthRange[1], 2));
+    O3D_MESSAGE(String("- Texture max size = ") << m_textureMaxSize);
+    O3D_MESSAGE(String("- Texture max size = ") << m_textureMaxSize);
+    O3D_MESSAGE(String("- Texture 3D max size = ") << m_texture3dMaxSize);
+    O3D_MESSAGE(String("- Texture max samples = ") << m_textureMaxSamples);
+    O3D_MESSAGE(String("- Max texture layers = ") << m_textureMaxLayers);
+    O3D_MESSAGE(String("- Max fragment texture image units = ") << m_maxTextureImageUnits);
+    O3D_MESSAGE(String("- Max vertex texture image units = ") << m_maxVertexTextureImageUnits);
+    O3D_MESSAGE(String("- Max geometry texture image units = ") << m_maxGeometryTextureImageUnits);
+    O3D_MESSAGE(String("- Max tessellation eval texture image units = ") << m_maxTessEvalTextureImageUnits);
+    O3D_MESSAGE(String("- Max tessellation control texture image units = ") << m_maxTessControlTextureImageUnits);
+    O3D_MESSAGE(String("- Max combined texture image units = ") << m_maxCombinedTextureImageUnits);
+    O3D_MESSAGE(String("- Max vertex attribs = ") << m_maxVertexAttribs);
+    O3D_MESSAGE(String("- Max draw buffers = ") << m_maxDrawBuffers);
+    O3D_MESSAGE(String("- Max anisotropy lvl = {0}").arg(m_maxAnisotropy, 2));
+    O3D_MESSAGE(String("- Max view-ports = ") << m_maxViewports);
+    O3D_MESSAGE(String("- GLSL version = ") << (version?(const Char*)version:"1.10"));
 }
 
 // Destructor

@@ -81,12 +81,12 @@ void EGL::init()
     EGLNativeDisplayType display = reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay());
     EGLDisplay eglDisplay = EGL::getDisplay(display);
 
-    // Initialize EGL for this display (need 1.5+)
+    // Initialize EGL for this display (need 1.4+)
     EGLint eglVersionMajor, eglVersionMinor;
     if (!EGL::initialize(eglDisplay, &eglVersionMajor, &eglVersionMinor) ||
-        ((eglVersionMajor == 1) && (eglVersionMinor < 5)) || (eglVersionMajor < 1)) {
+        ((eglVersionMajor == 1) && (eglVersionMinor < 4)) || (eglVersionMajor < 1)) {
 
-        O3D_ERROR(E_InvalidResult("Invalid EGL version. Need 1.5+"));
+        O3D_ERROR(E_InvalidResult("Invalid EGL version. Need 1.4+"));
     }
 
     // Selection of the GL API (GL on Desktop, GLES on mobile)

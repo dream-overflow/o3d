@@ -11,6 +11,7 @@
 #include "o3d/core/debug.h"
 
 #include "o3d/core/thread.h"
+#include "o3d/core/application.h"
 
 #include <time.h>
 
@@ -48,9 +49,15 @@ void Debug::destroy()
 // Restricted default ctor
 //---------------------------------------------------------------------------------------
 Debug::Debug() :
-    m_defaultLog(new FileLogger("default.log"))
+    m_defaultLog(nullptr)
 {
 	m_instance = (Debug*)this; // Used to avoid recursive call when the ctor call himself...
+
+#ifdef O3D_ANDROID
+    m_defaultLog = new AndroidLogger("");
+#else
+    m_defaultLog = new FileLogger(Application::getAppName() + ".log");
+#endif
 }
 
 Debug::~Debug()
@@ -85,7 +92,7 @@ void Debug::throwDebug(
         String details = "";
 
         if (logLevel >= Logger::ERROR) {
-            details = String::print("\n    at line(%i) file(%s) function(%s)", _line_, _file_, _function_);
+            details = String::print(" at line(%i) file(%s) function(%s)", _line_, _file_, _function_);
         }
 
         if (filename.isEmpty()) {
@@ -161,7 +168,7 @@ void Debug::throwDebug(
 
         // for error and critical
         if (logLevel >= Logger::ERROR) {
-            details = String::print("\n    at line(%i) file(%ls) function(%ls)", _line_, _file_, _function_);
+            details = String::print(" at line(%i) file(%ls) function(%ls)", _line_, _file_, _function_);
         }
 
         if (filename.isEmpty()) {
@@ -270,6 +277,16 @@ void Debug::setDefaultLog(const String &filename)
 
     if (filename.isValid()) {
         m_defaultLog = new FileLogger(filename);
+    }
+}
+
+void Debug::setDefaultLog(Logger *logger)
+{
+    FastMutexLocker locker(O3D_DebugMutex);
+    deletePtr(m_defaultLog);
+
+    if (logger) {
+        m_defaultLog = logger;
     }
 }
 

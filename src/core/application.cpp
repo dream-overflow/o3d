@@ -26,7 +26,6 @@
 #include "o3d/core/gl.h"
 
 #include <algorithm>
-#include <iostream>
 
 using namespace o3d;
 
@@ -59,6 +58,14 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
 
     // Get the application name and path
     getBaseNamePrivate(argc, argv);
+
+    if (settings.clearLog) {
+        Debug::instance()->getDefaultLog().clearLog();
+    }
+
+    // Log start time
+    DateTime current(True);
+    O3D_MESSAGE(String("Starting of application on ") + current.buildString("%y-%M-%D at %h:%i:%s.%l"));
 
 	// Initialize fast memory allocator
 	MemoryManager::instance()->initFastAllocator(
@@ -112,6 +119,10 @@ void Application::quit()
     if (!ms_init) {
 		return;
     }
+
+    // Log quit time
+    DateTime current(True);
+    O3D_MESSAGE(String("Terminating of application on ") + current.buildString("%y-%M-%D at %h:%i:%s.%l"));
 
     ms_init = False;
 

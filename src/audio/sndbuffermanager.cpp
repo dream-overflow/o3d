@@ -27,16 +27,12 @@ SndBufferManager::SndBufferManager(BaseObject *parent, const String &path) :
 SndBufferManager::~SndBufferManager()
 {
     if (!m_findMap.empty()) {
-		String message("Sound buffers still exists into the manager :\n");
-
         for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
             for (std::list<SndBuffer*>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
-                message += "    |- " + (*it2)->getResourceName() + "\n";
+                O3D_WARNING(String("Remaining sound buffer : ") + (*it2)->getResourceName());
 				deletePtr(*it2);
 			}
 		}
-
-		O3D_WARNING(message);
 	}
 }
 

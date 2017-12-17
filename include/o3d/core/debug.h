@@ -225,6 +225,9 @@ public:
     //! @param filename Default log filename. If empty or null string default log is disabled.
     void setDefaultLog(const String &filename = "");
 
+    //! Set a new default logger or null. The previous one is deleted.
+    void setDefaultLog(Logger *logger);
+
 	//! Check if the default logger is enabled
 	Bool isDefaultLog();
 

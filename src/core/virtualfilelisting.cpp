@@ -14,6 +14,8 @@
 #include "o3d/core/diskdir.h"
 #include "o3d/core/diskfileinfo.h"
 
+#include <wctype.h>
+
 #ifdef O3D_WINDOWS
 	#include <direct.h>
 #else

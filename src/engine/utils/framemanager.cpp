@@ -81,23 +81,18 @@ void FrameManager::update(Float prevDisplayDuration)
 // Log information about the last frames.
 void FrameManager::logInfo() const
 {
-    String str("The last ");
-
-	str.concat(m_interval);
-	str += " frames :\n";
+    O3D_MESSAGE(String("The last {0} frames :").arg(m_interval));
 
     for (UInt32 i = 0; i < m_interval; ++i) {
-		str += String::print
-                ("    |- %i -> duration(%.4f ms) tris(%i)/lines(%i)/points(%i)/vertices(%i)\n",
-				i,
-				m_framesList[i].duration,
-				m_framesList[i].numTris,
-				m_framesList[i].numLines,
-                m_framesList[i].numPoints,
-                m_framesList[i].numVertices);
-	}
-
-	O3D_MESSAGE(str);
+        O3D_MESSAGE(String::print
+                    ("- %i -> duration(%.4f ms) tris(%i)/lines(%i)/points(%i)/vertices(%i)",
+                     i,
+                     m_framesList[i].duration,
+                     m_framesList[i].numTris,
+                     m_framesList[i].numLines,
+                     m_framesList[i].numPoints,
+                     m_framesList[i].numVertices));
+    }
 }
 
 // Compute the duration of the frame in seconds.

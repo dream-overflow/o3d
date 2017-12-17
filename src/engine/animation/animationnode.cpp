@@ -247,7 +247,7 @@ void AnimationNode::drawTrajectory(Node *node)
 	if (animationIt != m_sonList.end())
 	{
 		// the animation node has too much sons
-        /*O3D_WARNING*/O3D_LOG(Logger::INFO, "Hierarchy tree and animation tree don't fit");
+        /*O3D_WARNING*/O3D_MESSAGE("Hierarchy tree and animation tree don't fit");
 		return;
 	}
 }

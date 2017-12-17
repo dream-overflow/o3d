@@ -27,28 +27,26 @@ void PCLODTerrain::log(PCLODLogType _type, const String & _msg) const
 {
 	FastMutexLocker locker(m_loggerMutex);
 
-    if (m_pCurrentConfigs != nullptr)
-	{
+    if (m_pCurrentConfigs != nullptr) {
 		if (!getCurrentConfigs().logEnabled())
 			return;
 
-		switch(_type)
-		{
-		case PCLOD_LOG_MESSAGE:
-			if (!getCurrentConfigs().messageShown())
-				return;
-			break;
-		case PCLOD_LOG_WARNING:
-			if (!getCurrentConfigs().warningShown())
-				return;
-			break;
-		case PCLOD_LOG_ERROR:
-			if (!getCurrentConfigs().errorShown())
-				return;
-			break;
-		default:
-			return;
-		}
+        switch(_type) {
+            case PCLOD_LOG_MESSAGE:
+                if (!getCurrentConfigs().messageShown())
+                    return;
+                break;
+            case PCLOD_LOG_WARNING:
+                if (!getCurrentConfigs().warningShown())
+                    return;
+                break;
+            case PCLOD_LOG_ERROR:
+                if (!getCurrentConfigs().errorShown())
+                    return;
+                break;
+            default:
+                return;
+        }
 	}
 
     String head;
@@ -87,7 +85,6 @@ PCLODTerrain::PCLODTerrain(BaseObject *pParent, Camera *pCamera) :
 	m_loggerMutex()
 {
 	m_logger.clearLog();
-	m_logger.writeHeaderLog();
 
 	m_pCurrentConfigs = new PCLODConfigs((BaseObject*)this);
 
@@ -98,21 +95,21 @@ PCLODTerrain::~PCLODTerrain()
 {
 	deletePtr(m_pZoneManager);
 	deletePtr(m_pCurrentConfigs);
-
-	m_logger.writeFooterLog();
 }
 
 void PCLODTerrain::draw()
 {
-    if (m_pZoneManager == nullptr)
+    if (m_pZoneManager == nullptr) {
 		PCLOD_WARNING(String("Terrain : Attempt to draw but the terrain is not initialized"));
-	else
+    } else {
 		m_pZoneManager->draw();
+    }
 
 	DrawInfo drawInfo(DrawInfo::AMBIENT_PASS);
 
-	if (m_pSky)
+    if (m_pSky) {
 		m_pSky->draw(drawInfo);
+    }
 }
 
 void PCLODTerrain::update()
@@ -215,12 +212,10 @@ void PCLODTerrain::load(
  * _position is the position of the origin of the terrain in the world coordinate */
 void PCLODTerrain::init(const Vector3 & _position)
 {
-    if (m_pZoneManager == nullptr)
+    if (m_pZoneManager == nullptr) {
 		PCLOD_ERROR(String("Terrain : You must load the terrain before the initialization"));
-	else
-	{
+    } else {
 		m_pCurrentConfigs->init();
 		m_pZoneManager->init(_position);
 	}
 }
-

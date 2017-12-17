@@ -14,8 +14,6 @@
 #include "o3d/core/string.h"
 #include "o3d/core/closable.h"
 
-#include <iostream>
-
 using namespace o3d;
 
 Closable::~Closable()

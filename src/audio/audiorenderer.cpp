@@ -49,52 +49,44 @@ AudioRenderer::AudioRenderer(const String& device, Bool useEAX) :
 	Char *devicesList;
 	Char *devices[12];
 
-	String str("Sound output devices :\n");
+    O3D_MESSAGE("Sound output devices :");
 
-    if (alcIsExtensionPresent(nullptr, (ALchar*)"ALC_ENUMERATION_EXT") == AL_TRUE)
-	{
+    if (alcIsExtensionPresent(nullptr, (ALchar*)"ALC_ENUMERATION_EXT") == AL_TRUE) {
 		defaultDevice = (Char*)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
 		devicesList = (Char*)alcGetString(NULL, ALC_DEVICE_SPECIFIER);
 
 		Int32 ndevices;
-		for (ndevices = 0 ; ndevices < 12 ; ++ndevices)
-		{
+        for (ndevices = 0 ; ndevices < 12 ; ++ndevices) {
             devices[ndevices] = nullptr;
 		}
 
-		for (ndevices = 0 ; ndevices < 12 ; ++ndevices)
-		{
+        for (ndevices = 0 ; ndevices < 12 ; ++ndevices) {
 			devices[ndevices] = devicesList;
 
-			if (strcmp(devices[ndevices],defaultDevice) == 0)
-			{
+            if (strcmp(devices[ndevices],defaultDevice) == 0) {
 				m_defaultDevice = ndevices;
 			}
 
 			devicesList += strlen(devicesList);
 
-			if (devicesList[0] == 0)
-			{
-				if (devicesList[1] == 0)
+            if (devicesList[0] == 0) {
+                if (devicesList[1] == 0) {
 					break;
-				else
+                } else {
 					devicesList += 1;
+                }
 			}
 		}
 
-        if (devices[ndevices] != nullptr)
-		{
+        if (devices[ndevices] != nullptr) {
 			m_numDevices = ++ndevices;
 
-			for (Int32 i = 0 ; i < ndevices ; ++i)
-			{
+            for (Int32 i = 0 ; i < ndevices ; ++i) {
 				m_devicesList[i] = devices[i];
-                str += "    |- " + m_devicesList[i] + "\n";
+                O3D_MESSAGE(String("- ") + m_devicesList[i]);
 			}
 		}
-	}
-
-	O3D_MESSAGE(str);
+    }
 
 	create(device, useEAX);
 }
@@ -201,20 +193,16 @@ Bool AudioRenderer::create(const String &device, Bool useEAX)
 
 	m_state = True;
 
-	String str("Sound card : " + getSoundCardString() + " on " + m_deviceName + " device\n");
+    O3D_MESSAGE(String("Sound card : ") + getSoundCardString() + " on " + m_deviceName + " device");
 
-	if(alReverbScale && alReverbDelay)
-	{
-        str += "    |- OpenAL LOKI reverb: YES\n";
+    if(alReverbScale && alReverbDelay) {
+        O3D_MESSAGE("- OpenAL LOKI reverb: YES");
 		m_reverb = True;
-	}
-	else
-	{
-        str += "    |- OpenAL LOKI reverb: NO\n";
+    } else {
+        O3D_MESSAGE("OpenAL LOKI reverb: NO");
 		m_reverb = False;
 	}
 
-    O3D_LOG(Logger::INFO, str);
 	return True;
 }
 

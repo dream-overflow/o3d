@@ -551,17 +551,11 @@ void AppWindow::computeFPS()
 // Log information about the last FPS.
 void AppWindow::logFps()
 {
-    String str;
-
-	str = "Last ";
-	str.concat(m_interval);
-	str += " frames :\n";
+    O3D_MESSAGE(String("The last {0} frames :").arg(m_interval));
 
     for (UInt32 i = 0; i < m_interval; ++i) {
-        str += String::print("    |- %i -> %.4f fps\n", i, m_framesList[i]);
-	}
-
-	O3D_MESSAGE(str);
+        O3D_MESSAGE(String::print("- %i -> %.4f fps", i, m_framesList[i]));
+    }
 }
 
 // Report FPS statistics.

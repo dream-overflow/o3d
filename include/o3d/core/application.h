@@ -43,7 +43,8 @@ public:
         sizeOfFastAlloc16(16384),
         sizeOfFastAlloc32(16384),
         sizeOfFastAlloc64(16384),
-        useDisplay(True)
+        useDisplay(True),
+        clearLog(True)
     {
     }
 
@@ -60,6 +61,11 @@ public:
      * main thread (as nullptr), and to call its update in your own main loop.
      */
     Bool useDisplay;
+
+    /**
+     * @details Clear the default choosen log file at startup.
+    */
+    Bool clearLog;
 };
 
 

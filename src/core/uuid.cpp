@@ -16,6 +16,8 @@
 #include "o3d/core/outstream.h"
 #include "o3d/core/application.h"
 
+#include <wctype.h>
+
 using namespace o3d;
 
 static UInt64 s_lastTime = 0;

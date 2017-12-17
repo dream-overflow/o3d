@@ -31,14 +31,10 @@ AnimationManager::AnimationManager(BaseObject *parent, const String &path) :
 AnimationManager::~AnimationManager()
 {
     if (!m_findMap.empty()) {
-		String message("Animations still exists into the manager :\n");
-
         for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
-            message += "    |- " + it->second->getFileName() + "\n";
+            O3D_WARNING(String("Remaining animation : ") + it->second->getFileName());
 			deletePtr(it->second);
-		}
-
-		O3D_WARNING(message);
+        }
 	}
 }
 
