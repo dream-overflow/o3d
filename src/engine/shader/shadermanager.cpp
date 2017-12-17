@@ -11,10 +11,10 @@
 #include "o3d/engine/shader/shadermanager.h"
 
 #include "o3d/core/filemanager.h"
-#include "o3d/core/diskfileinfo.h"
+#include "o3d/core/fileinfo.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/core/virtualfilelisting.h"
-#include "o3d/core/diskdir.h"
+#include "o3d/core/dir.h"
 #include "o3d/core/timer.h"
 #include "o3d/core/smartpointer.h"
 #include "o3d/core/char.h"
@@ -96,7 +96,7 @@ ShaderManager::ShaderManager(
 	Bool valid = False;
 
     if (defaultPath.isValid()) {
-		DiskDir dir(defaultPath);
+		Dir dir(defaultPath);
         if (dir.exists()) {
 			O3D_MESSAGE("Found defaults shaders in shaders directory");
 			addPath(defaultPath);
@@ -107,7 +107,7 @@ ShaderManager::ShaderManager(
     if (!valid) {
         // search for a shaders.zip archive in working directory
 		String pwd = FileManager::instance()->getWorkingDirectory();
-		DiskFileInfo zip(pwd + "/shaders.zip");
+		FileInfo zip(pwd + "/shaders.zip");
         if (zip.exists()) {
 			O3D_MESSAGE("Found defaults shaders in shaders.zip");
             FileManager::instance()->mountAsset("zip://", zip.getFullFileName());
@@ -724,7 +724,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
         is->read(data.getData(), size);
 		data[size] = 0;
 
-		DiskFileInfo fileInfo(*it);
+		FileInfo fileInfo(*it);
 		name = fileInfo.getFileName();
 
 		name.trimRight("_vp.glsl");
@@ -744,7 +744,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
         is->read(data.getData(), size);
 		data[size] = 0;
 
-		DiskFileInfo fileInfo(*it);
+		FileInfo fileInfo(*it);
 		name = fileInfo.getFileName();
 
 		name.trimRight("_fp.glsl");
@@ -764,7 +764,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
         is->read(data.getData(), size);
 		data[size] = 0;
 
-		DiskFileInfo fileInfo(*it);
+		FileInfo fileInfo(*it);
 		name = fileInfo.getFileName();
 
 		name.trimRight("_gp.glsl");

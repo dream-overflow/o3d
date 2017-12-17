@@ -12,7 +12,7 @@
 
 #include "o3d/core/vector2.h"
 #include "o3d/core/debug.h"
-#include "o3d/core/diskfileinfo.h"
+#include "o3d/core/fileinfo.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/object/bones.h"
@@ -754,7 +754,7 @@ Bool Ms3d::load(InStream &is, const String& baseName, const String &path)
 // Load MS3D file.
 Bool Ms3d::load(const String& filename)
 {
-    DiskFileInfo file(filename);
+    FileInfo file(filename);
 
     InStream *is = FileManager::instance()->openInStream(filename);
     if (is)

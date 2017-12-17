@@ -31,6 +31,11 @@
 
 using namespace o3d;
 
+Asset::~Asset()
+{
+
+}
+
 FileManager* FileManager::m_instance = nullptr;
 static FastMutex O3D_FileManagerMutex;
 
@@ -80,11 +85,11 @@ FileManager::~FileManager()
 // return the index of file pack end if not found
 IT_AssetList FileManager::findAsset(const String &assetName)
 {
-    String lPackName = getFullFileName(assetName);
+    String lAssetName = getFullFileName(assetName);
 
 	O3D_FileManagerMutex.lock();
     for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
-        if (((*it)->location() + '/' + (*it)->name()) == assetName) {
+        if ((*it)->fullPathName() == lAssetName) {
 			O3D_FileManagerMutex.unlock();
 			return it;
 		}
@@ -299,7 +304,7 @@ Bool FileManager::mountAsset(const String &protocol, const String &archiveName)
                 continue;
             }
 
-            if (((*it)->location() + '/' + (*it)->name()) == lPackName) {
+            if ((*it)->fullPathName() == lPackName) {
                 O3D_FileManagerMutex.unlock();
                 return False;
             }
@@ -355,12 +360,12 @@ Int32 FileManager::mountAllArchives()
 // remove a file pack and return true if it have already deleted
 Bool FileManager::umountAsset(const String &assetName)
 {
-    String lPackName = getFullFileName(assetName);
+    String lAssetName = getFullFileName(assetName);
 
 	O3D_FileManagerMutex.lock();
     for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
-        if (((*it)->location() + '/' + (*it)->name()) == lPackName) {
-			O3D_FileManagerMutex.unlock();
+        if ((*it)->fullPathName() == lAssetName) {
+            O3D_FileManagerMutex.unlock();
 
 			deletePtr(*it);
             m_assets.erase(it);
@@ -369,7 +374,7 @@ Bool FileManager::umountAsset(const String &assetName)
 	}
 	O3D_FileManagerMutex.unlock();
 
-	O3D_ERROR(E_InvalidParameter(lPackName));
+    O3D_ERROR(E_InvalidParameter(lAssetName));
 	return False;
 }
 
@@ -404,6 +409,8 @@ String FileManager::searchNextVirtualFile(FileTypes *fileType)
 	FastMutexLocker locker(O3D_FileManagerMutex);
 	String result;
 
+    // @todo improve because of android asset
+
     while (m_curAssetIt != m_assets.end()) {
         if (m_curFilePos < (*m_curAssetIt)->getNumFiles()) {
             result = (*m_curAssetIt)->getFileName(m_curFilePos);
@@ -428,12 +435,12 @@ String FileManager::searchNextVirtualFile(FileTypes *fileType)
 // get a mounted archive file
 Asset *FileManager::getAsset(const String &assetName)
 {
-    String lPackName = getFullFileName(assetName);
+    String lAssetName = getFullFileName(assetName);
 
 	O3D_FileManagerMutex.lock();
     for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
-        if (((*it)->location() + '/' + (*it)->name()) == lPackName) {
-			O3D_FileManagerMutex.unlock();
+        if ((*it)->fullPathName() == lAssetName) {
+            O3D_FileManagerMutex.unlock();
 			return *it;
 		}
 	}

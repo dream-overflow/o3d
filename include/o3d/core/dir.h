@@ -1,6 +1,6 @@
 /**
  * @file dir.h
- * @brief management.
+ * @brief File system directory management.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-06-22
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -11,157 +11,68 @@
 #define _O3D_DIR_H
 
 #include "memorydbg.h"
-#include "stringlist.h"
-#include "virtualfilelisting.h"
+#include "basedir.h"
 
 namespace o3d {
 
-typedef std::list<FLItem> T_FLItem_List;
-typedef T_FLItem_List::iterator IT_FLItem_List;
-typedef T_FLItem_List::const_iterator CIT_FLItem_List;
-
-//---------------------------------------------------------------------------------------
-//! @class Dir
-//-------------------------------------------------------------------------------------
-//! Abstract class for manager directory. @see O3DDiskDir for file system directory
-//! management. Path are returned without trailing slash. Any trailing slash or backslash
-//! are removed the given path name.
-//---------------------------------------------------------------------------------------
-class O3D_API Dir
+/**
+ * @brief File system directory management. Path are return without trailing slash.
+ * Given path are removed of theirs trailing slash, and any backslash are changed into slash.
+ */
+class O3D_API Dir : public BaseDir
 {
 public:
 
-	//! format of the directory
-	enum DirType
-	{
-		FILE_SYSTEM_DIR,        //!< local file system (real file on file system)
-		FILE_VIRTUAL_DIR,       //!< virtual file system (virtual file on O3DZip)
-		FILE_DIR,               //!< FTP directory
-		UNKNOWN_TYPE_DIR
-	};
-
-	//! directory return codes
-	enum DirReturn
-	{
-		SUCCESS,               //!< operation success
-		NOT_EMPTY_DIR,         //!< the directory is not empty
-		INVALID_PATH,          //!< the path is invalid
-		ACCESS_PROGRAM,        //!< a program is currently accessing the directory
-		NOT_WRITE_ACCESS,      //!< write access is requested
-		NOT_READ_ACCESS,       //!< read access is requested
-		NOT_PERMIT,            //!< the creation of a directory is not possible on the device
-		ALREADY_EXISTS,        //!< the directory is already existing
-		INVALID_ADDRESS,       //!< invalid address pointer
-		TOO_LONG,              //!< the directory address is too long
-		MEMORY_ERROR,          //!< not enough memory for the kernel
-		READ_ONLY,             //!< the path is read-only
-		CIRCULAR_REF,          //!< the path contain a circular reference due to a link
-		INSUFISANCE_SPACE,     //!< the writing device does not have enough space for create the directory
-		NOT_FOUND,             //!< invalid file descriptor
-		OLD_PATH_IS_NOT_DIR,   //!< when rename, old path is not a directory path
-		NOT_SOME_ENV,          //!< old path and new path are not on the same file system (environment)
-		CANT_CREATE_DEST_FILE, //!< can create the destination copy file
-		UNKNOWN_RET
-	};
+	//! Construct an DiskDir using the current directory.
+    static Dir current();
 
 	//! default constructor. Is the path is empty '.' is used.
-    Dir(const String& pathname = String());
+    Dir(const String& pathname = String()) :
+		BaseDir(pathname)
+	{
+		m_type = BaseDir::FILE_SYSTEM_DIR;
+	}
 
 	//! copy constructor
-	Dir(const Dir& dup) :
-		m_type(dup.m_type),
-		m_isValid(dup.m_isValid),
-		m_fullPathname(dup.m_fullPathname),
-		m_pathName(dup.m_pathName)
+    Dir(const Dir& dup) :
+		BaseDir(dup)
 	{
+		m_type = BaseDir::FILE_SYSTEM_DIR;
 	}
 
-	//! duplicator
-	inline Dir& operator=(const Dir &dup)
-	{
-		m_type = dup.m_type;
-		m_isValid = dup.m_isValid;
-		m_fullPathname = dup.m_fullPathname;
-		m_pathName = dup.m_pathName;
-
-		return (*this);
-	}
-
-	//! return the type of the directory
-	inline DirType getType() const { return m_type; }
+    virtual ~Dir() {}
 
 	//! clean the path (remove '..' and '.' when possible)
-	virtual void clean() = 0;
-
-	//! set the full path name of this
-	Bool setPathName(const String &pathName);
-
-	//! return the pathname (not the full path, only its name) without trailing slash.
-    inline const String& getPathName() const { return m_pathName; }
-
-	//! return the full pathname without trailing slash.
-	inline const String& getFullPathName() const { return m_fullPathname; }
-
-	//! concat the filename to the directory full-path (does not check its existence)
-    String makeFullFileName(const String &filename) const;
-
-	//! concat the filename to the directory relative path (does not check its existence)
-    String makeFileName(const String &filename) const;
-
-	//! concat the pathname to the full-path (does not check its existence)
-    String makeFullPathName(const String &pathName) const;
-
-	//! concat the pathname to the relative path (does not check its existence)
-    String makePathName(const String &pathName) const;
-
-    //! adapt a filename to this path. Note: the filename path and this Dir must have a common root.
-	//! e.g:
-	//!     'c:/tool/one/two/file.txt' as source
-	//!     'c:/tool/one/one/one' as path
-	//!	     result in '../../two/file.txt'
-	String makeRelative(const String &filename) const;
-
-	//! is an absolute or relative path ?
-	virtual Bool isAbsolute() const = 0;
-
-	//! is the path is readable (check the rights)
-	virtual Bool isReadable() const = 0;
-
-	//! is the path is writable (check the rights)
-	virtual Bool isWritable() const = 0;
-
-	//! is it the root directory
-	virtual Bool isRoot() const = 0;
-
-	//! remove a directory in the dir path (if the rights permits it)
-	virtual DirReturn removeDir(const String &path) const = 0;
-
-	//! create a sub directory in the dir path (if the rights permits it)
-	virtual DirReturn makeDir(const String &path) const = 0;
-
-	//! create the complete path in the Dir path
-	virtual DirReturn makePath(const String &path) const = 0;
-
-	//! check for the existence of a sub directory or a file
-	virtual Dir::DirReturn check(const String &fileOrPath) const = 0;
-
-	//! check if Dir exist
-    inline Bool exists() const
-	{
-		return m_isValid && (check("") == SUCCESS);
-	}
+	virtual void clean();
 
     //! check if the directory is empty
-    virtual Bool empty() const = 0;
+    virtual Bool empty() const;
 
-	//! change directory. return true if the new directory exists and it is readable
-	Bool cd(const String &path);
+	//! is an absolute or relative path ?
+	virtual Bool isAbsolute() const;
 
-	//! up directory. return true if the new directory exists and it is readable
-	inline Bool cdUp()
-	{
-		return cd("..");
-	}
+	//! is the path is readable (check the rights)
+	virtual Bool isReadable() const;
+
+	//! is the path is writable (check the rights)
+	virtual Bool isWritable() const;
+
+	//! is it the root directory
+	virtual Bool isRoot() const;
+
+	//! remove a directory in the O3DDir path (if the rights permits it)
+	virtual DirReturn removeDir(const String &path) const;
+
+	//! create a sub directory in the O3DDir path (if the rights permits it)
+	//! @note Mode is set to 0775.
+	virtual DirReturn makeDir(const String &path) const;
+
+	//! create the complete path in the O3DDir path
+	//! @note Mode is set to 0775.
+	virtual DirReturn makePath(const String &path) const;
+
+	//! check for the existence of a sub directory or a file
+	virtual BaseDir::DirReturn check(const String &fileOrPath) const;
 
 	//! search for a list of file. filters must be spaced by '|'.
 	//! If no filters is specified all files all files and directory listed are returned.
@@ -169,50 +80,24 @@ public:
 	//! VirtualFileListing.
 	virtual T_FLItem_List findFilesInfos(
 			const String &filters = "",
-			FileTypes Type = FILE_BOTH) const = 0;
+			FileTypes Type = FILE_BOTH) const;
 
 	//! Same as FindFiles but return only strings
 	virtual T_StringList findFiles(
 			const String &filters = "",
-			FileTypes Type = FILE_BOTH) const = 0;
+			FileTypes Type = FILE_BOTH) const;
 
 	//! make absolute. make - if relative - this path absolute depend to the current working directory
-	//! Note : work only for O3DDiskDir.
-	virtual Bool makeAbsolute() = 0;
-
-	//! remove the file in directory
-	virtual Dir::DirReturn removeFile(const String &filename) const = 0;
-
-	//! rename a file or a directory
-	virtual Dir::DirReturn rename(const String &oldName, const String &newName) const = 0;
+	virtual Bool makeAbsolute();
 
 	//! copy the given absolute filename/relative to working directory, to this dir
-	virtual Dir::DirReturn copyFile(const String &filename, UInt32 BlockSize = 32768) const = 0;
+	virtual BaseDir::DirReturn copyFile(const String &filename, UInt32 BlockSize = 32768) const;
 
-	//! check if two dir are the same
-	inline Bool operator== (const Dir &cmp) const
-	{
-		if (!m_isValid || !cmp.m_isValid)
-			return False;
-		return (m_fullPathname == cmp.m_fullPathname);
-	}
+	//! remove the file in directory
+	virtual BaseDir::DirReturn removeFile(const String &filename) const;
 
-	//! check if two dir are different
-	inline Bool operator!= (const Dir &cmp) const
-	{
-		if (!m_isValid || !cmp.m_isValid)
-			return False;
-		return (m_fullPathname != cmp.m_fullPathname);
-	}
-
-protected:
-
-	DirType m_type;            //!< type of the directory
-
-	Bool m_isValid;        //!< is the pathname valid
-
-	String m_fullPathname;  //!< absolute pathname (without trailing slash)
-	String m_pathName;      //!< only the name of the path (ie let full path '/foo/bar' then 'bar')
+	//! rename a file or a directory
+	virtual BaseDir::DirReturn rename(const String &oldName, const String &newName) const;
 };
 
 } // namespace o3d

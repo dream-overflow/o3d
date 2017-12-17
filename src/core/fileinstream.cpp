@@ -8,7 +8,7 @@
  */
 
 #include "o3d/core/fileinstream.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/basefileinfo.h"
 #include "o3d/core/templatearray.h"
 
 #ifdef _MSC_VER
@@ -49,7 +49,7 @@ FileInStream::FileInStream(const String &filename) :
     }
 }
 
-FileInStream::FileInStream(const FileInfo &file) :
+FileInStream::FileInStream(const BaseFileInfo &file) :
     m_file(nullptr),
     m_length(0)
 {

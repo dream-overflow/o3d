@@ -1,45 +1,43 @@
 /**
- * @file fileinstream.h
- * @brief 
+ * @file instreamandroid.h
+ * @brief Specialization for android asset.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
- * @date 2001-12-25
+ * @date 2017-12-17
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
- * @details 
+ * @details
  */
 
-#ifndef _O3D_FILEINSTREAM_H
-#define _O3D_FILEINSTREAM_H
+#ifndef _O3D_INSTREAMANDROID_H
+#define _O3D_INSTREAMANDROID_H
 
-#include "instream.h"
+#include "../instream.h"
+
+#ifdef O3D_ANDROID
+
+class AAsset;
 
 namespace o3d {
 
 class BaseFileInfo;
 
 /**
- * @brief FileInStream Reading file stream.
+ * @brief InStreamAndroid specialization for reading into android assets.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
- * @date 2013-12-04
+ * @date 2017-12-17
  */
-class O3D_API FileInStream : public InStream
+class O3D_API InStreamAndroid : public InStream
 {
 public:
 
     /**
-     * @brief FileInStream Open a file stream in reading from the file system.
-     * @param filename File name from file system.
+     * @brief InStreamAndroid Open a file stream in reading from the android asset.
+     * @param filename File name from the asset.
+     * @param asset Valid to own Android asset.
      * @throw E_FileNotFoundOrInvalidRights
      */
-    FileInStream(const String &filename);
+    InStreamAndroid(const String &filename, AAsset *asset);
 
-    /**
-     * @brief FileInStream Open a file stream in reading from the file system.
-     * @param file File info.
-     * @throw E_FileNotFoundOrInvalidRights
-     */
-    FileInStream(const BaseFileInfo &file);
-
-    virtual ~FileInStream();
+    virtual ~InStreamAndroid();
 
     //! False
     virtual Bool isMemory() const;
@@ -64,11 +62,8 @@ public:
 
     virtual Bool isEnd() const;
 
-    //! Get the C file descriptor.
-    int getFD() const;
-
-    //! Get the stdio C file stream.
-    FILE* getFile() const;
+    //! Get the AAsset handler.
+    AAsset* getAsset() const;
 
     virtual Int32 readLine(
             String &str,
@@ -86,12 +81,15 @@ public:
 
 protected:
 
-    FileInStream();
+    InStreamAndroid();
 
-    FILE *m_file;     //!< File stream
-    Int32 m_length;   //!< Cached file size
+    AAsset *m_asset;    //!< Android asset
+    Int32 m_pos;        //!< Seek position
+    Int32 m_length;     //!< Cached file size
 };
 
 } // namespace o3d
 
-#endif // _O3D_FILEINSTREAM_H
+#endif // O3D_ANDROID
+
+#endif // _O3D_INSTREAMANDROID_H

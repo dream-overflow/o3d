@@ -115,7 +115,7 @@ FileLogger::LogLevel FileLogger::getLogLevel() const
 #ifdef O3D_ANDROID
 
 #include "o3d/core/application.h"
-#include "o3d/android/android_native_app_glue.h"
+#include "android/android_native_app_glue.h"
 
 #include <android/log.h>
 

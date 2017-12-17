@@ -1,6 +1,6 @@
 /**
  * @file virtualfilelisting.h
- * @brief Virtual file and disk file listing.
+ * @brief Virtual file and system file listing.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date $2005-09-10
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -16,11 +16,10 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class VirtualFileListing
-//-------------------------------------------------------------------------------------
-//! Virtual file and disk file listing.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Virtual file and system file listing.
+ * @details Look into system file and into mounted asset from the file managers.
+ */
 class O3D_API VirtualFileListing : public FileListing
 {
 public:

@@ -12,7 +12,7 @@
 
 #include "o3d/core/stringtokenizer.h"
 #include "o3d/core/filemanager.h"
-#include "o3d/core/diskfileinfo.h"
+#include "o3d/core/fileinfo.h"
 
 #include <sstream>
 #include <set>
@@ -443,7 +443,7 @@ Bool ConfigFile::save(const String & _filePath)
 	else
 		lFilePath = _filePath;
 
-	DiskFileInfo lFileInfo(lFilePath);
+	FileInfo lFileInfo(lFilePath);
 
 //	if (lFileInfo.isExists() && !lFileInfo.isWritable())
 //		return False;

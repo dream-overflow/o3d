@@ -1,13 +1,18 @@
 cmake/Configs/Objective3DConfig.cmake.in
 cmake/Modules/FindObjective3D.cmake
 include/o3d/core/asset.h
+include/o3d/core/basedir.h
+include/o3d/core/basefileinfo.h
+include/o3d/core/dir.h
 include/o3d/core/display.h
+include/o3d/core/fileinfo.h
 include/o3d/core/private/assetandroid.h
 include/o3d/core/private/egl.h
 include/o3d/core/private/egldefines.h
 include/o3d/core/private/egldefines.h
 include/o3d/core/private/glx.h
 include/o3d/core/private/glxdefines.h
+include/o3d/core/private/instreamandroid.h
 include/o3d/core/private/keymapandroid.h
 include/o3d/core/private/keymapsdl.h
 include/o3d/core/private/keymapwin32.h
@@ -18,8 +23,12 @@ include/o3d/core/sha1.h
 include/o3d/core/touchscreen.h
 include/o3d/core/wgl.h
 include/o3d/engine/glextdefines.h
+src/core/basedir.cpp
+src/core/basefileinfo.cpp
+src/core/dir.cpp
 src/core/display.cpp
 src/core/egl.cpp
+src/core/fileinfo.cpp
 src/core/gl.cpp
 src/core/glx.cpp
 src/core/private/applicationandroid.cpp
@@ -55,6 +64,7 @@ src/core/private/egl.cpp
 src/core/private/glx.cpp
 src/core/private/glx.cpp
 src/core/private/glx.cpp
+src/core/private/instreamandroid.cpp
 src/core/private/keyboardandroid.cpp
 src/core/private/keyboardandroid.cpp
 src/core/private/keyboardandroid.cpp
@@ -255,9 +265,6 @@ include/o3d/core/database.h
 include/o3d/core/date.h
 include/o3d/core/datetime.h
 include/o3d/core/debug.h
-include/o3d/core/dir.h
-include/o3d/core/diskdir.h
-include/o3d/core/diskfileinfo.h
 include/o3d/core/dualquaternion.h
 include/o3d/core/error.h
 include/o3d/core/evt.h
@@ -267,7 +274,6 @@ include/o3d/core/evthandler.h
 include/o3d/core/evtlink.h
 include/o3d/core/evtmanager.h
 include/o3d/core/file.h
-include/o3d/core/fileinfo.h
 include/o3d/core/filelisting.h
 include/o3d/core/filemanager.h
 include/o3d/core/garbagemanager.h
@@ -607,9 +613,6 @@ src/core/database.cpp
 src/core/date.cpp
 src/core/datetime.cpp
 src/core/debug.cpp
-src/core/dir.cpp
-src/core/diskdir.cpp
-src/core/diskfileinfo.cpp
 src/core/dualquaternion.cpp
 src/core/error.cpp
 src/core/evtfunction.cpp
@@ -617,7 +620,6 @@ src/core/evthandler.cpp
 src/core/evtlink.cpp
 src/core/evtmanager.cpp
 src/core/file.cpp
-src/core/fileinfo.cpp
 src/core/filelisting.cpp
 src/core/filemanager.cpp
 src/core/glx11.cpp

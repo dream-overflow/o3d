@@ -15,7 +15,7 @@
 #ifdef O3D_WINDOWS
 
 #include "o3d/core/debug.h"
-#include "o3d/core/diskfileinfo.h"
+#include "o3d/core/fileinfo.h"
 
 using namespace o3d;
 

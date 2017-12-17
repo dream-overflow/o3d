@@ -108,7 +108,7 @@ public:
      * @param fileName the path of the filename is relative to the Zip file.
      * @return index of the file, or -1 if not found.
      */
-    virtual Int32 findFile(const String& fileName) const override;
+    virtual Int32 findFile(const String& fileName) override;
 
     virtual InStream* openInStream(const String& filename) override;
     virtual InStream* openInStream(Int32 index) override;
@@ -116,12 +116,14 @@ public:
     /**
      * @return Returns the location relative to the file system.
      */
-    virtual const String& location() const override;
+    virtual String location() const override;
 
     /**
-     * @return Returns the name (filename...).
+     * @return Returns the name of the zip file.
      */
     virtual String name() const override;
+
+    virtual String fullPathName() const override;
 
     /**
      * @brief get the number of files in this archive.
@@ -142,9 +144,6 @@ public:
      * @brief get the file type at a specified index.
      */
     virtual FileTypes getFileType(Int32 index) const override;
-
-    //! get complete Zip path+filename.
-    inline String getZipFullFileName() const { return (m_zipPathName + '/' + m_zipFileName); }
 
 protected:
 

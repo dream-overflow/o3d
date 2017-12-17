@@ -52,7 +52,7 @@ class ResourceManager;
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2008-11-23
  * A resource is an entity that associate an object to a file. The resource can be
- * anywhere (diskfile, memfile, database, in a manager, real or virtual...).
+ * anywhere supported by the file manager.
  * It is based on BaseObject class.
  */
 class O3D_API Resource : public BaseObject
@@ -97,4 +97,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_RESOURCE_H
-

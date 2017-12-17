@@ -13,4 +13,3 @@
 using namespace o3d;
 
 O3D_IMPLEMENT_ABSTRACT_CLASS1(Resource, CORE_RESOURCE, BaseObject)
-

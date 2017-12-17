@@ -28,6 +28,8 @@ class O3D_API Asset
 {
 public:
 
+    virtual ~Asset() = 0;
+
     /**
      * @brief Release all datas and close the asset.
      */
@@ -38,7 +40,7 @@ public:
      * @param fileName the path of the filename is relative
      * @return index of the file, or -1 if not found.
      */
-    virtual Int32 findFile(const String& fileName) const = 0;
+    virtual Int32 findFile(const String& fileName) = 0;
 
     /**
      * @brief Open for a reading stream.
@@ -57,12 +59,17 @@ public:
     /**
      * @return Returns the location relative to the file system, or global
      */
-    virtual const String& location() const = 0;
+    virtual String location() const = 0;
 
     /**
      * @return Returns the name (filename...).
      */
     virtual String name() const = 0;
+
+    /**
+     * @return Returns the full path name location/name.
+     */
+    virtual String fullPathName() const = 0;
 
     /**
      * @return Returns the protocol (file://, http://, ftp://, media://...)
@@ -89,12 +96,6 @@ public:
      * @return
      */
     virtual FileTypes getFileType(Int32 index) const = 0;
-
-protected:
-
-    typedef stdext::hash_map<String, Int32, std::hash<String> > T_ZipFileMap;
-    typedef T_ZipFileMap::iterator IT_ZipFileMap;
-    typedef T_ZipFileMap::const_iterator CIT_ZipFileMap;
 };
 
 typedef std::list<Asset*> T_AssetList;

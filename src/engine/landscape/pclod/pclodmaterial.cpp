@@ -14,7 +14,7 @@
 #include "o3d/engine/landscape/pclod/pclodtexturemanager.h"
 #include "o3d/core/string.h"
 #include "o3d/core/filemanager.h"
-#include "o3d/core/diskfileinfo.h"
+#include "o3d/core/fileinfo.h"
 #include "o3d/core/memorydbg.h"
 #include "o3d/engine/texture/texture2d.h"
 
@@ -59,7 +59,7 @@ void PCLODMaterial::rtLoad()
 {
 	O3D_ASSERT(!loaded());
 
-	DiskFileInfo lFileInfo(m_filePath);
+	FileInfo lFileInfo(m_filePath);
 
 	if (!lFileInfo.exists())
 	{

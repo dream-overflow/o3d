@@ -1,6 +1,6 @@
 /**
  * @file filelisting.h
- * @brief Folder file listing.
+ * @brief Directory file listing.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-05
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -31,8 +31,10 @@
 
 namespace o3d {
 
-//! Contain data about a file or a logical drive (windows only).
-//! FileSize and time informations are valid only if the type is O3DFileFile or O3DFileDir.
+/**
+ * @brief Contain data about a file or a logical drive (windows only).
+ * FileSize and time informations are valid only if the type is FILE_FILE or FILE_DIR.
+ */
 struct FLItem
 {
     String FileName;                 //!< full filename only
@@ -48,11 +50,9 @@ typedef std::vector<FLItem*> T_FLItemVector;
 typedef T_FLItemVector::iterator O3D_IT_FLItemVector;
 typedef T_FLItemVector::const_iterator O3D_CIT_FLItemVector;
 
-//---------------------------------------------------------------------------------------
-//! @class FileListing
-//-------------------------------------------------------------------------------------
-//! Folder file listing.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Folder file listing on file system only.
+ */
 class O3D_API FileListing
 {
 public:
@@ -105,12 +105,12 @@ public:
 
 protected:
 
-	Int32 m_curPos;                     //!< current position used by FindNextFile
-	String m_path;                          //!< current search path
-	FileTypes m_type;                        //!< file or directory type we want to return
+    Int32 m_curPos;              //!< current position used by FindNextFile
+    String m_path;               //!< current search path
+    FileTypes m_type;            //!< file or directory type we want to return
 
-	T_StringList m_extFilter;               //!< extension filter
-	T_FLItemVector m_fileList;              //!< file list
+    T_StringList m_extFilter;    //!< extension filter
+    T_FLItemVector m_fileList;   //!< file list
 
 	// internal methods
 	Bool isValidExt(const String &ext) const; //!< return true if this extension is in the extension list

@@ -10,7 +10,7 @@
 #include "o3d/engine/glextdefines.h"
 #include "o3d/engine/map2d/map2dtileset.h"
 #include "o3d/core/xmldoc.h"
-#include "o3d/core/diskfileinfo.h"
+#include "o3d/core/fileinfo.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"
@@ -317,7 +317,7 @@ void Map2dTileSet::loadXmlDef(const String &filename)
 	name = node->Attribute("name");
 	if (name.isEmpty())
 	{
-		DiskFileInfo fileInfo(filename);
+		FileInfo fileInfo(filename);
 		name = fileInfo.getFileName();
 		name.trimRight(fileInfo.getFileExt());
 	}

@@ -16,7 +16,7 @@
 
 #include "o3d/core/application.h"
 #include "o3d/core/appwindow.h"
-#include "o3d/core/diskfileinfo.h"
+#include "o3d/core/fileinfo.h"
 #include "o3d/core/debug.h"
 #include "o3d/core/architecture.h"
 #include "o3d/core/wintools.h"

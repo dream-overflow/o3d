@@ -148,12 +148,12 @@ Bool Zip::readHeader()
 		return True;
     } else {
 		deletePtr(entry);
-        O3D_ERROR(E_InvalidFormat(getZipFullFileName()));
+        O3D_ERROR(E_InvalidFormat(fullPathName()));
 	}
 }
 
 // return a file index in the list (-1 if not found)
-Int32 Zip::findFile(const String &filename) const
+Int32 Zip::findFile(const String &filename)
 {
 	String absFilename = FileManager::instance()->getFullFileName(filename);
 
@@ -277,7 +277,7 @@ InStream *Zip::openInStream(Int32 index)
 
             default:
                 // Compression non supporte
-                O3D_ERROR(E_InvalidFormat("Unsupported compression in " + getZipFullFileName()));
+                O3D_ERROR(E_InvalidFormat("Unsupported compression in " + fullPathName()));
         }
 
         return lfile;
@@ -287,7 +287,7 @@ InStream *Zip::openInStream(Int32 index)
     }
 }
 
-const String &Zip::location() const
+String Zip::location() const
 {
     return m_zipPathName;
 }
@@ -295,6 +295,11 @@ const String &Zip::location() const
 String Zip::name() const
 {
     return m_zipFileName;
+}
+
+String Zip::fullPathName() const
+{
+    return m_zipPathName + '/' + m_zipFileName;
 }
 
 Int32 Zip::getNumFiles() const
