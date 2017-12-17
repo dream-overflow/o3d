@@ -358,15 +358,12 @@ void ShaderManager::deleteShader(Int32 shaderId)
 	// search the shader in the template manager, then we can
 	// have the shader name to find it into the programs database
 	Shader *shader = TemplateManager<Shader>::get(shaderId);
-	if (shader)
-	{
+    if (shader) {
 		IT_ProgramMap it = m_programs.find(shader->getName());
 
 		// search in any versions
-		for (UInt32 i = 0; i < NUM_VERSIONS; ++i)
-		{
-			if (it->second->versions[i].shader == shader)
-			{
+        for (UInt32 i = 0; i < NUM_VERSIONS; ++i) {
+            if (it->second->versions[i].shader == shader) {
 				TemplateManager<Shader>::deleteElementPtr(shader);
                 it->second->versions[i].shader = nullptr;
 
@@ -376,9 +373,9 @@ void ShaderManager::deleteShader(Int32 shaderId)
 
 		O3D_ERROR(E_InvalidParameter(
 				"Shader appears to be in the manager but it doesn't match to one of the versions"));
-	}
-	else
+    } else {
 		O3D_ERROR(E_InvalidParameter("Invalid shader identifier"));
+    }
 }
 
 // Delete recursively all shader of a given path.
@@ -399,29 +396,28 @@ UInt32 ShaderManager::deleteAll(const String &path)
 
         // erase the entry of the browse path list
         IT_StringList strIt = std::find(m_searchPathList.begin(), m_searchPathList.end(), lPath);
-        if (strIt != m_searchPathList.end())
+        if (strIt != m_searchPathList.end()) {
             m_searchPathList.erase(strIt);
-        else
+        } else {
             O3D_ERROR(E_InvalidParameter("The path \"" + lPath + "\" is not known of the database"));
+        }
 
         // find any program contained into the given path
-        for (it = m_programs.begin(); it != m_programs.end(); ++it)
-        {
-            if (it->second && (it->second->path == lPath))
+        for (it = m_programs.begin(); it != m_programs.end(); ++it) {
+            if (it->second && (it->second->path == lPath)) {
                 eraseList.push_back(it->first);
+            }
         }
 
         // erase map entries
-        for (IT_StringList it2 = eraseList.begin(); it2 != eraseList.end(); ++it2)
-        {
+        for (IT_StringList it2 = eraseList.begin(); it2 != eraseList.end(); ++it2) {
             it = m_programs.find(*it2);
-            if (it != m_programs.end())
-            {
-                for (UInt32 i = 0; i < NUM_VERSIONS; ++i)
-                {
+            if (it != m_programs.end()) {
+                for (UInt32 i = 0; i < NUM_VERSIONS; ++i) {
                     // delete any valid program
-                    if (it->second->versions[i].shader)
+                    if (it->second->versions[i].shader) {
                         TemplateManager<Shader>::deleteElementPtr(it->second->versions[i].shader);
+                    }
                 }
 
                 // and erase the program entry
@@ -442,8 +438,7 @@ Bool ShaderManager::isProgramLoaded(
 {
 	FastMutexLocker locker(m_mutex);
 
-	switch (version)
-	{
+    switch (version) {
 		case NUM_VERSIONS:
 			break;
 
@@ -457,21 +452,17 @@ Bool ShaderManager::isProgramLoaded(
 
 	CIT_ProgramMap cit = m_programs.find(name);
 
-	if (cit != m_programs.end())
-	{
-		if (version == ANY_VERSIONS)
-		{
+    if (cit != m_programs.end()) {
+        if (version == ANY_VERSIONS) {
 			// return FALSE if one of the version is not defined
-			for (UInt32 i = 0; i < NUM_VERSIONS; ++i)
-			{
+            for (UInt32 i = 0; i < NUM_VERSIONS; ++i) {
                 if (cit->second->versions[i].shader == nullptr)
 					return False;
 			}
-		}
-		else
-		{
-			if (cit->second->versions[version].shader)
+        } else {
+            if (cit->second->versions[version].shader) {
 				return True;
+            }
 		}
 	}
 
@@ -493,8 +484,9 @@ const String& ShaderManager::getProgramPath(const String &name) const
 	FastMutexLocker locker(m_mutex);
 
 	CIT_ProgramMap cit = m_programs.find(name);
-	if (cit == m_programs.end())
+    if (cit == m_programs.end()) {
 		O3D_ERROR(E_InvalidParameter(String("Unknown program name \"") + name + "\""));
+    }
 
 	return cit->second->path;
 }
@@ -516,22 +508,17 @@ UInt32 ShaderManager::browseFolder(const String &path)
 
 	fileListing.searchFirstFile();
 
-    while ((fileItem = fileListing.searchNextFile()) != nullptr)
-	{
+    while ((fileItem = fileListing.searchNextFile()) != nullptr) {
 		// a sub directory
-		if (fileItem->FileType == FILE_DIR)
-		{
+        if (fileItem->FileType == FILE_DIR) {
             // we cannot directly found a version directory, or a sub directory
-            if (WideChar::isStringDigit(fileItem->FileName))
-            {
+            if (WideChar::isStringDigit(fileItem->FileName)) {
                 Int32 version = fileItem->FileName.toInt32();
 
-                if (version >= 330 && version <= 450)
+                if (version >= 330 && version <= 450) {
                     O3D_ERROR(E_InvalidParameter("The path must contain programs directories, but the given path contain version directories"));
-            }
-            else if ((fileItem->FileName != String(".")) &&
-					 (fileItem->FileName != String("..")))
-			{
+                }
+            } else if ((fileItem->FileName != String(".")) && (fileItem->FileName != String(".."))) {
 				numPrograms += browseSubFolder(fileListing.getFileFullName());
 			}
 		}
@@ -577,31 +564,27 @@ UInt32 ShaderManager::browseSubFolder(const String &path)
 }
 
 //! Browse a program directory.
-UInt32 ShaderManager::browseProgramFolder(
-		VirtualFileListing *fileListing,
-		FLItem *fileItem)
+UInt32 ShaderManager::browseProgramFolder(VirtualFileListing *fileListing, FLItem *fileItem)
 {
 	UInt32 numPrograms = 0;
 	T_Program *program = new T_Program;
 
 	String programName = fileListing->getPath();
-	if (programName.sub(m_currentBrowseFullPath,0) == 0)
+    if (programName.sub(m_currentBrowseFullPath,0) == 0) {
 		programName.remove(m_currentBrowseFullPath);
+    }
 
 	programName.trimLeft('/');
 
 	program->path = m_currentBrowseFullPath;
 
-    while (fileItem != nullptr)
-	{
+    while (fileItem != nullptr) {
 		// a sub directory
-        if ((fileItem->FileType == FILE_DIR) && WideChar::isStringDigit(fileItem->FileName))
-		{
+        if ((fileItem->FileType == FILE_DIR) && WideChar::isStringDigit(fileItem->FileName)) {
 			// we can directly found a version directory, or a sub directory
             Int32 version = fileItem->FileName.toInt32();
 
-            switch (version)
-            {
+            switch (version) {
                 case 330:
                     numPrograms += browseVersionFolder(fileListing->getFileFullName(), VERSION_330, program);
                     break;
@@ -636,22 +619,21 @@ UInt32 ShaderManager::browseProgramFolder(
 	}
 
 	// program found
-	if (numPrograms > 0)
-	{
-		if (m_programs.find(programName) != m_programs.end())
+    if (numPrograms > 0) {
+        if (m_programs.find(programName) != m_programs.end()) {
 			O3D_ERROR(E_InvalidPrecondition("Program name can exists only one time \"" +
 					programName + "\" at \"" + fileListing->getPath() + "\""));
+        }
 
 		m_programs.insert(std::make_pair(programName, program));
 
 		// fill any greater versions if empty
-		for (Int32 i = 0; i < NUM_VERSIONS; ++i)
-		{
+        for (Int32 i = 0; i < NUM_VERSIONS; ++i) {
 			// a version lack
 			if (((program->versions[i].vpList.size() +
 				 program->versions[i].fpList.size() +
-				 program->versions[i].gpList.size()) == 0) && (i > 0))
-			{
+                 program->versions[i].gpList.size()) == 0) && (i > 0)) {
+
 				// duplicate it from a lesser, excepted if it is the
 				// lower version
 				program->versions[i].vpList = program->versions[i-1].vpList;
@@ -663,9 +645,7 @@ UInt32 ShaderManager::browseProgramFolder(
 
 		O3D_MESSAGE("Found shader program \"" + programName + "\"");
 		return 1;
-	}
-	else
-	{
+    } else {
 		deletePtr(program);
 		return 0;
 	}
@@ -685,22 +665,25 @@ UInt32 ShaderManager::browseVersionFolder(
 
 	FLItem *fileItem;
 
-    while ((fileItem = fileListing.searchNextFile()) != nullptr)
-	{
-		if (fileItem->FileName.endsWith("_vp.glsl"))
+    while ((fileItem = fileListing.searchNextFile()) != nullptr) {
+        if (fileItem->FileName.endsWith("_vp.glsl")) {
 			program->versions[version].vpList.push_back(fileListing.getFileFullName());
-		else if (fileItem->FileName.endsWith("_fp.glsl"))
+        } else if (fileItem->FileName.endsWith("_fp.glsl")) {
 			program->versions[version].fpList.push_back(fileListing.getFileFullName());
-		else if (fileItem->FileName.endsWith("_gp.glsl"))
+        } else if (fileItem->FileName.endsWith("_gp.glsl")) {
 			program->versions[version].gpList.push_back(fileListing.getFileFullName());
+        } else if (fileItem->FileName.endsWith("_tp.glsl")) {
+            program->versions[version].tpList.push_back(fileListing.getFileFullName());
+        }
 	}
 
     program->versions[version].shader = nullptr;
 
 	// return 1 if one or more GLSL files are found
-	return (program->versions[version].vpList.size() +
+    return (program->versions[version].vpList.size() +
 		program->versions[version].fpList.size() +
-		program->versions[version].gpList.size()) > 0 ? 1 : 0;
+        program->versions[version].gpList.size() +
+        program->versions[version].tpList.size()) > 0 ? 1 : 0;
 }
 
 // Create a shader.
@@ -715,8 +698,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
     InStream *is;
 
 	// vertex programs
-	for (it = program.vpList.begin(); it != program.vpList.end(); ++it)
-	{
+    for (it = program.vpList.begin(); it != program.vpList.end(); ++it) {
         is = FileManager::instance()->openInStream(*it);
         size = is->getAvailable();
 
@@ -735,8 +717,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
 	}
 
 	// fragment programs
-	for (it = program.fpList.begin(); it != program.fpList.end(); ++it)
-	{
+    for (it = program.fpList.begin(); it != program.fpList.end(); ++it) {
         is = FileManager::instance()->openInStream(*it);
         size = is->getAvailable();
 
@@ -755,8 +736,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
 	}
 
 	// geometry programs
-	for (it = program.gpList.begin(); it != program.gpList.end(); ++it)
-	{
+    for (it = program.gpList.begin(); it != program.gpList.end(); ++it) {
         is = FileManager::instance()->openInStream(*it);
         size = is->getAvailable();
 
@@ -773,6 +753,25 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
 
         deletePtr(is);
 	}
+
+    // tesselation programs
+    for (it = program.tpList.begin(); it != program.tpList.end(); ++it) {
+        is = FileManager::instance()->openInStream(*it);
+        size = is->getAvailable();
+
+        data.setSize(size+1);
+        is->read(data.getData(), size);
+        data[size] = 0;
+
+        FileInfo fileInfo(*it);
+        name = fileInfo.getFileName();
+
+        name.trimRight("_tp.glsl");
+
+        shader->addProgram(Shader::TYPE_TESSELATION_PROGRAM, name, data.getData(), size+1);
+
+        deletePtr(is);
+    }
 
 	return True;
 }

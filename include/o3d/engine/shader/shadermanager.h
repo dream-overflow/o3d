@@ -178,6 +178,7 @@ private:
 		T_StringList vpList;    //!< List of vertex programs (file_vp.glsl).
 		T_StringList fpList;    //!< List of fragment programs (file_fp.glsl).
 		T_StringList gpList;    //!< List of geometry programs (file_gp.glsl).
+        T_StringList tpList;    //!< List of tesselation programs (file_tp.glsl).
 
 		Shader *shader;  //!< Direct pointer of the Shader object. null if not created.
 	};

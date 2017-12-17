@@ -216,8 +216,8 @@ const String& Application::getAppName()
 
 const String &Application::getAppPath()
 {
-    if (ms_appsName) {
-        return *ms_appsName;
+    if (ms_appsPath) {
+        return *ms_appsPath;
     } else {
         return String::getNull();
     }
