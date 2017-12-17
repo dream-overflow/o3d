@@ -94,9 +94,7 @@ void ResourceManager::browseFolder(const String &path)
 
     FLItem *flItem = nullptr;
     while ((flItem = fileListing.searchNextFile()) != nullptr) {
-        if (flItem->FileType == FILE_DIR) {
-			// sub-directories are ignored
-        } else if (flItem->FileType == FILE_FILE) {
+        if (flItem->FileType == FILE_FILE) {
 			// add a resource entry
 			m_filesMap.insert(std::make_pair(flItem->FileName, fileListing.getFileFullName()));
 		}

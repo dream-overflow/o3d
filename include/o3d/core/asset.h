@@ -43,6 +43,13 @@ public:
     virtual Int32 findFile(const String& fileName) = 0;
 
     /**
+     * @brief Is a path defined into this asset.
+     * @param path the path is relative
+     * @return True if exists.
+     */
+    virtual Bool isPath(const String& path) const = 0;
+
+    /**
      * @brief Open for a reading stream.
      * @return An opened input stream.
      * @throws E_FileNotFoundOrInvalidRights if cannot open the file name.
@@ -81,8 +88,6 @@ public:
     */
     virtual Int32 getNumFiles() const = 0;
 
-    //! get the file name at a specified index, prefixed by the Zip path.
-
     /**
      * @brief get the file name at a specified index, prefixed by the local path.
      * @param index
@@ -96,6 +101,13 @@ public:
      * @return
      */
     virtual FileTypes getFileType(Int32 index) const = 0;
+
+    /**
+     * @brief get file size for a file into this asset.
+     * @param fileName
+     * @return
+     */
+    virtual UInt64 getFileSize(Int32 index) const = 0;
 };
 
 typedef std::list<Asset*> T_AssetList;

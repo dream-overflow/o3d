@@ -86,7 +86,7 @@ ShaderManager::ShaderManager(
                     m_activeVersion = VERSION_330;
                     break;
                 default:
-                    O3D_ERROR(E_InvalidPrecondition("Shaders works only with OpenGL 2.0 and greater"));
+                    O3D_ERROR(E_InvalidPrecondition("Shaders works only with OpenGL 3.3 and greater"));
                     break;
             }
 			break;
@@ -96,23 +96,20 @@ ShaderManager::ShaderManager(
 	Bool valid = False;
 
     if (defaultPath.isValid()) {
-		Dir dir(defaultPath);
-        if (dir.exists()) {
+        if (FileManager::instance()->isPath(defaultPath)) {
 			O3D_MESSAGE("Found defaults shaders in shaders directory");
-			addPath(defaultPath);
+            addPath(FileManager::instance()->getFullFileName(defaultPath));
 			valid = True;
 		}
 	}
 
     if (!valid) {
         // search for a shaders.zip archive in working directory
-		String pwd = FileManager::instance()->getWorkingDirectory();
-		FileInfo zip(pwd + "/shaders.zip");
-        if (zip.exists()) {
-			O3D_MESSAGE("Found defaults shaders in shaders.zip");
-            FileManager::instance()->mountAsset("zip://", zip.getFullFileName());
+        if (FileManager::instance()->isFile("shaders.zip")) {
+            O3D_MESSAGE("Found defaults shaders in shaders.zip");
+            FileManager::instance()->mountAsset("zip://", "shaders.zip");
 
-			addPath(pwd + "/shaders");
+            addPath(FileManager::instance()->getFullFileName("shaders"));
 
 			valid = True;
 		}
@@ -151,13 +148,11 @@ UInt32 ShaderManager::addPath(const String &path)
 
 	lPath = FileManager::instance()->getFullFileName(lPath);
 
+    // @todo look for manifest read it
     {
         FastMutexLocker locker(m_mutex);
 
-        IT_StringList it = std::find(
-                               m_searchPathList.begin(),
-                               m_searchPathList.end(),
-                               lPath);
+        IT_StringList it = std::find(m_searchPathList.begin(), m_searchPathList.end(), lPath);
 
         // already include path
         if (it != m_searchPathList.end()) {
@@ -488,7 +483,16 @@ const String& ShaderManager::getProgramPath(const String &name) const
 		O3D_ERROR(E_InvalidParameter(String("Unknown program name \"") + name + "\""));
     }
 
-	return cit->second->path;
+    return cit->second->path;
+}
+
+UInt32 ShaderManager::readShaderResource(const String &path)
+{
+    UInt32 count = 0;
+
+    // @todo
+
+    return count;
 }
 
 // Browse a path to search any programs that it contain and list them into the program map.

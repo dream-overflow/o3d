@@ -21,6 +21,8 @@ include/o3d/core/private/wgl.h
 include/o3d/core/private/wgldefines.h
 include/o3d/core/sha1.h
 include/o3d/core/touchscreen.h
+include/o3d/core/virtualdir.h
+include/o3d/core/virtualfileinfo.h
 include/o3d/core/wgl.h
 include/o3d/engine/glextdefines.h
 src/core/basedir.cpp
@@ -100,6 +102,8 @@ src/core/private/wgl.cpp
 src/core/private/wgl.cpp
 src/core/sha1.cpp
 src/core/touchscreen.cpp
+src/core/virtualdir.cpp
+src/core/virtualfileinfo.cpp
 src/core/wgl.cpp
 src/engine/private/rendererandroid.cpp
 src/engine/private/rendererandroid.cpp
@@ -166,6 +170,7 @@ src/shaders/lensEffect/330/diffuseMap_fp.glsl
 src/shaders/lensEffect/330/diffuseMap_vp.glsl
 src/shaders/lensEffect/330/occlusion_fp.glsl
 src/shaders/lensEffect/330/occlusion_vp.glsl
+src/shaders/manifest
 src/shaders/map2d/colorMask/330/default_fp.glsl
 src/shaders/map2d/colorMask/330/default_vp.glsl
 src/shaders/pclodTerrain/lightmaps/shader1/330/default_fp.glsl

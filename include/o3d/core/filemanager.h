@@ -18,6 +18,9 @@
 
 namespace o3d {
 
+class BaseFileInfo;
+class BaseDir;
+
 /**
  * @brief File and asset manager.
  * Using file manager to open a file on the system, or any others virtual files
@@ -46,7 +49,7 @@ public:
 	static const Int32 NUM_FILE_SPEED_MANAGER = 2;
 
 	//! Return true if Path is relative otherwise return false.
-	static Bool isRelativePath(const String &path);
+    static Bool isRelativePath(const String &path);
 
     //! Define the packs files extension (default is "*.opk").
 	inline void setPackExt(const String &packExt) { m_packExt = packExt; }
@@ -73,7 +76,7 @@ public:
 	String getWorkingDirectory();
 
     //! Return a full path filename if it is in a relative path, from current working directory.
-	String getFullFileName(const String &filename);
+    String getFullFileName(const String &filename) const;
 
     /**
      * @brief openInputStream Open an input stream.
@@ -92,12 +95,12 @@ public:
     FileOutStream* openOutStream(const String &filename, FileOutStream::Mode mode);
 
 	//-----------------------------------------------------------------------------------
-	// Virtual file from (ZIP)
+    // Assets support
 	//-----------------------------------------------------------------------------------
 
     //! Add an asset handler. Can be a Zip or any other supported protocol.
 	//! @return true if it was not already added.
-    Bool mountAsset(const String &protocol, const String &archiveName);
+    Bool mountAsset(const String &protocol, const String &assetName);
 
 	//! Add all the archives files found in the working directory that are not
 	//! already present.
@@ -120,6 +123,28 @@ public:
 	//! Return the next file name (empty string if finished).
     //! @param fileType If non null will be contain the file type.
     String searchNextVirtualFile(FileTypes *fileType = nullptr);
+
+    //-----------------------------------------------------------------------------------
+    // File and directory support
+    //-----------------------------------------------------------------------------------
+
+    //! Find if a directory exists on file system or on assets.
+    Bool isPath(const String &path) const;
+
+    //! Find if a file exists on file system or on assets.
+    Bool isFile(const String &fileName) const;
+
+    //! Get the length of a file on file system or on assets.
+    UInt64 fileSize(const String &fileName) const;
+
+    //! Get the type of a file on file system or on assets.
+    FileTypes fileType(const String &fileName) const;
+
+    //! Get a file info object. It refers a valid file on system or asset.
+    BaseFileInfo* fileInfo(const String &fileName) const;
+
+    //! Get a dir info object. It refers a valid path on system or asset.
+    BaseDir* dir(const String &path) const;
 
 	//-----------------------------------------------------------------------------------
     // File transfer flow control (@deprecated no longer used)

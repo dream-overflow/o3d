@@ -18,7 +18,7 @@
 using namespace o3d;
 
 BaseDir::BaseDir(const String& pathname) :
-	m_type(UNKNOWN_TYPE_DIR),
+    m_type(UNKNOWN_DIR_TYPE),
 	m_isValid(False)
 {
     if (pathname.isValid()) {
@@ -55,15 +55,15 @@ Bool BaseDir::setPathName(const String &pathName)
 
 	m_isValid = True;
 
-	/* Don't perform the existence check, because we could manage non existing dir
-    if (!isExist()) {
-		m_fullPathname = "";
-		m_pathName = "";
+//	// Don't perform the existence check, because we could manage non existing dir
+//    if (!isExist()) {
+//		m_fullPathname = "";
+//		m_pathName = "";
 
-		m_isValid = False;
+//		m_isValid = False;
 
-		O3D_ERROR(O3D_E_InvalidParameter(pathName));
-	}*/
+//		O3D_ERROR(O3D_E_InvalidParameter(pathName));
+//	}
 
 	return m_isValid;
 }

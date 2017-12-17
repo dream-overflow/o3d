@@ -27,52 +27,44 @@ public:
     static Dir current();
 
 	//! default constructor. Is the path is empty '.' is used.
-    Dir(const String& pathname = String()) :
-		BaseDir(pathname)
-	{
-		m_type = BaseDir::FILE_SYSTEM_DIR;
-	}
+    Dir(const String& pathname = String());
 
 	//! copy constructor
-    Dir(const Dir& dup) :
-		BaseDir(dup)
-	{
-		m_type = BaseDir::FILE_SYSTEM_DIR;
-	}
+    Dir(const Dir& dup);
 
-    virtual ~Dir() {}
+    virtual ~Dir();
 
 	//! clean the path (remove '..' and '.' when possible)
-	virtual void clean();
+    virtual void clean() override;
 
     //! check if the directory is empty
-    virtual Bool empty() const;
+    virtual Bool empty() const override;
 
 	//! is an absolute or relative path ?
-	virtual Bool isAbsolute() const;
+    virtual Bool isAbsolute() const override;
 
 	//! is the path is readable (check the rights)
-	virtual Bool isReadable() const;
+    virtual Bool isReadable() const override;
 
 	//! is the path is writable (check the rights)
-	virtual Bool isWritable() const;
+    virtual Bool isWritable() const override;
 
 	//! is it the root directory
-	virtual Bool isRoot() const;
+    virtual Bool isRoot() const override;
 
 	//! remove a directory in the O3DDir path (if the rights permits it)
-	virtual DirReturn removeDir(const String &path) const;
+    virtual DirReturn removeDir(const String &path) const override;
 
 	//! create a sub directory in the O3DDir path (if the rights permits it)
 	//! @note Mode is set to 0775.
-	virtual DirReturn makeDir(const String &path) const;
+    virtual DirReturn makeDir(const String &path) const override;
 
 	//! create the complete path in the O3DDir path
 	//! @note Mode is set to 0775.
-	virtual DirReturn makePath(const String &path) const;
+    virtual DirReturn makePath(const String &path) const override;
 
 	//! check for the existence of a sub directory or a file
-	virtual BaseDir::DirReturn check(const String &fileOrPath) const;
+    virtual BaseDir::DirReturn check(const String &fileOrPath) const override;
 
 	//! search for a list of file. filters must be spaced by '|'.
 	//! If no filters is specified all files all files and directory listed are returned.
@@ -80,24 +72,24 @@ public:
 	//! VirtualFileListing.
 	virtual T_FLItem_List findFilesInfos(
 			const String &filters = "",
-			FileTypes Type = FILE_BOTH) const;
+            FileTypes Type = FILE_BOTH) const override;
 
 	//! Same as FindFiles but return only strings
 	virtual T_StringList findFiles(
 			const String &filters = "",
-			FileTypes Type = FILE_BOTH) const;
+            FileTypes Type = FILE_BOTH) const override;
 
 	//! make absolute. make - if relative - this path absolute depend to the current working directory
-	virtual Bool makeAbsolute();
+    virtual Bool makeAbsolute() override;
 
 	//! copy the given absolute filename/relative to working directory, to this dir
-	virtual BaseDir::DirReturn copyFile(const String &filename, UInt32 BlockSize = 32768) const;
+    virtual BaseDir::DirReturn copyFile(const String &filename, UInt32 BlockSize = 32768) const override;
 
 	//! remove the file in directory
-	virtual BaseDir::DirReturn removeFile(const String &filename) const;
+    virtual BaseDir::DirReturn removeFile(const String &filename) const override;
 
 	//! rename a file or a directory
-	virtual BaseDir::DirReturn rename(const String &oldName, const String &newName) const;
+    virtual BaseDir::DirReturn rename(const String &oldName, const String &newName) const override;
 };
 
 } // namespace o3d

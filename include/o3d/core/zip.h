@@ -110,6 +110,8 @@ public:
      */
     virtual Int32 findFile(const String& fileName) override;
 
+    virtual Bool isPath(const String& path) const override;
+
     virtual InStream* openInStream(const String& filename) override;
     virtual InStream* openInStream(Int32 index) override;
 
@@ -140,10 +142,9 @@ public:
      */
     virtual String getFileName(Int32 index) const override;
 
-    /**
-     * @brief get the file type at a specified index.
-     */
     virtual FileTypes getFileType(Int32 index) const override;
+
+    virtual UInt64 getFileSize(Int32 index) const override;
 
 protected:
 

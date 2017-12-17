@@ -203,6 +203,9 @@ private:
 
 	String m_currentBrowseFullPath;
 
+    //! Read a path containing shader with a dedicated manifest file and specific structure.
+    UInt32 readShaderResource(const String &path);
+
 	//! Browse a path to search any programs that it contain and list them into the program map.
 	//! @return The number of found programs.
 	UInt32 browseFolder(const String &path);

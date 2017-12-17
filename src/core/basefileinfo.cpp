@@ -13,6 +13,7 @@
 using namespace o3d;
 
 BaseFileInfo::BaseFileInfo(const String &filename) :
+    m_type(UNKNOWN_FILE_INFO),
 	m_cached(False),
 	m_isValid(False)
 {
@@ -41,6 +42,7 @@ BaseFileInfo::BaseFileInfo(const String &filename) :
 }
 
 BaseFileInfo::BaseFileInfo(const String &pathName, const String &filename) :
+    m_type(UNKNOWN_FILE_INFO),
 	m_cached(False),
 	m_isValid(False)
 {
@@ -68,6 +70,7 @@ BaseFileInfo::BaseFileInfo(const String &pathName, const String &filename) :
 }
 
 BaseFileInfo::BaseFileInfo(const BaseDir &dir, const String &filename) :
+    m_type(UNKNOWN_FILE_INFO),
 	m_cached(False),
 	m_isValid(False)
 {

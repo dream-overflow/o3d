@@ -30,13 +30,12 @@ class O3D_API BaseDir
 public:
 
 	//! format of the directory
-	enum DirType
-	{
-		FILE_SYSTEM_DIR,        //!< local file system (real file on file system)
-		FILE_VIRTUAL_DIR,       //!< virtual file system (virtual file on O3DZip)
-		FILE_DIR,               //!< FTP directory
-		UNKNOWN_TYPE_DIR
-	};
+    enum DirType
+    {
+        UNKNOWN_DIR_TYPE = 0,
+        FILE_SYSTEM,        //!< Local file system.
+        VIRTUAL_FILE,       //!< Virtual file (asset...).
+    };
 
 	//! directory return codes
 	enum DirReturn

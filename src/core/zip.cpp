@@ -166,6 +166,17 @@ Int32 Zip::findFile(const String &filename)
     }
 }
 
+Bool Zip::isPath(const String &path) const
+{
+    CIT_ZipFileMap cit = m_fileMap.find(path);
+    if (cit != m_fileMap.end()) {
+        Int32 index = cit->second;
+        return m_filelist[index]->FileType == FILE_DIR;
+    }
+
+    return False;
+}
+
 // get the file name at this index
 String Zip::getFileName(Int32 index) const
 {
@@ -183,6 +194,15 @@ FileTypes Zip::getFileType(Int32 index) const
 		return m_filelist[index]->FileType;
     } else {
 		O3D_ERROR(E_IndexOutOfRange(""));
+    }
+}
+
+UInt64 Zip::getFileSize(Int32 index) const
+{
+    if ((index >= 0) && (index < (Int32)m_filelist.size())) {
+        return m_filelist[index]->FileHeader.DataDescriptor.UnCompressedSize;
+    } else {
+        O3D_ERROR(E_IndexOutOfRange(""));
     }
 }
 

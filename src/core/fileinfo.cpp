@@ -27,6 +27,56 @@
 
 using namespace o3d;
 
+FileInfo::FileInfo(const String &filename) :
+    BaseFileInfo(filename)
+{
+    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_isValid = exists();
+}
+
+FileInfo::FileInfo(const String &pathname,const String &filename) :
+    BaseFileInfo(pathname,filename)
+{
+    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_isValid = exists();
+}
+
+FileInfo::FileInfo(const BaseDir &dir,const String &filename) :
+    BaseFileInfo(dir,filename)
+{
+    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_isValid = exists();
+}
+
+FileInfo::FileInfo(const BaseFileInfo& dup) :
+    BaseFileInfo(dup)
+{
+    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_isValid = exists();
+}
+
+FileInfo::~FileInfo()
+{
+}
+
+void FileInfo::setFile(const String &filename)
+{
+    BaseFileInfo::setFile(filename);
+    m_isValid = exists();
+}
+
+void FileInfo::setFile(const String &pathname,const String &filename)
+{
+    BaseFileInfo::setFile(pathname,filename);
+    m_isValid = exists();
+}
+
+void FileInfo::setFile(const BaseDir &dir, const String &filename)
+{
+    BaseFileInfo::setFile(dir,filename);
+    m_isValid = exists();
+}
+
 void FileInfo::cacheDatas()
 {
     // fill the CachedData structure if cache is enable
@@ -287,13 +337,10 @@ Bool FileInfo::isHidden()
 	return m_cachedData.hidden;
 }
 
-/*---------------------------------------------------------------------------------------
-  get the file owner id
----------------------------------------------------------------------------------------*/
 Int16 FileInfo::getOwnerId()
 {
     if (!m_isValid) {
-		return False;
+        return 0;
     }
 
     if (m_cached) {
@@ -318,13 +365,10 @@ Int16 FileInfo::getOwnerId()
 	return 0;
 }
 
-/*---------------------------------------------------------------------------------------
-  get the file owner string name
----------------------------------------------------------------------------------------*/
 const String& FileInfo::getOwnerName()
 {
     if (!m_isValid) {
-		return m_cachedData.ownerName;
+        return String::getNull();
     }
 
     if (m_cached) {
@@ -385,7 +429,7 @@ Int16 FileInfo::getGroupId()
 const String& FileInfo::getGroupName()
 {
     if (!m_isValid) {
-		return m_cachedData.groupName;
+        return String::getNull();
     }
 
     if (m_cached) {
@@ -440,7 +484,7 @@ Bool FileInfo::makeAbsolute()
 const DateTime &FileInfo::getCreationDate()
 {
     if (!m_isValid) {
-		return m_cachedData.created;
+        return DateTime::nullDate();
     }
 
     if (m_cached) {
@@ -469,7 +513,7 @@ const DateTime &FileInfo::getCreationDate()
 const DateTime &FileInfo::getLastAccessDate()
 {
     if (!m_isValid) {
-		return m_cachedData.lastAccess;
+        return DateTime::nullDate();
     }
 
     if (m_cached) {
@@ -498,7 +542,7 @@ const DateTime &FileInfo::getLastAccessDate()
 const DateTime& FileInfo::getModifiedDate()
 {
     if (!m_isValid) {
-		return m_cachedData.modified;
+        return DateTime::nullDate();
     }
 
     if (m_cached) {
@@ -531,7 +575,7 @@ Bool FileInfo::isSymbolicLink()
     }
 
     if (m_cached) {
-		return True;
+        return m_cachedData.symLink;
     }
 
 #ifdef O3D_WINDOWS

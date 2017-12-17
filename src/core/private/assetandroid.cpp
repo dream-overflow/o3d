@@ -87,6 +87,21 @@ Int32 AssetAndroid::findFile(const String &fileName)
     }
 }
 
+Bool AssetAndroid::isPath(const String &path) const
+{
+    if (!m_assetMgr) {
+        return False;
+    }
+
+    AAssetDir* assetDir = AAssetManager_openDir(m_assetMgr, path.toUtf8().getData());
+    if (assetDir) {
+        AAssetDir_close(assetDir);
+        return True;
+    } else {
+        return False;
+    }
+}
+
 InStream *AssetAndroid::openInStream(const String &fileName)
 {
     AAsset *asset = AAssetManager_open(m_assetMgr, fileName.toUtf8().getData(), AASSET_MODE_STREAMING);
@@ -161,6 +176,27 @@ FileTypes AssetAndroid::getFileType(Int32 index) const
     } else {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
+}
+
+UInt64 AssetAndroid::getFileSize(Int32 index) const
+{
+    AssetToken *entry;
+
+    if ((index < 0) || (index >= (Int32)m_fileList.size())) {
+        O3D_ERROR(E_IndexOutOfRange(""));
+    }
+
+    entry = m_fileList[index];
+
+    if (entry) {
+        AAsset *asset = AAssetManager_open(m_assetMgr, entry->FileName.toUtf8().getData(), AASSET_MODE_STREAMING);
+        if (asset) {
+            UInt64 size = AAsset_getLength(asset);
+            AAsset_close(asset);
+        }
+    }
+
+    O3D_ERROR(E_FileNotFoundOrInvalidRights("", fileName));
 }
 
 void AssetAndroid::findAllFiles()

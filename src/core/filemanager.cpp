@@ -12,6 +12,10 @@
 #include "o3d/core/zip.h"
 #include "o3d/core/filelisting.h"
 #include "o3d/core/thread.h"
+#include "o3d/core/fileinfo.h"
+#include "o3d/core/dir.h"
+#include "o3d/core/virtualdir.h"
+#include "o3d/core/virtualfileinfo.h"
 
 #include "o3d/core/debug.h"
 
@@ -229,7 +233,7 @@ String FileManager::getWorkingDirectory()
 }
 
 // return a full path filename, such as openFile but it don't open it
-String FileManager::getFullFileName(const String &filename)
+String FileManager::getFullFileName(const String &filename) const
 {
 	String lFilename(filename);
 	lFilename.replace('\\','/');
@@ -291,11 +295,11 @@ FileOutStream *FileManager::openOutStream(const String &filename, FileOutStream:
     return los;
 }
 
-Bool FileManager::mountAsset(const String &protocol, const String &archiveName)
+Bool FileManager::mountAsset(const String &protocol, const String &assetName)
 {
     if (protocol == "zip://") {
         Zip *pNewZipFile;
-        String lPackName = getFullFileName(archiveName);
+        String lPackName = getFullFileName(assetName);
 
         O3D_FileManagerMutex.lock();
         // Is archive already mounted
@@ -329,8 +333,33 @@ Bool FileManager::mountAsset(const String &protocol, const String &archiveName)
         O3D_FileManagerMutex.unlock();
 
         return True;
-    } else if (protocol == "asset://") {
-        // @todo
+    } else if (protocol == "android://") {
+    #ifdef O3D_ANDROID
+        AssetAndroid *asset;
+        String lAssetName = getFullFileName(archiveName);
+
+        O3D_FileManagerMutex.lock();
+        // Is archive already mounted
+        for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
+            // a single android asset
+            if ((*it)->protocol() == "android://") {
+                O3D_FileManagerMutex.unlock();
+                return False;
+            }
+        }
+        O3D_FileManagerMutex.unlock();
+
+        asset = new AssetAndroid();
+
+        // insert it
+        O3D_FileManagerMutex.lock();
+        m_assets.push_back(asset);
+        O3D_FileManagerMutex.unlock();
+
+        return True;
+    #else
+        return False;
+    #endif
     } else {
         return False;
     }
@@ -429,7 +458,153 @@ String FileManager::searchNextVirtualFile(FileTypes *fileType)
 		}
 	}
 
-	return result;
+    return result;
+}
+
+Bool FileManager::isPath(const String &path) const
+{
+    String lpath = getFullFileName(path);
+
+    // Lookup file on assets
+    {
+        FastMutexLocker locker(O3D_FileManagerMutex);
+
+        for (CIT_AssetList cit = m_assets.cbegin() ; cit != m_assets.cend(); ++cit) {
+            // @todo could optimize comparing the base of the path
+
+            // search for the path
+            if ((*cit)->isPath(lpath)) {
+                return True;
+            }
+        }
+    }
+
+    // Look on filesystem
+    Dir dir(lpath);
+    return dir.exists();
+}
+
+Bool FileManager::isFile(const String &fileName) const
+{
+    String lfilename = getFullFileName(fileName);
+
+    // Lookup file on assets
+    {
+        FastMutexLocker locker(O3D_FileManagerMutex);
+
+        for (CIT_AssetList cit = m_assets.cbegin() ; cit != m_assets.cend(); ++cit) {
+            Int32 index;
+            // search for the file
+            if ((index = (*cit)->findFile(lfilename)) != -1) {
+                return True;
+            }
+        }
+    }
+
+    // Look on filesystem
+    FileInfo fileInfo(lfilename);
+    return fileInfo.exists();
+}
+
+UInt64 FileManager::fileSize(const String &fileName) const
+{
+    String lfilename = getFullFileName(fileName);
+
+    // Lookup file on assets
+    {
+        FastMutexLocker locker(O3D_FileManagerMutex);
+
+        for (CIT_AssetList cit = m_assets.cbegin() ; cit != m_assets.cend(); ++cit) {
+            Int32 index;
+            // search for the file
+            if ((index = (*cit)->findFile(lfilename)) != -1) {
+                return (*cit)->getFileSize(index);
+            }
+        }
+    }
+
+    // Look on filesystem
+    FileInfo fileInfo(lfilename);
+    return fileInfo.exists();
+}
+
+FileTypes FileManager::fileType(const String &fileName) const
+{
+    String lfilename = getFullFileName(fileName);
+
+    // Lookup file on assets
+    {
+        FastMutexLocker locker(O3D_FileManagerMutex);
+
+        for (CIT_AssetList cit = m_assets.cbegin() ; cit != m_assets.cend(); ++cit) {
+            Int32 index;
+            // search for the file
+            if ((index = (*cit)->findFile(lfilename)) != -1) {
+                return (*cit)->getFileType(index);
+            }
+        }
+    }
+
+    // Look on filesystem
+    FileInfo fileInfo(lfilename);
+    return fileInfo.getType();
+}
+
+BaseFileInfo* FileManager::fileInfo(const String &fileName) const
+{
+    String lfilename = getFullFileName(fileName);
+
+    // Lookup file on assets
+    {
+        FastMutexLocker locker(O3D_FileManagerMutex);
+
+        for (CIT_AssetList cit = m_assets.cbegin() ; cit != m_assets.cend(); ++cit) {
+            Int32 index;
+            // search for the file
+            if ((index = (*cit)->findFile(lfilename)) != -1) {
+                return new VirtualFileInfo(fileName);
+            }
+        }
+    }
+
+    // Look on filesystem
+    FileInfo *fileInfo = new FileInfo(lfilename);
+    if (fileInfo->exists()) {
+        return fileInfo;
+    } else {
+        delete fileInfo;
+    }
+
+    return nullptr;
+}
+
+BaseDir* FileManager::dir(const String &path) const
+{
+    String lpath = getFullFileName(path);
+
+    // Lookup file on assets
+    {
+        FastMutexLocker locker(O3D_FileManagerMutex);
+
+        for (CIT_AssetList cit = m_assets.cbegin() ; cit != m_assets.cend(); ++cit) {
+            // @todo could optimize comparing the base of the path
+
+            // search for the path
+            if ((*cit)->isPath(lpath)) {
+                return new VirtualDir(path);
+            }
+        }
+    }
+
+    // Look on filesystem
+    Dir *dir = new Dir(lpath);
+    if (dir->exists()) {
+        return dir;
+    } else {
+        delete dir;
+    }
+
+    return nullptr;
 }
 
 // get a mounted archive file

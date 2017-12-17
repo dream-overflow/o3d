@@ -32,9 +32,9 @@ public:
 
 	enum FileInfoType
 	{
-        FILE_SYSTEM_FILE_INFO,  //!< Local file system or Zip virtual file system.
-		FTP_FILE_INFO,          //!< FTP file information.
-		UNKNOWN_FILE_INFO
+        UNKNOWN_FILE_INFO = 0,
+        FILE_SYSTEM,        //!< Local file system.
+        VIRTUAL_FILE,       //!< Virtual file (asset...).
 	};
 
 	//! default constructor
@@ -67,13 +67,13 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! set the filename
-	void setFile(const String &filename);
+    virtual void setFile(const String &filename);
 
 	//! set from a separates pathname and filename
-	void setFile(const String &pathname, const String &filename);
+    virtual void setFile(const String &pathname, const String &filename);
 
 	//! set from separates pathname and filename
-    void setFile(const BaseDir &dir, const String &filename);
+    virtual void setFile(const BaseDir &dir, const String &filename);
 
 	//
 	// Cache system
