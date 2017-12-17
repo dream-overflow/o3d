@@ -29,43 +29,43 @@ void Application::message(
 
     switch (icon) {
 		case ICON_HELP:
-            msg = String("[HELP] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[HELP] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case ICON_OK:
-            msg = String("[OK] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[OK] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case ICON_WARNING:
-            msg = String("[WARNING] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[WARNING] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case ICON_INFORMATION:
-            msg = String("[INFO] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[INFO] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case ICON_NOTICE:
-            msg = String("[NOTICE] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[NOTICE] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case ICON_QUESTION:
-            msg = String("[QUESTION] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[QUESTION] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case ICON_ERROR:
-            msg = String("[ERROR] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[ERROR] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
             return;
 
 		default:
-            msg = String("[NOTICE] ") + title + ": " + content + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[NOTICE] ") + title + ": " + content;
+            puts(msg.toUtf8().getData());
             return;
 	}
 }

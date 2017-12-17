@@ -207,12 +207,20 @@ CommandLine* Application::getCommandLine()
 // Get the application name
 const String& Application::getAppName()
 {
-    return *ms_appsName;
+    if (ms_appsName) {
+        return *ms_appsName;
+    } else {
+        return String::getNull();
+    }
 }
 
 const String &Application::getAppPath()
 {
-    return *ms_appsPath;
+    if (ms_appsName) {
+        return *ms_appsName;
+    } else {
+        return String::getNull();
+    }
 }
 
 void Application::addAppWindow(AppWindow *appWindow)

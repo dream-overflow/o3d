@@ -204,33 +204,33 @@ void System::print(
     switch (level)
 	{
         case MSG_DEBUG:
-            msg = String("[DEBUG] ") + t + ": " + c + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[DEBUG] ") + t + ": " + c;
+            puts(msg.toUtf8().getData());
             return;
 
         case MSG_INFO:
-            msg = String("[INFO] ") + t + ": " + c + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[INFO] ") + t + ": " + c;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case MSG_WARNING:
-            msg = String("[WARNING] ") + t + ": " + c + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[WARNING] ") + t + ": " + c;
+            puts(msg.toUtf8().getData());
 			return;
 
 		case MSG_ERROR:
-            msg = String("[ERROR] ") + t + ": " + c + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[ERROR] ") + t + ": " + c;
+            puts(msg.toUtf8().getData());
 			return;
 
         case MSG_CRITICAL:
-            msg = String("[CRITICAL] ") + t + ": " + c + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[CRITICAL] ") + t + ": " + c;
+            puts(msg.toUtf8().getData());
             return;
 
 		default:
-            msg = String("[DEBUG] ") + t + ": " + c + "\n";
-            printf(msg.toUtf8().getData());
+            msg = String("[DEBUG] ") + t + ": " + c;
+            puts(msg.toUtf8().getData());
 			return;
 	}
 }

@@ -48,6 +48,13 @@ void FileManager::destroy()
 	}
 }
 
+#ifdef O3D_ANDROID
+#include "o3d/core/application.h"
+
+#include <android/asset_manager.h>
+#include "android/android_native_app_glue.h"
+#endif
+
 // default contructor
 FileManager::FileManager() :
 	m_curFilePos(0)
@@ -58,6 +65,13 @@ FileManager::FileManager() :
 	m_defaultWorkingDir = getWorkingDirectory();
 	m_packExt = "*.pak";
 	m_curPackPos = m_packList.begin();
+
+#ifdef O3D_ANDROID
+    struct android_app* app = reinterpret_cast<struct android_app*>(Application::getApp());
+    AAssetManager *assetMgr = app->activity->assetManager;
+    AAssetDir* assetDir = AAssetManager_openDir(assetMgr, "media");
+    AAssetDir_close(assetDir);
+#endif
 }
 
 // destructor

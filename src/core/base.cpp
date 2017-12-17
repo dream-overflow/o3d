@@ -104,6 +104,10 @@ inline static UInt64 _getCycleNumber()
 // return approximate processor frequency in MHz
 Float System::getProcessorFrequency()
 {
+#ifdef O3D_ANDROID
+    return 0.f;
+#endif
+
     Int64 t1, t2, tf;
     UInt64 c1, c2;
 
