@@ -9,7 +9,7 @@
 
 #include "o3d/core/precompiled.h"
 #include "o3d/core/filemanager.h"
-
+#include "o3d/core/zip.h"
 #include "o3d/core/filelisting.h"
 #include "o3d/core/thread.h"
 
@@ -23,6 +23,10 @@
 #else
 	#include <sys/stat.h>
 	#include <dirent.h>
+#endif
+
+#ifdef O3D_ANDROID
+    #include "o3d/core/private/assetandroid.h"
 #endif
 
 using namespace o3d;
@@ -48,13 +52,6 @@ void FileManager::destroy()
 	}
 }
 
-#ifdef O3D_ANDROID
-#include "o3d/core/application.h"
-
-#include <android/asset_manager.h>
-#include "android/android_native_app_glue.h"
-#endif
-
 // default contructor
 FileManager::FileManager() :
 	m_curFilePos(0)
@@ -63,38 +60,38 @@ FileManager::FileManager() :
 
 	// current directory as default
 	m_defaultWorkingDir = getWorkingDirectory();
-	m_packExt = "*.pak";
-	m_curPackPos = m_packList.begin();
+    m_packExt = "*.opk";
 
 #ifdef O3D_ANDROID
-    struct android_app* app = reinterpret_cast<struct android_app*>(Application::getApp());
-    AAssetManager *assetMgr = app->activity->assetManager;
-    AAssetDir* assetDir = AAssetManager_openDir(assetMgr, "media");
-    AAssetDir_close(assetDir);
+    // add an android asset
+    AssetAndroid *aa = new AssetAndroid();
+    m_assets.push_back(aa);
 #endif
+
+    m_curAssetIt = m_assets.begin();
 }
 
 // destructor
 FileManager::~FileManager()
 {
-	removeAllArchives();
+    umountAllAssets();
 }
 
 // return the index of file pack end if not found
-IT_ZipList FileManager::findPackFile(const String &packName)
+IT_AssetList FileManager::findAsset(const String &assetName)
 {
-	String lPackName = getFullFileName(packName);
+    String lPackName = getFullFileName(assetName);
 
 	O3D_FileManagerMutex.lock();
-    for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
-        if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName) {
+    for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
+        if (((*it)->location() + '/' + (*it)->name()) == assetName) {
 			O3D_FileManagerMutex.unlock();
 			return it;
 		}
 	}
 	O3D_FileManagerMutex.unlock();
 
-	return m_packList.end();
+    return m_assets.end();
 }
 
 // return true if Path is relative otherwise return false
@@ -105,11 +102,13 @@ Bool FileManager::isRelativePath(const String &path)
 #ifdef O3D_WINDOWS
 	if (((path.length() > 2) && (path[1] == ':') && ((path[2] == '/') || (path[2] == '\\'))) ||
         ((path.length() > 2) && (path[0] == '/') && (path[1] == '/')) ||
-	    ((path.length() > 2) && (path[0] == '\\') && (path[1] == '\\')))
+        ((path.length() > 2) && (path[0] == '\\') && (path[1] == '\\'))) {
 		return False;
+    }
 #else
-	if ((path.length() > 1) && ((path[0] == '/') || (path[0] == '\\')))
+    if ((path.length() > 1) && ((path[0] == '/') || (path[0] == '\\'))) {
 		return False;
+    }
 #endif
 	return True;
 }
@@ -224,7 +223,7 @@ String FileManager::getWorkingDirectory()
 	return m_workingDir;
 }
 
-// return a full path filename, such as OpenFile but it don't open it
+// return a full path filename, such as openFile but it don't open it
 String FileManager::getFullFileName(const String &filename)
 {
 	String lFilename(filename);
@@ -246,11 +245,11 @@ InStream *FileManager::openInStream(const String &filename)
     String lfilename = getFullFileName(filename);
     InStream *lis = nullptr;
 
-    // on parcourt tous les fichiers pack
+    // Try with file on assets
     {
         FastMutexLocker locker(O3D_FileManagerMutex);
 
-        for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
+        for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
             Int32 index;
             // search for the file
             if ((index = (*it)->findFile(lfilename)) != -1) {
@@ -258,14 +257,14 @@ InStream *FileManager::openInStream(const String &filename)
                 return (*it)->openInStream(index);
             }
         }
+    }
 
-        // On cherche le fichier sur le disk
-        try {
-            lis = new FileInStream(lfilename);
-        } catch(const E_FileNotFoundOrInvalidRights &) {
-            deletePtr(lis);
-            throw;
-        }
+    // Try with filesystem
+    try {
+        lis = new FileInStream(lfilename);
+    } catch(const E_FileNotFoundOrInvalidRights &) {
+        deletePtr(lis);
+        throw;
     }
 
     return lis;
@@ -273,15 +272,13 @@ InStream *FileManager::openInStream(const String &filename)
 
 FileOutStream *FileManager::openOutStream(const String &filename, FileOutStream::Mode mode)
 {
-    // On cherche si le fichier existe dans les fichiers packs
+    // Always write on filesystem
     String lfilename = getFullFileName(filename);
     FileOutStream *los = nullptr;
 
     try {
         los = new FileOutStream(lfilename, mode);
-    }
-    catch(const E_BaseException &)
-    {
+    } catch(const E_BaseException &) {
         deletePtr(los);
         throw;
     }
@@ -289,83 +286,84 @@ FileOutStream *FileManager::openOutStream(const String &filename, FileOutStream:
     return los;
 }
 
-// add a pack file (relative to current path) return true if it was not already added
-Bool FileManager::mountArchive(const String &archiveName)
+Bool FileManager::mountAsset(const String &protocol, const String &archiveName)
 {
-	Zip *pNewZipFile;
-	String lPackName = getFullFileName(archiveName);
+    if (protocol == "zip://") {
+        Zip *pNewZipFile;
+        String lPackName = getFullFileName(archiveName);
 
-	O3D_FileManagerMutex.lock();
-	// On test si le fichier pack n'existe pas déjà
-	for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it)
-	{
-		if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName)
-		{
-			O3D_FileManagerMutex.unlock();
-			return False;
-		}
-	}
-	O3D_FileManagerMutex.unlock();
+        O3D_FileManagerMutex.lock();
+        // Is archive already mounted
+        for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
+            if ((*it)->protocol() != "zip://") {
+                continue;
+            }
 
-	// open the pack file
-    InStream *is = openInStream(lPackName);
+            if (((*it)->location() + '/' + (*it)->name()) == lPackName) {
+                O3D_FileManagerMutex.unlock();
+                return False;
+            }
+        }
+        O3D_FileManagerMutex.unlock();
 
-    try
-    {
-        String fname, fpath;
-        File::getFileNameAndPath(lPackName, fname, fpath);
-        pNewZipFile = new Zip(*is, fname, fpath);
+        // open the pack file
+        InStream *is = openInStream(lPackName);
+
+        try {
+            String fname, fpath;
+            File::getFileNameAndPath(lPackName, fname, fpath);
+            pNewZipFile = new Zip(*is, fname, fpath);
+        } catch(E_BaseException &) {
+            deletePtr(is);
+            throw;
+        }
+
+        // insert it
+        O3D_FileManagerMutex.lock();
+        m_assets.push_back(pNewZipFile);
+        O3D_FileManagerMutex.unlock();
+
+        return True;
+    } else if (protocol == "asset://") {
+        // @todo
+    } else {
+        return False;
     }
-    catch(E_BaseException &)
-    {
-        deletePtr(is);
-        throw;
-    }
-
-    // insert it
-    O3D_FileManagerMutex.lock();
-    m_packList.push_back(pNewZipFile);
-    O3D_FileManagerMutex.unlock();
-
-    return True;
 }
 
 // add all the packs files if not presents in and return the number of added packs
-Int32 FileManager::addAllArchives()
+Int32 FileManager::mountAllArchives()
 {
-	// On liste le repertoire courant et on ajoute tous les fichiers packs que l'on trouve dedans
+    // Add from working dir any packages files
 	Int32 Num = 0;
 	FileListing fileListing;
 
-	// On défini les params du systeme pour lister les fichiers
 	fileListing.setExt(m_packExt);
 	fileListing.setPath(m_workingDir);
 	fileListing.setType(FILE_FILE);
 
 	fileListing.searchFirstFile();
 
-	while (fileListing.searchNextFile())
-	{
-		if (mountArchive(fileListing.getFile()->FileName))
+    while (fileListing.searchNextFile()) {
+        if (mountAsset("zip://", fileListing.getFile()->FileName)) {
 			Num++;
+        }
 	}
 	return Num;
 }
 
 // remove a file pack and return true if it have already deleted
-Bool FileManager::removeArchive(const String &archiveName)
+Bool FileManager::umountAsset(const String &assetName)
 {
-	String lPackName = getFullFileName(archiveName);
+    String lPackName = getFullFileName(assetName);
 
 	O3D_FileManagerMutex.lock();
-	for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it)
-	{
-		if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName)
-		{
+    for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
+        if (((*it)->location() + '/' + (*it)->name()) == lPackName) {
 			O3D_FileManagerMutex.unlock();
 
 			deletePtr(*it);
-			m_packList.erase(it);
+            m_assets.erase(it);
 			return True;
 		}
 	}
@@ -376,17 +374,17 @@ Bool FileManager::removeArchive(const String &archiveName)
 }
 
 // remove all the files packs and the number of removed packs
-Int32 FileManager::removeAllArchives()
+Int32 FileManager::umountAllAssets()
 {
 	FastMutexLocker locker(O3D_FileManagerMutex);
 
-	Int32 ret = (Int32)m_packList.size();
+    Int32 ret = (Int32)m_assets.size();
 
-    for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
+    for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
 		deletePtr(*it);
 	}
 
-	m_packList.clear();
+    m_assets.clear();
 
 	return ret;
 }
@@ -397,7 +395,7 @@ void FileManager::searchFirstVirtualFile()
 	FastMutexLocker locker(O3D_FileManagerMutex);
 
     m_curFilePos = 0;
-	m_curPackPos = m_packList.begin();
+    m_curAssetIt = m_assets.begin();
 }
 
 // return the next file name (empty string if finished)
@@ -406,12 +404,12 @@ String FileManager::searchNextVirtualFile(FileTypes *fileType)
 	FastMutexLocker locker(O3D_FileManagerMutex);
 	String result;
 
-    while (m_curPackPos != m_packList.end()) {
-        if (m_curFilePos < (*m_curPackPos)->getNumFiles()) {
-			result = (*m_curPackPos)->getFileName(m_curFilePos);
+    while (m_curAssetIt != m_assets.end()) {
+        if (m_curFilePos < (*m_curAssetIt)->getNumFiles()) {
+            result = (*m_curAssetIt)->getFileName(m_curFilePos);
 
             if (fileType) {
-				*fileType = (*m_curPackPos)->getFileType(m_curFilePos);
+                *fileType = (*m_curAssetIt)->getFileType(m_curFilePos);
             }
 
 			++m_curFilePos;
@@ -420,28 +418,28 @@ String FileManager::searchNextVirtualFile(FileTypes *fileType)
         } else {
 			// this case when a package contain no files
 			m_curFilePos = 0;
-			++m_curPackPos;
+            ++m_curAssetIt;
 		}
 	}
 
 	return result;
 }
 
-// get an mounted archive file
-Zip* FileManager::getArchive(const String& archiveName)
+// get a mounted archive file
+Asset *FileManager::getAsset(const String &assetName)
 {
-	String lPackName = getFullFileName(archiveName);
+    String lPackName = getFullFileName(assetName);
 
 	O3D_FileManagerMutex.lock();
-    for (IT_ZipList it = m_packList.begin() ; it != m_packList.end(); ++it) {
-        if (((*it)->getZipPathName() + '/' + (*it)->getZipFileName()) == lPackName) {
+    for (IT_AssetList it = m_assets.begin() ; it != m_assets.end(); ++it) {
+        if (((*it)->location() + '/' + (*it)->name()) == lPackName) {
 			O3D_FileManagerMutex.unlock();
 			return *it;
 		}
 	}
 	O3D_FileManagerMutex.unlock();
 
-	O3D_ERROR(E_InvalidParameter(archiveName));
+    O3D_ERROR(E_InvalidParameter(assetName));
     return nullptr;
 }
 
@@ -452,7 +450,7 @@ void FileManager::setSpeedManager(FileSpeedManager type, UInt32 delay,UInt32 blo
 
 	O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
 
-	m_FileSpeedManager[type].m_delay = delay;
-	m_FileSpeedManager[type].m_size = blocksize;
-	m_FileSpeedManager[type].m_bytesec = (UInt32)(blocksize * (1000.f / (Float)delay));
+    m_flowCtrl[type].m_delay = delay;
+    m_flowCtrl[type].m_size = blocksize;
+    m_flowCtrl[type].m_bytesec = (UInt32)(blocksize * (1000.f / (Float)delay));
 }

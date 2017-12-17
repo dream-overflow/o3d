@@ -14,6 +14,7 @@
 
 #include "string.h"
 #include "hashmap.h"
+#include "asset.h"
 
 #include <vector>
 #include <list>
@@ -56,7 +57,7 @@ struct ZipHeader
 
 // Default alignment
 #ifdef _MSC_VER
-#	pragma pack( pop, packing )
+#	pragma pack(pop, packing)
 #endif
 
 #undef PACK_STRUCT
@@ -77,61 +78,73 @@ typedef std::vector<ZipToken*> T_ZipTokenVector;
 typedef T_ZipTokenVector::iterator IT_ZipTokenVector;
 typedef T_ZipTokenVector::const_iterator CIT_ZipTokenVector;
 
-//---------------------------------------------------------------------------------------
-//! @class Zip
-//-------------------------------------------------------------------------------------
-//! ZIP file management for decompression. You must attach a File opened
-//! in reading and binary mode to Zip. Then you can get file from this archive with
-//! OpenFile.
-//---------------------------------------------------------------------------------------
-class O3D_API Zip
+/**
+ * @brief ZIP file management for decompression. You must attach a File opened
+ * in reading and binary mode to Zip. Then you can get file from this archive with
+ * OpenFile.
+ */
+class O3D_API Zip : public Asset
 {
 public:
 
-    //! constructor (an open stream, Zip close it at destructor)
+    /**
+     * @brief Zip
+     * @param is An opened input stream on the zip file.
+     * @param zipName Zip filename
+     * @param zipPath Zip path.
+     */
     Zip(InStream &is, const String &zipName, const String &zipPath);
-	//! destructor
+
+    //! Destructor.
 	virtual ~Zip();
 
-	//! release all datas and close the file
-	void destroy();
-
-	//! return a file index in the list (-1 if not found).
-	//! the path of the filename is relative to the Zip file.
-	//! @return index of the file, or -1 if not found.
-	Int32 findFile(const String& fileName) const;
+    /**
+     * @brief release all datas and close the file
+     */
+    virtual void destroy() override;
 
     /**
-     * @brief openInStream open an input stream.
-     * @return
-     * @throws an exception E_FileNotFoundOrInvalidRights if cannot open the file name.
+     * @brief return a file index in the list (-1 if not found).
+     * @param fileName the path of the filename is relative to the Zip file.
+     * @return index of the file, or -1 if not found.
      */
-    InStream* openInStream(const String& filename);
+    virtual Int32 findFile(const String& fileName) const override;
+
+    virtual InStream* openInStream(const String& filename) override;
+    virtual InStream* openInStream(Int32 index) override;
 
     /**
-     * @brief openInStream open an input stream.
-     * @return
-     * @throws an exception E_FileNotFoundOrInvalidRights if cannot open the file index.
+     * @return Returns the location relative to the file system.
      */
-    InStream* openInStream(Int32 index);
+    virtual const String& location() const override;
 
-    //! get the Zip file name.
-	inline String getZipFileName() const { return m_zipFileName; }
+    /**
+     * @return Returns the name (filename...).
+     */
+    virtual String name() const override;
+
+    /**
+     * @brief get the number of files in this archive.
+     */
+    virtual Int32 getNumFiles() const override;
+
+    /**
+     * @return Returns the protocol (zip://)
+     */
+    virtual String protocol() const override;
+
+    /**
+     * @brief get the file name at a specified index, prefixed by the Zip path.
+     */
+    virtual String getFileName(Int32 index) const override;
+
+    /**
+     * @brief get the file type at a specified index.
+     */
+    virtual FileTypes getFileType(Int32 index) const override;
 
     //! get complete Zip path+filename.
     inline String getZipFullFileName() const { return (m_zipPathName + '/' + m_zipFileName); }
-
-    //! get the Zip path name only.
-	inline String getZipPathName() const { return m_zipPathName; }
-
-	//! get the number of files in this archive.
-	inline Int32 getNumFiles() const { return m_fileMap.size(); }
-
-    //! get the file name at a specified index, prefixed by the Zip path.
-	String getFileName(Int32 index) const;
-
-    //! get the file type at a specified index.
-	FileTypes getFileType(Int32 index) const;
 
 protected:
 

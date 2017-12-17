@@ -110,7 +110,7 @@ ShaderManager::ShaderManager(
 		DiskFileInfo zip(pwd + "/shaders.zip");
         if (zip.exists()) {
 			O3D_MESSAGE("Found defaults shaders in shaders.zip");
-			FileManager::instance()->mountArchive(zip.getFullFileName());
+            FileManager::instance()->mountAsset("zip://", zip.getFullFileName());
 
 			addPath(pwd + "/shaders");
 
@@ -119,7 +119,7 @@ ShaderManager::ShaderManager(
 	}
 
     if (!valid) {
-		O3D_ERROR(E_InvalidParameter("Missing shaders directory or shaders.zip file"));
+        O3D_ERROR(E_InvalidParameter("Missing shaders directory and shaders.zip file"));
 	}
 }
 

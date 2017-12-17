@@ -1,6 +1,8 @@
 cmake/Configs/Objective3DConfig.cmake.in
 cmake/Modules/FindObjective3D.cmake
+include/o3d/core/asset.h
 include/o3d/core/display.h
+include/o3d/core/private/assetandroid.h
 include/o3d/core/private/egl.h
 include/o3d/core/private/egldefines.h
 include/o3d/core/private/egldefines.h
@@ -34,6 +36,7 @@ src/core/private/appwindowwin32.cpp
 src/core/private/appwindowwin32.cpp
 src/core/private/appwindowx11.cpp
 src/core/private/appwindowx11.cpp
+src/core/private/assetandroid.cpp
 src/core/private/baseposix.cpp
 src/core/private/basewin32.cpp
 src/core/private/displayandroid.cpp

@@ -209,7 +209,7 @@ Scene::~Scene()
 
     // remove all archives
     for (IT_StringList it = m_packList.begin(); it != m_packList.end(); ++it) {
-		FileManager::instance()->removeArchive(m_rootPath + '/' + *it);
+		FileManager::instance()->umountAsset(m_rootPath + '/' + *it);
     }
 
 	// remove the renderer
@@ -280,7 +280,7 @@ Bool Scene::addArchive(const String& archiveName)
 		O3D_ERROR(E_InvalidParameter("packname must be a relative path"));
     }
 
-    if (FileManager::instance()->mountArchive(m_rootPath + '/' + archiveName)) {
+    if (FileManager::instance()->mountAsset("zip://", m_rootPath + '/' + archiveName)) {
 		m_packList.push_back(archiveName);
 		return True;
     } else {
@@ -295,7 +295,7 @@ void Scene::removeArchive(const String& archiveName)
 		O3D_ERROR(E_InvalidParameter("packname must be a relative path"));
     }
 
-    if (FileManager::instance()->removeArchive(m_rootPath + '/' + archiveName)) {
+    if (FileManager::instance()->umountAsset(m_rootPath + '/' + archiveName)) {
 		m_packList.remove(archiveName);
     }
 }
