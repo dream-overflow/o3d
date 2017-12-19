@@ -118,7 +118,7 @@ void TrueTypeFont::load(
 
     String fname, path;
     String fullfilename = FileManager::instance()->getFullFileName(filename);
-    File::getFileNameAndPath(fullfilename, fname, path);
+    FileManager::getFileNameAndPath(fullfilename, fname, path);
 
     InStream *is = FileManager::instance()->openInStream(fullfilename);
 	try {

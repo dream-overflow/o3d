@@ -33,11 +33,9 @@ namespace o3d {
     static Serialize* createInstance() { return new class<T>; }          \
     virtual Serialize* makeInstance() const { return (new class<T>()); }
 
-//---------------------------------------------------------------------------------------
-//! @class Serialize
-//-------------------------------------------------------------------------------------
-//! Used for serialize classes data to files
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Used for serialize classes data to files
+ */
 class O3D_API Serialize
 {
 public:
@@ -60,4 +58,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_SERIALIZE_H
-

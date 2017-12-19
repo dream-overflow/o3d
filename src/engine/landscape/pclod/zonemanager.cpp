@@ -402,7 +402,7 @@ void PCLODZoneManager::load(
 {
     m_headerFilePath = FileManager::instance()->getFullFileName(_headerFileName);
     String headerFname, headerPath;
-    File::getFileNameAndPath(m_headerFilePath, headerFname, headerPath);
+    FileManager::getFileNameAndPath(m_headerFilePath, headerFname, headerPath);
 
 	m_dataDirectory = _dataDir;
 

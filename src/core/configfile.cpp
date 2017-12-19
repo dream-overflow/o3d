@@ -438,29 +438,28 @@ Bool ConfigFile::save(const String & _filePath)
 {
 	String lFilePath;
 
-	if (_filePath.isEmpty())
+    if (_filePath.isEmpty()) {
 		lFilePath = m_fileName;
-	else
+    } else {
 		lFilePath = _filePath;
+    }
 
-	FileInfo lFileInfo(lFilePath);
-
-//	if (lFileInfo.isExists() && !lFileInfo.isWritable())
+//	FileInfo lFileInfo(lFilePath);
+//	if (lFileInfo.exists() && !lFileInfo.isWritable()) {
 //		return False;
+//    }
 
     OutStream *los = (OutStream*)FileManager::instance()->openOutStream(lFilePath, FileOutStream::CREATE);
-
     Bool lRet = writeToFile(*los);
 
     deletePtr(los);
 
-	if (lRet)
-	{
+    if (lRet) {
 		m_fileName = lFilePath;
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 Bool ConfigFile::writeToFile(OutStream &os)
@@ -472,10 +471,9 @@ Bool ConfigFile::readFromFile(InStream &is)
 {
 	destroy();
 
-    if (m_root.readFromFile(is))
+    if (m_root.readFromFile(is)) {
 		return True;
-	else
-	{
+    } else {
 		destroy();
 		return False;
 	}
@@ -1446,4 +1444,3 @@ Bool ConfigFile::ConfigFileValue::readFromString(const String & _string)
 
 	return False;
 }
-

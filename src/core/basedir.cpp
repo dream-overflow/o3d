@@ -12,13 +12,13 @@
 
 #include "o3d/core/instream.h"
 #include "o3d/core/outstream.h"
-#include "o3d/core/file.h"
+#include "o3d/core/filemanager.h"
 #include "o3d/core/debug.h"
 
 using namespace o3d;
 
 BaseDir::BaseDir(const String& pathname) :
-    m_type(UNKNOWN_DIR_TYPE),
+    m_type(FL_UNKNOWN),
 	m_isValid(False)
 {
     if (pathname.isValid()) {
@@ -26,6 +26,11 @@ BaseDir::BaseDir(const String& pathname) :
     } else {
 		m_fullPathname = ".";
     }
+}
+
+BaseDir::~BaseDir()
+{
+
 }
 
 String BaseDir::makeRelative(const String &filename) const
@@ -37,7 +42,7 @@ String BaseDir::makeRelative(const String &filename) const
     String lFilename(filename);
     lFilename.replace('\\','/');
 
-    return File::convertPath(lFilename, m_fullPathname);
+    return FileManager::convertPath(lFilename, m_fullPathname);
 }
 
 Bool BaseDir::setPathName(const String &pathName)
@@ -125,10 +130,10 @@ String BaseDir::makeFullFileName(const String &filename) const
 
     if (m_fullPathname.isValid()) {
 		lFilename = m_fullPathname + '/' + lFilename;
-		File::adaptPath(lFilename);
+        FileManager::adaptPath(lFilename);
 		return lFilename;
     } else {
-		File::adaptPath(lFilename);
+        FileManager::adaptPath(lFilename);
 		return lFilename;
 	}
 }
@@ -146,10 +151,10 @@ String BaseDir::makeFileName(const String &filename) const
 
     if (m_pathName.isValid()) {
 		lFilename = m_pathName + '/' + lFilename;
-		File::adaptPath(lFilename);
+        FileManager::adaptPath(lFilename);
 		return lFilename;
     } else {
-		File::adaptPath(lFilename);
+        FileManager::adaptPath(lFilename);
 		return lFilename;
 	}
 }
@@ -167,10 +172,10 @@ String BaseDir::makeFullPathName(const String &pathName) const
 
     if (m_fullPathname.isValid()) {
 		lPathName = m_fullPathname + '/' + lPathName;
-		File::adaptPath(lPathName);
+        FileManager::adaptPath(lPathName);
 		return lPathName;
     } else {
-		File::adaptPath(lPathName);
+        FileManager::adaptPath(lPathName);
 		return lPathName;
 	}
 }
@@ -188,10 +193,10 @@ String BaseDir::makePathName(const String &pathName) const
 
     if (m_pathName.isValid()) {
 		lPathName = m_pathName + '/' + lPathName;
-		File::adaptPath(lPathName);
+        FileManager::adaptPath(lPathName);
 		return lPathName;
     } else {
-		File::adaptPath(lPathName);
+        FileManager::adaptPath(lPathName);
 		return lPathName;
 	}
 }

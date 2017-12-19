@@ -16,6 +16,7 @@
 #include "o3d/core/dir.h"
 #include "o3d/core/virtualdir.h"
 #include "o3d/core/virtualfileinfo.h"
+#include "o3d/core/stringtokenizer.h"
 
 #include "o3d/core/debug.h"
 
@@ -120,6 +121,119 @@ Bool FileManager::isRelativePath(const String &path)
     }
 #endif
 	return True;
+}
+
+void FileManager::adaptPath(String& path)
+{
+    Int32 pos,pathToDelPos;
+
+    path.replace('\\','/');
+    path.trimRight('/');
+
+    // add a trailing slash to simplify our search
+    path += '/';
+
+    // delete the '.'
+    while ((pos = path.sub("./",0)) > 1) {
+        path.remove(pos,2);
+    }
+
+    // remove the last directory
+    while ((pos = path.sub("../",0)) > 1) {
+        pathToDelPos = path.find('/',pos-2,True);
+        path.remove(pathToDelPos,pos+2-pathToDelPos);
+    }
+
+    // no trailing slash
+    path.trimRight('/');
+}
+
+String FileManager::convertPath(const String &filename, const String &pathName)
+{
+    String result;
+    StringTokenizer lPath(filename, L"/\\");
+    StringTokenizer lPathCount(pathName, L"/\\");
+
+    while (lPath.hasMoreTokens()) {
+        String cur = lPath.nextToken();
+        lPathCount.nextToken();
+
+        if (pathName.sub(cur,0) == -1) {
+            result += cur;
+
+            if (lPath.hasMoreTokens()) {
+                if (lPathCount.hasMoreTokens()) {
+                    result.insert("../",0);
+                }
+
+                result += '/';
+            }
+        }
+    }
+
+    // no trailing slash
+    result.trimRight('/');
+    return result;
+}
+
+void FileManager::getFileNameAndPath(
+        const String &fullFileName,
+        String &filename,
+        String &pathname)
+{
+    Int32 p = fullFileName.reverseFind('/');
+    if (p == -1) {
+        pathname = "";
+        filename = fullFileName;
+    } else {
+        pathname = fullFileName;
+        pathname.truncate(p);
+        filename = fullFileName.sub(p+1);
+    }
+}
+
+String FileManager::getFileName(const String &fullFileName)
+{
+    Int32 p = fullFileName.reverseFind('/');
+    if (p == -1) {
+        return fullFileName;
+    } else {
+        return fullFileName.sub(p+1);
+    }
+}
+
+String FileManager::getStrippedFileName(const String &fullFileName)
+{
+    String fileName, fileExt;
+    getFileNameAndExt(fullFileName, fileName, fileExt);
+    fileName.trimRight(fileExt);
+
+    return fileName;
+}
+
+String FileManager::getFileExt(const String &fullFileName)
+{
+    Int32 p = fullFileName.reverseFind('.');
+    if (p == -1) {
+        return "";
+    } else {
+        return fullFileName.sub(p+1);
+    }
+}
+
+void FileManager::getFileNameAndExt(
+        const String &fullFileName,
+        String &filename,
+        String &ext)
+{
+    Int32 p = fullFileName.reverseFind('/');
+    if (p == -1) {
+        filename = fullFileName;
+    } else {
+        filename = fullFileName.sub(p+1);
+    }
+
+    ext = getFileExt(filename);
 }
 
 // define the current working path (absolute)
@@ -244,7 +358,7 @@ String FileManager::getFullFileName(const String &filename) const
 		O3D_FileManagerMutex.unlock();
 	}
 
-	File::adaptPath(lFilename);
+    adaptPath(lFilename);
 	return lFilename;
 }
 
@@ -320,7 +434,7 @@ Bool FileManager::mountAsset(const String &protocol, const String &assetName)
 
         try {
             String fname, fpath;
-            File::getFileNameAndPath(lPackName, fname, fpath);
+            getFileNameAndPath(lPackName, fname, fpath);
             pNewZipFile = new Zip(*is, fname, fpath);
         } catch(E_BaseException &) {
             deletePtr(is);
@@ -557,6 +671,9 @@ BaseFileInfo* FileManager::fileInfo(const String &fileName) const
     // Lookup file on assets
     {
         FastMutexLocker locker(O3D_FileManagerMutex);
+
+        // @todo optimize lookup throught asset using part of theirs path
+        // if the base path exists into a map... every where in this manager
 
         for (CIT_AssetList cit = m_assets.cbegin() ; cit != m_assets.cend(); ++cit) {
             Int32 index;

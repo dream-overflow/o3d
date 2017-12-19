@@ -698,7 +698,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
 	IT_StringList it;
 	ArrayChar data;
 	Int32 size;
-	String name;
+    String name;
     InStream *is;
 
 	// vertex programs
@@ -710,9 +710,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
         is->read(data.getData(), size);
 		data[size] = 0;
 
-		FileInfo fileInfo(*it);
-		name = fileInfo.getFileName();
-
+        name = FileManager::getFileName(*it);
 		name.trimRight("_vp.glsl");
 
 		shader->addProgram(Shader::TYPE_VERTEX_PROGRAM, name, data.getData(), size+1);
@@ -729,9 +727,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
         is->read(data.getData(), size);
 		data[size] = 0;
 
-		FileInfo fileInfo(*it);
-		name = fileInfo.getFileName();
-
+        name = FileManager::getFileName(*it);
 		name.trimRight("_fp.glsl");
 
 		shader->addProgram(Shader::TYPE_FRAGMENT_PROGRAM, name, data.getData(), size+1);
@@ -748,9 +744,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
         is->read(data.getData(), size);
 		data[size] = 0;
 
-		FileInfo fileInfo(*it);
-		name = fileInfo.getFileName();
-
+        name = FileManager::getFileName(*it);
 		name.trimRight("_gp.glsl");
 
 		shader->addProgram(Shader::TYPE_GEOMETRY_PROGRAM, name, data.getData(), size+1);
@@ -767,9 +761,7 @@ Bool ShaderManager::createShader(Shader *shader, T_ProgramToken &program)
         is->read(data.getData(), size);
         data[size] = 0;
 
-        FileInfo fileInfo(*it);
-        name = fileInfo.getFileName();
-
+        name = FileManager::getFileName(*it);
         name.trimRight("_tp.glsl");
 
         shader->addProgram(Shader::TYPE_TESSELATION_PROGRAM, name, data.getData(), size+1);

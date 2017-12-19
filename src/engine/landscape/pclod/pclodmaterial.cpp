@@ -59,15 +59,12 @@ void PCLODMaterial::rtLoad()
 {
 	O3D_ASSERT(!loaded());
 
-	FileInfo lFileInfo(m_filePath);
-
-	if (!lFileInfo.exists())
-	{
+    File lFileInfo(m_filePath);
+    if (!lFileInfo.exists()) {
 		// If the file is not found, we load a black texture
 
 		// If the file was not defined on purpose, we dont show any message
-		if (m_filePath.length() > 0)
-		{
+        if (m_filePath.length() > 0) {
 			PCLOD_WARNING(String("Material : Material not found (") << m_filePath <<
 					". Will be replaced by a black texture");
 		}
@@ -80,9 +77,7 @@ void PCLODMaterial::rtLoad()
 		m_pTexture->setWrap(Texture::REPEAT);
         m_pTexture->setName("<emptyPict>");
         m_pTexture->setResourceName("<emptyPict>");
-	}
-	else
-	{
+    } else {
 		// Manage exceptions
         AutoPtr<InStream> materialFile(FileManager::instance()->openInStream(m_filePath));
 
@@ -90,12 +85,9 @@ void PCLODMaterial::rtLoad()
 
 		// Try to load the picture file
 		Image materialPic(*materialFile);
-		if (materialPic.isValid())
-		{
+        if (materialPic.isValid()) {
 			m_pTexture = new Texture2D(m_pParent, materialPic);
-		}
-		else
-		{
+        } else {
 			PCLOD_WARNING(String("Material : Material file found (") << m_filePath <<
 					"), but its format is not supported. Will be replaced by a black texture");
 
@@ -126,11 +118,12 @@ void PCLODMaterial::rtUnload()
 
 	UInt32 texSize = m_pTexture->getImage().getSize();
 
-	//m_pTexture->setParent(NULL);
-	m_pTexture = NULL;
+    //m_pTexture->setParent(nullptr);
+    m_pTexture = nullptr;
 
-	for (IT_MatSampleMap it = m_sample.begin() ; it != m_sample.end() ; it++)
+    for (IT_MatSampleMap it = m_sample.begin() ; it != m_sample.end() ; it++) {
 		deleteArray(it->second);
+    }
 
 	m_sample.clear();
 
@@ -143,42 +136,39 @@ PCLODMaterial::PCLODRgba * PCLODMaterial::getSample(UInt32 _precision)
 {
 	IT_MatSampleMap it = m_sample.find(_precision);
 
-	if (it != m_sample.end())
+    if (it != m_sample.end()) {
 		return it->second;
-	else
-	{
+    } else {
 		PCLOD_WARNING(String("Texture Material <") << m_matId << "> : Sample size " <<
 				(1 << _precision) << " not available, must be generated");
 
 		generateSample(_precision);
 
 		it = m_sample.find(_precision);
-		if (it != m_sample.end())
+        if (it != m_sample.end()) {
 			return it->second;
-		else
+        } else {
             return nullptr;
+        }
 	}
 }
 
 /* Load the texture to openGL */
 void PCLODMaterial::loadToGL() const
 {
-	if (!loaded())
-	{
+    if (!loaded()) {
 		PCLOD_ERROR(String("Material : Attempt to load the texture <") << m_filePath <<
 				"> into video memory, but you must load it from disk before");
 		return;
 	}
 
-	if (m_pTexture->isValid())
+    if (m_pTexture->isValid()) {
 		return;
-	else
-	{
+    } else {
 		Texture2D * pTexture = getTexture();
 		pTexture->create(True);
 
-		if (!m_pTexture->isValid())
-		{
+        if (!m_pTexture->isValid()) {
 			PCLOD_ERROR(String("Material : An error occured while trying to send the texture <") <<
 					m_filePath << "> to openGL");
 			return;

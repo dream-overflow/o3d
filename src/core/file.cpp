@@ -9,94 +9,285 @@
 
 #include "o3d/core/precompiled.h"
 
-#include "o3d/core/architecture.h"
-#include "o3d/core/serialize.h"
 #include "o3d/core/file.h"
 #include "o3d/core/debug.h"
-#include "o3d/core/stringtokenizer.h"
+#include "o3d/core/basefileinfo.h"
+#include "o3d/core/filemanager.h"
 
 using namespace o3d;
 
-Serialize::~Serialize()
+File::File(const String &fileName)
 {
-
+    m_fi = FileManager::instance()->fileInfo(fileName);
 }
 
-// when a path contain some '..' or '.' this method reform the path without '..' and '.'
-void File::adaptPath(String& path)
+File::File(const String &pathName, const String &fileName)
 {
-	Int32 pos,pathToDelPos;
-
-	path.replace('\\','/');
-	path.trimRight('/');
-
-	// add a trailing slash to simplify our search
-	path += '/';
-
-	// delete the '.'
-    while ((pos = path.sub("./",0)) > 1)
-	{
-		path.remove(pos,2);
-	}
-
-	// remove the last directory
-    while ((pos = path.sub("../",0)) > 1)
-	{
-		pathToDelPos = path.find('/',pos-2,True);
-		path.remove(pathToDelPos,pos+2-pathToDelPos);
-	}
-
-  	// no trailing slash
-  	path.trimRight('/');
+    m_fi = FileManager::instance()->fileInfo(pathName + '/' + fileName);
 }
 
-// adapt an absolute path of a file to another absolute path. ex:
-String File::convertPath(const String &filename, const String &pathName)
+File::File(const BaseDir &dir, const String &fileName)
 {
-	String result;
-	StringTokenizer lPath(filename, L"/\\");
-	StringTokenizer lPathCount(pathName, L"/\\");
-
-	while (lPath.hasMoreTokens())
-	{
-		String cur = lPath.nextToken();
-		lPathCount.nextToken();
-
-		if (pathName.sub(cur,0) == -1)
-		{
-			result += cur;
-
-            if (lPath.hasMoreTokens())
-			{
-                if (lPathCount.hasMoreTokens())
-					result.insert("../",0);
-
-				result += '/';
-			}
-		}
-	}
-
-	// no trailing slash
-	result.trimRight('/');
-	return result;
+    m_fi = FileManager::instance()->fileInfo(dir.getFullPathName() + '/' + fileName);
 }
 
-// Get the file name and the path name from a complete (full) file name.
-void File::getFileNameAndPath(
-		const String &fullFileName,
-		String &filename,
-		String &pathname)
+File::File(const File &dup) :
+    m_fi(nullptr)
 {
-	Int32 p = fullFileName.reverseFind('/');
-	if (p == -1)
-	{
-		pathname = "";
-		filename = fullFileName;
-	}
-	else
-	{
-		pathname = fullFileName;
-		pathname.truncate(p);
-		filename = fullFileName.sub(p+1);
+    if (dup.m_fi) {
+        m_fi = dup.m_fi->clone();
     }
+}
+
+File::File(const BaseFileInfo &dup)
+{
+    m_fi = dup.clone();
+}
+
+File::~File()
+{
+    deletePtr(m_fi);
+}
+
+FileTypes File::getType()
+{
+    if (!m_fi) {
+        return FILE_UNKNWON;
+    }
+
+    return m_fi->getType();
+}
+
+UInt64 File::getFileSize()
+{
+    if (!m_fi) {
+        return 0;
+    }
+
+    return m_fi->getFileSize();
+}
+
+Bool File::exists()
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->exists();
+}
+
+Bool File::isAbsolute() const
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->isAbsolute();
+}
+
+Bool File::isReadable()
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->isReadable();
+}
+
+Bool File::isWritable()
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->isWritable();
+}
+
+Bool File::isHidden()
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->isHidden();
+}
+
+Int16 File::getOwnerId()
+{
+    if (!m_fi) {
+        return 0;
+    }
+
+    return m_fi->getOwnerId();
+}
+
+const String &File::getOwnerName()
+{
+    if (!m_fi) {
+        return String::getNull();
+    }
+
+    return m_fi->getOwnerName();
+}
+
+Int16 File::getGroupId()
+{
+    if (!m_fi) {
+        return 0;
+    }
+
+    return m_fi->getGroupId();
+}
+
+const String &File::getGroupName()
+{
+    if (!m_fi) {
+        return String::getNull();
+    }
+
+    return m_fi->getGroupName();
+}
+
+Bool File::makeAbsolute()
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->makeAbsolute();
+}
+
+const DateTime &File::getCreationDate()
+{
+    if (!m_fi) {
+        return DateTime::nullDate();
+    }
+
+    return m_fi->getCreationDate();
+}
+
+const DateTime &File::getLastAccessDate()
+{
+    if (!m_fi) {
+        return DateTime::nullDate();
+    }
+
+    return m_fi->getLastAccessDate();
+}
+
+const DateTime &File::getModifiedDate()
+{
+    if (!m_fi) {
+        return DateTime::nullDate();
+    }
+
+    return m_fi->getModifiedDate();
+}
+
+Bool File::isSymbolicLink()
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->isSymbolicLink();
+}
+
+Bool File::isInRoot() const
+{
+    if (!m_fi) {
+        return False;
+    }
+
+    return m_fi->isInRoot();
+}
+
+String File::makeRelative(const BaseDir &dir) const
+{
+    if (!m_fi) {
+        return "";
+    }
+
+    return m_fi->makeRelative(dir);
+}
+
+FileLocation File::getFileLocation() const
+{
+    if (!m_fi) {
+        return FL_UNKNOWN;
+    }
+
+    return m_fi->getFileLocation();
+}
+
+const String &File::getFileName() const
+{
+    if (!m_fi) {
+        return String::getNull();
+    }
+
+    return m_fi->getFileName();
+}
+
+const String &File::getFullFileName() const
+{
+    if (!m_fi) {
+        return String::getNull();
+    }
+
+    return m_fi->getFullFileName();
+}
+
+const String &File::getFileExt() const
+{
+    if (!m_fi) {
+        return String::getNull();
+    }
+
+    return m_fi->getFileExt();
+}
+
+String File::getFilePath() const
+{
+    if (!m_fi) {
+        return "";
+    }
+
+    return m_fi->getFilePath();
+}
+
+Bool File::operator==(const File &cmp) const
+{
+    if (!cmp.m_fi || !m_fi) {
+        return False;
+    }
+
+    return *m_fi == *cmp.m_fi;
+}
+
+Bool File::operator!=(const File &cmp) const
+{
+    if (!cmp.m_fi || !m_fi) {
+        return True;
+    }
+
+    return *m_fi != *cmp.m_fi;
+}
+
+Bool File::operator==(const BaseFileInfo &cmp) const
+{
+    if (m_fi) {
+        return False;
+    }
+
+    return *m_fi == cmp;
+}
+
+Bool File::operator!=(const BaseFileInfo &cmp) const
+{
+    if (!m_fi) {
+        return True;
+    }
+
+    return *m_fi != cmp;
 }

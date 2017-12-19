@@ -55,6 +55,13 @@ enum UserObjectType
     USER_OBJECT = 0x10000000         //!< First id for user objects types
 };
 
+enum FileLocation
+{
+    FL_UNKNOWN = 0,         //!< Unknown file location.
+    FL_LOCAL,               //!< Local file system.
+    FL_VIRTUAL,             //!< Virtual file (asset...).
+};
+
 //! File types
 enum FileTypes
 {

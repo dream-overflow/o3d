@@ -18,33 +18,38 @@ using namespace o3d;
 VirtualFileInfo::VirtualFileInfo(const String &filename) :
     BaseFileInfo(filename)
 {
-    m_type = VIRTUAL_FILE;
+    m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
 VirtualFileInfo::VirtualFileInfo(const String &pathname,const String &filename) :
     BaseFileInfo(pathname,filename)
 {
-    m_type = VIRTUAL_FILE;
+    m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
 VirtualFileInfo::VirtualFileInfo(const BaseDir &dir,const String &filename) :
     BaseFileInfo(dir,filename)
 {
-    m_type = VIRTUAL_FILE;
+    m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
 VirtualFileInfo::VirtualFileInfo(const BaseFileInfo& dup) :
     BaseFileInfo(dup)
 {
-    m_type = FILE_SYSTEM;
+    m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
 VirtualFileInfo::~VirtualFileInfo()
 {
+}
+
+BaseFileInfo *VirtualFileInfo::clone() const
+{
+    return new VirtualFileInfo(*this);
 }
 
 void VirtualFileInfo::setFile(const String &filename)

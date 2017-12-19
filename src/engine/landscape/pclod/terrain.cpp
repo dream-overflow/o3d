@@ -159,7 +159,7 @@ void PCLODTerrain::load(
 {
     String fullHeaderFile = FileManager::instance()->getFullFileName(_headerFile);
     String headerFname, headerPath;
-    File::getFileNameAndPath(fullHeaderFile, headerFname, headerPath);
+    FileManager::getFileNameAndPath(fullHeaderFile, headerFname, headerPath);
 
     O3D_ASSERT(m_pZoneManager == nullptr);
 

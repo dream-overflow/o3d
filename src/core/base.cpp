@@ -13,10 +13,16 @@
 #include "o3d/core/base.h"
 #include "o3d/core/string.h"
 #include "o3d/core/closable.h"
+#include "o3d/core/serialize.h"
 
 using namespace o3d;
 
 Closable::~Closable()
+{
+
+}
+
+Serialize::~Serialize()
 {
 
 }

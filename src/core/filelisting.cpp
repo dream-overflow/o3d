@@ -253,7 +253,7 @@ void FileListing::setPath(const String &path)
 		Dir diskDir(m_path);
         if (!diskDir.isAbsolute()) {
 			m_path = FileManager::instance()->getWorkingDirectory() + '/' + m_path;
-            File::adaptPath(m_path);
+            FileManager::adaptPath(m_path);
 		}
 
 	#ifdef O3D_WINDOWS
@@ -297,13 +297,13 @@ String FileListing::getFilePath() const
 
     if ((m_curPos >= 0) && (m_curPos < (Int32)m_fileList.size())) {
         if (m_fileList[m_curPos]->FileType == FILE_FILE) {
-			FileInfo diskFile(pathOnly + m_fileList[m_curPos]->FileName);
-			diskFile.makeAbsolute();
-			return diskFile.getFilePath();
+            FileInfo localFile(pathOnly + m_fileList[m_curPos]->FileName);
+            localFile.makeAbsolute();
+            return localFile.getFilePath();
         } else if (m_fileList[m_curPos]->FileType == FILE_DIR) {
-			Dir diskDir(pathOnly + m_fileList[m_curPos]->FileName);
-			diskDir.makeAbsolute();
-			return diskDir.getFullPathName();
+            Dir localDir(pathOnly + m_fileList[m_curPos]->FileName);
+            localDir.makeAbsolute();
+            return localDir.getFullPathName();
 		}
 	}
 
@@ -318,13 +318,13 @@ String FileListing::getFileFullName() const
 
     if ((m_curPos >= 0) && (m_curPos < (Int32)m_fileList.size())) {
         if (m_fileList[m_curPos]->FileType == FILE_FILE) {
-			FileInfo diskFile(pathOnly + m_fileList[m_curPos]->FileName);
-			diskFile.makeAbsolute();
-			return diskFile.getFullFileName();
+            FileInfo localFile(pathOnly + m_fileList[m_curPos]->FileName);
+            localFile.makeAbsolute();
+            return localFile.getFullFileName();
         } else if (m_fileList[m_curPos]->FileType == FILE_DIR) {
-			Dir diskDir(pathOnly + m_fileList[m_curPos]->FileName);
-			diskDir.makeAbsolute();
-			return diskDir.getFullPathName();
+            Dir localDir(pathOnly + m_fileList[m_curPos]->FileName);
+            localDir.makeAbsolute();
+            return localDir.getFullPathName();
 		}
 	}
 

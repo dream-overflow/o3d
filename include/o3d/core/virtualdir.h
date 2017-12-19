@@ -32,6 +32,8 @@ public:
 
     virtual ~VirtualDir();
 
+    virtual BaseDir* clone() const override;
+
     //! clean the path (remove '..' and '.' when possible)
     virtual void clean() override;
 

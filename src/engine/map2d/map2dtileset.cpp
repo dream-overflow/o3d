@@ -305,21 +305,20 @@ void Map2dTileSet::loadXmlDef(const String &filename)
 	// Read XML Content
 	// Element TextureTheme
 	TiXmlElement *node = xmlDoc.getDoc()->FirstChildElement("Tile");
-	if (!node)
+    if (!node) {
 		O3D_ERROR(E_InvalidFormat("Missing Tile token in " + filename));
+    }
 
 	// Iterate trough frame elements
-	TiXmlNode *frameNode = NULL;
+    TiXmlNode *frameNode = nullptr;
 	Int32 id;
 	Int32 delay;
+    String fileExt;
 
 	// tile name. if empty use the name of the file like for static tiles.
 	name = node->Attribute("name");
-	if (name.isEmpty())
-	{
-		FileInfo fileInfo(filename);
-		name = fileInfo.getFileName();
-		name.trimRight(fileInfo.getFileExt());
+    if (name.isEmpty()) {
+        name = FileManager::getStrippedFileName(filename);
 	}
 
 	UInt32 tileId = m_nameToId[name];
@@ -333,8 +332,7 @@ void Map2dTileSet::loadXmlDef(const String &filename)
 	Frame frame;
 
 	// for each frame
-	while ((frameNode = node->IterateChildren("Frame",frameNode)) != NULL)
-	{
+    while ((frameNode = node->IterateChildren("Frame",frameNode)) != nullptr) {
 		frameNode->ToElement()->Attribute("id", &id);
 		tileFile = frameNode->ToElement()->Attribute("file");
 		frameNode->ToElement()->Attribute("delay", &delay);
@@ -347,14 +345,11 @@ void Map2dTileSet::loadXmlDef(const String &filename)
 		tileId = m_nameToId[tileFile];
 
 		IT_TileMap it = m_tileSet.tileMap.find(tileId);
-		if (it != m_tileSet.tileMap.end())
-		{
+        if (it != m_tileSet.tileMap.end()) {
 			// take frame detail from the source static tile frame
 			frame.tileDef = it->second.frames[0].tileDef;
 			frame.texture = it->second.frames[0].texture;
-		}
-		else
-		{
+        } else {
 			frame.tileDef.sU = frame.tileDef.sV = frame.tileDef.eU = frame.tileDef.eV = 0.f;
 			frame.texture = nullptr;
 		}
@@ -375,35 +370,33 @@ void Map2dTileSet::loadXmlFile(const String &filename, std::map<UInt32, String> 
 	// Read XML Content
 	// Element Tiles
 	TiXmlElement *node = xmlDoc.getDoc()->FirstChildElement("Tiles");
-	if (!node)
+    if (!node) {
 		O3D_ERROR(E_InvalidFormat("Missing Tiles token in " + filename));
+    }
 
 	Int32 w, h;
 
 	if (node->ToElement()->Attribute("tileWidth", &w) &&
-		node->ToElement()->Attribute("tileHeight", &h))
-	{
+        node->ToElement()->Attribute("tileHeight", &h)) {
 		m_tileSet.tileSize.set(w, h);
-	}
-	else
+    } else {
 		O3D_ERROR(E_InvalidFormat("Missing tile size in " + filename));
+    }
 
 	if (node->ToElement()->Attribute("textureWidth", &w) &&
-		node->ToElement()->Attribute("textureHeight", &h))
-	{
+        node->ToElement()->Attribute("textureHeight", &h)) {
 		m_textureSize.set(w, h);
-	}
-	else
+    } else {
 		O3D_ERROR(E_InvalidFormat("Missing texture size in " + filename));
+    }
 
-	TiXmlNode *tileNode = NULL;
+    TiXmlNode *tileNode = nullptr;
 
 	String name;
 	Int32 id;
 
 	// for each tile
-	while ((tileNode = node->IterateChildren("Tile", tileNode)) != NULL)
-	{
+    while ((tileNode = node->IterateChildren("Tile", tileNode)) != nullptr) {
 		name = tileNode->ToElement()->Attribute("name");
 
 		tileNode->ToElement()->Attribute("id", &id);
@@ -413,8 +406,9 @@ void Map2dTileSet::loadXmlFile(const String &filename, std::map<UInt32, String> 
 	}
 
 	if ((m_textureSize.x() < m_tileSet.tileSize.x()) ||
-		(m_textureSize.y() < m_tileSet.tileSize.y()))
+        (m_textureSize.y() < m_tileSet.tileSize.y())) {
 		O3D_ERROR(E_InvalidFormat("Texture size must be greater than tile size"));
+    }
 }
 
 // Create a tile.
@@ -425,7 +419,7 @@ Map2dTileSet::TileDef Map2dTileSet::generateTile(
 {
     String fullfilename = FileManager::instance()->getFullFileName(filename);
     String path;
-    File::getFileNameAndPath(fullfilename, tileName, path);
+    FileManager::getFileNameAndPath(fullfilename, tileName, path);
 
     InStream *is = FileManager::instance()->openInStream(fullfilename);
     Image picture(*is, PF_RGBA_U8);

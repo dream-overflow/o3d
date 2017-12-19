@@ -30,29 +30,34 @@ using namespace o3d;
 FileInfo::FileInfo(const String &filename) :
     BaseFileInfo(filename)
 {
-    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_type = FL_LOCAL;
     m_isValid = exists();
 }
 
-FileInfo::FileInfo(const String &pathname,const String &filename) :
-    BaseFileInfo(pathname,filename)
+FileInfo::FileInfo(const String &pathname, const String &filename) :
+    BaseFileInfo(pathname, filename)
 {
-    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_type = FL_LOCAL;
     m_isValid = exists();
 }
 
-FileInfo::FileInfo(const BaseDir &dir,const String &filename) :
-    BaseFileInfo(dir,filename)
+FileInfo::FileInfo(const BaseDir &dir, const String &filename) :
+    BaseFileInfo(dir, filename)
 {
-    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_type = FL_LOCAL;
     m_isValid = exists();
 }
 
 FileInfo::FileInfo(const BaseFileInfo& dup) :
     BaseFileInfo(dup)
 {
-    m_type = BaseFileInfo::FILE_SYSTEM;
+    m_type = FL_LOCAL;
     m_isValid = exists();
+}
+
+BaseFileInfo *FileInfo::clone() const
+{
+    return new FileInfo(*this);
 }
 
 FileInfo::~FileInfo()

@@ -754,11 +754,10 @@ Bool Ms3d::load(InStream &is, const String& baseName, const String &path)
 // Load MS3D file.
 Bool Ms3d::load(const String& filename)
 {
-    FileInfo file(filename);
+    File file(filename);
 
     InStream *is = FileManager::instance()->openInStream(filename);
-    if (is)
-	{
+    if (is) {
         String baseName = file.getFileName();
         if (baseName.endsWith(".ms3d"))
             baseName.truncate(baseName.length() - 5);
@@ -774,8 +773,7 @@ Bool Ms3d::load(const String& filename)
 // Unload MS3D created content.
 void Ms3d::destroy()
 {
-	if (m_loaded)
-	{
+    if (m_loaded) {
 		deletePtr(m_rootNode);
 
         m_mesh = nullptr;
@@ -787,4 +785,3 @@ void Ms3d::destroy()
 		m_loaded = False;
 	}
 }
-

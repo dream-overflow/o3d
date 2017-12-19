@@ -20,23 +20,28 @@ using namespace o3d;
 VirtualDir::VirtualDir(const String& pathname) :
     BaseDir(pathname)
 {
-    m_type = BaseDir::VIRTUAL_FILE;
+    m_type = FL_VIRTUAL;
 }
 
 //! copy constructor
 VirtualDir::VirtualDir(const VirtualDir& dup) :
     BaseDir(dup)
 {
-    m_type = BaseDir::VIRTUAL_FILE;
+    m_type = FL_VIRTUAL;
 }
 
 VirtualDir::~VirtualDir()
 {
 }
 
+BaseDir *VirtualDir::clone() const
+{
+    return new VirtualDir(*this);
+}
+
 void VirtualDir::clean()
 {
-    File::adaptPath(m_fullPathname);
+    FileManager::adaptPath(m_fullPathname);
 }
 
 Bool VirtualDir::empty() const
@@ -111,7 +116,7 @@ BaseDir::DirReturn VirtualDir::check(const String &fileOrPath) const
     }
 
     String toCheck(m_fullPathname + '/' + lFileOrPath);
-    File::adaptPath(toCheck);
+    FileManager::adaptPath(toCheck);
 
     if (FileManager::instance()->isFile(toCheck) || FileManager::instance()->isPath(toCheck)) {
         return SUCCESS;

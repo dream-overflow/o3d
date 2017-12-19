@@ -22,6 +22,40 @@ class BaseFileInfo;
 class BaseDir;
 
 /**
+ * @brief BlockData Useful struct for data reading/writing managing
+ * @deprecated For now...
+ */
+struct O3D_API BlockData
+{
+    UInt32 m_delay;       //!< delay between to block of m_size (in ms)
+    UInt32 m_size;        //!< size of a chunk of data to read/write
+    UInt32 m_bytesec;     //!< value in byte per second
+    Bool m_use;           //!< is enable or disable
+
+    BlockData() :
+        m_delay(50),
+        m_size(25600),
+        m_bytesec(512000),
+        m_use(False) {}
+
+    BlockData(const BlockData &dup) :
+        m_delay(dup.m_delay),
+        m_size(dup.m_size),
+        m_bytesec(dup.m_bytesec),
+        m_use(dup.m_use) {}
+
+    const BlockData& operator= (const BlockData &dup)
+    {
+        m_delay = dup.m_delay;
+        m_size = dup.m_size;
+        m_bytesec = dup.m_bytesec;
+        m_use = dup.m_use;
+
+        return (*this);
+    }
+};
+
+/**
  * @brief File and asset manager.
  * Using file manager to open a file on the system, or any others virtual files
  * mounted into this manager (zip, asset manager...).
@@ -48,14 +82,73 @@ public:
 
 	static const Int32 NUM_FILE_SPEED_MANAGER = 2;
 
+    //-----------------------------------------------------------------------------------
+    // Helpers
+    //-----------------------------------------------------------------------------------
+
 	//! Return true if Path is relative otherwise return false.
     static Bool isRelativePath(const String &path);
 
-    //! Define the packs files extension (default is "*.opk").
-	inline void setPackExt(const String &packExt) { m_packExt = packExt; }
+    /**
+     * @brief When a path contain some '..' this method reform the path without '..' and './'
+     * @param path To cleanup
+     */
+    static void adaptPath(String &path);
 
-	//! Return the packs files extension.
-	inline String getPackExt()const { return m_packExt; }
+    /**
+     * @brief Adapt an absolute path of a file to another absolute path. ex:
+     * - 'c:/tool/one/two/file.txt' as source
+     * - 'c:/tool/one/one/one' as path
+     * result in '../../two/file.txt'
+     * @param filename
+     * @param pathname
+     * @return
+     */
+    static String convertPath(const String &filename, const String &pathname);
+
+    /**
+     * @brief Get the file name and the path name from a complete (full) file name.
+     * @param fullFileName Input fullFileName to parse.
+     * @param filename The filename only (output).
+     * @param pathname The path only (output).
+     */
+    static void getFileNameAndPath(
+        const String &fullFileName,
+        String &filename,
+        String &pathname);
+
+    /**
+     * @brief Get the file name only from a full path.
+     * @param fullFileName Input fullFileName to parse.
+     */
+    static String getFileName(const String &fullFileName);
+
+    /**
+     * @brief Get the file name only without path neither extension, from a full path.
+     * @param fullFileName Input fullFileName to parse.
+     */
+    static String getStrippedFileName(const String &fullFileName);
+
+    /**
+     * @brief Get the file extension only from a full path.
+     * @param fullFileName Input fullFileName to parse.
+     */
+    static String getFileExt(const String &fullFileName);
+
+    /**
+     * @brief Get the file name and its extension from a full path.
+     * @param fullFileName Input fullFileName to parse.
+     * @param filename The filename only (output).
+     * @param ext The extension only (output).
+     */
+    static void getFileNameAndExt(
+            const String &fullFileName,
+            String &filename,
+            String &ext);
+
+    //-----------------------------------------------------------------------------------
+    // Assets support
+    //-----------------------------------------------------------------------------------
 
 	//! Define the current working path (absolute).
 	Bool setWorkingDirectory();
@@ -97,6 +190,12 @@ public:
 	//-----------------------------------------------------------------------------------
     // Assets support
 	//-----------------------------------------------------------------------------------
+
+    //! Define the packs files extension (default is "*.opk").
+    inline void setPackExt(const String &packExt) { m_packExt = packExt; }
+
+    //! Return the packs files extension.
+    inline String getPackExt()const { return m_packExt; }
 
     //! Add an asset handler. Can be a Zip or any other supported protocol.
 	//! @return true if it was not already added.

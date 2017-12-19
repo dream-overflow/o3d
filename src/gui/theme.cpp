@@ -233,7 +233,7 @@ Bool Theme::load(const String &filename)
     String fullfilename = FileManager::instance()->getFullFileName(filename);
 
     String path, fname;
-    File::getFileNameAndPath(fullfilename, fname, path);
+    FileManager::getFileNameAndPath(fullfilename, fname, path);
 
     XmlDoc xmlDoc("import_theme");
     xmlDoc.read(fullfilename);

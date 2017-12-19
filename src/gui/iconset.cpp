@@ -263,22 +263,20 @@ void IconSet::loadXmlDef(const String &filename, IconSubSet &subSet)
 	// Read XML Content
 	// Element TextureTheme
 	TiXmlElement *node = xmlDoc.getDoc()->FirstChildElement("Icon");
-	if (!node)
+    if (!node) {
 		O3D_ERROR(E_InvalidFormat("Missing Icon token in " + filename));
+    }
 	
 	// Iterate trough frame elements
-	TiXmlNode *frameNode = NULL;
+    TiXmlNode *frameNode = nullptr;
 	Int32 id;
 	Int32 delay;
 
 	// icon name. if empty use the name of the file like for static icons.
 	name = node->Attribute("name");
-	if (name.isEmpty())
-	{
-		FileInfo fileInfo(filename);
-		name = fileInfo.getFileName();
-		name.trimRight(fileInfo.getFileExt());
-	}
+    if (name.isEmpty()) {
+        name = FileManager::getStrippedFileName(filename);
+    }
 
 	subSet.iconMap[name] = Icon();
 	Icon &icon = subSet.iconMap[name];
@@ -290,8 +288,7 @@ void IconSet::loadXmlDef(const String &filename, IconSubSet &subSet)
 	Frame frame;
 
 	// for each frame
-	while ((frameNode = node->IterateChildren("Frame",frameNode)) != NULL)
-	{
+    while ((frameNode = node->IterateChildren("Frame",frameNode)) != nullptr) {
 		frameNode->ToElement()->Attribute("id", &id);
 		iconFile = frameNode->ToElement()->Attribute("file");
 		frameNode->ToElement()->Attribute("delay", &delay);
@@ -302,10 +299,11 @@ void IconSet::loadXmlDef(const String &filename, IconSubSet &subSet)
 		iconFile.trimRight(".PNG");
 
 		IT_IconMap it = subSet.iconMap.find(iconFile);
-		if (it != subSet.iconMap.end())
+        if (it != subSet.iconMap.end()) {
 			frame.iconDef = it->second.frames[0].iconDef;
-		else
+        } else {
 			frame.iconDef.sU = frame.iconDef.sV = frame.iconDef.eU = frame.iconDef.eV = 0.f;
+        }
 
 		icon.frames.push_back(frame);
 	}
@@ -326,15 +324,14 @@ IconSet::IconDef IconSet::generateIcon(IconSubSet &subSet,
     Image picture(*is, PF_RGBA_U8);
 
     String path;
-    File::getFileNameAndPath(filename, iconName, path);
+    FileManager::getFileNameAndPath(filename, iconName, path);
 
 	iconName.trimRight(".png");
 	iconName.trimRight(".PNG");
 
     deletePtr(is);
 
-    if ((x + iconWidth) > textureWidth)
-	{
+    if ((x + iconWidth) > textureWidth) {
 		x = 0;
 		y += iconHeight + 1;
 

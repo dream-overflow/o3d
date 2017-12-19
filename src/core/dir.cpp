@@ -27,7 +27,6 @@
 
 using namespace o3d;
 
-// Construct an DiskDir using the current directory.
 Dir Dir::current()
 {
     return Dir(FileManager::instance()->getWorkingDirectory());
@@ -36,23 +35,28 @@ Dir Dir::current()
 Dir::Dir(const String& pathname) :
     BaseDir(pathname)
 {
-    m_type = BaseDir::FILE_SYSTEM;
+    m_type = FL_LOCAL;
 }
 
 Dir::Dir(const Dir& dup) :
     BaseDir(dup)
 {
-    m_type = BaseDir::FILE_SYSTEM;
+    m_type = FL_LOCAL;
 }
 
 Dir::~Dir()
 {
 }
 
+BaseDir *Dir::clone() const
+{
+    return new Dir(*this);
+}
+
 // clean the path (remove '..' and '.' when possible)
 void Dir::clean()
 {
-    File::adaptPath(m_fullPathname);
+    FileManager::adaptPath(m_fullPathname);
 }
 
 Bool Dir::empty() const
@@ -342,7 +346,7 @@ BaseDir::DirReturn Dir::check(const String &fileOrPath) const
 	}
 
 	String toCheck(m_fullPathname + '/' + lFileOrPath);
-	File::adaptPath(toCheck);
+    FileManager::adaptPath(toCheck);
 
     Int32 result;
 

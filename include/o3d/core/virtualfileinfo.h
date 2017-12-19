@@ -20,26 +20,23 @@ namespace o3d {
  */
 class O3D_API VirtualFileInfo : public BaseFileInfo
 {
-protected:
-
-    //! fill the CachedData structure if cache is enable
-    virtual void cacheDatas() override;
-
 public:
 
     //! default constructor
     VirtualFileInfo(const String &filename);
 
     //! constructor with separates pathname and filename
-    VirtualFileInfo(const String &pathname,const String &filename);
+    VirtualFileInfo(const String &pathname, const String &filename);
 
     //! constructor with separates pathname and filename
-    VirtualFileInfo(const BaseDir &dir,const String &filename);
+    VirtualFileInfo(const BaseDir &dir, const String &filename);
 
     //! copy constructor
     VirtualFileInfo(const BaseFileInfo& dup);
 
     virtual ~VirtualFileInfo();
+
+    virtual BaseFileInfo* clone() const override;
 
     //! set the filename
     virtual void setFile(const String &filename) override;
@@ -101,6 +98,13 @@ public:
 
     //! is the file is in the root directory
     virtual Bool isInRoot() const override;
+
+protected:
+
+    // @todo could have a string on the name of the related asset
+
+    //! fill the CachedData structure if cache is enable
+    virtual void cacheDatas() override;
 };
 
 } // namespace o3d

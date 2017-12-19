@@ -23,7 +23,7 @@ class O3D_API Dir : public BaseDir
 {
 public:
 
-	//! Construct an DiskDir using the current directory.
+    //! Construct using the current directory.
     static Dir current();
 
 	//! default constructor. Is the path is empty '.' is used.
@@ -33,6 +33,8 @@ public:
     Dir(const Dir& dup);
 
     virtual ~Dir();
+
+    virtual BaseDir* clone() const override;
 
 	//! clean the path (remove '..' and '.' when possible)
     virtual void clean() override;
@@ -52,7 +54,7 @@ public:
 	//! is it the root directory
     virtual Bool isRoot() const override;
 
-	//! remove a directory in the O3DDir path (if the rights permits it)
+    //! remove a directory in the Dir path (if the rights permits it)
     virtual DirReturn removeDir(const String &path) const override;
 
 	//! create a sub directory in the O3DDir path (if the rights permits it)

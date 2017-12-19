@@ -33,14 +33,18 @@ public:
 	SmartPtr(const SmartPtr& dup)
 	{
 		m_pData = dup.m_pData;
-		if (m_pData) m_pData->useIt();
+        if (m_pData) {
+            m_pData->useIt();
+        }
 	}
 
 	//! Initialization constructor
 	SmartPtr(T *pData)
 	{
 		m_pData = pData;
-		if (m_pData) m_pData->useIt();
+        if (m_pData) {
+            m_pData->useIt();
+        }
 	}
 
 	//! desctructor
@@ -62,14 +66,15 @@ public:
 	inline SmartPtr& operator=(const SmartPtr& ptr)
 	{
 		// Check if it's the same data
-		if (m_pData != ptr.m_pData)
-		{
+        if (m_pData != ptr.m_pData) {
 			// If not, release the old pointer
 			releaseCheckAndDelete();
 
 			// Assign the new pointer
 			m_pData = ptr.m_pData;
-			if (m_pData) m_pData->useIt();
+            if (m_pData) {
+                m_pData->useIt();
+            }
 		}
 		return *this;
 	}
@@ -78,14 +83,15 @@ public:
 	inline SmartPtr& operator=(T *pData)
 	{
 		// Check if it's the same data
-		if (m_pData != pData)
-		{
+        if (m_pData != pData) {
 			// If not, release the old pointer
 			releaseCheckAndDelete();
 
 			// Assign the new pointer
 			m_pData = pData;
-			if (m_pData) m_pData->useIt();
+            if (m_pData) {
+                m_pData->useIt();
+            }
 		}
 		return  *this;
 	}
@@ -102,13 +108,13 @@ public:
 	//! @return True if the object is no longer used and deferred deletion.
 	Bool releaseCheckAndDelete()
 	{
-        if (m_pData == nullptr)
+        if (m_pData == nullptr) {
 			return False;
+        }
 
 		m_pData->releaseIt();
 
-		if (m_pData->canRemove())
-		{
+        if (m_pData->canRemove()) {
 			m_pData->deleteIt();
 			return True;
 		}
@@ -151,7 +157,7 @@ public:
 	//! check if the object is valid (not null)
     inline Bool isValid() const { return (m_pData != nullptr); }
 
-    //! check if the object is valid (not null)
+    //! check if the object is null (not valid)
     inline Bool isNull() const { return (m_pData == nullptr); }
 
 	//! Return the object reference
@@ -167,8 +173,7 @@ public:
 	inline AutoPtr& operator=(T *pData)
 	{
 		// Check if it's the same data
-		if (m_pData != pData)
-		{
+        if (m_pData != pData) {
 			// If not, release the old pointer
 			release();
 
@@ -200,4 +205,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SMARTPOINTER_H
-

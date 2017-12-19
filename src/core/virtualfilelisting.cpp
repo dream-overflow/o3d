@@ -250,14 +250,14 @@ String VirtualFileListing::getFilePath() const
 
     if (tempItem) {
         if (tempItem->FileType == FILE_FILE) {
-            Dir diskDir(pathOnly);
-            FileInfo diskFile(tempItem->FileName);
-			diskDir.makeAbsolute();
-			return diskDir.getFullPathName() + '/' + diskFile.getFilePath();
+            Dir localDir(pathOnly);
+            FileInfo localFile(tempItem->FileName);
+            localDir.makeAbsolute();
+            return localDir.getFullPathName() + '/' + localFile.getFilePath();
         } else if (tempItem->FileType == FILE_DIR) {
-            Dir diskDir(pathOnly);
-			diskDir.makeAbsolute();
-			return diskDir.getFullPathName() + '/' + tempItem->FileName;
+            Dir localDir(pathOnly);
+            localDir.makeAbsolute();
+            return localDir.getFullPathName() + '/' + tempItem->FileName;
 		}
 	}
 
@@ -273,13 +273,13 @@ String VirtualFileListing::getFileFullName() const
 
     if (tempItem) {
         if (tempItem->FileType == FILE_FILE) {
-            Dir diskDir(pathOnly);
-			diskDir.makeAbsolute();
-			return diskDir.getFullPathName() + '/' + tempItem->FileName;
+            Dir localDir(pathOnly);
+            localDir.makeAbsolute();
+            return localDir.getFullPathName() + '/' + tempItem->FileName;
         } else if (tempItem->FileType == FILE_DIR) {
-            Dir diskDir(pathOnly);
-			diskDir.makeAbsolute();
-			return diskDir.getFullPathName() + '/' + tempItem->FileName;
+            Dir localDir(pathOnly);
+            localDir.makeAbsolute();
+            return localDir.getFullPathName() + '/' + tempItem->FileName;
 		}
 	}
 

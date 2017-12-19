@@ -15,63 +15,130 @@
 
 namespace o3d {
 
-//! @class BlockData Useful struct for data reading/writing managing
-struct O3D_API BlockData
-{
-    UInt32 m_delay;       //!< delay between to block of m_size (in ms)
-    UInt32 m_size;        //!< size of a chunk of data to read/write
-    UInt32 m_bytesec;     //!< value in byte per second
-    Bool m_use;           //!< is enable or disable
-
-	BlockData() :
-		m_delay(50),
-		m_size(25600),
-		m_bytesec(512000),
-        m_use(False) {}
-
-	BlockData(const BlockData &dup) :
-		m_delay(dup.m_delay),
-		m_size(dup.m_size),
-		m_bytesec(dup.m_bytesec),
-		m_use(dup.m_use) {}
-
-	const BlockData& operator= (const BlockData &dup)
-	{
-		m_delay = dup.m_delay;
-		m_size = dup.m_size;
-		m_bytesec = dup.m_bytesec;
-		m_use = dup.m_use;
-
-		return (*this);
-	}
-};
+class BaseFileInfo;
+class BaseDir;
+class DateTime;
 
 /**
- * @brief File utils.
+ * @brief File information and manipulator.
+ * @details This is a wrapper upside BaseFileInfo specialization, using
+ * the file manager to initiate internal data.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
- * @date 2002-01-02
+ * @date 2017-12-18
  */
 class O3D_API File
 {
 public:
 
-	//! When a path contain some '..' this method reform the path without '..' and './'
-	static void adaptPath(String &path);
+    //! default constructor
+    File(const String &fileName);
 
-	//! Adapt an absolute path of a file to another absolute path. ex:
-	//! - 'c:/tool/one/two/file.txt' as source
-	//! - 'c:/tool/one/one/one' as path
-	//! result in '../../two/file.txt'
-	static String convertPath(const String &filename, const String &pathname);
+    //! constructor with separates pathname and filename
+    File(const String &pathName, const String &fileName);
 
-	//! Get the file name and the path name from a complete (full) file name.
-	//! @param Input fullFileName to parse.
-	//! @param filename The filename only (output).
-	//! @param pathname The path only (output).
-	static void getFileNameAndPath(
-		const String &fullFileName,
-		String &filename,
-		String &pathname);
+    //! constructor with separates pathname and filename
+    File(const BaseDir &dir, const String &fileName);
+
+    //! copy constructor
+    File(const File &dup);
+
+    //! copy constructor
+    File(const BaseFileInfo &dup);
+
+    ~File();
+
+    //! Get the file type.
+    FileTypes getType();
+
+    //! Get the file size in bytes.
+    UInt64 getFileSize();
+
+    //! check if the filename exists
+    Bool exists();
+
+    //! is an absolute or relative filename ?
+    Bool isAbsolute() const;
+
+    //! is the file readable (check the rights)
+    Bool isReadable();
+
+    //! is the file writable (check the rights)
+    Bool isWritable();
+
+    //! is the file is hidden by the system
+    Bool isHidden();
+
+    //! return the owner id
+    Int16 getOwnerId();
+
+    //! get the file owner
+    const String& getOwnerName();
+
+    //! return the owner group id
+    Int16 getGroupId();
+
+    //! return the group string name
+    const String& getGroupName();
+
+    //! make absolute. make - if relative - this file name absolute depend to the current working directory
+    Bool makeAbsolute();
+
+    //! get the creation date/time
+    const DateTime& getCreationDate();
+
+    //! get the last access date/time
+    const DateTime& getLastAccessDate();
+
+    //! get the last modification date/time
+    const DateTime& getModifiedDate();
+
+    //! is the file a symbolic link
+    Bool isSymbolicLink();
+
+    //! is the file is in the root directory
+    Bool isInRoot() const;
+
+    //! adapt a filename to this path. Note: the filename path and the Dir must have a common root.
+    String makeRelative(const BaseDir &dir) const;
+
+    //-----------------------------------------------------------------------------------
+    // Accessors
+    //-----------------------------------------------------------------------------------
+
+    //! return the file information type
+    FileLocation getFileLocation() const;
+
+    //! return the file name only (without the path)
+    const String& getFileName() const;
+
+    //! return the full file name (with complete path)
+    const String& getFullFileName() const;
+
+    //! return the file extension only
+    const String& getFileExt() const;
+
+    //! return the file path only, without trailing slash.
+    String getFilePath() const;
+
+    //-----------------------------------------------------------------------------------
+    // Comparison operators
+    //-----------------------------------------------------------------------------------
+
+    //! check if two dir are the same
+    Bool operator== (const File &cmp) const;
+
+    //! check if two dir are different
+    Bool operator!= (const File &cmp) const;
+
+    //! check if two dir are the same
+    Bool operator== (const BaseFileInfo &cmp) const;
+
+    //! check if two dir are different
+    Bool operator!= (const BaseFileInfo &cmp) const;
+
+private:
+
+    BaseFileInfo *m_fi;
 };
 
 } // namespace o3d

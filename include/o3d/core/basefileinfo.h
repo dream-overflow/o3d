@@ -30,13 +30,6 @@ protected:
 
 public:
 
-	enum FileInfoType
-	{
-        UNKNOWN_FILE_INFO = 0,
-        FILE_SYSTEM,        //!< Local file system.
-        VIRTUAL_FILE,       //!< Virtual file (asset...).
-	};
-
 	//! default constructor
     BaseFileInfo(const String &filename);
 
@@ -48,6 +41,10 @@ public:
 
 	//! copy constructor
     BaseFileInfo(const BaseFileInfo& dup);
+
+    virtual ~BaseFileInfo() = 0;
+
+    virtual BaseFileInfo* clone() const = 0;
 
 	//! duplicator (take care it copy the state of the cached data)
     inline BaseFileInfo& operator=(const BaseFileInfo& dup)
@@ -96,7 +93,7 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! return the file information type
-	inline FileInfoType getInfoType() const { return m_type; }
+    inline FileLocation getFileLocation() const { return m_type; }
 
 	//! return the file name only (without the path)
 	inline const String& getFileName() const { return m_filename; }
@@ -107,17 +104,8 @@ public:
 	//! return the file extension only
 	inline const String& getFileExt() const { return m_fileExt; }
 
-	//! return the directory of the file (see DiskFileInfo for the DiskDir directory)
-	//virtual dir getDir() const = 0;
-
 	//! return the file path only, without trailing slash.
-	inline String getFilePath()const
-	{
-        String result(m_fullFilename);
-        result.trimRight(m_filename);
-        result.trimRight('/');
-        return result;
-	}
+    String getFilePath() const;
 
 	//! Get the file type.
 	virtual FileTypes getType() = 0;
@@ -153,7 +141,6 @@ public:
 	virtual const String& getGroupName() = 0;
 
 	//! make absolute. make - if relative - this file name absolute depend to the current working directory
-    //! Note : work only for DiskFileInfo.
 	virtual Bool makeAbsolute() = 0;
 
 	//! adapt a filename to this path. Note: the filename path and the Dir must have a common root.
@@ -162,10 +149,7 @@ public:
 	//!     'c:/tool/one/one/one' as path
 	//!	     result in '../../two/file.txt'
 	//! Only a string is returned because the file doesn't really exist.
-    inline String makeRelative(const BaseDir &dir)const
-	{
-		return File::convertPath(m_fullFilename,dir.getFullPathName());
-	}
+    String makeRelative(const BaseDir &dir) const;
 
 	//! get the creation date/time
     virtual const DateTime& getCreationDate() = 0;
@@ -193,17 +177,17 @@ public:
 	}
 
 	//! check if two dir are different
-    inline Bool operator!= (const BaseFileInfo &cmp)const
+    inline Bool operator!= (const BaseFileInfo &cmp) const
 	{
 		return (m_fullFilename != cmp.m_fullFilename);
 	}
 
 protected:
 
-	FileInfoType m_type;        //!< type of the file info
+    FileLocation m_type;     //!< type of the file info
 
-	Bool m_cached;          //!< is information are cached
-	Bool m_isValid;         //!< is the file exist
+    Bool m_cached;           //!< is information are cached
+    Bool m_isValid;          //!< is the file exist
 	String m_filename;       //!< only the filename
 	String m_fileExt;        //!< only the file extension
 	String m_fullFilename;   //!< the full file name and path
@@ -222,10 +206,10 @@ protected:
 		Bool symLink;       //!< is it a symbolic link
 
 		Int16 ownerId;      //!< owner id
-		String ownerName;    //!< owner name
+        String ownerName;   //!< owner name
 
 		Int16 groupId;      //!< owner group id
-		String groupName;    //!< owner group name
+        String groupName;   //!< owner group name
 
 		UInt64 fileSize;    //!< file size in bytes
 

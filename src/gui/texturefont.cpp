@@ -70,7 +70,7 @@ void TextureFont::load(const String& filename, CharSet charSet, FontStyle style)
 {
     String fname, path;
     String fullfilename = FileManager::instance()->getFullFileName(filename);
-    File::getFileNameAndPath(fullfilename, fname, path);
+    FileManager::getFileNameAndPath(fullfilename, fname, path);
 
     InStream *is = FileManager::instance()->openInStream(fullfilename);
 

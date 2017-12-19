@@ -94,10 +94,8 @@ Bool PCLODColormap::rtLoad()
 
 	Bool loadingError = False;
 
-	FileInfo fileInfo(m_filePath);
-
-	if (!fileInfo.exists())
-	{
+    File fileInfo(m_filePath);
+    if (!fileInfo.exists()) {
 		// If the file is not found, we load a black texture
 
 		PCLOD_WARNING(String("Colormap : Colormap not found (") << m_filePath << "). Will be generated");
@@ -113,9 +111,7 @@ Bool PCLODColormap::rtLoad()
 		m_pTexture->setWrap(Texture::CLAMP);
 
 		loadingError = True;
-	}
-	else
-	{
+    } else {
         AutoPtr<InStream> colormapFile;
 
         colormapFile = FileManager::instance()->openInStream(m_filePath);
@@ -123,12 +119,9 @@ Bool PCLODColormap::rtLoad()
 
 		// Try to load the picture file
 		Image colormapPic(*colormapFile);
-		if (colormapPic.isValid())
-		{
+        if (colormapPic.isValid()) {
 			m_pTexture = new Texture2D(m_pParent, colormapPic);
-		}
-		else
-		{
+        } else {
 			PCLOD_WARNING(String("Colormap : Colormap file found (") << m_filePath <<
 					"), but its format is not supported. Will be generated");
 
@@ -148,7 +141,7 @@ Bool PCLODColormap::rtLoad()
 	return (!loadingError);
 }
 
-// Libère les ressources occupées
+// Libere les ressources occupées
 // Cette fonction est appelée par le texture manager dans l'événement
 // MTE_OnColormapDelection.
 void PCLODColormap::mtUnload()

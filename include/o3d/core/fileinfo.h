@@ -17,6 +17,7 @@ namespace o3d {
 
 /**
  * @brief File system version of BaseFileInfo.
+ * @todo exists test should not be done during the ctor (@see m_isValid too)
  */
 class O3D_API FileInfo : public BaseFileInfo
 {
@@ -31,13 +32,15 @@ public:
     FileInfo(const String &filename);
 
 	//! constructor with separates pathname and filename
-    FileInfo(const String &pathname,const String &filename);
+    FileInfo(const String &pathname, const String &filename);
 
 	//! constructor with separates pathname and filename
-    FileInfo(const BaseDir &dir,const String &filename);
+    FileInfo(const BaseDir &dir, const String &filename);
 
 	//! copy constructor
     FileInfo(const BaseFileInfo& dup);
+
+    virtual BaseFileInfo* clone() const override;
 
     virtual ~FileInfo();
 

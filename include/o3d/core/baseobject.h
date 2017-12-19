@@ -16,7 +16,6 @@
 #include "evt.h"
 #include "evthandler.h"
 #include "classinfo.h"
-//#include "Memory.h"
 
 namespace o3d
 {

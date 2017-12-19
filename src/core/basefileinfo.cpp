@@ -9,11 +9,12 @@
 
 #include "o3d/core/precompiled.h"
 #include "o3d/core/basefileinfo.h"
+#include "o3d/core/filemanager.h"
 
 using namespace o3d;
 
 BaseFileInfo::BaseFileInfo(const String &filename) :
-    m_type(UNKNOWN_FILE_INFO),
+    m_type(FL_UNKNOWN),
 	m_cached(False),
 	m_isValid(False)
 {
@@ -42,7 +43,7 @@ BaseFileInfo::BaseFileInfo(const String &filename) :
 }
 
 BaseFileInfo::BaseFileInfo(const String &pathName, const String &filename) :
-    m_type(UNKNOWN_FILE_INFO),
+    m_type(FL_UNKNOWN),
 	m_cached(False),
 	m_isValid(False)
 {
@@ -70,7 +71,7 @@ BaseFileInfo::BaseFileInfo(const String &pathName, const String &filename) :
 }
 
 BaseFileInfo::BaseFileInfo(const BaseDir &dir, const String &filename) :
-    m_type(UNKNOWN_FILE_INFO),
+    m_type(FL_UNKNOWN),
 	m_cached(False),
 	m_isValid(False)
 {
@@ -101,6 +102,10 @@ BaseFileInfo::BaseFileInfo(const BaseFileInfo &dup) :
 	m_fileExt(dup.m_fileExt),
 	m_fullFilename(dup.m_fullFilename),
 	m_cachedData(dup.m_cachedData)
+{
+}
+
+BaseFileInfo::~BaseFileInfo()
 {
 }
 
@@ -182,4 +187,17 @@ void BaseFileInfo::setFile(const BaseDir &dir, const String &filename)
     } else {
 		m_cachedData.hidden = False;
     }
+}
+
+String BaseFileInfo::getFilePath() const
+{
+    String result(m_fullFilename);
+    result.trimRight(m_filename);
+    result.trimRight('/');
+    return result;
+}
+
+String BaseFileInfo::makeRelative(const BaseDir &dir) const
+{
+    return FileManager::convertPath(m_fullFilename, dir.getFullPathName());
 }

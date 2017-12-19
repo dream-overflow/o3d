@@ -29,14 +29,6 @@ class O3D_API BaseDir
 {
 public:
 
-	//! format of the directory
-    enum DirType
-    {
-        UNKNOWN_DIR_TYPE = 0,
-        FILE_SYSTEM,        //!< Local file system.
-        VIRTUAL_FILE,       //!< Virtual file (asset...).
-    };
-
 	//! directory return codes
 	enum DirReturn
 	{
@@ -73,6 +65,10 @@ public:
 	{
 	}
 
+    virtual ~BaseDir() = 0;
+
+    virtual BaseDir* clone() const = 0;
+
 	//! duplicator
     inline BaseDir& operator=(const BaseDir &dup)
 	{
@@ -85,7 +81,7 @@ public:
 	}
 
 	//! return the type of the directory
-	inline DirType getType() const { return m_type; }
+    inline FileLocation getFileLocation() const { return m_type; }
 
 	//! clean the path (remove '..' and '.' when possible)
 	virtual void clean() = 0;
@@ -174,7 +170,6 @@ public:
 			FileTypes Type = FILE_BOTH) const = 0;
 
 	//! make absolute. make - if relative - this path absolute depend to the current working directory
-	//! Note : work only for O3DDiskDir.
 	virtual Bool makeAbsolute() = 0;
 
 	//! remove the file in directory
@@ -206,9 +201,9 @@ public:
 
 protected:
 
-	DirType m_type;            //!< type of the directory
+    FileLocation m_type;    //!< type of the directory
 
-	Bool m_isValid;        //!< is the pathname valid
+    Bool m_isValid;         //!< is the pathname valid
 
 	String m_fullPathname;  //!< absolute pathname (without trailing slash)
 	String m_pathName;      //!< only the name of the path (ie let full path '/foo/bar' then 'bar')
