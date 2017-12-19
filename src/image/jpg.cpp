@@ -368,8 +368,9 @@ Bool Jpg::checkFormat(InStream &is)
     is.read(id, 2);
     is.seek(-2);
 
-	if (((UInt8)id[0] == 0xff) && ((UInt8)id[1] == 0xd8))
+    if (((UInt8)id[0] == 0xff) && ((UInt8)id[1] == 0xd8)) {
 		return True;
+    }
 
 	return False;
 }
@@ -383,8 +384,7 @@ Bool Jpg::load(InStream &is)
 // load jpeg from file
 Bool Jpg::load(InStream &is, PixelFormat pixelFormat)
 {
-	switch (pixelFormat)
-	{
+    switch (pixelFormat) {
 		case PF_RGB_U8:
             return loadRgb24(is);
 		case PF_RGBA_U8:
@@ -420,10 +420,9 @@ Bool Jpg::loadDefault(InStream &is)
 
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_decompress(&cinfo);
-/*
-	// for load managing
-    if (is.getType() == File::DISK_FILE)
-	{
+
+    /* // for load managing
+    if (is.getType() == File::DISK_FILE) {
 		// load entirely the file with or without the managing
         UInt32 fLen = is.fileLength();
 		pData = new UInt8[fLen];
@@ -432,40 +431,33 @@ Bool Jpg::loadDefault(InStream &is)
 		jpeg_mem_src(&cinfo,(JOCTET*)pData,(int)fLen);
 
 		//old code
-		//jpeg_stdio_src(&cinfo,((DiskFile&)file).getFile());
-	}
-    else if (is.getType() == File::MEM_FILE)
-	{
+        //jpeg_stdio_src(&cinfo,((DiskFile&)file).getFile());
+    } else if (is.getType() == File::MEM_FILE) {
         jpeg_mem_src(&cinfo,((MemFile&)is).getData(),((MemFile&)is).fileLength());
-	}
-  */
+    } */
+
     jpeg_istream_src(&cinfo, &is);
 
 	// jpeg info header
 	jpeg_read_header(&cinfo, TRUE);
 	jpeg_start_decompress(&cinfo);
 
-	if (cinfo.jpeg_color_space == JCS_GRAYSCALE)
-	{
+    if (cinfo.jpeg_color_space == JCS_GRAYSCALE) {
 		m_data = new UInt8[cinfo.image_height*cinfo.image_width];
 		m_bpp = 1;
-	}
-	else
-	{
+    } else {
 		m_data = new UInt8[cinfo.image_height*cinfo.image_width*3];
 		m_bpp = 3;
 	}
 
-	if (!m_data)
-	{
+    if (!m_data) {
         O3D_ERROR(E_InvalidAllocation("data is null"));
 	}
 
 	ligne = m_data;
 
 	// read line by line
-	while (cinfo.output_scanline < cinfo.output_height)
-	{
+    while (cinfo.output_scanline < cinfo.output_height) {
 		ligne = m_data + m_bpp * cinfo.output_width*cinfo.output_scanline;
 		jpeg_read_scanlines(&cinfo, (JSAMPARRAY)&ligne, 1);
 	}
@@ -659,8 +651,7 @@ Bool Jpg::convert24to32()
 
 	UInt32 i,j = 0;
 
-	for ( i = 0 ; i < m_size  ; i += 4 )
-	{
+    for (i = 0 ; i < m_size  ; i += 4) {
 		m_data[i  ] = exdata[j];
 		m_data[i+1] = exdata[j+1];
 		m_data[i+2] = exdata[j+2];
@@ -676,4 +667,3 @@ Bool Jpg::convert24to32()
 }
 
 #undef INPUT_BUF_SIZE
-

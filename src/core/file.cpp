@@ -1,6 +1,6 @@
 /**
  * @file file.cpp
- * @brief Implementation of File.h
+ * @brief Implementation of file.h
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2002-01-02
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -11,24 +11,24 @@
 
 #include "o3d/core/file.h"
 #include "o3d/core/debug.h"
-#include "o3d/core/basefileinfo.h"
+#include "o3d/core/basefile.h"
 #include "o3d/core/filemanager.h"
 
 using namespace o3d;
 
 File::File(const String &fileName)
 {
-    m_fi = FileManager::instance()->fileInfo(fileName);
+    m_fi = FileManager::instance()->file(fileName);
 }
 
 File::File(const String &pathName, const String &fileName)
 {
-    m_fi = FileManager::instance()->fileInfo(pathName + '/' + fileName);
+    m_fi = FileManager::instance()->file(pathName + '/' + fileName);
 }
 
 File::File(const BaseDir &dir, const String &fileName)
 {
-    m_fi = FileManager::instance()->fileInfo(dir.getFullPathName() + '/' + fileName);
+    m_fi = FileManager::instance()->file(dir.getFullPathName() + '/' + fileName);
 }
 
 File::File(const File &dup) :
@@ -39,14 +39,38 @@ File::File(const File &dup) :
     }
 }
 
-File::File(const BaseFileInfo &dup)
+File::File(const BaseFile &dup)
 {
     m_fi = dup.clone();
+}
+
+File::File(BaseFile *own)
+{
+    m_fi = own;
 }
 
 File::~File()
 {
     deletePtr(m_fi);
+}
+
+File &File::operator=(const BaseFile &dup)
+{
+    deletePtr(m_fi);
+
+    m_fi = dup.clone();
+    return *this;
+}
+
+File &File::operator=(const File &dup)
+{
+    deletePtr(m_fi);
+
+    if (dup.m_fi) {
+        m_fi = dup.m_fi->clone();
+    }
+
+    return *this;
 }
 
 FileTypes File::getType()
@@ -274,7 +298,7 @@ Bool File::operator!=(const File &cmp) const
     return *m_fi != *cmp.m_fi;
 }
 
-Bool File::operator==(const BaseFileInfo &cmp) const
+Bool File::operator==(const BaseFile &cmp) const
 {
     if (m_fi) {
         return False;
@@ -283,7 +307,7 @@ Bool File::operator==(const BaseFileInfo &cmp) const
     return *m_fi == cmp;
 }
 
-Bool File::operator!=(const BaseFileInfo &cmp) const
+Bool File::operator!=(const BaseFile &cmp) const
 {
     if (!m_fi) {
         return True;

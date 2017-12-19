@@ -20,7 +20,7 @@
 #include "o3d/core/memorydbg.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/core/objects.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 #include "o3d/image/image.h"
 #include "o3d/engine/texture/texture2d.h"
 

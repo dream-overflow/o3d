@@ -1,6 +1,6 @@
 /**
- * @file fileinfo.cpp
- * @brief Implementation of FileInfo.h
+ * @file basefile.cpp
+ * @brief Implementation of basefile.h
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-06-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -8,12 +8,12 @@
  */
 
 #include "o3d/core/precompiled.h"
-#include "o3d/core/basefileinfo.h"
+#include "o3d/core/basefile.h"
 #include "o3d/core/filemanager.h"
 
 using namespace o3d;
 
-BaseFileInfo::BaseFileInfo(const String &filename) :
+BaseFile::BaseFile(const String &filename) :
     m_type(FL_UNKNOWN),
 	m_cached(False),
 	m_isValid(False)
@@ -42,7 +42,7 @@ BaseFileInfo::BaseFileInfo(const String &filename) :
     }
 }
 
-BaseFileInfo::BaseFileInfo(const String &pathName, const String &filename) :
+BaseFile::BaseFile(const String &pathName, const String &filename) :
     m_type(FL_UNKNOWN),
 	m_cached(False),
 	m_isValid(False)
@@ -70,7 +70,7 @@ BaseFileInfo::BaseFileInfo(const String &pathName, const String &filename) :
     }
 }
 
-BaseFileInfo::BaseFileInfo(const BaseDir &dir, const String &filename) :
+BaseFile::BaseFile(const BaseDir &dir, const String &filename) :
     m_type(FL_UNKNOWN),
 	m_cached(False),
 	m_isValid(False)
@@ -94,7 +94,7 @@ BaseFileInfo::BaseFileInfo(const BaseDir &dir, const String &filename) :
     }
 }
 
-BaseFileInfo::BaseFileInfo(const BaseFileInfo &dup) :
+BaseFile::BaseFile(const BaseFile &dup) :
 	m_type(dup.m_type),
 	m_cached(dup.m_cached),
 	m_isValid(dup.m_isValid),
@@ -105,11 +105,11 @@ BaseFileInfo::BaseFileInfo(const BaseFileInfo &dup) :
 {
 }
 
-BaseFileInfo::~BaseFileInfo()
+BaseFile::~BaseFile()
 {
 }
 
-void BaseFileInfo::setFile(const String &filename)
+void BaseFile::setFile(const String &filename)
 {
 	m_cached = False;
 	m_isValid = False;
@@ -137,7 +137,7 @@ void BaseFileInfo::setFile(const String &filename)
     }
 }
 
-void BaseFileInfo::setFile(const String &pathName, const String &filename)
+void BaseFile::setFile(const String &pathName, const String &filename)
 {
 	String lPathName(pathName);
 	lPathName.replace('\\','/');
@@ -165,7 +165,7 @@ void BaseFileInfo::setFile(const String &pathName, const String &filename)
     }
 }
 
-void BaseFileInfo::setFile(const BaseDir &dir, const String &filename)
+void BaseFile::setFile(const BaseDir &dir, const String &filename)
 {
 	String lFilename(filename);
 	lFilename.replace('\\','/');
@@ -189,7 +189,7 @@ void BaseFileInfo::setFile(const BaseDir &dir, const String &filename)
     }
 }
 
-String BaseFileInfo::getFilePath() const
+String BaseFile::getFilePath() const
 {
     String result(m_fullFilename);
     result.trimRight(m_filename);
@@ -197,7 +197,7 @@ String BaseFileInfo::getFilePath() const
     return result;
 }
 
-String BaseFileInfo::makeRelative(const BaseDir &dir) const
+String BaseFile::makeRelative(const BaseDir &dir) const
 {
     return FileManager::convertPath(m_fullFilename, dir.getFullPathName());
 }

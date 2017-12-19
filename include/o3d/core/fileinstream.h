@@ -14,7 +14,7 @@
 
 namespace o3d {
 
-class BaseFileInfo;
+class BaseFile;
 
 /**
  * @brief FileInStream Reading file stream.
@@ -37,7 +37,7 @@ public:
      * @param file File info.
      * @throw E_FileNotFoundOrInvalidRights
      */
-    FileInStream(const BaseFileInfo &file);
+    FileInStream(const BaseFile &file);
 
     virtual ~FileInStream();
 

@@ -11,10 +11,10 @@
 #include "o3d/engine/shader/shadermanager.h"
 
 #include "o3d/core/filemanager.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/core/virtualfilelisting.h"
-#include "o3d/core/dir.h"
+#include "o3d/core/localdir.h"
 #include "o3d/core/timer.h"
 #include "o3d/core/smartpointer.h"
 #include "o3d/core/char.h"

@@ -18,8 +18,6 @@ class AAsset;
 
 namespace o3d {
 
-class BaseFileInfo;
-
 /**
  * @brief InStreamAndroid specialization for reading into android assets.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
@@ -84,8 +82,8 @@ protected:
     InStreamAndroid();
 
     AAsset *m_asset;    //!< Android asset
-    Int32 m_pos;        //!< Seek position
-    Int32 m_length;     //!< Cached file size
+    UInt64 m_pos;       //!< Seek position
+    UInt64 m_length;    //!< Cached file size
 };
 
 } // namespace o3d

@@ -12,7 +12,7 @@
 
 #include "o3d/core/vector2.h"
 #include "o3d/core/debug.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/object/bones.h"

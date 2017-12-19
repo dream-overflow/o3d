@@ -15,7 +15,7 @@
 #ifdef O3D_WINDOWS
 
 #include "o3d/core/debug.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 
 using namespace o3d;
 
@@ -277,20 +277,19 @@ HICON WinTools::createIconFromBitmap(
 		Int32 height,
 		COLORREF colorTransparency)
 {
-	if (!filePath.isEmpty())
-	{
-		DiskFileInfo fileInfo(filePath);
+    if (!filePath.isEmpty()) {
+        LocalFile localFile(filePath);
 
-		if (fileInfo.getFileExt().compare("bmp", String::CASE_INSENSITIVE) != 0)
-		{
+        if (file.getFileExt().compare("bmp", String::CASE_INSENSITIVE) != 0) {
 			O3D_ERROR(E_InvalidFormat("Icon must be a bmp file."));
 		}
 
-        if (!fileInfo.exists())
-			return NULL;
-	}
-	else
-		return NULL;
+        if (!localFile.exists()) {
+            return nullptr;
+        }
+    } else {
+        return nullptr;
+    }
 
 	HBITMAP hBitmap = (HBITMAP)::LoadImageW(
 			NULL,

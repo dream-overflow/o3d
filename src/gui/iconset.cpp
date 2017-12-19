@@ -13,7 +13,7 @@
 
 #include "o3d/core/architecture.h"
 #include "o3d/core/xmldoc.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"

@@ -1,42 +1,42 @@
 /**
- * @file virtualfileinfo.h
- * @brief Virtual (asset) sub file system file information.
+ * @file virtualfile.h
+ * @brief Virtual (asset) sub file system file.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2017-12-17
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details
  */
 
-#ifndef _O3D_VIRTUALFILEINFO_H
-#define _O3D_VIRTUALFILEINFO_H
+#ifndef _O3D_VIRTUALFILE_H
+#define _O3D_VIRTUALFILE_H
 
 #include "memorydbg.h"
-#include "basefileinfo.h"
+#include "basefile.h"
 
 namespace o3d {
 
 /**
- * @brief Virtual (asset) sub file system file information.
+ * @brief Virtual (asset) sub file system file.
  */
-class O3D_API VirtualFileInfo : public BaseFileInfo
+class O3D_API VirtualFile : public BaseFile
 {
 public:
 
     //! default constructor
-    VirtualFileInfo(const String &filename);
+    VirtualFile(const String &filename);
 
     //! constructor with separates pathname and filename
-    VirtualFileInfo(const String &pathname, const String &filename);
+    VirtualFile(const String &pathname, const String &filename);
 
     //! constructor with separates pathname and filename
-    VirtualFileInfo(const BaseDir &dir, const String &filename);
+    VirtualFile(const BaseDir &dir, const String &filename);
 
     //! copy constructor
-    VirtualFileInfo(const BaseFileInfo& dup);
+    VirtualFile(const BaseFile& dup);
 
-    virtual ~VirtualFileInfo();
+    virtual ~VirtualFile();
 
-    virtual BaseFileInfo* clone() const override;
+    virtual BaseFile* clone() const override;
 
     //! set the filename
     virtual void setFile(const String &filename) override;
@@ -81,7 +81,6 @@ public:
     virtual const String& getGroupName() override;
 
     //! make absolute. make - if relative - this file name absolute depend to the current working directory
-    //! @note Works only for FileInfo.
     virtual Bool makeAbsolute() override;
 
     //! get the creation date/time

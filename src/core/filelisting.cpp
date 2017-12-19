@@ -12,8 +12,8 @@
 #include "o3d/core/file.h"
 #include "o3d/core/filelisting.h"
 #include "o3d/core/architecture.h"
-#include "o3d/core/fileinfo.h"
-#include "o3d/core/dir.h"
+#include "o3d/core/localfile.h"
+#include "o3d/core/localdir.h"
 #include "o3d/core/filemanager.h"
 #include "o3d/core/debug.h"
 
@@ -250,7 +250,7 @@ void FileListing::setPath(const String &path)
 		m_path.trimRight('/');
 
 		// make the path absolute if necessary, using the current working directory
-		Dir diskDir(m_path);
+		LocalDir diskDir(m_path);
         if (!diskDir.isAbsolute()) {
 			m_path = FileManager::instance()->getWorkingDirectory() + '/' + m_path;
             FileManager::adaptPath(m_path);
@@ -297,11 +297,11 @@ String FileListing::getFilePath() const
 
     if ((m_curPos >= 0) && (m_curPos < (Int32)m_fileList.size())) {
         if (m_fileList[m_curPos]->FileType == FILE_FILE) {
-            FileInfo localFile(pathOnly + m_fileList[m_curPos]->FileName);
+            LocalFile localFile(pathOnly + m_fileList[m_curPos]->FileName);
             localFile.makeAbsolute();
             return localFile.getFilePath();
         } else if (m_fileList[m_curPos]->FileType == FILE_DIR) {
-            Dir localDir(pathOnly + m_fileList[m_curPos]->FileName);
+            LocalDir localDir(pathOnly + m_fileList[m_curPos]->FileName);
             localDir.makeAbsolute();
             return localDir.getFullPathName();
 		}
@@ -318,11 +318,11 @@ String FileListing::getFileFullName() const
 
     if ((m_curPos >= 0) && (m_curPos < (Int32)m_fileList.size())) {
         if (m_fileList[m_curPos]->FileType == FILE_FILE) {
-            FileInfo localFile(pathOnly + m_fileList[m_curPos]->FileName);
+            LocalFile localFile(pathOnly + m_fileList[m_curPos]->FileName);
             localFile.makeAbsolute();
             return localFile.getFullFileName();
         } else if (m_fileList[m_curPos]->FileType == FILE_DIR) {
-            Dir localDir(pathOnly + m_fileList[m_curPos]->FileName);
+            LocalDir localDir(pathOnly + m_fileList[m_curPos]->FileName);
             localDir.makeAbsolute();
             return localDir.getFullPathName();
 		}

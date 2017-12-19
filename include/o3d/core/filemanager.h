@@ -18,7 +18,7 @@
 
 namespace o3d {
 
-class BaseFileInfo;
+class BaseFile;
 class BaseDir;
 
 /**
@@ -105,6 +105,12 @@ public:
      * @return
      */
     static String convertPath(const String &filename, const String &pathname);
+
+    /**
+     * @brief Get the file path only from a full path filename.
+     * @param fullFileName Input fullFileName to parse.
+     */
+    static String getFilePath(const String &fullFileName);
 
     /**
      * @brief Get the file name and the path name from a complete (full) file name.
@@ -240,7 +246,7 @@ public:
     FileTypes fileType(const String &fileName) const;
 
     //! Get a file info object. It refers a valid file on system or asset.
-    BaseFileInfo* fileInfo(const String &fileName) const;
+    BaseFile* file(const String &fileName) const;
 
     //! Get a dir info object. It refers a valid path on system or asset.
     BaseDir* dir(const String &path) const;

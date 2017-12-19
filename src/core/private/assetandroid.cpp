@@ -15,7 +15,6 @@
 #include "o3d/core/private/assetandroid.h"
 #include "o3d/core/private/instreamandroid.h"
 #include "o3d/core/filemanager.h"
-#include "o3d/core/fileinfo.h"
 #include "o3d/core/datainstream.h"
 #include "o3d/core/application.h"
 
@@ -55,8 +54,8 @@ Int32 AssetAndroid::findFile(const String &fileName)
         return it->second;
     } else {
         // not cached
-        FileInfo fileInfo(fileName);
-        AAssetDir* assetDir = AAssetManager_openDir(m_assetMgr, fileInfo.getFilePath().toUtf8().getData());
+        String filePath = FileManager::instance()->getFilePath(fileName);
+        AAssetDir* assetDir = AAssetManager_openDir(m_assetMgr, filePath.toUtf8().getData());
         Int32 index = -1;
 
         if (assetDir) {
@@ -114,7 +113,6 @@ InStream *AssetAndroid::openInStream(const String &fileName)
 
 InStream *AssetAndroid::openInStream(Int32 index)
 {
-    InStream *is;
     AssetToken *entry;
 
     if ((index < 0) || (index >= (Int32)m_fileList.size())) {
@@ -193,10 +191,12 @@ UInt64 AssetAndroid::getFileSize(Int32 index) const
         if (asset) {
             UInt64 size = AAsset_getLength(asset);
             AAsset_close(asset);
+
+            return size;
         }
     }
 
-    O3D_ERROR(E_FileNotFoundOrInvalidRights("", fileName));
+    O3D_ERROR(E_FileNotFoundOrInvalidRights("", entry->FileName));
 }
 
 void AssetAndroid::findAllFiles()

@@ -13,7 +13,7 @@
 
 #include "o3d/core/objects.h"
 #include "o3d/core/appwindow.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 #include "o3d/core/classfactory.h"
 
 #include "o3d/engine/scene/sceneobjectmanager.h"

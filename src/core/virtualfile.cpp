@@ -8,69 +8,69 @@
  */
 
 #include "o3d/core/precompiled.h"
-#include "o3d/core/virtualfileinfo.h"
+#include "o3d/core/virtualfile.h"
 
 #include "o3d/core/filemanager.h"
 #include "o3d/core/debug.h"
 
 using namespace o3d;
 
-VirtualFileInfo::VirtualFileInfo(const String &filename) :
-    BaseFileInfo(filename)
+VirtualFile::VirtualFile(const String &filename) :
+    BaseFile(filename)
 {
     m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
-VirtualFileInfo::VirtualFileInfo(const String &pathname,const String &filename) :
-    BaseFileInfo(pathname,filename)
+VirtualFile::VirtualFile(const String &pathname,const String &filename) :
+    BaseFile(pathname,filename)
 {
     m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
-VirtualFileInfo::VirtualFileInfo(const BaseDir &dir,const String &filename) :
-    BaseFileInfo(dir,filename)
+VirtualFile::VirtualFile(const BaseDir &dir,const String &filename) :
+    BaseFile(dir,filename)
 {
     m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
-VirtualFileInfo::VirtualFileInfo(const BaseFileInfo& dup) :
-    BaseFileInfo(dup)
+VirtualFile::VirtualFile(const BaseFile& dup) :
+    BaseFile(dup)
 {
     m_type = FL_VIRTUAL;
     m_isValid = exists();
 }
 
-VirtualFileInfo::~VirtualFileInfo()
+VirtualFile::~VirtualFile()
 {
 }
 
-BaseFileInfo *VirtualFileInfo::clone() const
+BaseFile *VirtualFile::clone() const
 {
-    return new VirtualFileInfo(*this);
+    return new VirtualFile(*this);
 }
 
-void VirtualFileInfo::setFile(const String &filename)
+void VirtualFile::setFile(const String &filename)
 {
-    BaseFileInfo::setFile(filename);
+    BaseFile::setFile(filename);
     m_isValid = exists();
 }
 
-void VirtualFileInfo::setFile(const String &pathname,const String &filename)
+void VirtualFile::setFile(const String &pathname,const String &filename)
 {
-    BaseFileInfo::setFile(pathname,filename);
+    BaseFile::setFile(pathname,filename);
     m_isValid = exists();
 }
 
-void VirtualFileInfo::setFile(const BaseDir &dir, const String &filename)
+void VirtualFile::setFile(const BaseDir &dir, const String &filename)
 {
-    BaseFileInfo::setFile(dir,filename);
+    BaseFile::setFile(dir,filename);
     m_isValid = exists();
 }
 
-void VirtualFileInfo::cacheDatas()
+void VirtualFile::cacheDatas()
 {
     // fill the CachedData structure if cache is enable
     m_isValid = False;
@@ -99,7 +99,7 @@ void VirtualFileInfo::cacheDatas()
 }
 
 // Get the file type.
-FileTypes VirtualFileInfo::getType()
+FileTypes VirtualFile::getType()
 {
     if (!m_isValid) {
         return FILE_UNKNWON;
@@ -114,7 +114,7 @@ FileTypes VirtualFileInfo::getType()
 }
 
 // Get the file size in bytes.
-UInt64 VirtualFileInfo::getFileSize()
+UInt64 VirtualFile::getFileSize()
 {
     if (!m_isValid) {
         return 0;
@@ -128,13 +128,13 @@ UInt64 VirtualFileInfo::getFileSize()
     return m_cachedData.fileSize;
 }
 
-Bool VirtualFileInfo::exists()
+Bool VirtualFile::exists()
 {
     m_isValid = FileManager::instance()->isFile(m_fullFilename);
     return m_isValid;
 }
 
-Bool VirtualFileInfo::isAbsolute() const
+Bool VirtualFile::isAbsolute() const
 {
     if (!m_isValid || !m_fullFilename.length()) {
         return False;
@@ -143,7 +143,7 @@ Bool VirtualFileInfo::isAbsolute() const
     return (!FileManager::instance()->isRelativePath(m_fullFilename));
 }
 
-Bool VirtualFileInfo::isReadable()
+Bool VirtualFile::isReadable()
 {
     if (!m_isValid) {
         return False;
@@ -152,7 +152,7 @@ Bool VirtualFileInfo::isReadable()
     return True;
 }
 
-Bool VirtualFileInfo::isWritable()
+Bool VirtualFile::isWritable()
 {
     if (!m_isValid) {
         return False;
@@ -161,7 +161,7 @@ Bool VirtualFileInfo::isWritable()
     return False;
 }
 
-Bool VirtualFileInfo::isHidden()
+Bool VirtualFile::isHidden()
 {
     if (!m_isValid) {
         return False;
@@ -176,7 +176,7 @@ Bool VirtualFileInfo::isHidden()
     return m_cachedData.hidden;
 }
 
-Int16 VirtualFileInfo::getOwnerId()
+Int16 VirtualFile::getOwnerId()
 {
     if (!m_isValid) {
         return False;
@@ -185,7 +185,7 @@ Int16 VirtualFileInfo::getOwnerId()
     return 0;
 }
 
-const String& VirtualFileInfo::getOwnerName()
+const String& VirtualFile::getOwnerName()
 {
     if (!m_isValid) {
         return String::getNull();
@@ -194,7 +194,7 @@ const String& VirtualFileInfo::getOwnerName()
     return String::getNull();
 }
 
-Int16 VirtualFileInfo::getGroupId()
+Int16 VirtualFile::getGroupId()
 {
     if (!m_isValid) {
         return 0;
@@ -203,7 +203,7 @@ Int16 VirtualFileInfo::getGroupId()
     return 0;
 }
 
-const String& VirtualFileInfo::getGroupName()
+const String& VirtualFile::getGroupName()
 {
     if (!m_isValid) {
         return String::getNull();
@@ -212,7 +212,7 @@ const String& VirtualFileInfo::getGroupName()
     return String::getNull();
 }
 
-Bool VirtualFileInfo::makeAbsolute()
+Bool VirtualFile::makeAbsolute()
 {
     if (!m_isValid) {
         return False;
@@ -235,7 +235,7 @@ Bool VirtualFileInfo::makeAbsolute()
     return True;
 }
 
-const DateTime &VirtualFileInfo::getCreationDate()
+const DateTime &VirtualFile::getCreationDate()
 {
     if (!m_isValid) {
         return DateTime::nullDate();
@@ -245,7 +245,7 @@ const DateTime &VirtualFileInfo::getCreationDate()
     return DateTime::nullDate();
 }
 
-const DateTime &VirtualFileInfo::getLastAccessDate()
+const DateTime &VirtualFile::getLastAccessDate()
 {
     if (!m_isValid) {
         return DateTime::nullDate();
@@ -255,7 +255,7 @@ const DateTime &VirtualFileInfo::getLastAccessDate()
     return DateTime::nullDate();
 }
 
-const DateTime& VirtualFileInfo::getModifiedDate()
+const DateTime& VirtualFile::getModifiedDate()
 {
     if (!m_isValid) {
         return DateTime::nullDate();
@@ -265,7 +265,7 @@ const DateTime& VirtualFileInfo::getModifiedDate()
     return DateTime::nullDate();
 }
 
-Bool VirtualFileInfo::isSymbolicLink()
+Bool VirtualFile::isSymbolicLink()
 {
     if (!m_isValid) {
         return False;
@@ -275,7 +275,7 @@ Bool VirtualFileInfo::isSymbolicLink()
     return False;
 }
 
-Bool VirtualFileInfo::isInRoot() const
+Bool VirtualFile::isInRoot() const
 {
     if (!m_isValid) {
         return False;

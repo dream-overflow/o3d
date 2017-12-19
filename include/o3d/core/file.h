@@ -15,13 +15,13 @@
 
 namespace o3d {
 
-class BaseFileInfo;
+class BaseFile;
 class BaseDir;
 class DateTime;
 
 /**
  * @brief File information and manipulator.
- * @details This is a wrapper upside BaseFileInfo specialization, using
+ * @details This is a wrapper upside BaseFile specialization, using
  * the file manager to initiate internal data.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2017-12-18
@@ -43,9 +43,18 @@ public:
     File(const File &dup);
 
     //! copy constructor
-    File(const BaseFileInfo &dup);
+    File(const BaseFile &dup);
+
+    //! own constructor. Own the given pointer.
+    File(BaseFile *own);
 
     ~File();
+
+    //! copy operator
+    File& operator=(const BaseFile &dup);
+
+    //! copy operator
+    File& operator=(const File &dup);
 
     //! Get the file type.
     FileTypes getType();
@@ -124,21 +133,21 @@ public:
     // Comparison operators
     //-----------------------------------------------------------------------------------
 
-    //! check if two dir are the same
+    //! check if two file are the same
     Bool operator== (const File &cmp) const;
 
-    //! check if two dir are different
+    //! check if two file are different
     Bool operator!= (const File &cmp) const;
 
-    //! check if two dir are the same
-    Bool operator== (const BaseFileInfo &cmp) const;
+    //! check if two file are the same
+    Bool operator== (const BaseFile &cmp) const;
 
-    //! check if two dir are different
-    Bool operator!= (const BaseFileInfo &cmp) const;
+    //! check if two file are different
+    Bool operator!= (const BaseFile &cmp) const;
 
 private:
 
-    BaseFileInfo *m_fi;
+    BaseFile *m_fi;
 };
 
 } // namespace o3d

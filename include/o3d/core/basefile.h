@@ -1,14 +1,14 @@
 /**
- * @file fileinfo.h
- * @brief repetives calls. This is the abstract class (see DiskFileInfo for file system one)
+ * @file basefile.h
+ * @brief This is the abstract file class.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-06-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
  */
 
-#ifndef _O3D_BASEFILEINFO_H
-#define _O3D_BASEFILEINFO_H
+#ifndef _O3D_BASEFILE_H
+#define _O3D_BASEFILE_H
 
 #include "memorydbg.h"
 #include "basedir.h"
@@ -18,11 +18,11 @@
 namespace o3d {
 
 /**
- * @brief File information abstract model.
+ * @brief File abstract model.
  * @details It take informations available in stats, truncates strings path and file name.
  * Its a very useful class to avoid you of some basics repetitive calls.
  */
-class O3D_API BaseFileInfo
+class O3D_API BaseFile
 {
 protected:
 
@@ -31,23 +31,23 @@ protected:
 public:
 
 	//! default constructor
-    BaseFileInfo(const String &filename);
+    BaseFile(const String &filename);
 
 	//! constructor with separates pathname and filename
-    BaseFileInfo(const String &pathname, const String &filename);
+    BaseFile(const String &pathname, const String &filename);
 
 	//! constructor with separates pathname and filename
-    BaseFileInfo(const BaseDir &dir, const String &filename);
+    BaseFile(const BaseDir &dir, const String &filename);
 
 	//! copy constructor
-    BaseFileInfo(const BaseFileInfo& dup);
+    BaseFile(const BaseFile& dup);
 
-    virtual ~BaseFileInfo() = 0;
+    virtual ~BaseFile() = 0;
 
-    virtual BaseFileInfo* clone() const = 0;
+    virtual BaseFile* clone() const = 0;
 
 	//! duplicator (take care it copy the state of the cached data)
-    inline BaseFileInfo& operator=(const BaseFileInfo& dup)
+    inline BaseFile& operator=(const BaseFile& dup)
 	{
 		m_type = dup.m_type;
 		m_cached = dup.m_cached;
@@ -170,14 +170,14 @@ public:
 	// Comparison operators
 	//-----------------------------------------------------------------------------------
 
-	//! check if two dir are the same
-    inline Bool operator== (const BaseFileInfo &cmp) const
+    //! check if two file are the same
+    inline Bool operator== (const BaseFile &cmp) const
 	{
 		return (m_fullFilename == cmp.m_fullFilename);
 	}
 
-	//! check if two dir are different
-    inline Bool operator!= (const BaseFileInfo &cmp) const
+    //! check if two file are different
+    inline Bool operator!= (const BaseFile &cmp) const
 	{
 		return (m_fullFilename != cmp.m_fullFilename);
 	}
@@ -270,4 +270,4 @@ protected:
 
 } // namespace o3d
 
-#endif // _O3D_BASEFILEINFO_H
+#endif // _O3D_BASEFILE_H

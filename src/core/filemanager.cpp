@@ -12,10 +12,10 @@
 #include "o3d/core/zip.h"
 #include "o3d/core/filelisting.h"
 #include "o3d/core/thread.h"
-#include "o3d/core/fileinfo.h"
-#include "o3d/core/dir.h"
+#include "o3d/core/localfile.h"
+#include "o3d/core/localdir.h"
 #include "o3d/core/virtualdir.h"
-#include "o3d/core/virtualfileinfo.h"
+#include "o3d/core/virtualfile.h"
 #include "o3d/core/stringtokenizer.h"
 
 #include "o3d/core/debug.h"
@@ -174,6 +174,19 @@ String FileManager::convertPath(const String &filename, const String &pathName)
     // no trailing slash
     result.trimRight('/');
     return result;
+}
+
+String FileManager::getFilePath(const String &fullFileName)
+{
+    Int32 p = fullFileName.reverseFind('/');
+    if (p == -1) {
+        return "";
+    } else {
+        String pathName = fullFileName;
+        pathName.truncate(p);
+
+        return pathName;
+    }
 }
 
 void FileManager::getFileNameAndPath(
@@ -450,7 +463,7 @@ Bool FileManager::mountAsset(const String &protocol, const String &assetName)
     } else if (protocol == "android://") {
     #ifdef O3D_ANDROID
         AssetAndroid *asset;
-        String lAssetName = getFullFileName(archiveName);
+        String lAssetName = getFullFileName(assetName);
 
         O3D_FileManagerMutex.lock();
         // Is archive already mounted
@@ -594,7 +607,7 @@ Bool FileManager::isPath(const String &path) const
     }
 
     // Look on filesystem
-    Dir dir(lpath);
+    LocalDir dir(lpath);
     return dir.exists();
 }
 
@@ -616,7 +629,7 @@ Bool FileManager::isFile(const String &fileName) const
     }
 
     // Look on filesystem
-    FileInfo fileInfo(lfilename);
+    LocalFile fileInfo(lfilename);
     return fileInfo.exists();
 }
 
@@ -638,7 +651,7 @@ UInt64 FileManager::fileSize(const String &fileName) const
     }
 
     // Look on filesystem
-    FileInfo fileInfo(lfilename);
+    LocalFile fileInfo(lfilename);
     return fileInfo.exists();
 }
 
@@ -660,11 +673,11 @@ FileTypes FileManager::fileType(const String &fileName) const
     }
 
     // Look on filesystem
-    FileInfo fileInfo(lfilename);
+    LocalFile fileInfo(lfilename);
     return fileInfo.getType();
 }
 
-BaseFileInfo* FileManager::fileInfo(const String &fileName) const
+BaseFile* FileManager::file(const String &fileName) const
 {
     String lfilename = getFullFileName(fileName);
 
@@ -679,13 +692,13 @@ BaseFileInfo* FileManager::fileInfo(const String &fileName) const
             Int32 index;
             // search for the file
             if ((index = (*cit)->findFile(lfilename)) != -1) {
-                return new VirtualFileInfo(fileName);
+                return new VirtualFile(fileName);
             }
         }
     }
 
     // Look on filesystem
-    FileInfo *fileInfo = new FileInfo(lfilename);
+    LocalFile *fileInfo = new LocalFile(lfilename);
     if (fileInfo->exists()) {
         return fileInfo;
     } else {
@@ -714,7 +727,7 @@ BaseDir* FileManager::dir(const String &path) const
     }
 
     // Look on filesystem
-    Dir *dir = new Dir(lpath);
+    LocalDir *dir = new LocalDir(lpath);
     if (dir->exists()) {
         return dir;
     } else {

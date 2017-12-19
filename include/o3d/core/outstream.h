@@ -420,4 +420,3 @@ inline OutStream& operator<< (OutStream &os, _T &object)
 } // namespace o3d
 
 #endif // _O3D_OUTSTREAM_H
-

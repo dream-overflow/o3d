@@ -21,6 +21,7 @@ namespace o3d {
  * @brief InStream binary stream base class
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2013-12-04
+ * @todo Must be fully 64 bits
  */
 class O3D_API InStream : public TextInStream, public Closable
 {
@@ -430,4 +431,3 @@ inline InStream& operator>> (InStream &is, _T &object)
 } // namespace o3d
 
 #endif // _O3D_INSTREAM_H
-

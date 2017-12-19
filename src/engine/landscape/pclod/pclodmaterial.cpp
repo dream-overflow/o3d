@@ -14,7 +14,7 @@
 #include "o3d/engine/landscape/pclod/pclodtexturemanager.h"
 #include "o3d/core/string.h"
 #include "o3d/core/filemanager.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 #include "o3d/core/memorydbg.h"
 #include "o3d/engine/texture/texture2d.h"
 
@@ -59,8 +59,8 @@ void PCLODMaterial::rtLoad()
 {
 	O3D_ASSERT(!loaded());
 
-    File lFileInfo(m_filePath);
-    if (!lFileInfo.exists()) {
+    File lFile(m_filePath);
+    if (!lFile.exists()) {
 		// If the file is not found, we load a black texture
 
 		// If the file was not defined on purpose, we dont show any message

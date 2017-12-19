@@ -11,8 +11,8 @@
 #include "o3d/core/virtualfilelisting.h"
 
 #include "o3d/core/filemanager.h"
-#include "o3d/core/dir.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localdir.h"
+#include "o3d/core/localfile.h"
 
 #include <wctype.h>
 
@@ -250,12 +250,12 @@ String VirtualFileListing::getFilePath() const
 
     if (tempItem) {
         if (tempItem->FileType == FILE_FILE) {
-            Dir localDir(pathOnly);
-            FileInfo localFile(tempItem->FileName);
+            LocalDir localDir(pathOnly);
+            LocalFile localFile(tempItem->FileName);
             localDir.makeAbsolute();
             return localDir.getFullPathName() + '/' + localFile.getFilePath();
         } else if (tempItem->FileType == FILE_DIR) {
-            Dir localDir(pathOnly);
+            LocalDir localDir(pathOnly);
             localDir.makeAbsolute();
             return localDir.getFullPathName() + '/' + tempItem->FileName;
 		}
@@ -273,11 +273,11 @@ String VirtualFileListing::getFileFullName() const
 
     if (tempItem) {
         if (tempItem->FileType == FILE_FILE) {
-            Dir localDir(pathOnly);
+            LocalDir localDir(pathOnly);
             localDir.makeAbsolute();
             return localDir.getFullPathName() + '/' + tempItem->FileName;
         } else if (tempItem->FileType == FILE_DIR) {
-            Dir localDir(pathOnly);
+            LocalDir localDir(pathOnly);
             localDir.makeAbsolute();
             return localDir.getFullPathName() + '/' + tempItem->FileName;
 		}

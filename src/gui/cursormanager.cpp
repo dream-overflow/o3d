@@ -12,7 +12,7 @@
 #include "o3d/gui/guitype.h"
 
 #include "o3d/core/xmldoc.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 #include "o3d/core/filemanager.h"
 
 using namespace o3d;

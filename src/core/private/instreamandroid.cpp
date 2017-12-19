@@ -11,7 +11,6 @@
 
 #ifdef O3D_ANDROID
 
-#include "o3d/core/basefileinfo.h"
 #include "o3d/core/templatearray.h"
 #include "o3d/core/debug.h"
 
@@ -38,11 +37,13 @@ InStreamAndroid::InStreamAndroid(const String &filename, AAsset *asset) :
     if (!m_asset) {
         O3D_ERROR(E_NullPointer("Asset must be valid for file " + filename));
     }
+
+    m_length = AAsset_getLength64(m_asset);
 }
 
 InStreamAndroid::~InStreamAndroid()
 {
-    close();
+    this->close();
 }
 
 Bool InStreamAndroid::isMemory() const
@@ -52,7 +53,11 @@ Bool InStreamAndroid::isMemory() const
 
 UInt32 InStreamAndroid::reader(void *buf, UInt32 size, UInt32 count)
 {
-    //return (UInt32)fread(buf, size, count, m_file) * size;
+    if (!m_asset) {
+        return 0;
+    }
+
+    return (UInt32)AAsset_read(m_asset, buf, size*count);
 }
 
 void InStreamAndroid::close()
@@ -65,74 +70,82 @@ void InStreamAndroid::close()
 
 void InStreamAndroid::reset(UInt64 n)
 {
-  /*  if (n == 0) {
-        rewind(m_file);
-    } else if (fseek(m_file, n, SEEK_SET) != 0) {
+    if (n == 0) {
+        AAsset_seek64(m_asset, 0, SEEK_SET);
+    } else if (AAsset_seek64(m_asset, n, SEEK_SET) != 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
-    }*/
+    }
 }
 
 void InStreamAndroid::seek(Int64 n)
 {
-   /* if (fseek(m_file, n, SEEK_CUR) != 0) {
+    if (AAsset_seek64(m_asset, n, SEEK_CUR) != 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
-    }*/
+    }
 }
 
 void InStreamAndroid::end(Int64 n)
 {
-  /*  if (fseek(m_file, n, SEEK_END) != 0) {
+    if (AAsset_seek64(m_asset, n, SEEK_END) != 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
-    }*/
+    }
+}
+
+inline Int32 AAgetc(AAsset *asset)
+{
+    UInt8 value;
+    if (AAsset_read(asset, &value, 1) == 1) {
+        return (Int32)value;
+    } else {
+        return EOF;
+    }
 }
 
 UInt8 InStreamAndroid::peek()
 {
-    /*UInt8 value = (UInt8)getc(m_file);
-    ungetc(value, m_file);
+    if (m_pos < m_length) {
+        Int32 value = AAgetc(m_asset);
+        if (value != EOF) {
+            AAsset_seek(m_asset, -1, SEEK_CUR);
+            return value;
+        }
+    }
 
-    return value;*/
+    return 0;
 }
 
 void InStreamAndroid::ignore(Int32 limit, UInt8 delim)
 {
-   /* Int32 value;
+    Int32 value;
     Int32 counter = 0;
 
-    while ((counter < limit) && ((value = getc(m_file)) != EOF) && ((UInt8)value != delim)) {
+    while ((counter < limit) && ((value = AAgetc(m_asset)) != EOF) && ((UInt8)value != delim)) {
         ++counter;
-    }*/
+    }
 }
 
 Int32 InStreamAndroid::getAvailable() const
 {
-   /* if (m_length == 0) {
-        *const_cast<Int32*>(&m_length) = getFileLength(getFD());
-    }
-
-    if (m_length != 0) {
-        return m_length - ftell(m_file);
-    } else {
-        return 0;
-    }*/
+    // return (Int32)AAsset_getRemainingLength64(m_asset);
+    return AAsset_getRemainingLength(m_asset);
 }
 
 Int32 InStreamAndroid::getPosition() const
 {
-    /*return ftell(m_file);*/
+    return m_pos;
 }
 
 Bool InStreamAndroid::isEnd() const
 {
-   /* return feof(m_file) != 0;*/
+   return m_pos == m_length;
 }
 
 Int32 InStreamAndroid::readLine(String &str, CharacterEncoding encoding)
 {
     ArrayChar read;
-/*
+
     Int32 c;
-    while( ((c = getc(m_file)) != '\n') && ( c != EOF)) {
+    while( ((c = AAgetc(m_asset)) != '\n') && ( c != EOF)) {
         if (c != '\r') {
             read.push((Char)c);
         }
@@ -155,16 +168,16 @@ Int32 InStreamAndroid::readLine(String &str, CharacterEncoding encoding)
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
     }
 
-    return str.length();*/
+    return str.length();
 }
 
 Int32 InStreamAndroid::readLine(String &str, Int32 limit, UInt8 delim, CharacterEncoding encoding)
 {
     ArrayChar read;
-/*
+
     Int32 c = EOF, counter = 0;
 
-    while((counter < limit) && ((c = getc(m_file)) != '\n') && (c != EOF) && (c != delim)) {
+    while((counter < limit) && ((c = AAgetc(m_asset)) != '\n') && (c != EOF) && (c != delim)) {
         if (c != '\r') {
             read.push((Char)c);
         }
@@ -185,7 +198,7 @@ Int32 InStreamAndroid::readLine(String &str, Int32 limit, UInt8 delim, Character
         str.set(read.getData(),0);
     } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
-    }*/
+    }
 
     return str.length();
 }

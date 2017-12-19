@@ -1,25 +1,25 @@
 /**
- * @file fileinfo.h
- * @brief File system version of BaseFileInfo.
+ * @file localfile.h
+ * @brief Local file system version of BaseFile.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-06-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
  */
 
-#ifndef _O3D_FILEINFO_H
-#define _O3D_FILEINFO_H
+#ifndef _O3D_LOCALFILE_H
+#define _O3D_LOCALFILE_H
 
 #include "memorydbg.h"
-#include "basefileinfo.h"
+#include "basefile.h"
 
 namespace o3d {
 
 /**
- * @brief File system version of BaseFileInfo.
+ * @brief Local file system version of BaseFile.
  * @todo exists test should not be done during the ctor (@see m_isValid too)
  */
-class O3D_API FileInfo : public BaseFileInfo
+class O3D_API LocalFile : public BaseFile
 {
 protected:
 
@@ -29,20 +29,20 @@ protected:
 public:
 
 	//! default constructor
-    FileInfo(const String &filename);
+    LocalFile(const String &filename);
 
 	//! constructor with separates pathname and filename
-    FileInfo(const String &pathname, const String &filename);
+    LocalFile(const String &pathname, const String &filename);
 
 	//! constructor with separates pathname and filename
-    FileInfo(const BaseDir &dir, const String &filename);
+    LocalFile(const BaseDir &dir, const String &filename);
 
 	//! copy constructor
-    FileInfo(const BaseFileInfo& dup);
+    LocalFile(const BaseFile& dup);
 
-    virtual BaseFileInfo* clone() const override;
+    virtual BaseFile* clone() const override;
 
-    virtual ~FileInfo();
+    virtual ~LocalFile();
 
 	//! set the filename
     virtual void setFile(const String &filename) override;
@@ -87,7 +87,6 @@ public:
     virtual const String& getGroupName() override;
 
 	//! make absolute. make - if relative - this file name absolute depend to the current working directory
-    //! @note Works only for FileInfo.
     virtual Bool makeAbsolute() override;
 
 	//! get the creation date/time
@@ -108,4 +107,4 @@ public:
 
 } // namespace o3d
 
-#endif // _O3D_FILEINFO_H
+#endif // _O3D_LOCALFILE_H

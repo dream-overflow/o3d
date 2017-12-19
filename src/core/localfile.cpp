@@ -1,6 +1,6 @@
 /**
- * @file fileinfo.cpp
- * @brief File system version of FileInfo.
+ * @file localfile.cpp
+ * @brief Local File system version of BaseFile.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2007-06-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -8,7 +8,7 @@
  */
 
 #include "o3d/core/precompiled.h"
-#include "o3d/core/fileinfo.h"
+#include "o3d/core/localfile.h"
 
 #include "o3d/core/filemanager.h"
 #include "o3d/core/debug.h"
@@ -27,62 +27,62 @@
 
 using namespace o3d;
 
-FileInfo::FileInfo(const String &filename) :
-    BaseFileInfo(filename)
+LocalFile::LocalFile(const String &filename) :
+    BaseFile(filename)
 {
     m_type = FL_LOCAL;
     m_isValid = exists();
 }
 
-FileInfo::FileInfo(const String &pathname, const String &filename) :
-    BaseFileInfo(pathname, filename)
+LocalFile::LocalFile(const String &pathname, const String &filename) :
+    BaseFile(pathname, filename)
 {
     m_type = FL_LOCAL;
     m_isValid = exists();
 }
 
-FileInfo::FileInfo(const BaseDir &dir, const String &filename) :
-    BaseFileInfo(dir, filename)
+LocalFile::LocalFile(const BaseDir &dir, const String &filename) :
+    BaseFile(dir, filename)
 {
     m_type = FL_LOCAL;
     m_isValid = exists();
 }
 
-FileInfo::FileInfo(const BaseFileInfo& dup) :
-    BaseFileInfo(dup)
+LocalFile::LocalFile(const BaseFile& dup) :
+    BaseFile(dup)
 {
     m_type = FL_LOCAL;
     m_isValid = exists();
 }
 
-BaseFileInfo *FileInfo::clone() const
+BaseFile *LocalFile::clone() const
 {
-    return new FileInfo(*this);
+    return new LocalFile(*this);
 }
 
-FileInfo::~FileInfo()
+LocalFile::~LocalFile()
 {
 }
 
-void FileInfo::setFile(const String &filename)
+void LocalFile::setFile(const String &filename)
 {
-    BaseFileInfo::setFile(filename);
+    BaseFile::setFile(filename);
     m_isValid = exists();
 }
 
-void FileInfo::setFile(const String &pathname,const String &filename)
+void LocalFile::setFile(const String &pathname,const String &filename)
 {
-    BaseFileInfo::setFile(pathname,filename);
+    BaseFile::setFile(pathname,filename);
     m_isValid = exists();
 }
 
-void FileInfo::setFile(const BaseDir &dir, const String &filename)
+void LocalFile::setFile(const BaseDir &dir, const String &filename)
 {
-    BaseFileInfo::setFile(dir,filename);
+    BaseFile::setFile(dir,filename);
     m_isValid = exists();
 }
 
-void FileInfo::cacheDatas()
+void LocalFile::cacheDatas()
 {
     // fill the CachedData structure if cache is enable
 	Int32 result;
@@ -160,7 +160,7 @@ void FileInfo::cacheDatas()
 }
 
 // Get the file type.
-FileTypes FileInfo::getType()
+FileTypes LocalFile::getType()
 {
     if (!m_isValid) {
 		return FILE_UNKNWON;
@@ -204,7 +204,7 @@ FileTypes FileInfo::getType()
 }
 
 // Get the file size in bytes.
-UInt64 FileInfo::getFileSize()
+UInt64 LocalFile::getFileSize()
 {
     if (!m_isValid) {
 		return 0;
@@ -232,7 +232,7 @@ UInt64 FileInfo::getFileSize()
 }
 
 // check if the filename exists
-Bool FileInfo::exists()
+Bool LocalFile::exists()
 {
 	Int32 result;
 
@@ -254,7 +254,7 @@ Bool FileInfo::exists()
 }
 
 // is an absolute or relative filename ?
-Bool FileInfo::isAbsolute() const
+Bool LocalFile::isAbsolute() const
 {
     if (!m_isValid || !m_fullFilename.length()) {
 		return False;
@@ -263,7 +263,7 @@ Bool FileInfo::isAbsolute() const
 	return (!FileManager::instance()->isRelativePath(m_fullFilename));
 }
 
-Bool FileInfo::isReadable()
+Bool LocalFile::isReadable()
 {
     // is the file readable (check the rights
     if (!m_isValid) {
@@ -293,7 +293,7 @@ Bool FileInfo::isReadable()
 	return m_cachedData.readable;
 }
 
-Bool FileInfo::isWritable()
+Bool LocalFile::isWritable()
 {
     if (!m_isValid) {
 		return False;
@@ -322,7 +322,7 @@ Bool FileInfo::isWritable()
 	return m_cachedData.writable;
 }
 
-Bool FileInfo::isHidden()
+Bool LocalFile::isHidden()
 {
     if (!m_isValid) {
 		return False;
@@ -342,7 +342,7 @@ Bool FileInfo::isHidden()
 	return m_cachedData.hidden;
 }
 
-Int16 FileInfo::getOwnerId()
+Int16 LocalFile::getOwnerId()
 {
     if (!m_isValid) {
         return 0;
@@ -370,7 +370,7 @@ Int16 FileInfo::getOwnerId()
 	return 0;
 }
 
-const String& FileInfo::getOwnerName()
+const String& LocalFile::getOwnerName()
 {
     if (!m_isValid) {
         return String::getNull();
@@ -402,7 +402,7 @@ const String& FileInfo::getOwnerName()
 	return m_cachedData.ownerName;
 }
 
-Int16 FileInfo::getGroupId()
+Int16 LocalFile::getGroupId()
 {
     if (!m_isValid) {
 		return False;
@@ -431,7 +431,7 @@ Int16 FileInfo::getGroupId()
 }
 
 // return the group string name
-const String& FileInfo::getGroupName()
+const String& LocalFile::getGroupName()
 {
     if (!m_isValid) {
         return String::getNull();
@@ -463,7 +463,7 @@ const String& FileInfo::getGroupName()
 	return m_cachedData.groupName;
 }
 
-Bool FileInfo::makeAbsolute()
+Bool LocalFile::makeAbsolute()
 {
     if (!m_isValid) {
 		return False;
@@ -486,7 +486,7 @@ Bool FileInfo::makeAbsolute()
 	return True;
 }
 
-const DateTime &FileInfo::getCreationDate()
+const DateTime &LocalFile::getCreationDate()
 {
     if (!m_isValid) {
         return DateTime::nullDate();
@@ -515,7 +515,7 @@ const DateTime &FileInfo::getCreationDate()
 	return m_cachedData.created;
 }
 
-const DateTime &FileInfo::getLastAccessDate()
+const DateTime &LocalFile::getLastAccessDate()
 {
     if (!m_isValid) {
         return DateTime::nullDate();
@@ -544,7 +544,7 @@ const DateTime &FileInfo::getLastAccessDate()
 	return m_cachedData.lastAccess;
 }
 
-const DateTime& FileInfo::getModifiedDate()
+const DateTime& LocalFile::getModifiedDate()
 {
     if (!m_isValid) {
         return DateTime::nullDate();
@@ -573,7 +573,7 @@ const DateTime& FileInfo::getModifiedDate()
 	return m_cachedData.modified;
 }
 
-Bool FileInfo::isSymbolicLink()
+Bool LocalFile::isSymbolicLink()
 {
     if (!m_isValid) {
 		return False;
@@ -599,7 +599,7 @@ Bool FileInfo::isSymbolicLink()
 	return m_cachedData.symLink;
 }
 
-Bool FileInfo::isInRoot() const
+Bool LocalFile::isInRoot() const
 {
     if (!m_isValid) {
 		return False;
