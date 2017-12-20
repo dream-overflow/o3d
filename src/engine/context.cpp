@@ -38,7 +38,9 @@ Context::Context(Renderer *renderer) :
 	forceDefaultDepthTest();
 	forceDefaultBackgroundColor();
 	forceDefaultDepthClear();
+    O3D_MESSAGE("000000000000001");
 	forceDefaultDepthRange();
+    O3D_MESSAGE("000000000000002");
 	forceDefaultDepthFunc();
 	forceDefaultAntiAliasing();
 	forceDefaultDepthWrite();
@@ -47,7 +49,7 @@ Context::Context(Renderer *renderer) :
 	forceDefaultStencilClear();
 	forceDefaultStencilTest();
 	forceDefaultStencilTestFunc();
-
+O3D_MESSAGE("000000000000003");
     m_blending.forceDefaultFunc();
     m_blending.forceDefaultEquation();
 
@@ -931,7 +933,11 @@ void Context::setDepthRange(Float _near, Float _far)
 		m_depthNear = _near;
 		m_depthFar = _far;
 
-		glDepthRange(_near,_far);
+        if (glDepthRangef) {
+            glDepthRangef(_near,_far);
+        } else {
+            glDepthRange(_near,_far);
+        }
 	}
 }
 
@@ -941,7 +947,11 @@ void Context::forceDepthRange(Float _near, Float _far)
 	m_depthNear = _near;
 	m_depthFar = _far;
 
-	glDepthRange(_near,_far);
+    if (glDepthRangef) {
+        glDepthRangef(_near,_far);
+    } else {
+        glDepthRange(_near,_far);
+    }
 }
 
 // Change depth buffer comparison function.

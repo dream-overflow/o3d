@@ -242,7 +242,7 @@ Matrix4 ProjectionMatrix::pickMatrix(
 
   RedBook:
   "After clipping and division by w, depth coordinates range from -1 to 1, corresponding to
-  the near and far clipping planes. glDepthRange specifies a linear mapping of the normalized
+  the near and far clipping planes. DepthRange specifies a linear mapping of the normalized
   depth coordinates in this range to windows depth coordinates" in fact [0; 1]
 
   If you want to transform a depth value [0; 1] into a real distance, you have to apply

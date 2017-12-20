@@ -130,8 +130,6 @@ typedef void GLvoid;
 // GL_ARB_sync
 //
 
-//#ifndef GL_ARB_sync
-//#define GL_ARB_sync 1
 #ifndef O3D_GL_ARB_sync
 #define O3D_GL_ARB_sync 1
 typedef o3d::Int64 GLint64;
@@ -143,8 +141,6 @@ typedef struct __GLsync *GLsync;
 // GL_VERSION_1_0
 //
 
-//#ifndef GL_VERSION_1_0
-//#define GL_VERSION_1_0 1
 #ifndef O3D_GL_VERSION_1_0
 #define O3D_GL_VERSION_1_0 1
 
@@ -296,14 +292,12 @@ O3D_GLAPI GLboolean APIENTRY glIsEnabled (GLenum cap);
 O3D_GLAPI void APIENTRY glDepthRange (GLclampd near, GLclampd far);
 O3D_GLAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_1_0
+#endif // O3D_GL_VERSION_1_0
 
 //
 // GL_VERSION_1_1
 //
 
-//#ifndef GL_VERSION_1_1
-//#define GL_VERSION_1_1 1
 #ifndef O3D_GL_VERSION_1_1
 #define O3D_GL_VERSION_1_1 1
 
@@ -352,15 +346,13 @@ O3D_GLAPI void APIENTRY glBindTexture (GLenum target, GLuint texture);
 O3D_GLAPI void APIENTRY glDeleteTextures (GLsizei n, const GLuint *textures);
 O3D_GLAPI void APIENTRY glGenTextures (GLsizei n, GLuint *textures);
 O3D_GLAPI GLboolean APIENTRY glIsTexture (GLuint texture);
-#endif // GL_VERSION_1_1
 #endif // O3D_GL_PROTOTYPES
+#endif // O3D_GL_VERSION_1_1
 
 //
 // GL_VERSION_1_2
 //
 
-//#ifndef GL_VERSION_1_2
-//#define GL_VERSION_1_2 1
 #ifndef O3D_GL_VERSION_1_2
 #define O3D_GL_VERSION_1_2 1
 
@@ -384,14 +376,12 @@ O3D_GLAPI PFNGLTEXSUBIMAGE3DPROC glTexSubImage3D;
 O3D_GLAPI void APIENTRY glTexImage3D (GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid *);
 O3D_GLAPI void APIENTRY glTexSubImage3D (GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const GLvoid *);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_1_2
+#endif // O3D_GL_VERSION_1_2
 
 //
 // GL_VERSION_1_3
 //
 
-//#ifndef GL_VERSION_1_3
-//#define GL_VERSION_1_3 1
 #ifndef O3D_GL_VERSION_1_3
 #define O3D_GL_VERSION_1_3 1
 
@@ -430,14 +420,12 @@ O3D_GLAPI void APIENTRY glCompressedTexSubImage2D (GLenum target, GLint level, G
 O3D_GLAPI void APIENTRY glCompressedTexSubImage1D (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const GLvoid *data);
 O3D_GLAPI void APIENTRY glGetCompressedTexImage (GLenum target, GLint level, GLvoid *img);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_1_3
+#endif // O3D_GL_VERSION_1_3
 
 //
 // GL_VERSION_1_4
 //
 
-//#ifndef GL_VERSION_1_4
-//#define GL_VERSION_1_4 1
 #ifndef O3D_GL_VERSION_1_4
 #define O3D_GL_VERSION_1_4 1
 
@@ -477,14 +465,12 @@ O3D_GLAPI void APIENTRY glMultiDrawElements (GLenum mode, const GLsizei *count, 
 
 O3D_GLAPI void APIENTRY glBlendEquation(GLenum mode);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_1_4
+#endif // O3D_GL_VERSION_1_4
 
 //
 // GL_VERSION_1_5
 //
 
-//#ifndef GL_VERSION_1_5
-//#define GL_VERSION_1_5 1
 #ifndef O3D_GL_VERSION_1_5
 #define O3D_GL_VERSION_1_5 1
 /* GL types for handling large vertex buffer objects */
@@ -553,14 +539,12 @@ O3D_GLAPI GLvoid* APIENTRY glMapBuffer (GLenum, GLenum);
 O3D_GLAPI GLboolean APIENTRY glUnmapBuffer (GLenum);
 O3D_GLAPI void APIENTRY glGetBufferParameteriv (GLenum, GLenum, GLint *);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_1_5
+#endif // O3D_GL_VERSION_1_5
 
 //
 // GL_VERSION_2_0
 //
 
-//#ifndef GL_VERSION_2_0
-//#define GL_VERSION_2_0 1
 #ifndef O3D_GL_VERSION_2_0
 #define O3D_GL_VERSION_2_0 1
 /* GL type for program/shader text */
@@ -856,14 +840,12 @@ O3D_GLAPI void APIENTRY glVertexAttrib4uiv (GLuint, const GLuint *);
 O3D_GLAPI void APIENTRY glVertexAttrib4usv (GLuint, const GLushort *);
 O3D_GLAPI void APIENTRY glVertexAttribPointer (GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid *);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_2_0
+#endif // O3D_GL_VERSION_2_0
 
 //
 // GL_VERSION_3_0
 //
 
-//#ifndef GL_VERSION_3_0
-//#define GL_VERSION_3_0 1
 #ifndef O3D_GL_VERSION_3_0
 #define O3D_GL_VERSION_3_0 1
 
@@ -1045,14 +1027,12 @@ O3D_GLAPI void APIENTRY glClearBufferfv (GLenum buffer, GLint drawbuffer, const 
 O3D_GLAPI void APIENTRY glClearBufferfi (GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
 O3D_GLAPI const GLubyte * APIENTRY glGetStringi (GLenum name, GLuint index);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_3_0
+#endif // O3D_GL_VERSION_3_0
 
 //
 // GL_VERSION_3_2
 //
 
-//#ifndef GL_VERSION_3_2
-//#define GL_VERSION_3_2 1
 #ifndef O3D_GL_VERSION_3_2
 #define O3D_GL_VERSION_3_2 1
 
@@ -1076,14 +1056,12 @@ O3D_GLAPI void APIENTRY glProgramParameteri (GLuint, GLenum, GLint);
 O3D_GLAPI void APIENTRY glFramebufferTexture (GLenum, GLenum, GLuint, GLint);
 O3D_GLAPI void APIENTRY glFramebufferTextureFace (GLenum, GLenum, GLuint, GLint, GLenum);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_3_2
+#endif // O3D_GL_VERSION_3_2
 
 //
 // GL_VERSION_3_3
 //
 
-//#ifndef GL_VERSION_3_3
-//#define GL_VERSION_3_3 1
 #ifndef O3D_GL_VERSION_3_3
 #define O3D_GL_VERSION_3_3 1
 
@@ -1134,14 +1112,12 @@ O3D_GLAPI void APIENTRY glGetSamplerParameterIiv (GLuint sampler, GLenum pname, 
 O3D_GLAPI void APIENTRY glGetSamplerParameterfv (GLuint sampler, GLenum pname, GLfloat *params);
 O3D_GLAPI void APIENTRY glGetSamplerParameterIuiv (GLuint sampler, GLenum pname, GLuint *params);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_VERSION_3_3
+#endif // O3D_GL_VERSION_3_3
 
 //
 // GL_VERSION_4_0
 //
 
-//#ifndef GL_VERSION_4_0
-//#define GL_VERSION_4_0 1
 #ifndef O3D_GL_VERSION_4_0
 #define O3D_GL_VERSION_4_0 1
 
@@ -1162,25 +1138,29 @@ O3D_GLAPI void APIENTRY glBlendFunci (GLuint buf, GLenum src, GLenum dst);
 O3D_GLAPI void APIENTRY glBlendFuncSeparatei (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
 #endif // O3D_GL_PROTOTYPES
 
-#endif // GL_VERSION_4_0
+#endif // O3D_GL_VERSION_4_0
 
 //
 // GL_VERSION_4_1
 //
 
-//#ifndef GL_VERSION_4_1
-//#define GL_VERSION_4_1 1
 #ifndef O3D_GL_VERSION_4_1
 #define O3D_GL_VERSION_4_1 1
 
-#endif // GL_VERSION_4_1
+#ifndef O3D_GL_PROTOTYPES
+typedef void (APIENTRYP PFNGLDEPTHRANGEFPROC) (GLfloat n, GLfloat f);
+
+O3D_GLAPI PFNGLDEPTHRANGEFPROC glDepthRangef;
+#else
+O3D_GLAPI void APIENTRY glDepthRangef (GLfloat n, GLfloat f);
+#endif // O3D_GL_PROTOTYPES
+
+#endif // O3D_GL_VERSION_4_1
 
 //
 // GL_VERSION_4_2
 //
 
-//#ifndef GL_VERSION_4_2
-//#define GL_VERSION_4_2 1
 #ifndef O3D_GL_VERSION_4_2
 #define O3D_GL_VERSION_4_2 1
 
@@ -1190,30 +1170,24 @@ O3D_GLAPI void APIENTRY glBlendFuncSeparatei (GLuint buf, GLenum srcRGB, GLenum 
 // GL_VERSION_4_3
 //
 
-//#ifndef GL_VERSION_4_3
-//#define GL_VERSION_4_3 1
 #ifndef O3D_GL_VERSION_4_3
 #define O3D_GL_VERSION_4_3 1
 
-#endif // GL_VERSION_4_3
+#endif // O3D_GL_VERSION_4_3
 
 //
 // GL_VERSION_4_4
 //
 
-//#ifndef GL_VERSION_4_4
-//#define GL_VERSION_4_4 1
 #ifndef O3D_GL_VERSION_4_4
 #define O3D_GL_VERSION_4_4 1
 
-#endif // GL_VERSION_4_4
+#endif // O3D_GL_VERSION_4_4
 
 //
 // GL_VERSION_4_5
 //
 
-//#ifndef GL_VERSION_4_5
-//#define GL_VERSION_4_5 1
 #ifndef O3D_GL_VERSION_4_5
 #define O3D_GL_VERSION_4_5 1
 
@@ -1223,8 +1197,6 @@ O3D_GLAPI void APIENTRY glBlendFuncSeparatei (GLuint buf, GLenum srcRGB, GLenum 
 // GL_ARB_framebuffer_object
 //
 
-//#ifndef GL_ARB_framebuffer_object
-//#define GL_ARB_framebuffer_object 1
 #ifndef O3D_GL_ARB_framebuffer_object
 #define O3D_GL_ARB_framebuffer_object 1
 
@@ -1292,14 +1264,12 @@ O3D_GLAPI void APIENTRY glGetFramebufferAttachmentParameteriv (GLenum, GLenum, G
 O3D_GLAPI void APIENTRY glGenerateMipmap (GLenum);
 O3D_GLAPI void APIENTRY glBlitFramebuffer (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_ARB_framebuffer_objectf
+#endif // O3D_GL_ARB_framebuffer_object
 
 //
 // GL_ARB_vertex_array_object
 //
 
-//#ifndef GL_ARB_vertex_array_object
-//#define GL_ARB_vertex_array_object 1
 #ifndef O3D_GL_ARB_vertex_array_object
 #define O3D_GL_ARB_vertex_array_object 1
 
@@ -1319,14 +1289,12 @@ O3D_GLAPI void APIENTRY glDeleteVertexArrays (GLsizei n, const GLuint *arrays);
 O3D_GLAPI void APIENTRY glGenVertexArrays (GLsizei n, GLuint *arrays);
 O3D_GLAPI GLboolean APIENTRY glIsVertexArray (GLuint array);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_ARB_vertex_array_object
+#endif // O3D_GL_ARB_vertex_array_object
 
 //
 // GL_ARB_map_buffer_range
 //
 
-//#ifndef GL_ARB_map_buffer_range
-//#define GL_ARB_map_buffer_range 1
 #ifndef O3D_GL_ARB_map_buffer_range
 #define O3D_GL_ARB_map_buffer_range 1
 
@@ -1340,14 +1308,12 @@ O3D_GLAPI PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange;
 O3D_GLAPI GLvoid* APIENTRY glMapBufferRange (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 O3D_GLAPI void APIENTRY glFlushMappedBufferRange (GLenum target, GLintptr offset, GLsizeiptr length);
 #endif // O3D_GL_PROTOTYPES
-#endif // GL_ARB_map_buffer_range
+#endif // O3D_GL_ARB_map_buffer_range
 
 //
 // GL_ARB_texture_multisample
 //
 
-//#ifndef GL_ARB_texture_multisample
-//#define GL_ARB_texture_multisample 1
 #ifndef O3D_GL_ARB_texture_multisample
 #define O3D_GL_ARB_texture_multisample 1
 
@@ -1367,7 +1333,7 @@ O3D_GLAPI void APIENTRY glTexImage3DMultisample (GLenum target, GLsizei samples,
 O3D_GLAPI void APIENTRY glGetMultisamplefv (GLenum pname, GLuint index, GLfloat *val);
 O3D_GLAPI void APIENTRY glSampleMaski (GLuint index, GLbitfield mask);
 #endif // O3D_GL_PROTOTYPES
-#endif
+#endif // O3D_GL_ARB_texture_multisample
 
 //#ifdef __cplusplus
 //}

@@ -86,21 +86,21 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
     }
 
     GLExtensionManager::init();
-O3D_MESSAGE("000000000000001");
+
     O3D_MESSAGE("Video renderer: " + getRendererName());
     O3D_MESSAGE("OpenGL version: " + getStrVersion());
-O3D_MESSAGE("000000000000002");
+
     const GLubyte *version = _glGetString(GL_VERSION);
     if (version && (version[0] == '1')) {
         O3D_WARNING("OpenGLES 2.0 or greater is not available, try to found ARB/EXT");
     }
-O3D_MESSAGE("000000000000003");
+
     // compute the gl version
     Int32 glVersion = (version[0] - '0') * 100 + (version[2] - '0') * 10;
     if (glVersion > OGL_460) {
         glVersion = OGL_460;
     }
-O3D_MESSAGE("000000000000004");
+
     m_version = Version(glVersion);
 
     m_appWindow = appWindow;
@@ -118,9 +118,9 @@ O3D_MESSAGE("000000000000004");
     if (debug) {
         initDebug();
     }
-O3D_MESSAGE("000000000000005");
+
     m_glContext = new Context(this);
-O3D_MESSAGE("000000000000006");
+
     doAttachment(m_appWindow);
 }
 
