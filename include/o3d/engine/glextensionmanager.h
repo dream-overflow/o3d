@@ -71,7 +71,8 @@ private:
     static Bool ms_valid;
     static DynamicLibrary *ms_openGL;
 
-	static void getExtFunctions();
+    static void getGLFunctions();
+    static void getGLESFunctions();
 };
 
 //

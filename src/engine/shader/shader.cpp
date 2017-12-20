@@ -113,8 +113,9 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 	const T_ProgramInfo & lVertexProgram = m_vertexProgramArray[lVertexId];
 	const T_ProgramInfo & lFragmentProgram = m_fragmentProgramArray[lFragmentId];
 
-	if (_instance.shaderId == 0)
+    if (_instance.shaderId == 0) {
 		_instance.shaderId = glCreateProgram();
+    }
 
 	// Bind the attribute's slots
 	glBindAttribLocation(_instance.shaderId, V_VERTICES_ARRAY, "a_vertex");
@@ -150,14 +151,16 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_12_ARRAY, "a_tex2D_12");
 	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_12_ARRAY, "a_tex3D_12");
 */
-    // Since OpenGL 3.3 bind out fragments
-    glBindFragDataLocation(_instance.shaderId, 0, "o_finalColor");
-    glBindFragDataLocation(_instance.shaderId, 0, "o_fragData");
-    glBindFragDataLocation(_instance.shaderId, 0, "o_ambient");
-    glBindFragDataLocation(_instance.shaderId, 1, "o_normal");
-    glBindFragDataLocation(_instance.shaderId, 2, "o_position");
-    glBindFragDataLocation(_instance.shaderId, 3, "o_diffuse");
-    glBindFragDataLocation(_instance.shaderId, 4, "o_specular");
+    // Since OpenGL 3.3 bind out fragments, but not for GLES
+    if (glBindFragDataLocation) {
+        glBindFragDataLocation(_instance.shaderId, 0, "o_finalColor");
+        glBindFragDataLocation(_instance.shaderId, 0, "o_fragData");
+        glBindFragDataLocation(_instance.shaderId, 0, "o_ambient");
+        glBindFragDataLocation(_instance.shaderId, 1, "o_normal");
+        glBindFragDataLocation(_instance.shaderId, 2, "o_position");
+        glBindFragDataLocation(_instance.shaderId, 3, "o_diffuse");
+        glBindFragDataLocation(_instance.shaderId, 4, "o_specular");
+    }
 
 	T_ProgramInfo::CIT_ProgramMap lVpCit = lVertexProgram.programs.find(lOptions);
 	T_ProgramInfo::CIT_ProgramMap lFpCit = lFragmentProgram.programs.find(lOptions);

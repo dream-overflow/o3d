@@ -129,6 +129,11 @@ Bool EGL::isValid()
 
 void* EGL::getProcAddress(const Char *ext)
 {
+    void * foo = (void*)::_eglGetProcAddress((const char*)ext);
+    if (!foo) {
+        O3D_MESSAGE(String("Missing ") + ext);
+    }
+
     return (void*)::_eglGetProcAddress((const char*)ext);
 }
 

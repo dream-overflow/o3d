@@ -27,6 +27,8 @@
 
 using namespace o3d;
 
+static Bool windowReady = False;
+
 // #include <android/log.h> @todo for Log
 #define O3D_ALOG(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeActivitySimpleExample", __VA_ARGS__))
 
@@ -56,6 +58,7 @@ static void handleCmd(struct android_app* app, int32_t cmd)
             break;
 
         case APP_CMD_INIT_WINDOW:
+            windowReady = True;
             // get the window ready for showing
             break;
 
@@ -88,6 +91,33 @@ void Application::apiInitPrivate()
         state->onAppCmd = handleCmd;
         state->onInputEvent = handleInput;
         pthread_mutex_unlock(&state->mutex);
+
+        // process some events before the application can continue
+        Bool quit = False;
+
+        while (1) {
+            int ident;
+            int fdesc;
+            int events;
+
+            struct android_poll_source* source;
+
+            while ((ident = ALooper_pollAll(0, &fdesc, &events, (void**)&source)) >= 0) {
+                // process this event
+                if (source) {
+                    source->process(state, source);
+                }
+
+                if (windowReady) {
+                    break;
+                }
+            }
+
+            if (windowReady) {
+                break;
+            }
+        }
+
     }
 }
 
