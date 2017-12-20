@@ -348,6 +348,7 @@ PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei = nullptr;
 
 #ifdef O3D_GL_VERSION_4_1
 PFNGLDEPTHRANGEFPROC glDepthRangef = nullptr;
+PFNGLCLEARDEPTHFPROC glClearDepthf = nullptr;
 #endif // O3D_GL_VERSION_4_1
 
 #ifdef O3D_GL_VERSION_4_2
@@ -1270,6 +1271,7 @@ void GLExtensionManager::getGLFunctions()
 
 #ifdef O3D_GL_VERSION_4_1
     glDepthRangef = (PFNGLDEPTHRANGEFPROC)GL::getProcAddress("glDepthRangef");
+    glClearDepthf = (PFNGLCLEARDEPTHFPROC)GL::getProcAddress("glClearDepthf");
 #endif // O3D_GL_VERSION_4_1
 
 #ifdef O3D_GL_VERSION_4_2
@@ -1968,6 +1970,7 @@ void GLExtensionManager::getGLESFunctions()
 
 #ifdef O3D_GL_VERSION_4_1
     glDepthRangef = (PFNGLDEPTHRANGEFPROC)GL::getProcAddress("glDepthRangef");
+    glClearDepthf = (PFNGLCLEARDEPTHFPROC)GL::getProcAddress("glClearDepthf");
 #endif // O3D_GL_VERSION_4_1
 
 #ifdef O3D_GL_VERSION_4_2

@@ -1149,10 +1149,14 @@ O3D_GLAPI void APIENTRY glBlendFuncSeparatei (GLuint buf, GLenum srcRGB, GLenum 
 
 #ifndef O3D_GL_PROTOTYPES
 typedef void (APIENTRYP PFNGLDEPTHRANGEFPROC) (GLfloat n, GLfloat f);
+typedef void (APIENTRYP PFNGLCLEARDEPTHFPROC) (GLfloat d);
 
 O3D_GLAPI PFNGLDEPTHRANGEFPROC glDepthRangef;
+O3D_GLAPI PFNGLCLEARDEPTHFPROC glClearDepthf;
+
 #else
 O3D_GLAPI void APIENTRY glDepthRangef (GLfloat n, GLfloat f);
+O3D_GLAPI void APIENTRY glClearDepthf (GLfloat d);
 #endif // O3D_GL_PROTOTYPES
 
 #endif // O3D_GL_VERSION_4_1

@@ -38,9 +38,7 @@ Context::Context(Renderer *renderer) :
 	forceDefaultDepthTest();
 	forceDefaultBackgroundColor();
 	forceDefaultDepthClear();
-    O3D_MESSAGE("000000000000001");
 	forceDefaultDepthRange();
-    O3D_MESSAGE("000000000000002");
 	forceDefaultDepthFunc();
 	forceDefaultAntiAliasing();
 	forceDefaultDepthWrite();
@@ -49,7 +47,6 @@ Context::Context(Renderer *renderer) :
 	forceDefaultStencilClear();
 	forceDefaultStencilTest();
 	forceDefaultStencilTestFunc();
-O3D_MESSAGE("000000000000003");
     m_blending.forceDefaultFunc();
     m_blending.forceDefaultEquation();
 
@@ -686,20 +683,24 @@ Bool Context::forceDepthTest(Bool mode)
 // Change drawing mode.
 Context::DrawingMode Context::setDrawingMode(DrawingMode mode)
 {
-	DrawingMode old = mode;
+    DrawingMode old = m_drawingMode;
+
+    if (!glPolygonMode) {
+        return m_drawingMode;
+    }
 
     if (m_drawingMode != mode) {
         switch (mode) {
 			case DRAWING_FILLED:
-				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				break;
 			case DRAWING_WIREFRAME:
-				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				break;
 			case DRAWING_POINT:
-				glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 				break;
-		}
+        }
 		m_drawingMode = mode;
 	}
 	return old;
@@ -708,7 +709,12 @@ Context::DrawingMode Context::setDrawingMode(DrawingMode mode)
 // Force drawing mode.
 Context::DrawingMode Context::forceDrawingMode(DrawingMode mode)
 {
-	DrawingMode old = mode;
+    DrawingMode old = m_drawingMode;
+
+    if (!glPolygonMode) {
+        return m_drawingMode;
+    }
+
 	m_drawingMode = mode;
 
     switch (mode) {
@@ -728,7 +734,12 @@ Context::DrawingMode Context::forceDrawingMode(DrawingMode mode)
 // Override all materials drawing mode (useful for viewers).
 Context::DrawingMode Context::setOverrideDrawingMode(DrawingMode mode)
 {
-	DrawingMode old = mode;
+    DrawingMode old = m_drawingMode;
+
+    if (!glPolygonMode) {
+        return m_drawingMode;
+    }
+
 	m_overrideDrawing = m_drawingMode = mode;
 
     switch (mode) {
@@ -754,6 +765,10 @@ Context::DrawingMode Context::setOverrideDrawingMode(DrawingMode mode)
 // Restore to material drawing mode.
 void Context::materialsDrawingMode()
 {
+    if (!glPolygonMode) {
+        return;
+    }
+
 	m_drawingMode = DRAWING_FILLED;
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -887,7 +902,12 @@ Float Context::setDepthClear(Float val)
 
     if (old != val) {
 		m_depthClear = val;
-		glClearDepth(val);
+
+        if (glClearDepthf) {
+            glClearDepthf(val);
+        } else {
+            glClearDepth(val);
+        }
 	}
 	return old;
 }
@@ -898,7 +918,11 @@ Float Context::forceDepthClear(Float val)
     Float old = m_depthClear;
 
 	m_depthClear = val;
-	glClearDepth(val);
+    if (glClearDepthf) {
+        glClearDepthf(val);
+    } else {
+        glClearDepth(val);
+    }
 
 	return old;
 }
