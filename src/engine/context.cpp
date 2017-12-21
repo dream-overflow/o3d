@@ -83,16 +83,19 @@ Context::Context(Renderer *renderer) :
     m_maxTessControlTextureImageUnits = 0;
     m_maxViewports = 0;
 
-    if (m_renderer->getVersion() >= Renderer::OGL_400) {
-        _glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
-        _glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessControlTextureImageUnits);
-        _glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
-	}
+    _glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
+    _glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessControlTextureImageUnits);
+    _glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
 
 	// anisotropy
 	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat*)&m_maxAnisotropy);
 
-	glDrawBuffer(GL_BACK);
+    if (glDrawBuffers) {
+        const GLenum buffers[] = {GL_BACK};
+        glDrawBuffers(1, buffers);
+    } else if (glDrawBuffer) {
+        glDrawBuffer(GL_BACK);
+    }
 
 	glDisable(GL_DITHER);
 

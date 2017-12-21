@@ -28,24 +28,23 @@ DrawBuffers::~DrawBuffers()
 
 void DrawBuffers::apply() const
 {
-    if (m_drawBuffers.isValid())
+    if (m_drawBuffers.isValid()) {
         glDrawBuffers(m_drawBuffers.getSize(), m_drawBuffers.getData());
+    }
 }
 
 void DrawBuffers::reset() const
 {
-    glDrawBuffer(COLOR_ATTACHMENT0);
+    const GLenum buffers[] = {COLOR_ATTACHMENT0};
+    glDrawBuffers(1, buffers);
+    // glDrawBuffer(COLOR_ATTACHMENT0);
 }
 
 /*
-    if (active)
-    {
-        glDrawBuffer(GL_BACK);
-        glReadBuffer(GL_BACK);
-    }
-    else
-    {
-        glDrawBuffer(GL_NONE);
-        glReadBuffer(GL_NONE);
-    }*/
-
+if (active) {
+    glDrawBuffers(1, {GL_BACK});
+    glReadBuffer(GL_BACK);
+} else {
+    glDrawBuffers(1, {GL_NONE});
+    glReadBuffer(GL_NONE);
+}*/

@@ -391,7 +391,8 @@ void GBuffer::drawLigthing()
 
 void GBuffer::drawStencil()
 {
-    glDrawBuffer(GL_NONE);
+    const GLenum buffers[] = {GL_NONE};
+    glDrawBuffers(1, buffers);
 }
 
 void GBuffer::resetDrawBuffers()
@@ -403,7 +404,7 @@ void GBuffer::draw()
 {
     Box2i box(Vector2i(0, 0), m_fbo.getDimension());
 
-    //glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    //glDrawBuffers(1, {GL_COLOR_ATTACHMENT0});
 
     // default is already to color0
     //m_fbo.bindBuffer();

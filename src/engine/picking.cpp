@@ -66,25 +66,22 @@ void Picking::setCamera(Camera *camera)
 void Picking::preReDraw()
 {
 	// is a picking requested ?
-	if (!m_isPicking)
+    if (!m_isPicking) {
 		return;
+    }
 
 	m_redraw = True;
 	m_outObjectList.clear();
 
 	// color mode
-	if (m_mode == COLOR)
-	{
+    if (m_mode == COLOR) {
 		// create it for the first time
-		if (!m_fbo.isValid())
-		{
+        if (!m_fbo.isValid()) {
 			m_fbo.create((UInt32)m_size.x(), (UInt32)m_size.y(), PF_RGBA_U8, True);
             m_fbo.attachColorRender(FrameBuffer::COLOR_ATTACHMENT0);
 			m_fbo.attachDepthStencilRender(FrameBuffer::DEPTH_U32);
 			m_fbo.isCompleteness();
-		}
-		else
-		{
+        } else {
 			m_fbo.bindBuffer();
 		}
 
@@ -94,10 +91,8 @@ void Picking::preReDraw()
 
         m_fbo.clearColor(FrameBuffer::COLOR_ATTACHMENT0, Color(0.f, 0.f, 0.f, 0.f));
         m_fbo.clearDepth(1.0f);
-	}
-	// hybrid model
-	else if (m_mode == HIGHLIGHTING)
-	{
+    } else if (m_mode == HIGHLIGHTING) {
+        // hybrid model
 		// TODO
 	}
 }
@@ -106,15 +101,15 @@ void Picking::preReDraw()
 void Picking::postReDraw()
 {
 	// is a picking is asked ?
-	if (!m_isPicking)
+    if (!m_isPicking) {
 		return;
+    }
 
 	m_hit = False;
 	m_redraw = False;
 
 	// color mode
-	if (m_mode == COLOR)
-	{
+    if (m_mode == COLOR) {
 		getScene()->getContext()->setBackgroundColor(m_oldBackground);
 
 		// get the hit 3d point (on current rendered scene)
@@ -122,7 +117,7 @@ void Picking::postReDraw()
 		Int32 depth;
 		Float floatDepth;
 
-		// TODO read buffer from FrameBuffer::SetReadBuffer();
+        // TODO read buffer from FrameBuffer::setReadBuffer();
 		glReadBuffer(FrameBuffer::COLOR_ATTACHMENT0 + GL_COLOR_ATTACHMENT0);
 		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_RGBA, GL_FLOAT, pixel);
 
@@ -141,14 +136,11 @@ void Picking::postReDraw()
 		glReadBuffer(GL_BACK);
 
 		// Object picked ?
-		if (id > 0)
-		{
+        if (id > 0) {
 			// Find id
 			Pickable *object = getScene()->getSceneObjectManager()->get(id);
-			if (object)
-			{
-				if (m_camera)
-				{
+            if (object) {
+                if (m_camera) {
 					// get the hit 3d point (on current rendered scene)
 					m_hitPos = Matrix::unprojectPoint(
 							getScene()->getContext()->projection().get(),  // projection matrix assigned by the viewport
@@ -162,17 +154,13 @@ void Picking::postReDraw()
 				m_outObjectList.insert(Hit(object, depth, m_hitPos));
 
 				onHit(object, m_hitPos);
-			}
-			else
-			{
+            } else {
 				// not found
 				m_hit = False;
 			}
 		}
-	}
-	// hybrid model
-	else if (m_mode == HIGHLIGHTING)
-	{
+    } else if (m_mode == HIGHLIGHTING) {
+        // hybrid model
 		// TODO
 	}
 
@@ -183,8 +171,7 @@ void Picking::postReDraw()
 // Get from a 2d position a 3d coordinate
 Vector3 Picking::getPointerPos(Int32 x, Int32 y)
 {
-	if (m_camera)
-	{
+    if (m_camera) {
 		Float depth;
 		glReadPixels(
 				x,
@@ -200,7 +187,7 @@ Vector3 Picking::getPointerPos(Int32 x, Int32 y)
 				m_camera->getModelviewMatrix(),
 				getScene()->getContext()->getViewPort(),
 				Vector3((Float)x, (Float)y, depth));
-	}
-	else
+    } else {
 		return Vector3();
+    }
 }

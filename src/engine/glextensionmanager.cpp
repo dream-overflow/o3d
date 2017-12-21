@@ -10,9 +10,9 @@
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/glextdefines.h"
 
-#ifndef O3D_GL_PROTOTYPES
-  // avoid extern keywork during compilation of the library
-  #define O3D_GLAPI O3D_API
+// avoid extern keywork during compilation of the library
+#ifndef O3D_GLAPI
+#define O3D_GLAPI O3D_API
 #endif
 
 #include "o3d/engine/glextensionmanager.h"
@@ -23,8 +23,6 @@
 #include "o3d/core/stringtokenizer.h"
 
 using namespace o3d;
-
-#ifndef O3D_GL_PROTOTYPES
 
 #ifdef O3D_GL_VERSION_1_0
 PFNGLCULLFACEPROC glCullFace = nullptr;
@@ -410,8 +408,6 @@ PFNGLGETMULTISAMPLEFVPROC glGetMultisamplefv = nullptr;
 PFNGLSAMPLEMASKIPROC glSampleMaski = nullptr;
 #endif // GL_ARB_texture_multisample
 
-#endif // O3D_GL_PROTOTYPES
-
 #undef Bool
 
 // statics members
@@ -425,8 +421,6 @@ DynamicLibrary* GLExtensionManager::ms_openGL = nullptr;
 // Get extensions pointers
 void GLExtensionManager::getGLFunctions()
 {
-#ifndef O3D_GL_PROTOTYPES
-
     //
     // OpenGL 1.0
     //
@@ -1147,11 +1141,9 @@ void GLExtensionManager::getGLFunctions()
         !glUniform1uiv || !glUniform2uiv || !glUniform3uiv || !glUniform4uiv ||
         !glTexParameterIiv || !glTexParameterIuiv ||
         !glGetTexParameterIiv || !glGetTexParameterIuiv ||
-        !glClearBufferiv || !glClearBufferuiv || !glClearBufferfv ||!glClearBufferfi))
-	{
-		// Not mandatory for the moment
-		O3D_WARNING("Missing OpenGL 3.0 related functions");
-        //O3D_ERROR(E_UnsuportedFeature("OpenGL 3.0 related functions"));
+        !glClearBufferiv || !glClearBufferuiv || !glClearBufferfv ||!glClearBufferfi)) {
+
+        O3D_ERROR(E_UnsuportedFeature("OpenGL 3.0 related functions"));
 	}
 
 #endif // O3D_GL_VERSION_3_0
@@ -1175,7 +1167,7 @@ void GLExtensionManager::getGLFunctions()
     }
 
     if (!glProgramParameteri || !glFramebufferTexture || !glFramebufferTextureFace) {
-        O3D_WARNING("OpenGL 3.2 features are not availables");
+        O3D_ERROR(E_UnsuportedFeature("OpenGL 3.2 related functions"));
     }
 
 	//
@@ -1221,7 +1213,7 @@ void GLExtensionManager::getGLFunctions()
         !glGetSamplerParameteriv || !glGetSamplerParameterIiv ||
         !glGetSamplerParameterfv || !glGetSamplerParameterIuiv) {
 
-        O3D_WARNING("OpenGL sampler object is not available");
+        O3D_ERROR(E_UnsuportedFeature("OpenGL sampler object is not available"));
     }
 
 #endif // O3D_GL_VERSION_3_3
@@ -1288,8 +1280,6 @@ void GLExtensionManager::getGLFunctions()
 
 #ifdef O3D_GL_VERSION_4_6
 #endif // O3D_GL_VERSION_4_6
-
-#endif // O3D_GL_PROTOTYPES
 }
 
 //
@@ -1298,8 +1288,6 @@ void GLExtensionManager::getGLFunctions()
 
 void GLExtensionManager::getGLESFunctions()
 {
-#ifndef O3D_GL_PROTOTYPES
-
     //
     // OpenGL 1.0
     //
@@ -1987,8 +1975,6 @@ void GLExtensionManager::getGLESFunctions()
 
 #ifdef O3D_GL_VERSION_4_6
 #endif // O3D_GL_VERSION_4_6
-
-#endif // O3D_GL_PROTOTYPES
 }
 
 #include "objective3dconfig.h"
@@ -2000,7 +1986,6 @@ void GLExtensionManager::init()
 		return;
     }
 
-#ifndef O3D_GL_PROTOTYPES
     _glGetString = (PFNGLGETSTRINGPROC) GL::getProcAddress("glGetString");
     if (!_glGetString) {
     #ifdef O3D_ANDROID
@@ -2013,7 +1998,6 @@ void GLExtensionManager::init()
         ms_openGL = DynamicLibrary::load("Opengl32.dll");
     #endif
     }
-#endif // O3D_GL_PROTOTYPES
 
     if (!_glGetString) {
         O3D_ERROR(E_InvalidResult("Undefined OpenGL glGetString function"));
@@ -2026,9 +2010,7 @@ void GLExtensionManager::init()
     }
 
 	// get glGetStringi before
-#ifndef O3D_GL_PROTOTYPES
     glGetStringi = (PFNGLGETSTRINGIPROC) GL::getProcAddress("glGetStringi");
-#endif // O3D_GL_PROTOTYPES
 
     if (GL::getType() == GL::GLAPI_GL || GL::getType() == GL::GLAPI_CUSTOM) {
         getGLFunctions();

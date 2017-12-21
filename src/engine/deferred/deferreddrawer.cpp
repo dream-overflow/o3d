@@ -214,21 +214,20 @@ DeferredDrawer::DeferredDrawer(BaseObject *parent) :
 
 void DeferredDrawer::setGBuffer(GBuffer *gbuffer)
 {
-    if (!gbuffer->isValid())
+    if (!gbuffer->isValid()) {
         O3D_ERROR(E_InvalidParameter("GBuffer must be valid. Create it before."));
+    }
 
     m_gbuffer = gbuffer;
 }
 
 void DeferredDrawer::processLight(Light *light)
 {
-    if ((light != nullptr) && light->getActivity())
-    {     
+    if ((light != nullptr) && light->getActivity()) {
         Context &context = *getScene()->getContext();
         Camera &camera = *getScene()->getActiveCamera();
 
-        if (light->getShadowCast())
-        {
+        if (light->getShadowCast()) {
             // TODO
         }
 
@@ -253,8 +252,7 @@ void DeferredDrawer::processLight(Light *light)
         // TODO: Shadow volume and shadow maps with deferred.
         // TODO: Applying precomputed light map with deferred.
 
-        if (light->getLightType() == Light::DIRECTIONAL_LIGHT)
-        {
+        if (light->getLightType() == Light::DIRECTIONAL_LIGHT) {
             m_directLight.shader.bindShader();
                 m_vertices.attribute(V_VERTICES_ARRAY, 4, 0, 0);
 
@@ -277,12 +275,9 @@ void DeferredDrawer::processLight(Light *light)
 
                 getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
             m_directLight.shader.unbindShader();
-        }
-        else if (light->getLightType() == Light::POINT_LIGHT)
-        {
+        } else if (light->getLightType() == Light::POINT_LIGHT) {
             // use two pass, one with stencil, second with lighting
-            if (m_lightGeometry)
-            {
+            if (m_lightGeometry) {
                 // disable back face culling
                 context.setCullingMode(CULLING_NONE);
                 context.enableDepthTest();
@@ -353,10 +348,8 @@ void DeferredDrawer::processLight(Light *light)
                 context.disableDepthTest();
                 context.disableDoubleSide();
                 context.disableStencilTest();
-            }
-            // single pass on the entiere screen
-            else
-            {
+            } else {
+                // single pass on the entiere screen
                 m_pointLight.shader.bindShader();
                 m_vertices.attribute(V_VERTICES_ARRAY, 4, 0, 0);
 
@@ -382,12 +375,9 @@ void DeferredDrawer::processLight(Light *light)
                 getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
                 m_pointLight.shader.unbindShader();
             }
-        }
-        else if (light->getLightType() == Light::SPOT_LIGHT)
-        {
+        } else if (light->getLightType() == Light::SPOT_LIGHT) {
             // use two pass, one with stencil, second with lighting
-            if (m_lightGeometry)
-            {
+            if (m_lightGeometry) {
                 // disable back face culling
                 context.setCullingMode(CULLING_NONE);
                 context.enableDepthTest();
@@ -472,10 +462,8 @@ void DeferredDrawer::processLight(Light *light)
                 context.disableDepthTest();
                 context.disableDoubleSide();
                 context.disableStencilTest();
-            }
-            // single pass on the whole screen
-            else
-            {
+            } else {
+                // single pass on the whole screen
                 m_spotLight.shader.bindShader();
                 m_vertices.attribute(V_VERTICES_ARRAY, 4, 0, 0);
 
@@ -504,9 +492,7 @@ void DeferredDrawer::processLight(Light *light)
                 getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
                 m_spotLight.shader.unbindShader();
             }
-        }
-        else if (light->getLightType() == Light::LIGHT_MAP)
-        {
+        } else if (light->getLightType() == Light::LIGHT_MAP) {
             // TODO
         }
     }
@@ -515,12 +501,14 @@ void DeferredDrawer::processLight(Light *light)
 void DeferredDrawer::draw(ViewPort */*viewPort*/)
 {
     // The camera modelview should be set before draw()
-    if (getScene()->getActiveCamera() == nullptr)
+    if (getScene()->getActiveCamera() == nullptr) {
         return;
+    }
 
     // GBuffer is necessary
-    if (!m_gbuffer || !m_gbuffer->isValid())
+    if (!m_gbuffer || !m_gbuffer->isValid()) {
         return;
+    }
 
     Context &context = *getScene()->getContext();
     Camera &camera = *getScene()->getActiveCamera();
@@ -532,12 +520,14 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     getScene()->getVisibilityManager()->processVisibility();
 
     // use MSAA if MS renderer
-    if (m_gbuffer->getNumSamples() > 1)
+    if (m_gbuffer->getNumSamples() > 1) {
         context.setAntiAliasing(Context::AA_MULTI_SAMPLE);
+    }
 
     // resize the GBuffer if necessary
-    if (m_gbuffer->getDimension() != context.getViewPort().size())
+    if (m_gbuffer->getDimension() != context.getViewPort().size()) {
         m_gbuffer->reshape(context.getViewPort().size());
+    }
 
     m_gbuffer->bind();
 
@@ -602,8 +592,7 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     context.blending().setFunc(Blending::ONE__ONE);
     drawInfo.pass = DrawInfo::LIGHTING_PASS;
 
-    for (UInt32 i = 0; i < 4; ++i)
-    {
+    for (UInt32 i = 0; i < 4; ++i) {
         Light *light = dynamicCast<Light*>(getScene()->getSceneObjectManager()->searchName(lights[i]));
         processLight(light);
     }
@@ -617,10 +606,10 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     // TODO maybe the post effect can replace the last step of blitting/drawing
     if (m_gbuffer->getAuxColorMap() &&
         m_gbuffer->getAuxColorMap()->getTextureType() == TEXTURE_2D &&
-        m_gbuffer->getNumSamples() <= 1)
-    {
+        m_gbuffer->getNumSamples() <= 1) {
         // draw to auxiliary buffer
-        glDrawBuffer(GL_COLOR_ATTACHMENT6);
+        const GLenum color6[] = {GL_COLOR_ATTACHMENT6};
+        glDrawBuffers(1, color6);
 
         m_AA.process(m_gbuffer->getDimension(),
                      (Texture2D*)m_gbuffer->getDepthMap(),
@@ -630,7 +619,8 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
         // swap current color buffer with auxiliary
         m_gbuffer->swapColorMap();
 
-        glDrawBuffer(GL_COLOR_ATTACHMENT0);
+        const GLenum color0[] = {GL_COLOR_ATTACHMENT0};
+        glDrawBuffers(1, color0);
     }
 
     m_gbuffer->unbind();
@@ -639,18 +629,16 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     // Render the GBuffer to back buffer and depth buffer
     //
 
-//    if (m_gbuffer->getNumSamples() > 1)
+//    if (m_gbuffer->getNumSamples() > 1) {
 //        context.setAntiAliasing(Context::AA_NONE);
+//    }
 
     // TODO if MSAA need to have a shaders supporting them
     // and same for the non blitting method shader
 
-    if (m_blitting)// && m_gbuffer->getNumSamples() <= 1)
-    {
+    if (m_blitting) { // && m_gbuffer->getNumSamples() <= 1) {
         m_gbuffer->draw();
-    }
-    else
-    {
+    } else {
         // use the same projection as lighting
         context.blending().setDefaultFunc();
         context.enableDepthTest();
@@ -678,8 +666,9 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     context.setDefaultDepthRange();
 
     // restore default AA settings
-    if (m_gbuffer->getNumSamples() > 1)
+    if (m_gbuffer->getNumSamples() > 1) {
         context.setDefaultAntiAliasing();
+    }
 
     //
     // Special effects
@@ -732,4 +721,3 @@ UInt32 DeferredDrawer::getPolicyLevel() const
 {
     return 0;
 }
-

@@ -767,7 +767,7 @@ void HeightmapSplatting::drawDeferred()
 
 	O3D_ASSERT(!getScene()->getRenderer()->isError());
 	
-    GLenum attch[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    const GLenum attch[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
     glDrawBuffers(2, attch);
 	m_fbo.clearColor();
 
@@ -794,7 +794,7 @@ void HeightmapSplatting::drawDeferred()
 
 	glContext->setDefaultDepthFunc();
 
-    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    glDrawBuffers(1, attch);  // only color0
 	m_fbo.unbindBuffer();
 
 	O3D_ASSERT(!getScene()->getRenderer()->isError());
