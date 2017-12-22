@@ -135,7 +135,7 @@ Scene::Scene(
 
 	m_rootPath = FileManager::instance()->getFullFileName(rootPath);
 
-    m_shaderManager            = new ShaderManager(this, /*m_rootPath + */"shaders");
+    m_shaderManager            = new ShaderManager(this, "");
 
 	m_alphaPipeline	           = new AlphaPipeline(this);
 	m_specialEffectsManager    = new SpecialEffectsManager(this);

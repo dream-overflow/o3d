@@ -274,6 +274,7 @@ file(GLOB PHYSIC_HXX include/o3d/physic/*.h)
 file(GLOB GUI_HXX include/o3d/gui/*.h)
 file(GLOB GUI_WIDGETS_HXX include/o3d/gui/widgets/*.h)
 file(GLOB TINYXML_HXX third/tinyxml/*.h)
+file(GLOB GLSL_ZIP src/shaders/*.zip)
 
 # objective3dconfig.h and cmake config
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -290,8 +291,8 @@ endif()
 # Cmake module
 install (FILES ${PROJECT_SOURCE_DIR}/cmake/Modules/FindObjective3D.cmake DESTINATION share/cmake/Modules)
 
-# shaders.zip
-install (FILES ${CMAKE_BINARY_DIR}/src/shaders.zip DESTINATION share/o3d)
+# shaders
+install (FILES ${GLSL_ZIP} DESTINATION share/o3d)
 
 # Android specific
 install (FILES ${PROJECT_SOURCE_DIR}/third/android/android_native_app_glue.h DESTINATION include/o3d/android)

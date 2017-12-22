@@ -220,7 +220,7 @@ BaseDir::DirReturn Dir::check(const String &fileOrPath) const
         return BaseDir::INVALID_PATH;
     }
 
-    return m_di->makePath(fileOrPath);
+    return m_di->check(fileOrPath);
 }
 
 Bool Dir::exists() const

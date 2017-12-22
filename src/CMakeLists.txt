@@ -61,7 +61,7 @@ add_library(${O3D_LIB_NAME} SHARED
     ${GUI_CXX}
     ${AUDIO_CXX})
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     target_link_libraries(${O3D_LIB_NAME}
         ${ZLIB_LIBRARY}
         ${JPEG_LIBRARY}
@@ -81,7 +81,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
          target_link_libraries(${O3D_LIB_NAME} ${EGL_LIBRARIES})
     endif()
 
-ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     target_link_libraries(${O3D_LIB_NAME}
         pthread
         ${ZLIB_LIBRARY}
@@ -103,7 +103,7 @@ ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
          target_link_libraries(${O3D_LIB_NAME} ${EGL_LIBRARIES})
     endif()
 
-ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     target_link_libraries(${O3D_LIB_NAME}
         pthread
         z
@@ -120,7 +120,7 @@ ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
     endif()
 
-ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     target_link_libraries(${O3D_LIB_NAME}
         ${PNG_LIBRARY}
         ${JPEG_LIBRARY}
@@ -137,7 +137,7 @@ ELSEIF(MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
     endif()
 
-ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # todo upgrade and more cmake like
     target_link_libraries({O3D_LIB_NAME}
         ${OPENGL_gl_LIBRARY}
@@ -154,15 +154,15 @@ ELSEIF(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         target_link_libraries(${O3D_LIB_NAME} ${SDL2_LIBRARIES})
     endif()
 
-ENDIF()
+endif()
 
-# build shaders
-add_custom_target(copy_shaders 
-	COMMAND	${CMAKE_COMMAND} -E copy_directory
-            "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
-            "${CMAKE_CURRENT_BINARY_DIR}/shaders/")
+# build shaders @todo for any versions
+#add_custom_target(copy_shaders
+#	COMMAND	${CMAKE_COMMAND} -E copy_directory
+#            "${CMAKE_CURRENT_SOURCE_DIR}/shaders"
+#            "${CMAKE_CURRENT_BINARY_DIR}/shaders/")
 
-add_custom_target(zip_shaders COMMAND zip -r shaders.zip "shaders")
+#add_custom_target(zip_shaders COMMAND zip -r shaders.zip "shaders")
 
 #execute_process(
 #    COMMAND ${CMAKE_COMMAND} -E copy_directory

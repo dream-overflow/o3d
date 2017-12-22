@@ -28,15 +28,8 @@ namespace o3d {
  * This manager is responsible to browser directory containing program shader, and
  * to create instance (@see Shader) of these program.
  * Each created shader is kept into the manager, and returned subsequently on another
- * addShader or directly get.
- * Use AddPath to add a valid search path (virtual in ZIP or real on drive). This given
- * path should contain one or many sub-directories, that define a program.
- * In others words each sub-directory correspond to a program. It is not possible to
- * directly browser a program folder, it always must have a parent one.
- * In each program directory you should have one more directory named with a version
- * number: 110 for GLSL 1.10, 120, 130, 140 or 150...
- * If 110 is defined and not 120, then 120 would use the same files as defined in the
- * previous valid version (in this case 110).
+ * addShader or directly get. A shader directory per targeted version (GLSL 330,
+ * 450, 460 or GLSL ES 300 310 320).
  * In a version directory you can have many vertex programs, fragment programs and
  * geometry programs.
  * Notice a program file name should always be of the form:
@@ -46,12 +39,13 @@ namespace o3d {
  *    - "name_fp.o3dsl", for a scripted fragment program
  *    - "name_gp.glsl", for a geometry program
  *    - "name_gp.o3dsl", for a scripted geometry program
- *    - "name_tp.glsl", for a tesselation program
- *    - "name_tp.o3dsl", for a scripted tesselation program
- * otherwise it is impossible to list them correctly.
+ *    - "name_tc.glsl", for a tesselation control program
+ *    - "name_tc.o3dsl", for a scripted tesselation control program
+ *    - "name_te.glsl", for a tesselation evaluation program
+ *    - "name_te.o3dsl", for a scripted tesselation evaluation program
  * The content of these files must respect the rules of the GLSL shading language.
- * Never miss to define the GLSL version using #version 110 or greater, because this
- * force the compiler to use a specific version of the language/compiler.
+ * Never miss to define the GLSL version using #version XXX <ES> needed for the GLSL
+ * compiler.
  */
 class O3D_API ShaderManager : protected SceneTemplateManager<Shader>
 {
@@ -60,15 +54,11 @@ public:
 	//! Managed version
 	enum Version
 	{
+        VERSION_UNSUPPORTED = 0,
         VERSION_300_ES,       //!< GLSL ES 3.00 (OpenGL ES 3.0)
         VERSION_310_ES,       //!< GLSL ES 3.10 (OpenGL ES 3.1)
         VERSION_320_ES,       //!< GLSL ES 3.20 (OpenGL ES 3.2)
         VERSION_330,          //!< GLSL 3.30 (OpenGL 3.3)
-        VERSION_400,          //!< GLSL 4.00 (OpenGL 4.0)
-        VERSION_410,          //!< GLSL 4.10 (OpenGL 4.1)
-        VERSION_420,          //!< GLSL 4.20 (OpenGL 4.2)
-        VERSION_430,          //!< GLSL 4.30 (OpenGL 4.3)
-        VERSION_440,          //!< GLSL 4.40 (OpenGL 4.4)
         VERSION_450,          //!< GLSL 4.50 (OpenGL 4.5)
         VERSION_460,          //!< GLSL 4.50 (OpenGL 4.6)       
 		NUM_VERSIONS,         //!< Number of versions
@@ -80,7 +70,7 @@ public:
 
 	//! @brief Default constructor.
 	//! @param parent Parent object (the scene generally).
-	//! @param defaultPath Default search path.
+    //! @param defaultPath Default search path for a glsl<VERSION><ES><.zip>
 	ShaderManager(BaseObject *parent, const String &defaultPath = String());
 
 	//! Virtual Destructor
@@ -109,10 +99,9 @@ public:
 
 	//! @brief Load a program from its name.
 	//! @param name A valid program name from previously browsed path.
-    //! @param version Version to load. Cannot be AnyVersion (@see addShader).
 	//! @return A new shader object, or NULL if the path was not found.
 	//! @note All file contained into the given path are pre-loaded and kept in memory for a while.
-	Shader* addShader(const String &name, Version version = ACTIVE_VERSION);
+    Shader* addShader(const String &name);
 
 	//! @brief Load a set of programs from a list of names.
 	//! @param programNameArray contains the name of all programs you want to load.
@@ -120,10 +109,7 @@ public:
 	//! @param version Version to load.
 	//! @return the number of programs which are created.
     //! @exception E_FileInvalidFormat and E_InvalidOperation
-	UInt32 addShader(
-			const T_StringList &programNameArray,
-            std::vector<Shader*> *programPtrArray = nullptr,
-			Version version = ACTIVE_VERSION);
+    UInt32 addShader(const T_StringList &programNameArray, std::vector<Shader*> *programPtrArray = nullptr);
 
 	//! @brief Return a pointer to a shader.
 	//! @param name The name of the program you want to get. An case sensitive
@@ -131,7 +117,7 @@ public:
 	//! @param version Version to get (cannot be AnyVersion).
 	//! @return NULL if the shader was not found and not loaded.
     //! @exception E_FileNotFoundOrInvalidRights
-	Shader* get(const String &name, Version version = ACTIVE_VERSION) const;
+    Shader* get(const String &name) const;
 
 	//! @brief Return shader by name
 	//! This function returns pointers to all loaded program whose name match the specified name.
@@ -145,7 +131,7 @@ public:
 	//! @param name the name of the programs to delete.
 	//! @param version Version to delete.
 	//! @exception E_FileNotFoundOrInvalidRights
-	void deleteShader(const String &name, Version version = ANY_VERSIONS);
+    void deleteShader(const String &name);
 
 	//! @brief Delete a shader.
 	//! @param shaderId the id to delete.
@@ -162,7 +148,7 @@ public:
 	//! @param name the name of the program.
 	//! @param version Version to check for.
 	//! @return TRUE if the program is loaded, FALSE otherwise.
-	Bool isProgramLoaded(const String &name, Version version = ACTIVE_VERSION) const;
+    Bool isProgramLoaded(const String &name) const;
 
 	//! @brief Check for the existence of a given program.
 	//! @param name the name of the program.
@@ -176,21 +162,17 @@ public:
 
 private:
 
-	struct T_ProgramToken
+	struct T_Program
 	{
-		T_StringList vpList;    //!< List of vertex programs (file_vp.glsl).
-		T_StringList fpList;    //!< List of fragment programs (file_fp.glsl).
-		T_StringList gpList;    //!< List of geometry programs (file_gp.glsl).
+        String path;            //!< Path containing programs.
+
+        T_StringList vpList;    //!< List of vertex programs (file_vp.glsl).
+        T_StringList fpList;    //!< List of fragment programs (file_fp.glsl).
+        T_StringList gpList;    //!< List of geometry programs (file_gp.glsl).
         T_StringList tcList;    //!< List of tesselation control programs (file_tc.glsl).
         T_StringList teList;    //!< List of tesselation evaluation programs (file_te.glsl).
 
-		Shader *shader;  //!< Direct pointer of the Shader object. null if not created.
-	};
-
-	struct T_Program
-	{
-		String path;                           //!< Path containing programs.
-		T_ProgramToken versions[NUM_VERSIONS]; //!< Programs arranged by version
+        Shader *shader;         //!< Direct pointer of the Shader object. null if not created.
 	};
 
 	FastMutex m_mutex;
@@ -200,31 +182,25 @@ private:
 	typedef T_ProgramMap::const_iterator CIT_ProgramMap;
 
 	T_StringList m_searchPathList;  //!< Contain the list of searched path
-
-	T_ProgramMap m_programs;    //!< Map containing all programs found at folder browsing.
-
-	Version m_activeVersion;   //!< Active version.
-
+    T_ProgramMap m_programs;        //!< Map containing all programs found at folder browsing.
+    Version m_activeVersion;        //!< Active version.
 	String m_currentBrowseFullPath;
 
     //! Read a path containing shader with a dedicated manifest file and specific structure.
     UInt32 readShaderResource(InStream &is);
 
-	//! Browse a path to search any programs that it contain and list them into the program map.
+    //! Browse a path to search any programs that it contains and list them into the program map.
 	//! @return The number of found programs.
 	UInt32 browseFolder(const String &path);
 
 	//! Browse a sub directory.
 	UInt32 browseSubFolder(const String &path);
 
-	//! Browse a program directory.
-	UInt32 browseProgramFolder(class VirtualFileListing *fileListing, struct FLItem *fileItem);
-
-	//! Browse a version direction.
-	UInt32 browseVersionFolder(const String &path, Version version, T_Program *program);
+    //! Browse a directory containing GLSL files.
+    UInt32 browseGLSLDir(const String &path, Version version, T_Program *program);
 
 	//! Create a shader.
-	Bool createShader(Shader *shader, T_ProgramToken &program);
+    Bool createShader(Shader *shader, T_Program &program);
 };
 
 } // namespace o3d

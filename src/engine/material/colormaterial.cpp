@@ -140,7 +140,7 @@ void ColorMaterial::initialize(
         ShaderInstance &shaderInstance = m_shaderInstance;
 
         shader->buildInstance(shaderInstance);
-        shaderInstance.assign("default", "deferred", m_options + "AMBIENT");
+        shaderInstance.assign("deferred", "deferred", m_options + "AMBIENT");
         shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
         shaderInstance.bindShader();

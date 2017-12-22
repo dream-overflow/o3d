@@ -823,7 +823,7 @@ protected :
 namespace std {
 //namespace tr1 {
 template<>
-struct hash<o3d::CString> {
+struct O3D_API hash<o3d::CString> {
     enum
     {
         bucket_size = 8,
@@ -865,7 +865,7 @@ struct hash<o3d::CString> {
 };
 
 template<>
-struct hash<o3d::String> {
+struct O3D_API hash<o3d::String> {
     enum
     {
         bucket_size = 8,
