@@ -31,7 +31,6 @@ class ShaderInstance;
 /**
  * @brief Use Shader when you want to use a GLSL shader program.
  * @details You can load many vertex, fragment and geometry program in the same object.
- * @todo Add tesselation program
  */
 class O3D_API Shader : public SceneEntity, NonCopyable<>
 {
@@ -46,7 +45,8 @@ public:
 		TYPE_VERTEX_PROGRAM,
 		TYPE_FRAGMENT_PROGRAM,
         TYPE_GEOMETRY_PROGRAM,
-        TYPE_TESSELATION_PROGRAM
+        TYPE_TESS_CONTROL_PROGRAM,
+        TYPE_TESS_EVALUATION_PROGRAM
     };
 
 	//! Enum used to avoid trying to compile twice the same program if previously attempt failed.
@@ -116,27 +116,9 @@ public:
 			ProgramType _programType,
 			Int32 _programIndex,
 			const String & _options);
-/*
-	//! @brief Compile all available programs
-	//! This function is useful to avoid the over-cost of the real time compilation.
-	//! @param _vProgramArray a pointer to an integer array. It will contain the index of
-	//!                       all vertex programs which were not compiled.
-	//! @param _fProgramArray a pointer to an integer array. It will contain the index of
-	//!                       all fragment programs which were not compiled.
-	//! @param _gProgramArray a pointer to an integer array. It will contain the index of
-	//!                       all geometry programs which were not compiled.
-    //! @param _tProgramArray a pointer to an integer array. It will contain the index of
-    //!                       all tessaltion programs which were not compiled.
-	//! @return FALSE if a least one program was not compiled, TRUE otherwise.
-	//! @exception E_InvalidOperation if the shader object is not defined.
-	Bool compileAllPrograms(
-            T_ProgramIndexArray * _vProgramArray = nullptr,
-            T_ProgramIndexArray * _fProgramArray = nullptr,
-            T_ProgramIndexArray * _gProgramArray = nullptr
-            T_ProgramIndexArray * _tProgramArray = nullptr);*/
 
 	//! @brief Add a program to the shader
-	//! @param _programType is the type of program you want to add : TYPE_VERTEX_PROGRAM or TYPE_FRAGMENT_PROGRAM
+    //! @param _programType is the type of program you want to add
 	//! @param _programName the name of the vertex/fragment program.
 	//! @param _pBuffer a pointer to the source code
 	//! @param _bufferSize the size of the source code in bytes, or 0 if it's a null terminated string.
@@ -148,8 +130,7 @@ public:
 			UInt32 _bufferSize = 0);
 
 	//! @brief Remove a program from the shader.
-	//! @param _programType is the type of program you want to remove :
-	//!        TYPE_VERTEX_PROGRAM or TYPE_FRAGMENT_PROGRAM or TYPE_GEOMETRY_PROGRAM
+    //! @param _programType is the type of program you want to remove
 	//! @param _programName the name of the vertex/fragment program.
 	void removeProgram(ProgramType _programType, const String & _programName);
 
@@ -184,12 +165,28 @@ public:
 		return UInt32(m_geometryProgramArray.size());
 	}
 
+    //! Returns the number of tesselation control programs
+    inline UInt32 getTessControlProgramCount() const
+    {
+        return UInt32(m_tessControlProgramArray.size());
+    }
+
+    //! Returns the number of tesselation evaluation programs
+    inline UInt32 getTessEvalutionProgramCount() const
+    {
+        return UInt32(m_tessEvaluationProgramArray.size());
+    }
+
 	//! Return the name of a given vertex program
 	const String& getVertexProgramName(Int32 _vertexIndex) const;
 	//! Return the name of a given fragment program
 	const String& getFragmentProgramName(Int32 _fragmentIndex) const;
 	//! Return the name of a given geometry program
 	const String& getGeometryProgramName(Int32 _geometryIndex) const;
+    //! Return the name of a given tesselation control program
+    const String& getTessControlProgramName(Int32 _tessControlIndex) const;
+    //! Return the name of a given tesselation evaluation program
+    const String& getTessEvaluationProgramName(Int32 _tessEvaluationIndex) const;
 
 	//! Return the source of a given vertex program
 	const CString& getVertexProgramSource(Int32 _vertexIndex) const;
@@ -197,6 +194,10 @@ public:
 	const CString& getFragmentProgramSource(Int32 _fragmentIndex) const;
 	//! Return the source of a given geometry program
 	const CString& getGeometryProgramSource(Int32 _geometryIndex) const;
+    //! Return the source of a given tesselation control program
+    const CString& getTessControlProgramSource(Int32 _tessControlIndex) const;
+    //! Return the source of a given tesselation evaluation program
+    const CString& getTessEvaluationProgramSource(Int32 _tessEvaluationIndex) const;
 
 	//! Return the state of a given vertex program
 	ProgramState getVertexProgramState(Int32 _vertexIndex, const String & _options) const;
@@ -204,6 +205,10 @@ public:
 	ProgramState getFragmentProgramState(Int32 _fragmentIndex, const String & _options) const;
 	//! Return the state of a given geometry program
 	ProgramState getGeometryProgramState(Int32 _geometryIndex, const String & _options) const;
+    //! Return the state of a given tesselation control program
+    ProgramState getTessControlProgramState(Int32 _tessControlIndex, const String & _options) const;
+    //! Return the state of a given tesselation evaluation program
+    ProgramState getTessEvaluationProgramState(Int32 _tessEvaluationIndex, const String & _options) const;
 
 	//! Find a vertex program
 	//! @return the index of the program if found, else -1
@@ -216,6 +221,14 @@ public:
 	//! Find a geometry program
 	//! @return the index of the program if found, else -1
 	Int32 findGeometryProgram(const String &) const;
+
+    //! Find a tesselation control program
+    //! @return the index of the program if found, else -1
+    Int32 findTessControlProgram(const String &) const;
+
+    //! Find a tesselation evaluation program
+    //! @return the index of the program if found, else -1
+    Int32 findTessEvaluationProgram(const String &) const;
 
 	//! @brief Whether or not the program is loaded
 	inline Bool isLoaded() const
@@ -230,8 +243,8 @@ private:
 	{
 		struct T_Program
 		{
-			UInt32		programId;
-			ProgramState	programState;
+            UInt32 programId;
+            ProgramState programState;
 
 			//! Default constructor.
 			T_Program();
@@ -241,12 +254,12 @@ private:
 		typedef T_ProgramMap::iterator IT_ProgramMap;
 		typedef T_ProgramMap::const_iterator CIT_ProgramMap;
 
-		String		programName;
+        String programName;
 
-		ProgramType	programType;
-		CString		programSource;
+        ProgramType programType;
+        CString programSource;
 
-		T_ProgramMap programs;
+        T_ProgramMap programs;
 
 		//! Default constructor
 		T_ProgramInfo();
@@ -263,6 +276,8 @@ private:
 		Int32 vertexProgramId;
 		Int32 fragmentProgramId;
 		Int32 geometryProgramId;
+        Int32 tessControlProgramId;
+        Int32 tessEvaluationProgramId;
 
 		String options;      //!< Compilation defines options.
 
@@ -288,9 +303,11 @@ private:
 
 protected:
 
-	T_ProgramArray m_vertexProgramArray;    //!< The vertex shader id.
-	T_ProgramArray m_fragmentProgramArray;  //!< The fragment shader id.
-	T_ProgramArray m_geometryProgramArray;  //!< The geometry shader id.
+    T_ProgramArray m_vertexProgramArray;          //!< The vertex shader id.
+    T_ProgramArray m_fragmentProgramArray;        //!< The fragment shader id.
+    T_ProgramArray m_geometryProgramArray;        //!< The geometry shader id.
+    T_ProgramArray m_tessControlProgramArray;     //!< The tesselation control shader id.
+    T_ProgramArray m_tessEvaluationProgramArray;  //!< The tesselation evaluation shader id.
 
 	String m_programName;				//!< Only the program name.
 
@@ -305,7 +322,7 @@ protected:
 };
 
 /**
- * @brief Define an instance of an Shader object.
+ * @brief Define an instance of a Shader object.
  */
 class O3D_API ShaderInstance
 {
@@ -350,18 +367,32 @@ public:
 	inline Int32 getVertexProgramIndex() const;
 
 	//! @brief Return the current fragment program index
-	//! @exception E_InvalidOperation if the vertex program is not defined
+    //! @exception E_InvalidOperation if the fragment program is not defined
 	inline Int32 getFragmentProgramIndex() const;
 	//! @brief Return the current fragment program name
 	//! @exception E_InvalidOperation if the fragment program is not defined
 	inline const String & getFragmentProgramName() const;
 
 	//! @brief Return the current geometry program index
-	//! @exception E_InvalidOperation if the vertex program is not defined
+    //! @exception E_InvalidOperation if the geometry program is not defined
 	inline Int32 getGeometryProgramIndex() const;
 	//! @brief Return the current geometry program name
-	//! @exception E_InvalidOperation if the fragment program is not defined
+    //! @exception E_InvalidOperation if the geometry program is not defined
 	inline const String & getGeometryProgramName() const;
+
+    //! @brief Return the current tesselation control program index
+    //! @exception E_InvalidOperation if the tesselation program is not defined
+    inline Int32 getTessControlProgramIndex() const;
+    //! @brief Return the current tesselation control program name
+    //! @exception E_InvalidOperation if the tesselation program is not defined
+    inline const String & getTessControlProgramName() const;
+
+    //! @brief Return the current tesselation evalution program index
+    //! @exception E_InvalidOperation if the tesselation evalution program is not defined
+    inline Int32 getTessEvaluationProgramIndex() const;
+    //! @brief Return the current tesselation evalution program name
+    //! @exception E_InvalidOperation if the tesselation evalution program is not defined
+    inline const String & getTessEvaluationProgramName() const;
 
 	//! @brief Return the current program OpenGL identifier.
 	inline Int32 getProgramId() const;
@@ -402,11 +433,19 @@ public:
 	//!        is empty, the currently bound program will be use.
 	//! @param _fragmentProgram the name of the fragment program you want to use. If the name
 	//!        is empty, the currently bound program will be use.
+    //! @param _geometryProgram the name of the geometry program you want to use. If the name
+    //!        is empty, the currently bound program will be use.
+    //! @param _tessControlProgram the name of the tesselation control program you want to use. If the name
+    //!        is empty, the currently bound program will be use.
+    //! @param _tessEvalutionProgram the name of the tesselation evalution program you want to use. If the name
+    //!        is empty, the currently bound program will be use.
 	//! @param _options An option string that contains some defines on how to compile programs.
 	inline void bindShader(
 			const String & _vertexProgram,
 			const String & _fragmentProgram,
 			const String & _geometryProgram,
+            const String & _tessControlProgram,
+            const String & _tessEvalutionProgram,
 			const String & _options = "");
 
 	//! @brief Change the currently bound shader if necessary and bind the program
@@ -416,10 +455,16 @@ public:
 	//!        the current fragment program.
 	//! @param _geometryIndex the geometry program index. -1 if you want to keep
 	//!        the current geometry program.
+    //! @param _tessControlIndex the tesselation control program index. -1 if you want to keep
+    //!        the current tesselation control program.
+    //! @param _tessEvalutionIndex the tesselation evalution program index. -1 if you want to keep
+    //!        the current tesselation evalution program.
     inline void bindShader(
 			Int32 _vertexIndex,
 			Int32 _fragmentIndex,
 			Int32 _geometryIndex,
+            Int32 _tessControlIndex,
+            Int32 _tessEvaluationIndex,
 			const String & _options);
 
 	//! bind the shader program
@@ -432,6 +477,12 @@ public:
 	//!        the current vertex program.
 	//! @param _fragmentIndex the fragment program index. -1 if you want to keep
 	//!        the current fragment program.
+    //! @param _geometryIndex the fragment program index. -1 if you want to keep
+    //!        the current geometry program.
+    //! @param _tessControlIndex the tesselation control program index. -1 if you want to keep
+    //!        the current tesselation control program.
+    //! @param _tessEvaluationIndex the tesselation evalution program index. -1 if you want to keep
+    //!        the current tesselation evaluation program.
 	//! @param _type specify what operations will be apply on the newly assigned shader.
 	//!              If you're using a GUI, you won't always be in a openGL context, in this case
 	//!	             you'll probably use ASSIGN_ONLY to postpone the compilation and linkage at the
@@ -441,25 +492,45 @@ public:
 			Int32 _vertexIndex,
 			Int32 _fragmentIndex,
 			Int32 _geometryIndex,
-			const String & _options,
+            Int32 _tessControlIndex,
+            Int32 _tessEvaluationIndex,
+            const String & _options = String(""),
 			Shader::BuildType _type = Shader::BUILD_COMPILE_AND_LINK);
+
+    void assign(
+            Int32 _vertexIndex,
+            Int32 _fragmentIndex,
+            const String & _options = String(""),
+            Shader::BuildType _type = Shader::BUILD_COMPILE_AND_LINK);
 
 	//! @brief Define the current vertex/fragment program
 	//! @param _vertexProgram the name of the vertex program you want to use. If the name
 	//!        is empty, the currently used program will not changed.
 	//! @param _fragmentProgram the name of the fragment program you want to use. If the name
 	//!        is empty, the currently used program will not changed.
+    //! @param _geometryProgram the name of the geometry program you want to use. If the name
+    //!        is empty, the currently used program will not changed.
+    //! @param _tessControlProgram the name of the tesselation control program you want to use. If the name
+    //!        is empty, the currently used program will not changed.
+    //! @param _tessEvalutionProgram the name of the tesselation evaluation program you want to use. If the name
+    //!        is empty, the currently used program will not changed.
 	//! @param _type specify what operations will be apply on the newly assigned shader.
 	//!              If you're using a GUI, you won't always be in a openGL context, in this case
 	//!	             you'll probably use ASSIGN_ONLY to postpone the compilation and linkage at the
     //!              first call to ShadingLangage::Bind.
 	//! @exception E_IndexOutOfRange, E_InvalidOperation, E_InvalidParameter
-	void assign(
-			const String & _vertexProgram,
-			const String & _fragmentProgram,
-			const String & _geometryProgram,
-			const String & _options,
-			Shader::BuildType _type = Shader::BUILD_COMPILE_AND_LINK);
+    void assign(const String & _vertexProgram,
+                const String & _fragmentProgram,
+                const String & _geometryProgram,
+                const String & _tessControlProgram,
+                const String & _tessEvaluationProgram,
+                const String & _options = String(""),
+                Shader::BuildType _type = Shader::BUILD_COMPILE_AND_LINK);
+
+    void assign(const String & _vertexProgram,
+                const String & _fragmentProgram,
+                const String & _options = String(""),
+                Shader::BuildType _type = Shader::BUILD_COMPILE_AND_LINK);
 
 	//! @brief Compile the shader instance
 	//! @param _type specify what action must be performed:
@@ -565,92 +636,159 @@ private:
 
 const String & ShaderInstance::getShaderName() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
 	return m_shader->getName();
 }
 
 const String & ShaderInstance::getProgramName() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
 	return m_shader->getProgramName();
 }
 
 const String &  ShaderInstance::getVertexProgramName() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
-	if ((m_pInstance == NULL) || (m_pInstance->vertexProgramId == -1))
+    if ((m_pInstance == nullptr) || (m_pInstance->vertexProgramId == -1)) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Vertex program is still not defined")));
+    }
 
 	return m_shader->m_vertexProgramArray[m_pInstance->vertexProgramId].programName;
 }
 
 const String &  ShaderInstance::getFragmentProgramName() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
-	if ((m_pInstance == NULL) || (m_pInstance->fragmentProgramId == -1))
+    if ((m_pInstance == nullptr) || (m_pInstance->fragmentProgramId == -1)) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Fragment program is still not defined")));
+    }
 
 	return m_shader->m_fragmentProgramArray[m_pInstance->fragmentProgramId].programName;
 }
 
 const String &  ShaderInstance::getGeometryProgramName() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
-	if ((m_pInstance == NULL) || (m_pInstance->geometryProgramId == -1))
+    if ((m_pInstance == nullptr) || (m_pInstance->geometryProgramId == -1)) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Geometry program is still not defined")));
+    }
 
 	return m_shader->m_geometryProgramArray[m_pInstance->geometryProgramId].programName;
 }
 
+const String &ShaderInstance::getTessControlProgramName() const
+{
+    if (!isValid()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
+
+    if ((m_pInstance == nullptr) || (m_pInstance->geometryProgramId == -1)) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Tesselation control program is still not defined")));
+    }
+
+    return m_shader->m_tessControlProgramArray[m_pInstance->tessControlProgramId].programName;
+}
+
+const String &ShaderInstance::getTessEvaluationProgramName() const
+{
+    if (!isValid()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
+
+    if ((m_pInstance == nullptr) || (m_pInstance->tessEvaluationProgramId == -1)) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Tesselation evaluation program is still not defined")));
+    }
+
+    return m_shader->m_tessControlProgramArray[m_pInstance->tessControlProgramId].programName;
+}
+
 Int32 ShaderInstance::getProgramId() const
 {
-	if (!isLinked())
+    if (!isLinked()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not get the shader id because the shader is not linked")));
+    }
 
 	return m_pInstance->shaderId;
 }
 
 Int32 ShaderInstance::getVertexProgramIndex() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
-	if (!isDefined())
+    if (!isDefined()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Vertex program is still not defined")));
+    }
 
 	return m_pInstance->vertexProgramId;
 }
 
 Int32 ShaderInstance::getFragmentProgramIndex() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
-	if (!isDefined())
+    if (!isDefined()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Fragment program is still not defined")));
+    }
 
 	return m_pInstance->fragmentProgramId;
 }
 
 Int32 ShaderInstance::getGeometryProgramIndex() const
 {
-	if (!isValid())
+    if (!isValid()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
 
-	if (!isDefined())
+    if (!isDefined()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Geometry program is still not defined")));
+    }
 
 	return m_pInstance->geometryProgramId;
+}
+
+Int32 ShaderInstance::getTessControlProgramIndex() const
+{
+    if (!isValid()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
+
+    if (!isDefined()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Tesselation control program is still not defined")));
+    }
+
+    return m_pInstance->tessControlProgramId;
+}
+
+Int32 ShaderInstance::getTessEvaluationProgramIndex() const
+{
+    if (!isValid()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : No object attached")));
+    }
+
+    if (!isDefined()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Tesselation evaluation program is still not defined")));
+    }
+
+    return m_pInstance->tessEvaluationProgramId;
 }
 
 Int32 ShaderInstance::getState() const
@@ -691,12 +829,15 @@ void ShaderInstance::bindShader(
 		const String & _vertexProgram,
 		const String & _fragmentProgram,
 		const String & _geometryProgram,
+        const String & _tessControlProgram,
+        const String & _tessEvalutionProgram,
 		const String & _options)
 {
-	if (!isLoaded())
+    if (!isLoaded()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Object not loaded")));
+    }
 
-	assign(_vertexProgram, _fragmentProgram, _geometryProgram, _options);
+    assign(_vertexProgram, _fragmentProgram, _geometryProgram, _tessControlProgram, _tessEvalutionProgram, _options);
 
 	bindShader();
 }
@@ -706,12 +847,15 @@ void ShaderInstance::bindShader(
 		Int32 _vertexIndex,
 		Int32 _fragmentIndex,
 		Int32 _geometryIndex,
+        Int32 _tessControlIndex,
+        Int32 _tessEvalutionIndex,
 		const String & _options)
 {
-	if (!isLoaded())
+    if (!isLoaded()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Object not loaded")));
+    }
 
-	assign(_vertexIndex, _fragmentIndex, _geometryIndex, _options);
+    assign(_vertexIndex, _fragmentIndex, _geometryIndex, _tessControlIndex, _tessEvalutionIndex, _options);
 
 	bindShader();
 }
@@ -724,8 +868,9 @@ void ShaderInstance::bindShader(
 // This function must be called after program link and before program execution.
 Int32 ShaderInstance::getUniformLocation(const Char * name) const
 {
-	if (!isLinked())
+    if (!isLinked()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not get a uniform location because the shader is not linked")));
+    }
 
 	return glGetUniformLocation(m_pInstance->shaderId, name);
 }

@@ -144,8 +144,8 @@ void SkyScattering::init()
 	lpShader->buildInstance(m_shader1);
 	lpShader->buildInstance(m_shader2);
 
-	m_shader1.assign("noforecast", "default", "", "");
-	m_shader2.assign("forecast", "default", "", "");
+    m_shader1.assign("noforecast", "default");
+    m_shader2.assign("forecast", "default");
 
 	// Initialisation des vbos
 	m_indexBuffer.create(3*m_skyDome.getNumFaces(), VertexBuffer::STATIC, m_skyDome.getFacesIndices());

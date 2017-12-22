@@ -157,7 +157,7 @@ void LambertMaterial::initialize(
 			ShaderInstance &shaderInstance = m_shaderInstance[Light::POINT_LIGHT];
 
 			shader->buildInstance(shaderInstance);
-			shaderInstance.assign("lighting", "lighting", "", m_options + "POINT_LIGHT;");
+            shaderInstance.assign("lighting", "lighting", m_options + "POINT_LIGHT;");
 			shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
 			shaderInstance.bindShader();
@@ -178,7 +178,7 @@ void LambertMaterial::initialize(
 			ShaderInstance &shaderInstance = m_shaderInstance[Light::SPOT_LIGHT];
 
 			shader->buildInstance(shaderInstance);
-			shaderInstance.assign("lighting", "lighting", "", m_options + "SPOT_LIGHT;");
+            shaderInstance.assign("lighting", "lighting", m_options + "SPOT_LIGHT;");
 			shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
 			shaderInstance.bindShader();
@@ -199,7 +199,7 @@ void LambertMaterial::initialize(
 			ShaderInstance &shaderInstance = m_shaderInstance[Light::DIRECTIONAL_LIGHT];
 
 			shader->buildInstance(shaderInstance);
-			shaderInstance.assign("lighting", "lighting", "", m_options + "DIRECTIONAL_LIGHT;");
+            shaderInstance.assign("lighting", "lighting", m_options + "DIRECTIONAL_LIGHT;");
 			shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
 			shaderInstance.bindShader();
@@ -223,7 +223,7 @@ void LambertMaterial::initialize(
 		ShaderInstance &shaderInstance = m_shaderInstance[0];
 
 		shader->buildInstance(shaderInstance);
-        shaderInstance.assign("deferred", "deferred", "", m_options + "AMBIENT;DIFFUSE;SPECULAR;SHINE");
+        shaderInstance.assign("deferred", "deferred", m_options + "AMBIENT;DIFFUSE;SPECULAR;SHINE");
 		shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
 		shaderInstance.bindShader();

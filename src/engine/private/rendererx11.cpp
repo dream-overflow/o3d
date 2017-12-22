@@ -260,21 +260,9 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
     GLExtensionManager::init();
 
 	O3D_MESSAGE("Video renderer: " + getRendererName());
-	O3D_MESSAGE("OpenGL version: " + getStrVersion());
+    O3D_MESSAGE("OpenGL version: " + getVersionName());
 
-    const GLubyte *version = _glGetString(GL_VERSION);
-    if (version && (version[0] == '1')) {
-		O3D_WARNING("OpenGL 2.0 or greater is not available, try to found ARB/EXT");
-    }
-
-	// compute the gl version
-	Int32 glVersion = (version[0] - '0') * 100 + (version[2] - '0') * 10;
-    if (glVersion > OGL_460) {
-        glVersion = OGL_460;
-    }
-
-	m_version = Version(glVersion);
-
+    computeVersion();
 	m_appWindow = appWindow;
 
 	m_bpp = appWindow->getBpp();
@@ -344,7 +332,7 @@ void Renderer::destroy()
         m_depth = m_bpp = m_stencil = m_samples = 0;
 
         m_state.zero();
-		m_version = OGL_UNDEFINED;
+        m_version = 0;
 
         if (m_appWindow) {
 			disconnect(m_appWindow);

@@ -47,20 +47,6 @@ class O3D_API Renderer : public EvtHandler
 {
 public:
 
-    //! OpenGL version.
-    enum Version
-    {
-        OGL_UNDEFINED = 0,
-        OGL_330 = 330,
-        OGL_400 = 400,
-        OGL_410 = 410,
-        OGL_420 = 420,
-        OGL_430 = 430,
-        OGL_440 = 440,
-        OGL_450 = 450,
-        OGL_460 = 460   //!< or greater
-    };
-
     //! OpenGL debug level
     enum DebugLevel
     {
@@ -134,10 +120,15 @@ public:
 
 	//! Get information about the renderer.
 	String getRendererName() const;
+
+    //! Is a GL ES renderer.
+    inline Bool isGLES() const { return m_state.getBit(STATE_EGL); }
+
     //! Get OpenGL version of the renderer as string. Context must be current.
-    String getStrVersion() const;
-    //! Get OpenGL version enum. Valid after initialization of the renderer.
-    inline Version getVersion() const { return m_version; }
+    String getVersionName() const;
+
+    //! Get OpenGL version (300 for 3.0, 450 for 4.5, 320 for 3.2 and isGLES returs True if GL ES 3.2...)
+    inline Int32 getVersion() const { return m_version; }
 
 	//! Is the renderer use of a shared renderer.
     inline Bool isSharing() const { return (m_sharing != nullptr); }
@@ -273,7 +264,7 @@ protected:
     };
 
     Int32 m_glErrno;          //!< OpenGL last error code.
-	Version m_version;        //!< OpenGL renderer version.
+    UInt32 m_version;         //!< OpenGL renderer version.
 
 	Renderer *m_sharing;      //!< The sharing renderer.
     Int32 m_shareCount;       //!< Greater than 0 mean the context is shared into another renderer.
@@ -300,6 +291,7 @@ protected:
     void initDebug();
     void enableDebug();
     void disableDebug();
+    void computeVersion();
 };
 
 } // namespace o3d

@@ -750,7 +750,7 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 		Shader *shader = getScene()->getShaderManager()->addShader("shadowVolume");
 		ShaderInstance shaderInstance;
 		shaderInstance.attach(shader);
-		shaderInstance.assign(0,0,-1,"");
+        shaderInstance.assign(0, 0);
 
 		shaderInstance.bindShader();
 
@@ -772,8 +772,7 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 				shadowVertices.getData());
 
 		// no caps
-		if (1)
-		{
+        if (1) {
 			getScene()->getContext()->setCullingMode(CULLING_BACK_FACE);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
 

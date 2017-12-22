@@ -105,10 +105,10 @@ HeightmapSplatting::HeightmapSplatting(BaseObject *pParent, Camera *pCamera, UIn
 	lpShading->buildInstance(m_staticLightShader);
 	lpShading->buildInstance(m_deferredColorShader);
 
-	m_shader.assign("default", "default", "", "");
-	m_blackShader.assign("black", "black", "", "");
-	m_staticLightShader.assign("staticLightning", "staticLightning", "", "");
-	m_deferredColorShader.assign("deferredColorPass", "deferredColorPass", "", "");
+    m_shader.assign("default", "default");
+    m_blackShader.assign("black", "black");
+    m_staticLightShader.assign("staticLightning", "staticLightning");
+    m_deferredColorShader.assign("deferredColorPass", "deferredColorPass");
 
 	m_shader.setAttribute(A_VEC4_VERTEX, m_shader.getAttributeLocation("a_vertex"));
 	m_shader.setAttribute(A_VEC2_TEXCOORDS, m_shader.getAttributeLocation("a_texCoords"));
@@ -145,7 +145,7 @@ HeightmapSplatting::HeightmapSplatting(BaseObject *pParent, Camera *pCamera, UIn
 	lpShading = getScene()->getShaderManager()->addShader("ambient");
 	O3D_ASSERT(lpShading);
 	lpShading->buildInstance(m_texShader);
-	m_texShader.assign("default", "default", "", "MESH;AMBIENT_MAP");
+    m_texShader.assign("default", "default", "MESH;AMBIENT_MAP");
 
 	m_texShader.setAttribute(A_VEC4_VERTEX,		m_texShader.getAttributeLocation("a_vertex"));
 	m_texShader.setAttribute(A_VEC2_TEXCOORDS,	m_texShader.getAttributeLocation("a_texCoords1"));
@@ -156,7 +156,7 @@ HeightmapSplatting::HeightmapSplatting(BaseObject *pParent, Camera *pCamera, UIn
 	lpShading = getScene()->getShaderManager()->addShader("ambient");
 	O3D_ASSERT(lpShading);
 	lpShading->buildInstance(m_rgTexShader);
-	m_rgTexShader.assign("default", "default", "", "MESH;AMBIENT_MAP;RG");
+    m_rgTexShader.assign("default", "default", "MESH;AMBIENT_MAP;RG");
 
 	m_rgTexShader.setAttribute(A_VEC4_VERTEX,	 m_rgTexShader.getAttributeLocation("a_vertex"));
 	m_rgTexShader.setAttribute(A_VEC2_TEXCOORDS, m_rgTexShader.getAttributeLocation("a_texCoords1"));

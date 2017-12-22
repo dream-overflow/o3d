@@ -39,7 +39,7 @@ AntiAliasing::AntiAliasing(BaseObject *parent) :
 
     shader->buildInstance(m_shader.shader);
 
-    m_shader.shader.assign("default", "default", "", "");
+    m_shader.shader.assign("default", "default");
 
     m_shader.u_modelViewProjectionMatrix = m_shader.shader.getUniformLocation("u_modelViewProjectionMatrix");
     m_shader.u_colorMap = m_shader.shader.getUniformLocation("u_colorMap");

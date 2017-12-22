@@ -106,7 +106,7 @@ void AmbientMaterial::initialize(
         ShaderInstance &shaderInstance = m_shaderInstance;
 
         shader->buildInstance(shaderInstance);
-        shaderInstance.assign("default", "default", "", m_options);
+        shaderInstance.assign("default", "default", m_options);
         shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
         shaderInstance.bindShader();

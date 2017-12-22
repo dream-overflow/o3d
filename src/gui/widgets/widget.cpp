@@ -115,7 +115,7 @@ void Widget::init()
     Shader *shader = getScene()->getShaderManager()->addShader("gui/widgetSimple");
 	shader->buildInstance(m_shader.shaderInstance);
 
-	m_shader.shaderInstance.assign(0, 0, -1, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
+    m_shader.shaderInstance.assign(0, 0, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
 	m_shader.shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
 	m_shader.a_vertex = m_shader.shaderInstance.getAttributeLocation("a_vertex");

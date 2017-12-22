@@ -73,7 +73,7 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 	Shader *shader = getScene()->getShaderManager()->addShader("primitiveShader");
 	shader->buildInstance(m_colorShader.instance);
 
-	m_colorShader.instance.assign("vertexColor", "vertexColor", "", "", Shader::BUILD_COMPILE_AND_LINK);
+    m_colorShader.instance.assign("vertexColor", "vertexColor", "", Shader::BUILD_COMPILE_AND_LINK);
 
 	m_colorShader.u_modelViewProjectionMatrix = m_colorShader.instance.getUniformLocation("u_modelViewProjectionMatrix");
 	m_colorShader.u_color = m_colorShader.instance.getUniformLocation("u_color");

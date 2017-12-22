@@ -91,46 +91,39 @@ void PCLODConfigs::init()
 
 void PCLODConfigs::setShadersPath(const String & _path)
 {
-	Shader * lShader0 = NULL;
-	Shader * lShader1 = NULL;
-	Shader * lShaderSimple = NULL;
+    Shader * lShader0 = nullptr;
+    Shader * lShader1 = nullptr;
+    Shader * lShaderSimple = nullptr;
 
 	String lPath(_path);
 	lPath.trimRight('/');
 
-	try
-	{
+    try {
 		lShader0 = getScene()->getShaderManager()->addShader(lPath + '/' + "shader1");
 		lShader1 = getScene()->getShaderManager()->addShader(lPath + '/' + "shader2");
 		lShaderSimple = getScene()->getShaderManager()->addShader("ambient");
-	}
-	catch(const E_FileNotFoundOrInvalidRights & _ex)
-	{
+    } catch(const E_FileNotFoundOrInvalidRights & _ex) {
 		PCLOD_ERROR(String("Configs : Error during shaders file loading <") << _ex.getMsg() << ">");
-	}
-	catch(const E_InvalidParameter & _ex)
-	{
+    } catch(const E_InvalidParameter & _ex) {
 		PCLOD_ERROR(String("Configs : Error during shaders loading <") << _ex.getMsg() << ">");
 	}
 
-	for (UInt32 k = 0 ; k < 3 ;++k)
+    for (UInt32 k = 0 ; k < 3 ;++k) {
 		m_shaders[k].detach();
+    }
 
 	m_simpleShader.detach();
 
-	if ((lShader0 == NULL) || (lShader1 == NULL) || (lShaderSimple == NULL))
-	{
+    if ((lShader0 == nullptr) || (lShader1 == nullptr) || (lShaderSimple == nullptr)) {
 		PCLOD_ERROR(String("Configs : Error during shaders loading from <") << lPath << ">. Shaders won't be available.");
-	}
-	else
-	{
+    } else {
 		lShader0->buildInstance(m_shaders[0]);
 		lShader1->buildInstance(m_shaders[1]);
 		lShaderSimple->buildInstance(m_simpleShader);
 
-		m_shaders[0].assign(0, 0, -1, "");
-		m_shaders[1].assign(0, 0, -1, "");
-		m_simpleShader.assign("default", "default", "", "MESH");
+        m_shaders[0].assign(0, 0);
+        m_shaders[1].assign(0, 0);
+        m_simpleShader.assign("default", "default", "MESH");
 
 		m_shadersPath = lPath;
 

@@ -842,6 +842,10 @@ struct hash<o3d::CString> {
     {
         size_t  h = 0;
 
+        if (s1.isNull()) {
+            return 0;
+        }
+
         o3d::Char *p = const_cast<o3d::Char*>(s1.getData());
         o3d::Char zero = '\0';
 
@@ -876,6 +880,10 @@ struct hash<o3d::String> {
     size_t operator()(const o3d::String &s1) const
     {
         size_t  h = 0;
+
+        if (s1.isNull()) {
+            return 0;
+        }
 
         wchar_t *p = const_cast<o3d::WChar*>(s1.getData());
         wchar_t zero = L'\0';

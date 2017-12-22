@@ -56,7 +56,7 @@ void PCLODDebugLabel::initShaders()
 	if (shader)
 		shader->buildInstance(m_ambientColor);
 
-	m_ambientColor.assign("default", "default", "", "MESH");
+    m_ambientColor.assign("default", "default", "MESH");
 	m_ambientColor.bindShader();
 
 	m_ambientColor.setUniform(U_MODELVIEWPROJECT_MATRIX, m_ambientColor.getUniformLocation("u_modelViewProjectionMatrix"));
@@ -67,7 +67,7 @@ void PCLODDebugLabel::initShaders()
 	if (shader)
 		shader->buildInstance(m_ambientMap);
 
-	m_ambientMap.assign("default", "default", "", "MESH;AMBIENT_MAP");
+    m_ambientMap.assign("default", "default", "MESH;AMBIENT_MAP");
 	m_ambientMap.bindShader();
 
 	m_ambientMap.setUniform(U_MODELVIEWPROJECT_MATRIX, m_ambientMap.getUniformLocation("u_modelViewProjectionMatrix"));

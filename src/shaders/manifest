@@ -13,7 +13,7 @@ gui/widgetDraw/330
 gui/widgetSimple/330
 lambert/330
 lensEffect/330
-map2d/colorMask/330/
+map2d/colorMask/330
 pclodTerrain/lightmaps/shader1/330
 pclodTerrain/lightmaps/shader2/330
 pclodTerrain/materials/shader1/330

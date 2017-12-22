@@ -115,14 +115,57 @@ Context::Context(Renderer *renderer) :
     glGetFloatv(GL_SMOOTH_LINE_WIDTH_RANGE, (GLfloat*)m_smoothLineWidthRange);
 
 	// GLSL version
-    const GLubyte *version = _glGetString(GL_SHADING_LANGUAGE_VERSION);
-    if ((version != nullptr) && (version[0] >= '1') && (version[1] == '.'))	{
-		m_glslVersion = (version[0] - '0') * 100 +
-						(version[2] - '0') * 10 +
-						(version[3] - '0') * 1;
+    if (getRenderer()->isGLES()) {
+        switch (getRenderer()->getVersion()) {
+            case 200:
+                m_glslVersion = 100;
+                break;
+            case 300:
+                m_glslVersion = 300;
+                break;
+            case 310:
+                m_glslVersion = 310;
+                break;
+            case 320:
+                m_glslVersion = 320;
+                break;
+            default:
+                m_glslVersion = 110;
+                break;
+        }
     } else {
-        // assume 1.10 otherwise
-		m_glslVersion = 110;
+        const GLubyte *version = _glGetString(GL_SHADING_LANGUAGE_VERSION);
+        if ((version != nullptr) && (version[0] >= '1') && (version[1] == '.'))	{
+            m_glslVersion = (version[0] - '0') * 100 +
+                    (version[2] - '0') * 10 +
+                    (version[3] - '0') * 1;
+        } else {
+            if (getRenderer()->getVersion() < 330) {
+                switch (getRenderer()->getVersion()) {
+                    case 200:
+                        m_glslVersion = 110;
+                        break;
+                    case 210:
+                        m_glslVersion = 120;
+                        break;
+                    case 300:
+                        m_glslVersion = 130;
+                        break;
+                    case 310:
+                        m_glslVersion = 140;
+                        break;
+                    case 320:
+                        m_glslVersion = 150;
+                        break;
+                    default:
+                        m_glslVersion = 110;
+                        break;
+                }
+            } else {
+                // exact matching
+                m_glslVersion = getRenderer()->getVersion();
+            }
+        }
     }
 
 	O3D_ASSERT(!m_renderer->isError());
@@ -150,7 +193,7 @@ Context::Context(Renderer *renderer) :
     O3D_MESSAGE(String("- Max draw buffers = ") << m_maxDrawBuffers);
     O3D_MESSAGE(String("- Max anisotropy lvl = {0}").arg(m_maxAnisotropy, 2));
     O3D_MESSAGE(String("- Max view-ports = ") << m_maxViewports);
-    O3D_MESSAGE(String("- GLSL version = ") << (version?(const Char*)version:"1.10"));
+    O3D_MESSAGE(String("- GLSL version = ") << m_glslVersion);
 }
 
 // Destructor

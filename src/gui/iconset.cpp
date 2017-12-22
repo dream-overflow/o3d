@@ -34,7 +34,7 @@ IconSet::IconSet(BaseObject *parent, const String &iconSetPath) :
 	Shader *shader = getScene()->getShaderManager()->addShader("gui/icon");
 	shader->buildInstance(m_shaderInstance);
 
-	m_shaderInstance.assign(0, 0, -1, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
+    m_shaderInstance.assign(0, 0, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
 	m_shaderInstance.build(Shader::BUILD_COMPILE_AND_LINK);
 
 	a_vertex = m_shaderInstance.getAttributeLocation("a_vertex");

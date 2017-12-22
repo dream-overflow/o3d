@@ -36,7 +36,7 @@ SkyObject::SkyObject(BaseObject * _pParent):
 	O3D_ASSERT(lpShading);
 
 	lpShading->buildInstance(m_shader);
-	m_shader.assign(0, 0, -1, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
+    m_shader.assign(0, 0, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
 }
 
 //! The destructor

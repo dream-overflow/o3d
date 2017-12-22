@@ -19,28 +19,28 @@ VirtualFile::VirtualFile(const String &filename) :
     BaseFile(filename)
 {
     m_type = FL_VIRTUAL;
-    m_isValid = exists();
+    m_isValid = m_fullFilename.isValid(); // exists();
 }
 
 VirtualFile::VirtualFile(const String &pathname,const String &filename) :
     BaseFile(pathname,filename)
 {
     m_type = FL_VIRTUAL;
-    m_isValid = exists();
+    m_isValid = m_fullFilename.isValid(); // exists();
 }
 
 VirtualFile::VirtualFile(const BaseDir &dir,const String &filename) :
     BaseFile(dir,filename)
 {
     m_type = FL_VIRTUAL;
-    m_isValid = exists();
+    m_isValid = m_fullFilename.isValid(); // exists();
 }
 
 VirtualFile::VirtualFile(const BaseFile& dup) :
     BaseFile(dup)
 {
     m_type = FL_VIRTUAL;
-    m_isValid = exists();
+    m_isValid = m_fullFilename.isValid(); // exists();
 }
 
 VirtualFile::~VirtualFile()
@@ -55,19 +55,19 @@ BaseFile *VirtualFile::clone() const
 void VirtualFile::setFile(const String &filename)
 {
     BaseFile::setFile(filename);
-    m_isValid = exists();
+    m_isValid = m_fullFilename.isValid(); // exists();
 }
 
 void VirtualFile::setFile(const String &pathname,const String &filename)
 {
-    BaseFile::setFile(pathname,filename);
-    m_isValid = exists();
+    BaseFile::setFile(pathname, filename);
+    m_isValid = m_fullFilename.isValid(); // exists();
 }
 
 void VirtualFile::setFile(const BaseDir &dir, const String &filename)
 {
     BaseFile::setFile(dir,filename);
-    m_isValid = exists();
+    m_isValid = m_fullFilename.isValid(); // exists();
 }
 
 void VirtualFile::cacheDatas()

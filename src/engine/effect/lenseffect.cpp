@@ -119,7 +119,7 @@ void LensEffect::createShader()
 		Shader *shader = getScene()->getShaderManager()->addShader("lensEffect");
 		shader->buildInstance(m_diffuseMapShader.instance);
 
-		m_diffuseMapShader.instance.assign("diffuseMap", "diffuseMap", "", "", Shader::BUILD_COMPILE_AND_LINK);
+        m_diffuseMapShader.instance.assign("diffuseMap", "diffuseMap", "", Shader::BUILD_COMPILE_AND_LINK);
 
 		m_diffuseMapShader.u_modelViewProjectionMatrix = m_diffuseMapShader.instance.getUniformLocation("u_modelViewProjectionMatrix");
 		m_diffuseMapShader.u_color = m_diffuseMapShader.instance.getUniformLocation("u_color");
@@ -135,7 +135,7 @@ void LensEffect::createShader()
 		Shader *shader = getScene()->getShaderManager()->addShader("lensEffect");
 		shader->buildInstance(m_occlusionShader.instance);
 
-		m_occlusionShader.instance.assign("occlusion", "occlusion", "", "", Shader::BUILD_COMPILE_AND_LINK);
+        m_occlusionShader.instance.assign("occlusion", "occlusion", "", Shader::BUILD_COMPILE_AND_LINK);
 
 		m_occlusionShader.u_modelViewProjectionMatrix = m_occlusionShader.instance.getUniformLocation("u_modelViewProjectionMatrix");
 		m_occlusionShader.a_vertex = m_occlusionShader.instance.getAttributeLocation("a_vertex");

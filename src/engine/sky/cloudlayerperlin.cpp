@@ -489,7 +489,7 @@ Bool CloudLayerPerlin::updateGeometry()
 	{
 		// For the moment, the same shader is used for all versions. It means that disabling options
 		// does not improve performances of vertex and/or fragment programs.
-		m_shader.assign("default", "default", "", "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
+        m_shader.assign("default", "default", "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
 
 		m_paramLocations[A_VEC4_VERTEX]				= m_shader.getAttributeLocation("a_vertex");
 		m_paramLocations[A_VEC2_TEXCOORDS]			= m_shader.getAttributeLocation("a_texCoords");

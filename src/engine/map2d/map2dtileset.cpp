@@ -35,7 +35,7 @@ Map2dTileSet::Map2dTileSet(BaseObject *parent, const String &tileSetPath) :
 	Shader *shader = getScene()->getShaderManager()->addShader("gui/icon");
 	shader->buildInstance(m_defaultShader.inst);
 
-	m_defaultShader.inst.assign(0, 0, -1, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
+    m_defaultShader.inst.assign(0, 0, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
 	m_defaultShader.inst.build(Shader::BUILD_COMPILE_AND_LINK);
 
 	m_defaultShader.a_vertex = m_defaultShader.inst.getAttributeLocation("a_vertex");
@@ -49,7 +49,7 @@ Map2dTileSet::Map2dTileSet(BaseObject *parent, const String &tileSetPath) :
 	shader = getScene()->getShaderManager()->addShader("map2d/colorMask");
 	shader->buildInstance(m_colorShader.inst);
 
-	m_colorShader.inst.assign(0, 0, -1, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
+    m_colorShader.inst.assign(0, 0, "ALPHA_TEST_REF=0.0;ALPHA_FUNC_GREATER;");
 	m_colorShader.inst.build(Shader::BUILD_COMPILE_AND_LINK);
 
 	m_colorShader.a_vertex = m_colorShader.inst.getAttributeLocation("a_vertex");
@@ -63,7 +63,7 @@ Map2dTileSet::Map2dTileSet(BaseObject *parent, const String &tileSetPath) :
 	shader = getScene()->getShaderManager()->addShader("picking");
 	shader->buildInstance(m_pickingShader.inst);
 
-	m_pickingShader.inst.assign(0, 0, -1, "MESH;");
+    m_pickingShader.inst.assign(0, 0, "MESH;");
 	m_pickingShader.inst.build(Shader::BUILD_COMPILE_AND_LINK);
 
 	m_pickingShader.a_vertex = m_pickingShader.inst.getAttributeLocation("a_vertex");

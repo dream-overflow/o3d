@@ -60,6 +60,9 @@ public:
 	//! Managed version
 	enum Version
 	{
+        VERSION_300_ES,       //!< GLSL ES 3.00 (OpenGL ES 3.0)
+        VERSION_310_ES,       //!< GLSL ES 3.10 (OpenGL ES 3.1)
+        VERSION_320_ES,       //!< GLSL ES 3.20 (OpenGL ES 3.2)
         VERSION_330,          //!< GLSL 3.30 (OpenGL 3.3)
         VERSION_400,          //!< GLSL 4.00 (OpenGL 4.0)
         VERSION_410,          //!< GLSL 4.10 (OpenGL 4.1)
@@ -67,7 +70,7 @@ public:
         VERSION_430,          //!< GLSL 4.30 (OpenGL 4.3)
         VERSION_440,          //!< GLSL 4.40 (OpenGL 4.4)
         VERSION_450,          //!< GLSL 4.50 (OpenGL 4.5)
-        VERSION_460,          //!< GLSL 4.50 (OpenGL 4.6)
+        VERSION_460,          //!< GLSL 4.50 (OpenGL 4.6)       
 		NUM_VERSIONS,         //!< Number of versions
 		ACTIVE_VERSION,       //!< Apply to the current active version
 		ANY_VERSIONS          //!< Apply to any versions
@@ -106,7 +109,7 @@ public:
 
 	//! @brief Load a program from its name.
 	//! @param name A valid program name from previously browsed path.
-	//! @param version Version to load. Cannot be AnyVersion (see the AddShader below).
+    //! @param version Version to load. Cannot be AnyVersion (@see addShader).
 	//! @return A new shader object, or NULL if the path was not found.
 	//! @note All file contained into the given path are pre-loaded and kept in memory for a while.
 	Shader* addShader(const String &name, Version version = ACTIVE_VERSION);
@@ -178,7 +181,8 @@ private:
 		T_StringList vpList;    //!< List of vertex programs (file_vp.glsl).
 		T_StringList fpList;    //!< List of fragment programs (file_fp.glsl).
 		T_StringList gpList;    //!< List of geometry programs (file_gp.glsl).
-        T_StringList tpList;    //!< List of tesselation programs (file_tp.glsl).
+        T_StringList tcList;    //!< List of tesselation control programs (file_tc.glsl).
+        T_StringList teList;    //!< List of tesselation evaluation programs (file_te.glsl).
 
 		Shader *shader;  //!< Direct pointer of the Shader object. null if not created.
 	};
@@ -204,7 +208,7 @@ private:
 	String m_currentBrowseFullPath;
 
     //! Read a path containing shader with a dedicated manifest file and specific structure.
-    UInt32 readShaderResource(const String &path);
+    UInt32 readShaderResource(InStream &is);
 
 	//! Browse a path to search any programs that it contain and list them into the program map.
 	//! @return The number of found programs.

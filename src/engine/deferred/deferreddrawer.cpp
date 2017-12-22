@@ -97,7 +97,7 @@ DeferredDrawer::DeferredDrawer(BaseObject *parent) :
 
     shader->buildInstance(m_backShader.shader);
 
-    m_backShader.shader.assign("gbuffer", "gbuffer", "", "");
+    m_backShader.shader.assign("gbuffer", "gbuffer");
 
     m_backShader.u_modelViewProjectionMatrix = m_backShader.shader.getUniformLocation("u_modelViewProjectionMatrix");
     m_backShader.u_colorMap = m_backShader.shader.getUniformLocation("u_colorMap");
@@ -111,7 +111,7 @@ DeferredDrawer::DeferredDrawer(BaseObject *parent) :
 
     shader->buildInstance(m_stencilShader.shader);
 
-    m_stencilShader.shader.assign("stencil", "stencil", "", "");
+    m_stencilShader.shader.assign("stencil", "stencil");
 
     m_stencilShader.u_modelViewProjectionMatrix = m_stencilShader.shader.getUniformLocation("u_modelViewProjectionMatrix");
 
@@ -123,7 +123,7 @@ DeferredDrawer::DeferredDrawer(BaseObject *parent) :
 
     shader->buildInstance(m_ambientShader.shader);
 
-    m_ambientShader.shader.assign("ambient", "ambient", "", "");
+    m_ambientShader.shader.assign("ambient", "ambient");
 
     m_ambientShader.u_screenSize = m_ambientShader.shader.getUniformLocation("u_screenSize");
 
@@ -140,7 +140,7 @@ DeferredDrawer::DeferredDrawer(BaseObject *parent) :
 
     shader->buildInstance(m_pointLight.shader);
 
-    m_pointLight.shader.assign("pointlight", "pointlight", "", "");
+    m_pointLight.shader.assign("pointlight", "pointlight");
 
     m_pointLight.u_screenSize = m_pointLight.shader.getUniformLocation("u_screenSize");
 
@@ -166,7 +166,7 @@ DeferredDrawer::DeferredDrawer(BaseObject *parent) :
 
     shader->buildInstance(m_directLight.shader);
 
-    m_directLight.shader.assign("directLight", "directLight", "", "");
+    m_directLight.shader.assign("directLight", "directLight");
 
     m_directLight.u_screenSize = m_directLight.shader.getUniformLocation("u_screenSize");
 
@@ -190,7 +190,7 @@ DeferredDrawer::DeferredDrawer(BaseObject *parent) :
 
     shader->buildInstance(m_spotLight.shader);
 
-    m_spotLight.shader.assign("spotlight", "spotlight", "", "");
+    m_spotLight.shader.assign("spotlight", "spotlight");
 
     m_spotLight.u_screenSize = m_spotLight.shader.getUniformLocation("u_screenSize");
 

@@ -54,7 +54,12 @@ Int32 AssetAndroid::findFile(const String &fileName)
         return it->second;
     } else {
         // not cached
-        String filePath = FileManager::instance()->getFilePath(fileName);
+        String shortFileName;
+        String filePath;
+
+        FileManager::instance()->getFileNameAndPath(fileName, shortFileName, filePath);
+        filePath.trimLeft('/');
+
         AAssetDir* assetDir = AAssetManager_openDir(m_assetMgr, filePath.toUtf8().getData());
         Int32 index = -1;
 
@@ -63,16 +68,16 @@ Int32 AssetAndroid::findFile(const String &fileName)
 
             // only for the first level, listing is only possible on files...
             while ((filename = AAssetDir_getNextFileName(assetDir)) != nullptr) {
-                if (fileName == filename) {
+                if (shortFileName == filename) {
                     AssetToken *entry = new AssetToken;
-                    entry->FileName = fileName;
+                    entry->FileName = filePath + '/' + filename;
                     entry->FileType = FILE_FILE;
 
                     m_fileList.push_back(entry);
 
                     // to file map
                     index = (Int32)(m_fileList.size() - 1);
-                    m_fileMap[entry->FileName] = index;
+                    m_fileMap[fileName] = index;
 
                     break;
                 }
@@ -105,7 +110,8 @@ InStream *AssetAndroid::openInStream(const String &fileName)
 {
     AAsset *asset = AAssetManager_open(m_assetMgr, fileName.toUtf8().getData(), AASSET_MODE_STREAMING);
     if (asset) {
-        return new InStreamAndroid(fileName, asset);
+        String lFileName(fileName);
+        return new InStreamAndroid(lFileName, asset);
     } else {
         O3D_ERROR(E_FileNotFoundOrInvalidRights("", fileName));
     }

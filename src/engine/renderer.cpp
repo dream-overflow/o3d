@@ -24,7 +24,7 @@ using namespace o3d;
 // Default constructor
 Renderer::Renderer() :
 	m_glErrno(GL_NO_ERROR),
-	m_version(OGL_UNDEFINED),
+    m_version(0),
     m_sharing(nullptr),
 	m_shareCount(0),
     m_appWindow(nullptr),
@@ -165,7 +165,7 @@ String Renderer::getRendererName() const
     }
 }
 
-String Renderer::getStrVersion() const
+String Renderer::getVersionName() const
 {
     if (isCurrent()) {
         return String(reinterpret_cast<const Char*>(_glGetString(GL_VERSION)));
@@ -465,4 +465,15 @@ void Renderer::disableDebug()
         glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
         O3D_MESSAGE("GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB is now disabled");
     }
+}
+
+void Renderer::computeVersion()
+{
+    GLint majorVersion, minorVersion;
+    _glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+    _glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+
+    // compute the gl version
+    UInt32 glVersion = majorVersion * 100 + minorVersion * 10;
+    m_version = (UInt32)(majorVersion * 100 + minorVersion * 10);
 }
