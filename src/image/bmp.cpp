@@ -75,8 +75,8 @@ Bool Bmp::loadDefault(InStream &is)
     if (!checkFormat(is))
         O3D_ERROR(E_InvalidFormat("Invalid BMP token"));
 
-	UInt8 *_data = NULL;
-	UInt8 *palette = NULL;
+    UInt8 *_data = nullptr;
+    UInt8 *palette = nullptr;
 	UInt16 data_ofs;
 	UInt32 ofs1 = 0,ofs2 = 0;
 	UInt32 palcol, index;
@@ -107,7 +107,7 @@ Bool Bmp::loadDefault(InStream &is)
 	if ((palcol == 0) && (m_bpp == 8)) palcol = 256;
 
 	data_ofs += 14;
-    is.seek(data_ofs-50);     // position devant la palette si 8bbp ou les données sinon
+    is.seek(data_ofs-50);     // position devant la palette si 8bpp ou les données sinon
 
 	if ((m_bpp == 1) || (m_bpp == 4) || (m_bpp == 8))
 	{
@@ -318,7 +318,7 @@ Bool Bmp::loadRgb24(InStream &is)
     if (!checkFormat(is))
         O3D_ERROR(E_InvalidFormat("Invalid BMP token"));
 
-	UInt8 *palette = NULL;
+    UInt8 *palette = nullptr;
 	UInt8 *_data;
 	UInt16 data_ofs;
 	UInt32 _palcol = 256;
@@ -349,7 +349,7 @@ Bool Bmp::loadRgb24(InStream &is)
 	if ((_palcol == 0) && (m_bpp == 8)) _palcol = 256;
 
 	data_ofs += 14;
-    is.seek(data_ofs-50);     // position devant la palette si 8bbp ou les données sinon
+    is.seek(data_ofs-50);     // position devant la palette si 8bpp ou les données sinon
 
 	if ((m_bpp == 1) || (m_bpp == 4) || (m_bpp == 8))
 	{
@@ -547,7 +547,7 @@ Bool Bmp::loadRgba32(InStream &is)
     if (!checkFormat(is))
         O3D_ERROR(E_InvalidFormat("Invalid BMP token"));
 
-	UInt8 *palette = NULL;
+    UInt8 *palette = nullptr;
 	UInt8 *_data;
 
 	UInt16 data_ofs;
@@ -579,7 +579,7 @@ Bool Bmp::loadRgba32(InStream &is)
 	if ((palcol == 0) && (m_bpp == 8)) palcol = 256;
 
 	data_ofs += 14;
-    is.seek(data_ofs-50);     // position devant la palette si 8bbp ou les données sinon
+    is.seek(data_ofs-50);     // position devant la palette si 8bpp ou les données sinon
 
 	if ((m_bpp == 1) || (m_bpp == 4) || (m_bpp == 8))
 	{
@@ -843,4 +843,3 @@ Bool Image::saveRgbBmp(const String &filename)
     deletePtr(os);
 	return True;
 }
-

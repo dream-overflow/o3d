@@ -130,7 +130,7 @@ String Dir::makeFullPathName(const String &pathName) const
         return "";
     }
 
-    return m_di->makeFileName(pathName);
+    return m_di->makeFullPathName(pathName);
 }
 
 String Dir::makePathName(const String &pathName) const

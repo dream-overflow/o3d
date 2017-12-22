@@ -41,15 +41,15 @@ ShaderManager::ShaderManager(
         switch (getScene()->getContext()->getGLSLVersion())	{
             case 300:
                 m_activeVersion = VERSION_300_ES;
-                name = "glsl300es";
+                name = "glsles300";
                 break;
             case 310:
                 m_activeVersion = VERSION_310_ES;
-                name = "glsl310es";
+                name = "glsles310";
                 break;
             case 320:
                 m_activeVersion = VERSION_320_ES;
-                name = "glsl320es";
+                name = "glsles320";
                 break;
             default:
                 break;
@@ -90,13 +90,13 @@ ShaderManager::ShaderManager(
     if (basePath.check(name) == BaseDir::SUCCESS) {
         if (FileManager::instance()->isPath(defaultPath)) {
             O3D_MESSAGE("Found defaults shaders in shaders directory");
-            addPath(FileManager::instance()->getFullFileName(basePath.getFullPathName() + '/' + name));
+            addPath(basePath.makeFullPathName(name));
             valid = True;
         }
     } else if (basePath.check(name + ".zip") == BaseDir::SUCCESS) {
-            O3D_MESSAGE(String("Found defaults shaders in ") << defaultPath << "/" << name << ".zip");
-            FileManager::instance()->mountAsset("zip://", basePath.getFullPathName() + "/" + name + ".zip");
-            addPath(FileManager::instance()->getFullFileName(basePath.getFullPathName() + '/' + name));
+            O3D_MESSAGE(String("Found defaults shaders in ") << basePath.makeFullFileName(name + ".zip"));
+            FileManager::instance()->mountAsset("zip://", basePath.makeFullFileName(name + ".zip"));
+            addPath(basePath.makeFullPathName(name));
             valid = True;
     }
 
@@ -504,7 +504,6 @@ UInt32 ShaderManager::browseFolder(const String &path)
         // no manifest found try to browser the folder, but need directory listing capacity
         VirtualFileListing fileListing;
         fileListing.setPath(m_currentBrowseFullPath);
-
         fileListing.searchFirstFile();
 
         while ((fileItem = fileListing.searchNextFile()) != nullptr) {

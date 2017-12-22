@@ -69,9 +69,10 @@ Int32 AssetAndroid::findFile(const String &fileName)
 
         if (assetDir) {
             const char* filename;
-
+            O3D_MESSAGE("dD *T* " + fileName);
             // only for the first level, listing is only possible on files...
             while ((filename = AAssetDir_getNextFileName(assetDir)) != nullptr) {
+
                 if (shortFileName == filename) {
                     AssetToken *entry = new AssetToken;
                     entry->FileName = filePath + '/' + filename;
@@ -99,6 +100,10 @@ Bool AssetAndroid::isPath(const String &path) const
 {
     if (!m_assetMgr) {
         return False;
+    }
+
+    if (path.isEmpty()) {
+        return True;
     }
 
     if (!path.startsWith("/")) {

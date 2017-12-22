@@ -36,7 +36,7 @@ if (UNIX OR MINGW)
 	include(${OBJECTIVE3D_LIBRARY_DIR}/${O3D_LIB_NAME}/Objective3DConfig.cmake)	
 
     # shaders
-    file(GLOB OBJECTIVE3D_SHADERS_ZIP "share/o3d/glsl*.zip")
+    file(GLOB OBJECTIVE3D_SHADERS_ZIP "$ENV{PREFIX}/share/o3d/glsl*.zip")
     # find_file(OBJECTIVE3D_SHADERS_ZIP *.zip HINTS ENV PREFIX PATH_SUFFIXES share/o3d)
 
 	mark_as_advanced(OBJECTIVE3D_INCLUDE_DIR OBJECTIVE3D_LIBRARY)

@@ -70,23 +70,21 @@ void InStreamAndroid::close()
 
 void InStreamAndroid::reset(UInt64 n)
 {
-    if (n == 0) {
-        AAsset_seek64(m_asset, 0, SEEK_SET);
-    } else if (AAsset_seek64(m_asset, n, SEEK_SET) != 0) {
+    if (AAsset_seek64(m_asset, n, SEEK_SET) < 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
 }
 
 void InStreamAndroid::seek(Int64 n)
 {
-    if (AAsset_seek64(m_asset, n, SEEK_CUR) != 0) {
+    if (AAsset_seek64(m_asset, n, SEEK_CUR) < 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
 }
 
 void InStreamAndroid::end(Int64 n)
 {
-    if (AAsset_seek64(m_asset, n, SEEK_END) != 0) {
+    if (AAsset_seek64(m_asset, n, SEEK_END) < 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
 }

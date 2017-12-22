@@ -47,6 +47,12 @@ void ThreadManager::setExitCode(Bool exitCode)
 	m_mutexExitCode.unlock();
 }
 
+void ThreadManager::init()
+{
+    // initialize the main thread id
+    m_mainThreadId = getThreadId();
+}
+
 void ThreadManager::addThread()
 {
 	m_mutexCount.lock();

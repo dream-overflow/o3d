@@ -110,7 +110,7 @@ BaseDir::DirReturn VirtualDir::check(const String &fileOrPath) const
     String lFileOrPath(fileOrPath);
     lFileOrPath.replace('\\','/');
 
-    if (!m_isValid || (lFileOrPath.sub("/",0) == 0)) {
+    if (!m_isValid || (lFileOrPath.sub("/", 0) == 0)) {
         O3D_ERROR(E_InvalidResult(fileOrPath + " is an invalid path or filename"));
         return INVALID_PATH;
     }

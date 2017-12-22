@@ -51,6 +51,9 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
     ms_app = app;
     ms_mappedObject = new StringMap<BaseObject*>;
 
+    // get the main thread id
+    ThreadManager::init();
+
 	System::initTime();
 	Date::init();
     DateTime::init();

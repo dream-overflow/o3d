@@ -47,6 +47,8 @@ class O3D_API ThreadManager
 {
 public:
 
+    static void init();
+
 	static void addThread();
 	static void removeThread();
 	static Bool getExitCode();

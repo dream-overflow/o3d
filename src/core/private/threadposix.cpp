@@ -33,8 +33,7 @@ static int sigList[] = {
     SIGHUP, SIGINT, SIGQUIT, SIGPIPE, SIGALRM, SIGTERM,
 	SIGCHLD, SIGWINCH, SIGVTALRM, SIGPROF, 0 };
 
-// initialize the main thread id
-UInt32 ThreadManager::m_mainThreadId = ThreadManager::getThreadId();
+UInt32 ThreadManager::m_mainThreadId = 0;
 
 // return current thread id
 UInt32 ThreadManager::getThreadId()

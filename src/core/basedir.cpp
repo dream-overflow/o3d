@@ -24,7 +24,9 @@ BaseDir::BaseDir(const String& pathname) :
     if (pathname.isValid()) {
 		setPathName(pathname);
     } else {
-		m_fullPathname = ".";
+        //m_fullPathname = ".";
+        m_fullPathname = "";
+        m_isValid = True;
     }
 }
 
