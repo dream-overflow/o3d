@@ -72,6 +72,8 @@ public:
 
     virtual UInt64 getFileSize(Int32 index) const override;
 
+    virtual void searchFirstFile(const String &path) override;
+
 protected:
 
     struct AssetToken

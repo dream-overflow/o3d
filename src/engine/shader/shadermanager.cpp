@@ -560,6 +560,10 @@ UInt32 ShaderManager::readShaderResource(InStream &is)
                     break;
                 case 330:
                     count += browseVersionFolder(path, VERSION_330, program);
+                    // @todo for test purpose only
+                    if (getScene()->getRenderer()->isGLES()) {
+                        count += browseVersionFolder(path, VERSION_320_ES, program);
+                    }
                     break;
                 case 400:
                     count += browseVersionFolder(path, VERSION_400, program);
@@ -823,9 +827,11 @@ UInt32 ShaderManager::browseVersionFolder(
 
     while ((fileItem = fileListing.searchNextFile()) != nullptr) {
         if (fileItem->FileName.endsWith("_vp.glsl")) {
+        O3D_MESSAGE(fileListing.getFileFullName());
 			program->versions[version].vpList.push_back(fileListing.getFileFullName());
         } else if (fileItem->FileName.endsWith("_fp.glsl")) {
 			program->versions[version].fpList.push_back(fileListing.getFileFullName());
+            O3D_MESSAGE(fileListing.getFileFullName());
         } else if (fileItem->FileName.endsWith("_gp.glsl")) {
 			program->versions[version].gpList.push_back(fileListing.getFileFullName());
         } else if (fileItem->FileName.endsWith("_tc.glsl")) {

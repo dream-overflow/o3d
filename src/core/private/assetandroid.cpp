@@ -48,7 +48,11 @@ void AssetAndroid::destroy()
 }
 
 Int32 AssetAndroid::findFile(const String &fileName)
-{   
+{
+    if (!fileName.startsWith("/")) {
+        return -1;
+    }
+
     auto it = m_fileMap.find(fileName);
     if (it != m_fileMap.end()) {
         return it->second;
@@ -97,6 +101,14 @@ Bool AssetAndroid::isPath(const String &path) const
         return False;
     }
 
+    if (!path.startsWith("/")) {
+        return False;
+    }
+
+    String lPath(path);
+    lPath.trimLeft('/');
+    lPath.trimRight('/');
+
     AAssetDir* assetDir = AAssetManager_openDir(m_assetMgr, path.toUtf8().getData());
     if (assetDir) {
         AAssetDir_close(assetDir);
@@ -108,6 +120,13 @@ Bool AssetAndroid::isPath(const String &path) const
 
 InStream *AssetAndroid::openInStream(const String &fileName)
 {
+    if (!fileName.startsWith("/")) {
+        O3D_ERROR(E_FileNotFoundOrInvalidRights("", fileName));
+    }
+
+    String lFileName(fileName);
+    lFileName.trimLeft('/');
+
     AAsset *asset = AAssetManager_open(m_assetMgr, fileName.toUtf8().getData(), AASSET_MODE_STREAMING);
     if (asset) {
         String lFileName(fileName);
@@ -167,7 +186,7 @@ Int32 AssetAndroid::getNumFiles() const
 String AssetAndroid::getFileName(Int32 index) const
 {
     if ((index >= 0) && (index < (Int32)m_fileList.size())) {
-        return m_fileList[index]->FileName;
+        return String("/") + m_fileList[index]->FileName;
     } else {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
@@ -208,6 +227,10 @@ UInt64 AssetAndroid::getFileSize(Int32 index) const
 void AssetAndroid::findAllFiles()
 {
     AAssetDir* assetDir = AAssetManager_openDir(m_assetMgr, "");
+    if (!assetDir) {
+        return;
+    }
+
     const char* filename;
 
     // only for the first level, listing is only possible on files...
@@ -219,9 +242,34 @@ void AssetAndroid::findAllFiles()
         m_fileList.push_back(entry);
 
         // to file map
-        m_fileMap[entry->FileName] = (Int32)(m_fileList.size() - 1);
+        m_fileMap[String("/") + entry->FileName] = (Int32)(m_fileList.size() - 1);
+    }
 
-        O3D_MESSAGE(entry->FileName);
+    AAssetDir_close(assetDir);
+}
+
+void AssetAndroid::searchFirstFile(const String &path)
+{
+    String lPath(path);
+    lPath.trimLeft('/');
+    lPath.trimRight('/');
+    AAssetDir* assetDir = AAssetManager_openDir(m_assetMgr, lPath.toUtf8().getData());
+    if (!assetDir) {
+        return;
+    }
+
+    const char* filename;
+
+    // only for the first level, listing is only possible on files...
+    while ((filename = AAssetDir_getNextFileName(assetDir)) != nullptr) {
+        AssetToken *entry = new AssetToken;
+        entry->FileName = lPath + '/' + filename;
+        entry->FileType = FILE_FILE;
+
+        m_fileList.push_back(entry);
+
+        // to file map
+        m_fileMap[String("/") + entry->FileName] = (Int32)(m_fileList.size() - 1);
     }
 
     AAssetDir_close(assetDir);

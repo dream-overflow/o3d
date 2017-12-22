@@ -146,6 +146,8 @@ public:
 
     virtual UInt64 getFileSize(Int32 index) const override;
 
+    virtual void searchFirstFile(const String &path) override;
+
 protected:
 
     InStream *m_is;          //!< the zip stream object

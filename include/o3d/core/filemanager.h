@@ -223,11 +223,11 @@ public:
     Asset* getAsset(const String &assetName);
 
     //! Initialize file search for file contained in asset.
-	void searchFirstVirtualFile();
+    void searchFirstVirtualFile(const String &path);
 
 	//! Return the next file name (empty string if finished).
     //! @param fileType If non null will be contain the file type.
-    String searchNextVirtualFile(FileTypes *fileType = nullptr);
+    String searchNextVirtualFile(const String &path, FileTypes *fileType = nullptr);
 
     //-----------------------------------------------------------------------------------
     // File and directory support

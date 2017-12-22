@@ -108,6 +108,12 @@ public:
      * @return
      */
     virtual UInt64 getFileSize(Int32 index) const = 0;
+
+    /**
+     * @brief Init the path for the search first file.
+     * @param path
+     */
+    virtual void searchFirstFile(const String &path) = 0;
 };
 
 typedef std::list<Asset*> T_AssetList;

@@ -551,22 +551,25 @@ Int32 FileManager::umountAllAssets()
 }
 
 // initialize the file search
-void FileManager::searchFirstVirtualFile()
+void FileManager::searchFirstVirtualFile(const String &path)
 {
 	FastMutexLocker locker(O3D_FileManagerMutex);
 
     m_curFilePos = 0;
     m_curAssetIt = m_assets.begin();
+
+    if (m_curAssetIt != m_assets.end()) {
+        (*m_curAssetIt)->searchFirstFile(path);
+    }
 }
 
 // return the next file name (empty string if finished)
-String FileManager::searchNextVirtualFile(FileTypes *fileType)
+String FileManager::searchNextVirtualFile(const String &path, FileTypes *fileType)
 {
 	FastMutexLocker locker(O3D_FileManagerMutex);
 	String result;
 
     // @todo improve because of android asset
-
     while (m_curAssetIt != m_assets.end()) {
         if (m_curFilePos < (*m_curAssetIt)->getNumFiles()) {
             result = (*m_curAssetIt)->getFileName(m_curFilePos);
@@ -582,6 +585,10 @@ String FileManager::searchNextVirtualFile(FileTypes *fileType)
 			// this case when a package contain no files
 			m_curFilePos = 0;
             ++m_curAssetIt;
+
+            if (m_curAssetIt != m_assets.end()) {
+                (*m_curAssetIt)->searchFirstFile(path);
+            }
 		}
 	}
 

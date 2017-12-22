@@ -193,7 +193,11 @@ Context::Context(Renderer *renderer) :
     O3D_MESSAGE(String("- Max draw buffers = ") << m_maxDrawBuffers);
     O3D_MESSAGE(String("- Max anisotropy lvl = {0}").arg(m_maxAnisotropy, 2));
     O3D_MESSAGE(String("- Max view-ports = ") << m_maxViewports);
-    O3D_MESSAGE(String("- GLSL version = ") << m_glslVersion);
+    if (getRenderer()->isGLES()) {
+        O3D_MESSAGE(String("- GLSL version = ") << m_glslVersion << " ES");
+    } else {
+        O3D_MESSAGE(String("- GLSL version = ") << m_glslVersion);
+    }
 }
 
 // Destructor

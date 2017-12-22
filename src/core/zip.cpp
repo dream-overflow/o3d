@@ -206,6 +206,11 @@ UInt64 Zip::getFileSize(Int32 index) const
     }
 }
 
+void Zip::searchFirstFile(const String &path)
+{
+    // @todo nothing but could be used to improve returned files
+}
+
 InStream *Zip::openInStream(const String &filename)
 {
     Int32 filePos = findFile(filename);

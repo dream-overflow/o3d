@@ -38,7 +38,7 @@ VirtualFileListing::~VirtualFileListing()
 		deletePtr(flitem);
 	}
 }
-
+#include "o3d/core/debug.h"
 void VirtualFileListing::virtualFindFirstFile()
 {
     // On a fini de lister les fichiers qui sont sur le systeme de fichier
@@ -52,11 +52,11 @@ void VirtualFileListing::virtualFindFirstFile()
 	// search in virtual files of the file manager
 	m_virtualCurPos = -1;
 
-	FileManager *fileManager = FileManager::instance();
-	fileManager->searchFirstVirtualFile();
-
 	absPath = m_path;
 	absPath.trimRight('*');
+
+    FileManager *fileManager = FileManager::instance();
+    fileManager->searchFirstVirtualFile(absPath);
 
 	// On recupere le repertoire courant
 	String tmpAbsPath = m_path;
@@ -64,7 +64,7 @@ void VirtualFileListing::virtualFindFirstFile()
 
 	// list virtual files
     do {
-		curFilename = fileManager->searchNextVirtualFile(&fileType);
+        curFilename = fileManager->searchNextVirtualFile(absPath, &fileType);
 
         if (curFilename.isEmpty()) {
 			break;
