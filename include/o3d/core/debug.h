@@ -126,8 +126,17 @@
         __LINE__,                   \
         __TFUNCTION__)
 
-//! Log a message directly to the default logger
-#define O3D_LOG(LEVEL, MSG) Debug::instance()->getDefaultLog().log((LEVEL), (MSG))
+//! Generic log helper like O3D_MESSAGE... but no level defined
+#define O3D_LOG(LEVEL, LOGGER, MSG) \
+    Debug::instance()->throwDebug(  \
+        (LEVEL),                    \
+        "",                         \
+        "",                         \
+        (MSG),                      \
+        "",                         \
+        __TFILE__,                  \
+        __LINE__,                   \
+        __TFUNCTION__)
 
 namespace o3d {
 

@@ -15,6 +15,7 @@
 #include "inputmanager.h"
 #include "keyboard.h"
 #include "mouse.h"
+#include "touchscreen.h"
 #include "objects.h"
 #include "memorydbg.h"
 #include "vector2.h"
@@ -328,6 +329,11 @@ public:
 		Bool pressed,
 		Bool dblClick);
 
+    //! Touch-screen motion virtual callback.
+    virtual void callBackTouchScreenMotion();
+    //! Touch-screen change virtual callback.
+    virtual void callBackTouchScreenChange();
+
 	virtual void callBackCreate();
 	virtual Int32 callBackPaint(void*);
 	virtual void callBackMove();
@@ -349,16 +355,21 @@ public:
 public:
 
 	//! Keyboard key state change.
-    Signal<Keyboard*, KeyEvent> onKey{this}; // keyboard reference, key event
+    Signal<Keyboard*, KeyEvent> onKey{this}; // keyboard, key event
 	//! Keyboard key state change.
-    Signal<Keyboard*, CharacterEvent> onCharacter{this}; // keyboard reference, character event
+    Signal<Keyboard*, CharacterEvent> onCharacter{this}; // keyboard, character event
 
 	//! Mouse motion.
-    Signal<Mouse*> onMouseMotion{this}; // mouse reference
+    Signal<Mouse*> onMouseMotion{this}; // mouse
 	//! Mouse wheel rotation.
-    Signal<Mouse*> onMouseWheel{this}; // mouse reference
+    Signal<Mouse*> onMouseWheel{this}; // mouse
 	//! Mouse button state change.
-    Signal<Mouse*, ButtonEvent> onMouseButton{this}; // mouse reference, button event
+    Signal<Mouse*, ButtonEvent> onMouseButton{this}; // mouse, button event
+
+    //! Touch-screen motion.
+    Signal<TouchScreen*> onTouchScreenMotion{this}; // touch screen
+    //! Touch-screen change.
+    Signal<TouchScreen*, TouchScreenEvent> onTouchScreenChange{this}; // mouse, touch event
 
 	//! Window create
     Signal<> onCreate{this};
@@ -423,18 +434,25 @@ public:
 		EVT_MOUSE_BUTTON_DOWN,
 		EVT_MOUSE_BUTTON_UP,
 		EVT_MOUSE_MOTION,
-		EVT_MOUSE_WHEEL
+        EVT_MOUSE_WHEEL,
+        EVT_TOUCH_DOWN,
+        EVT_TOUCH_POINTER_DOWN,
+        EVT_TOUCH_MOVE,
+        EVT_TOUCH_POINTER_UP,
+        EVT_TOUCH_UP
 	};
 
     //! Internal event struct.
 	struct EventData
 	{
+        Float fx, fy;
 		Int32 x, y;
 		Int32 w, h;
 		UInt32 button;
 		UInt32 unicode;
 		UInt32 key;
         UInt32 character;
+        Int64 time;
 	};
 
     //! Internally process a window event.

@@ -104,11 +104,10 @@ protected:
 
 	SmartObject<SkyBase> m_pSky;
 
-    mutable FileLogger m_logger;
+    mutable Logger *m_logger;
 	mutable FastMutex m_loggerMutex;
 };
 
 } // namaspace o3d
 
 #endif // _O3D_PCLODTERRAIN_H
-

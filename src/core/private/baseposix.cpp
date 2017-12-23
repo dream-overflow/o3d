@@ -21,11 +21,13 @@
 
 using namespace o3d;
 
-#ifdef __MACOSX__ // macosx 10.4 no have it, and 10.5 ?
+// macosx 10.4 no have it, and 10.5 ?
+// Android have issue with clock_gettime
+#if defined(O3D_MACOSX) // || defined(O3D_ANDROID)
 	#define HAVE_CLOCK_GETTIME 0
 	#define pthread_yield pthread_yield_np
 #else
-#define HAVE_CLOCK_GETTIME 1
+    #define HAVE_CLOCK_GETTIME 1
 #endif
 
 #if HAVE_CLOCK_GETTIME
@@ -34,6 +36,7 @@ static struct timespec timerResolution;
 static Int64 timerFrequency = 0;
 #else
 static struct timeval timerStartTime;
+static Int64 timerFrequency = 0;
 #endif // HAVE_CLOCK_GETTIME
 
 #define O3D_USE_USLEEP 1
@@ -59,10 +62,10 @@ void System::initTime()
     clock_getres(CLOCK_MONOTONIC, &timerResolution);
 
     // nanosecond precision
-    timerFrequency = timerResolution.tv_sec + 1000000000 / timerResolution.tv_nsec;
+    timerFrequency = (Int64)timerResolution.tv_sec + 1000000000LL / (Int64)timerResolution.tv_nsec;
 #else
     gettimeofday(&timerStartTime, NULL);
-    timerResolutionInt64 = 1000000; // microsecond
+    timerFrequency = 1000000; // microsecond
 #endif
 }
 
@@ -74,8 +77,8 @@ Int64 System::getTime()
     struct timespec curTime;
     clock_gettime(CLOCK_MONOTONIC, &curTime);
 
-    return (curTime.tv_sec - timerStartTime.tv_sec) * 1000000000 +
-           (curTime.tv_nsec - timerStartTime.tv_nsec);
+    return ((Int64)curTime.tv_sec - (Int64)timerStartTime.tv_sec) * 1000000000LL +
+           (Int64)(curTime.tv_nsec - (Int64)timerStartTime.tv_nsec);
 #else
     // get time in microsecond
     struct timeval curTime;
@@ -93,20 +96,20 @@ Int64 System::getTime(TimeUnit unit)
     clock_gettime(CLOCK_MONOTONIC, &curTime);
 
     if (unit == TIME_SECOND)
-        return (curTime.tv_sec - timerStartTime.tv_sec) +
-               (curTime.tv_nsec - timerStartTime.tv_nsec) / 1000000000;
+        return ((Int64)curTime.tv_sec - (Int64)timerStartTime.tv_sec) +
+               ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec) / 1000000000LL;
     else if (unit == TIME_MILLISECOND)
-        return (curTime.tv_sec - timerStartTime.tv_sec) * 1000 +
-               (curTime.tv_nsec - timerStartTime.tv_nsec) / 1000000;
+        return ((Int64)curTime.tv_sec - (Int64)timerStartTime.tv_sec) * 1000 +
+               ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec) / 1000000;
     else if (unit == TIME_MICROSECOND)
-        return (curTime.tv_sec - timerStartTime.tv_sec) * 1000000 +
-               (curTime.tv_nsec - timerStartTime.tv_nsec) / 1000;
+        return ((Int64)curTime.tv_sec - (Int64)timerStartTime.tv_sec) * 1000000 +
+               ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec) / 1000;
     else if (unit == TIME_NANOSECOND)
-        return (curTime.tv_sec - timerStartTime.tv_sec) * 1000000000 +
-               (curTime.tv_nsec - timerStartTime.tv_nsec);
+        return ((Int64)curTime.tv_sec - (Int64)timerStartTime.tv_sec) * 1000000000LL +
+               ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec);
     else // nanosecond
-        return (curTime.tv_sec - timerStartTime.tv_sec) * 1000000000 +
-               (curTime.tv_nsec - timerStartTime.tv_nsec);
+        return ((Int64)curTime.tv_sec - (Int64)timerStartTime.tv_sec) * 1000000000LL +
+               ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec);
 #else
     struct timeval curTime;
     gettimeofday(&curTime, NULL);
@@ -136,8 +139,8 @@ Int32 System::getMsTime()
     struct timespec curTime;
     clock_gettime(CLOCK_MONOTONIC, &curTime);
 
-    return (curTime.tv_sec - timerStartTime.tv_sec) * 1000 +
-           (curTime.tv_nsec - timerStartTime.tv_nsec) / 1000000;
+    return ((Int64)curTime.tv_sec - (Int64)timerStartTime.tv_sec) * 1000 +
+           ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec) / 1000000;
 #else
     struct timeval curTime;
     gettimeofday(&curTime, NULL);
@@ -152,7 +155,7 @@ Int64 System::getTimeFrequency()
 {
 //    return timerFrequency;
 #if HAVE_CLOCK_GETTIME
-    return 1000000000;  // 1 ns
+    return 1000000000LL;  // 1 ns
 #else
     return 1000000; // 1 us
 #endif

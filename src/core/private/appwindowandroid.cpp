@@ -443,6 +443,37 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
             callBackMouseLost();
             break;
 
+        case EVT_TOUCH_DOWN:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                m_inputManager.getTouchScreen()->setDown();
+                callBackTouchScreenChange();
+            }
+            break;
+        case EVT_TOUCH_POINTER_DOWN:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                m_inputManager.getTouchScreen()->setPointerDown(eventData.fx);
+                callBackTouchScreenChange();
+            }
+            break;
+        case EVT_TOUCH_MOVE:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                m_inputManager.getTouchScreen()->setPosition(eventData.x, eventData.fx, eventData.fy);
+                callBackTouchScreenMotion();
+            }
+            break;
+        case EVT_TOUCH_POINTER_UP:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                m_inputManager.getTouchScreen()->setPointerUp(eventData.fx);
+                callBackTouchScreenChange();
+            }
+            break;
+        case EVT_TOUCH_UP:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                m_inputManager.getTouchScreen()->setUp();
+                callBackTouchScreenChange();
+            }
+            break;
+
         case EVT_MOUSE_BUTTON_DOWN:
             {
                 Bool dblClick;

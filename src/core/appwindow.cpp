@@ -309,7 +309,25 @@ void AppWindow::callBackMouseButton(Mouse::Buttons button, Bool pressed, Bool db
         // DEFAULT
 		ButtonEvent event(button, pressed, dblClick);
         onMouseButton(mouse, event);
-	}
+    }
+}
+
+void AppWindow::callBackTouchScreenMotion()
+{
+     if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+        TouchScreen *touchScreen = static_cast<TouchScreen*>(m_inputManager.getInput(Input::INPUT_TOUCHSCREEN));
+        // DEFAULT
+        onTouchScreenMotion(touchScreen);
+    }
+}
+
+void AppWindow::callBackTouchScreenChange()
+{
+    if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+        TouchScreen *touchScreen = static_cast<TouchScreen*>(m_inputManager.getInput(Input::INPUT_TOUCHSCREEN));
+        // DEFAULT @todo
+        onTouchScreenChange(touchScreen, TouchScreenEvent());
+    }
 }
 
 void AppWindow::callBackClose()
@@ -618,9 +636,9 @@ Bool AppWindow::isPaintNeeded()
 		return True;
 	}
 
-    if ((time - m_lastPaint) >= (m_paintFreq * System::getTimeFrequency()) / 1000) {
+    if ((time - m_lastPaint) >= ((Int64)m_paintFreq * System::getTimeFrequency()) / 1000) {
 		m_lastPaint = time;
-		return True;
+        return True;
 	}
 	
 	return False;
@@ -636,7 +654,7 @@ Bool AppWindow::isUpdateNeeded()
 		return True;
 	}
 
-    if ((time - m_lastUpdate) >= (m_updateFreq * System::getTimeFrequency()) / 1000) {
+    if ((time - m_lastUpdate) >= ((Int64)m_updateFreq * System::getTimeFrequency()) / 1000) {
 		m_lastUpdate = time;
 		return True;
 	}

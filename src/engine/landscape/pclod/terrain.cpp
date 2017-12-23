@@ -22,25 +22,28 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(PCLODTerrain, ENGINE_PCLOD_TERRAIN, TerrainBase)
 
-/* Terrain logger */
 void PCLODTerrain::log(PCLODLogType _type, const String & _msg) const
 {
 	FastMutexLocker locker(m_loggerMutex);
 
     if (m_pCurrentConfigs != nullptr) {
-		if (!getCurrentConfigs().logEnabled())
+        if (!getCurrentConfigs().logEnabled()) {
 			return;
+        }
 
         switch(_type) {
-            case PCLOD_LOG_MESSAGE:
+            case Logger::TRACE:
+                break;
+            case Logger::INFO:
                 if (!getCurrentConfigs().messageShown())
                     return;
                 break;
-            case PCLOD_LOG_WARNING:
+            case Logger::WARNING:
                 if (!getCurrentConfigs().warningShown())
                     return;
                 break;
-            case PCLOD_LOG_ERROR:
+            case Logger::ERROR:
+            case Logger::CRITICAL:
                 if (!getCurrentConfigs().errorShown())
                     return;
                 break;
@@ -50,14 +53,19 @@ void PCLODTerrain::log(PCLODLogType _type, const String & _msg) const
 	}
 
     String head;
-    if (_type == PCLOD_LOG_MESSAGE)
+    if (_type == PCLOD_LOG_MESSAGE) {
         head = "<MSG> " ;
-    else if (_type == PCLOD_LOG_WARNING)
+    } else if (_type == PCLOD_LOG_WARNING) {
         head = "<WRN> ";
-    else if (_type == PCLOD_LOG_WARNING)
+    } else if (_type == PCLOD_LOG_WARNING) {
         head = "<ERR> ";
+    }
 
-    m_logger.log((Logger::LogLevel)_type, head + _msg);
+    if (m_logger) {
+        m_logger->log((Logger::LogLevel)_type, head + _msg);
+    } else {
+        O3D_LOG((Logger::LogLevel)_type, "terrain", head + _msg);
+    }
 }
 
 PCLODTerrain* PCLODTerrain::getTerrain()
@@ -81,10 +89,10 @@ PCLODTerrain::PCLODTerrain(BaseObject *pParent, Camera *pCamera) :
     m_pZoneManager(nullptr),
     m_pCurrentConfigs(nullptr),
 	m_pSky(this),
-	m_logger("PCLODTerrain.log"),
+    m_logger(nullptr),
 	m_loggerMutex()
 {
-	m_logger.clearLog();
+//    m_logger->clearLog();
 
 	m_pCurrentConfigs = new PCLODConfigs((BaseObject*)this);
 

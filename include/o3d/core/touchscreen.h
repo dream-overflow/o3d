@@ -46,6 +46,37 @@ public:
     //! Is multi-touch capacity.
     inline Bool isMultiTouch() const { return m_multiTouch; }
 
+    //! Set the last touch screen local position.
+    void setPosition(Int32 index, Float x, Float y);
+
+    //! Set the touch up.
+    void setUp();
+
+    //! Set the touch down.
+    void setDown();
+
+    //! Set the touch pointer up.
+    void setPointerUp(Float pressure);
+
+    //! Set the touch pointer down.
+    void setPointerDown(Float pressure);
+
+    //! Get the local coordinates.
+    inline Vector2f getPosition() const { return m_pos; }
+
+    //! Get the X local coordinates.
+    inline Float getPositionX() const { return m_pos.x(); }
+    //! Get the Y local coordinates.
+    inline Float getPositionY() const { return m_pos.y(); }
+
+    //! Get the delta distance since the last update.
+    inline Vector2f getDelta() const { return m_deltaPos; }
+
+    //! Get the X delta.
+    inline Float getDeltaX() const { return m_deltaPos.x(); }
+    //! Get the Y delta.
+    inline Float getDeltaY() const { return m_deltaPos.y(); }
+
     //-------------------------------------------------------------------------------
     // virtual
     //-------------------------------------------------------------------------------
@@ -70,8 +101,26 @@ protected:
 
     Bool m_multiTouch;             //!< Multi-points touch capacity
 
+    Vector2f m_pos;                //!< Local position.
+    Vector2f m_oldPos;             //!< Previous local position.
+    Vector2f m_deltaPos;           //!< Delta position since last update.
+
     void commonInit(Int32 xlimit, Int32 ylimit);
 };
+
+/**
+ * @brief Touch-screen pointer event
+ * @todo
+ */
+class TouchScreenEvent
+{
+public:
+
+    TouchScreenEvent() {}
+
+private:
+};
+
 
 } // namespace o3d
 

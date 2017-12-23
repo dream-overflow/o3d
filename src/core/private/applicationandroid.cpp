@@ -29,21 +29,32 @@ using namespace o3d;
 
 static Bool windowReady = False;
 
-// #include <android/log.h> @todo for Log
 #define O3D_ALOG(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeActivitySimpleExample", __VA_ARGS__))
 
 static int32_t handleInput(struct android_app* app, AInputEvent* event)
 {
+    AppWindow::EventData eventData;
+    eventData.time = AMotionEvent_getEventTime(event);
+
+    AppWindow *appWindow = Application::getAppWindow(reinterpret_cast<_HWND>(app->window));
+
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         size_t pointerCount = AMotionEvent_getPointerCount(event);
 
         for (size_t i = 0; i < pointerCount; ++i) {
-            O3D_ALOG("Received motion event from pointer %zu: (%.2f, %.2f)", i, AMotionEvent_getX(event, i), AMotionEvent_getY(event, i));
+            eventData.fx = AMotionEvent_getX(event, i);
+            eventData.fy = AMotionEvent_getY(event, i);
+            eventData.x = i;
+
+            if (appWindow) {
+                appWindow->processEvent(AppWindow::EVT_TOUCH_MOVE, eventData);
+            }
         }
 
         return 1;
     } else if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
         O3D_ALOG("Received key event: %d", AKeyEvent_getKeyCode(event));
+        // @todo key events
         return 1;
     }
 
@@ -52,9 +63,13 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
 
 static void handleCmd(struct android_app* app, int32_t cmd)
 {
+    AppWindow::EventData eventData;
+    AppWindow *appWindow = Application::getAppWindow(reinterpret_cast<_HWND>(app->window));
+
     switch (cmd) {
         case APP_CMD_SAVE_STATE:
             // the OS asked us to save the state of the app
+            O3D_MESSAGE("App ask to save");
             break;
 
         case APP_CMD_INIT_WINDOW:
@@ -63,15 +78,47 @@ static void handleCmd(struct android_app* app, int32_t cmd)
             break;
 
         case APP_CMD_TERM_WINDOW:
+            O3D_MESSAGE("App ask to terminate");
+            appWindow->terminate();
             // clean up the window because it is being hidden/closed
             break;
 
         case APP_CMD_LOST_FOCUS:
+            appWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_LOST, eventData);
             // if the app lost focus, avoid unnecessary processing (like monitoring the accelerometer)
             break;
 
         case APP_CMD_GAINED_FOCUS:
+            appWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_GAIN, eventData);
             // bring back a certain functionality, like monitoring the accelerometer
+            break;
+
+        case APP_CMD_RESUME:
+            O3D_MESSAGE("app resume");
+            break;
+
+        case APP_CMD_PAUSE:
+        O3D_MESSAGE("app pause");
+            break;
+
+        case APP_CMD_STOP:
+            O3D_MESSAGE("app stop");
+            break;
+
+        case APP_CMD_CONTENT_RECT_CHANGED:
+            O3D_MESSAGE("app rect changed");
+            break;
+
+        case APP_CMD_WINDOW_REDRAW_NEEDED:
+            O3D_MESSAGE("app redraw needed");
+            break;
+
+        case APP_CMD_WINDOW_RESIZED:
+            O3D_MESSAGE("app resized");
+            break;
+
+        case APP_CMD_DESTROY:
+            O3D_MESSAGE("app destroy");
             break;
 
         default:
@@ -92,7 +139,7 @@ void Application::apiInitPrivate()
         state->onInputEvent = handleInput;
         pthread_mutex_unlock(&state->mutex);
 
-        // process some events before the application can continue
+        // process some events before the application can continue, until the window is ready
         Bool quit = False;
 
         while (1) {
@@ -139,6 +186,8 @@ void Application::runPrivate(Bool runOnce)
     AppWindow::EventData eventData;
     struct android_app* state = reinterpret_cast<struct android_app*>(ms_app);
 
+    ms_currAppWindow = nullptr;
+
     while (!quit || EvtManager::instance()->isPendingEvent()) {
         ms_currAppWindow = nullptr;
 
@@ -173,6 +222,8 @@ void Application::runPrivate(Bool runOnce)
             break;
         }
     }
+
+    ms_currAppWindow = nullptr;
 }
 
 // Push a user application event.

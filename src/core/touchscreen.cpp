@@ -70,4 +70,31 @@ void TouchScreen::release()
 
 }
 
+void TouchScreen::setPosition(Int32 index, Float x, Float y)
+{
+    m_oldPos = m_pos;
+    m_pos.set(x, y);
+    m_deltaPos = m_pos - m_oldPos;
+}
+
+void TouchScreen::setUp()
+{
+
+}
+
+void TouchScreen::setDown()
+{
+
+}
+
+void TouchScreen::setPointerUp(Float pressure)
+{
+
+}
+
+void TouchScreen::setPointerDown(Float pressure)
+{
+
+}
+
 #endif // O3D_WINAPI || O3D_X11

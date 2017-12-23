@@ -69,7 +69,7 @@ Int32 AssetAndroid::findFile(const String &fileName)
 
         if (assetDir) {
             const char* filename;
-            O3D_MESSAGE("dD *T* " + fileName);
+
             // only for the first level, listing is only possible on files...
             while ((filename = AAssetDir_getNextFileName(assetDir)) != nullptr) {
 
