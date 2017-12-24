@@ -44,6 +44,8 @@ void TouchScreen::commonInit(Int32 xlimit, Int32 ylimit)
 {
     m_name = "TouchScreen";
 
+    m_oldSize = m_deltaSize = 0;
+
     m_pointers.clear();
     m_pointers.push_back(Pointer());
 }
@@ -150,7 +152,7 @@ Float TouchScreen::getDeltaY(UInt32 index) const
 
 Bool TouchScreen::isTap() const
 {
-    if (m_pointers.size() >= 1 && !isZoom()) {
+    if (m_pointers.size() >= 1 && !isSize()) {
         return m_pointers[0].tap == 2;
     } else {
          return False;
@@ -159,14 +161,14 @@ Bool TouchScreen::isTap() const
 
 Bool TouchScreen::isLongTap() const
 {
-    if (m_pointers.size() >= 1 && !isZoom()) {
+    if (m_pointers.size() >= 1 && !isSize()) {
         return m_pointers[0].tap == 3;
     } else {
          return False;
     }
 }
 
-Bool TouchScreen::isZoom() const
+Bool TouchScreen::isSize() const
 {
     // at least 2 pointers down
     return m_pointers.size() >= 2 && m_pointers[0].pointer && m_pointers[1].pointer;
@@ -174,11 +176,16 @@ Bool TouchScreen::isZoom() const
 
 Float TouchScreen::getSize() const
 {
-    if (isZoom()) {
+    if (isSize()) {
         return (m_pointers[1].pos - m_pointers[0].pos).length();
     } else {
         return 0;
     }
+}
+
+Float TouchScreen::getDeltaSize() const
+{
+    return m_deltaSize;
 }
 
 // For now, not supported on Windows and Linux desktop
@@ -210,6 +217,7 @@ void TouchScreen::update()
 void TouchScreen::acquire()
 {
     if (!m_aquired) {
+        m_size = m_deltaSize = 0;
         m_pointers.clear();
         m_pointers.push_back(Pointer());
         m_aquired = True;
@@ -219,6 +227,7 @@ void TouchScreen::acquire()
 void TouchScreen::release()
 {
     if (m_aquired) {
+        m_size = m_deltaSize = 0;
         m_pointers.clear();
         m_pointers.push_back(Pointer());
         m_aquired = False;
@@ -253,6 +262,14 @@ void TouchScreen::setPosition(UInt32 index, Float x, Float y, Float pressure, In
             // cancel tap on motion
             pointer.tap = 0;
         }
+
+        if (isSize()) {
+            Float size = getSize();
+            m_deltaSize = size - m_oldSize;
+            m_oldSize = size;
+        } else {
+            m_oldSize = m_deltaSize = 0;
+        }
     }
 
     if (pointer.pressure < 0) {
@@ -281,6 +298,8 @@ void TouchScreen::setPointerState(UInt32 index, Bool state, Float x, Float y, Fl
     pointer.pos.set(x, y);
     pointer.oldPos.set(-1, -1);
     pointer.deltaPos.zero();
+
+    m_oldSize = m_deltaSize = 0;
 
     if (state) {
         // possible tap

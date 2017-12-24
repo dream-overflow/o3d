@@ -87,10 +87,13 @@ public:
     Bool isLongTap() const;
 
     //! True if at least two pointer are defined.
-    Bool isZoom() const;
+    Bool isSize() const;
 
-    //! Size of the range when two pointers are defines.
+    //! Size between two pointers (when two pointers are defined).
     Float getSize() const;
+
+    //! Delta of the size (when two pointers are defined).
+    Float getDeltaSize() const;
 
     //-------------------------------------------------------------------------------
     // virtual
@@ -136,6 +139,9 @@ protected:
     };
 
     std::vector<Pointer> m_pointers;
+
+    Float m_oldSize;
+    Float m_deltaSize;
 
     void commonInit(Int32 xlimit, Int32 ylimit);
 };
