@@ -217,7 +217,7 @@ void TouchScreen::update()
 void TouchScreen::acquire()
 {
     if (!m_aquired) {
-        m_size = m_deltaSize = 0;
+        m_oldSize = m_deltaSize = 0;
         m_pointers.clear();
         m_pointers.push_back(Pointer());
         m_aquired = True;
@@ -227,7 +227,7 @@ void TouchScreen::acquire()
 void TouchScreen::release()
 {
     if (m_aquired) {
-        m_size = m_deltaSize = 0;
+        m_oldSize = m_deltaSize = 0;
         m_pointers.clear();
         m_pointers.push_back(Pointer());
         m_aquired = False;
