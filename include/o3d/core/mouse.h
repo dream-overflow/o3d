@@ -283,7 +283,7 @@ protected:
 
 	Bool m_accel;              //!< use x/y acceleration
 
-	Bool m_aquired;            //!< input acquired by direct input
+    Bool m_aquired;            //!< input acquired by application
 
     AppWindow *m_appWindow;    //!< Related application window.
     Bool m_cursor;             //!< cursor drawing state

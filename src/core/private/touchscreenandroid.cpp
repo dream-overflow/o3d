@@ -21,8 +21,14 @@ TouchScreen::TouchScreen(AppWindow *appWindow, Int32 xlimit, Int32 ylimit) :
     Input(),
     m_appWindow(appWindow)
 {
-    m_pos.set(-1, -1);
-    m_oldPos.set(-1, -1);
+    commonInit(xlimit, ylimit);
+
+    if (!m_appWindow) {
+        O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
+
+    m_isActive = True;
+    m_aquired = False;
 }
 
 TouchScreen::~TouchScreen()
@@ -32,57 +38,111 @@ TouchScreen::~TouchScreen()
 
 void TouchScreen::update()
 {
+    if (!m_isActive) {
+        return;
+    }
 
+    if (!m_aquired) {
+        acquire();
+    }
 }
 
 void TouchScreen::acquire()
 {
-    m_pos.set(-1, -1);
-    m_oldPos.set(-1, -1);
+    if (!m_aquired) {
+        m_pointers.clear();
+        m_pointers.push_back(Pointer());
+        m_aquired = True;
+    }
 }
 
 void TouchScreen::release()
 {
-
+    if (m_aquired) {
+        m_pointers.clear();
+        m_pointers.push_back(Pointer());
+        m_aquired = False;
+    }
 }
 
-void TouchScreen::setPosition(Int32 index, Float x, Float y)
+void TouchScreen::setPosition(UInt32 index, Float x, Float y, Float pressure, Int64 time)
 {
-    if (index != 0) {
-        return;
+    if (index >= m_pointers.size()) {
+        m_pointers.resize(index+1);
     }
 
-    if (m_pos.x() == -1 || m_pos.y() == -1) {
+    Pointer &pointer = m_pointers[index];
+
+    if (pointer.oldPos.x() < 0) {
         // first init
-        m_pos.set(x, y);
+        pointer.pos.set(x, y);
+        pointer.oldPos.x() = 0;
+        pointer.deltaPos.zero();
+    } else if (pointer.oldPos.y() < 0) {
+        // wait second move
+        pointer.pos.set(x, y);
+        pointer.oldPos = pointer.pos;
+        pointer.deltaPos.zero();
+    } else {
+        // now we can compute delta
+        pointer.deltaPos.set(x - pointer.pos.x(), y - pointer.pos.y());
+        pointer.oldPos = pointer.pos;
+        pointer.pos.set(x, y);
+
+        if (pointer.tap > 0) {
+            // cancel tap on motion
+            pointer.tap = 0;
+        }
     }
 
-    m_deltaPos.set(x - m_pos.x(), y - m_pos.y());
-    m_oldPos = m_pos;
-    m_pos.set(x, y);
+    if (pointer.pressure < 0) {
+        pointer.pressure = pressure;
+    }
 
-    O3D_MESSAGE(String::print("Received motion event from pointer: (%.2f, %.2f)", x, y));
-    O3D_MESSAGE(String::print("Delta touch: (%.2f, %.2f)", m_deltaPos.x(), m_deltaPos.y()));
+    pointer.deltaPressure = pressure - pointer.oldPressure;
+    pointer.oldPressure = pointer.pressure;
+    pointer.pressure = pressure;
+
+    pointer.time = time;
 }
 
-void TouchScreen::setUp()
+void TouchScreen::setPointerState(UInt32 index, Bool state, Float x, Float y, Float pressure, Int64 time)
 {
+    if (index >= m_pointers.size()) {
+        m_pointers.resize(index+1);
+    }
 
-}
+    Pointer &pointer = m_pointers[index];
 
-void TouchScreen::setDown()
-{
-    // @todo reset pos on down and up
-}
+    pointer.pressure = pointer.oldPressure = pressure;
+    pointer.deltaPressure = 0;
+    pointer.pointer = state;
 
-void TouchScreen::setPointerUp(Float pressure)
-{
+    pointer.pos.set(x, y);
+    pointer.oldPos.set(-1, -1);
+    pointer.deltaPos.zero();
 
-}
+    if (state) {
+        // possible tap
+        pointer.tap = 1;
+        pointer.downTime = time;
+    } else {
+        if (pointer.tap == 1) {
+            Int64 elapsed = time - pointer.downTime;
 
-void TouchScreen::setPointerDown(Float pressure)
-{
+            // tap occurs
+            if (elapsed > (Int64)(LONG_TAP_DURATION * 1000 * 1000)) {
+                pointer.tap = 3;  // a long tap
+            } else {
+                pointer.tap = 2; // a short tap
+            }
+        } else {
+            // reset no tap
+            pointer.tap = 0;
+        }
+    }
 
+    pointer.time = time;
 }
 
 #endif

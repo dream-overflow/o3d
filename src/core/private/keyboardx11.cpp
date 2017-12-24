@@ -32,10 +32,8 @@ static unsigned char getKeySymMask(Display *display, KeySym keySym)
 	// Find the modifier mask corresponding to CapsLock and NumLock
 	KeyCode keyCode = XKeysymToKeycode(display, keySym);
 	XModifierKeymap *modmap = XGetModifierMapping(display);
-	for (int i = 0; i < 8 * modmap->max_keypermod; ++i)
-	{
-		if (modmap->modifiermap[i] == keyCode)
-		{
+    for (int i = 0; i < 8 * modmap->max_keypermod; ++i) {
+        if (modmap->modifiermap[i] == keyCode) {
 			result = (1 << (i / modmap->max_keypermod));
 			break;
 		}
@@ -56,8 +54,9 @@ Keyboard::Keyboard(AppWindow *appWindow) :
 
 	m_keys.clear();
 
-	if (!m_appWindow)
+    if (!m_appWindow) {
 		O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
 
 	m_aquired = False;
 

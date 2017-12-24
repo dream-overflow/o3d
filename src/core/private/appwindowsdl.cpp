@@ -626,4 +626,9 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 	}
 }
 
+void AppWindow::processMotionEvent(EventType eventType, MotionEventData &eventData)
+{
+
+}
+
 #endif // O3D_SDL2

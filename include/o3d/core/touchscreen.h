@@ -27,6 +27,9 @@ public:
 
     O3D_DECLARE_CLASS(TouchScreen)
 
+    //! Long tap minimum duration in millisecond;
+    const Int32 LONG_TAP_DURATION = 500;
+
     //! Default constructor.
     TouchScreen(BaseObject *parent = nullptr);
 
@@ -47,35 +50,47 @@ public:
     inline Bool isMultiTouch() const { return m_multiTouch; }
 
     //! Set the last touch screen local position.
-    void setPosition(Int32 index, Float x, Float y);
+    void setPosition(UInt32 index, Float x, Float y, Float pressure, Int64 time);
+    //! Set the state up or down of the pointer.
+    void setPointerState(UInt32 index, Bool down, Float x, Float y, Float pressure, Int64 time);
 
-    //! Set the touch up.
-    void setUp();
-
-    //! Set the touch down.
-    void setDown();
-
-    //! Set the touch pointer up.
-    void setPointerUp(Float pressure);
-
-    //! Set the touch pointer down.
-    void setPointerDown(Float pressure);
+    //! Is the pointer up.
+    Bool isPointerUp(UInt32 index = 0) const;
+    //! Is the pointer down.
+    Bool isPointerDown(UInt32 index = 0) const;
+    //! Is the pointer state.
+    Bool getPointerState(UInt32 index = 0) const;
 
     //! Get the local coordinates.
-    inline Vector2f getPosition() const { return m_pos; }
+    Vector2f getPosition(UInt32 index = 0) const;
+
+    //! Get the pressure.
+    Float getPressure(UInt32 index = 0) const;
 
     //! Get the X local coordinates.
-    inline Float getPositionX() const { return m_pos.x(); }
+    Float getPositionX(UInt32 index = 0) const;
     //! Get the Y local coordinates.
-    inline Float getPositionY() const { return m_pos.y(); }
+    Float getPositionY(UInt32 index = 0) const;
 
     //! Get the delta distance since the last update.
-    inline Vector2f getDelta() const { return m_deltaPos; }
+    Vector2f getDelta(UInt32 index = 0) const;
 
     //! Get the X delta.
-    inline Float getDeltaX() const { return m_deltaPos.x(); }
+    Float getDeltaX(UInt32 index = 0) const;
     //! Get the Y delta.
-    inline Float getDeltaY() const { return m_deltaPos.y(); }
+    Float getDeltaY(UInt32 index = 0) const;
+
+    //! Is a normal tap occurs (less than 500ms).
+    Bool isTap() const;
+
+    //! Is a long tap occurs (greater than 500ms).
+    Bool isLongTap() const;
+
+    //! True if at least two pointer are defined.
+    Bool isZoom() const;
+
+    //! Size of the range when two pointers are defines.
+    Float getSize() const;
 
     //-------------------------------------------------------------------------------
     // virtual
@@ -99,11 +114,28 @@ protected:
 
     AppWindow *m_appWindow;        //!< Related application window.
 
-    Bool m_multiTouch;             //!< Multi-points touch capacity
+    Bool m_aquired;                //!< input acquired by application
+    Bool m_multiTouch;             //!< Multi-touch capacity
 
-    Vector2f m_pos;                //!< Local position.
-    Vector2f m_oldPos;             //!< Previous local position.
-    Vector2f m_deltaPos;           //!< Delta position since last update.
+    struct Pointer
+    {
+        Pointer();
+
+        Vector2f pos;                //!< Local position.
+        Vector2f oldPos;             //!< Previous local position.
+        Vector2f deltaPos;           //!< Delta position since last update.
+
+        Bool pointer;                //!< Pointer state (True down, False up).
+        Int8 tap;
+
+        Float pressure, oldPressure;
+        Float deltaPressure;
+
+        Int64 time;
+        Int64 downTime;
+    };
+
+    std::vector<Pointer> m_pointers;
 
     void commonInit(Int32 xlimit, Int32 ylimit);
 };
@@ -116,11 +148,39 @@ class TouchScreenEvent
 {
 public:
 
-    TouchScreenEvent() {}
+    enum Type
+    {
+        TYPE_NONE = 0,
+        TYPE_POINTER_UP = 1,
+        TYPE_POINTER_DOWN = 2
+    };
+
+    TouchScreenEvent(Type type, Float x, Float y, Float pressure, Int64 time) :
+        m_type(type),
+        m_pos(x, y),
+        m_pressure(pressure),
+        m_time(time)
+    {
+    }
+
+    inline Bool isPointerUp() const { return m_type == TYPE_POINTER_UP; }
+    inline Bool isPointerDown() const { return m_type == TYPE_POINTER_DOWN; }
+
+    inline Bool getPointerState() const { return m_type == TYPE_POINTER_DOWN ? True : False; }
+
+    inline Float getPressure() const { return m_pressure; }
+
+    inline Int64 getTime() const { return m_time; }
+
+    inline Vector2f getPosition() const { return m_pos; }
 
 private:
-};
 
+    Type m_type;
+    Vector2f m_pos;
+    Float m_pressure;
+    Int64 m_time;
+};
 
 } // namespace o3d
 

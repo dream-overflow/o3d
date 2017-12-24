@@ -33,28 +33,165 @@ static Bool windowReady = False;
 
 static int32_t handleInput(struct android_app* app, AInputEvent* event)
 {
-    AppWindow::EventData eventData;
-    eventData.time = AMotionEvent_getEventTime(event);
-
     AppWindow *appWindow = Application::getAppWindow(reinterpret_cast<_HWND>(app->window));
 
+    Int32 source = AInputEvent_getSource(event);
+    Int32 sourceClass = source & AINPUT_SOURCE_CLASS_MASK;
+    // AINPUT_SOURCE_KEYBOARD ...
+
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+        if (!appWindow) {
+            return 1;
+        }
+
+        AppWindow::MotionEventData eventData;
+
+        eventData.time = AMotionEvent_getEventTime(event);
         size_t pointerCount = AMotionEvent_getPointerCount(event);
 
-        for (size_t i = 0; i < pointerCount; ++i) {
-            eventData.fx = AMotionEvent_getX(event, i);
-            eventData.fy = AMotionEvent_getY(event, i);
-            eventData.x = i;
+        // AMOTION_EVENT_TOOL_TYPE_UNKNOWN 	unknown
+        // AMOTION_EVENT_TOOL_TYPE_FINGER 	finger
+        // AMOTION_EVENT_TOOL_TYPE_STYLUS 	stylus
+        // AMOTION_EVENT_TOOL_TYPE_MOUSE 	mouse
+        // AMOTION_EVENT_TOOL_TYPE_ERASER 	eraser
 
-            if (appWindow) {
-                appWindow->processEvent(AppWindow::EVT_TOUCH_MOVE, eventData);
-            }
+        Int32 action = AMotionEvent_getAction(event);
+        // AMotionEvent_getDownTime(event);
+        // AMotionEvent_getEdgeFlags(event);
+        // AMotionEvent_getMetaState(event);
+
+        // AMOTION_EVENT_AXIS_X ...
+        // AMOTION_EVENT_EDGE_FLAG_NONE ...
+
+        // Int32 flags = AMotionEvent_getFlags(event);  // AMOTION_EVENT_FLAG_WINDOW_IS_OBSCURED
+
+        for (size_t i = 0; i < pointerCount; ++i) {
+            Int32 pointerId = AMotionEvent_getPointerId(event, i);
+            Int32 toolType = AMotionEvent_getToolType(event, i);
+
+            AppWindow::MotionData pointer;
+
+            pointer.x = AMotionEvent_getX(event, i);
+            pointer.y = AMotionEvent_getY(event, i);
+            pointer.p = AMotionEvent_getPressure(event, i);
+
+            eventData.array.push_back(pointer);
+
+            // AMotionEvent_getAxisValue(event, AXIS, i); => :
+            // AMOTION_EVENT_AXIS_VSCROLL
+            // AMOTION_EVENT_AXIS_HSCROLL
+            // AMOTION_EVENT_AXIS_Z
+
+            // eventData.fx = AMotionEvent_getToolMajor(event, i);
+            // eventData.fy = AMotionEvent_getTouchMinor(event, i);
+            // eventData.fz = AMotionEvent_getSize(event, i);
+
+            // AMotionEvent_getOrientation(event);  what for us ?
+        }
+
+        // action pointer that is not the primary event
+        Int32 pointIndex2 = action >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+        if (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) {
+            pointIndex2 = action >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+        }
+
+        // action event
+        switch(action & AMOTION_EVENT_ACTION_MASK) {
+            case AMOTION_EVENT_ACTION_CANCEL:
+                O3D_MESSAGE("cancel motion");
+                break;
+
+            case AMOTION_EVENT_ACTION_DOWN:
+                appWindow->processMotionEvent(AppWindow::EVT_TOUCH_POINTER_DOWN, eventData);
+                break;
+
+            case AMOTION_EVENT_ACTION_UP:
+                appWindow->processMotionEvent(AppWindow::EVT_TOUCH_POINTER_UP, eventData);
+                break;
+
+            case AMOTION_EVENT_ACTION_POINTER_DOWN:
+                appWindow->processMotionEvent(AppWindow::EVT_TOUCH_POINTER_DOWN, eventData);
+                break;
+
+            case AMOTION_EVENT_ACTION_POINTER_UP:
+                appWindow->processMotionEvent(AppWindow::EVT_TOUCH_POINTER_UP, eventData);
+                break;
+
+            case AMOTION_EVENT_ACTION_MOVE:
+                appWindow->processMotionEvent(AppWindow::EVT_TOUCH_MOVE, eventData);
+                break;
+
+            case AMOTION_EVENT_ACTION_SCROLL:
+                // appWindow->processMotionEvent(AppWindow::EVT_TOUCH_SCROLL, eventData); how to ?
+                break;
+
+            case AMOTION_EVENT_ACTION_HOVER_ENTER:
+                // appWindow->processMotionEvent(AppWindow::EVT_HOVER_ENTER, eventData); @todo
+                break;
+
+            case AMOTION_EVENT_ACTION_HOVER_EXIT:
+                // appWindow->processMotionEvent(AppWindow::EVT_HOVER_EXIT, eventData); @todo
+                break;
+
+            case AMOTION_EVENT_ACTION_BUTTON_PRESS:
+                // AMOTION_EVENT_BUTTON_PRIMARY ...
+                eventData.buttons = (UInt32)AMotionEvent_getButtonState(event);
+//                if (toolType == AMOTION_EVENT_TOOL_TYPE_MOUSE) {
+//                    appWindow->processMotionEvent(AppWindow::EVT_MOUSE_BUTTON_DOWN, eventData);
+//                } else {
+//                    // @todo
+//                }
+                break;
+
+            case AMOTION_EVENT_ACTION_BUTTON_RELEASE:
+                eventData.buttons = (UInt32)AMotionEvent_getButtonState(event);
+//                if (toolType == AMOTION_EVENT_TOOL_TYPE_MOUSE) {
+//                    appWindow->processMotionEvent(AppWindow::EVT_MOUSE_BUTTON_UP, eventData);
+//                } else {
+//                    // @todo
+//                }
+                break;
+
+            default:
+                break;
         }
 
         return 1;
     } else if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-        O3D_ALOG("Received key event: %d", AKeyEvent_getKeyCode(event));
-        // @todo key events
+        if (!appWindow) {
+            return 1;
+        }
+
+        AppWindow::EventData eventData;
+        eventData.time = AKeyEvent_getEventTime(event);
+
+        Int32 flags = AKeyEvent_getFlags(event);
+        Int32 action = AKeyEvent_getAction(event);
+
+        // AKEY_STATE_UP AKEY_STATE_DOWN AKEY_STATE_VIRTUAL
+
+        // interest into a long press key
+        if ((flags & AKEY_EVENT_FLAG_LONG_PRESS) == AKEY_EVENT_FLAG_LONG_PRESS) {
+            // @todo
+        } else if ((flags & AKEY_EVENT_FLAG_CANCELED_LONG_PRESS) == AKEY_EVENT_FLAG_CANCELED_LONG_PRESS) {
+            // or canceled
+        }
+
+        // AKEY_EVENT_FLAG_CANCELED could be interesting too
+
+        eventData.key = (UInt32)AKeyEvent_getKeyCode(event);
+        eventData.unicode = (UInt32)AKeyEvent_getKeyCode(event);
+        eventData.w = AKeyEvent_getRepeatCount(event);
+        eventData.h = AKeyEvent_getMetaState(event);  // AMETA_NONE ...
+
+        if (action == AKEY_EVENT_ACTION_DOWN) {
+            appWindow->processEvent(AppWindow::EVT_KEYDOWN, eventData);
+        } else if (action == AKEY_EVENT_ACTION_UP) {
+            appWindow->processEvent(AppWindow::EVT_KEYDOWN, eventData);
+        } else if (action == AKEY_EVENT_ACTION_MULTIPLE) {
+            // not clear... to test
+        }
+
         return 1;
     }
 

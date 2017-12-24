@@ -19,6 +19,7 @@
 #include "objects.h"
 #include "memorydbg.h"
 #include "vector2.h"
+#include "stringlist.h"
 
 #include "../image/image.h"
 
@@ -36,6 +37,65 @@ class Image;
 class O3D_API AppWindow : public EvtHandler, NonCopyable<>
 {
 public:
+
+    //! Application window event types.
+    enum EventType
+    {
+        EVT_CREATE,
+        EVT_CLOSE,
+        EVT_DESTROY,
+        EVT_MAXIMIZE,
+        EVT_MINIMIZE,
+        EVT_RESTORE,
+        EVT_RESIZE,
+        EVT_MOVE,
+        EVT_MOUSE_GAIN,
+        EVT_MOUSE_LOST,
+        EVT_INPUT_FOCUS_GAIN,
+        EVT_INPUT_FOCUS_LOST,
+        EVT_UPDATE,
+        EVT_PAINT,
+        EVT_KEYDOWN,
+        EVT_KEYUP,
+        EVT_CHARDOWN,
+        EVT_CHARUP,
+        EVT_MOUSE_BUTTON_DOWN,
+        EVT_MOUSE_BUTTON_UP,
+        EVT_MOUSE_MOTION,
+        EVT_MOUSE_WHEEL,
+        EVT_TOUCH_POINTER_DOWN,
+        EVT_TOUCH_MOVE,
+        EVT_TOUCH_POINTER_UP,
+    };
+
+    //! Application window common event data.
+    struct EventData
+    {
+        Float fx, fy, fz;
+        Int32 x, y;
+        Int32 w, h;
+        UInt32 button;
+        UInt32 unicode;
+        UInt32 key;
+        UInt32 character;
+        Int64 time;
+    };
+
+    struct MotionData
+    {
+        Float x, y;
+        Float p;
+        Float s;
+        Float M, m;
+    };
+
+    //! Application window input motion event data
+    struct MotionEventData
+    {
+        std::vector<MotionData> array;
+        Int32 buttons;
+        Int64 time;
+    };
 
     //! Possibles color formats.
     enum ColorFormats
@@ -295,7 +355,7 @@ public:
 	void logFps();
 
 	//! Report FPS statistics.
-	String report() const;
+    T_StringList report() const;
 
 	//-------------------------------------------------------------------------------
 	// Virtual callback default behaviors.
@@ -324,15 +384,12 @@ public:
 	//! Mouse wheel rotation virtual callback.
 	virtual void callBackMouseWheel();
 	//! Mouse button state change virtual callback.
-	virtual void callBackMouseButton(
-		Mouse::Buttons button,
-		Bool pressed,
-		Bool dblClick);
+    virtual void callBackMouseButton(Mouse::Buttons button, Bool pressed, Bool dblClick);
 
     //! Touch-screen motion virtual callback.
     virtual void callBackTouchScreenMotion();
     //! Touch-screen change virtual callback.
-    virtual void callBackTouchScreenChange();
+    virtual void callBackTouchScreenChange(TouchScreenEvent::Type type, MotionEventData &eventData);
 
 	virtual void callBackCreate();
 	virtual Int32 callBackPaint(void*);
@@ -352,7 +409,7 @@ public:
 	virtual void callBackMouseGain();
 	virtual void callBackMouseLost();
 
-public:
+public /*signals*/:
 
 	//! Keyboard key state change.
     Signal<Keyboard*, KeyEvent> onKey{this}; // keyboard, key event
@@ -410,53 +467,11 @@ public:
 
 public:
 
-    //! Internal event type.
-	enum EventType
-	{
-		EVT_CREATE,
-		EVT_CLOSE,
-		EVT_DESTROY,
-		EVT_MAXIMIZE,
-		EVT_MINIMIZE,
-		EVT_RESTORE,
-		EVT_RESIZE,
-		EVT_MOVE,
-		EVT_MOUSE_GAIN,
-		EVT_MOUSE_LOST,
-		EVT_INPUT_FOCUS_GAIN,
-		EVT_INPUT_FOCUS_LOST,
-		EVT_UPDATE,
-		EVT_PAINT,
-		EVT_KEYDOWN,
-		EVT_KEYUP,
-		EVT_CHARDOWN,
-		EVT_CHARUP,
-		EVT_MOUSE_BUTTON_DOWN,
-		EVT_MOUSE_BUTTON_UP,
-		EVT_MOUSE_MOTION,
-        EVT_MOUSE_WHEEL,
-        EVT_TOUCH_DOWN,
-        EVT_TOUCH_POINTER_DOWN,
-        EVT_TOUCH_MOVE,
-        EVT_TOUCH_POINTER_UP,
-        EVT_TOUCH_UP
-	};
-
-    //! Internal event struct.
-	struct EventData
-	{
-        Float fx, fy;
-		Int32 x, y;
-		Int32 w, h;
-		UInt32 button;
-		UInt32 unicode;
-		UInt32 key;
-        UInt32 character;
-        Int64 time;
-	};
-
-    //! Internally process a window event.
+    //! Process an event onto this windows and its inputs
 	void processEvent(EventType eventType, EventData &eventData);
+
+    //! Process a motion event onto this windows and its inputs
+    void processMotionEvent(EventType eventType, MotionEventData &eventData);
 
 protected:
 

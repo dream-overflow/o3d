@@ -689,6 +689,11 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 	}
 }
 
+void AppWindow::processMotionEvent(EventType eventType, MotionEventData &eventData)
+{
+
+}
+
 inline WPARAM translateWmKey(WPARAM wParam, LPARAM lParam)
 {
     if (wParam == VK_SHIFT) {

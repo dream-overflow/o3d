@@ -443,41 +443,10 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
             callBackMouseLost();
             break;
 
-        case EVT_TOUCH_DOWN:
-            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
-                m_inputManager.getTouchScreen()->setDown();
-                callBackTouchScreenChange();
-            }
-            break;
-        case EVT_TOUCH_POINTER_DOWN:
-            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
-                m_inputManager.getTouchScreen()->setPointerDown(eventData.fx);
-                callBackTouchScreenChange();
-            }
-            break;
-        case EVT_TOUCH_MOVE:
-            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
-                m_inputManager.getTouchScreen()->setPosition(eventData.x, eventData.fx, eventData.fy);
-                callBackTouchScreenMotion();
-            }
-            break;
-        case EVT_TOUCH_POINTER_UP:
-            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
-                m_inputManager.getTouchScreen()->setPointerUp(eventData.fx);
-                callBackTouchScreenChange();
-            }
-            break;
-        case EVT_TOUCH_UP:
-            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
-                m_inputManager.getTouchScreen()->setUp();
-                callBackTouchScreenChange();
-            }
-            break;
-
         case EVT_MOUSE_BUTTON_DOWN:
             {
-                Bool dblClick;
-/*
+/*                Bool dblClick;
+
                 switch (eventData.button) {
                     // left button
                     case Button1:
@@ -622,6 +591,59 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 
                 Bool repeat = m_inputManager.getKeyboard()->isKeyDown(vkey);
                 callBackCharacter(vkey, character, static_cast<WChar>(eventData.unicode), repeat);
+            }
+            break;
+
+        default:
+            break;
+    }
+}
+
+void AppWindow::processMotionEvent(EventType eventType, MotionEventData &eventData)
+{
+    switch(eventType) {
+        case EVT_TOUCH_POINTER_DOWN:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                for (UInt32 i = 0; i < eventData.array.size(); ++i) {
+                    m_inputManager.getTouchScreen()->setPointerState(
+                            i,
+                            True,
+                            eventData.array[i].x,
+                            eventData.array[i].y,
+                            eventData.array[i].p,
+                            eventData.time);
+                }
+
+                callBackTouchScreenChange(TouchScreenEvent::TYPE_POINTER_DOWN, eventData);
+            }
+            break;
+        case EVT_TOUCH_MOVE:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                for (UInt32 i = 0; i < eventData.array.size(); ++i) {
+                    m_inputManager.getTouchScreen()->setPosition(
+                            i,
+                            eventData.array[i].x,
+                            eventData.array[i].y,
+                            eventData.array[i].p,
+                            eventData.time);
+                }
+
+                callBackTouchScreenMotion();
+            }
+            break;
+        case EVT_TOUCH_POINTER_UP:
+            if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
+                for (UInt32 i = 0; i < eventData.array.size(); ++i) {
+                    m_inputManager.getTouchScreen()->setPointerState(
+                            i,
+                            False,
+                            eventData.array[i].x,
+                            eventData.array[i].y,
+                            eventData.array[i].p,
+                            eventData.time);
+                }
+
+                callBackTouchScreenChange(TouchScreenEvent::TYPE_POINTER_UP, eventData);
             }
             break;
 

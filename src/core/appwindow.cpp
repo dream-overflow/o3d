@@ -8,9 +8,9 @@
  */
 
 #include "o3d/core/precompiled.h"
+
 #include "o3d/core/appwindow.h"
 
-#include "o3d/core/architecture.h"
 #include "o3d/core/wintools.h"
 #include "o3d/core/application.h"
 #include "o3d/core/display.h"
@@ -321,12 +321,13 @@ void AppWindow::callBackTouchScreenMotion()
     }
 }
 
-void AppWindow::callBackTouchScreenChange()
+void AppWindow::callBackTouchScreenChange(TouchScreenEvent::Type type, MotionEventData &eventData)
 {
     if (m_inputManager.isInput(Input::INPUT_TOUCHSCREEN)) {
         TouchScreen *touchScreen = static_cast<TouchScreen*>(m_inputManager.getInput(Input::INPUT_TOUCHSCREEN));
-        // DEFAULT @todo
-        onTouchScreenChange(touchScreen, TouchScreenEvent());
+        // DEFAULT
+        MotionData &primary = eventData.array[0];
+        onTouchScreenChange(touchScreen, TouchScreenEvent(type, primary.x, primary.y, primary.p, eventData.time));
     }
 }
 
@@ -577,26 +578,20 @@ void AppWindow::logFps()
 }
 
 // Report FPS statistics.
-String AppWindow::report() const
+T_StringList AppWindow::report() const
 {
 	Float sum = 0;
 	Float moy = 0;
 	Float equart = 0;
 	UInt32 i;
 
-	String msg;
+    T_StringList result;
+    String msg;
 
-	msg = "Parameters : Interval size=";
-	msg.concat(m_interval);
-	msg += "\n\n";
+    result.push_back(String("Parameters : Interval size={0}").arg(m_interval));
 
     for (i = 0; i < m_interval; ++i) {
-		msg += "Interval ";
-		msg.concat(i);
-		msg += " : FPS=";
-		msg.concat(m_framesList[i]);
-		msg += "\n";
-
+        result.push_back(String("> Interval {0} : FPS={1}").arg(i).arg(m_framesList[i]));
 		sum += m_framesList[i];
 	}
 
@@ -612,12 +607,10 @@ String AppWindow::report() const
         equart = Math::sqrt(equart/m_interval);
     }
 
-	msg += "\n- Esperance=";
-	msg.concat(moy);
-	msg += "\n- Standard Deviation=";
-	msg.concat(equart);
+    result.push_back(String("- Esperance={0}").arg(moy));
+    result.push_back(String("- Standard Deviation={0}").arg(equart));
 
-	return msg;
+    return result;
 }
 
 // Get the average FPS.
