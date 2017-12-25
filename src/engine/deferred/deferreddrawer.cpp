@@ -14,7 +14,7 @@
 #include "o3d/engine/object/primitive.h"
 #include "o3d/engine/object/geometrydata.h"
 
-#include "o3d/core/architecture.h"
+#include "o3d/core/gl.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/glextensionmanager.h"
 #include "o3d/engine/scene/sceneobjectmanager.h"
@@ -396,7 +396,7 @@ void DeferredDrawer::processLight(Light *light)
                 Float length = light->getLength();
                 Float radius = light->getRadius();
 
-                printf("r=%f l=%f\n", radius, length);
+                // System::print(String::print("r=%f l=%f\n", radius, length));
 
                 // Directional wire cone (Z aligned)
                 Matrix4 m;
@@ -493,7 +493,7 @@ void DeferredDrawer::processLight(Light *light)
                 m_spotLight.shader.unbindShader();
             }
         } else if (light->getLightType() == Light::LIGHT_MAP) {
-            // TODO
+            // @todo
         }
     }
 }
@@ -546,9 +546,11 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     drawInfo.setFromCamera(&camera);
 
     context.disableStencilTest();
+    context.enableDepthWrite();
+    context.setDefaultDepthTest();
     context.setDefaultDepthFunc();
 
-    // landscape
+    // landscape @todo drawInfo
     getScene()->getLandscape()->draw();
 
     // world objects
@@ -586,11 +588,10 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
 
     context.disableDepthTest();
 
-    // TODO what are the effective ligth, depends of the visibility, indoor, outdoor...
+    // @todo what are the effective ligth, depends of the visibility, indoor, outdoor...
     const String lights[] = { "light1" , "light2", "light3", "light4" };
 
     context.blending().setFunc(Blending::ONE__ONE);
-    drawInfo.pass = DrawInfo::LIGHTING_PASS;
 
     for (UInt32 i = 0; i < 4; ++i) {
         Light *light = dynamicCast<Light*>(getScene()->getSceneObjectManager()->searchName(lights[i]));
@@ -603,7 +604,7 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     // Post effects
     //
 
-    // TODO maybe the post effect can replace the last step of blitting/drawing
+    // @todo maybe the post effect can replace the last step of blitting/drawing
     if (m_gbuffer->getAuxColorMap() &&
         m_gbuffer->getAuxColorMap()->getTextureType() == TEXTURE_2D &&
         m_gbuffer->getNumSamples() <= 1) {
@@ -633,10 +634,11 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
 //        context.setAntiAliasing(Context::AA_NONE);
 //    }
 
-    // TODO if MSAA need to have a shaders supporting them
+    // @todo if MSAA need to have a shaders supporting them
     // and same for the non blitting method shader
 
-    if (m_blitting) { // && m_gbuffer->getNumSamples() <= 1) {
+    // @todo how to have blit working with GLES
+    if (GL::getType() != GL::API_GLES_3 && m_blitting) { // && m_gbuffer->getNumSamples() <= 1) {
         m_gbuffer->draw();
     } else {
         // use the same projection as lighting

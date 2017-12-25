@@ -86,12 +86,12 @@ public:
      */
     enum Profiles
     {
-        PROFILE_CHEAP,
-        PROFILE_STANDARD,
-        PROFILE_OPTIMAL
+        PROFILE_LOW,
+        PROFILE_MEDIUM,
+        PROFILE_HIGH
     };
 
-    //! Constructor.
+    //! Constructor. Set a medium profile.
     GBuffer(BaseObject *parent);
 
     //! Destructor, call release.

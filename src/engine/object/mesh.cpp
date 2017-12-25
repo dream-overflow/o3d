@@ -51,8 +51,9 @@ Mesh::Mesh(const Mesh &dup):
 	UInt32 numProfiles = static_cast<UInt32>(dup.m_matProfiles.size());
 	setNumMaterialProfiles(numProfiles);
 
-	for (UInt32 i = 0; i < numProfiles; ++i)
+    for (UInt32 i = 0; i < numProfiles; ++i) {
 		*m_matProfiles[i] = *dup.m_matProfiles[i];
+    }
 }
 
 // Virtual destructor.
@@ -61,8 +62,9 @@ Mesh::~Mesh()
 	// delete any profiles
 	UInt32 numProfiles = static_cast<UInt32>(m_matProfiles.size());
 
-	for (UInt32 i = 0; i < numProfiles; ++i)
+    for (UInt32 i = 0; i < numProfiles; ++i) {
 		deletePtr(m_matProfiles[i]);
+    }
 }
 
 // Copy operator.
@@ -80,8 +82,9 @@ Mesh& Mesh::operator=(const Mesh &dup)
 	UInt32 numProfiles = static_cast<UInt32>(dup.m_matProfiles.size());
 	setNumMaterialProfiles(numProfiles);
 
-	for (UInt32 i = 0; i < numProfiles; ++i)
+    for (UInt32 i = 0; i < numProfiles; ++i) {
 		*m_matProfiles[i] = *dup.m_matProfiles[i];
+    }
 
 	return *this;
 }
@@ -99,28 +102,29 @@ void Mesh::setMeshData(MeshData *meshData)
 void Mesh::setNumMaterialProfiles(UInt32 numProfiles)
 {
 	// delete more techniques
-	if (m_matProfiles.size() > static_cast<size_t>(numProfiles))
-	{
-		for (size_t i = numProfiles; i < m_matProfiles.size(); ++i)
+    if (m_matProfiles.size() > static_cast<size_t>(numProfiles)) {
+        for (size_t i = numProfiles; i < m_matProfiles.size(); ++i) {
 			deletePtr(m_matProfiles[i]);
+        }
 	}
 
 	size_t oldSize = m_matProfiles.size();
 	m_matProfiles.resize(numProfiles);
 
 	// add more techniques
-	if (oldSize < static_cast<size_t>(numProfiles))
-	{
-		for (size_t i = oldSize; i < numProfiles; ++i)
+    if (oldSize < static_cast<size_t>(numProfiles)) {
+        for (size_t i = oldSize; i < numProfiles; ++i) {
 			m_matProfiles[i] = new MaterialProfile(this);
+        }
 	}
 }
 
 // Get the profile at a specified index (correspond to a sub-mesh index) (read only).
 const MaterialProfile& Mesh::getMaterialProfile(UInt32 index) const
 {
-	if (static_cast<size_t>(index) >= m_matProfiles.size())
+    if (static_cast<size_t>(index) >= m_matProfiles.size()) {
 		O3D_ERROR(E_IndexOutOfRange("Profile index"));
+    }
 
 	return *m_matProfiles[index];
 }
@@ -128,8 +132,9 @@ const MaterialProfile& Mesh::getMaterialProfile(UInt32 index) const
 // Get the profile at a specified index (correspond to a sub-mesh index).
 MaterialProfile& Mesh::getMaterialProfile(UInt32 index)
 {
-	if (static_cast<size_t>(index) >= m_matProfiles.size())
+    if (static_cast<size_t>(index) >= m_matProfiles.size()) {
 		O3D_ERROR(E_IndexOutOfRange("Profile index"));
+    }
 	
 	return *m_matProfiles[index];	
 }
@@ -139,49 +144,47 @@ void Mesh::initMaterialProfiles()
 {
 	UInt32 numProfiles = static_cast<UInt32>(m_matProfiles.size());
 
-	for (UInt32 i = 0; i < numProfiles; ++i)
+    for (UInt32 i = 0; i < numProfiles; ++i) {
 		m_matProfiles[i]->prepareAndCompile(*this);
+    }
 }
 
 // Check the global bounding box with an AABBox
 Geometry::Clipping Mesh::checkBounding(const AABBox &bbox) const
 {
-	if (m_meshData && m_meshData->getGeometry())
-	{
+    if (m_meshData && m_meshData->getGeometry()) {
 		GeometryData::BoundingMode mode = m_meshData->getGeometry()->getBoundingMode();
 
-		if (mode == GeometryData::BOUNDING_BOXEXT)
-		{
+        if (mode == GeometryData::BOUNDING_BOXEXT) {
 			// use the world space bounding box, that was previously
 			// transformed on an update
-			if (bbox.include(m_boundingBox))
+            if (bbox.include(m_boundingBox)) {
 				return Geometry::CLIP_INSIDE;
-			else if (bbox.intersect(m_boundingBox))
+            } else if (bbox.intersect(m_boundingBox)) {
 				return Geometry::CLIP_INTERSECT;
-			else
+            } else {
 				return Geometry::CLIP_OUTSIDE;
-		}
-		else if (mode == GeometryData::BOUNDING_BOX)
-		{
+            }
+        } else if (mode == GeometryData::BOUNDING_BOX) {
 			// use the world space bounding box, that was previously
 			// transformed on an update
-			if (bbox.include(*reinterpret_cast<const AABBox*>(&m_boundingBox)))
+            if (bbox.include(*reinterpret_cast<const AABBox*>(&m_boundingBox))) {
 				return Geometry::CLIP_INSIDE;
-			else if (bbox.intersect(*reinterpret_cast<const AABBox*>(&m_boundingBox)))
+            } else if (bbox.intersect(*reinterpret_cast<const AABBox*>(&m_boundingBox))) {
 				return Geometry::CLIP_INTERSECT;
-			else
+            } else {
 				return Geometry::CLIP_OUTSIDE;
-		}
-		else if (mode == GeometryData::BOUNDING_SPHERE)
-		{
+            }
+        } else if (mode == GeometryData::BOUNDING_SPHERE) {
 			// use the world space bounding sphere, that was previously
 			// transformed on an update
-			if (bbox.include(m_boundingSphere))
+            if (bbox.include(m_boundingSphere)) {
 				return Geometry::CLIP_INSIDE;
-			else if (bbox.intersect(m_boundingSphere))
+            } else if (bbox.intersect(m_boundingSphere)) {
 				return Geometry::CLIP_INTERSECT;
-			else
+            } else {
 				return Geometry::CLIP_OUTSIDE;
+            }
 		}
 	}
 
@@ -191,51 +194,48 @@ Geometry::Clipping Mesh::checkBounding(const AABBox &bbox) const
 // Check the global bounding box with an infinite plane
 Geometry::Clipping Mesh::checkBounding(const Plane &plane) const
 {
-	if (m_meshData && m_meshData->getGeometry())
-	{
+    if (m_meshData && m_meshData->getGeometry()) {
 		GeometryData::BoundingMode mode = m_meshData->getGeometry()->getBoundingMode();
 
-		if (mode == GeometryData::BOUNDING_BOXEXT)
-		{
+        if (mode == GeometryData::BOUNDING_BOXEXT) {
 			// use the world space bounding box, that was previously
 			// transformed on an update
 			Bool front = m_boundingBox.clipFront(plane);
 			Bool back = m_boundingBox.clipBack(plane);
 
-			if (!front && back)
+            if (!front && back) {
 				return Geometry::CLIP_INSIDE;
-			else if (front && back)
+            } else if (front && back) {
 				return Geometry::CLIP_INTERSECT;
-			else
+            } else {
 				return Geometry::CLIP_OUTSIDE;
-		}
-		else if (mode == GeometryData::BOUNDING_BOX)
-		{
+            }
+        } else if (mode == GeometryData::BOUNDING_BOX) {
 			// use the world space bounding box, that was previously
 			// transformed on an update
 			Bool front = reinterpret_cast<const AABBox*>(&m_boundingBox)->clipFront(plane);
 			Bool back = reinterpret_cast<const AABBox*>(&m_boundingBox)->clipBack(plane);
 
-			if (!front && back)
+            if (!front && back) {
 				return Geometry::CLIP_INSIDE;
-			else if (front && back)
+            } else if (front && back) {
 				return Geometry::CLIP_INTERSECT;
-			else
+            } else {
 				return Geometry::CLIP_OUTSIDE;
-		}
-		else if (mode == GeometryData::BOUNDING_SPHERE)
-		{
-			// use the world space bounding sphere, that was previously
+            }
+        } else if (mode == GeometryData::BOUNDING_SPHERE) {
+            // use the world space bounding sphere, that was previously
 			// transformed on an update
 			Bool front = m_boundingSphere.clipFront(plane);
 			Bool back = m_boundingSphere.clipBack(plane);
 
-			if (!front && back)
+            if (!front && back) {
 				return Geometry::CLIP_INSIDE;
-			else if (front && back)
+            } else if (front && back) {
 				return Geometry::CLIP_INTERSECT;
-			else
+            } else {
 				return Geometry::CLIP_OUTSIDE;
+            }
 		}
 	}
 
@@ -245,24 +245,18 @@ Geometry::Clipping Mesh::checkBounding(const Plane &plane) const
 // Check the global bounding volume with the frustum.
 Geometry::Clipping Mesh::checkFrustum(const Frustum &frustum) const
 {
-	if (m_meshData && m_meshData->getGeometry())
-	{
+    if (m_meshData && m_meshData->getGeometry()) {
 		GeometryData::BoundingMode mode = m_meshData->getGeometry()->getBoundingMode();
 
-		if (mode == GeometryData::BOUNDING_BOXEXT)
-		{
+        if (mode == GeometryData::BOUNDING_BOXEXT) {
 			// use the world space bounding box, that was previously
 			// transformed on an update
 			return frustum.boxInFrustum(m_boundingBox);
-		}
-		else if (mode == GeometryData::BOUNDING_BOX)
-		{
+        } else if (mode == GeometryData::BOUNDING_BOX) {
 			// use the world space bounding box, that was previously
 			// transformed on an update
 			return frustum.boxInFrustum(*reinterpret_cast<const AABBox*>(&m_boundingBox));
-		}
-		else if (mode == GeometryData::BOUNDING_SPHERE)
-		{
+        } else if (mode == GeometryData::BOUNDING_SPHERE) {
 			// use the world space bounding sphere, that was previously
 			// transformed on an update
 			return frustum.sphereInFrustum(
@@ -285,48 +279,41 @@ void Mesh::update()
 {
 	clearUpdated();
 
-	if (m_node && (m_node->hasUpdated()))
-	{
+    if (m_node && (m_node->hasUpdated())) {
 		m_boundingDirty = True;
 		setUpdated();
 	}
 
-	if (m_boundingDirty)
+    if (m_boundingDirty) {
 		updateBounding();
+    }
 }
 
 // Update the global bounding volume.
 void Mesh::updateBounding()
 {
-	if (!m_boundingDirty)
+    if (!m_boundingDirty) {
 		return;
+    }
 
-	if (m_meshData && m_meshData->getGeometry())
-	{
-		if (m_node)
-		{
-			if (m_meshData->getGeometry()->getBoundingMode() == GeometryData::BOUNDING_SPHERE)
-			{
+    if (m_meshData && m_meshData->getGeometry()) {
+        if (m_node) {
+            if (m_meshData->getGeometry()->getBoundingMode() == GeometryData::BOUNDING_SPHERE) {
 				m_meshData->getGeometry()->getBSphere().applyTransform(
 						m_node->getAbsoluteMatrix(),
 						m_boundingSphere);
-			}
-			else
-			{
+            } else {
 				m_localBoundingBox = m_meshData->getGeometry()->getAABBoxExt();
 				m_boundingBox = m_localBoundingBox.transformTo(m_node->getAbsoluteMatrix());
 			}
-		}
-		else
-		{
-			if (m_meshData->getGeometry()->getBoundingMode() == GeometryData::BOUNDING_SPHERE)
+        } else {
+            if (m_meshData->getGeometry()->getBoundingMode() == GeometryData::BOUNDING_SPHERE) {
 				m_boundingSphere = m_meshData->getGeometry()->getBSphere();
-			else
+            } else {
 				m_boundingBox = m_localBoundingBox = m_meshData->getGeometry()->getAABBoxExt();
+            }
 		}
-	}
-	else
-	{
+    } else {
 		m_localBoundingBox.destroy();
 		m_boundingBox.destroy();
 	}
@@ -339,32 +326,26 @@ void Mesh::drawSymbolics()
 {
 	// Draw primitives
 	if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME) ||
-		getScene()->getDrawObject(Scene::DRAW_MESH_LOCAL_AXIS))
-	{
+        getScene()->getDrawObject(Scene::DRAW_MESH_LOCAL_AXIS)) {
+
 		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
 
-		// camera space TODO with current modelview, push pop...
+        // camera space @todo with current modelview, push pop...
 		getScene()->getContext()->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
 
 		// draw its global bounding volume
-		if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME))
-		{
+        if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME)) {
 			GeometryData::BoundingMode mode = m_meshData->getGeometry()->getBoundingMode();
 
-			if (mode == GeometryData::BOUNDING_BOXEXT)
-			{
+            if (mode == GeometryData::BOUNDING_BOXEXT) {
 				// use the world space bounding box, that was previously
 				// transformed on an update
 				primitive->boundingBox(m_boundingBox);
-			}
-			else if (mode == GeometryData::BOUNDING_BOX)
-			{
+            } else if (mode == GeometryData::BOUNDING_BOX) {
 				// use the world space bounding box, that was previously
 				// transformed on an update
 				primitive->boundingBox(*reinterpret_cast<AABBox*>(&m_boundingBox));
-			}
-			else if (mode == GeometryData::BOUNDING_SPHERE)
-			{
+            } else if (mode == GeometryData::BOUNDING_SPHERE) {
 				// use the world space bounding sphere, that was previously
 				// transformed on an update
 				primitive->boundingSphere(m_boundingSphere);
@@ -372,8 +353,7 @@ void Mesh::drawSymbolics()
 		}
 
 		// draw local axis
-		if (getScene()->getDrawObject(Scene::DRAW_MESH_LOCAL_AXIS))
-		{
+        if (getScene()->getDrawObject(Scene::DRAW_MESH_LOCAL_AXIS)) {
 			// object space
 			getScene()->getContext()->modelView().mult(m_node->getAbsoluteMatrix());
 
@@ -385,20 +365,24 @@ void Mesh::drawSymbolics()
 // Draw pass
 void Mesh::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
 	// mesh data ?
-	if (!m_meshData || !m_meshData->getGeometry())
+    if (!m_meshData || !m_meshData->getGeometry()) {
 		return;
+    }
 
 	// draw mesh ?
-	if (!getScene()->getDrawObject((Scene::DrawObjectType)getDrawType()))
+    if (!getScene()->getDrawObject((Scene::DrawObjectType)getDrawType())) {
 		return;
+    }
 
 	// draw symbolics
-	if (drawInfo.pass == DrawInfo::AMBIENT_PASS)
+    if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
 		drawSymbolics();
+    }
 
 	// distance of the mesh from the camera
 	Float squaredDistance = getDistanceFrom(
@@ -414,12 +398,10 @@ void Mesh::draw(const DrawInfo &drawInfo)
     // setup modelview matrix
     setUpModelView();
 
-	for (UInt32 i = 0; i < numProfiles; ++i)
-	{
+    for (UInt32 i = 0; i < numProfiles; ++i) {
 		profile = m_matProfiles[i];
 
-		if (profile && profile->getActivity())
-		{
+        if (profile && profile->getActivity()) {
 			MaterialTechnique *technique = profile->getBestTechnique(squaredDistance);
 
 			// bind the face array for the current sub-mesh
@@ -427,19 +409,21 @@ void Mesh::draw(const DrawInfo &drawInfo)
 			m_faceArrayId = i;
 
 			// If picking pass, force in internal array mode
-			if (drawInfo.pass == DrawInfo::PICKING_PASS)
+            if (drawInfo.pass == DrawInfo::PICKING_PASS) {
                 m_shadableInfo.faceArray = nullptr;
+            }
 
 			// process the technique
-			if (technique)
+            if (technique) {
 				technique->processMaterial(*this, this, this, drawInfo);
+            }
 
 			// draw the symbolic only on AMBIENT_PASS
-			if (drawInfo.pass == DrawInfo::AMBIENT_PASS)
-			{
+            if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
 				// processing the rendering of local space immediately
-				if (getScene()->getDrawObject(Scene::DRAW_LOCAL_SPACE))
+                if (getScene()->getDrawObject(Scene::DRAW_LOCAL_SPACE)) {
 					m_meshData->getGeometry()->drawLocalSpace();
+                }
 			}
 		}
 	}
@@ -448,44 +432,36 @@ void Mesh::draw(const DrawInfo &drawInfo)
 // Process all faces
 void Mesh::processAllFaces(Shadable::ProcessingPass pass)
 {
-	if (!m_meshData)
+    if (!m_meshData) {
 		return;
+    }
 
-	if (pass == Shadable::PREPARE_GEOMETRY)
-	{
+    if (pass == Shadable::PREPARE_GEOMETRY) {
 		// bind the external face array
-		if (isExternalFaceArray())
-		{
+        if (isExternalFaceArray()) {
 			UInt32 first,last;
 			FaceArray *faceArray = getFaceArrayToProcess(first, last);
 
-			if (faceArray)
-			{
+            if (faceArray) {
 				// bind an external face array before process
 				m_meshData->getGeometry()->bindExternalFaceArray(faceArray);
 			}
 		}
-	}
-	else if (pass == Shadable::PROCESS_GEOMETRY)
-	{
+    } else if (pass == Shadable::PROCESS_GEOMETRY) {
 		// external face array
-		if (isExternalFaceArray())
-		{
+        if (isExternalFaceArray()) {
 			UInt32 first, last;
 			FaceArray *faceArray = getFaceArrayToProcess(first, last);
 
-			if (faceArray)
-			{
+            if (faceArray) {
 				// draw the external face array
 				m_meshData->getGeometry()->drawPart(faceArray, first, last);
 			}
 
 			// and reset for the next process
 			useInternalFaceArray();
-		}
-		// internal face array
-		else
-		{
+        } else {
+            // internal face array
 			// draw the bound face array
 			m_meshData->getGeometry()->draw();
 		}
@@ -495,21 +471,23 @@ void Mesh::processAllFaces(Shadable::ProcessingPass pass)
 //Access to a currently active vertex element.
 VertexElement* Mesh::getVertexElement(VertexAttributeArray type) const
 {
-	if (m_meshData)
+    if (m_meshData) {
 		return m_meshData->getGeometry()->getElement(type);
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Access to the currently active face array.
 FaceArray* Mesh::getFaceArray() const
 {
-	if (m_shadableInfo.faceArray)
+    if (m_shadableInfo.faceArray) {
 		return m_shadableInfo.faceArray;
-	else if (m_meshData)
+    } else if (m_meshData) {
 		return m_meshData->getGeometry()->getFaceArray(m_faceArrayId);
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Make an operation.
@@ -517,12 +495,13 @@ void Mesh::operation(Operations what)
 {
 	O3D_ASSERT(m_meshData.isValid());
 
-	if ((what == TANGENT_SPACE) && m_meshData.isValid())
+    if ((what == TANGENT_SPACE) && m_meshData.isValid()) {
 		m_meshData->genTangentSpace();
-	else if ((what == NORMALS) && m_meshData.isValid())
+    } else if ((what == NORMALS) && m_meshData.isValid()) {
 		m_meshData->genNormals();
-	else if ((what == CREATE) && m_meshData.isValid())
+    } else if ((what == CREATE) && m_meshData.isValid()) {
 		m_meshData->createGeometry();
+    }
 }
 
 // Is an operation is already done. For example ask if the tangent space is defined,
@@ -530,41 +509,43 @@ Bool Mesh::isOperation(Operations what) const
 {
 	O3D_ASSERT(m_meshData.isValid());
 
-	if ((what == TANGENT_SPACE) && m_meshData.isValid() && m_meshData->getGeometry())
+    if ((what == TANGENT_SPACE) && m_meshData.isValid() && m_meshData->getGeometry()) {
 		return m_meshData->getGeometry()->isTangentSpace();
-	else if ((what == NORMALS) && m_meshData.isValid() && m_meshData->getGeometry())
+    } else if ((what == NORMALS) && m_meshData.isValid() && m_meshData->getGeometry()) {
 		return m_meshData->getGeometry()->isNormals();
-	else if ((what == CREATE) && m_meshData.isValid() && m_meshData->getGeometry())
+    } else if ((what == CREATE) && m_meshData.isValid() && m_meshData->getGeometry()) {
 		return m_meshData->getGeometry()->isValid();
-	else
+    } else {
 		return False;
+    }
 }
 
 // Get the matrix array for hardware skinning/rigging
 const Float* Mesh::getMatrixArray() const
 {
-	return NULL;
+    return nullptr;
 }
 
 // Get the minimal square distance of the object bounding volume from the given point.
 Float Mesh::getDistanceFrom(const Vector3 &point) const
 {
-	if (m_meshData && m_meshData->getGeometry())
-	{
-		if (m_meshData->getGeometry()->getBoundingMode() == GeometryData::BOUNDING_SPHERE)
+    if (m_meshData && m_meshData->getGeometry()) {
+        if (m_meshData->getGeometry()->getBoundingMode() == GeometryData::BOUNDING_SPHERE) {
 			return (point - m_boundingSphere.getCenter()).squareLength() - o3d::sqr(m_boundingSphere.getRadius());
-		else
+        } else {
 			return (point - m_boundingBox.clamp(point)).squareLength() - o3d::sqr(m_boundingBox.getRadius());
-	}
-	else
+        }
+    } else {
 		return 0.0f;
+    }
 }
 
 // bind a specified array
 void Mesh::attribute(VertexAttributeArray mode, UInt32 location)
 {
-	if (m_meshData)
+    if (m_meshData) {
 		m_meshData->getGeometry()->attribute(mode, location);
+    }
 }
 
 #include "o3d/engine/object/light.h"
@@ -574,17 +555,19 @@ void Mesh::attribute(VertexAttributeArray mode, UInt32 location)
 // Project the silhouette according the a specific light.
 void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if (m_meshData && m_capacities.getBit(STATE_SHADOW_CASTER))
-	{
+    if (m_meshData && m_capacities.getBit(STATE_SHADOW_CASTER)) {
 		FaceArray *faceArray = getFaceArray();
-		if (!faceArray)
+        if (!faceArray) {
 			return;
+        }
 
-		if (!faceArray->isEdgeArray())
+        if (!faceArray->isEdgeArray()) {
 			faceArray->computeEdges();
+        }
 
 		// Get the edges for the current bound face array.
 		const EdgeArray &edgeArray = faceArray->getEdgeArray();
@@ -593,16 +576,11 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 
 		// Get the light vector.
 		Vector4 lightVec;
-		if (drawInfo.light.type == Light::POINT_LIGHT)
-		{
+        if (drawInfo.light.type == Light::POINT_LIGHT) {
 			lightVec = m_node->getAbsoluteMatrix().invertStd() * drawInfo.light.worldPos;
-		}
-		else if (drawInfo.light.type == Light::SPOT_LIGHT)
-		{
+        } else if (drawInfo.light.type == Light::SPOT_LIGHT) {
 			lightVec = m_node->getAbsoluteMatrix().invertStd() * drawInfo.light.worldPos;
-		}
-		else if (drawInfo.light.type == Light::DIRECTIONAL_LIGHT)
-		{
+        } else if (drawInfo.light.type == Light::DIRECTIONAL_LIGHT) {
 			lightVec = m_node->getAbsoluteMatrix().invertStd() * drawInfo.light.worldPos;
 		}
 
@@ -610,8 +588,9 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 		VertexElement *verticesElements = getVertexElement(V_VERTICES_ARRAY);
 		const Float *vertices = verticesElements->lockArray(0, 0);
 
-		if (!vertices)
+        if (!vertices) {
 			return;
+        }
 
 		// Project the silhouette according to the light.
 		Vector3 v1, v2, v3;
@@ -623,10 +602,8 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 		const UInt32 numTriangles = triangles.getNumTriangles();
 		ArrayUInt8 facingLight(numTriangles);
 
-		// TODO only recompute the light has moved, the mesh has moved or its vertices (skin or geometry) was update.
-
-		for (FaceArrayIterator it = triangles.begin(); it != triangles.end(); ++it)
-		{
+        // @todo only recompute the light has moved, the mesh has moved or its vertices (skin or geometry) was update.
+        for (FaceArrayIterator it = triangles.begin(); it != triangles.end(); ++it) {
 			v1.set(&vertices[it.a*3]);
 			v2.set(&vertices[it.b*3]);
 			v3.set(&vertices[it.c*3]);
@@ -639,8 +616,9 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 			NdotL = F * lightVec;
 
 			// light is facing the triangle
-			if (NdotL > 0.f)
+            if (NdotL > 0.f) {
 				facingLight[it.id] = 1;
+            }
 		}
 
 		// 4 vertices by edge is the max...
@@ -648,19 +626,15 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 		Vector4 v11, v22, v33, v44;
 
 		// compute the list of triangles
-		for (UInt32 i = 0; i < numEdges; ++i)
-		{
+        for (UInt32 i = 0; i < numEdges; ++i) {
 			const EdgeArray::Edge &edge = edges[i];
 			// TODO 2 triangles and not a quad
 
-			if (edge.triangleIndex[0] != edge.triangleIndex[1])
-			{
-				if (facingLight[edge.triangleIndex[0]] != facingLight[edge.triangleIndex[1]])
-				{
+            if (edge.triangleIndex[0] != edge.triangleIndex[1]) {
+                if (facingLight[edge.triangleIndex[0]] != facingLight[edge.triangleIndex[1]]) {
 					//printf("%i %i\n", edge.triangleIndex[0], edge.triangleIndex[1]);
 
-					if (facingLight[edge.triangleIndex[0]] == 1)
-					{
+                    if (facingLight[edge.triangleIndex[0]] == 1) {
 						// add vertices
 						v11 = Vector4(Vector3(&vertices[edge.vertexIndex[1]*3]), 1.f);
 						v22 = Vector4(Vector3(&vertices[edge.vertexIndex[0]*3]), 1.f);
@@ -676,9 +650,7 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 
 						shadowVertices.pushArray(v33.getData(), 4);
 						shadowVertices.pushArray(v44.getData(), 4);
-					}
-					else
-					{
+                    } else {
 						// add vertices
 						v11 = Vector4(Vector3(&vertices[edge.vertexIndex[0]*3]), 1.f);
 						v22 = Vector4(Vector3(&vertices[edge.vertexIndex[1]*3]), 1.f);
@@ -696,11 +668,8 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 						shadowVertices.pushArray(v44.getData(), 4);
 					}
 				}
-			}
-			else
-			{
-				if (facingLight[edge.triangleIndex[0]] == 1)
-				{
+            } else {
+                if (facingLight[edge.triangleIndex[0]] == 1) {
 					/*// add vertices
 					// add vertices
 					v11 = O3DVector4(O3DVector3(&vertices[edge.vertexIndex[1]*3]), 1.f);
@@ -717,9 +686,7 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 
 					shadowVertices.pushArray(v33.getData(), 4);
 					shadowVertices.pushArray(v44.getData(), 4);*/
-				}
-				else
-				{
+                } else {
 					/*// add vertices
 					v11 = O3DVector4(O3DVector3(&vertices[edge.vertexIndex[0]*3]), 1.f);
 					v22 = O3DVector4(O3DVector3(&vertices[edge.vertexIndex[1]*3]), 1.f);
@@ -798,10 +765,8 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 			//getScene()->drawArrays(GL_QUADS, 0, shadowVertices.getSize()/4);
 
 			glDisable(GL_STENCIL_TEST_TWO_SIDE_EXT);
-*/		}
-		// caps
-		else
-		{
+*/		} else {
+            // caps
 			getScene()->getContext()->setCullingMode(CULLING_FRONT_FACE);
 			glStencilOp(GL_KEEP, GL_INCR, GL_KEEP);
 
@@ -839,11 +804,13 @@ void Mesh::projectSilhouette(const DrawInfo &drawInfo)
 // serialization
 Bool Mesh::writeToFile(OutStream &os)
 {
-	if (!m_meshData)
+    if (!m_meshData) {
         O3D_ERROR(E_InvalidPrecondition("Undefined meshdata"));
+    }
 
-    if (!ShadableObject::writeToFile(os))
+    if (!ShadableObject::writeToFile(os)) {
 		return False;
+    }
 
 	// write used meshdata info
     os << *m_meshData.get();
@@ -852,23 +819,26 @@ Bool Mesh::writeToFile(OutStream &os)
 	UInt32 numProfiles = static_cast<UInt32>(m_matProfiles.size());
     os << numProfiles;
 
-	for (UInt32 i = 0; i < numProfiles; ++i)
+    for (UInt32 i = 0; i < numProfiles; ++i) {
         os << *m_matProfiles[i];
+    }
 
 	return True;
 }
 
 Bool Mesh::readFromFile(InStream &is)
 {
-    if (!ShadableObject::readFromFile(is))
+    if (!ShadableObject::readFromFile(is)) {
 		return False;
+    }
 
 	// load the meshdata
     m_meshData = getScene()->getMeshDataManager()->readMeshData(is);
 
 	// not found ? then error
-	if (!m_meshData)
+    if (!m_meshData) {
         O3D_ERROR(E_InvalidParameter("Unable to load the MeshData"));
+    }
 
 	// read any material profiles
 	UInt32 numProfiles;
@@ -876,8 +846,9 @@ Bool Mesh::readFromFile(InStream &is)
 
 	setNumMaterialProfiles(numProfiles);
 
-	for (UInt32 i = 0; i < numProfiles; ++i)
+    for (UInt32 i = 0; i < numProfiles; ++i) {
         is >> *m_matProfiles[i];
+    }
 
 	m_faceArrayId = 0;
 

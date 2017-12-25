@@ -71,7 +71,7 @@ void main()
 	alphaTest(diffuse.a);
 #endif
 #else
-	o_diffuse = u_diffuse;
+    o_diffuse = u_diffuse;
 #endif
 #endif
 
@@ -104,4 +104,3 @@ void main()
     // vertex position
     o_position = io_position;
 }
-

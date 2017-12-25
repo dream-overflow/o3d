@@ -82,7 +82,7 @@ GBuffer::GBuffer(BaseObject *parent) :
     m_fbo(getScene()->getContext()),
     m_drawBuffers(getScene()->getContext())
 {
-    setProfile(PROFILE_STANDARD);
+    setProfile(PROFILE_MEDIUM);
 
     for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i) {
         m_buffers[i].texture.setUser(this);
@@ -164,7 +164,7 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
         if (getScene()->getRenderer()->getVersion() >= 400) {
             m_buffers[COLOR_BUFFER].type = COLOR_BUFFER;
             m_buffers[COLOR_BUFFER].actif = True;
-            if (profile == PROFILE_CHEAP) {
+            if (profile == PROFILE_LOW) {
                 m_buffers[COLOR_BUFFER].format = FORMAT_8;
             } else {
                 m_buffers[COLOR_BUFFER].format = FORMAT_16F;
@@ -172,7 +172,7 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[AUX_COLOR_BUFFER].type = AUX_COLOR_BUFFER;
             m_buffers[AUX_COLOR_BUFFER].actif = False;
-            if (profile == PROFILE_CHEAP) {
+            if (profile == PROFILE_LOW) {
                 m_buffers[AUX_COLOR_BUFFER].format = FORMAT_8;
             } else {
                 m_buffers[AUX_COLOR_BUFFER].format = FORMAT_16F;
@@ -196,7 +196,7 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[DEPTH_BUFFER].type = DEPTH_BUFFER;
             m_buffers[DEPTH_BUFFER].actif = True;
-            if (profile == PROFILE_OPTIMAL) {
+            if (profile == PROFILE_HIGH) {
                 m_buffers[DEPTH_BUFFER].format = FORMAT_32F_8;
             } else {
                 m_buffers[DEPTH_BUFFER].format = FORMAT_24_8;
@@ -204,13 +204,17 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[POSITION_BUFFER].type = POSITION_BUFFER;
             m_buffers[POSITION_BUFFER].actif = True;
-            m_buffers[POSITION_BUFFER].format = FORMAT_32F;
+            if (profile == PROFILE_LOW) {
+                m_buffers[POSITION_BUFFER].format = FORMAT_16F;
+            } else {
+                m_buffers[POSITION_BUFFER].format = FORMAT_32F;
+            }
 
             return;
         } else if (getScene()->getRenderer()->getVersion() >= 300) {
             m_buffers[COLOR_BUFFER].type = COLOR_BUFFER;
             m_buffers[COLOR_BUFFER].actif = True;
-            if (profile == PROFILE_CHEAP) {
+            if (profile == PROFILE_LOW) {
                 m_buffers[COLOR_BUFFER].format = FORMAT_8;
             } else {
                 m_buffers[COLOR_BUFFER].format = FORMAT_16F;
@@ -218,7 +222,7 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[AUX_COLOR_BUFFER].type = AUX_COLOR_BUFFER;
             m_buffers[AUX_COLOR_BUFFER].actif = False;
-            if (profile == PROFILE_CHEAP) {
+            if (profile == PROFILE_LOW) {
                 m_buffers[AUX_COLOR_BUFFER].format = FORMAT_8;
             } else {
                 m_buffers[AUX_COLOR_BUFFER].format = FORMAT_16F;
@@ -242,7 +246,7 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[DEPTH_BUFFER].type = DEPTH_BUFFER;
             m_buffers[DEPTH_BUFFER].actif = True;
-            if (profile == PROFILE_OPTIMAL) {
+            if (profile == PROFILE_HIGH) {
                 m_buffers[DEPTH_BUFFER].format = FORMAT_32F_8;
             } else {
                 m_buffers[DEPTH_BUFFER].format = FORMAT_24_8;
@@ -250,7 +254,11 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[POSITION_BUFFER].type = POSITION_BUFFER;
             m_buffers[POSITION_BUFFER].actif = True;
-            m_buffers[POSITION_BUFFER].format = FORMAT_32F;
+            if (profile == PROFILE_LOW) {
+                m_buffers[POSITION_BUFFER].format = FORMAT_16F;
+            } else {
+                m_buffers[POSITION_BUFFER].format = FORMAT_32F;
+            }
 
             return;
         }
@@ -258,7 +266,7 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
         if (getScene()->getRenderer()->getVersion() >= 300) {
             m_buffers[COLOR_BUFFER].type = COLOR_BUFFER;
             m_buffers[COLOR_BUFFER].actif = True;
-            if (profile == PROFILE_CHEAP) {
+            if (profile == PROFILE_LOW) {
                 m_buffers[COLOR_BUFFER].format = FORMAT_8;
             } else {
                 m_buffers[COLOR_BUFFER].format = FORMAT_16F;
@@ -266,7 +274,7 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[AUX_COLOR_BUFFER].type = AUX_COLOR_BUFFER;
             m_buffers[AUX_COLOR_BUFFER].actif = False;
-            if (profile == PROFILE_CHEAP) {
+            if (profile == PROFILE_LOW) {
                 m_buffers[AUX_COLOR_BUFFER].format = FORMAT_8;
             } else {
                 m_buffers[AUX_COLOR_BUFFER].format = FORMAT_16F;
@@ -290,19 +298,18 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[DEPTH_BUFFER].type = DEPTH_BUFFER;
             m_buffers[DEPTH_BUFFER].actif = True;
-            if (profile == PROFILE_OPTIMAL) {
+            if (profile == PROFILE_HIGH) {
                 m_buffers[DEPTH_BUFFER].format = FORMAT_32F_8;
             } else {
                 m_buffers[DEPTH_BUFFER].format = FORMAT_24_8;
             }
 
-            // @todo
             m_buffers[POSITION_BUFFER].type = POSITION_BUFFER;
             m_buffers[POSITION_BUFFER].actif = True;
-            if (profile == PROFILE_OPTIMAL) {
-                m_buffers[DEPTH_BUFFER].format = FORMAT_16F; //FORMAT_32F;
+            if (profile == PROFILE_HIGH) {
+                m_buffers[POSITION_BUFFER].format = FORMAT_32F;
             } else {
-                m_buffers[DEPTH_BUFFER].format = FORMAT_16F; //FORMAT_32F;
+                m_buffers[POSITION_BUFFER].format = FORMAT_16F;
             }
 
             return;
@@ -465,7 +472,7 @@ void GBuffer::clear()
     if (m_drawBuffers.getCount()) {
         m_drawBuffers.apply();
 
-        GLfloat zeros[] = { 0.f, 0.f, 0.f, 0.f };
+        const GLfloat zeros[] = { 0.f, 0.f, 0.f, 0.f };
 
         // ambient with context background color
         glClearBufferfv(GL_COLOR, 0, getScene()->getContext()->getBackgroundColor().getData()); // ambient
@@ -476,8 +483,8 @@ void GBuffer::clear()
         }
     }
 
-    GLfloat one = 1.f;
-    GLint zero = 0;
+    const GLfloat one = 1.f;
+    const GLint zero = 0;
 
     glClearBufferfv(GL_DEPTH, 0, &one);
     glClearBufferiv(GL_STENCIL, 0, &zero);
@@ -492,7 +499,7 @@ void GBuffer::clearDepth()
             O3D_ERROR(E_InvalidOperation("FBO must be bound"));
 //        }
     } else {
-        GLfloat one = 1.f;
+        const GLfloat one = 1.f;
         glClearBufferfv(GL_DEPTH, 0, &one);
     }
 }
@@ -502,7 +509,7 @@ void GBuffer::clearColors()
     if (!m_fbo.isBound()) {
         O3D_ERROR(E_InvalidOperation("FBO must be bound"));
     } else if (m_drawBuffers.getCount()) {
-        GLfloat zeros[] = { 0.f, 0.f, 0.f, 0.f };
+        const GLfloat zeros[] = { 0.f, 0.f, 0.f, 0.f };
 
         // ambient with context background color
         glClearBufferfv(GL_COLOR, 0, getScene()->getContext()->getBackgroundColor().getData());
@@ -569,7 +576,7 @@ void GBuffer::draw()
 {
     Box2i box(Vector2i(0, 0), m_fbo.getDimension());
 
-    //GLuint buffers = {GL_COLOR_ATTACHMENT0};
+    //const GLuint buffers = {GL_COLOR_ATTACHMENT0};
     //glDrawBuffers(1, buffers);
 
     // default is already to color0

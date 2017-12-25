@@ -77,5 +77,5 @@ void main()
     o_position = io_position;
     o_normal.xyz = normalize(io_normal);
     // shine
-    o_normal.w = 1;
+    o_normal.w = 1.0;
 }

@@ -535,45 +535,39 @@ void LambertMaterial::processDeferred(
 	ShaderInstance &shader = m_shaderInstance[0];
 	Context *glContext = getScene()->getContext();
 
-	if ((m_initMode == DEFERRED) && shader.isOperational())
-	{
+    if ((m_initMode == DEFERRED) && shader.isOperational()) {
 		shader.bindShader();
 
         object.processAllFaces(Shadable::PREPARE_GEOMETRY);
 
-        if (m_ambientMap)
-        {
+        if (m_ambientMap) {
             materialPass.assignMapSetting(MaterialPass::AMBIENT_MAP);
             shader.setConstTexture(u_ambientMap, materialPass.getAmbientMap(), 0);
         }
         shader.setConstColor(u_ambient, materialPass.getAmbient());
 
-		if (m_diffuseMap)
-		{
+        if (m_diffuseMap) {
 			materialPass.assignMapSetting(MaterialPass::DIFFUSE_MAP);
             shader.setConstTexture(u_diffuseMap[0], materialPass.getDiffuseMap(), 1);
-		}
-		else
+        } else {
 			shader.setConstColor(u_diffuse[0], materialPass.getDiffuse());
+        }
 
-		if (m_specularMap)
-		{
+        if (m_specularMap) {
 			materialPass.assignMapSetting(MaterialPass::SPECULAR_MAP);
             shader.setConstTexture(u_specularMap[0], materialPass.getSpecularMap(), 2);
-		}
-		else
+        } else {
 			shader.setConstColor(u_specular[0], materialPass.getSpecular());
+        }
 
-        if (m_shineMap)
-        {
+        if (m_shineMap) {
             materialPass.assignMapSetting(MaterialPass::SHINE_MAP);
             shader.setConstTexture(u_shineMap[0], materialPass.getShineMap(), 3);
-        }
-        else
+        } else {
             shader.setConstFloat(u_shine[0], materialPass.getShine());
+        }
 
-        if (m_ambientMap || m_diffuseMap || m_specularMap || m_shineMap)
-		{
+        if (m_ambientMap || m_diffuseMap || m_specularMap || m_shineMap) {
 			object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1[0]);
 		}
 
@@ -596,8 +590,7 @@ void LambertMaterial::processDeferred(
 		object.attribute(V_NORMALS_ARRAY, V_NORMALS_ARRAY);
 
 		// rigging
-        if ((a_rigging[0] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
+        if ((a_rigging[0] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING)) {
             shader.setNConstMatrix4(
                     u_bonesMatrixArray[0],
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
@@ -605,10 +598,8 @@ void LambertMaterial::processDeferred(
                     object.getMatrixArray());
 
             object.attribute(V_RIGGING_ARRAY, a_rigging[0]);
-        }
-        // skinning
-        else if ((a_skinning[0] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
+        } else if ((a_skinning[0] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING)) {
+            // skinning
             shader.setNConstMatrix4(
                     u_bonesMatrixArray[0],
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
@@ -621,40 +612,33 @@ void LambertMaterial::processDeferred(
 
 		object.processAllFaces(Shadable::PROCESS_GEOMETRY);
 
-        if (m_ambientMap)
-        {
+        if (m_ambientMap) {
             glContext->setActiveTextureUnit(0);
             glContext->bindTexture(TEXTURE_2D, 0);
         }
 
-		if (m_diffuseMap)
-		{
+        if (m_diffuseMap) {
             glContext->setActiveTextureUnit(1);
 			glContext->bindTexture(TEXTURE_2D, 0);
 		}
 
-		if (m_specularMap)
-		{
+        if (m_specularMap) {
             glContext->setActiveTextureUnit(2);
 			glContext->bindTexture(TEXTURE_2D, 0);
 		}
 
-        if (m_shineMap)
-        {
+        if (m_shineMap) {
             glContext->setActiveTextureUnit(3);
             glContext->bindTexture(TEXTURE_2D, 0);
         }
 
-
-        if (m_ambientMap || m_diffuseMap || m_specularMap || m_shineMap)
+        if (m_ambientMap || m_diffuseMap || m_specularMap || m_shineMap) {
 			glContext->disableVertexAttribArray(a_texCoords1[0]);
-
-        if ((a_rigging[0] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
-            glContext->disableVertexAttribArray(a_rigging[0]);
         }
-        else if ((a_skinning[0] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
+
+        if ((a_rigging[0] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING)) {
+            glContext->disableVertexAttribArray(a_rigging[0]);
+        } else if ((a_skinning[0] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING)) {
             glContext->disableVertexAttribArray(a_skinning[0]);
             glContext->disableVertexAttribArray(a_weighting[0]);
         }
@@ -665,4 +649,3 @@ void LambertMaterial::processDeferred(
 		shader.unbindShader();
 	}
 }
-

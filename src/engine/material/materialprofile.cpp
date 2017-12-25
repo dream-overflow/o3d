@@ -337,10 +337,10 @@ void MaterialProfile::clear()
 {
     // prepare and compile all chosen techniques
     size_t numTechniques = m_activeTechniques.size();
-    for (size_t i = 0; i < numTechniques; ++i)
-    {
-        if (m_activeTechniques[i])
+    for (size_t i = 0; i < numTechniques; ++i) {
+        if (m_activeTechniques[i]) {
             m_activeTechniques[i]->clear();
+        }
     }
 }
 
@@ -348,19 +348,21 @@ void MaterialProfile::clear()
 MaterialTechnique* MaterialProfile::getBestTechnique(Float squaredDistance)
 {
 	UInt32 lodIndex = getLodIndex(squaredDistance);
-	if (lodIndex < static_cast<UInt32>(m_activeTechniques.size()))
+    if (lodIndex < static_cast<UInt32>(m_activeTechniques.size())) {
 		return m_activeTechniques[lodIndex];
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Get the LOD index for a specific distance (squared distance value).
 UInt32 MaterialProfile::getLodIndex(Float squaredDistance) const
 {
-	if (m_lodStrategy)
+    if (m_lodStrategy) {
 		return m_lodStrategy->getIndex(squaredDistance, m_lodList);
-	else
+    } else {
 		return 0;
+    }
 }
 
 #include "o3d/engine/scene/scene.h"
