@@ -64,8 +64,30 @@ Int32 o3d::log2(UInt32 n)
 //---------------------------------------------------------------------------------------
 
 
+//inline static void _enablePerformanceCounter()
+//{
+//#if defined(O3D_ARM64) || defined(O3D_ARM32)
+//    asm ("MCR p15, 0, %0, C9, C14, 0\n\t" :: "r"(1));
+//    asm ("MCR p15, 0, %0, C9, C14, 2\n\t" :: "r"(0x8000000f));
+//#endif
+//}
+
+//inline static void _disablePerformanceCounter()
+//{
+//#if defined(O3D_ARM64) || defined(O3D_ARM32)
+//    asm ("MCR p15, 0, %0, C9, C14, 0\n\t" :: "r"(0));
+//    asm ("MCR p15, 0, %0, C9, C14, 2\n\t" :: "r"(0x0000000f));
+//#endif
+//}
+
+#if defined(O3D_ARM32) || defined(O3D_ARM64)
+#include <sys/time.h>
+#endif
+
 //! return processor cycles numbers
-//! @note ARM : https://stackoverflow.com/questions/40454157/is-there-an-equivalent-instruction-to-rdtsc-in-arm
+//! @note ARM : http://liuluheng.github.io/wiki/public_html/Embedded-System/Cortex-A8/Performance%20Monitor%20Control%20Register.html
+//! and http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0344k/Bgbjjhaj.html
+//! that is not working on Android devices, so try with a clock_gettime (to be continued...)
 #ifdef _MSC_VER
 #pragma warning(once: 4035)
 #endif
@@ -92,13 +114,19 @@ inline static UInt64 _getCycleNumber()
     __asm__ volatile ("rdtsc" : "=a"(a), "=d"(d));
     return a | (d << 32);
   #elif defined(O3D_ARM64)
-    UInt64 pmccntr;
-    __asm__ volatile ("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
-    return pmccntr * 64;
+    // UInt64 value;
+    // asm volatile ("MRC p15, 0, %0, c9, c13, 0\t\n": "=r"(value));
+    // return value;
+    struct timespec time;
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &time);
+    return (UInt64)time.tv_sec * 1000000000LL + (UInt64)time.tv_nsec;
   #elif defined(O3D_ARM32)
-    UInt32 pmccntr;
-    __asm__ volatile ("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
-    return pmccntr * 64;
+    // UInt32 value;
+    // asm volatile ("MRC p15, 0, %0, c9, c13, 0\t\n": "=r"(value));
+    // return (UInt64)value;
+    struct timespec time;
+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &time);
+    return (UInt64)time.tv_sec * 1000000000LL + (UInt64)time.tv_nsec;
   #else
     #error "<< Unknown architecture ! >>"
   #endif
@@ -110,12 +138,10 @@ inline static UInt64 _getCycleNumber()
 // return approximate processor frequency in MHz
 Float System::getProcessorFrequency()
 {
-#ifdef O3D_ANDROID
-    return 0.f;
-#endif
-
     Int64 t1, t2, tf;
     UInt64 c1, c2;
+
+    // _enablePerformanceCounter();
 
 	tf = System::getTimeFrequency();
 	t1 = System::getTime();
@@ -138,11 +164,13 @@ Float System::getProcessorFrequency()
 #else
     // __APPLE__, ARM...
 	volatile Int32 i;
-	for (i=O3D_PROC_FREQ_LOOP; i--;) {}
+    for (i = O3D_PROC_FREQ_LOOP; i--;) {}
 #endif
 
     c2 = _getCycleNumber();
     t2 = System::getTime();
+
+    // _disablePerformanceCounter();
 
 	// return an approximate processor frequency
     return ((Float)((c2 - c1 + 1) * tf) / (Float)(t2 - t1) / System::getTimeFrequency()) * 1000.f;
@@ -171,4 +199,31 @@ void System::checking()
 #endif
 
     static_assert(True == true && False == false, "Invalid Bool const values");
+}
+
+System::Plateform System::getPlatform()
+{
+#ifdef O3D_ANDROID
+    return PLATEFORM_ANDROID;
+#elif defined(O3D_WINDOWS)
+    return PLATEFORM_WINDOWS;
+#elif defined(O3D_LINUX)
+    return PLATEFORM_LINUX;
+#elif defined(O3D_MACOSX)
+    return PLATEFORM_MACOSX;
+#endif
+}
+
+// @todo how to be more specific, windows tablet vs phone, android tablet vs phone
+System::Profile System::getProfile()
+{
+#ifdef O3D_ANDROID
+    return PROFILE_MOBILE;
+#elif defined(O3D_WINDOWS) || defined(O3D_LINUX) || defined(O3D_MACOSX)
+    return PROFILE_DESKTOP;
+#elif defined(O3D_PS4) || defined(O3D_XBOXONE)
+    return PROFILE_CONSOLE_HIGH;
+#elif defined(O3D_SWITCH)
+    return PROFILE_CONSOLE;
+#endif
 }

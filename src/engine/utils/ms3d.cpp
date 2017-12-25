@@ -428,7 +428,7 @@ Bool Ms3d::load(InStream &is, const String& baseName, const String &path)
                 pass.setMaterial(Material::AMBIENT, new AmbientMaterial(m_scene));
                 pass.setMaterial(Material::LIGHTING, new LambertMaterial(m_scene));
 				pass.setMaterial(Material::PICKING, new PickingMaterial(m_scene));
-                pass.setMaterial(Material::DEFERRED, new LambertMaterial(m_scene)); // TODO BumpMaterial
+                pass.setMaterial(Material::DEFERRED, new LambertMaterial(m_scene)); // @todo BumpMaterial
 			}
 		}
 	}

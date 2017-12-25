@@ -420,6 +420,36 @@ public:
     //! wait a delay (in time unit)
     //static void wait(Int64 ms, TimeUnit);
 
+    //-----------------------------------------------------------------------------------
+    // Plateform details
+    //-----------------------------------------------------------------------------------
+
+    enum Plateform
+    {
+        PLATEFORM_ANDROID,
+        PLATEFORM_LINUX,
+        PLATEFORM_WINDOWS,
+        PLATEFORM_MACOSX,
+        PLATEFORM_PS4,
+        PLATEFORM_SWITCH,
+        PLATEFORM_XBOXONE
+    };
+
+    //! Get the plateform type.
+    static Plateform getPlatform();
+
+    enum Profile
+    {
+        PROFILE_DESKTOP,
+        PROFILE_MOBILE,
+        PROFILE_MOBILE_WIDE,
+        PROFILE_CONSOLE,
+        PROFILE_CONSOLE_HIGH
+    };
+
+    //! Get the plateform profile.
+    static Profile getProfile();
+
 	//-----------------------------------------------------------------------------------
 	// CPU methods and informations
 	//-----------------------------------------------------------------------------------

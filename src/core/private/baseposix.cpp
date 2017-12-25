@@ -22,8 +22,7 @@
 using namespace o3d;
 
 // macosx 10.4 no have it, and 10.5 ?
-// Android have issue with clock_gettime
-#if defined(O3D_MACOSX) // || defined(O3D_ANDROID)
+#if defined(O3D_MACOSX)
 	#define HAVE_CLOCK_GETTIME 0
 	#define pthread_yield pthread_yield_np
 #else
@@ -191,7 +190,7 @@ void System::waitMs(Int32 ms)
 
 		} while (result && (errno == EINTR));
 #endif
-	}
+    }
 }
 
 // Print a message on the standard output.

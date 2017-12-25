@@ -235,7 +235,7 @@ GL::GLAPIType GL::getType()
     switch (ms_usedImpl) {
         case IMPL_CUSTOM:
             if (ms_callback) {
-                return GLAPI_CUSTOM;
+                return API_CUSTOM;
             }
             break;
         #ifdef O3D_EGL
@@ -243,18 +243,18 @@ GL::GLAPIType GL::getType()
             return EGL::getType();
         #endif
         case IMPL_GLX_14:
-            return GLAPI_GL;  // desktop always GL
+            return API_GL;  // desktop always GL
         #ifdef O3D_SDL2
         case IMPL_SDL_2:
-            return GLAPI_GL;  // @todo getType
+            return API_GL;  // @todo getType
         #endif
         case IMPL_WGL:
-            return GLAPI_GL;  // desktop always GL
+            return API_GL;  // desktop always GL
         default:
-            return GLAPI_UNDEFINED;
+            return API_UNDEFINED;
     }
 
-    return GLAPI_UNDEFINED;
+    return API_UNDEFINED;
 }
 
 void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)

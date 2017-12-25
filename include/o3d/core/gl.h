@@ -23,10 +23,10 @@ public:
 
     enum GLAPIType
     {
-        GLAPI_UNDEFINED = 0x0,
-        GLAPI_CUSTOM = 0x1,
-        GLAPI_GL = 0x10,
-        GLAPI_GLES_3 = 0x20
+        API_UNDEFINED = 0x0,
+        API_CUSTOM = 0x1,
+        API_GL = 0x10,
+        API_GLES_3 = 0x20
     };
 
     enum Impl

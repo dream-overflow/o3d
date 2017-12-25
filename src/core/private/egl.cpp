@@ -43,7 +43,7 @@ EGLTERMINATEPROC EGL::terminate = nullptr;
 EGLSWAPINTERVALPROC EGL::swapInterval = nullptr;
 
 DynamicLibrary* EGL::ms_egl = nullptr;
-GL::GLAPIType EGL::ms_type = GL::GLAPI_UNDEFINED;
+GL::GLAPIType EGL::ms_type = GL::API_UNDEFINED;
 
 void EGL::init()
 {
@@ -94,12 +94,12 @@ void EGL::init()
     if (!EGL::bindAPI(EGL_OPENGL_API)) {
         O3D_ERROR(E_InvalidResult("EGL is not able to bind a GL API"));
     }
-    ms_type = GL::GLAPI_GL;
+    ms_type = GL::API_GL;
 #elif defined(O3D_ANDROID)
     if (!EGL::bindAPI(EGL_OPENGL_ES_API)) {
         O3D_ERROR(E_InvalidResult("EGL is not able to bind a GLES API"));
     }
-    ms_type = GL::GLAPI_GLES_3;
+    ms_type = GL::API_GLES_3;
 #endif
 }
 

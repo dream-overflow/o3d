@@ -97,57 +97,57 @@ PFNGLISTEXTUREPROC glIsTexture = nullptr;
 PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements = nullptr;
 
 // texture_3d
-PFNGLTEXIMAGE3DPROC	glTexImage3D = nullptr;
-PFNGLTEXSUBIMAGE3DPROC glTexSubImage3D  = nullptr;
+PFNGLTEXIMAGE3DPROC glTexImage3D = nullptr;
+PFNGLTEXSUBIMAGE3DPROC glTexSubImage3D = nullptr;
 #endif // O3D_GL_VERSION_1_2
 
 #ifdef O3D_GL_VERSION_1_3
 // multi-texture extension
-PFNGLACTIVETEXTUREPROC glActiveTexture  = nullptr;
+PFNGLACTIVETEXTUREPROC glActiveTexture = nullptr;
 
 // glCompressedTexImage
-PFNGLCOMPRESSEDTEXIMAGE1DPROC glCompressedTexImage1D  = nullptr;
-PFNGLCOMPRESSEDTEXIMAGE2DPROC glCompressedTexImage2D  = nullptr;
-PFNGLCOMPRESSEDTEXIMAGE3DPROC glCompressedTexImage3D  = nullptr;
-PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC glCompressedTexSubImage3D  = nullptr;
-PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC glCompressedTexSubImage2D  = nullptr;
-PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC glCompressedTexSubImage1D  = nullptr;
-PFNGLGETCOMPRESSEDTEXIMAGEPROC glGetCompressedTexImage  = nullptr;
+PFNGLCOMPRESSEDTEXIMAGE1DPROC glCompressedTexImage1D = nullptr;
+PFNGLCOMPRESSEDTEXIMAGE2DPROC glCompressedTexImage2D = nullptr;
+PFNGLCOMPRESSEDTEXIMAGE3DPROC glCompressedTexImage3D = nullptr;
+PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC glCompressedTexSubImage3D = nullptr;
+PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC glCompressedTexSubImage2D = nullptr;
+PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC glCompressedTexSubImage1D = nullptr;
+PFNGLGETCOMPRESSEDTEXIMAGEPROC glGetCompressedTexImage = nullptr;
 #endif // O3D_GL_VERSION_1_3
 
 #ifdef O3D_GL_VERSION_1_4
 // point_parameters can be used for particles
-PFNGLPOINTPARAMETERFPROC	glPointParameterf	 = nullptr;
-PFNGLPOINTPARAMETERFVPROC	glPointParameterfv	 = nullptr;
-PFNGLPOINTPARAMETERIPROC    glPointParameteri    = nullptr;
-PFNGLPOINTPARAMETERIVPROC   glPointParameteriv   = nullptr;
-PFNGLBLENDFUNCSEPARATEPROC  glBlendFuncSeparate  = nullptr;
-PFNGLMULTIDRAWARRAYSPROC    glMultiDrawArrays    = nullptr;
-PFNGLMULTIDRAWELEMENTSPROC  glMultiDrawElements  = nullptr;
-PFNGLBLENDEQUATIONPROC      glBlendEquation      = nullptr;
+PFNGLPOINTPARAMETERFPROC glPointParameterf = nullptr;
+PFNGLPOINTPARAMETERFVPROC glPointParameterfv = nullptr;
+PFNGLPOINTPARAMETERIPROC glPointParameteri = nullptr;
+PFNGLPOINTPARAMETERIVPROC glPointParameteriv = nullptr;
+PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = nullptr;
+PFNGLMULTIDRAWARRAYSPROC glMultiDrawArrays = nullptr;
+PFNGLMULTIDRAWELEMENTSPROC glMultiDrawElements = nullptr;
+PFNGLBLENDEQUATIONPROC glBlendEquation = nullptr;
 #endif // O3D_GL_VERSION_1_4
 
 #ifdef O3D_GL_VERSION_1_5
 // occlusion_query
-PFNGLGENQUERIESPROC	    glGenQueries	 = nullptr;
-PFNGLISQUERYPROC	    glIsQuery		 = nullptr;
-PFNGLBEGINQUERYPROC	    glBeginQuery	 = nullptr;
-PFNGLENDQUERYPROC	    glEndQuery		 = nullptr;
-PFNGLGETQUERYOBJECTIVPROC glGetQueryObjectiv	 = nullptr;
-PFNGLGETQUERYIVPROC	    glGetQueryiv     	     = nullptr;
-PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv	 = nullptr;
-PFNGLDELETEQUERIESPROC  glDeleteQueries	 = nullptr;
+PFNGLGENQUERIESPROC glGenQueries = nullptr;
+PFNGLISQUERYPROC glIsQuery = nullptr;
+PFNGLBEGINQUERYPROC glBeginQuery = nullptr;
+PFNGLENDQUERYPROC glEndQuery = nullptr;
+PFNGLGETQUERYOBJECTIVPROC glGetQueryObjectiv = nullptr;
+PFNGLGETQUERYIVPROC glGetQueryiv = nullptr;
+PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv = nullptr;
+PFNGLDELETEQUERIESPROC glDeleteQueries = nullptr;
 
 // vertex_buffer_object
-PFNGLBINDBUFFERPROC		glBindBuffer		 = nullptr;
-PFNGLDELETEBUFFERSPROC	glDeleteBuffers		 = nullptr;
-PFNGLGENBUFFERSPROC		glGenBuffers		 = nullptr;
-PFNGLBUFFERDATAPROC		glBufferData		 = nullptr;
-PFNGLBUFFERSUBDATAPROC        glBufferSubData         = nullptr;
-PFNGLGETBUFFERSUBDATAPROC     glGetBufferSubData      = nullptr;
-PFNGLGETBUFFERPARAMETERIVPROC glGetBufferParameteriv  = nullptr;
-PFNGLMAPBUFFERPROC		glMapBuffer    = nullptr;
-PFNGLUNMAPBUFFERPROC	glUnmapBuffer  = nullptr;
+PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
+PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
+PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
+PFNGLBUFFERDATAPROC glBufferData = nullptr;
+PFNGLBUFFERSUBDATAPROC glBufferSubData = nullptr;
+PFNGLGETBUFFERSUBDATAPROC glGetBufferSubData = nullptr;
+PFNGLGETBUFFERPARAMETERIVPROC glGetBufferParameteriv = nullptr;
+PFNGLMAPBUFFERPROC glMapBuffer = nullptr;
+PFNGLUNMAPBUFFERPROC glUnmapBuffer = nullptr;
 #endif // O3D_GL_VERSION_1_5
 
 #ifdef O3D_GL_VERSION_2_0
@@ -161,163 +161,163 @@ PFNGLSTENCILFUNCSEPARATEPROC glStencilFuncSeparate = nullptr;
 PFNGLSTENCILMASKSEPARATEPROC glStencilMaskSeparate = nullptr;
 
 // shading_language
-PFNGLCREATESHADERPROC    glCreateShader		 = nullptr;
-PFNGLSHADERSOURCEPROC	 glShaderSource		 = nullptr;
-PFNGLCOMPILESHADERPROC	 glCompileShader	 = nullptr;
-PFNGLCREATEPROGRAMPROC	 glCreateProgram	 = nullptr;
-PFNGLATTACHSHADERPROC	 glAttachShader		 = nullptr;
-PFNGLLINKPROGRAMPROC	 glLinkProgram		 = nullptr;
-PFNGLVALIDATEPROGRAMPROC glValidateProgram	 = nullptr;
-PFNGLUSEPROGRAMPROC	 	 glUseProgram		 = nullptr;
+PFNGLCREATESHADERPROC glCreateShader = nullptr;
+PFNGLSHADERSOURCEPROC glShaderSource = nullptr;
+PFNGLCOMPILESHADERPROC glCompileShader = nullptr;
+PFNGLCREATEPROGRAMPROC glCreateProgram = nullptr;
+PFNGLATTACHSHADERPROC glAttachShader = nullptr;
+PFNGLLINKPROGRAMPROC glLinkProgram = nullptr;
+PFNGLVALIDATEPROGRAMPROC glValidateProgram = nullptr;
+PFNGLUSEPROGRAMPROC glUseProgram = nullptr;
 
-PFNGLDETACHSHADERPROC  glDetachShader  = nullptr;
-PFNGLDELETESHADERPROC  glDeleteShader  = nullptr;
+PFNGLDETACHSHADERPROC glDetachShader = nullptr;
+PFNGLDELETESHADERPROC glDeleteShader = nullptr;
 PFNGLDELETEPROGRAMPROC glDeleteProgram = nullptr;
 
-PFNGLGETPROGRAMIVPROC		glGetProgramiv		 = nullptr;
-PFNGLGETPROGRAMINFOLOGPROC	glGetProgramInfoLog	 = nullptr;
-PFNGLGETSHADERIVPROC		glGetShaderiv		 = nullptr;
-PFNGLGETSHADERINFOLOGPROC	glGetShaderInfoLog	 = nullptr;
-PFNGLISPROGRAMPROC			glIsProgram		 = nullptr;
-PFNGLISSHADERPROC			glIsShader		 = nullptr;
+PFNGLGETPROGRAMIVPROC glGetProgramiv = nullptr;
+PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = nullptr;
+PFNGLGETSHADERIVPROC glGetShaderiv = nullptr;
+PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog = nullptr;
+PFNGLISPROGRAMPROC glIsProgram = nullptr;
+PFNGLISSHADERPROC glIsShader = nullptr;
 
 // uniform
-PFNGLGETUNIFORMLOCATIONPROC	glGetUniformLocation = nullptr;
-PFNGLGETACTIVEUNIFORMPROC   glGetActiveUniform   = nullptr;
-PFNGLUNIFORM1FPROC		glUniform1f		 = nullptr;
-PFNGLUNIFORM2FPROC		glUniform2f		 = nullptr;
-PFNGLUNIFORM3FPROC		glUniform3f		 = nullptr;
-PFNGLUNIFORM4FPROC		glUniform4f		 = nullptr;
-PFNGLUNIFORM1FVPROC		glUniform1fv	 = nullptr;
-PFNGLUNIFORM2FVPROC		glUniform2fv	 = nullptr;
-PFNGLUNIFORM3FVPROC		glUniform3fv	 = nullptr;
-PFNGLUNIFORM4FVPROC		glUniform4fv	 = nullptr;
-PFNGLUNIFORM1IPROC		glUniform1i		 = nullptr;
-PFNGLUNIFORM2IPROC		glUniform2i		 = nullptr;
-PFNGLUNIFORM3IPROC		glUniform3i		 = nullptr;
-PFNGLUNIFORM4IPROC		glUniform4i		 = nullptr;
-PFNGLUNIFORMMATRIX2FVPROC	glUniformMatrix2fv	 = nullptr;
-PFNGLUNIFORMMATRIX3FVPROC	glUniformMatrix3fv	 = nullptr;
-PFNGLUNIFORMMATRIX4FVPROC	glUniformMatrix4fv	 = nullptr;
+PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation = nullptr;
+PFNGLGETACTIVEUNIFORMPROC glGetActiveUniform = nullptr;
+PFNGLUNIFORM1FPROC glUniform1f = nullptr;
+PFNGLUNIFORM2FPROC glUniform2f = nullptr;
+PFNGLUNIFORM3FPROC glUniform3f = nullptr;
+PFNGLUNIFORM4FPROC glUniform4f = nullptr;
+PFNGLUNIFORM1FVPROC glUniform1fv = nullptr;
+PFNGLUNIFORM2FVPROC glUniform2fv = nullptr;
+PFNGLUNIFORM3FVPROC glUniform3fv = nullptr;
+PFNGLUNIFORM4FVPROC glUniform4fv = nullptr;
+PFNGLUNIFORM1IPROC glUniform1i = nullptr;
+PFNGLUNIFORM2IPROC glUniform2i = nullptr;
+PFNGLUNIFORM3IPROC glUniform3i = nullptr;
+PFNGLUNIFORM4IPROC glUniform4i = nullptr;
+PFNGLUNIFORMMATRIX2FVPROC glUniformMatrix2fv = nullptr;
+PFNGLUNIFORMMATRIX3FVPROC glUniformMatrix3fv = nullptr;
+PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = nullptr;
 
 // vertex attributes array
 PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray = nullptr;
-PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray  = nullptr;
-PFNGLGETACTIVEATTRIBPROC	glGetActiveAttrib		 = nullptr;
-PFNGLBINDATTRIBLOCATIONPROC	glBindAttribLocation	 = nullptr;
-PFNGLGETATTRIBLOCATIONPROC	glGetAttribLocation		 = nullptr;
-PFNGLGETVERTEXATTRIBDVPROC	glGetVertexAttribdv		 = nullptr;
-PFNGLGETVERTEXATTRIBFVPROC	glGetVertexAttribfv		 = nullptr;
-PFNGLGETVERTEXATTRIBIVPROC	glGetVertexAttribiv		 = nullptr;
+PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
+PFNGLGETACTIVEATTRIBPROC glGetActiveAttrib = nullptr;
+PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation = nullptr;
+PFNGLGETATTRIBLOCATIONPROC glGetAttribLocation = nullptr;
+PFNGLGETVERTEXATTRIBDVPROC glGetVertexAttribdv = nullptr;
+PFNGLGETVERTEXATTRIBFVPROC glGetVertexAttribfv = nullptr;
+PFNGLGETVERTEXATTRIBIVPROC glGetVertexAttribiv = nullptr;
 PFNGLGETVERTEXATTRIBPOINTERVPROC glGetVertexAttribPointerv = nullptr;
 
 // vertex attributes
-PFNGLVERTEXATTRIB1DPROC		glVertexAttrib1d	 = nullptr;
-PFNGLVERTEXATTRIB1DVPROC	glVertexAttrib1dv	 = nullptr;
-PFNGLVERTEXATTRIB1FPROC		glVertexAttrib1f	 = nullptr;
-PFNGLVERTEXATTRIB1FVPROC	glVertexAttrib1fv	 = nullptr;
-PFNGLVERTEXATTRIB1SPROC		glVertexAttrib1s	 = nullptr;
-PFNGLVERTEXATTRIB1SVPROC	glVertexAttrib1sv	 = nullptr;
-PFNGLVERTEXATTRIB2DPROC		glVertexAttrib2d	 = nullptr;
-PFNGLVERTEXATTRIB2DVPROC	glVertexAttrib2dv	 = nullptr;
-PFNGLVERTEXATTRIB2FPROC		glVertexAttrib2f	 = nullptr;
-PFNGLVERTEXATTRIB2FVPROC	glVertexAttrib2fv	 = nullptr;
-PFNGLVERTEXATTRIB2SPROC		glVertexAttrib2s	 = nullptr;
-PFNGLVERTEXATTRIB2SVPROC	glVertexAttrib2sv	 = nullptr;
-PFNGLVERTEXATTRIB3DPROC		glVertexAttrib3d	 = nullptr;
-PFNGLVERTEXATTRIB3DVPROC	glVertexAttrib3dv	 = nullptr;
-PFNGLVERTEXATTRIB3FPROC		glVertexAttrib3f	 = nullptr;
-PFNGLVERTEXATTRIB3FVPROC	glVertexAttrib3fv	 = nullptr;
-PFNGLVERTEXATTRIB3SPROC		glVertexAttrib3s	 = nullptr;
-PFNGLVERTEXATTRIB3SVPROC	glVertexAttrib3sv	 = nullptr;
-PFNGLVERTEXATTRIB4NBVPROC	glVertexAttrib4Nbv	 = nullptr;
-PFNGLVERTEXATTRIB4NIVPROC	glVertexAttrib4Niv	 = nullptr;
-PFNGLVERTEXATTRIB4NSVPROC	glVertexAttrib4Nsv	 = nullptr;
-PFNGLVERTEXATTRIB4NUBPROC	glVertexAttrib4Nub	 = nullptr;
-PFNGLVERTEXATTRIB4NUBVPROC	glVertexAttrib4Nubv	 = nullptr;
-PFNGLVERTEXATTRIB4NUIVPROC	glVertexAttrib4Nuiv	 = nullptr;
-PFNGLVERTEXATTRIB4NUSVPROC	glVertexAttrib4Nusv	 = nullptr;
-PFNGLVERTEXATTRIB4BVPROC	glVertexAttrib4bv	 = nullptr;
-PFNGLVERTEXATTRIB4DPROC		glVertexAttrib4d	 = nullptr;
-PFNGLVERTEXATTRIB4DVPROC	glVertexAttrib4dv	 = nullptr;
-PFNGLVERTEXATTRIB4FPROC		glVertexAttrib4f	 = nullptr;
-PFNGLVERTEXATTRIB4FVPROC	glVertexAttrib4fv	 = nullptr;
-PFNGLVERTEXATTRIB4IVPROC	glVertexAttrib4iv	 = nullptr;
-PFNGLVERTEXATTRIB4SPROC		glVertexAttrib4s	 = nullptr;
-PFNGLVERTEXATTRIB4SVPROC	glVertexAttrib4sv	 = nullptr;
-PFNGLVERTEXATTRIB4UBVPROC	glVertexAttrib4ubv	 = nullptr;
-PFNGLVERTEXATTRIB4UIVPROC	glVertexAttrib4uiv	 = nullptr;
-PFNGLVERTEXATTRIB4USVPROC	glVertexAttrib4usv	 = nullptr;
-PFNGLVERTEXATTRIBPOINTERPROC	glVertexAttribPointer	 = nullptr;
+PFNGLVERTEXATTRIB1DPROC glVertexAttrib1d = nullptr;
+PFNGLVERTEXATTRIB1DVPROC glVertexAttrib1dv = nullptr;
+PFNGLVERTEXATTRIB1FPROC glVertexAttrib1f = nullptr;
+PFNGLVERTEXATTRIB1FVPROC glVertexAttrib1fv = nullptr;
+PFNGLVERTEXATTRIB1SPROC glVertexAttrib1s = nullptr;
+PFNGLVERTEXATTRIB1SVPROC glVertexAttrib1sv = nullptr;
+PFNGLVERTEXATTRIB2DPROC glVertexAttrib2d = nullptr;
+PFNGLVERTEXATTRIB2DVPROC glVertexAttrib2dv = nullptr;
+PFNGLVERTEXATTRIB2FPROC glVertexAttrib2f = nullptr;
+PFNGLVERTEXATTRIB2FVPROC glVertexAttrib2fv = nullptr;
+PFNGLVERTEXATTRIB2SPROC glVertexAttrib2s = nullptr;
+PFNGLVERTEXATTRIB2SVPROC glVertexAttrib2sv = nullptr;
+PFNGLVERTEXATTRIB3DPROC glVertexAttrib3d = nullptr;
+PFNGLVERTEXATTRIB3DVPROC glVertexAttrib3dv = nullptr;
+PFNGLVERTEXATTRIB3FPROC glVertexAttrib3f = nullptr;
+PFNGLVERTEXATTRIB3FVPROC glVertexAttrib3fv = nullptr;
+PFNGLVERTEXATTRIB3SPROC glVertexAttrib3s = nullptr;
+PFNGLVERTEXATTRIB3SVPROC glVertexAttrib3sv = nullptr;
+PFNGLVERTEXATTRIB4NBVPROC glVertexAttrib4Nbv = nullptr;
+PFNGLVERTEXATTRIB4NIVPROC glVertexAttrib4Niv = nullptr;
+PFNGLVERTEXATTRIB4NSVPROC glVertexAttrib4Nsv = nullptr;
+PFNGLVERTEXATTRIB4NUBPROC glVertexAttrib4Nub = nullptr;
+PFNGLVERTEXATTRIB4NUBVPROC glVertexAttrib4Nubv = nullptr;
+PFNGLVERTEXATTRIB4NUIVPROC glVertexAttrib4Nuiv = nullptr;
+PFNGLVERTEXATTRIB4NUSVPROC glVertexAttrib4Nusv = nullptr;
+PFNGLVERTEXATTRIB4BVPROC glVertexAttrib4bv = nullptr;
+PFNGLVERTEXATTRIB4DPROC glVertexAttrib4d = nullptr;
+PFNGLVERTEXATTRIB4DVPROC glVertexAttrib4dv = nullptr;
+PFNGLVERTEXATTRIB4FPROC glVertexAttrib4f = nullptr;
+PFNGLVERTEXATTRIB4FVPROC glVertexAttrib4fv = nullptr;
+PFNGLVERTEXATTRIB4IVPROC glVertexAttrib4iv = nullptr;
+PFNGLVERTEXATTRIB4SPROC glVertexAttrib4s = nullptr;
+PFNGLVERTEXATTRIB4SVPROC glVertexAttrib4sv = nullptr;
+PFNGLVERTEXATTRIB4UBVPROC glVertexAttrib4ubv = nullptr;
+PFNGLVERTEXATTRIB4UIVPROC glVertexAttrib4uiv = nullptr;
+PFNGLVERTEXATTRIB4USVPROC glVertexAttrib4usv = nullptr;
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 #endif // O3D_GL_VERSION_2_0
 
 #ifdef O3D_GL_VERSION_3_0
-PFNGLCOLORMASKIPROC glColorMaski  = nullptr;
-PFNGLGETBOOLEANI_VPROC glGetBooleani_v  = nullptr;
-PFNGLGETINTEGERI_VPROC glGetIntegeri_v  = nullptr;
-PFNGLENABLEIPROC glEnablei  = nullptr;
-PFNGLDISABLEIPROC glDisablei  = nullptr;
-PFNGLISENABLEDIPROC glIsEnabledi  = nullptr;
-PFNGLBEGINTRANSFORMFEEDBACKPROC glBeginTransformFeedback  = nullptr;
-PFNGLENDTRANSFORMFEEDBACKPROC glEndTransformFeedback  = nullptr;
-PFNGLBINDBUFFERRANGEPROC glBindBufferRange  = nullptr;
-PFNGLBINDBUFFERBASEPROC glBindBufferBase  = nullptr;
-PFNGLTRANSFORMFEEDBACKVARYINGSPROC glTransformFeedbackVaryings  = nullptr;
-PFNGLGETTRANSFORMFEEDBACKVARYINGPROC glGetTransformFeedbackVarying  = nullptr;
-PFNGLCLAMPCOLORPROC glClampColor  = nullptr;
-PFNGLBEGINCONDITIONALRENDERPROC glBeginConditionalRender  = nullptr;
-PFNGLENDCONDITIONALRENDERPROC glEndConditionalRender  = nullptr;
-PFNGLVERTEXATTRIBIPOINTERPROC glVertexAttribIPointer  = nullptr;
-PFNGLGETVERTEXATTRIBIIVPROC glGetVertexAttribIiv  = nullptr;
-PFNGLGETVERTEXATTRIBIUIVPROC glGetVertexAttribIuiv  = nullptr;
-PFNGLVERTEXATTRIBI1IPROC glVertexAttribI1i  = nullptr;
-PFNGLVERTEXATTRIBI2IPROC glVertexAttribI2i  = nullptr;
-PFNGLVERTEXATTRIBI3IPROC glVertexAttribI3i  = nullptr;
-PFNGLVERTEXATTRIBI4IPROC glVertexAttribI4i  = nullptr;
-PFNGLVERTEXATTRIBI1UIPROC glVertexAttribI1ui  = nullptr;
-PFNGLVERTEXATTRIBI2UIPROC glVertexAttribI2ui  = nullptr;
-PFNGLVERTEXATTRIBI3UIPROC glVertexAttribI3ui  = nullptr;
-PFNGLVERTEXATTRIBI4UIPROC glVertexAttribI4ui  = nullptr;
-PFNGLVERTEXATTRIBI1IVPROC glVertexAttribI1iv  = nullptr;
-PFNGLVERTEXATTRIBI2IVPROC glVertexAttribI2iv  = nullptr;
-PFNGLVERTEXATTRIBI3IVPROC glVertexAttribI3iv  = nullptr;
-PFNGLVERTEXATTRIBI4IVPROC glVertexAttribI4iv  = nullptr;
-PFNGLVERTEXATTRIBI1UIVPROC glVertexAttribI1uiv  = nullptr;
-PFNGLVERTEXATTRIBI2UIVPROC glVertexAttribI2uiv  = nullptr;
-PFNGLVERTEXATTRIBI3UIVPROC glVertexAttribI3uiv  = nullptr;
-PFNGLVERTEXATTRIBI4UIVPROC glVertexAttribI4uiv  = nullptr;
-PFNGLVERTEXATTRIBI4BVPROC glVertexAttribI4bv  = nullptr;
-PFNGLVERTEXATTRIBI4SVPROC glVertexAttribI4sv  = nullptr;
-PFNGLVERTEXATTRIBI4UBVPROC glVertexAttribI4ubv  = nullptr;
-PFNGLVERTEXATTRIBI4USVPROC glVertexAttribI4usv  = nullptr;
-PFNGLGETUNIFORMUIVPROC glGetUniformuiv  = nullptr;
-PFNGLBINDFRAGDATALOCATIONPROC glBindFragDataLocation  = nullptr;
-PFNGLGETFRAGDATALOCATIONPROC glGetFragDataLocation  = nullptr;
-PFNGLUNIFORM1UIPROC glUniform1ui  = nullptr;
-PFNGLUNIFORM2UIPROC glUniform2ui  = nullptr;
-PFNGLUNIFORM3UIPROC glUniform3ui  = nullptr;
-PFNGLUNIFORM4UIPROC glUniform4ui  = nullptr;
-PFNGLUNIFORM1UIVPROC glUniform1uiv  = nullptr;
-PFNGLUNIFORM2UIVPROC glUniform2uiv  = nullptr;
-PFNGLUNIFORM3UIVPROC glUniform3uiv  = nullptr;
-PFNGLUNIFORM4UIPROC glUniform4uiv  = nullptr;
-PFNGLTEXPARAMETERIIVPROC glTexParameterIiv  = nullptr;
-PFNGLTEXPARAMETERIUIVPROC glTexParameterIuiv  = nullptr;
-PFNGLGETTEXPARAMETERIIVPROC glGetTexParameterIiv  = nullptr;
-PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv  = nullptr;
-PFNGLCLEARBUFFERIVPROC glClearBufferiv  = nullptr;
-PFNGLCLEARBUFFERUIVPROC glClearBufferuiv  = nullptr;
-PFNGLCLEARBUFFERFVPROC glClearBufferfv  = nullptr;
-PFNGLCLEARBUFFERFIPROC glClearBufferfi  = nullptr;
-PFNGLGETSTRINGIPROC glGetStringi  = nullptr;
+PFNGLCOLORMASKIPROC glColorMaski = nullptr;
+PFNGLGETBOOLEANI_VPROC glGetBooleani_v = nullptr;
+PFNGLGETINTEGERI_VPROC glGetIntegeri_v = nullptr;
+PFNGLENABLEIPROC glEnablei = nullptr;
+PFNGLDISABLEIPROC glDisablei = nullptr;
+PFNGLISENABLEDIPROC glIsEnabledi = nullptr;
+PFNGLBEGINTRANSFORMFEEDBACKPROC glBeginTransformFeedback = nullptr;
+PFNGLENDTRANSFORMFEEDBACKPROC glEndTransformFeedback = nullptr;
+PFNGLBINDBUFFERRANGEPROC glBindBufferRange = nullptr;
+PFNGLBINDBUFFERBASEPROC glBindBufferBase = nullptr;
+PFNGLTRANSFORMFEEDBACKVARYINGSPROC glTransformFeedbackVaryings = nullptr;
+PFNGLGETTRANSFORMFEEDBACKVARYINGPROC glGetTransformFeedbackVarying = nullptr;
+PFNGLCLAMPCOLORPROC glClampColor = nullptr;
+PFNGLBEGINCONDITIONALRENDERPROC glBeginConditionalRender = nullptr;
+PFNGLENDCONDITIONALRENDERPROC glEndConditionalRender = nullptr;
+PFNGLVERTEXATTRIBIPOINTERPROC glVertexAttribIPointer = nullptr;
+PFNGLGETVERTEXATTRIBIIVPROC glGetVertexAttribIiv = nullptr;
+PFNGLGETVERTEXATTRIBIUIVPROC glGetVertexAttribIuiv = nullptr;
+PFNGLVERTEXATTRIBI1IPROC glVertexAttribI1i = nullptr;
+PFNGLVERTEXATTRIBI2IPROC glVertexAttribI2i = nullptr;
+PFNGLVERTEXATTRIBI3IPROC glVertexAttribI3i = nullptr;
+PFNGLVERTEXATTRIBI4IPROC glVertexAttribI4i = nullptr;
+PFNGLVERTEXATTRIBI1UIPROC glVertexAttribI1ui = nullptr;
+PFNGLVERTEXATTRIBI2UIPROC glVertexAttribI2ui = nullptr;
+PFNGLVERTEXATTRIBI3UIPROC glVertexAttribI3ui = nullptr;
+PFNGLVERTEXATTRIBI4UIPROC glVertexAttribI4ui = nullptr;
+PFNGLVERTEXATTRIBI1IVPROC glVertexAttribI1iv = nullptr;
+PFNGLVERTEXATTRIBI2IVPROC glVertexAttribI2iv = nullptr;
+PFNGLVERTEXATTRIBI3IVPROC glVertexAttribI3iv = nullptr;
+PFNGLVERTEXATTRIBI4IVPROC glVertexAttribI4iv = nullptr;
+PFNGLVERTEXATTRIBI1UIVPROC glVertexAttribI1uiv = nullptr;
+PFNGLVERTEXATTRIBI2UIVPROC glVertexAttribI2uiv = nullptr;
+PFNGLVERTEXATTRIBI3UIVPROC glVertexAttribI3uiv = nullptr;
+PFNGLVERTEXATTRIBI4UIVPROC glVertexAttribI4uiv = nullptr;
+PFNGLVERTEXATTRIBI4BVPROC glVertexAttribI4bv = nullptr;
+PFNGLVERTEXATTRIBI4SVPROC glVertexAttribI4sv = nullptr;
+PFNGLVERTEXATTRIBI4UBVPROC glVertexAttribI4ubv = nullptr;
+PFNGLVERTEXATTRIBI4USVPROC glVertexAttribI4usv = nullptr;
+PFNGLGETUNIFORMUIVPROC glGetUniformuiv = nullptr;
+PFNGLBINDFRAGDATALOCATIONPROC glBindFragDataLocation = nullptr;
+PFNGLGETFRAGDATALOCATIONPROC glGetFragDataLocation = nullptr;
+PFNGLUNIFORM1UIPROC glUniform1ui = nullptr;
+PFNGLUNIFORM2UIPROC glUniform2ui = nullptr;
+PFNGLUNIFORM3UIPROC glUniform3ui = nullptr;
+PFNGLUNIFORM4UIPROC glUniform4ui = nullptr;
+PFNGLUNIFORM1UIVPROC glUniform1uiv = nullptr;
+PFNGLUNIFORM2UIVPROC glUniform2uiv = nullptr;
+PFNGLUNIFORM3UIVPROC glUniform3uiv = nullptr;
+PFNGLUNIFORM4UIPROC glUniform4uiv = nullptr;
+PFNGLTEXPARAMETERIIVPROC glTexParameterIiv = nullptr;
+PFNGLTEXPARAMETERIUIVPROC glTexParameterIuiv = nullptr;
+PFNGLGETTEXPARAMETERIIVPROC glGetTexParameterIiv = nullptr;
+PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv = nullptr;
+PFNGLCLEARBUFFERIVPROC glClearBufferiv = nullptr;
+PFNGLCLEARBUFFERUIVPROC glClearBufferuiv = nullptr;
+PFNGLCLEARBUFFERFVPROC glClearBufferfv = nullptr;
+PFNGLCLEARBUFFERFIPROC glClearBufferfi = nullptr;
+PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 #endif // O3D_GL_VERSION_3_0
 
 #ifdef O3D_GL_VERSION_3_2
-//PFNGLGETINTEGER64I_VPROC        glGetInteger64i_v        = nullptr;
+//PFNGLGETINTEGER64I_VPROC glGetInteger64i_v = nullptr;
 //PFNGLGETBUFFERPARAMETERI64VPROC glGetBufferParameteri64v = nullptr;
-PFNGLPROGRAMPARAMETERIPROC        glProgramParameteri      = nullptr;
-PFNGLFRAMEBUFFERTEXTUREPROC       glFramebufferTexture     = nullptr;
-PFNGLFRAMEBUFFERTEXTUREFACEPROC   glFramebufferTextureFace = nullptr;
+PFNGLPROGRAMPARAMETERIPROC glProgramParameteri = nullptr;
+PFNGLFRAMEBUFFERTEXTUREPROC glFramebufferTexture = nullptr;
+PFNGLFRAMEBUFFERTEXTUREFACEPROC glFramebufferTextureFace = nullptr;
 #endif // O3D_GL_VERSION_3_2
 
 #ifdef O3D_GL_VERSION_3_3
@@ -359,6 +359,41 @@ PFNGLCLEARDEPTHFPROC glClearDepthf = nullptr;
 #endif // O3D_GL_VERSION_4_4
 
 #ifdef O3D_GL_VERSION_4_5
+
+PFNGLCREATEBUFFERSPROC glCreateBuffers = nullptr;
+PFNGLNAMEDBUFFERSTORAGEPROC glNamedBufferStorage = nullptr;
+PFNGLNAMEDBUFFERDATAPROC glNamedBufferData = nullptr;
+PFNGLNAMEDBUFFERSUBDATAPROC glNamedBufferSubData = nullptr;
+PFNGLCOPYNAMEDBUFFERSUBDATAPROC glCopyNamedBufferSubData = nullptr;
+PFNGLCLEARNAMEDBUFFERDATAPROC glClearNamedBufferData = nullptr;
+PFNGLCLEARNAMEDBUFFERSUBDATAPROC glClearNamedBufferSubData = nullptr;
+PFNGLMAPNAMEDBUFFERPROC glMapNamedBuffer = nullptr;
+PFNGLMAPNAMEDBUFFERRANGEPROC glMapNamedBufferRange = nullptr;
+PFNGLUNMAPNAMEDBUFFERPROC glUnmapNamedBuffer = nullptr;
+PFNGLFLUSHMAPPEDNAMEDBUFFERRANGEPROC glFlushMappedNamedBufferRange = nullptr;
+PFNGLGETNAMEDBUFFERPARAMETERIVPROC glGetNamedBufferParameteriv = nullptr;
+PFNGLGETNAMEDBUFFERPARAMETERI64VPROC glGetNamedBufferParameteri64v = nullptr;
+PFNGLGETNAMEDBUFFERPOINTERVPROC glGetNamedBufferPointerv = nullptr;
+PFNGLGETNAMEDBUFFERSUBDATAPROC glGetNamedBufferSubData = nullptr;
+PFNGLCREATEFRAMEBUFFERSPROC glCreateFramebuffers = nullptr;
+PFNGLNAMEDFRAMEBUFFERRENDERBUFFERPROC glNamedFramebufferRenderbuffer = nullptr;
+PFNGLNAMEDFRAMEBUFFERPARAMETERIPROC glNamedFramebufferParameteri = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTUREPROC glNamedFramebufferTexture = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC glNamedFramebufferTextureLayer = nullptr;
+PFNGLNAMEDFRAMEBUFFERDRAWBUFFERPROC glNamedFramebufferDrawBuffer = nullptr;
+PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC glNamedFramebufferDrawBuffers = nullptr;
+PFNGLNAMEDFRAMEBUFFERREADBUFFERPROC glNamedFramebufferReadBuffer = nullptr;
+PFNGLINVALIDATENAMEDFRAMEBUFFERDATAPROC glInvalidateNamedFramebufferData = nullptr;
+PFNGLINVALIDATENAMEDFRAMEBUFFERSUBDATAPROC glInvalidateNamedFramebufferSubData = nullptr;
+PFNGLCLEARNAMEDFRAMEBUFFERIVPROC glClearNamedFramebufferiv = nullptr;
+PFNGLCLEARNAMEDFRAMEBUFFERUIVPROC glClearNamedFramebufferuiv = nullptr;
+PFNGLCLEARNAMEDFRAMEBUFFERFVPROC glClearNamedFramebufferfv = nullptr;
+PFNGLCLEARNAMEDFRAMEBUFFERFIPROC glClearNamedFramebufferfi = nullptr;
+PFNGLBLITNAMEDFRAMEBUFFERPROC glBlitNamedFramebuffer = nullptr;
+PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC glCheckNamedFramebufferStatus = nullptr;
+PFNGLGETNAMEDFRAMEBUFFERPARAMETERIVPROC glGetNamedFramebufferParameteriv = nullptr;
+PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC glGetNamedFramebufferAttachmentParameteriv = nullptr;
+
 #endif // O3D_GL_VERSION_4_5
 
 #ifdef O3D_GL_VERSION_4_6
@@ -366,38 +401,38 @@ PFNGLCLEARDEPTHFPROC glClearDepthf = nullptr;
 
 #ifdef O3D_GL_ARB_framebuffer_object
 // framebuffer_object (render-to-texture)
-PFNGLISRENDERBUFFERPROC     glIsRenderbuffer       = nullptr;
-PFNGLBINDRENDERBUFFERPROC     glBindRenderbuffer       = nullptr;
-PFNGLDELETERENDERBUFFERSPROC     glDeleteRenderbuffers  = nullptr;
-PFNGLGENRENDERBUFFERSPROC     glGenRenderbuffers       = nullptr;
-PFNGLRENDERBUFFERSTORAGEPROC     glRenderbufferStorage  = nullptr;
-PFNGLGETRENDERBUFFERPARAMETERIVPROC glGetRenderbufferParameteriv  = nullptr;
-PFNGLISFRAMEBUFFERPROC         glIsFramebuffer           = nullptr;
-PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer       = nullptr;
-PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers  = nullptr;
+PFNGLISRENDERBUFFERPROC glIsRenderbuffer = nullptr;
+PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
+PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
+PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
+PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
+PFNGLGETRENDERBUFFERPARAMETERIVPROC glGetRenderbufferParameteriv = nullptr;
+PFNGLISFRAMEBUFFERPROC glIsFramebuffer = nullptr;
+PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
+PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
 PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers = nullptr;
 PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = nullptr;
-PFNGLFRAMEBUFFERTEXTURE1DPROC     glFramebufferTexture1D = nullptr;
-PFNGLFRAMEBUFFERTEXTURE2DPROC     glFramebufferTexture2D = nullptr;
-PFNGLFRAMEBUFFERTEXTURE3DPROC     glFramebufferTexture3D = nullptr;
+PFNGLFRAMEBUFFERTEXTURE1DPROC glFramebufferTexture1D = nullptr;
+PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
+PFNGLFRAMEBUFFERTEXTURE3DPROC glFramebufferTexture3D = nullptr;
 PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer = nullptr;
-PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC  glGetFramebufferAttachmentParameteriv = nullptr;
-PFNGLBLITFRAMEBUFFERPROC        glBlitFramebuffer  = nullptr;
+PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC glGetFramebufferAttachmentParameteriv = nullptr;
+PFNGLBLITFRAMEBUFFERPROC glBlitFramebuffer = nullptr;
 PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample = nullptr;
-PFNGLGENERATEMIPMAPPROC     glGenerateMipmap = nullptr;
+PFNGLGENERATEMIPMAPPROC glGenerateMipmap = nullptr;
 PFNGLFRAMEBUFFERTEXTURELAYERPROC glFramebufferTextureLayer = nullptr;
 #endif // O3D_GL_ARB_framebuffer_object
 
 // O3D_GL_ARB_vertex_array_object
 #ifdef O3D_GL_ARB_vertex_array_object
-PFNGLBINDVERTEXARRAYPROC glBindVertexArray       = nullptr;
+PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
-PFNGLGENVERTEXARRAYSPROC glGenVertexArrays       = nullptr;
-PFNGLISVERTEXARRAYPROC glIsVertexArray           = nullptr;
+PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
+PFNGLISVERTEXARRAYPROC glIsVertexArray   = nullptr;
 #endif // O3D_GL_ARB_vertex_array_object
 
 #ifdef O3D_GL_ARB_map_buffer_range
-PFNGLMAPBUFFERRANGEPROC glMapBufferRange                 = nullptr;
+PFNGLMAPBUFFERRANGEPROC glMapBufferRange = nullptr;
 PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange = nullptr;
 #endif // O3D_GL_ARB_map_buffer_range
 
@@ -581,17 +616,17 @@ void GLExtensionManager::getGLFunctions()
 	// PointParametersSupported
 	//
 
-    glPointParameterf  = (PFNGLPOINTPARAMETERFPROC)  GL::getProcAddress("glPointParameterf");
+    glPointParameterf  = (PFNGLPOINTPARAMETERFPROC) GL::getProcAddress("glPointParameterf");
     glPointParameterfv = (PFNGLPOINTPARAMETERFVPROC) GL::getProcAddress("glPointParameterfv");
-    glPointParameteri  = (PFNGLPOINTPARAMETERIPROC)  GL::getProcAddress("glPointParameteri");
+    glPointParameteri  = (PFNGLPOINTPARAMETERIPROC) GL::getProcAddress("glPointParameteri");
     glPointParameteriv = (PFNGLPOINTPARAMETERIVPROC) GL::getProcAddress("glPointParameteriv");
 
     if ((!glPointParameterf || !glPointParameterfv || !glPointParameteri || !glPointParameteriv) &&
         isExtensionSupported("GL_ARB_point_parameters")) {
 
-        glPointParameterf  = (PFNGLPOINTPARAMETERFPROC)  GL::getProcAddress("glPointParameterfARB");
+        glPointParameterf  = (PFNGLPOINTPARAMETERFPROC) GL::getProcAddress("glPointParameterfARB");
         glPointParameterfv = (PFNGLPOINTPARAMETERFVPROC) GL::getProcAddress("glPointParameterfvARB");
-        glPointParameteri  = (PFNGLPOINTPARAMETERIPROC)  GL::getProcAddress("glPointParameteriARB");
+        glPointParameteri  = (PFNGLPOINTPARAMETERIPROC) GL::getProcAddress("glPointParameteriARB");
         glPointParameteriv = (PFNGLPOINTPARAMETERIVPROC) GL::getProcAddress("glPointParameterivARB");
     }
 
@@ -625,27 +660,27 @@ void GLExtensionManager::getGLFunctions()
 	// Vertex Buffer Object
 	//
 
-    glBindBuffer		= (PFNGLBINDBUFFERPROC)	    GL::getProcAddress("glBindBuffer");
-    glGenBuffers		= (PFNGLGENBUFFERSPROC)	    GL::getProcAddress("glGenBuffers");
-    glBufferData		= (PFNGLBUFFERDATAPROC)	    GL::getProcAddress("glBufferData");
-    glBufferSubData		= (PFNGLBUFFERSUBDATAPROC)  GL::getProcAddress("glBufferSubData");
-    glDeleteBuffers		= (PFNGLDELETEBUFFERSPROC)  GL::getProcAddress("glDeleteBuffers");
+    glBindBuffer		= (PFNGLBINDBUFFERPROC) GL::getProcAddress("glBindBuffer");
+    glGenBuffers		= (PFNGLGENBUFFERSPROC) GL::getProcAddress("glGenBuffers");
+    glBufferData		= (PFNGLBUFFERDATAPROC) GL::getProcAddress("glBufferData");
+    glBufferSubData		= (PFNGLBUFFERSUBDATAPROC) GL::getProcAddress("glBufferSubData");
+    glDeleteBuffers		= (PFNGLDELETEBUFFERSPROC) GL::getProcAddress("glDeleteBuffers");
     glGetBufferParameteriv = (PFNGLGETBUFFERPARAMETERIVPROC) GL::getProcAddress("glGetBufferParameteriv");
-    glMapBuffer			= (PFNGLMAPBUFFERPROC)      GL::getProcAddress("glMapBuffer");
-    glUnmapBuffer		= (PFNGLUNMAPBUFFERPROC)    GL::getProcAddress("glUnmapBuffer");
+    glMapBuffer			= (PFNGLMAPBUFFERPROC) GL::getProcAddress("glMapBuffer");
+    glUnmapBuffer		= (PFNGLUNMAPBUFFERPROC) GL::getProcAddress("glUnmapBuffer");
 
     if ((!glBindBuffer || !glDeleteBuffers || !glGenBuffers || !glBufferData ||
         !glGetBufferParameteriv || !glMapBuffer || !glUnmapBuffer) &&
         isExtensionSupported("GL_ARB_vertex_buffer_object")) {
 
-        glBindBuffer			= (PFNGLBINDBUFFERPROC)	     GL::getProcAddress("glBindBufferARB");
-        glGenBuffers			= (PFNGLGENBUFFERSPROC)	     GL::getProcAddress("glGenBuffersARB");
-        glBufferData			= (PFNGLBUFFERDATAPROC)	     GL::getProcAddress("glBufferDataARB");
-        glBufferSubData			= (PFNGLBUFFERSUBDATAPROC)   GL::getProcAddress("glBufferSubDataARB");
-        glDeleteBuffers			= (PFNGLDELETEBUFFERSPROC)   GL::getProcAddress("glDeleteBuffersARB");
+        glBindBuffer			= (PFNGLBINDBUFFERPROC) GL::getProcAddress("glBindBufferARB");
+        glGenBuffers			= (PFNGLGENBUFFERSPROC) GL::getProcAddress("glGenBuffersARB");
+        glBufferData			= (PFNGLBUFFERDATAPROC) GL::getProcAddress("glBufferDataARB");
+        glBufferSubData			= (PFNGLBUFFERSUBDATAPROC) GL::getProcAddress("glBufferSubDataARB");
+        glDeleteBuffers			= (PFNGLDELETEBUFFERSPROC) GL::getProcAddress("glDeleteBuffersARB");
         glGetBufferParameteriv = (PFNGLGETBUFFERPARAMETERIVPROC) GL::getProcAddress("glGetBufferParameterivARB");
-        glMapBuffer		        = (PFNGLMAPBUFFERPROC)       GL::getProcAddress("glMapBufferARB");
-        glUnmapBuffer			= (PFNGLUNMAPBUFFERPROC)     GL::getProcAddress("glUnmapBufferARB");
+        glMapBuffer		        = (PFNGLMAPBUFFERPROC) GL::getProcAddress("glMapBufferARB");
+        glUnmapBuffer			= (PFNGLUNMAPBUFFERPROC) GL::getProcAddress("glUnmapBufferARB");
     }
 
     if (!glBindBuffer|| !glDeleteBuffers|| !glGenBuffers|| !glBufferData ||
@@ -690,91 +725,91 @@ void GLExtensionManager::getGLFunctions()
 	// GLSL
 	//
 
-    glCreateShader		= (PFNGLCREATESHADERPROC)	GL::getProcAddress("glCreateShader");
-    glShaderSource		= (PFNGLSHADERSOURCEPROC)	GL::getProcAddress("glShaderSource");
-    glCompileShader		= (PFNGLCOMPILESHADERPROC)	GL::getProcAddress("glCompileShader");
-    glCreateProgram		= (PFNGLCREATEPROGRAMPROC)	GL::getProcAddress("glCreateProgram");
-    glAttachShader		= (PFNGLATTACHSHADERPROC)	GL::getProcAddress("glAttachShader");
-    glLinkProgram		= (PFNGLLINKPROGRAMPROC)	GL::getProcAddress("glLinkProgram");
+    glCreateShader		= (PFNGLCREATESHADERPROC) GL::getProcAddress("glCreateShader");
+    glShaderSource		= (PFNGLSHADERSOURCEPROC) GL::getProcAddress("glShaderSource");
+    glCompileShader		= (PFNGLCOMPILESHADERPROC) GL::getProcAddress("glCompileShader");
+    glCreateProgram		= (PFNGLCREATEPROGRAMPROC) GL::getProcAddress("glCreateProgram");
+    glAttachShader		= (PFNGLATTACHSHADERPROC) GL::getProcAddress("glAttachShader");
+    glLinkProgram		= (PFNGLLINKPROGRAMPROC) GL::getProcAddress("glLinkProgram");
     glValidateProgram	= (PFNGLVALIDATEPROGRAMPROC)GL::getProcAddress("glValidateProgram");
-    glUseProgram		= (PFNGLUSEPROGRAMPROC)		GL::getProcAddress("glUseProgram");
+    glUseProgram		= (PFNGLUSEPROGRAMPROC) GL::getProcAddress("glUseProgram");
 
-    glDetachShader		= (PFNGLDETACHSHADERPROC)	GL::getProcAddress("glDetachShader");
-    glDeleteShader		= (PFNGLDELETESHADERPROC)	GL::getProcAddress("glDeleteShader");
-    glDeleteProgram		= (PFNGLDELETEPROGRAMPROC)	GL::getProcAddress("glDeleteProgram");
+    glDetachShader		= (PFNGLDETACHSHADERPROC) GL::getProcAddress("glDetachShader");
+    glDeleteShader		= (PFNGLDELETESHADERPROC) GL::getProcAddress("glDeleteShader");
+    glDeleteProgram		= (PFNGLDELETEPROGRAMPROC) GL::getProcAddress("glDeleteProgram");
 
-    glGetProgramiv		= (PFNGLGETPROGRAMIVPROC)	GL::getProcAddress("glGetProgramiv");
-    glGetProgramInfoLog	= (PFNGLGETPROGRAMINFOLOGPROC)	GL::getProcAddress("glGetProgramInfoLog");
-    glGetShaderiv		= (PFNGLGETSHADERIVPROC)	GL::getProcAddress("glGetShaderiv");
-    glGetShaderInfoLog	= (PFNGLGETSHADERINFOLOGPROC)	GL::getProcAddress("glGetShaderInfoLog");
-    glIsProgram		= (PFNGLISPROGRAMPROC)		GL::getProcAddress("glIsProgram");
-    glIsShader		= (PFNGLISSHADERPROC)		GL::getProcAddress("glIsShader");
+    glGetProgramiv		= (PFNGLGETPROGRAMIVPROC) GL::getProcAddress("glGetProgramiv");
+    glGetProgramInfoLog	= (PFNGLGETPROGRAMINFOLOGPROC) GL::getProcAddress("glGetProgramInfoLog");
+    glGetShaderiv		= (PFNGLGETSHADERIVPROC) GL::getProcAddress("glGetShaderiv");
+    glGetShaderInfoLog	= (PFNGLGETSHADERINFOLOGPROC) GL::getProcAddress("glGetShaderInfoLog");
+    glIsProgram		= (PFNGLISPROGRAMPROC) GL::getProcAddress("glIsProgram");
+    glIsShader		= (PFNGLISSHADERPROC) GL::getProcAddress("glIsShader");
 
-    glGetUniformLocation= (PFNGLGETUNIFORMLOCATIONPROC)	GL::getProcAddress("glGetUniformLocation");
-    glGetActiveUniform  = (PFNGLGETACTIVEUNIFORMPROC)   GL::getProcAddress("glGetActiveUniform");
-    glUniform1f		= (PFNGLUNIFORM1FPROC)		GL::getProcAddress("glUniform1f");
-    glUniform2f		= (PFNGLUNIFORM2FPROC)		GL::getProcAddress("glUniform2f");
-    glUniform3f		= (PFNGLUNIFORM3FPROC)		GL::getProcAddress("glUniform3f");
-    glUniform4f		= (PFNGLUNIFORM4FPROC)		GL::getProcAddress("glUniform4f");
-    glUniform1fv	= (PFNGLUNIFORM1FVPROC)		GL::getProcAddress("glUniform1fv");
-    glUniform2fv	= (PFNGLUNIFORM2FVPROC)		GL::getProcAddress("glUniform2fv");
-    glUniform3fv	= (PFNGLUNIFORM3FVPROC)		GL::getProcAddress("glUniform3fv");
-    glUniform4fv	= (PFNGLUNIFORM4FVPROC)		GL::getProcAddress("glUniform4fv");
-    glUniform1i		= (PFNGLUNIFORM1IPROC)		GL::getProcAddress("glUniform1i");
-    glUniform2i		= (PFNGLUNIFORM2IPROC)		GL::getProcAddress("glUniform2i");
-    glUniform3i		= (PFNGLUNIFORM3IPROC)		GL::getProcAddress("glUniform3i");
-    glUniform4i		= (PFNGLUNIFORM4IPROC)		GL::getProcAddress("glUniform4i");
-    glUniformMatrix2fv	= (PFNGLUNIFORMMATRIX2FVPROC)	GL::getProcAddress("glUniformMatrix2fv");
-    glUniformMatrix3fv	= (PFNGLUNIFORMMATRIX3FVPROC)	GL::getProcAddress("glUniformMatrix3fv");
-    glUniformMatrix4fv	= (PFNGLUNIFORMMATRIX4FVPROC)	GL::getProcAddress("glUniformMatrix4fv");
+    glGetUniformLocation= (PFNGLGETUNIFORMLOCATIONPROC) GL::getProcAddress("glGetUniformLocation");
+    glGetActiveUniform  = (PFNGLGETACTIVEUNIFORMPROC) GL::getProcAddress("glGetActiveUniform");
+    glUniform1f		= (PFNGLUNIFORM1FPROC) GL::getProcAddress("glUniform1f");
+    glUniform2f		= (PFNGLUNIFORM2FPROC) GL::getProcAddress("glUniform2f");
+    glUniform3f		= (PFNGLUNIFORM3FPROC) GL::getProcAddress("glUniform3f");
+    glUniform4f		= (PFNGLUNIFORM4FPROC) GL::getProcAddress("glUniform4f");
+    glUniform1fv	= (PFNGLUNIFORM1FVPROC) GL::getProcAddress("glUniform1fv");
+    glUniform2fv	= (PFNGLUNIFORM2FVPROC) GL::getProcAddress("glUniform2fv");
+    glUniform3fv	= (PFNGLUNIFORM3FVPROC) GL::getProcAddress("glUniform3fv");
+    glUniform4fv	= (PFNGLUNIFORM4FVPROC) GL::getProcAddress("glUniform4fv");
+    glUniform1i		= (PFNGLUNIFORM1IPROC) GL::getProcAddress("glUniform1i");
+    glUniform2i		= (PFNGLUNIFORM2IPROC) GL::getProcAddress("glUniform2i");
+    glUniform3i		= (PFNGLUNIFORM3IPROC) GL::getProcAddress("glUniform3i");
+    glUniform4i		= (PFNGLUNIFORM4IPROC) GL::getProcAddress("glUniform4i");
+    glUniformMatrix2fv	= (PFNGLUNIFORMMATRIX2FVPROC) GL::getProcAddress("glUniformMatrix2fv");
+    glUniformMatrix3fv	= (PFNGLUNIFORMMATRIX3FVPROC) GL::getProcAddress("glUniformMatrix3fv");
+    glUniformMatrix4fv	= (PFNGLUNIFORMMATRIX4FVPROC) GL::getProcAddress("glUniformMatrix4fv");
 
-    glDisableVertexAttribArray	= (PFNGLDISABLEVERTEXATTRIBARRAYPROC)	GL::getProcAddress("glDisableVertexAttribArray");
-    glEnableVertexAttribArray	= (PFNGLENABLEVERTEXATTRIBARRAYPROC)	GL::getProcAddress("glEnableVertexAttribArray");
-    glGetActiveAttrib		= (PFNGLGETACTIVEATTRIBPROC)		GL::getProcAddress("glGetActiveAttrib");
-    glBindAttribLocation		= (PFNGLBINDATTRIBLOCATIONPROC)		GL::getProcAddress("glBindAttribLocation");
-    glGetAttribLocation		= (PFNGLGETATTRIBLOCATIONPROC)		GL::getProcAddress("glGetAttribLocation");
-    glGetVertexAttribdv		= (PFNGLGETVERTEXATTRIBDVPROC)		GL::getProcAddress("glGetVertexAttribdv");
-    glGetVertexAttribfv		= (PFNGLGETVERTEXATTRIBFVPROC)		GL::getProcAddress("glGetVertexAttribfv");
-    glGetVertexAttribiv		= (PFNGLGETVERTEXATTRIBIVPROC)		GL::getProcAddress("glGetVertexAttribiv");
-    glGetVertexAttribPointerv	= (PFNGLGETVERTEXATTRIBPOINTERVPROC)	GL::getProcAddress("glGetVertexAttribPointerv");
+    glDisableVertexAttribArray	= (PFNGLDISABLEVERTEXATTRIBARRAYPROC) GL::getProcAddress("glDisableVertexAttribArray");
+    glEnableVertexAttribArray	= (PFNGLENABLEVERTEXATTRIBARRAYPROC) GL::getProcAddress("glEnableVertexAttribArray");
+    glGetActiveAttrib		= (PFNGLGETACTIVEATTRIBPROC) GL::getProcAddress("glGetActiveAttrib");
+    glBindAttribLocation		= (PFNGLBINDATTRIBLOCATIONPROC) GL::getProcAddress("glBindAttribLocation");
+    glGetAttribLocation		= (PFNGLGETATTRIBLOCATIONPROC) GL::getProcAddress("glGetAttribLocation");
+    glGetVertexAttribdv		= (PFNGLGETVERTEXATTRIBDVPROC) GL::getProcAddress("glGetVertexAttribdv");
+    glGetVertexAttribfv		= (PFNGLGETVERTEXATTRIBFVPROC) GL::getProcAddress("glGetVertexAttribfv");
+    glGetVertexAttribiv		= (PFNGLGETVERTEXATTRIBIVPROC) GL::getProcAddress("glGetVertexAttribiv");
+    glGetVertexAttribPointerv	= (PFNGLGETVERTEXATTRIBPOINTERVPROC) GL::getProcAddress("glGetVertexAttribPointerv");
 
-    glVertexAttrib1d		= (PFNGLVERTEXATTRIB1DPROC)		GL::getProcAddress("glVertexAttrib1d");
-    glVertexAttrib1dv		= (PFNGLVERTEXATTRIB1DVPROC)		GL::getProcAddress("glVertexAttrib1dv");
-    glVertexAttrib1f		= (PFNGLVERTEXATTRIB1FPROC)		GL::getProcAddress("glVertexAttrib1f");
-    glVertexAttrib1fv		= (PFNGLVERTEXATTRIB1FVPROC)		GL::getProcAddress("glVertexAttrib1fv");
-    glVertexAttrib1s		= (PFNGLVERTEXATTRIB1SPROC)		GL::getProcAddress("glVertexAttrib1s");
-    glVertexAttrib1sv		= (PFNGLVERTEXATTRIB1SVPROC)		GL::getProcAddress("glVertexAttrib1sv");
-    glVertexAttrib2d		= (PFNGLVERTEXATTRIB2DPROC)		GL::getProcAddress("glVertexAttrib2d");
-    glVertexAttrib2dv		= (PFNGLVERTEXATTRIB2DVPROC)		GL::getProcAddress("glVertexAttrib2dv");
-    glVertexAttrib2f		= (PFNGLVERTEXATTRIB2FPROC)		GL::getProcAddress("glVertexAttrib2f");
-    glVertexAttrib2fv		= (PFNGLVERTEXATTRIB2FVPROC)		GL::getProcAddress("glVertexAttrib2fv");
-    glVertexAttrib2s		= (PFNGLVERTEXATTRIB2SPROC)		GL::getProcAddress("glVertexAttrib2s");
-    glVertexAttrib2sv		= (PFNGLVERTEXATTRIB2SVPROC)		GL::getProcAddress("glVertexAttrib2sv");
-    glVertexAttrib3d		= (PFNGLVERTEXATTRIB3DPROC)		GL::getProcAddress("glVertexAttrib3d");
-    glVertexAttrib3dv		= (PFNGLVERTEXATTRIB3DVPROC)		GL::getProcAddress("glVertexAttrib3dv");
-    glVertexAttrib3f		= (PFNGLVERTEXATTRIB3FPROC)		GL::getProcAddress("glVertexAttrib3f");
-    glVertexAttrib3fv		= (PFNGLVERTEXATTRIB3FVPROC)		GL::getProcAddress("glVertexAttrib3fv");
-    glVertexAttrib3s		= (PFNGLVERTEXATTRIB3SPROC)		GL::getProcAddress("glVertexAttrib3s");
-    glVertexAttrib3sv		= (PFNGLVERTEXATTRIB3SVPROC)		GL::getProcAddress("glVertexAttrib3sv");
-    glVertexAttrib4Nbv		= (PFNGLVERTEXATTRIB4NBVPROC)		GL::getProcAddress("glVertexAttrib4Nbv");
-    glVertexAttrib4Niv		= (PFNGLVERTEXATTRIB4NIVPROC)		GL::getProcAddress("glVertexAttrib4Niv");
-    glVertexAttrib4Nsv		= (PFNGLVERTEXATTRIB4NSVPROC)		GL::getProcAddress("glVertexAttrib4Nsv");
-    glVertexAttrib4Nub		= (PFNGLVERTEXATTRIB4NUBPROC)		GL::getProcAddress("glVertexAttrib4Nub");
-    glVertexAttrib4Nubv		= (PFNGLVERTEXATTRIB4NUBVPROC)		GL::getProcAddress("glVertexAttrib4Nubv");
-    glVertexAttrib4Nuiv		= (PFNGLVERTEXATTRIB4NUIVPROC)		GL::getProcAddress("glVertexAttrib4Nuiv");
-    glVertexAttrib4Nusv		= (PFNGLVERTEXATTRIB4NUSVPROC)		GL::getProcAddress("glVertexAttrib4Nusv");
-    glVertexAttrib4bv		= (PFNGLVERTEXATTRIB4BVPROC)		GL::getProcAddress("glVertexAttrib4bv");
-    glVertexAttrib4d		= (PFNGLVERTEXATTRIB4DPROC)		GL::getProcAddress("glVertexAttrib4d");
-    glVertexAttrib4dv		= (PFNGLVERTEXATTRIB4DVPROC)		GL::getProcAddress("glVertexAttrib4dv");
-    glVertexAttrib4f		= (PFNGLVERTEXATTRIB4FPROC)		GL::getProcAddress("glVertexAttrib4f");
-    glVertexAttrib4fv		= (PFNGLVERTEXATTRIB4FVPROC)		GL::getProcAddress("glVertexAttrib4fv");
-    glVertexAttrib4iv		= (PFNGLVERTEXATTRIB4IVPROC)		GL::getProcAddress("glVertexAttrib4iv");
-    glVertexAttrib4s		= (PFNGLVERTEXATTRIB4SPROC)		GL::getProcAddress("glVertexAttrib4s");
-    glVertexAttrib4sv		= (PFNGLVERTEXATTRIB4SVPROC)		GL::getProcAddress("glVertexAttrib4sv");
-    glVertexAttrib4ubv		= (PFNGLVERTEXATTRIB4UBVPROC)		GL::getProcAddress("glVertexAttrib4ubv");
-    glVertexAttrib4uiv		= (PFNGLVERTEXATTRIB4UIVPROC)		GL::getProcAddress("glVertexAttrib4uiv");
-    glVertexAttrib4usv		= (PFNGLVERTEXATTRIB4USVPROC)		GL::getProcAddress("glVertexAttrib4usv");
-    glVertexAttribPointer	= (PFNGLVERTEXATTRIBPOINTERPROC)		GL::getProcAddress("glVertexAttribPointer");
+    glVertexAttrib1d		= (PFNGLVERTEXATTRIB1DPROC) GL::getProcAddress("glVertexAttrib1d");
+    glVertexAttrib1dv		= (PFNGLVERTEXATTRIB1DVPROC) GL::getProcAddress("glVertexAttrib1dv");
+    glVertexAttrib1f		= (PFNGLVERTEXATTRIB1FPROC) GL::getProcAddress("glVertexAttrib1f");
+    glVertexAttrib1fv		= (PFNGLVERTEXATTRIB1FVPROC) GL::getProcAddress("glVertexAttrib1fv");
+    glVertexAttrib1s		= (PFNGLVERTEXATTRIB1SPROC) GL::getProcAddress("glVertexAttrib1s");
+    glVertexAttrib1sv		= (PFNGLVERTEXATTRIB1SVPROC) GL::getProcAddress("glVertexAttrib1sv");
+    glVertexAttrib2d		= (PFNGLVERTEXATTRIB2DPROC) GL::getProcAddress("glVertexAttrib2d");
+    glVertexAttrib2dv		= (PFNGLVERTEXATTRIB2DVPROC) GL::getProcAddress("glVertexAttrib2dv");
+    glVertexAttrib2f		= (PFNGLVERTEXATTRIB2FPROC) GL::getProcAddress("glVertexAttrib2f");
+    glVertexAttrib2fv		= (PFNGLVERTEXATTRIB2FVPROC) GL::getProcAddress("glVertexAttrib2fv");
+    glVertexAttrib2s		= (PFNGLVERTEXATTRIB2SPROC) GL::getProcAddress("glVertexAttrib2s");
+    glVertexAttrib2sv		= (PFNGLVERTEXATTRIB2SVPROC) GL::getProcAddress("glVertexAttrib2sv");
+    glVertexAttrib3d		= (PFNGLVERTEXATTRIB3DPROC) GL::getProcAddress("glVertexAttrib3d");
+    glVertexAttrib3dv		= (PFNGLVERTEXATTRIB3DVPROC) GL::getProcAddress("glVertexAttrib3dv");
+    glVertexAttrib3f		= (PFNGLVERTEXATTRIB3FPROC) GL::getProcAddress("glVertexAttrib3f");
+    glVertexAttrib3fv		= (PFNGLVERTEXATTRIB3FVPROC) GL::getProcAddress("glVertexAttrib3fv");
+    glVertexAttrib3s		= (PFNGLVERTEXATTRIB3SPROC) GL::getProcAddress("glVertexAttrib3s");
+    glVertexAttrib3sv		= (PFNGLVERTEXATTRIB3SVPROC) GL::getProcAddress("glVertexAttrib3sv");
+    glVertexAttrib4Nbv		= (PFNGLVERTEXATTRIB4NBVPROC) GL::getProcAddress("glVertexAttrib4Nbv");
+    glVertexAttrib4Niv		= (PFNGLVERTEXATTRIB4NIVPROC) GL::getProcAddress("glVertexAttrib4Niv");
+    glVertexAttrib4Nsv		= (PFNGLVERTEXATTRIB4NSVPROC) GL::getProcAddress("glVertexAttrib4Nsv");
+    glVertexAttrib4Nub		= (PFNGLVERTEXATTRIB4NUBPROC) GL::getProcAddress("glVertexAttrib4Nub");
+    glVertexAttrib4Nubv		= (PFNGLVERTEXATTRIB4NUBVPROC) GL::getProcAddress("glVertexAttrib4Nubv");
+    glVertexAttrib4Nuiv		= (PFNGLVERTEXATTRIB4NUIVPROC) GL::getProcAddress("glVertexAttrib4Nuiv");
+    glVertexAttrib4Nusv		= (PFNGLVERTEXATTRIB4NUSVPROC) GL::getProcAddress("glVertexAttrib4Nusv");
+    glVertexAttrib4bv		= (PFNGLVERTEXATTRIB4BVPROC) GL::getProcAddress("glVertexAttrib4bv");
+    glVertexAttrib4d		= (PFNGLVERTEXATTRIB4DPROC) GL::getProcAddress("glVertexAttrib4d");
+    glVertexAttrib4dv		= (PFNGLVERTEXATTRIB4DVPROC) GL::getProcAddress("glVertexAttrib4dv");
+    glVertexAttrib4f		= (PFNGLVERTEXATTRIB4FPROC) GL::getProcAddress("glVertexAttrib4f");
+    glVertexAttrib4fv		= (PFNGLVERTEXATTRIB4FVPROC) GL::getProcAddress("glVertexAttrib4fv");
+    glVertexAttrib4iv		= (PFNGLVERTEXATTRIB4IVPROC) GL::getProcAddress("glVertexAttrib4iv");
+    glVertexAttrib4s		= (PFNGLVERTEXATTRIB4SPROC) GL::getProcAddress("glVertexAttrib4s");
+    glVertexAttrib4sv		= (PFNGLVERTEXATTRIB4SVPROC) GL::getProcAddress("glVertexAttrib4sv");
+    glVertexAttrib4ubv		= (PFNGLVERTEXATTRIB4UBVPROC) GL::getProcAddress("glVertexAttrib4ubv");
+    glVertexAttrib4uiv		= (PFNGLVERTEXATTRIB4UIVPROC) GL::getProcAddress("glVertexAttrib4uiv");
+    glVertexAttrib4usv		= (PFNGLVERTEXATTRIB4USVPROC) GL::getProcAddress("glVertexAttrib4usv");
+    glVertexAttribPointer	= (PFNGLVERTEXATTRIBPOINTERPROC) GL::getProcAddress("glVertexAttribPointer");
 
     if ((!glCreateShader || !glShaderSource || !glCompileShader || !glCreateProgram  ||
         !glAttachShader || !glLinkProgram || !glValidateProgram || !glUseProgram  ||
@@ -798,90 +833,90 @@ void GLExtensionManager::getGLFunctions()
         !glVertexAttrib4uiv || !glVertexAttrib4usv || !glVertexAttribPointer) &&
         isExtensionSupported("GL_ARB_shading_language_100")) {
 
-        glCreateShader		= (PFNGLCREATESHADERPROC)	GL::getProcAddress("glCreateShaderObjectARB");
-        glShaderSource		= (PFNGLSHADERSOURCEPROC)	GL::getProcAddress("glShaderSourceARB");
-        glCompileShader		= (PFNGLCOMPILESHADERPROC)	GL::getProcAddress("glCompileShaderARB");
-        glCreateProgram		= (PFNGLCREATEPROGRAMPROC)	GL::getProcAddress("glCreateProgramObjectARB");
-        glAttachShader		= (PFNGLATTACHSHADERPROC)	GL::getProcAddress("glAttachObjectARB");
-        glLinkProgram		= (PFNGLLINKPROGRAMPROC)	GL::getProcAddress("glLinkProgramARB");
+        glCreateShader		= (PFNGLCREATESHADERPROC) GL::getProcAddress("glCreateShaderObjectARB");
+        glShaderSource		= (PFNGLSHADERSOURCEPROC) GL::getProcAddress("glShaderSourceARB");
+        glCompileShader		= (PFNGLCOMPILESHADERPROC) GL::getProcAddress("glCompileShaderARB");
+        glCreateProgram		= (PFNGLCREATEPROGRAMPROC) GL::getProcAddress("glCreateProgramObjectARB");
+        glAttachShader		= (PFNGLATTACHSHADERPROC) GL::getProcAddress("glAttachObjectARB");
+        glLinkProgram		= (PFNGLLINKPROGRAMPROC) GL::getProcAddress("glLinkProgramARB");
         glValidateProgram	= (PFNGLVALIDATEPROGRAMPROC)GL::getProcAddress("glValidateProgramARB");
-        glUseProgram		= (PFNGLUSEPROGRAMPROC)		GL::getProcAddress("glUseProgramObjectARB");
+        glUseProgram		= (PFNGLUSEPROGRAMPROC) GL::getProcAddress("glUseProgramObjectARB");
 
-        glDetachShader		= (PFNGLDETACHSHADERPROC)	GL::getProcAddress("glDetachObjectARB");
-        glDeleteShader		= (PFNGLDELETESHADERPROC)	GL::getProcAddress("glDeleteObjectARB");
-        glDeleteProgram		= (PFNGLDELETEPROGRAMPROC)	GL::getProcAddress("glDeleteObjectARB");
+        glDetachShader		= (PFNGLDETACHSHADERPROC) GL::getProcAddress("glDetachObjectARB");
+        glDeleteShader		= (PFNGLDELETESHADERPROC) GL::getProcAddress("glDeleteObjectARB");
+        glDeleteProgram		= (PFNGLDELETEPROGRAMPROC) GL::getProcAddress("glDeleteObjectARB");
 
-        glGetProgramiv		= (PFNGLGETPROGRAMIVPROC)	GL::getProcAddress("glGetObjectParameterivARB");
-        glGetProgramInfoLog	= (PFNGLGETPROGRAMINFOLOGPROC)	GL::getProcAddress("glGetInfoLogARB");
-        glGetShaderiv		= (PFNGLGETSHADERIVPROC)	GL::getProcAddress("glGetObjectParameterivARB");
-        glGetShaderInfoLog	= (PFNGLGETSHADERINFOLOGPROC)	GL::getProcAddress("glGetInfoLogARB");
-        glIsProgram		= (PFNGLISPROGRAMPROC)		GL::getProcAddress("glIsProgramARB"); // Not sure
-        glIsShader		= (PFNGLISSHADERPROC)		GL::getProcAddress("glIsProgramARB"); // Not sure
+        glGetProgramiv		= (PFNGLGETPROGRAMIVPROC) GL::getProcAddress("glGetObjectParameterivARB");
+        glGetProgramInfoLog	= (PFNGLGETPROGRAMINFOLOGPROC) GL::getProcAddress("glGetInfoLogARB");
+        glGetShaderiv		= (PFNGLGETSHADERIVPROC) GL::getProcAddress("glGetObjectParameterivARB");
+        glGetShaderInfoLog	= (PFNGLGETSHADERINFOLOGPROC) GL::getProcAddress("glGetInfoLogARB");
+        glIsProgram		= (PFNGLISPROGRAMPROC) GL::getProcAddress("glIsProgramARB"); // Not sure
+        glIsShader		= (PFNGLISSHADERPROC) GL::getProcAddress("glIsProgramARB"); // Not sure
 
-        glGetUniformLocation    = (PFNGLGETUNIFORMLOCATIONPROC)	GL::getProcAddress("glGetUniformLocationARB");
-        glGetActiveUniform      = (PFNGLGETACTIVEUNIFORMPROC)   GL::getProcAddress("glGetActiveUniformARB");
-        glUniform1f		= (PFNGLUNIFORM1FPROC)		GL::getProcAddress("glUniform1fARB");
-        glUniform2f		= (PFNGLUNIFORM2FPROC)		GL::getProcAddress("glUniform2fARB");
-        glUniform3f		= (PFNGLUNIFORM3FPROC)		GL::getProcAddress("glUniform3fARB");
-        glUniform4f		= (PFNGLUNIFORM4FPROC)		GL::getProcAddress("glUniform4fARB");
-        glUniform1fv	= (PFNGLUNIFORM1FVPROC)		GL::getProcAddress("glUniform1fvARB");
-        glUniform2fv	= (PFNGLUNIFORM2FVPROC)		GL::getProcAddress("glUniform2fvARB");
-        glUniform3fv	= (PFNGLUNIFORM3FVPROC)		GL::getProcAddress("glUniform3fvARB");
-        glUniform4fv	= (PFNGLUNIFORM4FVPROC)		GL::getProcAddress("glUniform4fvARB");
-        glUniform1i		= (PFNGLUNIFORM1IPROC)		GL::getProcAddress("glUniform1iARB");
-        glUniform2i		= (PFNGLUNIFORM2IPROC)		GL::getProcAddress("glUniform2iARB");
-        glUniform3i		= (PFNGLUNIFORM3IPROC)		GL::getProcAddress("glUniform3iARB");
-        glUniform4i		= (PFNGLUNIFORM4IPROC)		GL::getProcAddress("glUniform4iARB");
-        glUniformMatrix2fv	= (PFNGLUNIFORMMATRIX2FVPROC)	GL::getProcAddress("glUniformMatrix2fvARB");
-        glUniformMatrix3fv	= (PFNGLUNIFORMMATRIX3FVPROC)	GL::getProcAddress("glUniformMatrix3fvARB");
-        glUniformMatrix4fv	= (PFNGLUNIFORMMATRIX4FVPROC)	GL::getProcAddress("glUniformMatrix4fvARB");
+        glGetUniformLocation    = (PFNGLGETUNIFORMLOCATIONPROC) GL::getProcAddress("glGetUniformLocationARB");
+        glGetActiveUniform      = (PFNGLGETACTIVEUNIFORMPROC) GL::getProcAddress("glGetActiveUniformARB");
+        glUniform1f		= (PFNGLUNIFORM1FPROC) GL::getProcAddress("glUniform1fARB");
+        glUniform2f		= (PFNGLUNIFORM2FPROC) GL::getProcAddress("glUniform2fARB");
+        glUniform3f		= (PFNGLUNIFORM3FPROC) GL::getProcAddress("glUniform3fARB");
+        glUniform4f		= (PFNGLUNIFORM4FPROC) GL::getProcAddress("glUniform4fARB");
+        glUniform1fv	= (PFNGLUNIFORM1FVPROC) GL::getProcAddress("glUniform1fvARB");
+        glUniform2fv	= (PFNGLUNIFORM2FVPROC) GL::getProcAddress("glUniform2fvARB");
+        glUniform3fv	= (PFNGLUNIFORM3FVPROC) GL::getProcAddress("glUniform3fvARB");
+        glUniform4fv	= (PFNGLUNIFORM4FVPROC) GL::getProcAddress("glUniform4fvARB");
+        glUniform1i		= (PFNGLUNIFORM1IPROC) GL::getProcAddress("glUniform1iARB");
+        glUniform2i		= (PFNGLUNIFORM2IPROC) GL::getProcAddress("glUniform2iARB");
+        glUniform3i		= (PFNGLUNIFORM3IPROC) GL::getProcAddress("glUniform3iARB");
+        glUniform4i		= (PFNGLUNIFORM4IPROC) GL::getProcAddress("glUniform4iARB");
+        glUniformMatrix2fv	= (PFNGLUNIFORMMATRIX2FVPROC) GL::getProcAddress("glUniformMatrix2fvARB");
+        glUniformMatrix3fv	= (PFNGLUNIFORMMATRIX3FVPROC) GL::getProcAddress("glUniformMatrix3fvARB");
+        glUniformMatrix4fv	= (PFNGLUNIFORMMATRIX4FVPROC) GL::getProcAddress("glUniformMatrix4fvARB");
 
-        glDisableVertexAttribArray	= (PFNGLDISABLEVERTEXATTRIBARRAYPROC)	GL::getProcAddress("glDisableVertexAttribArrayARB");
-        glEnableVertexAttribArray	= (PFNGLENABLEVERTEXATTRIBARRAYPROC)	GL::getProcAddress("glEnableVertexAttribArrayARB");
-        glGetActiveAttrib		= (PFNGLGETACTIVEATTRIBPROC)		GL::getProcAddress("glGetActiveAttribARB");
-        glBindAttribLocation		= (PFNGLBINDATTRIBLOCATIONPROC)		GL::getProcAddress("glBindAttribLocationARB");
-        glGetAttribLocation		= (PFNGLGETATTRIBLOCATIONPROC)		GL::getProcAddress("glGetAttribLocationARB");
-        glGetVertexAttribdv		= (PFNGLGETVERTEXATTRIBDVPROC)		GL::getProcAddress("glGetVertexAttribdvARB");
-        glGetVertexAttribfv		= (PFNGLGETVERTEXATTRIBFVPROC)		GL::getProcAddress("glGetVertexAttribfvARB");
-        glGetVertexAttribiv		= (PFNGLGETVERTEXATTRIBIVPROC)		GL::getProcAddress("glGetVertexAttribivARB");
-        glGetVertexAttribPointerv	= (PFNGLGETVERTEXATTRIBPOINTERVPROC)	GL::getProcAddress("glGetVertexAttribPointervARB");
+        glDisableVertexAttribArray	= (PFNGLDISABLEVERTEXATTRIBARRAYPROC) GL::getProcAddress("glDisableVertexAttribArrayARB");
+        glEnableVertexAttribArray	= (PFNGLENABLEVERTEXATTRIBARRAYPROC) GL::getProcAddress("glEnableVertexAttribArrayARB");
+        glGetActiveAttrib		= (PFNGLGETACTIVEATTRIBPROC) GL::getProcAddress("glGetActiveAttribARB");
+        glBindAttribLocation		= (PFNGLBINDATTRIBLOCATIONPROC) GL::getProcAddress("glBindAttribLocationARB");
+        glGetAttribLocation		= (PFNGLGETATTRIBLOCATIONPROC) GL::getProcAddress("glGetAttribLocationARB");
+        glGetVertexAttribdv		= (PFNGLGETVERTEXATTRIBDVPROC) GL::getProcAddress("glGetVertexAttribdvARB");
+        glGetVertexAttribfv		= (PFNGLGETVERTEXATTRIBFVPROC) GL::getProcAddress("glGetVertexAttribfvARB");
+        glGetVertexAttribiv		= (PFNGLGETVERTEXATTRIBIVPROC) GL::getProcAddress("glGetVertexAttribivARB");
+        glGetVertexAttribPointerv	= (PFNGLGETVERTEXATTRIBPOINTERVPROC) GL::getProcAddress("glGetVertexAttribPointervARB");
 
-        glVertexAttrib1d		= (PFNGLVERTEXATTRIB1DPROC)	GL::getProcAddress("glVertexAttrib1dARB");
-        glVertexAttrib1dv		= (PFNGLVERTEXATTRIB1DVPROC)	GL::getProcAddress("glVertexAttrib1dvARB");
-        glVertexAttrib1f		= (PFNGLVERTEXATTRIB1FPROC)	GL::getProcAddress("glVertexAttrib1fARB");
-        glVertexAttrib1fv		= (PFNGLVERTEXATTRIB1FVPROC)	GL::getProcAddress("glVertexAttrib1fvARB");
-        glVertexAttrib1s		= (PFNGLVERTEXATTRIB1SPROC)	GL::getProcAddress("glVertexAttrib1sARB");
-        glVertexAttrib1sv		= (PFNGLVERTEXATTRIB1SVPROC)	GL::getProcAddress("glVertexAttrib1svARB");
-        glVertexAttrib2d		= (PFNGLVERTEXATTRIB2DPROC)	GL::getProcAddress("glVertexAttrib2dARB");
-        glVertexAttrib2dv		= (PFNGLVERTEXATTRIB2DVPROC)	GL::getProcAddress("glVertexAttrib2dvARB");
-        glVertexAttrib2f		= (PFNGLVERTEXATTRIB2FPROC)	GL::getProcAddress("glVertexAttrib2fARB");
-        glVertexAttrib2fv		= (PFNGLVERTEXATTRIB2FVPROC)	GL::getProcAddress("glVertexAttrib2fvARB");
-        glVertexAttrib2s		= (PFNGLVERTEXATTRIB2SPROC)	GL::getProcAddress("glVertexAttrib2sARB");
-        glVertexAttrib2sv		= (PFNGLVERTEXATTRIB2SVPROC)	GL::getProcAddress("glVertexAttrib2svARB");
-        glVertexAttrib3d		= (PFNGLVERTEXATTRIB3DPROC)	GL::getProcAddress("glVertexAttrib3dARB");
-        glVertexAttrib3dv		= (PFNGLVERTEXATTRIB3DVPROC)	GL::getProcAddress("glVertexAttrib3dvARB");
-        glVertexAttrib3f		= (PFNGLVERTEXATTRIB3FPROC)	GL::getProcAddress("glVertexAttrib3fARB");
-        glVertexAttrib3fv		= (PFNGLVERTEXATTRIB3FVPROC)	GL::getProcAddress("glVertexAttrib3fvARB");
-        glVertexAttrib3s		= (PFNGLVERTEXATTRIB3SPROC)	GL::getProcAddress("glVertexAttrib3sARB");
-        glVertexAttrib3sv		= (PFNGLVERTEXATTRIB3SVPROC)	GL::getProcAddress("glVertexAttrib3svARB");
-        glVertexAttrib4Nbv		= (PFNGLVERTEXATTRIB4NBVPROC)	GL::getProcAddress("glVertexAttrib4NbvARB");
-        glVertexAttrib4Niv		= (PFNGLVERTEXATTRIB4NIVPROC)	GL::getProcAddress("glVertexAttrib4NivARB");
-        glVertexAttrib4Nsv		= (PFNGLVERTEXATTRIB4NSVPROC)	GL::getProcAddress("glVertexAttrib4NsvARB");
-        glVertexAttrib4Nub		= (PFNGLVERTEXATTRIB4NUBPROC)	GL::getProcAddress("glVertexAttrib4NubARB");
-        glVertexAttrib4Nubv		= (PFNGLVERTEXATTRIB4NUBVPROC)	GL::getProcAddress("glVertexAttrib4NubvARB");
-        glVertexAttrib4Nuiv		= (PFNGLVERTEXATTRIB4NUIVPROC)	GL::getProcAddress("glVertexAttrib4NuivARB");
-        glVertexAttrib4Nusv		= (PFNGLVERTEXATTRIB4NUSVPROC)	GL::getProcAddress("glVertexAttrib4NusvARB");
-        glVertexAttrib4bv		= (PFNGLVERTEXATTRIB4BVPROC)	GL::getProcAddress("glVertexAttrib4bvARB");
-        glVertexAttrib4d		= (PFNGLVERTEXATTRIB4DPROC)	GL::getProcAddress("glVertexAttrib4dARB");
-        glVertexAttrib4dv		= (PFNGLVERTEXATTRIB4DVPROC)	GL::getProcAddress("glVertexAttrib4dvARB");
-        glVertexAttrib4f		= (PFNGLVERTEXATTRIB4FPROC)	GL::getProcAddress("glVertexAttrib4fARB");
-        glVertexAttrib4fv		= (PFNGLVERTEXATTRIB4FVPROC)	GL::getProcAddress("glVertexAttrib4fvARB");
-        glVertexAttrib4iv		= (PFNGLVERTEXATTRIB4IVPROC)	GL::getProcAddress("glVertexAttrib4ivARB");
-        glVertexAttrib4s		= (PFNGLVERTEXATTRIB4SPROC)	GL::getProcAddress("glVertexAttrib4sARB");
-        glVertexAttrib4sv		= (PFNGLVERTEXATTRIB4SVPROC)	GL::getProcAddress("glVertexAttrib4svARB");
-        glVertexAttrib4ubv		= (PFNGLVERTEXATTRIB4UBVPROC)	GL::getProcAddress("glVertexAttrib4ubvARB");
-        glVertexAttrib4uiv		= (PFNGLVERTEXATTRIB4UIVPROC)	GL::getProcAddress("glVertexAttrib4uivARB");
-        glVertexAttrib4usv		= (PFNGLVERTEXATTRIB4USVPROC)	GL::getProcAddress("glVertexAttrib4usvARB");
+        glVertexAttrib1d		= (PFNGLVERTEXATTRIB1DPROC) GL::getProcAddress("glVertexAttrib1dARB");
+        glVertexAttrib1dv		= (PFNGLVERTEXATTRIB1DVPROC) GL::getProcAddress("glVertexAttrib1dvARB");
+        glVertexAttrib1f		= (PFNGLVERTEXATTRIB1FPROC) GL::getProcAddress("glVertexAttrib1fARB");
+        glVertexAttrib1fv		= (PFNGLVERTEXATTRIB1FVPROC) GL::getProcAddress("glVertexAttrib1fvARB");
+        glVertexAttrib1s		= (PFNGLVERTEXATTRIB1SPROC) GL::getProcAddress("glVertexAttrib1sARB");
+        glVertexAttrib1sv		= (PFNGLVERTEXATTRIB1SVPROC) GL::getProcAddress("glVertexAttrib1svARB");
+        glVertexAttrib2d		= (PFNGLVERTEXATTRIB2DPROC) GL::getProcAddress("glVertexAttrib2dARB");
+        glVertexAttrib2dv		= (PFNGLVERTEXATTRIB2DVPROC) GL::getProcAddress("glVertexAttrib2dvARB");
+        glVertexAttrib2f		= (PFNGLVERTEXATTRIB2FPROC) GL::getProcAddress("glVertexAttrib2fARB");
+        glVertexAttrib2fv		= (PFNGLVERTEXATTRIB2FVPROC) GL::getProcAddress("glVertexAttrib2fvARB");
+        glVertexAttrib2s		= (PFNGLVERTEXATTRIB2SPROC) GL::getProcAddress("glVertexAttrib2sARB");
+        glVertexAttrib2sv		= (PFNGLVERTEXATTRIB2SVPROC) GL::getProcAddress("glVertexAttrib2svARB");
+        glVertexAttrib3d		= (PFNGLVERTEXATTRIB3DPROC) GL::getProcAddress("glVertexAttrib3dARB");
+        glVertexAttrib3dv		= (PFNGLVERTEXATTRIB3DVPROC) GL::getProcAddress("glVertexAttrib3dvARB");
+        glVertexAttrib3f		= (PFNGLVERTEXATTRIB3FPROC) GL::getProcAddress("glVertexAttrib3fARB");
+        glVertexAttrib3fv		= (PFNGLVERTEXATTRIB3FVPROC) GL::getProcAddress("glVertexAttrib3fvARB");
+        glVertexAttrib3s		= (PFNGLVERTEXATTRIB3SPROC) GL::getProcAddress("glVertexAttrib3sARB");
+        glVertexAttrib3sv		= (PFNGLVERTEXATTRIB3SVPROC) GL::getProcAddress("glVertexAttrib3svARB");
+        glVertexAttrib4Nbv		= (PFNGLVERTEXATTRIB4NBVPROC) GL::getProcAddress("glVertexAttrib4NbvARB");
+        glVertexAttrib4Niv		= (PFNGLVERTEXATTRIB4NIVPROC) GL::getProcAddress("glVertexAttrib4NivARB");
+        glVertexAttrib4Nsv		= (PFNGLVERTEXATTRIB4NSVPROC) GL::getProcAddress("glVertexAttrib4NsvARB");
+        glVertexAttrib4Nub		= (PFNGLVERTEXATTRIB4NUBPROC) GL::getProcAddress("glVertexAttrib4NubARB");
+        glVertexAttrib4Nubv		= (PFNGLVERTEXATTRIB4NUBVPROC) GL::getProcAddress("glVertexAttrib4NubvARB");
+        glVertexAttrib4Nuiv		= (PFNGLVERTEXATTRIB4NUIVPROC) GL::getProcAddress("glVertexAttrib4NuivARB");
+        glVertexAttrib4Nusv		= (PFNGLVERTEXATTRIB4NUSVPROC) GL::getProcAddress("glVertexAttrib4NusvARB");
+        glVertexAttrib4bv		= (PFNGLVERTEXATTRIB4BVPROC) GL::getProcAddress("glVertexAttrib4bvARB");
+        glVertexAttrib4d		= (PFNGLVERTEXATTRIB4DPROC) GL::getProcAddress("glVertexAttrib4dARB");
+        glVertexAttrib4dv		= (PFNGLVERTEXATTRIB4DVPROC) GL::getProcAddress("glVertexAttrib4dvARB");
+        glVertexAttrib4f		= (PFNGLVERTEXATTRIB4FPROC) GL::getProcAddress("glVertexAttrib4fARB");
+        glVertexAttrib4fv		= (PFNGLVERTEXATTRIB4FVPROC) GL::getProcAddress("glVertexAttrib4fvARB");
+        glVertexAttrib4iv		= (PFNGLVERTEXATTRIB4IVPROC) GL::getProcAddress("glVertexAttrib4ivARB");
+        glVertexAttrib4s		= (PFNGLVERTEXATTRIB4SPROC) GL::getProcAddress("glVertexAttrib4sARB");
+        glVertexAttrib4sv		= (PFNGLVERTEXATTRIB4SVPROC) GL::getProcAddress("glVertexAttrib4svARB");
+        glVertexAttrib4ubv		= (PFNGLVERTEXATTRIB4UBVPROC) GL::getProcAddress("glVertexAttrib4ubvARB");
+        glVertexAttrib4uiv		= (PFNGLVERTEXATTRIB4UIVPROC) GL::getProcAddress("glVertexAttrib4uivARB");
+        glVertexAttrib4usv		= (PFNGLVERTEXATTRIB4USVPROC) GL::getProcAddress("glVertexAttrib4usvARB");
         glVertexAttribPointer	= (PFNGLVERTEXATTRIBPOINTERPROC)GL::getProcAddress("glVertexAttribPointerARB");
     }
 
@@ -913,7 +948,7 @@ void GLExtensionManager::getGLFunctions()
     // Blend equation separate
     //
 
-    glBlendEquationSeparate = (PFNGLBLENDEQUATIONSEPARATEPROC)  GL::getProcAddress("glBlendEquationSeparate");
+    glBlendEquationSeparate = (PFNGLBLENDEQUATIONSEPARATEPROC) GL::getProcAddress("glBlendEquationSeparate");
     if (!glBlendEquationSeparate) {
         O3D_ERROR(E_UnsuportedFeature("OpenGL Blend equation separate"));
     }
@@ -922,7 +957,7 @@ void GLExtensionManager::getGLFunctions()
 	// Draw buffers
 	//
 
-    glDrawBuffers = (PFNGLDRAWBUFFERSPROC)  GL::getProcAddress("glDrawBuffers");
+    glDrawBuffers = (PFNGLDRAWBUFFERSPROC) GL::getProcAddress("glDrawBuffers");
     if (!glDrawBuffers && isExtensionSupported("GL_ARB_draw_buffers")) {
         glDrawBuffers = (PFNGLDRAWBUFFERSPROC) GL::getProcAddress("glDrawBuffersARB");
     }
@@ -935,9 +970,9 @@ void GLExtensionManager::getGLFunctions()
     // Stencil separate
     //
 
-    glStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC)  GL::getProcAddress("glStencilOpSeparate");
-    glStencilFuncSeparate = (PFNGLSTENCILFUNCSEPARATEPROC)  GL::getProcAddress("glStencilFuncSeparate");
-    glStencilMaskSeparate = (PFNGLSTENCILMASKSEPARATEPROC)  GL::getProcAddress("glStencilMaskSeparate");
+    glStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC) GL::getProcAddress("glStencilOpSeparate");
+    glStencilFuncSeparate = (PFNGLSTENCILFUNCSEPARATEPROC) GL::getProcAddress("glStencilFuncSeparate");
+    glStencilMaskSeparate = (PFNGLSTENCILMASKSEPARATEPROC) GL::getProcAddress("glStencilMaskSeparate");
 
     if (!glStencilOpSeparate || !glStencilFuncSeparate || !glStencilMaskSeparate) {
         O3D_ERROR(E_UnsuportedFeature("OpenGL stencil separate functions"));
@@ -959,17 +994,17 @@ void GLExtensionManager::getGLFunctions()
     glGetRenderbufferParameteriv    = (PFNGLGETRENDERBUFFERPARAMETERIVPROC) GL::getProcAddress("glGetRenderbufferParameteriv");
     glIsFramebuffer 		= (PFNGLISFRAMEBUFFERPROC) GL::getProcAddress("glIsFramebuffer");
     glBindFramebuffer 		= (PFNGLBINDFRAMEBUFFERPROC) GL::getProcAddress("glBindFramebuffer");
-    glDeleteFramebuffers 	= (PFNGLDELETEFRAMEBUFFERSPROC)	GL::getProcAddress("glDeleteFramebuffers");
+    glDeleteFramebuffers 	= (PFNGLDELETEFRAMEBUFFERSPROC) GL::getProcAddress("glDeleteFramebuffers");
     glGenFramebuffers 		= (PFNGLGENFRAMEBUFFERSPROC) GL::getProcAddress("glGenFramebuffers");
-    glCheckFramebufferStatus 	= (PFNGLCHECKFRAMEBUFFERSTATUSPROC)	GL::getProcAddress("glCheckFramebufferStatus");
+    glCheckFramebufferStatus 	= (PFNGLCHECKFRAMEBUFFERSTATUSPROC) GL::getProcAddress("glCheckFramebufferStatus");
     glFramebufferTexture1D 		= (PFNGLFRAMEBUFFERTEXTURE1DPROC) GL::getProcAddress("glFramebufferTexture1D");
     glFramebufferTexture2D 		= (PFNGLFRAMEBUFFERTEXTURE2DPROC) GL::getProcAddress("glFramebufferTexture2D");
     glFramebufferTexture3D 		= (PFNGLFRAMEBUFFERTEXTURE3DPROC) GL::getProcAddress("glFramebufferTexture3D");
     glFramebufferRenderbuffer 	= (PFNGLFRAMEBUFFERRENDERBUFFERPROC) GL::getProcAddress("glFramebufferRenderbuffer");
-    glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)	GL::getProcAddress("glGetFramebufferAttachmentParameteriv");
+    glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC) GL::getProcAddress("glGetFramebufferAttachmentParameteriv");
     glBlitFramebuffer 		= (PFNGLBLITFRAMEBUFFERPROC) GL::getProcAddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC) GL::getProcAddress("glRenderbufferStorageMultisample");
-    glGenerateMipmap 		= (PFNGLGENERATEMIPMAPPROC)	 GL::getProcAddress("glGenerateMipmap");
+    glGenerateMipmap 		= (PFNGLGENERATEMIPMAPPROC) GL::getProcAddress("glGenerateMipmap");
     glFramebufferTextureLayer   = (PFNGLFRAMEBUFFERTEXTURELAYERPROC) GL::getProcAddress("glFramebufferTextureLayer");
 
     if ((!glIsRenderbuffer || !glBindRenderbuffer || !glDeleteRenderbuffers ||
@@ -981,7 +1016,7 @@ void GLExtensionManager::getGLFunctions()
         !glRenderbufferStorageMultisample || !glGenerateMipmap ||!glFramebufferTextureLayer) &&
         isExtensionSupported("GL_ARB_framebuffer_object")) {
 
-        glIsRenderbuffer 		= (PFNGLISRENDERBUFFERPROC)	GL::getProcAddress("glIsRenderbufferARB");
+        glIsRenderbuffer 		= (PFNGLISRENDERBUFFERPROC) GL::getProcAddress("glIsRenderbufferARB");
         glBindRenderbuffer 		= (PFNGLBINDRENDERBUFFERPROC) GL::getProcAddress("glBindRenderbufferARB");
         glDeleteRenderbuffers 	= (PFNGLDELETERENDERBUFFERSPROC) GL::getProcAddress("glDeleteRenderbuffersARB");
         glGenRenderbuffers 		= (PFNGLGENRENDERBUFFERSPROC) GL::getProcAddress("glGenRenderbuffersARB");
@@ -989,18 +1024,18 @@ void GLExtensionManager::getGLFunctions()
         glGetRenderbufferParameteriv = (PFNGLGETRENDERBUFFERPARAMETERIVPROC) GL::getProcAddress("glGetRenderbufferParameterivARB");
         glIsFramebuffer 		= (PFNGLISFRAMEBUFFERPROC) GL::getProcAddress("glIsFramebufferARB");
         glBindFramebuffer 		= (PFNGLBINDFRAMEBUFFERPROC) GL::getProcAddress("glBindFramebufferARB");
-        glDeleteFramebuffers 	= (PFNGLDELETEFRAMEBUFFERSPROC)	GL::getProcAddress("glDeleteFramebuffersARB");
+        glDeleteFramebuffers 	= (PFNGLDELETEFRAMEBUFFERSPROC) GL::getProcAddress("glDeleteFramebuffersARB");
         glGenFramebuffers 		= (PFNGLGENFRAMEBUFFERSPROC) GL::getProcAddress("glGenFramebuffersARB");
-        glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)	GL::getProcAddress("glCheckFramebufferStatusARB");
-        glFramebufferTexture1D = (PFNGLFRAMEBUFFERTEXTURE1DPROC)	GL::getProcAddress("glFramebufferTexture1DARB");
-        glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)	GL::getProcAddress("glFramebufferTexture2DARB");
-        glFramebufferTexture3D = (PFNGLFRAMEBUFFERTEXTURE3DPROC)	GL::getProcAddress("glFramebufferTexture3DARB");
-        glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)	GL::getProcAddress("glFramebufferRenderbufferARB");
-        glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)	GL::getProcAddress("glGetFramebufferAttachmentParameterivARB");
-        glBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC)		GL::getProcAddress("glBlitFramebufferARB");
+        glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC) GL::getProcAddress("glCheckFramebufferStatusARB");
+        glFramebufferTexture1D = (PFNGLFRAMEBUFFERTEXTURE1DPROC) GL::getProcAddress("glFramebufferTexture1DARB");
+        glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC) GL::getProcAddress("glFramebufferTexture2DARB");
+        glFramebufferTexture3D = (PFNGLFRAMEBUFFERTEXTURE3DPROC) GL::getProcAddress("glFramebufferTexture3DARB");
+        glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC) GL::getProcAddress("glFramebufferRenderbufferARB");
+        glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC) GL::getProcAddress("glGetFramebufferAttachmentParameterivARB");
+        glBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC) GL::getProcAddress("glBlitFramebufferARB");
         glRenderbufferStorageMultisample = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC) GL::getProcAddress("glRenderbufferStorageMultisampleARB");
-        glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)	        GL::getProcAddress("glGenerateMipmapARB");
-        glFramebufferTextureLayer  = (PFNGLFRAMEBUFFERTEXTURELAYERPROC)	GL::getProcAddress("glFramebufferTextureLayerARB");
+        glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC) GL::getProcAddress("glGenerateMipmapARB");
+        glFramebufferTextureLayer  = (PFNGLFRAMEBUFFERTEXTURELAYERPROC) GL::getProcAddress("glFramebufferTextureLayerARB");
     }
 
     if ((!glIsRenderbuffer || !glBindRenderbuffer || !glDeleteRenderbuffers ||
@@ -1012,23 +1047,23 @@ void GLExtensionManager::getGLFunctions()
         !glRenderbufferStorageMultisample || !glGenerateMipmap ||!glFramebufferTextureLayer) &&
         isExtensionSupported("GL_EXT_framebuffer_object")) {
 
-        glIsRenderbuffer 	= (PFNGLISRENDERBUFFERPROC)		GL::getProcAddress("glIsRenderbufferEXT");
-        glBindRenderbuffer 	= (PFNGLBINDRENDERBUFFERPROC)		GL::getProcAddress("glBindRenderbufferEXT");
-        glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC)	GL::getProcAddress("glDeleteRenderbuffersEXT");
-        glGenRenderbuffers 	= (PFNGLGENRENDERBUFFERSPROC)		GL::getProcAddress("glGenRenderbuffersEXT");
-        glRenderbufferStorage = (PFNGLRENDERBUFFERSTORAGEPROC)	GL::getProcAddress("glRenderbufferStorageEXT");
+        glIsRenderbuffer 	= (PFNGLISRENDERBUFFERPROC) GL::getProcAddress("glIsRenderbufferEXT");
+        glBindRenderbuffer 	= (PFNGLBINDRENDERBUFFERPROC) GL::getProcAddress("glBindRenderbufferEXT");
+        glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC) GL::getProcAddress("glDeleteRenderbuffersEXT");
+        glGenRenderbuffers 	= (PFNGLGENRENDERBUFFERSPROC) GL::getProcAddress("glGenRenderbuffersEXT");
+        glRenderbufferStorage = (PFNGLRENDERBUFFERSTORAGEPROC) GL::getProcAddress("glRenderbufferStorageEXT");
         glGetRenderbufferParameteriv = (PFNGLGETRENDERBUFFERPARAMETERIVPROC) GL::getProcAddress("glGetRenderbufferParameterivEXT");
-        glIsFramebuffer 	= (PFNGLISFRAMEBUFFERPROC)		GL::getProcAddress("glIsFramebufferEXT");
-        glBindFramebuffer 	= (PFNGLBINDFRAMEBUFFERPROC)		GL::getProcAddress("glBindFramebufferEXT");
-        glDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC)		GL::getProcAddress("glDeleteFramebuffersEXT");
-        glGenFramebuffers 	= (PFNGLGENFRAMEBUFFERSPROC)		GL::getProcAddress("glGenFramebuffersEXT");
-        glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)	GL::getProcAddress("glCheckFramebufferStatusEXT");
-        glFramebufferTexture1D 	= (PFNGLFRAMEBUFFERTEXTURE1DPROC)	GL::getProcAddress("glFramebufferTexture1DEXT");
-        glFramebufferTexture2D 	= (PFNGLFRAMEBUFFERTEXTURE2DPROC)	GL::getProcAddress("glFramebufferTexture2DEXT");
-        glFramebufferTexture3D 	= (PFNGLFRAMEBUFFERTEXTURE3DPROC)	GL::getProcAddress("glFramebufferTexture3DEXT");
-        glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)	GL::getProcAddress("glFramebufferRenderbufferEXT");
-        glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)	GL::getProcAddress("glGetFramebufferAttachmentParameterivEXT");
-        glGenerateMipmap 	= (PFNGLGENERATEMIPMAPPROC)		GL::getProcAddress("glGenerateMipmapEXT");
+        glIsFramebuffer 	= (PFNGLISFRAMEBUFFERPROC) GL::getProcAddress("glIsFramebufferEXT");
+        glBindFramebuffer 	= (PFNGLBINDFRAMEBUFFERPROC) GL::getProcAddress("glBindFramebufferEXT");
+        glDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC) GL::getProcAddress("glDeleteFramebuffersEXT");
+        glGenFramebuffers 	= (PFNGLGENFRAMEBUFFERSPROC) GL::getProcAddress("glGenFramebuffersEXT");
+        glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC) GL::getProcAddress("glCheckFramebufferStatusEXT");
+        glFramebufferTexture1D 	= (PFNGLFRAMEBUFFERTEXTURE1DPROC) GL::getProcAddress("glFramebufferTexture1DEXT");
+        glFramebufferTexture2D 	= (PFNGLFRAMEBUFFERTEXTURE2DPROC) GL::getProcAddress("glFramebufferTexture2DEXT");
+        glFramebufferTexture3D 	= (PFNGLFRAMEBUFFERTEXTURE3DPROC) GL::getProcAddress("glFramebufferTexture3DEXT");
+        glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC) GL::getProcAddress("glFramebufferRenderbufferEXT");
+        glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC) GL::getProcAddress("glGetFramebufferAttachmentParameterivEXT");
+        glGenerateMipmap 	= (PFNGLGENERATEMIPMAPPROC) GL::getProcAddress("glGenerateMipmapEXT");
     }
 
     if (!glBlitFramebuffer && isExtensionSupported("GL_EXT_framebuffer_blit")) {
@@ -1070,7 +1105,7 @@ void GLExtensionManager::getGLFunctions()
     glGetIntegeri_v = (PFNGLGETINTEGERI_VPROC) GL::getProcAddress("glGetIntegeri_v");
     glEnablei = (PFNGLENABLEIPROC) GL::getProcAddress("glEnablei");
     glDisablei = (PFNGLDISABLEIPROC) GL::getProcAddress("glDisablei");
-    glIsEnabledi = (PFNGLISENABLEDIPROC)  GL::getProcAddress("glIsEnabledi");
+    glIsEnabledi = (PFNGLISENABLEDIPROC) GL::getProcAddress("glIsEnabledi");
     glBeginTransformFeedback = (PFNGLBEGINTRANSFORMFEEDBACKPROC) GL::getProcAddress("glBeginTransformFeedback");
     glEndTransformFeedback = (PFNGLENDTRANSFORMFEEDBACKPROC) GL::getProcAddress("glEndTransformFeedback");
     glBindBufferRange = (PFNGLBINDBUFFERRANGEPROC) GL::getProcAddress("glBindBufferRange");
@@ -1276,6 +1311,41 @@ void GLExtensionManager::getGLFunctions()
 #endif // O3D_GL_VERSION_4_4
 
 #ifdef O3D_GL_VERSION_4_5
+
+//    PFNGLCREATEBUFFERSPROC glCreateBuffers = nullptr;
+//    PFNGLNAMEDBUFFERSTORAGEPROC glNamedBufferStorage = nullptr;
+//    PFNGLNAMEDBUFFERDATAPROC glNamedBufferData = nullptr;
+//    PFNGLNAMEDBUFFERSUBDATAPROC glNamedBufferSubData = nullptr;
+//    PFNGLCOPYNAMEDBUFFERSUBDATAPROC glCopyNamedBufferSubData = nullptr;
+//    PFNGLCLEARNAMEDBUFFERDATAPROC glClearNamedBufferData = nullptr;
+//    PFNGLCLEARNAMEDBUFFERSUBDATAPROC glClearNamedBufferSubData = nullptr;
+//    PFNGLMAPNAMEDBUFFERPROC glMapNamedBuffer = nullptr;
+//    PFNGLMAPNAMEDBUFFERRANGEPROC glMapNamedBufferRange = nullptr;
+//    PFNGLUNMAPNAMEDBUFFERPROC glUnmapNamedBuffer = nullptr;
+//    PFNGLFLUSHMAPPEDNAMEDBUFFERRANGEPROC glFlushMappedNamedBufferRange = nullptr;
+//    PFNGLGETNAMEDBUFFERPARAMETERIVPROC glGetNamedBufferParameteriv = nullptr;
+//    PFNGLGETNAMEDBUFFERPARAMETERI64VPROC glGetNamedBufferParameteri64v = nullptr;
+//    PFNGLGETNAMEDBUFFERPOINTERVPROC glGetNamedBufferPointerv = nullptr;
+//    PFNGLGETNAMEDBUFFERSUBDATAPROC glGetNamedBufferSubData = nullptr;
+//    PFNGLCREATEFRAMEBUFFERSPROC glCreateFramebuffers = nullptr;
+//    PFNGLNAMEDFRAMEBUFFERRENDERBUFFERPROC glNamedFramebufferRenderbuffer = nullptr;
+//    PFNGLNAMEDFRAMEBUFFERPARAMETERIPROC glNamedFramebufferParameteri = nullptr;
+//    PFNGLNAMEDFRAMEBUFFERTEXTUREPROC glNamedFramebufferTexture = nullptr;
+//    PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC glNamedFramebufferTextureLayer = nullptr;
+//    PFNGLNAMEDFRAMEBUFFERDRAWBUFFERPROC glNamedFramebufferDrawBuffer = nullptr;
+//    PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC glNamedFramebufferDrawBuffers = nullptr;
+//    PFNGLNAMEDFRAMEBUFFERREADBUFFERPROC glNamedFramebufferReadBuffer = nullptr;
+//    PFNGLINVALIDATENAMEDFRAMEBUFFERDATAPROC glInvalidateNamedFramebufferData = nullptr;
+//    PFNGLINVALIDATENAMEDFRAMEBUFFERSUBDATAPROC glInvalidateNamedFramebufferSubData = nullptr;
+//    PFNGLCLEARNAMEDFRAMEBUFFERIVPROC glClearNamedFramebufferiv = nullptr;
+//    PFNGLCLEARNAMEDFRAMEBUFFERUIVPROC glClearNamedFramebufferuiv = nullptr;
+//    PFNGLCLEARNAMEDFRAMEBUFFERFVPROC glClearNamedFramebufferfv = nullptr;
+//    PFNGLCLEARNAMEDFRAMEBUFFERFIPROC glClearNamedFramebufferfi = nullptr;
+//    PFNGLBLITNAMEDFRAMEBUFFERPROC glBlitNamedFramebuffer = nullptr;
+//    PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC glCheckNamedFramebufferStatus = nullptr;
+//    PFNGLGETNAMEDFRAMEBUFFERPARAMETERIVPROC glGetNamedFramebufferParameteriv = nullptr;
+//    PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC glGetNamedFramebufferAttachmentParameteriv = nullptr;
+
 #endif // O3D_GL_VERSION_4_5
 
 #ifdef O3D_GL_VERSION_4_6
@@ -1436,9 +1506,9 @@ void GLExtensionManager::getGLESFunctions()
     // PointParametersSupported
     //
 
-    glPointParameterf  = (PFNGLPOINTPARAMETERFPROC)  GL::getProcAddress("glPointParameterf");
+    glPointParameterf  = (PFNGLPOINTPARAMETERFPROC) GL::getProcAddress("glPointParameterf");
     glPointParameterfv = (PFNGLPOINTPARAMETERFVPROC) GL::getProcAddress("glPointParameterfv");
-    glPointParameteri  = (PFNGLPOINTPARAMETERIPROC)  GL::getProcAddress("glPointParameteri");
+    glPointParameteri  = (PFNGLPOINTPARAMETERIPROC) GL::getProcAddress("glPointParameteri");
     glPointParameteriv = (PFNGLPOINTPARAMETERIVPROC) GL::getProcAddress("glPointParameteriv");
 
     if (!glPointParameterf || !glPointParameterfv || !glPointParameteri || !glPointParameteriv) {
@@ -1471,14 +1541,14 @@ void GLExtensionManager::getGLESFunctions()
     // Vertex Buffer Object
     //
 
-    glBindBuffer		= (PFNGLBINDBUFFERPROC)	    GL::getProcAddress("glBindBuffer");
-    glGenBuffers		= (PFNGLGENBUFFERSPROC)	    GL::getProcAddress("glGenBuffers");
-    glBufferData		= (PFNGLBUFFERDATAPROC)	    GL::getProcAddress("glBufferData");
-    glBufferSubData		= (PFNGLBUFFERSUBDATAPROC)  GL::getProcAddress("glBufferSubData");
-    glDeleteBuffers		= (PFNGLDELETEBUFFERSPROC)  GL::getProcAddress("glDeleteBuffers");
+    glBindBuffer		= (PFNGLBINDBUFFERPROC) GL::getProcAddress("glBindBuffer");
+    glGenBuffers		= (PFNGLGENBUFFERSPROC) GL::getProcAddress("glGenBuffers");
+    glBufferData		= (PFNGLBUFFERDATAPROC) GL::getProcAddress("glBufferData");
+    glBufferSubData		= (PFNGLBUFFERSUBDATAPROC) GL::getProcAddress("glBufferSubData");
+    glDeleteBuffers		= (PFNGLDELETEBUFFERSPROC) GL::getProcAddress("glDeleteBuffers");
     glGetBufferParameteriv = (PFNGLGETBUFFERPARAMETERIVPROC) GL::getProcAddress("glGetBufferParameteriv");
-    glMapBuffer			= (PFNGLMAPBUFFERPROC)      GL::getProcAddress("glMapBuffer");
-    glUnmapBuffer		= (PFNGLUNMAPBUFFERPROC)    GL::getProcAddress("glUnmapBuffer");
+    glMapBuffer			= (PFNGLMAPBUFFERPROC) GL::getProcAddress("glMapBuffer");
+    glUnmapBuffer		= (PFNGLUNMAPBUFFERPROC) GL::getProcAddress("glUnmapBuffer");
 
     if (!glBindBuffer || !glDeleteBuffers || !glGenBuffers || !glBufferData || !glGetBufferParameteriv) {
         O3D_ERROR(E_UnsuportedFeature("OpenGL VBO related"));
@@ -1522,87 +1592,87 @@ void GLExtensionManager::getGLESFunctions()
     // GLSL
     //
 
-    glCreateShader		= (PFNGLCREATESHADERPROC)	GL::getProcAddress("glCreateShader");
-    glShaderSource		= (PFNGLSHADERSOURCEPROC)	GL::getProcAddress("glShaderSource");
-    glCompileShader		= (PFNGLCOMPILESHADERPROC)	GL::getProcAddress("glCompileShader");
-    glCreateProgram		= (PFNGLCREATEPROGRAMPROC)	GL::getProcAddress("glCreateProgram");
-    glAttachShader		= (PFNGLATTACHSHADERPROC)	GL::getProcAddress("glAttachShader");
-    glLinkProgram		= (PFNGLLINKPROGRAMPROC)	GL::getProcAddress("glLinkProgram");
+    glCreateShader		= (PFNGLCREATESHADERPROC) GL::getProcAddress("glCreateShader");
+    glShaderSource		= (PFNGLSHADERSOURCEPROC) GL::getProcAddress("glShaderSource");
+    glCompileShader		= (PFNGLCOMPILESHADERPROC) GL::getProcAddress("glCompileShader");
+    glCreateProgram		= (PFNGLCREATEPROGRAMPROC) GL::getProcAddress("glCreateProgram");
+    glAttachShader		= (PFNGLATTACHSHADERPROC) GL::getProcAddress("glAttachShader");
+    glLinkProgram		= (PFNGLLINKPROGRAMPROC) GL::getProcAddress("glLinkProgram");
     glValidateProgram	= (PFNGLVALIDATEPROGRAMPROC)GL::getProcAddress("glValidateProgram");
-    glUseProgram		= (PFNGLUSEPROGRAMPROC)		GL::getProcAddress("glUseProgram");
+    glUseProgram		= (PFNGLUSEPROGRAMPROC) GL::getProcAddress("glUseProgram");
 
-    glDetachShader		= (PFNGLDETACHSHADERPROC)	GL::getProcAddress("glDetachShader");
-    glDeleteShader		= (PFNGLDELETESHADERPROC)	GL::getProcAddress("glDeleteShader");
-    glDeleteProgram		= (PFNGLDELETEPROGRAMPROC)	GL::getProcAddress("glDeleteProgram");
+    glDetachShader		= (PFNGLDETACHSHADERPROC) GL::getProcAddress("glDetachShader");
+    glDeleteShader		= (PFNGLDELETESHADERPROC) GL::getProcAddress("glDeleteShader");
+    glDeleteProgram		= (PFNGLDELETEPROGRAMPROC) GL::getProcAddress("glDeleteProgram");
 
-    glGetProgramiv		= (PFNGLGETPROGRAMIVPROC)	GL::getProcAddress("glGetProgramiv");
-    glGetProgramInfoLog	= (PFNGLGETPROGRAMINFOLOGPROC)	GL::getProcAddress("glGetProgramInfoLog");
-    glGetShaderiv		= (PFNGLGETSHADERIVPROC)	GL::getProcAddress("glGetShaderiv");
-    glGetShaderInfoLog	= (PFNGLGETSHADERINFOLOGPROC)	GL::getProcAddress("glGetShaderInfoLog");
-    glIsProgram		= (PFNGLISPROGRAMPROC)		GL::getProcAddress("glIsProgram");
-    glIsShader		= (PFNGLISSHADERPROC)		GL::getProcAddress("glIsShader");
+    glGetProgramiv		= (PFNGLGETPROGRAMIVPROC) GL::getProcAddress("glGetProgramiv");
+    glGetProgramInfoLog	= (PFNGLGETPROGRAMINFOLOGPROC) GL::getProcAddress("glGetProgramInfoLog");
+    glGetShaderiv		= (PFNGLGETSHADERIVPROC) GL::getProcAddress("glGetShaderiv");
+    glGetShaderInfoLog	= (PFNGLGETSHADERINFOLOGPROC) GL::getProcAddress("glGetShaderInfoLog");
+    glIsProgram		= (PFNGLISPROGRAMPROC) GL::getProcAddress("glIsProgram");
+    glIsShader		= (PFNGLISSHADERPROC) GL::getProcAddress("glIsShader");
 
-    glGetUniformLocation= (PFNGLGETUNIFORMLOCATIONPROC)	GL::getProcAddress("glGetUniformLocation");
-    glGetActiveUniform  = (PFNGLGETACTIVEUNIFORMPROC)   GL::getProcAddress("glGetActiveUniform");
-    glUniform1f		= (PFNGLUNIFORM1FPROC)		GL::getProcAddress("glUniform1f");
-    glUniform2f		= (PFNGLUNIFORM2FPROC)		GL::getProcAddress("glUniform2f");
-    glUniform3f		= (PFNGLUNIFORM3FPROC)		GL::getProcAddress("glUniform3f");
-    glUniform4f		= (PFNGLUNIFORM4FPROC)		GL::getProcAddress("glUniform4f");
-    glUniform1fv	= (PFNGLUNIFORM1FVPROC)		GL::getProcAddress("glUniform1fv");
-    glUniform2fv	= (PFNGLUNIFORM2FVPROC)		GL::getProcAddress("glUniform2fv");
-    glUniform3fv	= (PFNGLUNIFORM3FVPROC)		GL::getProcAddress("glUniform3fv");
-    glUniform4fv	= (PFNGLUNIFORM4FVPROC)		GL::getProcAddress("glUniform4fv");
-    glUniform1i		= (PFNGLUNIFORM1IPROC)		GL::getProcAddress("glUniform1i");
-    glUniform2i		= (PFNGLUNIFORM2IPROC)		GL::getProcAddress("glUniform2i");
-    glUniform3i		= (PFNGLUNIFORM3IPROC)		GL::getProcAddress("glUniform3i");
-    glUniform4i		= (PFNGLUNIFORM4IPROC)		GL::getProcAddress("glUniform4i");
-    glUniformMatrix2fv	= (PFNGLUNIFORMMATRIX2FVPROC)	GL::getProcAddress("glUniformMatrix2fv");
-    glUniformMatrix3fv	= (PFNGLUNIFORMMATRIX3FVPROC)	GL::getProcAddress("glUniformMatrix3fv");
-    glUniformMatrix4fv	= (PFNGLUNIFORMMATRIX4FVPROC)	GL::getProcAddress("glUniformMatrix4fv");
+    glGetUniformLocation= (PFNGLGETUNIFORMLOCATIONPROC) GL::getProcAddress("glGetUniformLocation");
+    glGetActiveUniform  = (PFNGLGETACTIVEUNIFORMPROC) GL::getProcAddress("glGetActiveUniform");
+    glUniform1f		= (PFNGLUNIFORM1FPROC) GL::getProcAddress("glUniform1f");
+    glUniform2f		= (PFNGLUNIFORM2FPROC) GL::getProcAddress("glUniform2f");
+    glUniform3f		= (PFNGLUNIFORM3FPROC) GL::getProcAddress("glUniform3f");
+    glUniform4f		= (PFNGLUNIFORM4FPROC) GL::getProcAddress("glUniform4f");
+    glUniform1fv	= (PFNGLUNIFORM1FVPROC) GL::getProcAddress("glUniform1fv");
+    glUniform2fv	= (PFNGLUNIFORM2FVPROC) GL::getProcAddress("glUniform2fv");
+    glUniform3fv	= (PFNGLUNIFORM3FVPROC) GL::getProcAddress("glUniform3fv");
+    glUniform4fv	= (PFNGLUNIFORM4FVPROC) GL::getProcAddress("glUniform4fv");
+    glUniform1i		= (PFNGLUNIFORM1IPROC) GL::getProcAddress("glUniform1i");
+    glUniform2i		= (PFNGLUNIFORM2IPROC) GL::getProcAddress("glUniform2i");
+    glUniform3i		= (PFNGLUNIFORM3IPROC) GL::getProcAddress("glUniform3i");
+    glUniform4i		= (PFNGLUNIFORM4IPROC) GL::getProcAddress("glUniform4i");
+    glUniformMatrix2fv	= (PFNGLUNIFORMMATRIX2FVPROC) GL::getProcAddress("glUniformMatrix2fv");
+    glUniformMatrix3fv	= (PFNGLUNIFORMMATRIX3FVPROC) GL::getProcAddress("glUniformMatrix3fv");
+    glUniformMatrix4fv	= (PFNGLUNIFORMMATRIX4FVPROC) GL::getProcAddress("glUniformMatrix4fv");
 
-    glDisableVertexAttribArray	= (PFNGLDISABLEVERTEXATTRIBARRAYPROC)	GL::getProcAddress("glDisableVertexAttribArray");
-    glEnableVertexAttribArray	= (PFNGLENABLEVERTEXATTRIBARRAYPROC)	GL::getProcAddress("glEnableVertexAttribArray");
-    glGetActiveAttrib		= (PFNGLGETACTIVEATTRIBPROC)		GL::getProcAddress("glGetActiveAttrib");
-    glBindAttribLocation		= (PFNGLBINDATTRIBLOCATIONPROC)		GL::getProcAddress("glBindAttribLocation");
-    glGetAttribLocation		= (PFNGLGETATTRIBLOCATIONPROC)		GL::getProcAddress("glGetAttribLocation");
-    glGetVertexAttribdv		= (PFNGLGETVERTEXATTRIBDVPROC)		GL::getProcAddress("glGetVertexAttribdv");
-    glGetVertexAttribfv		= (PFNGLGETVERTEXATTRIBFVPROC)		GL::getProcAddress("glGetVertexAttribfv");
-    glGetVertexAttribiv		= (PFNGLGETVERTEXATTRIBIVPROC)		GL::getProcAddress("glGetVertexAttribiv");
-    glGetVertexAttribPointerv	= (PFNGLGETVERTEXATTRIBPOINTERVPROC)	GL::getProcAddress("glGetVertexAttribPointerv");
+    glDisableVertexAttribArray	= (PFNGLDISABLEVERTEXATTRIBARRAYPROC) GL::getProcAddress("glDisableVertexAttribArray");
+    glEnableVertexAttribArray	= (PFNGLENABLEVERTEXATTRIBARRAYPROC) GL::getProcAddress("glEnableVertexAttribArray");
+    glGetActiveAttrib		= (PFNGLGETACTIVEATTRIBPROC) GL::getProcAddress("glGetActiveAttrib");
+    glBindAttribLocation		= (PFNGLBINDATTRIBLOCATIONPROC) GL::getProcAddress("glBindAttribLocation");
+    glGetAttribLocation		= (PFNGLGETATTRIBLOCATIONPROC) GL::getProcAddress("glGetAttribLocation");
+    glGetVertexAttribdv		= (PFNGLGETVERTEXATTRIBDVPROC) GL::getProcAddress("glGetVertexAttribdv");
+    glGetVertexAttribfv		= (PFNGLGETVERTEXATTRIBFVPROC) GL::getProcAddress("glGetVertexAttribfv");
+    glGetVertexAttribiv		= (PFNGLGETVERTEXATTRIBIVPROC) GL::getProcAddress("glGetVertexAttribiv");
+    glGetVertexAttribPointerv	= (PFNGLGETVERTEXATTRIBPOINTERVPROC) GL::getProcAddress("glGetVertexAttribPointerv");
 
-    glVertexAttrib1d		= (PFNGLVERTEXATTRIB1DPROC)		GL::getProcAddress("glVertexAttrib1d");
-    glVertexAttrib1dv		= (PFNGLVERTEXATTRIB1DVPROC)		GL::getProcAddress("glVertexAttrib1dv");
-    glVertexAttrib1f		= (PFNGLVERTEXATTRIB1FPROC)		GL::getProcAddress("glVertexAttrib1f");
-    glVertexAttrib1fv		= (PFNGLVERTEXATTRIB1FVPROC)		GL::getProcAddress("glVertexAttrib1fv");
-    glVertexAttrib1s		= (PFNGLVERTEXATTRIB1SPROC)		GL::getProcAddress("glVertexAttrib1s");
-    glVertexAttrib1sv		= (PFNGLVERTEXATTRIB1SVPROC)		GL::getProcAddress("glVertexAttrib1sv");
-    glVertexAttrib2d		= (PFNGLVERTEXATTRIB2DPROC)		GL::getProcAddress("glVertexAttrib2d");
-    glVertexAttrib2dv		= (PFNGLVERTEXATTRIB2DVPROC)		GL::getProcAddress("glVertexAttrib2dv");
-    glVertexAttrib2f		= (PFNGLVERTEXATTRIB2FPROC)		GL::getProcAddress("glVertexAttrib2f");
-    glVertexAttrib2fv		= (PFNGLVERTEXATTRIB2FVPROC)		GL::getProcAddress("glVertexAttrib2fv");
-    glVertexAttrib2s		= (PFNGLVERTEXATTRIB2SPROC)		GL::getProcAddress("glVertexAttrib2s");
-    glVertexAttrib2sv		= (PFNGLVERTEXATTRIB2SVPROC)		GL::getProcAddress("glVertexAttrib2sv");
-    glVertexAttrib3d		= (PFNGLVERTEXATTRIB3DPROC)		GL::getProcAddress("glVertexAttrib3d");
-    glVertexAttrib3dv		= (PFNGLVERTEXATTRIB3DVPROC)		GL::getProcAddress("glVertexAttrib3dv");
-    glVertexAttrib3f		= (PFNGLVERTEXATTRIB3FPROC)		GL::getProcAddress("glVertexAttrib3f");
-    glVertexAttrib3fv		= (PFNGLVERTEXATTRIB3FVPROC)		GL::getProcAddress("glVertexAttrib3fv");
-    glVertexAttrib3s		= (PFNGLVERTEXATTRIB3SPROC)		GL::getProcAddress("glVertexAttrib3s");
-    glVertexAttrib3sv		= (PFNGLVERTEXATTRIB3SVPROC)		GL::getProcAddress("glVertexAttrib3sv");
-    glVertexAttrib4Nbv		= (PFNGLVERTEXATTRIB4NBVPROC)		GL::getProcAddress("glVertexAttrib4Nbv");
-    glVertexAttrib4Niv		= (PFNGLVERTEXATTRIB4NIVPROC)		GL::getProcAddress("glVertexAttrib4Niv");
-    glVertexAttrib4Nsv		= (PFNGLVERTEXATTRIB4NSVPROC)		GL::getProcAddress("glVertexAttrib4Nsv");
-    glVertexAttrib4Nub		= (PFNGLVERTEXATTRIB4NUBPROC)		GL::getProcAddress("glVertexAttrib4Nub");
-    glVertexAttrib4Nubv		= (PFNGLVERTEXATTRIB4NUBVPROC)		GL::getProcAddress("glVertexAttrib4Nubv");
-    glVertexAttrib4Nuiv		= (PFNGLVERTEXATTRIB4NUIVPROC)		GL::getProcAddress("glVertexAttrib4Nuiv");
-    glVertexAttrib4Nusv		= (PFNGLVERTEXATTRIB4NUSVPROC)		GL::getProcAddress("glVertexAttrib4Nusv");
-    glVertexAttrib4bv		= (PFNGLVERTEXATTRIB4BVPROC)		GL::getProcAddress("glVertexAttrib4bv");
-    glVertexAttrib4d		= (PFNGLVERTEXATTRIB4DPROC)		GL::getProcAddress("glVertexAttrib4d");
-    glVertexAttrib4dv		= (PFNGLVERTEXATTRIB4DVPROC)		GL::getProcAddress("glVertexAttrib4dv");
-    glVertexAttrib4f		= (PFNGLVERTEXATTRIB4FPROC)		GL::getProcAddress("glVertexAttrib4f");
-    glVertexAttrib4fv		= (PFNGLVERTEXATTRIB4FVPROC)		GL::getProcAddress("glVertexAttrib4fv");
-    glVertexAttrib4iv		= (PFNGLVERTEXATTRIB4IVPROC)		GL::getProcAddress("glVertexAttrib4iv");
-    glVertexAttrib4s		= (PFNGLVERTEXATTRIB4SPROC)		GL::getProcAddress("glVertexAttrib4s");
-    glVertexAttrib4sv		= (PFNGLVERTEXATTRIB4SVPROC)		GL::getProcAddress("glVertexAttrib4sv");
+    glVertexAttrib1d		= (PFNGLVERTEXATTRIB1DPROC) GL::getProcAddress("glVertexAttrib1d");
+    glVertexAttrib1dv		= (PFNGLVERTEXATTRIB1DVPROC) GL::getProcAddress("glVertexAttrib1dv");
+    glVertexAttrib1f		= (PFNGLVERTEXATTRIB1FPROC) GL::getProcAddress("glVertexAttrib1f");
+    glVertexAttrib1fv		= (PFNGLVERTEXATTRIB1FVPROC) GL::getProcAddress("glVertexAttrib1fv");
+    glVertexAttrib1s		= (PFNGLVERTEXATTRIB1SPROC) GL::getProcAddress("glVertexAttrib1s");
+    glVertexAttrib1sv		= (PFNGLVERTEXATTRIB1SVPROC) GL::getProcAddress("glVertexAttrib1sv");
+    glVertexAttrib2d		= (PFNGLVERTEXATTRIB2DPROC) GL::getProcAddress("glVertexAttrib2d");
+    glVertexAttrib2dv		= (PFNGLVERTEXATTRIB2DVPROC) GL::getProcAddress("glVertexAttrib2dv");
+    glVertexAttrib2f		= (PFNGLVERTEXATTRIB2FPROC) GL::getProcAddress("glVertexAttrib2f");
+    glVertexAttrib2fv		= (PFNGLVERTEXATTRIB2FVPROC) GL::getProcAddress("glVertexAttrib2fv");
+    glVertexAttrib2s		= (PFNGLVERTEXATTRIB2SPROC) GL::getProcAddress("glVertexAttrib2s");
+    glVertexAttrib2sv		= (PFNGLVERTEXATTRIB2SVPROC) GL::getProcAddress("glVertexAttrib2sv");
+    glVertexAttrib3d		= (PFNGLVERTEXATTRIB3DPROC) GL::getProcAddress("glVertexAttrib3d");
+    glVertexAttrib3dv		= (PFNGLVERTEXATTRIB3DVPROC) GL::getProcAddress("glVertexAttrib3dv");
+    glVertexAttrib3f		= (PFNGLVERTEXATTRIB3FPROC) GL::getProcAddress("glVertexAttrib3f");
+    glVertexAttrib3fv		= (PFNGLVERTEXATTRIB3FVPROC) GL::getProcAddress("glVertexAttrib3fv");
+    glVertexAttrib3s		= (PFNGLVERTEXATTRIB3SPROC) GL::getProcAddress("glVertexAttrib3s");
+    glVertexAttrib3sv		= (PFNGLVERTEXATTRIB3SVPROC) GL::getProcAddress("glVertexAttrib3sv");
+    glVertexAttrib4Nbv		= (PFNGLVERTEXATTRIB4NBVPROC) GL::getProcAddress("glVertexAttrib4Nbv");
+    glVertexAttrib4Niv		= (PFNGLVERTEXATTRIB4NIVPROC) GL::getProcAddress("glVertexAttrib4Niv");
+    glVertexAttrib4Nsv		= (PFNGLVERTEXATTRIB4NSVPROC) GL::getProcAddress("glVertexAttrib4Nsv");
+    glVertexAttrib4Nub		= (PFNGLVERTEXATTRIB4NUBPROC) GL::getProcAddress("glVertexAttrib4Nub");
+    glVertexAttrib4Nubv		= (PFNGLVERTEXATTRIB4NUBVPROC) GL::getProcAddress("glVertexAttrib4Nubv");
+    glVertexAttrib4Nuiv		= (PFNGLVERTEXATTRIB4NUIVPROC) GL::getProcAddress("glVertexAttrib4Nuiv");
+    glVertexAttrib4Nusv		= (PFNGLVERTEXATTRIB4NUSVPROC) GL::getProcAddress("glVertexAttrib4Nusv");
+    glVertexAttrib4bv		= (PFNGLVERTEXATTRIB4BVPROC) GL::getProcAddress("glVertexAttrib4bv");
+    glVertexAttrib4d		= (PFNGLVERTEXATTRIB4DPROC) GL::getProcAddress("glVertexAttrib4d");
+    glVertexAttrib4dv		= (PFNGLVERTEXATTRIB4DVPROC) GL::getProcAddress("glVertexAttrib4dv");
+    glVertexAttrib4f		= (PFNGLVERTEXATTRIB4FPROC) GL::getProcAddress("glVertexAttrib4f");
+    glVertexAttrib4fv		= (PFNGLVERTEXATTRIB4FVPROC) GL::getProcAddress("glVertexAttrib4fv");
+    glVertexAttrib4iv		= (PFNGLVERTEXATTRIB4IVPROC) GL::getProcAddress("glVertexAttrib4iv");
+    glVertexAttrib4s		= (PFNGLVERTEXATTRIB4SPROC) GL::getProcAddress("glVertexAttrib4s");
+    glVertexAttrib4sv		= (PFNGLVERTEXATTRIB4SVPROC) GL::getProcAddress("glVertexAttrib4sv");
     glVertexAttrib4ubv		= (PFNGLVERTEXATTRIB4UBVPROC)GL::getProcAddress("glVertexAttrib4ubv");
     glVertexAttrib4uiv		= (PFNGLVERTEXATTRIB4UIVPROC)GL::getProcAddress("glVertexAttrib4uiv");
     glVertexAttrib4usv		= (PFNGLVERTEXATTRIB4USVPROC)GL::getProcAddress("glVertexAttrib4usv");
@@ -1639,7 +1709,7 @@ void GLExtensionManager::getGLESFunctions()
     // Blend equation separate
     //
 
-    glBlendEquationSeparate = (PFNGLBLENDEQUATIONSEPARATEPROC)  GL::getProcAddress("glBlendEquationSeparate");
+    glBlendEquationSeparate = (PFNGLBLENDEQUATIONSEPARATEPROC) GL::getProcAddress("glBlendEquationSeparate");
 
     if (!glBlendEquationSeparate) {
         O3D_ERROR(E_UnsuportedFeature("OpenGL blend equation separate"));
@@ -1649,7 +1719,7 @@ void GLExtensionManager::getGLESFunctions()
     // Draw buffers
     //
 
-    glDrawBuffers = (PFNGLDRAWBUFFERSPROC)  GL::getProcAddress("glDrawBuffers");
+    glDrawBuffers = (PFNGLDRAWBUFFERSPROC) GL::getProcAddress("glDrawBuffers");
 
     if (!glDrawBuffers && isExtensionSupported("GL_ARB_draw_buffers")) {
         glDrawBuffers = (PFNGLDRAWBUFFERSPROC) GL::getProcAddress("glDrawBuffersARB");
@@ -1663,9 +1733,9 @@ void GLExtensionManager::getGLESFunctions()
     // Stencil separate
     //
 
-    glStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC)  GL::getProcAddress("glStencilOpSeparate");
-    glStencilFuncSeparate = (PFNGLSTENCILFUNCSEPARATEPROC)  GL::getProcAddress("glStencilFuncSeparate");
-    glStencilMaskSeparate = (PFNGLSTENCILMASKSEPARATEPROC)  GL::getProcAddress("glStencilMaskSeparate");
+    glStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC) GL::getProcAddress("glStencilOpSeparate");
+    glStencilFuncSeparate = (PFNGLSTENCILFUNCSEPARATEPROC) GL::getProcAddress("glStencilFuncSeparate");
+    glStencilMaskSeparate = (PFNGLSTENCILMASKSEPARATEPROC) GL::getProcAddress("glStencilMaskSeparate");
 
     if (!glStencilOpSeparate || !glStencilFuncSeparate || !glStencilMaskSeparate) {
         O3D_ERROR(E_UnsuportedFeature("OpenGL stencil separate"));
@@ -1687,17 +1757,17 @@ void GLExtensionManager::getGLESFunctions()
     glGetRenderbufferParameteriv    = (PFNGLGETRENDERBUFFERPARAMETERIVPROC) GL::getProcAddress("glGetRenderbufferParameteriv");
     glIsFramebuffer 		= (PFNGLISFRAMEBUFFERPROC) GL::getProcAddress("glIsFramebuffer");
     glBindFramebuffer 		= (PFNGLBINDFRAMEBUFFERPROC) GL::getProcAddress("glBindFramebuffer");
-    glDeleteFramebuffers 	= (PFNGLDELETEFRAMEBUFFERSPROC)	GL::getProcAddress("glDeleteFramebuffers");
+    glDeleteFramebuffers 	= (PFNGLDELETEFRAMEBUFFERSPROC) GL::getProcAddress("glDeleteFramebuffers");
     glGenFramebuffers 		= (PFNGLGENFRAMEBUFFERSPROC) GL::getProcAddress("glGenFramebuffers");
-    glCheckFramebufferStatus 	= (PFNGLCHECKFRAMEBUFFERSTATUSPROC)	GL::getProcAddress("glCheckFramebufferStatus");
+    glCheckFramebufferStatus 	= (PFNGLCHECKFRAMEBUFFERSTATUSPROC) GL::getProcAddress("glCheckFramebufferStatus");
     glFramebufferTexture1D 		= (PFNGLFRAMEBUFFERTEXTURE1DPROC) GL::getProcAddress("glFramebufferTexture1D");
     glFramebufferTexture2D 		= (PFNGLFRAMEBUFFERTEXTURE2DPROC) GL::getProcAddress("glFramebufferTexture2D");
     glFramebufferTexture3D 		= (PFNGLFRAMEBUFFERTEXTURE3DPROC) GL::getProcAddress("glFramebufferTexture3D");
     glFramebufferRenderbuffer 	= (PFNGLFRAMEBUFFERRENDERBUFFERPROC) GL::getProcAddress("glFramebufferRenderbuffer");
-    glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)	GL::getProcAddress("glGetFramebufferAttachmentParameteriv");
+    glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC) GL::getProcAddress("glGetFramebufferAttachmentParameteriv");
     glBlitFramebuffer 		= (PFNGLBLITFRAMEBUFFERPROC) GL::getProcAddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC) GL::getProcAddress("glRenderbufferStorageMultisample");
-    glGenerateMipmap 		= (PFNGLGENERATEMIPMAPPROC)	 GL::getProcAddress("glGenerateMipmap");
+    glGenerateMipmap 		= (PFNGLGENERATEMIPMAPPROC) GL::getProcAddress("glGenerateMipmap");
     glFramebufferTextureLayer   = (PFNGLFRAMEBUFFERTEXTURELAYERPROC) GL::getProcAddress("glFramebufferTextureLayer");
 
     if (!glIsRenderbuffer || !glBindRenderbuffer || !glDeleteRenderbuffers ||
@@ -1747,7 +1817,7 @@ void GLExtensionManager::getGLESFunctions()
     glGetIntegeri_v = (PFNGLGETINTEGERI_VPROC) GL::getProcAddress("glGetIntegeri_v");
     glEnablei = (PFNGLENABLEIPROC) GL::getProcAddress("glEnablei");
     glDisablei = (PFNGLDISABLEIPROC) GL::getProcAddress("glDisablei");
-    glIsEnabledi = (PFNGLISENABLEDIPROC)  GL::getProcAddress("glIsEnabledi");
+    glIsEnabledi = (PFNGLISENABLEDIPROC) GL::getProcAddress("glIsEnabledi");
     glBeginTransformFeedback = (PFNGLBEGINTRANSFORMFEEDBACKPROC) GL::getProcAddress("glBeginTransformFeedback");
     glEndTransformFeedback = (PFNGLENDTRANSFORMFEEDBACKPROC) GL::getProcAddress("glEndTransformFeedback");
     glBindBufferRange = (PFNGLBINDBUFFERRANGEPROC) GL::getProcAddress("glBindBufferRange");
@@ -1975,6 +2045,74 @@ void GLExtensionManager::getGLESFunctions()
 
 #ifdef O3D_GL_VERSION_4_6
 #endif // O3D_GL_VERSION_4_6
+
+    if (!isExtensionSupported("OES_framebuffer_object")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_texture_3D")) {
+
+    }
+
+    if (!isExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_packed_depth_stencil")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_depth_texture")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_depth24")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_depth32")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_texture_float")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_depth_texture_cube_map")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_compressed_ETC1_RGB8_texture")) {
+
+    }
+
+    if (!isExtensionSupported("GL_AMD_compressed_ATC_texture")) {
+
+    }
+
+    if (!isExtensionSupported("GL_KHR_texture_compression_astc_ldr")) {
+
+    }
+
+    if (!isExtensionSupported("GL_EXT_geomtry_shader")) {
+
+    }
+
+    if (!isExtensionSupported("GL_EXT_tesselation_shader")) {
+
+    }
+
+    if (!isExtensionSupported("GL_EXT_multisampled_render_to_texture")) {
+
+    }
+
+    if (!isExtensionSupported("GL_EXT_draw_buffer_indexed")) {
+
+    }
+
+    if (!isExtensionSupported("GL_OES_vertex_array_object")) {
+
+    }
 }
 
 #include "objective3dconfig.h"
@@ -2012,9 +2150,9 @@ void GLExtensionManager::init()
 	// get glGetStringi before
     glGetStringi = (PFNGLGETSTRINGIPROC) GL::getProcAddress("glGetStringi");
 
-    if (GL::getType() == GL::GLAPI_GL || GL::getType() == GL::GLAPI_CUSTOM) {
+    if (GL::getType() == GL::API_GL || GL::getType() == GL::API_CUSTOM) {
         getGLFunctions();
-    } else if (GL::getType() == GL::GLAPI_GLES_3) {
+    } else if (GL::getType() == GL::API_GLES_3) {
         getGLESFunctions();
     }
 

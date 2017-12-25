@@ -67,10 +67,28 @@ public:
      */
     enum BufferFormat
     {
-        FORMAT_8U = 0,         //!< 8 bits unsigned integer per channel.
-        FORMAT_16F = 1,        //!< 16 bits float per channel.
-        FORMAT_32F = 2,        //!< 32 bits float per channel.
-        FORMAT_24_8 = 3       //!< 24/8 bits for depth/stencil buffer.
+        FORMAT_8 = 0,         //!< 8 bits (unsigned integer) (per channel or red).
+        FORMAT_8I = 1,        //!< 8 bits integer (per channel or red).
+        FORMAT_8UI = 2,       //!< 8 bits unsigned integer (per channel or red).
+        FORMAT_16I = 3,       //!< 16 bits integer (per channel or red).
+        FORMAT_16UI = 4,      //!< 16 bits unsigned integer (per channel or deth or red).
+        FORMAT_16F = 5,       //!< 16 bits float (per channel or depth or red).
+        FORMAT_24 = 6,        //!< 24 bits (unsigned integer) (depth).
+        FORMAT_32F = 7,       //!< 32 bits float (per channel or depth or red).
+        FORMAT_32I = 8,       //!< 32 bits integer (per channel or red).
+        FORMAT_32UI = 9,      //!< 32 bits float (per channel or depth or red).
+        FORMAT_24_8 = 10,     //!< 24/8 unsigned integer /unsigned integer bits for depth/stencil buffer.
+        FORMAT_32F_8 = 11     //!< 32/8 float/unsigned integer bits for depth/stencil buffer.
+    };
+
+    /**
+     * @brief Setup profile for current implementation (GL3, GL4 and GLES3) with 3 qualities.
+     */
+    enum Profiles
+    {
+        PROFILE_CHEAP,
+        PROFILE_STANDARD,
+        PROFILE_OPTIMAL
     };
 
     //! Constructor.
@@ -92,6 +110,9 @@ public:
 
     //! Get the format of a specific buffer.
     BufferFormat getFormat(BufferType buffer) const;
+
+    //! Setup formats from a profile and according to the current GL implemantion.
+    void setProfile(Profiles profile);
 
     /**
      * @brief setBufferUsage Enable or disable a buffer, to use it for deferred shading.
@@ -234,4 +255,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_GBUFFER_H
-

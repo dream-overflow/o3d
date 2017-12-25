@@ -148,7 +148,7 @@ void AppWindow::applySettings(Bool fullScreen)
     if (GL::getImplementation() == GL::IMPL_EGL_15) {
     #ifdef O3D_EGL
         EGLint apiType = EGL_OPENGL_BIT;
-        if (GL::getType() == GL::GLAPI_GLES_3) {
+        if (GL::getType() == GL::API_GLES_3) {
             apiType = EGL_OPENGL_ES2_BIT;  // not 3 defined in Android
         }
 

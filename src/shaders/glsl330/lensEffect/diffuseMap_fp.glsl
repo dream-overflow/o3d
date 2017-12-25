@@ -12,6 +12,6 @@ out vec4 o_finalColor;
 
 void main()
 {
-	vec4 colorDiffuse = texture2D(u_diffuseMap, io_texCoords.xy);
+    vec4 colorDiffuse = texture(u_diffuseMap, io_texCoords.xy);
 	o_finalColor = u_color * colorDiffuse;
 }

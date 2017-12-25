@@ -99,9 +99,9 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
         GL::init();
 
         String typeString = "Undefined";
-        if (GL::getType() == GL::GLAPI_GL) {
+        if (GL::getType() == GL::API_GL) {
             typeString = "GL3+";
-        } else if (GL::getType() == GL::GLAPI_GLES_3) {
+        } else if (GL::getType() == GL::API_GLES_3) {
             typeString = "GLES3+";
         }
 

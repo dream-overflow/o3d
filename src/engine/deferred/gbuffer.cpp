@@ -7,6 +7,8 @@
  * @details 
  */
 
+#include "o3d/core/gl.h"
+
 #include "o3d/engine/deferred/gbuffer.h"
 #include "o3d/engine/glextdefines.h"
 #include "o3d/engine/glextensionmanager.h"
@@ -14,6 +16,7 @@
 #include "o3d/engine/texture/texture2d.h"
 #include "o3d/engine/texture/texture2dms.h"
 #include "o3d/engine/scene/scene.h"
+#include "o3d/engine/renderer.h"
 
 using namespace o3d;
 
@@ -25,41 +28,47 @@ PixelFormat GBuffer::bufferFormatToPixelFormat(BufferType buffer, BufferFormat f
         case AMBIENT_BUFFER:
         case DIFFUSE_BUFFER:
         case SPECULAR_BUFFER:
-            if (format == FORMAT_8U)
+            if (format == FORMAT_8UI) {
                 return PF_RGBA_U8;
-            else if (format == FORMAT_16F)
+            } else if (format == FORMAT_16F) {
                 return PF_RGBA_F16;
-            else if (format == FORMAT_32F)
+            } else if (format == FORMAT_32F) {
                 return PF_RGBA_F32;
+            }
             break;
 
         case POSITION_BUFFER:
-            if (format == FORMAT_8U)
+            if (format == FORMAT_8UI) {
                 return PF_RGB_U8;
-            else if (format == FORMAT_16F)
+            } else if (format == FORMAT_16F) {
                 return PF_RGB_F16;
-            else if (format == FORMAT_32F)
+            } else if (format == FORMAT_32F) {
                 return PF_RGB_F32;
+            }
             break;
 
         case NORMAL_BUFFER:
-            if (format == FORMAT_8U)
+            if (format == FORMAT_8UI) {
                 return PF_RGBA_U8;
-            else if (format == FORMAT_16F)
+            } else if (format == FORMAT_16F) {
                 return PF_RGBA_F16;
-            else if (format == FORMAT_32F)
+            } else if (format == FORMAT_32F) {
                 return PF_RGBA_F32;
+            }
             break;
 
         case DEPTH_BUFFER:
-            if (format == FORMAT_8U)
+            if (format == FORMAT_8UI) {
                 return PF_DEPTH;
-            else if (format == FORMAT_16F)
-                return PF_DEPTH;//_F16;
-            else if (format == FORMAT_32F)
+            } else if (format == FORMAT_16F) {
+                return PF_DEPTH;//_F16; @todo
+            } else if (format == FORMAT_32F) {
                 return PF_DEPTH_F32;
-            else if (format == FORMAT_24_8)
+            } else if (format == FORMAT_24_8) {
                 return PF_DEPTH_U24_STENCIL_U8;
+            } else if (format == FORMAT_32F_8) {
+                return PF_DEPTH_F32_STENCIL_U8;
+            }
 
         default:
             break;
@@ -73,41 +82,9 @@ GBuffer::GBuffer(BaseObject *parent) :
     m_fbo(getScene()->getContext()),
     m_drawBuffers(getScene()->getContext())
 {
-    // set default formats
-    m_buffers[COLOR_BUFFER].type = COLOR_BUFFER;
-    m_buffers[COLOR_BUFFER].actif = True;
-    m_buffers[COLOR_BUFFER].format = FORMAT_16F;
+    setProfile(PROFILE_STANDARD);
 
-    m_buffers[AUX_COLOR_BUFFER].type = AUX_COLOR_BUFFER;
-    m_buffers[AUX_COLOR_BUFFER].actif = False;
-    m_buffers[AUX_COLOR_BUFFER].format = FORMAT_16F;
-
-    m_buffers[AMBIENT_BUFFER].type = AMBIENT_BUFFER;
-    m_buffers[AMBIENT_BUFFER].actif = True;
-    m_buffers[AMBIENT_BUFFER].format = FORMAT_8U;
-
-    m_buffers[DIFFUSE_BUFFER].type = DIFFUSE_BUFFER;
-    m_buffers[DIFFUSE_BUFFER].actif = True;
-    m_buffers[DIFFUSE_BUFFER].format = FORMAT_8U;
-
-    m_buffers[SPECULAR_BUFFER].type = SPECULAR_BUFFER;
-    m_buffers[SPECULAR_BUFFER].actif = True;
-    m_buffers[SPECULAR_BUFFER].format = FORMAT_8U;
-
-    m_buffers[NORMAL_BUFFER].type = NORMAL_BUFFER;
-    m_buffers[NORMAL_BUFFER].actif = True;
-    m_buffers[NORMAL_BUFFER].format = FORMAT_16F;
-
-    m_buffers[DEPTH_BUFFER].type = DEPTH_BUFFER;
-    m_buffers[DEPTH_BUFFER].actif = True;
-    m_buffers[DEPTH_BUFFER].format = FORMAT_24_8;
-
-    m_buffers[POSITION_BUFFER].type = POSITION_BUFFER;
-    m_buffers[POSITION_BUFFER].actif = True;
-    m_buffers[POSITION_BUFFER].format = FORMAT_32F;
-
-    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i)
-    {
+    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i) {
         m_buffers[i].texture.setUser(this);
     }
 }
@@ -119,76 +96,264 @@ GBuffer::~GBuffer()
 
 void GBuffer::setFormat(GBuffer::BufferType buffer, GBuffer::BufferFormat format)
 {
-    if (m_fbo.isValid())
+    if (m_fbo.isValid()) {
         O3D_ERROR(E_InvalidOperation("GBuffer exists. This operation can only be done before its creation."));
-
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE)
-    {
-        if ((format == FORMAT_8U) && (buffer == DEPTH_BUFFER))
-            O3D_ERROR(E_InvalidOperation("This format is not allowed on this buffer."));
-
-        if ((format == FORMAT_24_8) && (buffer != DEPTH_BUFFER))
-            O3D_ERROR(E_InvalidOperation("This format is not allowed on this buffer."));
-
-        // TODO MSAA
-
-        m_buffers[buffer].format = format;
     }
-    else
+
+    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
+        if (buffer == DEPTH_BUFFER) {
+            switch(format) {
+                case FORMAT_8:
+                case FORMAT_8I:
+                case FORMAT_8UI:
+                case FORMAT_16I:
+                case FORMAT_16UI:
+                case FORMAT_32I:
+                case FORMAT_32UI:
+                    O3D_ERROR(E_InvalidOperation("This format is not allowed on depth buffer."));
+                    break;
+
+                case FORMAT_16F:
+                case FORMAT_24:
+                case FORMAT_32F:
+                case FORMAT_24_8:
+                case FORMAT_32F_8:
+                    break;
+            }
+        } else {
+            switch(format) {
+                case FORMAT_8:
+                case FORMAT_8I:
+                case FORMAT_8UI:
+                case FORMAT_16I:
+                case FORMAT_16UI:
+                case FORMAT_32I:
+                case FORMAT_32UI:
+                    O3D_ERROR(E_InvalidOperation("This format is not allowed on depth buffer."));
+                    break;
+
+                case FORMAT_16F:
+                case FORMAT_24:
+                case FORMAT_32F:
+                case FORMAT_24_8:
+                case FORMAT_32F_8:
+                    O3D_ERROR(E_InvalidOperation("This format is not allowed on color buffer."));
+                    break;
+            }
+        }
+
+        // @todo MSAA format
+        m_buffers[buffer].format = format;
+    } else {
         O3D_ERROR(E_IndexOutOfRange("Buffer format"));
+    }
 }
 
 GBuffer::BufferFormat GBuffer::getFormat(GBuffer::BufferType buffer) const
 {
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE)
+    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
         return m_buffers[buffer].format;
-    else
+    } else {
         O3D_ERROR(E_IndexOutOfRange("Buffer format"));
+    }
+}
+
+void GBuffer::setProfile(GBuffer::Profiles profile)
+{
+    if (GL::getType() == GL::API_CUSTOM || GL::getType() == GL::API_GL) {
+        if (getScene()->getRenderer()->getVersion() >= 400) {
+            m_buffers[COLOR_BUFFER].type = COLOR_BUFFER;
+            m_buffers[COLOR_BUFFER].actif = True;
+            if (profile == PROFILE_CHEAP) {
+                m_buffers[COLOR_BUFFER].format = FORMAT_8;
+            } else {
+                m_buffers[COLOR_BUFFER].format = FORMAT_16F;
+            }
+
+            m_buffers[AUX_COLOR_BUFFER].type = AUX_COLOR_BUFFER;
+            m_buffers[AUX_COLOR_BUFFER].actif = False;
+            if (profile == PROFILE_CHEAP) {
+                m_buffers[AUX_COLOR_BUFFER].format = FORMAT_8;
+            } else {
+                m_buffers[AUX_COLOR_BUFFER].format = FORMAT_16F;
+            }
+
+            m_buffers[AMBIENT_BUFFER].type = AMBIENT_BUFFER;
+            m_buffers[AMBIENT_BUFFER].actif = True;
+            m_buffers[AMBIENT_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[DIFFUSE_BUFFER].type = DIFFUSE_BUFFER;
+            m_buffers[DIFFUSE_BUFFER].actif = True;
+            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[SPECULAR_BUFFER].type = SPECULAR_BUFFER;
+            m_buffers[SPECULAR_BUFFER].actif = True;
+            m_buffers[SPECULAR_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[NORMAL_BUFFER].type = NORMAL_BUFFER;
+            m_buffers[NORMAL_BUFFER].actif = True;
+            m_buffers[NORMAL_BUFFER].format = FORMAT_16F;
+
+            m_buffers[DEPTH_BUFFER].type = DEPTH_BUFFER;
+            m_buffers[DEPTH_BUFFER].actif = True;
+            if (profile == PROFILE_OPTIMAL) {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_32F_8;
+            } else {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_24_8;
+            }
+
+            m_buffers[POSITION_BUFFER].type = POSITION_BUFFER;
+            m_buffers[POSITION_BUFFER].actif = True;
+            m_buffers[POSITION_BUFFER].format = FORMAT_32F;
+
+            return;
+        } else if (getScene()->getRenderer()->getVersion() >= 300) {
+            m_buffers[COLOR_BUFFER].type = COLOR_BUFFER;
+            m_buffers[COLOR_BUFFER].actif = True;
+            if (profile == PROFILE_CHEAP) {
+                m_buffers[COLOR_BUFFER].format = FORMAT_8;
+            } else {
+                m_buffers[COLOR_BUFFER].format = FORMAT_16F;
+            }
+
+            m_buffers[AUX_COLOR_BUFFER].type = AUX_COLOR_BUFFER;
+            m_buffers[AUX_COLOR_BUFFER].actif = False;
+            if (profile == PROFILE_CHEAP) {
+                m_buffers[AUX_COLOR_BUFFER].format = FORMAT_8;
+            } else {
+                m_buffers[AUX_COLOR_BUFFER].format = FORMAT_16F;
+            }
+
+            m_buffers[AMBIENT_BUFFER].type = AMBIENT_BUFFER;
+            m_buffers[AMBIENT_BUFFER].actif = True;
+            m_buffers[AMBIENT_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[DIFFUSE_BUFFER].type = DIFFUSE_BUFFER;
+            m_buffers[DIFFUSE_BUFFER].actif = True;
+            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[SPECULAR_BUFFER].type = SPECULAR_BUFFER;
+            m_buffers[SPECULAR_BUFFER].actif = True;
+            m_buffers[SPECULAR_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[NORMAL_BUFFER].type = NORMAL_BUFFER;
+            m_buffers[NORMAL_BUFFER].actif = True;
+            m_buffers[NORMAL_BUFFER].format = FORMAT_16F;
+
+            m_buffers[DEPTH_BUFFER].type = DEPTH_BUFFER;
+            m_buffers[DEPTH_BUFFER].actif = True;
+            if (profile == PROFILE_OPTIMAL) {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_32F_8;
+            } else {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_24_8;
+            }
+
+            m_buffers[POSITION_BUFFER].type = POSITION_BUFFER;
+            m_buffers[POSITION_BUFFER].actif = True;
+            m_buffers[POSITION_BUFFER].format = FORMAT_32F;
+
+            return;
+        }
+    } else if (GL::getType() == GL::API_GLES_3) {
+        if (getScene()->getRenderer()->getVersion() >= 300) {
+            m_buffers[COLOR_BUFFER].type = COLOR_BUFFER;
+            m_buffers[COLOR_BUFFER].actif = True;
+            if (profile == PROFILE_CHEAP) {
+                m_buffers[COLOR_BUFFER].format = FORMAT_8;
+            } else {
+                m_buffers[COLOR_BUFFER].format = FORMAT_16F;
+            }
+
+            m_buffers[AUX_COLOR_BUFFER].type = AUX_COLOR_BUFFER;
+            m_buffers[AUX_COLOR_BUFFER].actif = False;
+            if (profile == PROFILE_CHEAP) {
+                m_buffers[AUX_COLOR_BUFFER].format = FORMAT_8;
+            } else {
+                m_buffers[AUX_COLOR_BUFFER].format = FORMAT_16F;
+            }
+
+            m_buffers[AMBIENT_BUFFER].type = AMBIENT_BUFFER;
+            m_buffers[AMBIENT_BUFFER].actif = True;
+            m_buffers[AMBIENT_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[DIFFUSE_BUFFER].type = DIFFUSE_BUFFER;
+            m_buffers[DIFFUSE_BUFFER].actif = True;
+            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[SPECULAR_BUFFER].type = SPECULAR_BUFFER;
+            m_buffers[SPECULAR_BUFFER].actif = True;
+            m_buffers[SPECULAR_BUFFER].format = FORMAT_8UI;
+
+            m_buffers[NORMAL_BUFFER].type = NORMAL_BUFFER;
+            m_buffers[NORMAL_BUFFER].actif = True;
+            m_buffers[NORMAL_BUFFER].format = FORMAT_16F;
+
+            m_buffers[DEPTH_BUFFER].type = DEPTH_BUFFER;
+            m_buffers[DEPTH_BUFFER].actif = True;
+            if (profile == PROFILE_OPTIMAL) {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_32F_8;
+            } else {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_24_8;
+            }
+
+            // @todo
+            m_buffers[POSITION_BUFFER].type = POSITION_BUFFER;
+            m_buffers[POSITION_BUFFER].actif = True;
+            if (profile == PROFILE_OPTIMAL) {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_16F; //FORMAT_32F;
+            } else {
+                m_buffers[DEPTH_BUFFER].format = FORMAT_16F; //FORMAT_32F;
+            }
+
+            return;
+        }
+    }
+
+    O3D_ERROR(E_InvalidPrecondition("OpenGL version cannot be found or is not supported"));
 }
 
 void GBuffer::setBufferUsage(GBuffer::BufferType buffer, Bool state)
 {
-    if (m_fbo.isValid())
+    if (m_fbo.isValid()) {
         O3D_ERROR(E_InvalidOperation("GBuffer exists. This operation can only be done before its creation."));
+    }
 
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE)
-    {
-        switch (buffer)
-        {
-        case COLOR_BUFFER:
-        case AMBIENT_BUFFER:
-        case DEPTH_BUFFER:
-        case NORMAL_BUFFER:
-        case POSITION_BUFFER:
-            O3D_ERROR(E_InvalidOperation("It is not allowed to disable this buffer."));
-        default:
-            break;
+    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
+        switch (buffer) {
+            case COLOR_BUFFER:
+            case AMBIENT_BUFFER:
+            case DEPTH_BUFFER:
+            case NORMAL_BUFFER:
+            case POSITION_BUFFER:
+                O3D_ERROR(E_InvalidOperation("It is not allowed to disable this buffer."));
+            default:
+                break;
         }
 
         m_buffers[buffer].actif = state;
-    }
-    else
+    } else {
         O3D_ERROR(E_IndexOutOfRange("Buffer format"));
+    }
 }
 
 Bool GBuffer::getBufferUsage(GBuffer::BufferType buffer) const
 {
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE)
+    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
         return m_buffers[buffer].actif;
-    else
+    } else {
         O3D_ERROR(E_IndexOutOfRange("Buffer format"));
+    }
 }
 
 void GBuffer::create(UInt32 width, UInt32 height, UInt32 samples)
 {
-    if (m_fbo.isValid())
+    if (m_fbo.isValid()) {
         return;
+    }
 
     // create textures
-    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i)
-    {
-        if (m_buffers[i].actif)
-        {
+    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i) {
+        if (m_buffers[i].actif) {
             if (samples > 1) {
                 m_buffers[i].texture = new Texture2DMS(this);
                 static_cast<Texture2DMS*>(m_buffers[i].texture.get())->create(
@@ -222,22 +387,19 @@ void GBuffer::create(UInt32 width, UInt32 height, UInt32 samples)
     m_drawBuffers.push(DrawBuffers::COLOR_ATTACHMENT2);
     m_drawBuffers.push(DrawBuffers::COLOR_ATTACHMENT3);
 
-    if (m_buffers[DIFFUSE_BUFFER].actif)
-    {
+    if (m_buffers[DIFFUSE_BUFFER].actif) {
         // 4 diffuse
         m_drawBuffers.push(DrawBuffers::COLOR_ATTACHMENT4);
         m_fbo.attachTexture2D(m_buffers[DIFFUSE_BUFFER].texture.get(), FrameBuffer::COLOR_ATTACHMENT4);
     }
 
-    if (m_buffers[SPECULAR_BUFFER].actif)
-    {
+    if (m_buffers[SPECULAR_BUFFER].actif) {
         // 5 specular
         m_drawBuffers.push(DrawBuffers::COLOR_ATTACHMENT5);
         m_fbo.attachTexture2D(m_buffers[SPECULAR_BUFFER].texture.get(), FrameBuffer::COLOR_ATTACHMENT5);
     }
 
-    if (m_buffers[AUX_COLOR_BUFFER].actif)
-    {
+    if (m_buffers[AUX_COLOR_BUFFER].actif) {
         m_drawBuffers.push(DrawBuffers::COLOR_ATTACHMENT6);
         m_fbo.attachTexture2D(m_buffers[AUX_COLOR_BUFFER].texture.get(), FrameBuffer::COLOR_ATTACHMENT6);
     }
@@ -251,36 +413,37 @@ void GBuffer::create(UInt32 width, UInt32 height, UInt32 samples)
 void GBuffer::release()
 {   
     // release FBO and textures
-    if (m_fbo.isValid())
+    if (m_fbo.isValid()) {
         m_fbo.release();
+    }
 
     // delete textures
-    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i)
-    {
-        if (m_buffers[i].texture.isValid())
+    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i) {
+        if (m_buffers[i].texture.isValid()) {
             m_buffers[i].texture = nullptr;
+        }
     }
 }
 
 void GBuffer::reshape(const Vector2i &size)
 {
-    if (!m_fbo.isValid())
+    if (!m_fbo.isValid()) {
         O3D_ERROR(E_InvalidOperation("GBuffer must be created"));
+    }
 
-    if ((m_fbo.getDimension().x() == (Int32)size.x()) &&
-        (m_fbo.getDimension().y() == (Int32)size.y()))
+    if ((m_fbo.getDimension().x() == (Int32)size.x()) && (m_fbo.getDimension().y() == (Int32)size.y())) {
         return;
+    }
 
     // resize texture
-    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i)
-    {
-        if (m_buffers[i].actif)
-        {
+    for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i) {
+        if (m_buffers[i].actif) {
             // depends of the instance
-            if (m_buffers[i].texture.get()->getType() == ENGINE_TEXTURE_2D)
+            if (m_buffers[i].texture.get()->getType() == ENGINE_TEXTURE_2D) {
                 ((Texture2D*)m_buffers[i].texture.get())->resize(size.x(), size.y());
-            else
+            } else {
                 ((Texture2DMS*)m_buffers[i].texture.get())->resize(size.x(), size.y());
+            }
         }
     }
 
@@ -289,8 +452,9 @@ void GBuffer::reshape(const Vector2i &size)
 
 void GBuffer::clear()
 {
-    if (!m_fbo.isBound())
+    if (!m_fbo.isBound()) {
         O3D_ERROR(E_InvalidOperation("FBO must be bound"));
+    }
 
     // output color buffer
     m_drawBuffers.reset();
@@ -298,8 +462,7 @@ void GBuffer::clear()
     // output with context background color
     glClearBufferfv(GL_COLOR, 0, getScene()->getContext()->getBackgroundColor().getData()); // color
 
-    if (m_drawBuffers.getCount())
-    {
+    if (m_drawBuffers.getCount()) {
         m_drawBuffers.apply();
 
         GLfloat zeros[] = { 0.f, 0.f, 0.f, 0.f };
@@ -308,8 +471,7 @@ void GBuffer::clear()
         glClearBufferfv(GL_COLOR, 0, getScene()->getContext()->getBackgroundColor().getData()); // ambient
 
         // others with zeros
-        for (Int32 i = 1; i < (Int32)m_drawBuffers.getCount(); ++i)
-        {
+        for (Int32 i = 1; i < (Int32)m_drawBuffers.getCount(); ++i) {
             glClearBufferfv(GL_COLOR, i, zeros);
         }
     }
@@ -323,28 +485,30 @@ void GBuffer::clear()
 
 void GBuffer::clearDepth()
 {
-    if (!m_fbo.isBound())
-        O3D_ERROR(E_InvalidOperation("FBO must be bound"));
-
-    GLfloat one = 1.f;
-    glClearBufferfv(GL_DEPTH, 0, &one);
+    if (!m_fbo.isBound()) {
+//        if (glClearNamedFramebufferfv) {
+//            glClearNamedFramebufferfv() @todo and for colors too
+//        } else {
+            O3D_ERROR(E_InvalidOperation("FBO must be bound"));
+//        }
+    } else {
+        GLfloat one = 1.f;
+        glClearBufferfv(GL_DEPTH, 0, &one);
+    }
 }
 
 void GBuffer::clearColors()
 {
-    if (!m_fbo.isBound())
+    if (!m_fbo.isBound()) {
         O3D_ERROR(E_InvalidOperation("FBO must be bound"));
-
-    if (m_drawBuffers.getCount())
-    {
+    } else if (m_drawBuffers.getCount()) {
         GLfloat zeros[] = { 0.f, 0.f, 0.f, 0.f };
 
         // ambient with context background color
         glClearBufferfv(GL_COLOR, 0, getScene()->getContext()->getBackgroundColor().getData());
 
         // others with zero
-        for (Int32 i = 1; i < (Int32)m_drawBuffers.getCount(); ++i)
-        {
+        for (Int32 i = 1; i < (Int32)m_drawBuffers.getCount(); ++i) {
             glClearBufferfv(GL_COLOR, i, zeros);
         }
     }
@@ -362,15 +526,16 @@ void GBuffer::unbind()
 
 void GBuffer::swapColorMap()
 {
-    if (!m_buffers[AUX_COLOR_BUFFER].actif)
+    if (!m_buffers[AUX_COLOR_BUFFER].actif) {
         O3D_ERROR(E_InvalidOperation("Auxiliary color buffer is not defined"));
+    }
 
-    if (!m_fbo.isBound())
+    if (!m_fbo.isBound()) {
         O3D_ERROR(E_InvalidOperation("FBO must be bound"));
+    }
 
     // attach the auxiliary color buffer in place of the primary
-    if (m_fbo.isValid())
-    {
+    if (m_fbo.isValid()) {
         m_fbo.attachTexture2D(m_buffers[AUX_COLOR_BUFFER].texture.get(), FrameBuffer::COLOR_ATTACHMENT0);
         m_fbo.attachTexture2D(m_buffers[COLOR_BUFFER].texture.get(), FrameBuffer::COLOR_ATTACHMENT6);
     }
@@ -404,7 +569,8 @@ void GBuffer::draw()
 {
     Box2i box(Vector2i(0, 0), m_fbo.getDimension());
 
-    //glDrawBuffers(1, {GL_COLOR_ATTACHMENT0});
+    //GLuint buffers = {GL_COLOR_ATTACHMENT0};
+    //glDrawBuffers(1, buffers);
 
     // default is already to color0
     //m_fbo.bindBuffer();
@@ -413,4 +579,3 @@ void GBuffer::draw()
 
     m_fbo.blit(box, box, FrameBuffer::MASK_COLOR | FrameBuffer::MASK_DEPTH, FrameBuffer::FILTER_NEAREST);
 }
-

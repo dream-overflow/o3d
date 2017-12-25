@@ -13,5 +13,5 @@ out vec4 o_finalColor;
 
 void main()
 {
-    o_finalColor = texture2D(u_colormap, io_texCoords) * texture2D(u_noise, u_invNoiseScale*io_fragPosition);
+    o_finalColor = texture(u_colormap, io_texCoords) * texture(u_noise, u_invNoiseScale*io_fragPosition);
 }
