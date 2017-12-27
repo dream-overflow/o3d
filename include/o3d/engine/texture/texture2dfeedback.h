@@ -22,12 +22,10 @@ namespace o3d {
 class Context;
 class Texture2D;
 
-//---------------------------------------------------------------------------------------
-//! @class Texture2DFeedback
-//-------------------------------------------------------------------------------------
-//! 2D texture feedback (read-back) with two PBO. Feedback allow to get back in
-//! CPU memory or into a texture the content of a draw buffer.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief 2D texture feedback (read-back) with two PBO. Feedback allow to get back in
+ * CPU memory or into a texture the content of a draw buffer.
+ */
 class O3D_API Texture2DFeedback
 {
 public:
@@ -142,4 +140,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_TEXTURE2DFEEDBACK_H
-

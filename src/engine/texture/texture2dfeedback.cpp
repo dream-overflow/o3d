@@ -28,11 +28,13 @@ Texture2DFeedback::Texture2DFeedback(BaseObject *parent) :
 	m_type(DATA_UNSIGNED_BYTE),
     m_mapped(nullptr)
 {
-	if (!m_parent)
+    if (!m_parent) {
 		O3D_ERROR(E_NullPointer("Parent must be a valid pointer"));
+    }
 
-	if (!o3d::typeOf<Scene>(m_parent->getTopLevelParent()))
+    if (!o3d::typeOf<Scene>(m_parent->getTopLevelParent())) {
 		O3D_ERROR(E_InvalidParameter("Top level parent must be the scene"));
+    }
 
 	m_context = reinterpret_cast<Scene*>(m_parent->getTopLevelParent())->getContext();
 
@@ -59,8 +61,9 @@ const Scene* Texture2DFeedback::getScene() const
 
 void Texture2DFeedback::create(UInt32 readBuffer, PixelFormat pf)
 {
-	if (m_state)
+    if (m_state) {
 		release();
+    }
 
 	m_readBuffer = readBuffer;
 
@@ -76,8 +79,8 @@ void Texture2DFeedback::create(UInt32 readBuffer, PixelFormat pf)
 
     m_mapped = nullptr;
 
-	m_format = GLTexture::getGLFormat(getScene()->getRenderer(), m_pixelFormat);
-	m_type = GLTexture::getGLType(m_pixelFormat);
+    m_format = GLTexture::getGLFormat(getScene()->getRenderer(), pf);
+    m_type = GLTexture::getGLType(pf);
 	m_pixelFormat = pf;
 
 	m_next = 0;
@@ -87,16 +90,14 @@ void Texture2DFeedback::create(UInt32 readBuffer, PixelFormat pf)
 
 void Texture2DFeedback::release()
 {
-	if (m_buffersId[0] != 0)
-	{
+    if (m_buffersId[0] != 0) {
 		O3D_GFREE(MemoryManager::GPU_PBO, m_buffersId[0]);
 
 		m_context->deletePixelBuffer(m_buffersId[0]);
 		m_buffersId[0] = 0;
 	}
 
-	if (m_buffersId[1] != 0)
-	{
+    if (m_buffersId[1] != 0) {
 		O3D_GFREE(MemoryManager::GPU_PBO, m_buffersId[1]);
 
 		m_context->deletePixelBuffer(m_buffersId[1]);
@@ -115,8 +116,9 @@ void Texture2DFeedback::release()
 
 void Texture2DFeedback::setBox(const Box2i &box)
 {
-	if (!m_state)
+    if (!m_state) {
 		O3D_ERROR(E_InvalidOperation("Texture2DFeedback must be created"));
+    }
 
 	m_box = box;
 
@@ -125,8 +127,7 @@ void Texture2DFeedback::setBox(const Box2i &box)
 								   getScene()->getRenderer(), m_pixelFormat)) >> 3;
 
 	// allocate PBO if necessary
-	if (size != m_size)
-	{
+    if (size != m_size) {
 		m_size = size;
 
 		O3D_GREALLOC(MemoryManager::GPU_PBO, m_buffersId[0], dbgSize);
@@ -147,15 +148,31 @@ void Texture2DFeedback::update()
 {
 	UInt32 pbo = m_buffersId[m_next];
 
-	if (!m_state || (m_size == 0))
+    if (!m_state || (m_size == 0)) {
 		O3D_ERROR(E_InvalidParameter("Object must be created before and size defined"));
+    }
 
-	if (m_next == 0)
+    if (m_next == 0) {
 		m_next = 1;
-	else
+    } else {
 		m_next = 0;
+    }
 
 	glReadBuffer(m_readBuffer);
+
+    // many solutions : glGetTexImage the less efficien and works only with the full surface
+    // and not availables on GLES.
+    // @todo uses glGetTextureSubImage if GL 4.5+ the most efficient
+    // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetTextureSubImage.xhtml
+    if (glGetTextureSubImage) {
+        // @todo uses glGetTextureSubImage if GL 4.5+ the most efficient
+//        glGetTextureSubImage(
+//                    GL_TEXTURE_2D,
+//                    0/*level*/,
+//                    0, 0, 0,
+//                    m_box.width(), m_box.height(), 0,
+//                    m_format, m_type, m_size, nullptr);
+    }
 
 	m_context->bindPixelPackBuffer(pbo);
 
@@ -179,16 +196,22 @@ const UInt8* Texture2DFeedback::lock(UInt32 size, UInt32 offset)
 {
 	UInt32 pbo = m_buffersId[m_next == 0 ? 1 : 0];
 
-	if (!m_state)
+    if (!m_state) {
 		O3D_ERROR(E_InvalidParameter("Object must be created before"));
+    }
 
-	if (size+offset > m_size)
+    if (size+offset > m_size) {
 		O3D_ERROR(E_InvalidParameter("Size+offset must be less or equal to m_size"));
+    }
+
+    // not available of GLES
+    if (!glMapBuffer) {
+        return nullptr;
+    }
 
 	m_context->bindPixelPackBuffer(pbo);
 
-	m_mapped = reinterpret_cast<UInt8*>(
-		glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY)) + offset;
+    m_mapped = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY)) + offset;
 
 	return m_mapped;
 }
@@ -197,25 +220,33 @@ const UInt8* Texture2DFeedback::lock(UInt32 size)
 {
 	UInt32 pbo = m_buffersId[m_next == 0 ? 1 : 0];
 
-	if (!m_state)
+    if (!m_state) {
 		O3D_ERROR(E_InvalidParameter("Object must be created before"));
+    }
 
-	if (size != m_size)
-		O3D_ERROR(E_InvalidParameter("Size must be equal to m_size"));
+    if (size != m_size) {
+        O3D_ERROR(E_InvalidParameter("Size must be equal to m_size"));
+    }
+
+    // not available of GLES
+    if (!glMapBuffer) {
+        return nullptr;
+    }
 
 	m_context->bindPixelPackBuffer(pbo);
 
-	m_mapped = reinterpret_cast<UInt8*>(
-		glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY));
+    m_mapped = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY));
 
 	return m_mapped;
 }
 
 void Texture2DFeedback::unlock()
 {
-    if (m_mapped != nullptr)
-	{
-		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+    if (m_mapped != nullptr) {
+        // not available of GLES
+        if (glUnmapBuffer) {
+            glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+        }
 
 		// finally unbind pack buffer
 		m_context->bindPixelPackBuffer(0);
@@ -228,17 +259,21 @@ void Texture2DFeedback::copyToTexture(Texture2D *texture, UInt32 level)
 {
 	UInt32 pbo = m_buffersId[m_next == 0 ? 1 : 0];
 
-    if ((texture == nullptr) || !texture->isValid())
+    if ((texture == nullptr) || !texture->isValid()) {
 		O3D_ERROR(E_InvalidParameter("Texture must be valid"));
+    }
 
-	if ((level < texture->getMinLevel()) || (level > texture->getMaxLevel()))
+    if ((level < texture->getMinLevel()) || (level > texture->getMaxLevel())) {
 		O3D_ERROR(E_InvalidParameter("Texture level out of boundaries"));
+    }
 
-	if ((texture->getWidth() != (UInt32)m_box.width()) || (texture->getHeight() != (UInt32)m_box.height()))
+    if ((texture->getWidth() != (UInt32)m_box.width()) || (texture->getHeight() != (UInt32)m_box.height())) {
 		O3D_ERROR(E_InvalidParameter("Texture width/height is different from box size"));
+    }
 
-	if (texture->getPixelFormat() != m_pixelFormat)
+    if (texture->getPixelFormat() != m_pixelFormat) {
 		O3D_ERROR(E_InvalidParameter("Texture pixel format is different from read buffer"));
+    }
 
 	texture->bind();
 	m_context->bindPixelUnpackBuffer(pbo);
@@ -258,4 +293,3 @@ void Texture2DFeedback::copyToTexture(Texture2D *texture, UInt32 level)
 	m_context->bindPixelUnpackBuffer(0);
 	texture->unbind();
 }
-

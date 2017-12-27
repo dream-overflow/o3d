@@ -1,6 +1,8 @@
 // fragment program
 #version 330
 
+precision highp float;
+
 out vec4 o_finalColor;
 
 void main()

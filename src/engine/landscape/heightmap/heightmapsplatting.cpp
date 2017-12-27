@@ -15,6 +15,7 @@
 #include "o3d/engine/landscape/heightmap/heightmapsplatting.h"
 #include "o3d/engine/landscape/heightmap/terrainheightmapformat.h"
 #include "o3d/engine/shader/shadermanager.h"
+#include "o3d/engine/texture/texture2dfeedback.h"
 #include "o3d/engine/texture/texturemanager.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/scene/sceneobject.h"
@@ -174,8 +175,7 @@ Bool HeightmapSplatting::isValid() const
 {
 	Bool lOk = m_shader.isOperational() && m_vertices.isValid();
 
-	if ((m_flags & OPT_STATIC_LIGHTNING) != 0)
-	{
+    if ((m_flags & OPT_STATIC_LIGHTNING) != 0) {
 		lOk &= m_colormapTex.isValid();		// Colormap must be defined
 		lOk &= ((m_flags & OPT_NOISE) == 0) || (m_noiseTex.isValid()); // Noise must be disabled or be defined
 	}
@@ -197,8 +197,7 @@ void HeightmapSplatting::load(InStream &_is)
 	// Loading of vertex attributes
 	std::vector<TerrainHeightmap::AttribHeader> lAttribHeaders(lFileHeader.attribCount);
 
-	for (std::vector<TerrainHeightmap::AttribHeader>::iterator it = lAttribHeaders.begin() ; it != lAttribHeaders.end() ; it++)
-	{
+    for (std::vector<TerrainHeightmap::AttribHeader>::iterator it = lAttribHeaders.begin() ; it != lAttribHeaders.end() ; it++) {
         _is.read(it->name, 64);
         _is.read(&it->position, 1);
         _is.read(&it->size, 1);
@@ -210,28 +209,26 @@ void HeightmapSplatting::enable(OptionFlag _flag, Bool _state)
 {
 	Int32 lBitCount = 0;
 
-	for (Int32 i = 0; i < 32 ; ++i)
+    for (Int32 i = 0; i < 32 ; ++i) {
 		lBitCount += ((_flag >> i) & 0x00000001);
+    }
 
-	if (lBitCount > 1)
+    if (lBitCount > 1) {
 		setFlag(_flag);
-	else
-	{
+    } else {
 		const Bool lOldState = isEnabled(_flag);
 
-		switch(_flag)
-		{
-		case OPT_STATIC_LIGHTNING:
-			if (_state != lOldState)
-				m_updateFlag |= UPDATE_SHADER;
-			break;
-		case OPT_NOISE:
-			break;
-		default:
-			O3D_ASSERT(0);
-			break;
+        switch(_flag) {
+            case OPT_STATIC_LIGHTNING:
+                if (_state != lOldState)
+                    m_updateFlag |= UPDATE_SHADER;
+                break;
+            case OPT_NOISE:
+                break;
+            default:
+                O3D_ASSERT(0);
+                break;
 		}
-
 
 		m_flags = (_state ? m_flags | _flag : m_flags & ~_flag);
 	}
@@ -239,31 +236,33 @@ void HeightmapSplatting::enable(OptionFlag _flag, Bool _state)
 
 void HeightmapSplatting::setFlag(UInt32 _flag)
 {
-	if ((_flag == OPT_UNDEFINED) && (_flag != m_flags))
-	{
+    if ((_flag == OPT_UNDEFINED) && (_flag != m_flags)) {
 		enable(OPT_STATIC_LIGHTNING, False);
 		enable(OPT_NOISE, False);
-	}
-	else
-	{
-		if ((_flag & OPT_STATIC_LIGHTNING) != (m_flags & OPT_STATIC_LIGHTNING))
+    } else {
+        if ((_flag & OPT_STATIC_LIGHTNING) != (m_flags & OPT_STATIC_LIGHTNING)) {
 			enable(OPT_STATIC_LIGHTNING, (_flag & OPT_STATIC_LIGHTNING) != 0);
+        }
 
-		if ((_flag & OPT_NOISE) != (m_flags & OPT_NOISE))
+        if ((_flag & OPT_NOISE) != (m_flags & OPT_NOISE)) {
 			enable(OPT_NOISE, (_flag & OPT_NOISE) != 0);
+        }
 	}
 }
 
 void HeightmapSplatting::setHeightmap(const Image & _pic, Float _offset)
 {
-	if (!_pic.isValid())
+    if (!_pic.isValid()) {
 		O3D_ERROR(E_InvalidOperation("Invalid heightmap picture"));
+    }
 
-	if ((_pic.getWidth() != _pic.getHeight()))
-		O3D_ERROR(E_InvalidOperation("Heightmap picture must be square"));
+    if ((_pic.getWidth() != _pic.getHeight())) {
+        O3D_ERROR(E_InvalidOperation("Heightmap picture must be square"));
+    }
 
-	if (!o3d::isPow2(_pic.getWidth()))
+    if (!o3d::isPow2(_pic.getWidth())) {
 		O3D_ERROR(E_InvalidOperation("Heightmap width must be a power of two"));
+    }
 
 	const Int32 lBpp = _pic.getBpp()/8;
 	const UInt8 * lpSrc = _pic.getData();
@@ -277,8 +276,7 @@ void HeightmapSplatting::setHeightmap(const Image & _pic, Float _offset)
 	const Float liWidth = 1.0f / (_pic.getWidth()-1);
 	const Float liHeight = 1.0f / (_pic.getHeight()-1);
 
-	for(UInt32 i = 0 ; i < _pic.getWidth() * _pic.getHeight() ; ++i, lpBufferVertex += 4, lpBufferTex += 2, lpSrc += lBpp)
-	{
+    for(UInt32 i = 0 ; i < _pic.getWidth() * _pic.getHeight() ; ++i, lpBufferVertex += 4, lpBufferTex += 2, lpSrc += lBpp) {
 		lpBufferVertex[X] = Float(i / _pic.getWidth());
 		lpBufferVertex[Y] = (*lpSrc) + _offset;
 		lpBufferVertex[Z] = Float(i % _pic.getWidth());
@@ -298,91 +296,92 @@ void HeightmapSplatting::setHeightmap(const Image & _pic, Float _offset)
 
 	vboBuilder.create(m_vbo);
 
-	if (m_indices.getNumElements() != 2*3*(_pic.getWidth()-1) * (_pic.getHeight()-1))
-	{
-		m_indices.create(2*3*(_pic.getWidth()-1) * (_pic.getHeight()-1));
-		UInt32 * lpIndicesInit = (UInt32 *)m_indices.lockArray();
-		UInt32 * lpIndices = lpIndicesInit;
+    if (m_indices.getNumElements() != 2*3*(_pic.getWidth()-1) * (_pic.getHeight()-1)) {
+        SmartArrayUInt32 faceArray(2*3*(_pic.getWidth()-1) * (_pic.getHeight()-1));
 
-		for (UInt32 j = 0 ; j < _pic.getWidth()-1 ; ++j)
-		{
-			UInt32 lCurrRow = j * _pic.getWidth();
-			UInt32 lNextRow = (j + 1) * _pic.getWidth();
+        UInt32 *lpIndicesInit = faceArray.getData();
+        UInt32 *lpIndices = lpIndicesInit;
 
-			for (UInt32 i = 0 ; i < _pic.getHeight()-1 ; ++i, lpIndices += 6, lCurrRow++, lNextRow++)
-			{
-				lpIndices[0] = lCurrRow;
-				lpIndices[1] = lCurrRow+1;
-				lpIndices[2] = lNextRow;
+        for (UInt32 j = 0 ; j < _pic.getWidth()-1 ; ++j) {
+            UInt32 lCurrRow = j * _pic.getWidth();
+            UInt32 lNextRow = (j + 1) * _pic.getWidth();
 
-				lpIndices[3] = lNextRow;
-				lpIndices[4] = lCurrRow+1;
-				lpIndices[5] = lNextRow+1;
-			}
-		}
+            for (UInt32 i = 0 ; i < _pic.getHeight()-1 ; ++i, lpIndices += 6, lCurrRow++, lNextRow++) {
+                lpIndices[0] = lCurrRow;
+                lpIndices[1] = lCurrRow+1;
+                lpIndices[2] = lNextRow;
 
-		m_indices.unlockArray();
+                lpIndices[3] = lNextRow;
+                lpIndices[4] = lCurrRow+1;
+                lpIndices[5] = lNextRow+1;
+            }
+        }
+
+        m_indices.setFaces(faceArray);
+        m_indices.create();
 	}
 }
 
 void HeightmapSplatting::setNormalmap(const Image & _pic)
 {
-	if (_pic.isValid())
-	{
-		if (_pic.getBpp() < 24)
+    if (_pic.isValid()) {
+        if (_pic.getBpp() < 24) {
 			O3D_ERROR(E_InvalidOperation("Invalid colormap picture: bpp must be >= 24"));
+        }
 
-		if ((_pic.getWidth() != _pic.getHeight()))
+        if ((_pic.getWidth() != _pic.getHeight())) {
 			O3D_ERROR(E_InvalidOperation("Colormap picture must be square"));
+        }
 
-		if (!o3d::isPow2(_pic.getWidth()))
+        if (!o3d::isPow2(_pic.getWidth())) {
 			O3D_ERROR(E_InvalidOperation("Colormap width must be a power of two"));
+        }
 
 		m_normalTex = new Texture2D(this, _pic);
 		m_normalTex->setFiltering(Texture::BILINEAR_FILTERING);
 		m_normalTex->create(True);
-	}
-	else if (m_normalTex.isValid())
-	{
+    } else if (m_normalTex.isValid()) {
 		m_normalTex.releaseCheckAndDelete();
 	}
 }
 
 void HeightmapSplatting::setColormap(const Image & _pic)
 {
-	if (_pic.isValid())
-	{
-		if (_pic.getBpp() < 24)
-			O3D_ERROR(E_InvalidOperation("Invalid colormap picture: bpp must be >= 24"));
+    if (_pic.isValid()) {
+        if (_pic.getBpp() < 24) {
+            O3D_ERROR(E_InvalidOperation("Invalid colormap picture: bpp must be >= 24"));
+        }
 
-		if ((_pic.getWidth() != _pic.getHeight()))
+        if ((_pic.getWidth() != _pic.getHeight())) {
 			O3D_ERROR(E_InvalidOperation("Colormap picture must be square"));
+        }
 
-		if (!o3d::isPow2(_pic.getWidth()))
+        if (!o3d::isPow2(_pic.getWidth())) {
 			O3D_ERROR(E_InvalidOperation("Colormap width must be a power of two"));
+        }
 
 		m_colormapTex = new Texture2D(this, _pic);
 		m_colormapTex->setFiltering(Texture::BILINEAR_FILTERING);
 		m_colormapTex->create(True);
-	}
-	else if (m_colormapTex.isValid())
-	{
+    } else if (m_colormapTex.isValid()) {
 		m_colormapTex.releaseCheckAndDelete();
 	}
 }
 
 void HeightmapSplatting::setLightmap(const Image & _pic)
 {
-	if (!isEnabled(OPT_STATIC_LIGHTNING))
+    if (!isEnabled(OPT_STATIC_LIGHTNING)) {
 		O3D_WARNING("Static lightning must be enabled");
+    }
 
-	if (_pic.isValid())
-	{
-		if ((_pic.getWidth() != _pic.getHeight()))
+    if (_pic.isValid()) {
+        if ((_pic.getWidth() != _pic.getHeight())) {
 			O3D_ERROR(E_InvalidOperation("Lightmap picture must be square"));
+        }
 
-		if (!o3d::isPow2(_pic.getWidth()))
-			O3D_ERROR(E_InvalidOperation("Lightmap width must be a power of two"));
+        if (!o3d::isPow2(_pic.getWidth())) {
+            O3D_ERROR(E_InvalidOperation("Lightmap width must be a power of two"));
+        }
 
 		m_lightmapTex = new Texture2D(this, _pic);
 		m_lightmapTex->setFiltering(Texture::BILINEAR_FILTERING);
@@ -396,43 +395,42 @@ void HeightmapSplatting::setLightmap(const Image & _pic)
 
 void HeightmapSplatting::setShadowmap(const Image & _pic)
 {
-	if (!isEnabled(OPT_STATIC_LIGHTNING))
+    if (!isEnabled(OPT_STATIC_LIGHTNING)) {
 		O3D_WARNING("Static lightning must be enabled");
+    }
 
-	if (_pic.isValid())
-	{
-		if ((_pic.getWidth() != _pic.getHeight()))
+    if (_pic.isValid()) {
+        if ((_pic.getWidth() != _pic.getHeight())) {
 			O3D_ERROR(E_InvalidOperation("Shadowmap picture must be square"));
+        }
 
-		if (!o3d::isPow2(_pic.getWidth()))
+        if (!o3d::isPow2(_pic.getWidth())) {
 			O3D_ERROR(E_InvalidOperation("Shadowmap width must be a power of two"));
+        }
 
 		m_shadowmapTex = new Texture2D(this, _pic);
 		m_shadowmapTex->setFiltering(Texture::BILINEAR_FILTERING);
 		m_shadowmapTex->create(True);
-	}
-	else if (m_shadowmapTex.isValid())
-	{
+    } else if (m_shadowmapTex.isValid()) {
 		m_shadowmapTex.releaseCheckAndDelete();
 	}
 }
 
 void HeightmapSplatting::setNoise(const Image & _pic)
 {
-	if (_pic.isValid())
-	{
-		if ((_pic.getWidth() != _pic.getHeight()))
+    if (_pic.isValid()) {
+        if ((_pic.getWidth() != _pic.getHeight())) {
 			O3D_ERROR(E_InvalidOperation("Noise picture must be square"));
+        }
 
-		if (!o3d::isPow2(_pic.getWidth()))
+        if (!o3d::isPow2(_pic.getWidth())) {
 			O3D_ERROR(E_InvalidOperation("Noise width must be a power of two"));
+        }
 
 		m_noiseTex = new Texture2D(this, _pic);
 		m_noiseTex->setFiltering(Texture::BILINEAR_FILTERING);
 		m_noiseTex->create(True);
-	}
-	else
-	{
+    } else {
 		m_shadowmapTex.releaseCheckAndDelete();
 	}
 }
@@ -443,10 +441,10 @@ void HeightmapSplatting::setNoise(const Image & _pic)
 
 void HeightmapSplatting::addLight(const LightInfos & _info)
 {
-	for (CIT_LightArray it = m_lights.begin() ; it != m_lights.end() ; it++)
-	{
-		if (it->pLight == _info.pLight)
+    for (CIT_LightArray it = m_lights.begin() ; it != m_lights.end() ; it++) {
+        if (it->pLight == _info.pLight) {
 			O3D_ERROR(E_InvalidOperation("Attempt to add a existing light to the terrain"));
+        }
 	}
 
 	m_lights.push_back(_info);
@@ -454,10 +452,8 @@ void HeightmapSplatting::addLight(const LightInfos & _info)
 
 void HeightmapSplatting::removeLight(Light * _pLight)
 {
-	for (IT_LightArray it = m_lights.begin() ; it != m_lights.end() ; it++)
-	{
-		if (it->pLight == _pLight)
-		{
+    for (IT_LightArray it = m_lights.begin() ; it != m_lights.end() ; it++) {
+        if (it->pLight == _pLight) {
 			m_lights.erase(it);
 			return;
 		}
@@ -476,17 +472,16 @@ void HeightmapSplatting::draw()
     //const Vector2i lFboSize(viewPort.width()/2, viewPort.height()/2);
     const Vector2i lFboSize(viewPort.width(), viewPort.height());
 
-	if (((m_updateFlag & UPDATE_SHADER) != 0) || !m_fbo.isValid())
-	{
+    if (((m_updateFlag & UPDATE_SHADER) != 0) || !m_fbo.isValid()) {
 		O3D_ASSERT(m_fboColorTex && m_fboDepthTex);
 
         if ((m_fboColorTex->getWidth() != UInt32(lFboSize[X])) ||
-            (m_fboColorTex->getHeight() != UInt32(lFboSize[Y])))
+            (m_fboColorTex->getHeight() != UInt32(lFboSize[Y]))) {
             m_fboColorTex->create(False, lFboSize[X], lFboSize[Y], PF_RGBA_U8);
+        }
 
         if ((m_fboDepthTex->getWidth() != UInt32(lFboSize[X])) ||
-            (m_fboDepthTex->getHeight() != UInt32(lFboSize[Y])))
-		{
+            (m_fboDepthTex->getHeight() != UInt32(lFboSize[Y]))) {
 			// GL_DEPTH_COMPONENT16 ensures compatibility with some old ATI cards
 			//m_fboDepthTex->create(False, lVboSize[X], lVboSize[Y], PF_DEPTH_U16);
             m_fboDepthTex->create(False, lFboSize[X], lFboSize[Y], PF_DEPTH_F32);
@@ -494,148 +489,96 @@ void HeightmapSplatting::draw()
 
 		if (!isEnabled(OPT_STATIC_LIGHTNING) &&
             ((m_fboNormalTex->getWidth() != UInt32(lFboSize[X])) ||
-            (m_fboNormalTex->getHeight() != UInt32(lFboSize[Y]))))
-		{
+            (m_fboNormalTex->getHeight() != UInt32(lFboSize[Y])))) {
             m_fboNormalTex->create(False, lFboSize.x(), lFboSize.y(), PF_RGBA_U8);
 		}
 
-        if (m_fbo.getDimension() != lFboSize)
-		{
+        if (m_fbo.getDimension() != lFboSize) {
             m_fbo.create(lFboSize.x(), lFboSize.y(), PF_RGBA_U8, True);
             m_fbo.attachTexture2D(m_fboColorTex.get(), FrameBuffer::COLOR_ATTACHMENT0);
 
-			if (!isEnabled(OPT_STATIC_LIGHTNING))
+            if (!isEnabled(OPT_STATIC_LIGHTNING)) {
                 m_fbo.attachTexture2D(m_fboNormalTex.get(), FrameBuffer::COLOR_ATTACHMENT1);
+            }
 
 			m_fbo.attachTexture2D(m_fboDepthTex.get(), FrameBuffer::DEPTH_ATTACHMENT);
 			m_fbo.unbindBuffer();
 
 			getScene()->getRenderer()->isError();
-			//int test = 4;
+            // int test = 4;
 		}
 	}
 
     getScene()->getContext()->setViewPort(0, 0, lFboSize.x(), lFboSize.y());
 
-	if ((m_flags & OPT_STATIC_LIGHTNING) != 0)
+    if ((m_flags & OPT_STATIC_LIGHTNING) != 0) {
 		drawDeferredStaticLighting();
-	else
+    } else {
 		drawDeferred();
+    }
 
 	getScene()->getRenderer()->isError();
 
 	getScene()->getContext()->setViewPort(0, 0, viewPort.width(), viewPort.height());
 
-	// Screen rendering of generated texture	
-//        deprecation of GL2.1
-//        Float * lpBuffer = new Float[lFboSize[X]*lFboSize[Y]];
+    // Screen rendering of generated texture
+//    pbo->bindUnpackBuffer();
 
-//        //	m_fboColorTex->bind();
-//        //	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, lpBuffer);
-//        //	m_fboColorTex->unbind();
+//    //glReadPixels(0, 0, lVboSize.x(), lVboSize.y(), GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+//    Float *data = pbo->lock(0, 0, PixelBuffer::READ_ONLY);
+//    Image out;
+//    out.loadBuffer(lVboSize.x(), lVboSize.y(), lVboSize.x()*lVboSize.y()*4, PF_DEPTH_F32, (UInt8*)data);
+//    out.save("test.png", Image::PNG);
 
-//        //	m_fboNormalTex->bind();
-//        //	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, lpBuffer);
-//        //	m_fboNormalTex->unbind();
+//    pbo->unlock();
+//    pbo->unbindUnpackBuffer();
 
-//		m_fboDepthTex->bind();
-//		glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, lpBuffer);
+//    // @todo into object
+//    Texture2DFeedback depthTex(this);
+//    depthTex.create(GL_BACK, m_fboDepthTex->getPixelFormat());
+//    depthTex.setBox(Box2i(0, 0, m_fboDepthTex->getWidth(), m_fboDepthTex->getHeight()));
 
-//        for (Int32 i = 0 ; i < lFboSize[X]*lFboSize[Y]; ++i) {
-//			// Thanks to sqrt, sensitivity of depth value near 1.0 is infinite.
-//            lpBuffer[i] = 1.0f - Math::sqrt(1.0f - lpBuffer[i]);
-//		}
+    // depthTex.update(); or
 
-//		UInt32 format = GLTexture::getGLFormat(getScene()->getRenderer(), PF_RED_F32);
-//		//UInt32 internalFormat = GLTexture::getGLInternalFormat(
-//		//		getScene()->getRenderer(),
-//		//		PF_RED_F32);
-//		UInt32 type = GLTexture::getGLType(PF_RED_F32);
+////    getScene()->getContext()->bindPixelPackBuffer(depthTex.getPBO0Id());
+////    m_fboDepthTex->bind();
+////    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
-//		// faster than TexImage2D
-//		glTexSubImage2D(
-//				GL_TEXTURE_2D,
-//				0,
-//				0,
-//				0,
+////    getScene()->getContext()->bindPixelPackBuffer(0);
+//    depthTex.copyToTexture(m_fboDepthTex.get(), 0);
+
+//    GLuint lBuffer;
+//    glGenBuffers(1, &lBuffer);
+//    getScene()->getContext()->bindPixelPackBuffer(lBuffer);
+
+//    glBufferData(GL_PIXEL_PACK_BUFFER,
+//                 sizeof(Float) * lFboSize.x() * lFboSize.y(),
+//                 NULL,
+//                 GL_STATIC_COPY);
+
+//    m_fboDepthTex->bind();
+//    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+//    getScene()->getContext()->bindPixelPackBuffer(0);
+//    getScene()->getContext()->bindPixelUnpackBuffer(lBuffer);
+
+//    // faster than TexImage2D
+//    glTexSubImage2D(
+//                GL_TEXTURE_2D,
+//                0,
+//                0,
+//                0,
 //                lFboSize.x(),
 //                lFboSize.y(),
-//				format,
-//				type,
-//				lpBuffer);
+//                m_fboDepthTex.get()->getGLInternalFormat(),
+//                GL_FLOAT,
+//                NULL);
 
-//		/*glTexImage2D(
-//				GL_TEXTURE_2D,
-//				0,
+//    getScene()->getRenderer()->isError();
+//    getScene()->getContext()->bindPixelUnpackBuffer(0);
 
-//				internalFormat,
-//				lVboSize.x(),
-//				lVboSize.y(),
-//				0,
-//				format,
-//				type,
-//				lpBuffer);	*/
-
-//		m_fboDepthTex->unbind();
-
-//		deleteArray(lpBuffer);
-
-    /*pbo->bindUnpackBuffer();
-
-        //glReadPixels(0, 0, lVboSize.x(), lVboSize.y(), GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-        Float *data = pbo->lock(0, 0, PixelBuffer::READ_ONLY);
-        Image out;
-        out.loadBuffer(lVboSize.x(), lVboSize.y(), lVboSize.x()*lVboSize.y()*4, PF_DEPTH_F32, (UInt8*)data);
-        out.save("test.png", Image::PNG);
-
-        pbo->unlock();
-        pbo->unbindUnpackBuffer();*/
-
-    // TODO
-
-    GLuint lBuffer;
-    glGenBuffers(1, &lBuffer);
-    getScene()->getContext()->bindPixelPackBuffer(lBuffer);
-
-    glBufferData(GL_PIXEL_PACK_BUFFER,
-                 sizeof(Float) * lFboSize.x() * lFboSize.y(),
-                 NULL,
-                 GL_STATIC_COPY);
-
-    m_fboDepthTex->bind();
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-
-    getScene()->getContext()->bindPixelPackBuffer(0);
-    getScene()->getContext()->bindPixelUnpackBuffer(lBuffer);
-
-    // faster than TexImage2D
-    glTexSubImage2D(
-                GL_TEXTURE_2D,
-                0,
-                0,
-                0,
-                lFboSize.x(),
-                lFboSize.y(),
-                GL_RED,
-                GL_FLOAT,
-                NULL);
-    /*
-        glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_R8,
-                lVboSize.x(),
-                lVboSize.y(),
-                0,
-                GL_RED,
-                GL_FLOAT,
-                NULL);*/
-    getScene()->getRenderer()->isError();
-
-    getScene()->getContext()->bindPixelUnpackBuffer(0);
-
-    m_fboDepthTex->unbind();
-    glDeleteBuffers(1, &lBuffer);
+//    m_fboDepthTex->unbind();
+//    glDeleteBuffers(1, &lBuffer);
 
 	// Screen rendering
 	Matrix4 lProjection;
@@ -645,24 +588,24 @@ void HeightmapSplatting::draw()
 
 	const Float lpTexCoords[] = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f };
 	const Float lpFullScreenVertices[] = {	0.0f, 0.0f, 0.0f, 1.0f,
-												1.0f, 0.0f, 0.0f, 1.0f,
-												0.0f, 1.0f, 0.0f, 1.0f,
-												1.0f, 1.0f, 0.0f, 1.0f };
+                                            1.0f, 0.0f, 0.0f, 1.0f,
+                                            0.0f, 1.0f, 0.0f, 1.0f,
+                                            1.0f, 1.0f, 0.0f, 1.0f };
 
 	const Float lpZbufferVertices[] = {	0.6f, 0.6f, 0.0f, 1.0f,
-											1.0f, 0.6f, 0.0f, 1.0f,
-											0.6f, 1.0f, 0.0f, 1.0f,
-											1.0f, 1.0f, 0.0f, 1.0f };
+                                        1.0f, 0.6f, 0.0f, 1.0f,
+                                        0.6f, 1.0f, 0.0f, 1.0f,
+                                        1.0f, 1.0f, 0.0f, 1.0f };
 
 	const Float lpColorVertices[] = {	0.6f, 0.1f, 0.0f, 1.0f,
-											1.0f, 0.1f, 0.0f, 1.0f,
-											0.6f, 0.5f, 0.0f, 1.0f,
-											1.0f, 0.5f, 0.0f, 1.0f };
+                                        1.0f, 0.1f, 0.0f, 1.0f,
+                                        0.6f, 0.5f, 0.0f, 1.0f,
+                                        1.0f, 0.5f, 0.0f, 1.0f };
 
 	const Float lpNormalVertices[] = {	0.0f, 0.1f, 0.0f, 1.0f,
-											0.4f, 0.1f, 0.0f, 1.0f,
-											0.0f, 0.5f, 0.0f, 1.0f,
-											0.4f, 0.5f, 0.0f, 1.0f };
+                                        0.4f, 0.1f, 0.0f, 1.0f,
+                                        0.0f, 0.5f, 0.0f, 1.0f,
+                                        0.4f, 0.5f, 0.0f, 1.0f };
 
 	VertexBufferObjf
         lFullScreenVbo(getScene()->getContext()),
@@ -720,8 +663,7 @@ void HeightmapSplatting::draw()
 
 		getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
 
-		if (!isEnabled(OPT_STATIC_LIGHTNING))
-		{
+        if (!isEnabled(OPT_STATIC_LIGHTNING)) {
 			m_texShader.setConstTexture(m_texShader.getUniform(U_TEX_DIFFUSE), m_fboNormalTex.get(), 0);
 
 			lNormalVertexVbo.attribute(m_texShader.getAttribute(A_VEC4_VERTEX), 4, 0, 0);

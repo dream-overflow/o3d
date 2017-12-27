@@ -352,8 +352,9 @@ Bool Skinning::writeToFile(OutStream &os)
 
 Bool Skin::readFromFile(InStream &is)
 {
-    if (!Mesh::readFromFile(is))
+    if (!Mesh::readFromFile(is)) {
         return False;
+    }
 
     deletePtr(m_vertexBlend);
 
@@ -365,30 +366,26 @@ Bool Skin::readFromFile(InStream &is)
          >> m_useHardware
          >> namedBones;
 
-    if (m_useHardware)
+    if (m_useHardware) {
         setGPUMode();
-    else
+    } else {
         setCPUMode();
+    }
 
     // skeleton
     is >> *m_skeleton.get();
 
     setNumBones(numBones);
 
-    if (namedBones)
-    {
+    if (namedBones) {
         m_boneImportName = new String[m_numBones];
-        for (UInt32 i = 0 ; i < m_numBones ; ++i)
-        {
+        for (UInt32 i = 0 ; i < m_numBones ; ++i) {
             is   >> m_boneImportName[i]
                  >> m_refMatrices[i];
         }
-    }
-    else
-    {
+    } else {
         m_boneImportId = new Int32[m_numBones];
-        for (UInt32 i = 0 ; i < m_numBones ; ++i)
-        {
+        for (UInt32 i = 0 ; i < m_numBones ; ++i) {
             is   >> m_boneImportId[i]
                  >> m_refMatrices[i];
         }
@@ -459,12 +456,12 @@ void Skin::setCPUMode()
     m_useHardware = False;
     m_shadableInfo.vertexProgram = Shadable::VP_MESH;
 
-    if (prevUseHardware == m_useHardware)
+    if (prevUseHardware == m_useHardware) {
         return;
+    }
 
     // rebuild materials if necessary
-    for (UInt32 i = 0; i < m_matProfiles.size(); ++i)
-    {
+    for (UInt32 i = 0; i < m_matProfiles.size(); ++i) {
         m_matProfiles[i]->clear();
         m_matProfiles[i]->prepareAndCompile(*this);
     }
@@ -481,12 +478,12 @@ void Skin::setGPUMode()
             Shadable::VP_SKINNING :
             Shadable::VP_RIGGING;
 
-    if (prevUseHardware == m_useHardware)
+    if (prevUseHardware == m_useHardware) {
         return;
+    }
 
     // rebuild materials if necessary
-    for (UInt32 i = 0; i < m_matProfiles.size(); ++i)
-    {
+    for (UInt32 i = 0; i < m_matProfiles.size(); ++i) {
         m_matProfiles[i]->clear();
         m_matProfiles[i]->prepareAndCompile(*this);
     }
@@ -497,41 +494,39 @@ void Skin::setUpModelView()
 {
     O3D_ASSERT(getScene()->getActiveCamera() != nullptr);
 
-    if (!m_node)
-    {
+    if (!m_node) {
         getScene()->getContext()->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
-    }
-    else
+    } else {
         getScene()->getContext()->modelView().set(
             getScene()->getActiveCamera()->getModelviewMatrix() * m_node->getAbsoluteMatrix());
+    }
 }
 
 // update the skin bounding box
 void Skin::update()
 {
     // update the skeleton
-    if (m_skeleton.isValid())
+    if (m_skeleton.isValid()) {
         m_skeleton->update();
+    }
 
     // update the skin
     clearUpdated();
 
-    if (m_isPrecomputed)
-    {
+    if (m_isPrecomputed) {
         // is a bone has moved
         Bool boneUpdated = False;
 
         // do we need to update the bounding volume
-        for (UInt32 i = 0; i < m_numBones; ++i)
-        {
+        for (UInt32 i = 0; i < m_numBones; ++i) {
             boneUpdated |= m_bones[i]->hasUpdated();
-            if (boneUpdated)
+            if (boneUpdated) {
                 break;
+            }
         }
 
         // recompute the bounding box depending of the bones
-        if (boneUpdated && getNode())
-        {
+        if (boneUpdated && getNode()) {
             m_boundingDirty = True;
 
             // recompute skinning at drawing (for CPU mode).
@@ -541,19 +536,20 @@ void Skin::update()
             setUpdated();
         }
 
-        if (m_boundingDirty)
+        if (m_boundingDirty) {
             updateBounding();
+        }
     }
 }
 
 // Update the global bounding volume.
 void Skin::updateBounding()
 {
-    if (!m_boundingDirty)
+    if (!m_boundingDirty) {
         return;
+    }
 
-    if (m_isSkinning && m_meshData && m_meshData->getGeometry() && getNode() && m_isPrecomputed && m_boundingAutoRegen)
-    {
+    if (m_isSkinning && m_meshData && m_meshData->getGeometry() && getNode() && m_isPrecomputed && m_boundingAutoRegen) {
         Float length, radius;
 
         Vector3 vMin;
@@ -566,15 +562,12 @@ void Skin::updateBounding()
         GeometryData::BoundingMode mode = m_meshData->getGeometry()->getBoundingMode();
 
         // use bounding box
-        if ((mode == GeometryData::BOUNDING_BOX) || (mode == GeometryData::BOUNDING_BOXEXT))
-        {
+        if ((mode == GeometryData::BOUNDING_BOX) || (mode == GeometryData::BOUNDING_BOXEXT)) {
             m_boundingBox.destroy();
 
             // and extend it by each bone
-            for (UInt32 i = 0; i < m_numBones; ++i)
-            {
-                if (m_bones[i]->isEndEffector())
-                {
+            for (UInt32 i = 0; i < m_numBones; ++i) {
+                if (m_bones[i]->isEndEffector()) {
                     radius = m_bones[i]->getRadius();
 
                     vMin2.set(-radius,-radius,-radius);
@@ -585,9 +578,7 @@ void Skin::updateBounding()
 
                     m_boundingBox.extend(vMin2);
                     m_boundingBox.extend(vMax2);
-                }
-                else
-                {
+                } else {
                     length = m_bones[i]->getLength();
                     radius = m_bones[i]->getRadius();
 
@@ -606,9 +597,8 @@ void Skin::updateBounding()
             // by the Z component of the bones matrix. And to have 0z for min and length for max.
             m_localBoundingBox = m_boundingBox;
             m_boundingBox = m_boundingBox.transformTo(getNode()->getAbsoluteMatrix());
-        }
-        else if (mode == GeometryData::BOUNDING_SPHERE)
-        {
+
+        } else if (mode == GeometryData::BOUNDING_SPHERE) {
             // use bounding sphere
             BSphere bsphere = m_meshData->getGeometry()->getBSphere();
 
@@ -623,10 +613,8 @@ void Skin::updateBounding()
                     Limits<Float>::min());
 
             // and extend it by each bone
-            for (UInt32 i = 0; i < m_numBones; ++i)
-            {
-                if (m_bones[i]->isEndEffector())
-                {
+            for (UInt32 i = 0; i < m_numBones; ++i) {
+                if (m_bones[i]->isEndEffector()) {
                     radius = m_bones[i]->getRadius();
 
                     vMin2.set(-radius,-radius,-radius);
@@ -634,9 +622,7 @@ void Skin::updateBounding()
 
                     vMax2.set(radius,radius,radius);
                     vMax2 += m_bones[i]->getAbsoluteMatrix().getTranslation() - getNode()->getAbsoluteMatrix().getTranslation();
-                }
-                else
-                {
+                } else {
                     length = m_bones[i]->getLength();
                     radius = m_bones[i]->getRadius();
 
@@ -662,12 +648,9 @@ void Skin::updateBounding()
         }
 
         m_boundingDirty = False;
-    }
-    else
-    {
+    } else {
         Mesh::updateBounding();
     }
-
 }
 
 // Get the drawing type
@@ -679,29 +662,30 @@ UInt32 Skin::getDrawType() const
 // Draw the skin
 void Skin::draw(const DrawInfo &drawInfo)
 {
-    if (!getActivity())
+    if (!getActivity()) {
         return;
+    }
 
     // mesh data ?
-    if (!m_meshData || !m_meshData->getGeometry())
+    if (!m_meshData || !m_meshData->getGeometry()) {
         return;
+    }
 
     // draw mesh ?
-    if (!getScene()->getDrawObject((Scene::DrawObjectType)getDrawType()))
+    if (!getScene()->getDrawObject((Scene::DrawObjectType)getDrawType())) {
         return;
+    }
 
     // if to recompute skinning is necessary
-    if (m_recompute)
-    {
+    if (m_recompute) {
         // pre-drawing initialization (made once time)
-        if (!m_isPrecomputed)
+        if (!m_isPrecomputed) {
             preComputeRefMatrices();
+        }
 
-        if (m_isSkinning)
-        {
+        if (m_isSkinning) {
             // compute news vertices transform matrices
-            for (UInt32 i = 0; i < m_numBones; ++i)
-            {
+            for (UInt32 i = 0; i < m_numBones; ++i) {
                 // Use of Mult and not * because it is faster.
                 m_bones[i]->getAbsoluteMatrix().mult(m_precomputedRefMatrices[i], m_skinMatrices[i]);
             }
@@ -709,25 +693,24 @@ void Skin::draw(const DrawInfo &drawInfo)
     }
 
     // draw symbolics
-    if (drawInfo.pass == DrawInfo::AMBIENT_PASS)
-    {
+    if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
         drawSymbolics();
 
         // and skeleton
-        if (m_skeleton.isValid())
+        if (m_skeleton.isValid()) {
             m_skeleton->draw(drawInfo);
-    }
-    // in picking pass draw the skeleton
-    else if (drawInfo.pass == DrawInfo::PICKING_PASS)
-    {
-        // skeleton
-        if (m_skeleton.isValid())
+        }
+    } else if (drawInfo.pass == DrawInfo::PICKING_PASS) {
+        // in picking pass draw the skeleton
+        if (m_skeleton.isValid()) {
             m_skeleton->draw(drawInfo);
+        }
     }
 
     // visibility is for the skin
-    if (!getVisibility())
+    if (!getVisibility()) {
         return;
+    }
 
     // distance of the mesh from the camera
     Float squaredDistance = getDistanceFrom(
@@ -743,12 +726,10 @@ void Skin::draw(const DrawInfo &drawInfo)
     // setup modelview matrix for this mesh
     setUpModelView();
 
-    for (UInt32 i = 0; i < numProfiles; ++i)
-    {
+    for (UInt32 i = 0; i < numProfiles; ++i) {
         profile = m_matProfiles[i];
 
-        if (profile && profile->getActivity())
-        {
+        if (profile && profile->getActivity()) {
             MaterialTechnique *technique = profile->getBestTechnique(squaredDistance);
 
             // bind the face array for the current material
@@ -756,15 +737,16 @@ void Skin::draw(const DrawInfo &drawInfo)
             m_faceArrayId = i;
 
             // If picking pass, force in internal array mode
-            if (drawInfo.pass == DrawInfo::PICKING_PASS)
+            if (drawInfo.pass == DrawInfo::PICKING_PASS) {
                 m_shadableInfo.faceArray = nullptr;
+            }
 
             // compute the skinning (CPU pass if non GPU mode) according to the bound face array
-            if ((!m_useHardware/* || material.needsSorting()*/) && m_isSkinning)
-            {
+            if ((!m_useHardware/* || material.needsSorting()*/) && m_isSkinning) {
                 // create the vertex blend the first time if necessary
-                if (!m_vertexBlend)
+                if (!m_vertexBlend) {
                     m_vertexBlend = m_meshData->getGeometry()->createVertexBlend();
+                }
 
                 // Bind the the vertex blender
                 // It must not be unbound while the complete rendering is not finished.
@@ -774,23 +756,22 @@ void Skin::draw(const DrawInfo &drawInfo)
 
                 // perform the CPU skinning
                 prepareDrawing();
-            }
-            else
-            {
+            } else {
                 // if skinning is disabled or GPU skinning, we use the original vertices data
                 m_meshData->getGeometry()->bindVertexBlender(nullptr);
             }
 
             // process the technique
-            if (technique)
+            if (technique) {
                 technique->processMaterial(*this, this, this, drawInfo);
+            }
 
             // draw the symbolic only on AMBIENT_PASS
-            if (drawInfo.pass == DrawInfo::AMBIENT_PASS)
-            {
+            if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
                 // processing the rendering of local space immediately
-                if (getScene()->getDrawObject(Scene::DRAW_LOCAL_SPACE))
+                if (getScene()->getDrawObject(Scene::DRAW_LOCAL_SPACE)) {
                     m_meshData->getGeometry()->drawLocalSpace();
+                }
             }
         }
     }
@@ -800,44 +781,36 @@ void Skin::draw(const DrawInfo &drawInfo)
 
 void Skin::processAllFaces(Shadable::ProcessingPass pass)
 {
-    if (!m_meshData)
+    if (!m_meshData) {
         return;
+    }
 
-    if (pass == Shadable::PREPARE_GEOMETRY)
-    {
+    if (pass == Shadable::PREPARE_GEOMETRY) {
         // bind the external face array
-        if (isExternalFaceArray())
-        {
-            UInt32 first,last;
-            FaceArray *faceArray = getFaceArrayToProcess(first,last);
+        if (isExternalFaceArray()) {
+            UInt32 first, last;
+            FaceArray *faceArray = getFaceArrayToProcess(first, last);
 
-            if (faceArray)
-            {
+            if (faceArray) {
                 // bind an external face array before process the CPU skinning
                 m_meshData->getGeometry()->bindExternalFaceArray(faceArray);
             }
         }
-    }
-    else if (pass == Shadable::PROCESS_GEOMETRY)
-    {
+    } else if (pass == Shadable::PROCESS_GEOMETRY) {
         // external face array
-        if (isExternalFaceArray())
-        {
+        if (isExternalFaceArray()) {
             UInt32 first,last;
             FaceArray *faceArray = getFaceArrayToProcess(first,last);
 
-            if (faceArray)
-            {
+            if (faceArray) {
                 // draw the external face array
                 m_meshData->getGeometry()->drawPart(faceArray, first, last);
             }
 
             // and reset for the next process
             useInternalFaceArray();
-        }
-        // internal face array
-        else
-        {
+        } else {
+            // internal face array
             // draw the bound face array
             m_meshData->getGeometry()->draw();
         }
@@ -848,20 +821,20 @@ void Skin::processAllFaces(Shadable::ProcessingPass pass)
 void Rigging::prepareDrawing()
 {
     // software rigging
-    if (m_shadableInfo.activeVertexProgram == Shadable::VP_MESH)
-    {
-        if (!m_recompute)
+    if (m_shadableInfo.activeVertexProgram == Shadable::VP_MESH) {
+        if (!m_recompute) {
             return;
+        }
 
         O3D_ASSERT(m_vertexBlend);
 
-        if (m_isSkinning)
-        {
+        if (m_isSkinning) {
             // we don't process interleaved vertex blender object (only serialized)
             // when dst is interlveaded, in this case the vbo update is not trivial
             // and should be done once per draw with the full or adapted range
-            if (m_vertexBlend->isInterleaved())
+            if (m_vertexBlend->isInterleaved()) {
                 return;
+            }
 
             // take and lock all needed data from submesh blender
             Float *dstVertices = m_vertexBlend->getVertices().getData().getData();
@@ -882,12 +855,14 @@ void Rigging::prepareDrawing()
             UInt32 lastIndice = m_meshData->getGeometry()->getBoundFaceArray()->getMaxVertex();
 
             // missing arrays
-            if (!dstVertices || !srcRigging || !srcVertices)
-            {
-                if (srcRigging)
+            if (!dstVertices || !srcRigging || !srcVertices) {
+                if (srcRigging) {
                     m_meshData->getGeometry()->getElement(V_RIGGING_ARRAY)->unlockArray();
-                if (srcVertices)
+                }
+
+                if (srcVertices) {
                     m_meshData->getGeometry()->getVertices()->unlockArray();
+                }
 
                 return;
             }
@@ -898,8 +873,7 @@ void Rigging::prepareDrawing()
             srcRigging += firstIndice * riggingSrcStride;
 
             // process with normal
-            if (m_meshData->getGeometry()->isNormals())
-            {
+            if (m_meshData->getGeometry()->isNormals()) {
                 const Float *srcNormals = m_meshData->getGeometry()->getNormals()->lockArray(0, 0);
                 Float *dstNormals = m_vertexBlend->getNormals().getData().getData();
 
@@ -912,12 +886,10 @@ void Rigging::prepareDrawing()
                 srcNormals += firstIndice * normalSrcStride;
 
                 // rigging process
-                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex)
-                {
+                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex) {
                     Int32 bone = (Int32)srcRigging[0];
 
-                    if (bone != -1)
-                    {
+                    if (bone != -1) {
                         // vertex
                         position.set(srcVertices);
 
@@ -931,9 +903,7 @@ void Rigging::prepareDrawing()
 
                         normal = matrix.rotate(normal);
                         memcpy(dstNormals, normal.getData(), 3*sizeof(Float));
-                    }
-                    else
-                    {
+                    } else {
                         memcpy(dstVertices, srcVertices, 3*sizeof(Float));
                         memcpy(dstNormals, srcNormals, 3*sizeof(Float));
                     }
@@ -954,17 +924,13 @@ void Rigging::prepareDrawing()
                         m_vertexBlend->getNormals().getData().getData() + firstIndice * normalDstStride,
                         firstIndice,
                         lastIndice - firstIndice + 1);
-            }
-            // process only vertices
-            else
-            {
+            } else {
+                // process only vertices
                 // rigging process
-                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex)
-                {
+                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex) {
                     Int32 bone = (Int32)srcRigging[0];
 
-                    if (bone != -1)
-                    {
+                    if (bone != -1) {
                         // vertex
                         position.set(srcVertices);
 
@@ -972,9 +938,7 @@ void Rigging::prepareDrawing()
 
                         position = matrix * position;
                         memcpy(dstVertices, position.getData(), 3*sizeof(Float));
-                    }
-                    else
-                    {
+                    } else {
                         memcpy(dstVertices, srcVertices, 3*sizeof(Float));
                     }
 
@@ -1001,20 +965,20 @@ void Rigging::prepareDrawing()
 void Skinning::prepareDrawing()
 {
     // software skinning
-    if (m_shadableInfo.activeVertexProgram == Shadable::VP_MESH)
-    {
-        if (!m_recompute)
+    if (m_shadableInfo.activeVertexProgram == Shadable::VP_MESH) {
+        if (!m_recompute) {
             return;
+        }
 
         O3D_ASSERT(m_vertexBlend);
 
-        if (m_isSkinning)
-        {
+        if (m_isSkinning) {
             // we don't process interleaved vertex blender object (only serialized)
             // when dst is interlveaded, in this case the vbo update is not trivial
             // and should be done once per draw with the full or adapted range
-            if (m_vertexBlend->isInterleaved())
+            if (m_vertexBlend->isInterleaved()) {
                 return;
+            }
 
             // take and lock all needed data from submesh blender
             Float *dstVertices = m_vertexBlend->getVertices().getData().getData();
@@ -1041,14 +1005,16 @@ void Skinning::prepareDrawing()
             UInt32 lastIndice = m_meshData->getGeometry()->getBoundFaceArray()->getMaxVertex();
 
             // missing arrays
-            if (!dstVertices || !srcSkinning || !srcWeighting || !srcVertices)
-            {
-                if (srcSkinning)
+            if (!dstVertices || !srcSkinning || !srcWeighting || !srcVertices) {
+                if (srcSkinning) {
                     m_meshData->getGeometry()->getElement(V_SKINNING_ARRAY)->unlockArray();
-                if (srcWeighting)
+                }
+                if (srcWeighting) {
                     m_meshData->getGeometry()->getElement(V_WEIGHTING_ARRAY)->unlockArray();
-                if (srcVertices)
+                }
+                if (srcVertices) {
                     m_meshData->getGeometry()->getVertices()->unlockArray();
+                }
 
                 return;
             }
@@ -1060,8 +1026,7 @@ void Skinning::prepareDrawing()
             srcWeighting += firstIndice * weightingSrcStride;
 
             // process with normal
-            if (m_meshData->getGeometry()->isNormals())
-            {
+            if (m_meshData->getGeometry()->isNormals()) {
                 const Float *srcNormals = m_meshData->getGeometry()->getNormals()->lockArray(0, 0);
                 Float *dstNormals = m_vertexBlend->getNormals().getData().getData();
 
@@ -1074,30 +1039,27 @@ void Skinning::prepareDrawing()
                 srcNormals += firstIndice * normalSrcStride;
 
                 // skinning process
-                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex)
-                {
+                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex) {
                     matrix.zero();
 
                     boneCount = 0;
 
                     // compute the matrix (matrix blending)
-                    while (boneCount < 4)
-                    {
-                        if ((boneId = (Int32)srcSkinning[boneCount]) != -1)
-                        {
+                    while (boneCount < 4) {
+                        if ((boneId = (Int32)srcSkinning[boneCount]) != -1) {
                             scale = srcWeighting[boneCount];
-                            if (scale > 0.f)
+                            if (scale > 0.f) {
                                 matrix += m_skinMatrices[boneId] * scale;
+                            }
 
                             ++boneCount;
-                        }
-                        else
+                        } else {
                             break;
+                        }
                     }
 
                     // compute the new vertex and normals only if one or more bone affect it
-                    if (boneCount != 0)
-                    {
+                    if (boneCount != 0) {
                         // vertex
                         position.set(srcVertices);
 
@@ -1109,10 +1071,8 @@ void Skinning::prepareDrawing()
 
                         normal = matrix.rotate(normal);
                         memcpy(dstNormals, normal.getData(), 3*sizeof(Float));
-                    }
-                    // otherwise simply copy
-                    else
-                    {
+                    } else {
+                        // otherwise simply copy
                         memcpy(dstVertices, srcVertices, 3*sizeof(Float));
                         memcpy(dstNormals, srcNormals, 3*sizeof(Float));
                     }
@@ -1134,44 +1094,37 @@ void Skinning::prepareDrawing()
                         m_vertexBlend->getNormals().getData().getData() + firstIndice * normalDstStride,
                         firstIndice,
                         lastIndice - firstIndice + 1);
-            }
-            // process only vertices
-            else
-            {
+            } else {
+                // process only vertices
                 // skinning process
-                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex)
-                {
+                for (UInt32 curVertex = firstIndice; curVertex <= lastIndice; ++curVertex) {
                     matrix.zero();
 
                     boneCount = 0;
 
                     // compute the matrix (matrix blending)
-                    while (boneCount < 4)
-                    {
-                        if ((boneId = (Int32)srcSkinning[boneCount]) != -1)
-                        {
+                    while (boneCount < 4) {
+                        if ((boneId = (Int32)srcSkinning[boneCount]) != -1) {
                             scale = srcWeighting[boneCount];
-                            if (scale > 0.f)
+                            if (scale > 0.f) {
                                 matrix += m_skinMatrices[boneId] * scale;
+                            }
 
                             ++boneCount;
-                        }
-                        else
+                        } else {
                             break;
+                        }
                     }
 
                     // compute the new vertex and normals only if one or more bone affect it
-                    if (boneCount != 0)
-                    {
+                    if (boneCount != 0) {
                         // vertex
                         position.set(srcVertices);
 
                         position = matrix * position;
                         memcpy(dstVertices, position.getData(), 3*sizeof(Float));
-                    }
-                    // otherwise simply copy
-                    else
-                    {
+                    } else {
+                        // otherwise simply copy
                         memcpy(dstVertices, srcVertices, 3*sizeof(Float));
                     }
 
@@ -1196,7 +1149,6 @@ void Skinning::prepareDrawing()
         }
     }
 }
-
 
 //---------------------------------------------------------------------------------------
 // ClothManager
@@ -1284,4 +1236,3 @@ Bool ClothManager::exportClothModels(const String& path)
 //{
 //    return True;
 //}
-

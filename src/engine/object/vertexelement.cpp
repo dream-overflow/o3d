@@ -88,61 +88,101 @@ UInt32 VertexBufferBuilder::addData(
 // Create the VBO.
 void VertexBufferBuilder::create(VertexBufferObjf &vbo)
 {
-	vbo.create(m_size, True);
+    vbo.create(m_size, True);
 
     if (m_interleave) {
-		UInt32 numElt = m_datas.begin()->numElt;
-		UInt32 dstOfs = 0;
+        UInt32 numElt = m_datas.begin()->numElt;
+        UInt32 dstOfs = 0;
 
-		Float *vboData = vbo.lock(0, 0, VertexBuffer::WRITE_ONLY);
+        // depending if map buffer is available or not it is used for interleaved generation
+        // but also on differents vertex elements, but at this state elements are not created
+        // so locking does not perform buffer mapping
+        if (glMapBuffer) {
+            Float *vboData = vbo.lock(0, 0, VertexBuffer::WRITE_ONLY);
 
-        for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
-            if (it->vertexElement) {
-				it->lockedData = it->vertexElement->lockArray(0, 0);
-            }
-		}
-
-		// interleave data into the dst VBO
-        for (UInt32 s = 0; s < numElt; ++s) {
             for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
-				memcpy(
-						vboData + dstOfs,
-						it->lockedData + it->eltSize * s,
-						it->eltSize * sizeof(Float));
+                if (it->vertexElement) {
+                    it->lockedData = it->vertexElement->lockArray(0, 0);
+                }
+            }
 
-				dstOfs += it->eltSize;
-			}
-		}
+            // interleave data into the dst VBO
+            for (UInt32 s = 0; s < numElt; ++s) {
+                for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+                    memcpy(
+                                vboData + dstOfs,
+                                it->lockedData + it->eltSize * s,
+                                it->eltSize * sizeof(Float));
 
-        for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
-            if (it->vertexElement) {
-				it->vertexElement->unlockArray();
+                    dstOfs += it->eltSize;
+                }
+            }
 
-				it->vertexElement->create(vbo, it->offset, m_stride, it->keepLocalData);
-			}
-		}
+            for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+                if (it->vertexElement) {
+                    it->vertexElement->unlockArray();
 
-		vbo.unlock();
+                    it->vertexElement->create(vbo, it->offset, m_stride, it->keepLocalData);
+                }
+            }
+
+            vbo.unlock();
+        } else {
+            // use global data buffer
+            SmartArrayFloat data(m_size);
+
+            UInt32 numElt = m_datas.begin()->numElt;
+            UInt32 dstOfs = 0;
+
+            Float *vboData = data.getData();
+
+            for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+                if (it->vertexElement) {
+                    it->lockedData = it->vertexElement->lockArray(0, 0);
+                }
+            }
+
+            // interleave data into the dst VBO
+            for (UInt32 s = 0; s < numElt; ++s) {
+                for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+                    memcpy(vboData + dstOfs,
+                           it->lockedData + it->eltSize * s,
+                           it->eltSize * sizeof(Float));
+
+                    dstOfs += it->eltSize;
+                }
+            }
+
+            for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
+                if (it->vertexElement) {
+                    it->vertexElement->unlockArray();
+
+                    it->vertexElement->create(vbo, it->offset, m_stride, it->keepLocalData);
+                }
+            }
+
+            vbo.update(data.getData(), 0, data.getNumElt());
+        }
     } else {
         for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
             if (it->vertexElement) {
-				const Float *data = it->vertexElement->lockArray(0, 0);
+                const Float *data = it->vertexElement->lockArray(0, 0);
 
-				vbo.update(
-						data,
-						it->offset,
-						it->vertexElement->getNumElements()*it->vertexElement->getElementSize());
+                vbo.update(
+                            data,
+                            it->offset,
+                            it->vertexElement->getNumElements()*it->vertexElement->getElementSize());
 
-				it->vertexElement->unlockArray();
+                it->vertexElement->unlockArray();
 
-				it->vertexElement->create(vbo, it->offset, 0, it->keepLocalData);
+                it->vertexElement->create(vbo, it->offset, 0, it->keepLocalData);
             } else {
-				vbo.update(it->data.getData(), it->offset, it->data.getNumElt());
-			}
-		}
-	}
+                vbo.update(it->data.getData(), it->offset, it->data.getNumElt());
+            }
+        }
+    }
 
-	vbo.unbindBuffer();
+    vbo.unbindBuffer();
 }
 
 //---------------------------------------------------------------------------------------

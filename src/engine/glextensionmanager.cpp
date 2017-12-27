@@ -394,6 +394,8 @@ PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC glCheckNamedFramebufferStatus = nullptr;
 PFNGLGETNAMEDFRAMEBUFFERPARAMETERIVPROC glGetNamedFramebufferParameteriv = nullptr;
 PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC glGetNamedFramebufferAttachmentParameteriv = nullptr;
 
+PFNGLGETTEXTURESUBIMAGEPROC glGetTextureSubImage = nullptr;
+
 #endif // O3D_GL_VERSION_4_5
 
 #ifdef O3D_GL_VERSION_4_6
@@ -1345,6 +1347,8 @@ void GLExtensionManager::getGLFunctions()
 //    PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC glCheckNamedFramebufferStatus = nullptr;
 //    PFNGLGETNAMEDFRAMEBUFFERPARAMETERIVPROC glGetNamedFramebufferParameteriv = nullptr;
 //    PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC glGetNamedFramebufferAttachmentParameteriv = nullptr;
+
+    glGetTextureSubImage = (PFNGLGETTEXTURESUBIMAGEPROC)GL::getProcAddress("glGetTextureSubImage");
 
 #endif // O3D_GL_VERSION_4_5
 

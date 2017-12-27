@@ -525,10 +525,9 @@ void FaceArrayUInt32::setFaces(
 	m_faces = faces;
 	m_numElements = faces.getNumElt();
 
-	if ((minIndex < 0) || (maxIndex < 0))
+    if ((minIndex < 0) || (maxIndex < 0)) {
 		computeMinMax(m_faces.getData(), m_faces.getNumElt());
-	else
-	{
+    } else {
 		m_minVertex = minIndex;
 		m_maxVertex = maxIndex;
 	}
@@ -539,11 +538,11 @@ void FaceArrayUInt32::setFaces(
 // Create the data for GPU
 Bool FaceArrayUInt32::create()
 {
-	if (!m_isDirty)
+    if (!m_isDirty) {
 		return True;
+    }
 
-	if (!m_faces.getData())
-	{
+    if (!m_faces.getData()) {
 		m_minVertex = m_maxVertex = 0;
 		m_numElements = 0;
 		m_faces.releaseCheckAndDelete();
@@ -555,38 +554,37 @@ Bool FaceArrayUInt32::create()
 
 	m_numElements = m_faces.getNumElt();
 
-	if (m_minVertex > m_maxVertex)
+    if (m_minVertex > m_maxVertex) {
 		O3D_ERROR(E_InvalidParameter("Minimal vertex index must be lesser than maximal vertex index"));
+    }
 
 	//ComputeEdgeInt(m_faces.getData());
 
 	m_vbo.create(m_faces.getNumElt(), m_storage, m_faces.getData());
 	m_faces.releaseCheckAndDelete();
 
-	if (m_vbo.isExist())
-	{
+    if (m_vbo.isExist()) {
 		m_isDirty = False;
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 // Create the data for GPU according to the specified number of elements.
 Bool FaceArrayUInt32::create(UInt32 numElt)
 {
-	m_vbo.create(numElt, m_storage, NULL);
-	m_faces.releaseCheckAndDelete(); // a previous set...
+    m_vbo.create(numElt, m_storage, nullptr);
+    m_faces.releaseCheckAndDelete();  // a previous set...
 
 	m_numElements = numElt;
 
-	if (m_vbo.isExist())
-	{
+    if (m_vbo.isExist()) {
 		m_isDirty = False;
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 // Directly set and create from a data array.
@@ -598,37 +596,39 @@ Bool FaceArrayUInt32::create(
 {
 	O3D_ASSERT(numElt > 0);
 
-	if (!faces)
+    if (!faces) {
 		O3D_ERROR(E_InvalidParameter("Data array must be defined"));
-	if (!numElt)
-		O3D_ERROR(E_InvalidParameter("Number of face an indices (elements) must be greater than zero"));
+    }
 
-	if (minIndex > maxIndex)
+    if (!numElt) {
+		O3D_ERROR(E_InvalidParameter("Number of face an indices (elements) must be greater than zero"));
+    }
+
+    if (minIndex > maxIndex) {
 		O3D_ERROR(E_InvalidParameter("Minimal vertex index must be lesser than maximal vertex index"));
+    }
 
 	m_numElements = numElt;
 
 	// Compute the min/max vertex indices if necessary
-	if ((minIndex < 0) || (maxIndex < 0))
+    if ((minIndex < 0) || (maxIndex < 0)) {
 		computeMinMax(faces, numElt);
-	else
-	{
+    } else {
 		m_minVertex = minIndex;
 		m_maxVertex = maxIndex;
 	}
 
-	//ComputeEdgeInt(faces);
+    // computeEdgeInt(faces);
 
 	m_vbo.create(numElt, m_storage, faces);
 	m_faces.releaseCheckAndDelete(); // a previous set...
 
-	if (m_vbo.isExist())
-	{
+    if (m_vbo.isExist()) {
 		m_isDirty = False;
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 // Directly update a part from a data array.
@@ -639,19 +639,25 @@ void FaceArrayUInt32::update(
 {
 	O3D_ASSERT(numElt > 0);
 
-	if (!m_vbo.isExist())
+    if (!m_vbo.isExist()) {
 		O3D_ERROR(E_InvalidPrecondition("Must be previously created"));
+    }
 
-	if (!faces)
+    if (!faces) {
 		O3D_ERROR(E_InvalidParameter("Data array must be defined"));
-	if (!numElt)
+    }
+
+    if (!numElt) {
 		O3D_ERROR(E_InvalidParameter("Number of face an indices (elements) must be greater than zero"));
+    }
 
-	if (numElt+offset > m_numElements)
+    if (numElt+offset > m_numElements) {
 		O3D_ERROR(E_InvalidParameter("Number of face to update must be lesser than current number of elements"));
+    }
 
-	if (offset >= m_numElements)
+    if (offset >= m_numElements) {
 		O3D_ERROR(E_InvalidParameter("Offset must be lesser than current number of elements"));
+    }
 
 	m_vbo.update(faces, offset, numElt);
 	m_isDirty = False;
@@ -663,37 +669,41 @@ UInt8* FaceArrayUInt32::lockArray(
 		UInt32 size,
 		VertexBuffer::LockMode flags)
 {
-	if (m_faces.getData())
+    if (m_faces.getData()) {
 		return reinterpret_cast<UInt8*>(m_faces.getData() + offset);
-	else if (m_vbo.isExist())
+    } else if (m_vbo.isExist()) {
 		return reinterpret_cast<UInt8*>(m_vbo.lock(offset, size, flags));
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Unlock the data array
 void FaceArrayUInt32::unlockArray()
 {
-	if (m_vbo.isExist() && m_vbo.isLocked())
+    if (m_vbo.isExist() && m_vbo.isLocked()) {
 		m_vbo.unlock();
+    }
 }
 
 // Get memory size
 UInt32 FaceArrayUInt32::getCapacity() const
 {
-	if (m_faces.isValid())
+    if (m_faces.isValid()) {
 		return m_faces.getNumElt() << 2;
-	else if (m_vbo.isExist())
+    } else if (m_vbo.isExist()) {
 		return m_vbo.getCount() << 2;
-	else
+    } else {
 		return 0;
+    }
 }
 
 // Bind the data array 
 void FaceArrayUInt32::bindArray()
 {
-	if (m_vbo.isExist())
+    if (m_vbo.isExist()) {
 		return m_vbo.bindBuffer();
+    }
 }
 
 // Draw using the data array

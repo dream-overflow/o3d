@@ -1,6 +1,8 @@
 // fragment program
 #version 320 es
 
+precision highp float;
+
 uniform float u_invNoiseScale;						// Ex: a value of 2.0 means the noise texture size is equal to the half distance between two consecutive vertices
 
 uniform sampler2D u_colormap;

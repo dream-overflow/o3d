@@ -1301,7 +1301,7 @@ O3D_GLAPI PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC glGetNamedFramebuffe
 //O3D_GLAPI glGetQueryBufferObjectui64v;
 //O3D_GLAPI glGetQueryBufferObjectuiv;
 //O3D_GLAPI glMemoryBarrierByRegion;
-//O3D_GLAPI glGetTextureSubImage;
+O3D_GLAPI PFNGLGETTEXTURESUBIMAGEPROC glGetTextureSubImage;
 //O3D_GLAPI glGetCompressedTextureSubImage;
 //O3D_GLAPI GLenum APIENTRY glGetGraphicsResetStatus;
 //O3D_GLAPI glGetnCompressedTexImage;
