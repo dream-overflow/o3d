@@ -194,7 +194,6 @@ Scene::~Scene()
 	deletePtr(m_specialEffectsManager);
 	deletePtr(m_sceneObjectManager);
 	deletePtr(m_meshDataManager);
-	deletePtr(m_shaderManager);
 	deletePtr(m_viewPortManager);
 	deletePtr(m_clothManager);
 	deletePtr(m_primitiveManager);
@@ -202,8 +201,9 @@ Scene::~Scene()
 
 	deletePtr(m_audio);
 
-	// delete misc managers
 	deletePtr(m_alphaPipeline);
+    deletePtr(m_shaderManager);
+
 	deletePtr(m_frustum);
 	deletePtr(m_frameManager);
 

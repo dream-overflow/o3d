@@ -186,6 +186,8 @@ private:
     Version m_activeVersion;        //!< Active version.
 	String m_currentBrowseFullPath;
 
+    T_StringList m_assets;          //!< Mounted assets
+
     //! Read a path containing shader with a dedicated manifest file and specific structure.
     UInt32 readShaderResource(InStream &is);
 

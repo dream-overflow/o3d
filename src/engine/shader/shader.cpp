@@ -827,7 +827,7 @@ void Shader::removeProgram(ProgramType _programType, const String & _programName
 
 void Shader::destroy()
 {
-	m_programName.destroy();
+    m_programName.destroy();
 	m_name.destroy();
 
     for (IT_ProgramArray it = m_vertexProgramArray.begin(); it != m_vertexProgramArray.end(); it++) {

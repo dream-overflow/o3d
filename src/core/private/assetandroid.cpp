@@ -268,13 +268,16 @@ void AssetAndroid::searchFirstFile(const String &path)
     // only for the first level, listing is only possible on files...
     while ((filename = AAssetDir_getNextFileName(assetDir)) != nullptr) {
         AssetToken *entry = new AssetToken;
-        entry->FileName = lPath + '/' + filename;
+        entry->FileName = (lPath.isValid() ? (lPath + '/' + filename) : filename);
         entry->FileType = FILE_FILE;
 
-        m_fileList.push_back(entry);
+        // add only if not already listed
+        if (m_fileMap.find(String("/") + entry->FileName) == m_fileMap.end()) {
+            m_fileList.push_back(entry);
 
-        // to file map
-        m_fileMap[String("/") + entry->FileName] = (Int32)(m_fileList.size() - 1);
+            // to file map
+            m_fileMap[String("/") + entry->FileName] = (Int32)(m_fileList.size() - 1);
+        }
     }
 
     AAssetDir_close(assetDir);

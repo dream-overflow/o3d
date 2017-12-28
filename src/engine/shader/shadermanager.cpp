@@ -98,6 +98,8 @@ ShaderManager::ShaderManager(
             FileManager::instance()->mountAsset("zip://", basePath.makeFullFileName(name + ".zip"));
             addPath(basePath.makeFullPathName(name));
             valid = True;
+
+            m_assets.push_back(basePath.makeFullFileName(name + ".zip"));
     }
 
     if (!valid) {
@@ -119,10 +121,19 @@ void ShaderManager::destroy()
     for (IT_ProgramMap it = m_programs.begin(); it != m_programs.end(); ++it) {
 		deletePtr(it->second);
 	}
+    m_programs.clear();
 
+    // destroy shaders
 	TemplateManager<Shader>::destroy();
 
-	m_searchPathList.clear();
+    m_searchPathList.clear();
+
+    // unmount assets of shaders
+    for (IT_StringList it = m_assets.begin(); it != m_assets.end(); ++it) {
+        FileManager::instance()->umountAsset(*it);
+    }
+
+    m_assets.clear();
 }
 
 // Add a path containing programs to browse for.
@@ -290,8 +301,7 @@ void ShaderManager::deleteShader(Int32 shaderId)
             return;
 		}
 
-		O3D_ERROR(E_InvalidParameter(
-                "Shader appears to be in the manager but it doesn't match"));
+        O3D_ERROR(E_InvalidParameter("Shader appears to be in the manager but it doesn't match"));
     } else {
 		O3D_ERROR(E_InvalidParameter("Invalid shader identifier"));
     }
