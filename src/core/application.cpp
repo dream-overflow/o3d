@@ -33,13 +33,20 @@ String *Application::ms_appsName = nullptr;
 String *Application::ms_appsPath = nullptr;
 Application::T_AppWindowMap Application::ms_appWindowMap;
 _DISP Application::ms_display = NULL_DISP;
+Activity *Application::ms_activity = nullptr;
 void* Application::ms_app = nullptr;
+Int32 Application::ms_appState = 0;
 AppWindow* Application::ms_currAppWindow = nullptr;
 CommandLine *Application::ms_appsCommandLine = nullptr;
 Bool Application::ms_init = False;
 Bool Application::ms_displayInit = False;
 StringMap<BaseObject*> *ms_mappedObject = nullptr;
 Bool Application::ms_displayError = False;
+
+Activity::~Activity()
+{
+
+}
 
 // Objective-3D initialization
 void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
@@ -48,6 +55,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
 		return;
     }
 
+    ms_appState = 0;
     ms_app = app;
     ms_mappedObject = new StringMap<BaseObject*>;
 
@@ -95,6 +103,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
     // only if display
     if (settings.useDisplay) {
         apiInitPrivate();
+        ms_displayInit = True;
 
         GL::init();
 
@@ -119,6 +128,8 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
 // Objective-3D terminate
 void Application::quit()
 {
+    deletePtr(ms_activity);
+
     if (!ms_init) {
 		return;
     }
@@ -255,6 +266,11 @@ void Application::removeAppWindow(_HWND hWnd)
     }
 }
 
+Activity *Application::getActivity()
+{
+    return ms_activity;
+}
+
 AppWindow* Application::getAppWindow(_HWND window)
 {
 	IT_AppWindowMap it = ms_appWindowMap.find(window);
@@ -319,9 +335,62 @@ BaseObject *Application::getObject(const String &name)
     return nullptr;
 }
 
+void Application::setState(Int32 state)
+{
+    ms_appState = state;
+}
+
+Int32 Application::getState()
+{
+    return ms_appState;
+}
+
+#ifndef O3D_ANDROID
+Int32 Application::startPrivate()
+{
+    if (ms_activity) {
+        return ms_activity->onStart();
+    } else {
+        return 0;
+    }
+}
+
+Int32 Application::stopPrivate()
+{
+    if (ms_activity) {
+        return ms_activity->onStop();
+    } else {
+        return 0;
+    }
+}
+#endif
+
+void Application::setActivity(Activity *activity)
+{
+    if (ms_activity) {
+        delete ms_activity;
+    }
+
+    ms_activity = activity;
+}
+
+void Application::start()
+{
+    if (startPrivate() != 0) {
+        // @todo need exit now
+    }
+}
+
 void Application::run(Bool runOnce)
 {
     runPrivate(runOnce);
+}
+
+void Application::stop()
+{
+    if (stopPrivate() != 0) {
+        // @todo need exit now
+    }
 }
 
 void Application::pushEvent(Application::EventType type, _HWND hWnd, void *data)

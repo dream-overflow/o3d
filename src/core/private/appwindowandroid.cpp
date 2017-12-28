@@ -310,7 +310,13 @@ void AppWindow::destroy()
         EventData event;
         processEvent(EVT_DESTROY, event);
 
-        // @todo
+        // destroy surface
+        if (GL::getImplementation() == GL::IMPL_EGL_15) {
+        #ifdef O3D_EGL
+            EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay()));
+            EGL::destroySurface(eglDisplay, reinterpret_cast<EGLSurface>(m_HDC));
+        #endif
+        }
 
         m_hWnd = NULL_HWND;
         m_HDC = NULL_HDC;

@@ -20,6 +20,45 @@ namespace o3d {
 class AppWindow;
 
 /**
+ * @brief Activity interface necessary for any complete application processing.
+ * The activity must be then setup to the application singleton.
+ * Each method returns 0 on success. Otherwise it is an error, and the activty will
+ * ask to exit.
+ */
+class O3D_API Activity
+{
+public:
+
+    virtual ~Activity() = 0;
+
+    /**
+     * @brief Activity start here. Windows and content can be instancied now.
+     */
+    virtual Int32 onStart() = 0;
+
+    /**
+     * @brief Activty stop here. Windows and content must be destroyed.
+     */
+    virtual Int32 onStop() = 0;
+
+    /**
+     * @brief Activity is paused for a moment, could be destroy ou resumed after that.
+     */
+    virtual Int32 onPause() = 0;
+
+    /**
+     * @brief Activity is resume after a pause.
+     */
+    virtual Int32 onResume() = 0;
+
+    /**
+     * @brief Activity might be saved now, could not have the time later. But
+     * this can also be done on pause.
+     */
+    virtual Int32 onSave() = 0;
+};
+
+/**
  * @brief Base application object settings.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2010-08-12
@@ -43,7 +82,6 @@ public:
         sizeOfFastAlloc16(16384),
         sizeOfFastAlloc32(16384),
         sizeOfFastAlloc64(16384),
-        useDisplay(True),
         clearLog(True)
     {
     }
@@ -68,9 +106,8 @@ public:
     Bool clearLog;
 };
 
-
 /**
- * @brief Application entry
+ * @brief Application singleton.
  * @date 2010-08-12
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @details Application is a static class offering support for :
@@ -114,89 +151,174 @@ public:
      */
     static void init(AppSettings settings, Int32 argc = -1, Char **argv = nullptr, void *app = nullptr);
 
-	//! Terminate the application.
+    /**
+     * @brief Terminate the application.
+     */
 	static void quit();
 
-	//! Returns true if the application is correctly initialized.
+    /**
+     * @brief Returns true if the application is correctly initialized.
+     */
     static Bool isInit();
 
-	//! Return the command line
+    /**
+     * @brief Return the command line
+     */
 	static CommandLine* getCommandLine();
 
-	//! Get the application name
+    /**
+     * @brief Get the application name
+     */
 	static const String& getAppName();
 
-    //! Get the application path
+    /**
+     * @brief Get the application path
+     */
     static const String& getAppPath();
-
-	//! Show a message. On win32 application it draw a standard message box,
-	//! on UNIX's plate-forms it print on stdout.
-	//! @param content Content of the message box.
-	//! @param title Title of the message box.
-	//! @param icon Icon style of the message box. Default is IconInformation.
-	static void message(
+    /**
+     * @brief Show a message. On win32 application it draw a standard message box,
+     * on UNIX's plate-forms it print on stdout.
+     * @param content Content of the message box.
+     * @param title Title of the message box.
+     * @param icon Icon style of the message box. Default is IconInformation.
+     */
+    static void message(
 			const String &content,
 			const String &title,
 			IconStyle icon = ICON_INFORMATION);
 
-	//! Map a single file. It is mostly used to make a single instance application.
-	//! Try to map with a unique string, using this method. If it return TRUE you can
-	//! continue. Otherwise it mean the mapped file exists, then a first instance exists.
-	//! @param name Name of the unique mapped file. Only ASCII characters and no spaces.
-	//! An exception is thrown if the file name is already mapped.
+    /**
+     * @brief Map a single file. It is mostly used to make a single instance application.
+     * Try to map with a unique string, using this method. If it return TRUE you can
+     * continue. Otherwise it mean the mapped file exists, then a first instance exists.
+     * @param name Name of the unique mapped file. Only ASCII characters and no spaces.
+     * @exception An exception is thrown if the file name is already mapped.
+     */
 	static void mapSingleFile(const String &name);
 
-	//! Check for a mapped file existence.
-	//! @param name Name of the unique mapped file to check for.
-	//! @return TRUE if the file exists.
+    /**
+     * @brief Check for a mapped file existence.
+     * @param name Name of the unique mapped file to check for.
+     * @return True if the file exists.
+     */
     static Bool isMappedFileExists(const String &name);
 
-	//! Run the application main loop until there is at least one event or one appWindow.
-    //! In the case you are using your own main loop or window manager, you have to
-    //! setup the two callbacks (setEvtManagerCallback and setStdTimerCallback).
+    /**
+     * @brief Must be setup before start.
+     */
+    static void setActivity(Activity *activity);
+
+    /**
+     * @brief Must be called before run into the main.
+     */
+    static void start();
+
+    /**
+     * @brief Run the application main loop until there is at least one event or one appWindow.
+     * @details In the case you are using your own main loop or window manager, you have to
+     * setup the two callbacks (setEvtManagerCallback and setStdTimerCallback).
+     */
     static void run(Bool runOnce = False);
 
-	//! Push a user application event.
+    /**
+     * @brief Must be called after run into the main.
+     */
+    static void stop();
+
+    /**
+     * @brief Push a user application event.
+     * @param type
+     * @param hWnd
+     * @param data
+     */
     static void pushEvent(EventType type, _HWND hWnd, void *data);
 
-	//! Get the default display server.
+    /**
+     * @brief Get the default display server.
+     * @return
+     */
 	static _DISP getDisplay();
 
-    //! On some implementation this can returns an specific structure.
+    /**
+     * @brief On some implementation this can returns an specific structure.
+     */
     static void* getApp();
 
-    //! Is an error on display server.
+    /**
+     * @brief Is an error on display server.
+     */
     static Bool isDisplayError();
 
-	//! Search an application window by its handle.
-	//! This method is not thread-safe, and must be called only by the application thread.
-	static AppWindow* getAppWindow(_HWND window);
+    /**
+     * @brief Search an application window by its handle.
+     * @details This method is not thread-safe, and must be called only by the application thread.
+     * @param window
+     * @return
+     */
+    static AppWindow* getAppWindow(_HWND window);
 
-	//! Add an application window to the application.
-	//! The appWindow is automatically deleted when the window is closed.
-	//! This method is not thread-safe, and must be called only by the application thread.
-	static void addAppWindow(AppWindow *appWindow);
+    /**
+     * @brief Add an application window to the application.
+     * @details The appWindow is automatically deleted when the window is closed.
+     * This method is not thread-safe, and must be called only by the application thread.
+     * @param appWindow
+     */
+    static void addAppWindow(AppWindow *appWindow);
 
-	//! Remove manually an application window from the application.
-	//! The appWindow is closed if is opened, and deleted.
-	//! This method is not thread-safe, and must be called only by the application thread.
-	static void removeAppWindow(_HWND hWnd);
+    /**
+     * @brief Remove manually an application window from the application.
+     * @details The appWindow is closed if is opened, and deleted.
+     * This method is not thread-safe, and must be called only by the application thread.
+     * @param hWnd
+     */
+    static void removeAppWindow(_HWND hWnd);
 
-	//! Get the process id.
+    /**
+     * @brief Get activity (could be null).
+     */
+    static Activity* getActivity();
+
+    /**
+     * @brief Get the process id.
+     */
     static Int32 getPID();
 
-    //! Register by a name, a pointer, to be retrieved by getObject.
+    /**
+     * @brief Register by a name, a pointer, to be retrieved by getObject.
+     * @param name
+     * @param object
+     */
     static void registerObject(const String &name, BaseObject *object);
 
-    //! Unregister a previously registred object, by its name.
+    /**
+     * @brief Unregister a previously registred object, by its name.
+     * @param name
+     */
     static void unregisterObject(const String &name);
 
-    //! Get a registred object, by its name.
+    /**
+     * @brief Get a registred object, by its name.
+     * @param name
+     * @return
+     */
     static BaseObject* getObject(const String &name);
+
+    /**
+     * @brief Get current application state flags.
+     * @param state
+     */
+    static void setState(Int32 state);
+
+    /**
+     * @brief Get current application state flags.
+     */
+    static Int32 getState();
 
 private:
 
+    static Int32 startPrivate();
     static void runPrivate(Bool runOnce);
+    static Int32 stopPrivate();
     static void pushEventPrivate(EventType type, _HWND hWnd, void *data);
     static void apiInitPrivate();
     static void apiQuitPrivate();
@@ -213,8 +335,10 @@ protected:
 
 	static T_AppWindowMap ms_appWindowMap;
 
+    static Activity *ms_activity;
 	static _DISP ms_display;
     static void* ms_app;
+    static Int32 ms_appState;
     static Bool ms_displayError;
 
 	static AppWindow *ms_currAppWindow;

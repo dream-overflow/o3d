@@ -27,9 +27,39 @@
 
 using namespace o3d;
 
-static Bool windowReady = False;
+static const Int32 STATE_APP_RUNNING = 0x01;
+static const Int32 STATE_APP_PLAYING = 0x02;
+static const Int32 STATE_WINDOW_INIT = 0x04;
+static const Int32 STATE_WINDOW_FOCUS = 0x08;
 
 #define O3D_ALOG(...) ((void)__android_log_print(ANDROID_LOG_INFO, "NativeActivitySimpleExample", __VA_ARGS__))
+
+static void waitWindowActive(struct android_app* state)
+{
+    // process some events before the application can continue, until the window is ready
+    while (1) {
+        int ident;
+        int fdesc;
+        int events;
+
+        struct android_poll_source* source;
+
+        while ((ident = ALooper_pollAll(0, &fdesc, &events, (void**)&source)) >= 0) {
+            // process this event
+            if (source) {
+                source->process(state, source);
+            }
+
+            if (Application::getState() & STATE_WINDOW_INIT) {
+                break;
+            }
+        }
+
+        if (Application::getState() & STATE_WINDOW_INIT) {
+            break;
+        }
+    }
+}
 
 static int32_t handleInput(struct android_app* app, AInputEvent* event)
 {
@@ -204,42 +234,94 @@ static void handleCmd(struct android_app* app, int32_t cmd)
     AppWindow *appWindow = Application::getAppWindow(reinterpret_cast<_HWND>(app->window));
 
     switch (cmd) {
+        case APP_CMD_DESTROY:
+            O3D_MESSAGE("App destroy");
+            Application::setState(Application::getState() & ~STATE_APP_RUNNING);
+            break;
+
         case APP_CMD_SAVE_STATE:
             // the OS asked us to save the state of the app
+            // android_app->savedState = malloc(savedStateSize);
+            // android_app->savedStateSize
             O3D_MESSAGE("App ask to save");
             break;
 
         case APP_CMD_INIT_WINDOW:
-            windowReady = True;
+            O3D_MESSAGE("Init window");
+            Application::setState(Application::getState() | STATE_WINDOW_INIT);
             // get the window ready for showing
             break;
 
         case APP_CMD_TERM_WINDOW:
-            O3D_MESSAGE("App ask to terminate");
-            appWindow->terminate();
-            // clean up the window because it is being hidden/closed
+            O3D_MESSAGE("Terminate window");
+
+            // destroy he window
+            if (appWindow) {
+                Application::removeAppWindow(static_cast<_HWND>(appWindow->getHWND()));
+                appWindow->destroy();
+            }
+
+            Application::setState(Application::getState() & ~STATE_WINDOW_INIT);
             break;
 
         case APP_CMD_LOST_FOCUS:
-            appWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_LOST, eventData);
-            // if the app lost focus, avoid unnecessary processing (like monitoring the accelerometer)
+            if (appWindow) {
+                // if the app lost focus, avoid unnecessary processing
+                appWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_LOST, eventData);
+            }
+
+            Application::setState(Application::getState() & ~STATE_WINDOW_FOCUS);
             break;
 
         case APP_CMD_GAINED_FOCUS:
-            appWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_GAIN, eventData);
-            // bring back a certain functionality, like monitoring the accelerometer
+            if (appWindow) {
+                // bring back a certain functionality
+                appWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_GAIN, eventData);
+            }
+
+            Application::setState(Application::getState() | STATE_WINDOW_FOCUS);
+            break;
+
+        case APP_CMD_START:
+            O3D_MESSAGE("app started");
+
+            if (!(Application::getState() & STATE_APP_PLAYING)) {
+                waitWindowActive(app);
+            }
+
+            Application::setState(Application::getState() | STATE_APP_PLAYING);
             break;
 
         case APP_CMD_RESUME:
             O3D_MESSAGE("app resume");
+/*
+            if (!(Application::getState() & STATE_APP_PLAYING)) {
+                waitWindowActive(app);
+            }
+  */
+            if (appWindow) {
+                // AppWindow::MotionEventData eventData;
+                // appWindow->processEvent(AppWindow::EVT_RESUME, eventData); @todo
+            }
+
+            Application::setState(Application::getState() | STATE_APP_PLAYING);
             break;
 
         case APP_CMD_PAUSE:
-        O3D_MESSAGE("app pause");
+            O3D_MESSAGE("app pause");
+
+            if (appWindow) {
+                // AppWindow::MotionEventData eventData;
+                // appWindow->processEvent(AppWindow::EVT_PAUSE, eventData); @todo
+            }
+
+            Application::setState(Application::getState() & ~STATE_APP_PLAYING);
             break;
 
         case APP_CMD_STOP:
             O3D_MESSAGE("app stop");
+
+            Application::setState(Application::getState() & ~STATE_APP_PLAYING);
             break;
 
         case APP_CMD_CONTENT_RECT_CHANGED:
@@ -251,11 +333,13 @@ static void handleCmd(struct android_app* app, int32_t cmd)
             break;
 
         case APP_CMD_WINDOW_RESIZED:
-            O3D_MESSAGE("app resized");
-            break;
-
-        case APP_CMD_DESTROY:
-            O3D_MESSAGE("app destroy");
+            if ((Application::getState() & STATE_WINDOW_INIT) && appWindow) {
+                // AppWindow::MotionEventData eventData;
+                // eventData.x = ?;
+                // eventData.y = ?;
+                // @todo
+                // ms_currAppWindow->processEvent(AppWindow::EVT_RESIZE, eventData);
+            }
             break;
 
         default:
@@ -271,37 +355,14 @@ void Application::apiInitPrivate()
         // setup app state
         struct android_app* state = reinterpret_cast<struct android_app*>(ms_app);
         pthread_mutex_lock(&state->mutex);
-        // state->userData = ;
         state->onAppCmd = handleCmd;
         state->onInputEvent = handleInput;
         pthread_mutex_unlock(&state->mutex);
 
+        Application::setState(STATE_APP_RUNNING);
+
         // process some events before the application can continue, until the window is ready
-        Bool quit = False;
-
-        while (1) {
-            int ident;
-            int fdesc;
-            int events;
-
-            struct android_poll_source* source;
-
-            while ((ident = ALooper_pollAll(0, &fdesc, &events, (void**)&source)) >= 0) {
-                // process this event
-                if (source) {
-                    source->process(state, source);
-                }
-
-                if (windowReady) {
-                    break;
-                }
-            }
-
-            if (windowReady) {
-                break;
-            }
-        }
-
+        waitWindowActive(state);
     }
 }
 
@@ -310,7 +371,12 @@ void Application::apiQuitPrivate()
     if (ms_display) {
         ms_display = NULL_DISP;
 
-        // is there something todo here ?
+        // setup app state
+        struct android_app* state = reinterpret_cast<struct android_app*>(ms_app);
+        pthread_mutex_lock(&state->mutex);
+        state->onAppCmd = nullptr;
+        state->onInputEvent = nullptr;
+        pthread_mutex_unlock(&state->mutex);
 
         ms_app = nullptr;
     }
@@ -343,18 +409,21 @@ void Application::runPrivate(Bool runOnce)
             }
         }
 
-        if (ms_appWindowMap.empty()) {
-            quit = True;
-        }
-
         // process update/paint event if necessary for each window
         for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it) {
-            if (it->second->isRunning()) {
+            if (it->second->isRunning() && (Application::getState() & STATE_WINDOW_INIT)) {
                 it->second->processEvent(AppWindow::EVT_UPDATE, eventData);
                 it->second->processEvent(AppWindow::EVT_PAINT, eventData);
             }
         }
-
+/*
+        if (!(Application::getState() & STATE_APP_RUNNING)) {
+            if (!EvtManager::instance()->isPendingEvent()) {
+                EvtManager::instance()->processEvent();
+                break;
+            }
+        }
+*/
         if (runOnce) {
             break;
         }
@@ -367,6 +436,16 @@ void Application::runPrivate(Bool runOnce)
 void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 {
     // @todo
+}
+
+Int32 Application::startPrivate()
+{
+    return 0;
+}
+
+Int32 Application::stopPrivate()
+{
+    return 0;
 }
 
 #endif // O3D_ANDROID
