@@ -92,9 +92,9 @@ void Processor::reportLog()
     O3D_MESSAGE(String("- 3DNOW: ") << (m_has_3dnow?"YES":"NO") << (m_has_3dnow_ext?"(+)":""));
 
     O3D_MESSAGE(String("- SSE: ") <<
-                (m_has_sse?"SSE ":"NO") << (m_has_sse2?"SSE2 ":"") <<
-                (m_has_sse3?"SSE3 ":"") << (m_has_ssse3?"SSSE3 ":"") <<
-                (m_has_sse4_1?"SSE4_1 ":"") << (m_has_sse4_2?"SSE4_2":""));
+                (m_has_sse?"SSE ":"NO SSE ") << (m_has_sse2?"SSE2 ":"NO SSE2 ") <<
+                (m_has_sse3?"SSE3 ":"NO SSE3 ") << (m_has_ssse3?"SSSE3 ":"NO SSSE3 ") <<
+                (m_has_sse4_1?"SSE4.1 ":"NO SSE4.1 ") << (m_has_sse4_2?"SSE4.2":"NO SSE4.2"));
 
     O3D_MESSAGE(String("- HTT: ") << (m_is_htt?"YES":"NO"));
 
