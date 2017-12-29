@@ -38,8 +38,7 @@ VisibilityManager::VisibilityManager(BaseObject *parent) :
 VisibilityManager::~VisibilityManager()
 {
 	deletePtr(m_globalController);
-
-	// TODO delete specifics controllers
+    // @todo delete specifics controllers
 }
 
 // set global visibility controller
@@ -50,8 +49,7 @@ void VisibilityManager::setGlobal(
 {
 	deletePtr(m_globalController);
 
-	switch (type)
-	{
+    switch (type) {
 		case DISTANCE:
 			m_globalController = new VisibilityBasic(this);
 			break;
@@ -61,7 +59,7 @@ void VisibilityManager::setGlobal(
 			break;
 
 		case OCTREE:
-			m_globalController = new Octree(this);//, halfSize, zoneSize);
+            m_globalController = new Octree(this); //, halfSize, zoneSize);
 			break;
 
 		default:
@@ -75,31 +73,29 @@ void VisibilityManager::setGlobal(
 void VisibilityManager::addObject(SceneObject *object)
 {
 	m_globalController->addObject(object);
-
-	// TODO search in specifics controllers
+    // @todo search in specifics controllers
 }
 
 // add/update an object to the current visibility mode
 void VisibilityManager::updateObject(SceneObject *object)
 {
 	m_globalController->updateObject(object);
-
-	// TODO search in specifics controllers
+    // @todo search in specifics controllers
 }
 
 // remove an object of a its specified structure
 void VisibilityManager::removeObject(SceneObject *object)
 {
 	m_globalController->removeObject(object);
-
-	// TODO search in specifics controllers
+    // @todo search in specifics controllers
 }
 
 // Process the visibility determination.
 void VisibilityManager::processVisibility()
 {
-	// clear the draw list
+    // clear the draw list and effective light list
 	m_drawList.forceSize(0);
+    m_effectiveLightList.forceSize(0);
 
 	VisibilityInfos info = {
 			getScene()->getActiveCamera()->getAbsoluteMatrix().getTranslation(),
@@ -107,44 +103,60 @@ void VisibilityManager::processVisibility()
 			getMaxDistance(),
 			m_useMaxDistance };
 
-//	Float maxDistance = m_maxDistance;
-
-//	if (m_useMaxZFar && getScene()->getActiveCamera())
-//		maxDistance = getScene()->getActiveCamera()->getZfar();
-
 	// check for visible objects
 	m_globalController->checkVisibleObject(info);
 }
 
-// draw all visible objects
 void VisibilityManager::draw(const DrawInfo &drawInfo)
 {
 	// draw the global controller
-	if (drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/)
-	{
+    if (drawInfo.pass == DrawInfo::AMBIENT_PASS/*SYMBOLIC_PASS*/) {
 		m_globalController->draw();
 	}
 
 	SceneObject * sceneObject;
 
+    // according to the draw list check if each objet lies with the frustum and draw it
 	Int32 numObject = m_drawList.getSize();
-	for (Int32 i = 0; i < numObject; ++i)
-	{
+    for (Int32 i = 0; i < numObject; ++i) {
 		sceneObject = m_drawList[i];
 
-		if (sceneObject->checkFrustum(*getScene()->getFrustum()) != Geometry::CLIP_OUTSIDE)
+        if (sceneObject->checkFrustum(*getScene()->getFrustum()) != Geometry::CLIP_OUTSIDE) {
 			sceneObject->draw(drawInfo);
-	//	else
-	//		System::Print(String("culling ") + sceneObject->getName(), "");
-	}
+        } else {
+            // System::Print(String("Visibility manager culling ") + sceneObject->getName(), "");
+        }
+    }
 }
 
-// Get the max distance
+const TemplateArray<Light *> VisibilityManager::getEffectiveLights() const
+{
+    return m_effectiveLightList;
+}
+
+void VisibilityManager::setMaxDistance(Float max)
+{
+    m_maxDistance = max;
+    m_useMaxDistance = True;
+    m_useMaxZFar = False;
+}
+
 Float VisibilityManager::getMaxDistance() const
 {
-	if (m_useMaxZFar && getScene()->getActiveCamera())
+    if (m_useMaxZFar && getScene()->getActiveCamera()) {
 		return getScene()->getActiveCamera()->getZfar();
-	else
-		return m_maxDistance;
+    } else {
+        return m_maxDistance;
+    }
 }
 
+void VisibilityManager::useZFarMaxDistance()
+{
+    m_useMaxZFar = m_useMaxDistance = True;
+}
+
+void VisibilityManager::useDefinedMaxDistance()
+{
+    m_useMaxDistance = True;
+    m_useMaxZFar = False;
+}

@@ -15,6 +15,8 @@
 
 #include <math.h>
 
+// #define ACCURATE_SQRT 1
+
 using namespace o3d;
 
 // @see http://gruntthepeon.free.fr/ssemath/ if we need more optimized maths func
@@ -73,35 +75,58 @@ Float Math::_Std::sqrt(Float x)
 #endif
 }
 
+// use of the optimized version only on NDEBUG because else performances
+// are lesser than standard sqrtf.
 Float Math::_SSE::sqrt(Float x)
 {
 #ifdef O3D_SSE2
-  #if defined(_MSC_VER)
+  #if defined(_MSC_VER) && defined(NDEBUG)
+   #ifndef ACCURATE_SQRT
     static Float half = 0.5f;
     static Float three = 3.0f;
-    Float y;  // = 0.f; not set to 0 otherwise optimization will take 0 as result of the function
 
-    __asm
-    {
-        movss     xmm3, x     // xmm3 = (x, ?, ?, ?)
-                movss     xmm4, xmm3   // xmm4 = (x, ?, ?, ?)
-                movss     xmm1, half   // xmm1 = (0.5, ?, ?, ?)
-                movss     xmm2, three  // xmm2 = (3, ?, ?, ?)
-                rsqrtss   xmm0, xmm3   // xmm0 = (~ 1 / sqrt(x), ?, ?, ?)
-                mulss     xmm3, xmm0   // xmm3 = (~ sqrt(x), ?, ?, ?)
-                mulss     xmm1, xmm0   // xmm1 = (~ 0.5 / sqrt(x), ?, ?, ?)
-                mulss     xmm3, xmm0   // xmm3 = (~ 1, ?, ?, ?)
-                subss     xmm2, xmm3   // xmm2 = (~ 2, ?, ?, ?)
-                mulss     xmm1, xmm2   // xmm1 = (~ 1 / sqrt(x), ?, ?, ?)
-                mulss     xmm1, xmm4   // xmm1 = (sqrt(x), ?, ?, ?)
-                movss     y, xmm1      // store result
+    // rsqrtss does not deal if x is zero
+    if (x <= 0.f) {
+        return 0.f;
     }
 
+    // never set to 0 otherwise optimization will take 0 as result of the function
+    Float y;
+
+    __asm {
+        movss     xmm3, x     // xmm3 = (x, ?, ?, ?)
+        movss     xmm4, xmm3   // xmm4 = (x, ?, ?, ?)
+        movss     xmm1, half   // xmm1 = (0.5, ?, ?, ?)
+        movss     xmm2, three  // xmm2 = (3, ?, ?, ?)
+        rsqrtss   xmm0, xmm3   // xmm0 = (~ 1 / sqrt(x), ?, ?, ?)
+        mulss     xmm3, xmm0   // xmm3 = (~ sqrt(x), ?, ?, ?)
+        mulss     xmm1, xmm0   // xmm1 = (~ 0.5 / sqrt(x), ?, ?, ?)
+        mulss     xmm3, xmm0   // xmm3 = (~ 1, ?, ?, ?)
+        subss     xmm2, xmm3   // xmm2 = (~ 2, ?, ?, ?)
+        mulss     xmm1, xmm2   // xmm1 = (~ 1 / sqrt(x), ?, ?, ?)
+        mulss     xmm1, xmm4   // xmm1 = (sqrt(x), ?, ?, ?)
+        movss     y, xmm1      // store result
+    }
+   #else
+    __asm {
+        movss xmm3, x
+        sqrtss xmm3, xmm0
+        movss xmm0, y
+    }
+   #endif
     return y;
-  #elif defined(__GNUC__)
+  #elif defined(__GNUC__) && defined(NDEBUG)
+   #ifndef ACCURATE_SQRT
     static Float half = 0.5f;
     static Float three = 3.0f;
-    Float y;   // = 0.f; not set to 0 otherwise optimization will take 0 as result of the function
+
+    // rsqrtss does not deal if x is zero
+    if (x <= 0.f) {
+        return 0.f;
+    }
+
+    // never set to 0 otherwise optimization will take 0 as result of the function
+    Float y;
 
     __asm__ __volatile__ ("movss %0,%%xmm3 \n\t" : : "m" (x));
     __asm__ __volatile__ ("movss %xmm3,%xmm4 \n\t");
@@ -115,13 +140,14 @@ Float Math::_SSE::sqrt(Float x)
     __asm__ __volatile__ ("mulss %xmm2,%xmm1 \n\t");
     __asm__ __volatile__ ("mulss %xmm4,%xmm1 \n\t");
     __asm__ __volatile__ ("movss %%xmm1,%0" : : "m" (y));
-
-    // __asm__ __volatile__ ("sqrtss %xmm3,%xmm0 \n\t");
-    // __asm__ __volatile__ ("movss %%xmm0,%0" : : "m" (y));
-
+   #else
+    __asm__ __volatile__ ("movss %0,%%xmm3 \n\t" : : "m" (x));
+    __asm__ __volatile__ ("sqrtss %xmm3,%xmm0 \n\t");
+    __asm__ __volatile__ ("movss %%xmm0,%0" : : "m" (y));
+   #endif
     return y;
   #else
-    return ::sqrt(x);
+    return ::sqrtf(x);
   #endif
 #else
     return ::sqrtf(x);

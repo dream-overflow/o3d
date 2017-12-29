@@ -588,14 +588,11 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
 
     context.disableDepthTest();
 
-    // @todo what are the effective ligth, depends of the visibility, indoor, outdoor...
-    const String lights[] = { "light1" , "light2", "light3", "light4" };
-
     context.blending().setFunc(Blending::ONE__ONE);
 
-    for (UInt32 i = 0; i < 4; ++i) {
-        Light *light = dynamicCast<Light*>(getScene()->getSceneObjectManager()->searchName(lights[i]));
-        processLight(light);
+    const TemplateArray<Light*> lights = getScene()->getVisibilityManager()->getEffectiveLights();
+    for (Int32 i = 0; i < lights.getSize(); ++i) {
+        processLight(lights[i]);
     }
 
     m_gbuffer->resetDrawBuffers();

@@ -376,8 +376,7 @@ void LambertMaterial::processLighting(
 	ShaderInstance &shader = m_shaderInstance[drawInfo.light.type];
 	Context *glContext = getScene()->getContext();
 
-	if ((m_initMode == LIGHTING) && shader.isOperational())
-	{
+    if ((m_initMode == LIGHTING) && shader.isOperational()) {
         glContext->blending().setFunc(Blending::ONE__ONE);
 
 		shader.bindShader();
@@ -385,35 +384,31 @@ void LambertMaterial::processLighting(
 		object.processAllFaces(Shadable::PREPARE_GEOMETRY);
 
         // u_diffuse is pre-multiplied by light diffuse if there is no diffuse map
-		if (m_diffuseMap)
-		{
+        if (m_diffuseMap) {
 			materialPass.assignMapSetting(MaterialPass::DIFFUSE_MAP);
 			shader.setConstTexture(u_diffuseMap[drawInfo.light.type], materialPass.getDiffuseMap(), 0);
             shader.setConstColor(u_lightDiffuse[drawInfo.light.type], drawInfo.light.diffuse);
-		}
-		else
+        } else {
 			shader.setConstColor(u_diffuse[drawInfo.light.type], materialPass.getDiffuse()*drawInfo.light.diffuse);
+        }
 
         // u_specular is pre-multiplied by light specular if there is no specular map
-		if (m_specularMap)
-		{
+        if (m_specularMap) {
 			materialPass.assignMapSetting(MaterialPass::SPECULAR_MAP);
             shader.setConstTexture(u_specularMap[drawInfo.light.type], materialPass.getSpecularMap(), 1);
             shader.setConstColor(u_lightSpecular[drawInfo.light.type], drawInfo.light.specular);
-		}
-		else
+        } else {
 			shader.setConstColor(u_specular[drawInfo.light.type], materialPass.getSpecular()*drawInfo.light.specular);
+        }
 
-        if (m_shineMap)
-        {
+        if (m_shineMap) {
             materialPass.assignMapSetting(MaterialPass::SHINE_MAP);
             shader.setConstTexture(u_shineMap[drawInfo.light.type], materialPass.getShineMap(), 2);
-        }
-        else
+        } else {
             shader.setConstFloat(u_shine[drawInfo.light.type], materialPass.getShine());
+        }
 
-        if (m_diffuseMap || m_specularMap || m_shineMap)
-		{
+        if (m_diffuseMap || m_specularMap || m_shineMap) {
 			object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1[drawInfo.light.type]);
 		}
 
@@ -441,14 +436,12 @@ void LambertMaterial::processLighting(
         shader.setConstVector3(u_eyePos[drawInfo.light.type], drawInfo.eyePos);
 
 		// point light
-		if (drawInfo.light.type == Light::POINT_LIGHT)
-		{
+        if (drawInfo.light.type == Light::POINT_LIGHT) {
             shader.setConstVector4(u_lightPos[drawInfo.light.type], drawInfo.light.worldPos);
 			shader.setConstVector3(u_lightAtt[drawInfo.light.type], drawInfo.light.attenuation);
 		}
 		// spot light
-		else if (drawInfo.light.type == Light::SPOT_LIGHT)
-		{
+        else if (drawInfo.light.type == Light::SPOT_LIGHT) {
             shader.setConstVector4(u_lightPos[drawInfo.light.type], drawInfo.light.worldPos);
             shader.setConstVector3(u_lightDir[drawInfo.light.type], drawInfo.light.worldDir);
 			shader.setConstVector3(u_lightAtt[drawInfo.light.type], drawInfo.light.attenuation);
@@ -456,14 +449,12 @@ void LambertMaterial::processLighting(
 			shader.setConstFloat(u_lightExponent, drawInfo.light.exponent);
 		}
 		// directional light
-		else if (drawInfo.light.type == Light::DIRECTIONAL_LIGHT)
-		{
+        else if (drawInfo.light.type == Light::DIRECTIONAL_LIGHT) {
             shader.setConstVector3(u_lightDir[drawInfo.light.type], drawInfo.light.worldDir);
         }
 
         // rigging
-        if ((a_rigging[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
+        if ((a_rigging[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING)) {
             shader.setNConstMatrix4(
                     u_bonesMatrixArray[drawInfo.light.type],
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
@@ -473,8 +464,7 @@ void LambertMaterial::processLighting(
             object.attribute(V_RIGGING_ARRAY, a_rigging[drawInfo.light.type]);
         }
         // skinning
-        else if ((a_skinning[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
+        else if ((a_skinning[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING)) {
             shader.setNConstMatrix4(
                     u_bonesMatrixArray[drawInfo.light.type],
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
@@ -487,33 +477,28 @@ void LambertMaterial::processLighting(
 
 		object.processAllFaces(Shadable::PROCESS_GEOMETRY);
 
-		if (m_diffuseMap)
-		{
+        if (m_diffuseMap) {
 			glContext->setActiveTextureUnit(0);
 			glContext->bindTexture(TEXTURE_2D, 0);
 		}
 
-		if (m_specularMap)
-		{
+        if (m_specularMap) {
 			glContext->setActiveTextureUnit(1);
 			glContext->bindTexture(TEXTURE_2D, 0);
 		}
 
-        if (m_shineMap)
-        {
+        if (m_shineMap) {
             glContext->setActiveTextureUnit(2);
             glContext->bindTexture(TEXTURE_2D, 0);
         }
 
-		if (m_diffuseMap || m_specularMap)
+        if (m_diffuseMap || m_specularMap) {
 			glContext->disableVertexAttribArray(a_texCoords1[drawInfo.light.type]);
-
-        if ((a_rigging[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
-            glContext->disableVertexAttribArray(a_rigging[drawInfo.light.type]);
         }
-        else if ((a_skinning[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
+
+        if ((a_rigging[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING)) {
+            glContext->disableVertexAttribArray(a_rigging[drawInfo.light.type]);
+        } else if ((a_skinning[drawInfo.light.type] > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING)) {
             glContext->disableVertexAttribArray(a_skinning[drawInfo.light.type]);
             glContext->disableVertexAttribArray(a_weighting[drawInfo.light.type]);
         }

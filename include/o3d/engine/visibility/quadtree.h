@@ -188,6 +188,8 @@ private:
  * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
  * Dynamic QuadTree following the move of the camera by translating its zones.
  * Useful as a global visibility controller for large plane area.
+ * @todo success lifetime to preserve useless CPU computations
+ * @todo lifetime counter which depends on screen movements
  */
 class O3D_API Quadtree : public VisibilityABC
 {
@@ -263,11 +265,7 @@ protected:
 
 	Vector3 m_currentPosition;	//!< Current position of the user
 
-	//! @TODO
-	//! - success lifetime to preserve useless CPU computations
-	//! - lifetime counter which depends on screen movements
-
-	//! Translate the array of zones
+    //! Translate the array of zones
 	void translate(const Vector2i &);
 
 	//! Signals: When an object is not used anymore
@@ -277,4 +275,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_QUADTREE_H
-

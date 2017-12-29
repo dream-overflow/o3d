@@ -162,7 +162,7 @@ void main()
 	vec3 normal = normalize(io_normal);
 	float NdotL = clamp(dot(normal, -u_lightDir), 0.0, 1.0);
 
-	if (NdotL > 0.0)
+    if (NdotL > 0.0)
 	{
 		// diffuse
 	#ifdef DIFFUSE_MAP
@@ -191,7 +191,7 @@ void main()
 
 		float specularIntensity = pow(max(dot(reflectVec, dirToEye), 0.0), shine);
 
-		finalColor += specular * specularIntensity;
+        finalColor += specular * specularIntensity;
 	}
 #endif
 /*
@@ -201,5 +201,5 @@ void main()
 	finalColor *= u_diffuse.a;
 #endif*/
 
-	o_finalColor = finalColor;	
+    o_finalColor = finalColor;
 }

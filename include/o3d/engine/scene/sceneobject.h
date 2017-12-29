@@ -51,19 +51,19 @@ protected:
 	//! Capacities and states bitset index
 	enum Capacities
 	{
-		CAPS_MOVABLE = 0,         //!< Movable object.
-		CAPS_UPDATABLE = 1,       //!< Updatable object (update, node...).
+        CAPS_MOVABLE = 0,         //!< Movable object (not static, need dynamic update).
+        CAPS_UPDATABLE = 1,       //!< Updatable object (update, node, visibility...).
 		CAPS_DRAWABLE = 2,        //!< Drawable object (draw, visibility...).
 		CAPS_PICKABLE = 3,        //!< Pickable object (picking).
-		CAPS_ANIMATABLE = 4,      //!< Animlatable object (animation).
-		CAPS_SHADABLE = 5,        //!< Shadable object (material).
-		CAPS_SHADOWABLE = 6,      //!< Shadowable object (light).
-		STATE_SHADOW_CASTER = 16, //!< TRUE if the object cast shadows.
-		STATE_UPDATED,            //!< TRUE if the object update occurred.
-		STATE_ACTIVITY,           //!< TRUE if the object is active.
-		STATE_VISIBILITY,         //!< TRUE if the object is visible.
-		STATE_PICKING,            //!< TRUE if the object picking is active.
-        STATE_DRAW_UPDATE,        //!< TRUE if the next draw need an update.
+        CAPS_ANIMATABLE = 4,      //!< Animatable object (animation).
+        CAPS_SHADABLE = 5,        //!< Shadable object (mesh using materials).
+        CAPS_SHADOWABLE = 6,      //!< Shadowable object (mesh that can receive shadow).
+        STATE_SHADOW_CASTER = 16, //!< True if the object cast shadows.
+        STATE_UPDATED,            //!< True if the object update occurred.
+        STATE_ACTIVITY,           //!< True if the object is active.
+        STATE_VISIBILITY,         //!< True if the object is visible.
+        STATE_PICKING,            //!< True if the object picking is active.
+        STATE_DRAW_UPDATE,        //!< True if the next draw need an update.
 		CAPS_SCENE_OBJECT_NEXT    //!< Next capacity bit free.
 	};
 
@@ -92,7 +92,6 @@ public:
 	//! Set parent.
 	virtual void setParent(BaseObject *parent);
 
-
 	//-----------------------------------------------------------------------------------
 	// Scene object capacities
 	//-----------------------------------------------------------------------------------
@@ -117,7 +116,7 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Return the hierarchy node object.
-	virtual       BaseNode* getNode();
+    virtual BaseNode* getNode();
 	//! Return the hierarchy node object (read only).
 	virtual const BaseNode* getNode() const;
 
@@ -136,7 +135,6 @@ public:
 
     //! Defines a rigid body object from the physic entity manager.
     virtual void setRigidBody(RigidBody *rigidBody);
-
 
 	//-----------------------------------------------------------------------------------
 	// Scene object draw specific
@@ -173,6 +171,9 @@ public:
         }
 	}
 
+    //! Is a light based objet. It is usefull for many light computation, especially
+    //! duing visibility processing.
+    virtual Bool isLight() const;
 
 	//-----------------------------------------------------------------------------------
 	// Movable
@@ -180,7 +181,6 @@ public:
 
 	//! Is the object is static (unmovable false) or dynamic (movable true).
 	virtual Bool isMovable() const;
-
 
     //-----------------------------------------------------------------------------------
 	// Drawable
@@ -223,27 +223,24 @@ public:
 	//! Set the object activity.
 	inline void setActivity(Bool state)
 	{
-		if (state)
+        if (state) {
 			enable();
-		else
+        } else {
 			disable();
+        }
 	}
 
 	//! Toggle the object activity.
 	inline Bool toggleActivity()
 	{
-		if (getActivity())
-		{
+        if (getActivity()) {
 			disable();
 			return False;
-		}
-		else
-		{
+        } else {
 			enable();
 			return True;
 		}
 	}
-
 
 	//-----------------------------------------------------------------------------------
 	// Scene object picking specific
@@ -283,7 +280,6 @@ public:
 	//! Get the pickable color.
 	virtual Color getPickableColor();
 
-
 	//-----------------------------------------------------------------------------------
 	// Animatable specific
 	//-----------------------------------------------------------------------------------
@@ -318,7 +314,6 @@ public:
 
 	//! Return identity matrix.
     virtual const Matrix4& getPrevAnimationMatrix() const;
-
 
 	//-----------------------------------------------------------------------------------
 	// Shadable specific
@@ -383,7 +378,6 @@ public:
 	//! Force to process an update the next time.
 	inline void queryUpdate() { setUpdated(); }
 
-
 	//-----------------------------------------------------------------------------------
 	// Shadowable specific
 	//-----------------------------------------------------------------------------------
@@ -400,7 +394,6 @@ public:
 	//! Project the silhouette according to a specified light.
 	//! Do nothing by default.
 	virtual void projectSilhouette(const DrawInfo &drawInfo);
-
 
 	//-----------------------------------------------------------------------------------
 	// Serialization
@@ -426,33 +419,33 @@ protected:
 	T_AnimationKeyFrameItMap m_keyFrameMap;
 
 	//! Set the object update processed flag.
-	inline void setUpdated() { return m_capacities.setBit(STATE_UPDATED,True); }
+    inline void setUpdated() { return m_capacities.setBit(STATE_UPDATED, True); }
 	//! Clear the object update processed flag.
-	inline void clearUpdated() { return m_capacities.setBit(STATE_UPDATED,False); }
+    inline void clearUpdated() { return m_capacities.setBit(STATE_UPDATED, False); }
     //! Get the object update processed flag.
 	inline Bool isNeedUpdate() { return !m_capacities.getBit(STATE_UPDATED); }
 
     //! Set the object draw update processed flag.
-    inline void setDrawUpdate() { return m_capacities.setBit(STATE_DRAW_UPDATE,True); }
+    inline void setDrawUpdate() { return m_capacities.setBit(STATE_DRAW_UPDATE, True); }
     //! Clear the object draw update processed flag.
-    inline void clearDrawUpdate() { return m_capacities.setBit(STATE_DRAW_UPDATE,False); }
+    inline void clearDrawUpdate() { return m_capacities.setBit(STATE_DRAW_UPDATE, False); }
     //! Get the object draw update processed flag.
     inline Bool isNeedDrawUpdate() { return !m_capacities.getBit(STATE_DRAW_UPDATE); }
 
 	//! Set the object as movable.
-	inline void setMovable(Bool state) { m_capacities.setBit(CAPS_MOVABLE,state); }
+    inline void setMovable(Bool state) { m_capacities.setBit(CAPS_MOVABLE, state); }
 	//! Set the object as updatable.
-	inline void setUpdatable(Bool state) { m_capacities.setBit(CAPS_UPDATABLE,state); }
+    inline void setUpdatable(Bool state) { m_capacities.setBit(CAPS_UPDATABLE, state); }
 	//! Set the object as drawable.
-	inline void setDrawable(Bool state) { m_capacities.setBit(CAPS_DRAWABLE,state); }
+    inline void setDrawable(Bool state) { m_capacities.setBit(CAPS_DRAWABLE, state); }
 	//! Set the object as pickable.
-	inline void setPickable(Bool state) { m_capacities.setBit(CAPS_PICKABLE,state); }
+    inline void setPickable(Bool state) { m_capacities.setBit(CAPS_PICKABLE, state); }
 	//! Set the object as animatable.
-	inline void setAnimatable(Bool state) { m_capacities.setBit(CAPS_ANIMATABLE,state); }
+    inline void setAnimatable(Bool state) { m_capacities.setBit(CAPS_ANIMATABLE, state); }
 	//! Set the object as shadable.
-	inline void setShadable(Bool state) { m_capacities.setBit(CAPS_SHADABLE,state); }
+    inline void setShadable(Bool state) { m_capacities.setBit(CAPS_SHADABLE, state); }
 	//! Set the object as shadowable.
-	inline void setShadowable(Bool state) { m_capacities.setBit(CAPS_SHADOWABLE,state); }
+    inline void setShadowable(Bool state) { m_capacities.setBit(CAPS_SHADOWABLE, state); }
 };
 
 } // namespace o3d

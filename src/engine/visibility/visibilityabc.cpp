@@ -14,7 +14,6 @@ using namespace o3d;
 
 O3D_IMPLEMENT_ABSTRACT_CLASS1(VisibilityABC, ENGINE_VISIBILITY_ABC, SceneEntity)
 
-// default constructor
 VisibilityABC::VisibilityABC(
 		BaseObject *parent,
 		const Vector3 &position,
@@ -24,8 +23,6 @@ VisibilityABC::VisibilityABC(
 {
 }
 
-// destructor
 VisibilityABC::~VisibilityABC()
 {
 }
-

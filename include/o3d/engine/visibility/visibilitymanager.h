@@ -19,13 +19,15 @@ namespace o3d {
 
 class VisibilityABC;
 class SceneObject;
+class Light;
 class DrawInfo;
 
-//---------------------------------------------------------------------------------------
-//! @class VisibilityManager
-//-------------------------------------------------------------------------------------
-//! Visibility manager for a scene.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Visibility manager for a scene.
+ * @todo A standard quadtree and renamed the actual because its an adaptative kind of quadtree
+ * @todo Implement the octree
+ * @todo Support for multiples visibility controllers
+ */
 class O3D_API VisibilityManager : public SceneEntity
 {
 public:
@@ -33,9 +35,9 @@ public:
 	//! Global visibility controller type
 	enum VisibilityType
 	{
-		DISTANCE,         //!< Visibility basic (by distance).
-		OCTREE,
-		QUADTREE          //!< Default
+        DISTANCE,         //!< Visibility basic (by distance only).
+        OCTREE,           //!< Octree based visibility manager
+        QUADTREE          //!< Quadtree based visibility managet. Default.
 	};
 
 	O3D_DECLARE_DYNAMIC_CLASS(VisibilityManager)
@@ -46,7 +48,6 @@ public:
 
 	//! Virtual destructor.
 	virtual ~VisibilityManager();
-
 
 	//-----------------------------------------------------------------------------------
 	// Global settings
@@ -61,21 +62,16 @@ public:
 	inline VisibilityType getGlobal() const { return m_global; }
 
 	//! Set max visibility distance and set usage to defined max distance (don't use camera zFar).
-	inline void setMaxDistance(Float max)
-	{
-		m_maxDistance = max;
-		m_useMaxDistance = True;
-		m_useMaxZFar = False;
-	}
+    void setMaxDistance(Float max);
 
 	//! Get the max distance (return the user defined max distance or the active camera zFar).
 	Float getMaxDistance() const;
 
 	//! Use the zFar active camera as max distance.
-	inline void useZFarMaxDistance() { m_useMaxZFar = m_useMaxDistance = True; }
+    void useZFarMaxDistance();
 
 	//! Use the defined max distance.
-	inline void useDefinedMaxDistance() { m_useMaxDistance = True; m_useMaxZFar = False; }
+    void useDefinedMaxDistance();
 
 	//! Enable max distance.
 	inline void enableMaxDistance() { m_useMaxDistance = True;  }
@@ -87,7 +83,6 @@ public:
 
 	//! Is max distance is the camera zFar.
 	inline Bool isMaxDistanceByZFar() const { return m_useMaxZFar; }
-
 
 	//-----------------------------------------------------------------------------------
 	// Process
@@ -111,20 +106,25 @@ public:
 	//! Add an object to the drawing list.
 	inline void addObjectToDraw(SceneObject* object) { m_drawList.push(object); }
 
+    //! Add an effective light to the effective lights list.
+    inline void addEffectiveLight(Light* light) { m_effectiveLightList.push(light); }
+
+    //! Get actives lights for this current processing.
+    const TemplateArray<Light*> getEffectiveLights() const;
+
 protected:
 
-	VisibilityType m_global;        //!< Type of the global visibility controller.
-
-	VisibilityABC *m_globalController; //!< Global dynamic visibility controller.
+    VisibilityType m_global;            //!< Type of the global visibility controller.
+    VisibilityABC *m_globalController;  //!< Global dynamic visibility controller.
 
 	Float m_maxDistance;      //!< Max distance of visible objects.
 	Bool m_useMaxDistance;    //!< Is the max distance is used (enable by default).
 	Bool m_useMaxZFar;        //!< Max distance used is zFar value of the current camera (this is default).
 
-	TemplateArray<SceneObject*> m_drawList; //!< Object draw list.
+    TemplateArray<SceneObject*> m_drawList;      //!< Object draw list.
+    TemplateArray<Light*> m_effectiveLightList;  //!< Effective lights list
 };
 
 } // namespace o3d
 
 #endif // _O3D_VISIBILITYMANAGER_H
-

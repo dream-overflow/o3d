@@ -343,28 +343,25 @@ void Matrix4::reComputeBasisGivenY(Vector3 v)
 void Matrix4::reComputeBasisGivenZ(Vector3 v)
 {
 	// nouveau vecteur X
-	v.normalize();
+    v.normalize();
 	setZ(v);
 
 	// recalcule une base
 	Vector3 axeX = getY()^v;
-	Float  len = axeX.length();
+    Float len = axeX.length();
 
-	if (len < o3d::Limits<Float>::epsilon())
-	{
+    if (len < o3d::Limits<Float>::epsilon()) {
 		// l'ancien X est colineaire au nouveau Z, utilisons Y pour calculer la nouvelle base
 		Vector3 axeY = v^getX();
 		axeY.normalize();
 		setY(axeY);
 		setX(axeY^v);
-	}
-	else
-	{
+    } else {
 		// nouveau vecteur Y
 		axeX.normalize();
 		setX(axeX);
 		setY(v^axeX);
-	}
+    }
 }
 
 // define the matrix as a rotation matrix by an axis and angle (like glRotate)
@@ -644,17 +641,18 @@ void Matrix4::buildOrtho(
 }
 
 // convert to a string
-Matrix4::operator String()const
+Matrix4::operator String() const
 {
 	String temp;
 
-	for (UInt32 i = 0 ; i < 4 ; ++i)
+    for (UInt32 i = 0 ; i < 4 ; ++i) {
 		temp << String("\n{ ")
 			 << operator ()(i,0) << String(", ")
 			 << operator ()(i,1) <<	String(", ")
 			 << operator ()(i,2) << String(", ")
 			 << operator ()(i,3)
 			 << String(" }");
+    }
 
 	return temp;
 }
@@ -662,16 +660,18 @@ Matrix4::operator String()const
 // serialisation
 Bool Matrix4::writeToFile(OutStream& os)const
 {
-	for (UInt32 i = 0 ; i < 16 ; ++i)
+    for (UInt32 i = 0 ; i < 16 ; ++i) {
         os << M[i];
+    }
 
 	return True;
 }
 
 Bool Matrix4::readFromFile(InStream& is)
 {
-	for (UInt32 i = 0 ; i < 16 ; ++i)
+    for (UInt32 i = 0 ; i < 16 ; ++i) {
         is >> M[i];
+    }
 
 	return True;
 }

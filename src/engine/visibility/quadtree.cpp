@@ -14,6 +14,7 @@
 #include "o3d/engine/visibility/visibilitymanager.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/object/camera.h"
+#include "o3d/engine/object/light.h"
 #include "o3d/geom/frustum.h"
 #include "o3d/core/vector2.h"
 #include "o3d/core/vector3.h"
@@ -665,7 +666,12 @@ void Quadtree::checkVisibleObject(const VisibilityInfos & _infos)
                 }
 			}
 
-			getScene()->getVisibilityManager()->addObjectToDraw(object);
+            // depending if it is light or something else
+            if (object->isLight()) {
+                getScene()->getVisibilityManager()->addEffectiveLight(static_cast<Light*>(object));
+            } else {
+                getScene()->getVisibilityManager()->addObjectToDraw(object);
+            }
 		}
 	}
 }

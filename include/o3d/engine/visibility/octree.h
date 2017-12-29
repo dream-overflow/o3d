@@ -15,11 +15,10 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Octree
-//-------------------------------------------------------------------------------------
-//! Octree
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Octree based visibility controller.
+ * @todo Implement it.
+ */
 class O3D_API Octree : public VisibilityABC
 {
 public:
@@ -57,4 +56,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_OCTREE_H
-

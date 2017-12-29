@@ -36,8 +36,7 @@ Light::Light(BaseObject *parent, Light::LightType lightType) :
     m_pConeBounding(nullptr),
 	m_thresholdDistance(-1.0f) // Negative values are not valid. It means 'must be updated'
 {
-	if (lightType == Light::SPOT_LIGHT)
-    {
+    if (lightType == Light::SPOT_LIGHT) {
         m_pConeBounding = new BCone(
                     Vector3(getWorldPosition().getData()),
                     getWorldDirection(),
@@ -66,8 +65,9 @@ Light::Light(const Light &dup) :
     m_pConeBounding(nullptr),
 	m_thresholdDistance(dup.m_thresholdDistance)
 {
-    if (dup.m_pConeBounding != nullptr)
+    if (dup.m_pConeBounding != nullptr) {
 		m_pConeBounding = new BCone(*dup.m_pConeBounding);
+    }
 }
 
 //! Copy constructor.
@@ -79,17 +79,23 @@ Light::~Light()
 // Get the drawing type.
 UInt32 Light::getDrawType() const
 {
-	switch (m_lightType)
-	{
-		case POINT_LIGHT:
-			return Scene::DRAW_POINT_LIGHT;
-		case SPOT_LIGHT:
-			return Scene::DRAW_SPOT_LIGHT;
-		case DIRECTIONAL_LIGHT:
-			return Scene::DRAW_DIRECTIONAL_LIGHT;
-		default:
-			return 0;
-	}
+    switch (m_lightType) {
+        case POINT_LIGHT:
+            return Scene::DRAW_POINT_LIGHT;
+        case SPOT_LIGHT:
+            return Scene::DRAW_SPOT_LIGHT;
+        case DIRECTIONAL_LIGHT:
+            return Scene::DRAW_DIRECTIONAL_LIGHT;
+        case LIGHT_MAP:
+            return Scene::DRAW_LIGHT_MAP;
+        default:
+            return 0;
+    }
+}
+
+Bool Light::isLight() const
+{
+    return True;
 }
 
 // Nothing to update.
@@ -97,12 +103,11 @@ void Light::update()
 {
     clearUpdated();
 
-    if (m_node && (m_node->hasUpdated()))
-    {
+    if (m_node && (m_node->hasUpdated())) {
         setUpdated();
 
-        if (m_lightType == SPOT_LIGHT) // The cone won't update if the position didnt change.
-        {
+        if (m_lightType == SPOT_LIGHT) {
+            // The cone won't update if the position didnt change.
             m_pConeBounding->setOrigin(Vector3(getWorldPosition().getData()));
             // direction on Z component of the matrix
             m_pConeBounding->setDirection(!m_node->getAbsoluteMatrix().getZ());
@@ -113,73 +118,85 @@ void Light::update()
 //! Set the constant light attenuation.
 void Light::setConstantAttenuation(Float constant)
 {
-	if (m_attenuation[0] != constant)
+    if (m_attenuation[0] != constant) {
 		m_thresholdDistance = -1.0f;
+    }
 
 	m_attenuation[0] = constant;
 
-    if (m_lightType == SPOT_LIGHT)
+    if (m_lightType == SPOT_LIGHT) {
         m_pConeBounding->setDepth(getThresholdDistance());
+    }
 }
 
 //! Set the linear light attenuation.
 void Light::setLinearAttenuation(Float linear)
 {
-	if (m_attenuation[1] != linear)
+    if (m_attenuation[1] != linear) {
 		m_thresholdDistance = -1.0f;
+    }
 
 	m_attenuation[1] = linear;
 
-    if (m_lightType == SPOT_LIGHT)
+    if (m_lightType == SPOT_LIGHT) {
         m_pConeBounding->setDepth(getThresholdDistance());
+    }
 }
 
 //! Set the quadratic light attenuation.
 void Light::setQuadraticAttenuation(Float quadratic)
 {
-	if (m_attenuation[2] != quadratic)
+    if (m_attenuation[2] != quadratic) {
 		m_thresholdDistance = -1.0f;
+    }
 
 	m_attenuation[2] = quadratic;
 
-    if (m_lightType == SPOT_LIGHT)
+    if (m_lightType == SPOT_LIGHT) {
         m_pConeBounding->setDepth(getThresholdDistance());
+    }
 }
 
 //! Set the light attenuation from 3 float.
 void Light::setAttenuation(Float constant, Float linear, Float quadratic)
 {
-	if ((m_attenuation[0] != constant) || (m_attenuation[1] != linear) || (m_attenuation[2] != quadratic))
+    if ((m_attenuation[0] != constant) || (m_attenuation[1] != linear) || (m_attenuation[2] != quadratic)) {
 		m_thresholdDistance = -1.0f;
+    }
 
 	m_attenuation.set(constant, linear, quadratic);
 
-    if (m_lightType == SPOT_LIGHT)
+    if (m_lightType == SPOT_LIGHT) {
         m_pConeBounding->setDepth(getThresholdDistance());
+    }
 }
 
 //! Set the light attenuation from a 3 float vector.
 void Light::setAttenuation(const Vector3 att)
 {
-	if (m_attenuation != att)
+    if (m_attenuation != att) {
 		m_thresholdDistance = -1.0f;
+    }
 
 	m_attenuation = att;
 
-    if (m_lightType == SPOT_LIGHT)
+    if (m_lightType == SPOT_LIGHT) {
         m_pConeBounding->setDepth(getThresholdDistance());
+    }
 }
 
 //! Set the attenuation threshold
 void Light::setAttenuationThreshold(Float _value)
 {
-	if (m_attenuationThreshold != _value)
+    if (m_attenuationThreshold != _value) {
 		m_thresholdDistance = -1.0f;
+    }
 
 	m_attenuationThreshold = _value;
 
-    if (m_lightType == SPOT_LIGHT)
+    if (m_lightType == SPOT_LIGHT) {
         m_pConeBounding->setDepth(getThresholdDistance());
+    }
 }
 
 // Set the light cutoff in degree [0..90]. 180 mean omnidirectional like a point light.
@@ -187,8 +204,9 @@ void Light::setCutOff(Float cutoff)
 {
 	O3D_ASSERT((cutoff >= 0.f) && ((cutoff <= 90.f) || (cutoff == 180.f)));
 
-	if ((m_lightType == SPOT_LIGHT) && (m_cutOff != cutoff))
+    if ((m_lightType == SPOT_LIGHT) && (m_cutOff != cutoff)) {
 		m_pConeBounding->setCutoff(o3d::toRadian(cutoff));
+    }
 
 	m_cutOff = cutoff;
 }
@@ -196,11 +214,11 @@ void Light::setCutOff(Float cutoff)
 // Draw according to the light type.
 void Light::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	switch (m_lightType)
-	{
+    switch (m_lightType) {
 		case POINT_LIGHT:
 			drawPointLight(drawInfo);
 			return;
@@ -217,42 +235,43 @@ void Light::draw(const DrawInfo &drawInfo)
 
 void Light::drawPointLight(const DrawInfo &drawInfo)
 {
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_POINT_LIGHT))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_POINT_LIGHT)) {
 		setUpModelView();
 
 		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(m_diffuse);
 
         // wire sphere light volume
-        if (getScene()->getDrawObject(Scene::DRAW_LIGHT_VOLUME))
+        if (getScene()->getDrawObject(Scene::DRAW_LIGHT_VOLUME)) {
             primitive->draw(
                         PrimitiveManager::WIRE_SPHERE1,
                         Vector3(getRadius(), getRadius(), getRadius()));
-        else // or little wire sphere
+        } else {
+            // or little wire sphere
             primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(0.3f,0.3f,0.3f));
+        }
 	}
 }
 
 void Light::drawSpotLight(const DrawInfo &drawInfo)
 {
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_SPOT_LIGHT))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_SPOT_LIGHT)) {
 		setUpModelView();
 
 		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(m_diffuse);
 
-		if (m_cutOff < 180.f)
-		{
+        if (m_cutOff < 180.f) {
 			primitive->beginDraw(P_LINES);
 				primitive->addVertex(0,0,0);
 				primitive->addVertex(0,0,3);
@@ -263,8 +282,7 @@ void Light::drawSpotLight(const DrawInfo &drawInfo)
 			primitive->draw(PrimitiveManager::SOLID_SPHERE1, Vector3(0.1f,0.1f,0.1f));
 
             // wire cone light volume
-            if (getScene()->getDrawObject(Scene::DRAW_LIGHT_VOLUME))
-            {
+            if (getScene()->getDrawObject(Scene::DRAW_LIGHT_VOLUME)) {
                 // Directional wire cone (Z aligned)
                 primitive->modelView().translate(Vector3(0,0,-1+getLength()));
                 primitive->modelView().rotateX(o3d::toRadian(-90.f));
@@ -272,9 +290,8 @@ void Light::drawSpotLight(const DrawInfo &drawInfo)
                                     getRadius(),
                                     getLength(),
                                     getRadius()) );
-            }
-            else // or little light cone
-            {
+            } else {
+                // or little light cone
                 // Directional wire cone (Z aligned)
                 primitive->modelView().translate(Vector3(0,0,-1+getLength()));
                 primitive->modelView().rotateX(o3d::toRadian(-90.f));
@@ -283,9 +300,7 @@ void Light::drawSpotLight(const DrawInfo &drawInfo)
                                     2.f,
                                     2.f*tanf(o3d::toRadian(m_cutOff))) );
             }
-		}
-		else
-		{
+        } else {
 			// Omnidirectional wire sphere
 			primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(0.3f,0.3f,0.3f));
 		}
@@ -294,14 +309,14 @@ void Light::drawSpotLight(const DrawInfo &drawInfo)
 
 void Light::drawDirectLight(const DrawInfo &drawInfo)
 {
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_DIRECTIONAL_LIGHT))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_DIRECTIONAL_LIGHT)) {
 		setUpModelView();
 
 		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(m_diffuse);
 
@@ -327,134 +342,129 @@ void Light::drawDirectLight(const DrawInfo &drawInfo)
 //! Check only with its parent node position.
 Geometry::Clipping Light::checkBounding(const AABBox &bbox) const
 {
-	switch (m_lightType)
-	{
-	case SPOT_LIGHT:
-		return bbox.clip(*m_pConeBounding);
-	case POINT_LIGHT:
-		return bbox.clip(BSphere(Vector3(getWorldPosition().getData()), getThresholdDistance()));
-	default:
-		return Geometry::CLIP_INTERSECT;
+    switch (m_lightType) {
+        case SPOT_LIGHT:
+            return bbox.clip(*m_pConeBounding);
+        case POINT_LIGHT:
+            return bbox.clip(BSphere(Vector3(getWorldPosition().getData()), getThresholdDistance()));
+        default:
+            return Geometry::CLIP_INTERSECT;
 	}
 }
 
 //! Check only with its parent node position.
 Geometry::Clipping Light::checkBounding(const Plane &plane) const
 {
-	switch (m_lightType)
-	{
-	case SPOT_LIGHT:
-        return plane.clip(*m_pConeBounding);
-	case POINT_LIGHT:
-		return plane.clip(BSphere(Vector3(getWorldPosition().getData()), getThresholdDistance()));
-	default:
-		return Geometry::CLIP_INTERSECT;
+    switch (m_lightType) {
+        case SPOT_LIGHT:
+            return plane.clip(*m_pConeBounding);
+        case POINT_LIGHT:
+            return plane.clip(BSphere(Vector3(getWorldPosition().getData()), getThresholdDistance()));
+        default:
+            return Geometry::CLIP_INTERSECT;
 	}
 }
 
 //! Check only with its parent node position.
 Geometry::Clipping Light::checkBounding(const BSphere &sphere) const
 {
-	switch (m_lightType)
-	{
-	case SPOT_LIGHT:
-		return sphere.clip(*m_pConeBounding);
-	case POINT_LIGHT:
-		return sphere.clip(BSphere(Vector3(getWorldPosition().getData()), getThresholdDistance()));
-	default:
-		return Geometry::CLIP_INTERSECT;
+    switch (m_lightType) {
+        case SPOT_LIGHT:
+            return sphere.clip(*m_pConeBounding);
+        case POINT_LIGHT:
+            return sphere.clip(BSphere(Vector3(getWorldPosition().getData()), getThresholdDistance()));
+        default:
+            return Geometry::CLIP_INTERSECT;
 	}
 }
 
 Geometry::Clipping Light::checkFrustum(const Frustum &frustum) const
 {
-	switch (m_lightType)
-	{
-	case SPOT_LIGHT:
-        return frustum.coneInFrustum(*m_pConeBounding);
-	case POINT_LIGHT:
-		return frustum.sphereInFrustum(Vector3(getWorldPosition().getData()), getThresholdDistance());
-	default:
-		return Geometry::CLIP_INTERSECT;
+    switch (m_lightType) {
+        case SPOT_LIGHT:
+            return frustum.coneInFrustum(*m_pConeBounding);
+        case POINT_LIGHT:
+            return frustum.sphereInFrustum(Vector3(getWorldPosition().getData()), getThresholdDistance());
+        default:
+            return Geometry::CLIP_INTERSECT;
 	}
 }
 
 // Get the light position into the eye space using the current active camera.
 Vector4 Light::getPosition() const
 {
-	if (getScene()->getActiveCamera())
-	{
-		if (m_lightType == DIRECTIONAL_LIGHT)
-		{
+    if (getScene()->getActiveCamera()) {
+        if (m_lightType == DIRECTIONAL_LIGHT) {
 			return Vector4(
 					!(getScene()->getActiveCamera()->getModelviewMatrix() *
 							getAbsoluteMatrix()).getZ(),
 					0.0f);
-		}
-		else
-		{
+        } else {
 			return Vector4(
 					(getScene()->getActiveCamera()->getModelviewMatrix() *
 							getAbsoluteMatrix()).getTranslation(),
 					1.0f);
 		}
-	}
-	else
-	{
-		if (m_lightType == DIRECTIONAL_LIGHT)
+    } else {
+        if (m_lightType == DIRECTIONAL_LIGHT) {
             return Vector4(!getAbsoluteMatrix().getZ(), 0.0f);
-		else
+        } else {
             return Vector4(getAbsoluteMatrix().getTranslation(), 1.0f);
+        }
 	}
 }
 
 // Get the light direction into the eye space using the current active camera.
 Vector3 Light::getDirection() const
 {
-	if (getScene()->getActiveCamera())
-	{
-		if (m_lightType == POINT_LIGHT)
+    if (getScene()->getActiveCamera()) {
+        if (m_lightType == POINT_LIGHT) {
 			return Vector3();
-		else
+        } else {
 			return !(getScene()->getActiveCamera()->getModelviewMatrix() * getAbsoluteMatrix()).getZ();
-	}
-	else
+        }
+    } else {
         return !getAbsoluteMatrix().getZ();
+    }
 }
 
 // Get the light position into world space.
 Vector4 Light::getWorldPosition() const
 {
-	if (m_lightType == DIRECTIONAL_LIGHT)
+    if (m_lightType == DIRECTIONAL_LIGHT) {
 		return Vector4(!getAbsoluteMatrix().getZ(), 0.0f);
-	else
+    } else {
 		return Vector4(getAbsoluteMatrix().getTranslation(), 1.0f);
+    }
 }
 
 //! Get the light direction into world space.
 Vector3 Light::getWorldDirection() const
 {
-	if (m_lightType == POINT_LIGHT)
+    if (m_lightType == POINT_LIGHT) {
 		return Vector3();
-	else
+    } else {
         return !getAbsoluteMatrix().getZ();
+    }
 }
 
 Float Light::getRadius() const
 {
-    if (m_lightType == POINT_LIGHT)
+    if (m_lightType == POINT_LIGHT) {
         return getThresholdDistance();
-    else if (m_lightType == SPOT_LIGHT)
+    } else if (m_lightType == SPOT_LIGHT) {
         return getThresholdDistance() * tanf(toRadian(m_cutOff));
-    else
+    } else {
         return 0.0f;
+    }
 }
 
 // Serialization
 Bool Light::writeToFile(OutStream &os)
 {
-    if (!SceneObject::writeToFile(os))
+    if (!SceneObject::writeToFile(os)) {
 		return False;
+    }
 
     os   << static_cast<Int32>(m_lightType)
 		 << m_exponent
@@ -469,8 +479,9 @@ Bool Light::writeToFile(OutStream &os)
 
 Bool Light::readFromFile(InStream &is)
 {
-    if (!SceneObject::readFromFile(is))
+    if (!SceneObject::readFromFile(is)) {
 		return False;
+    }
 
 	Int32 lightType;
 

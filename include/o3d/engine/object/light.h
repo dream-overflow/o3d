@@ -24,12 +24,13 @@ class BCone;
 /**
  * @brief The Light class
  * @date 2002-09-16
- * @author Frederic SCHERMA, Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
- * A scene light object which can be a 3 kind of type :
- *  - point light : position, attenuation
- *  - spot light : position, direction, attenuation, cutoff
- *  - directional light : direction
- *  - light map : light map (TODO LightMap : public Light)
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
+ * @author Emmanuel RUFFIO (emmanuel.ruffio@gmail.com)
+ * A scene light object which can be of many types :
+ *  - point light : position, attenuation (finite)
+ *  - spot light : position, direction, attenuation, cutoff (finite)
+ *  - directional light : direction (and infinite)
+ *  - light map : light map (local or global)
  * A light that project shadow must enableShadowCast().
  */
 class O3D_API Light : public SceneObject
@@ -71,7 +72,10 @@ public:
 	inline LightType getLightType() const { return m_lightType; }
 
 	//! Get the drawing type according to the light type.
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
+
+    //! Returns True for any object based on light.
+    virtual Bool isLight() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Color model
@@ -171,26 +175,26 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Draw according to the light type
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	//! Check only with its parent node position.
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 
 	//! Check only with its parent node position.
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 
 	//! Check only with its parent node position.
-	virtual Geometry::Clipping checkBounding(const BSphere &sphere) const;
+    virtual Geometry::Clipping checkBounding(const BSphere &sphere) const; // override;
 
     //! Check how the light clip with the frustum.
-	virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const;
+    virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const override;
 
     //-----------------------------------------------------------------------------------
 	// Processing
 	//-----------------------------------------------------------------------------------
 
 	//! Nothing to update.
-	virtual void update();
+    virtual void update() override;
 
 	//! Get the light position into the eye space using the current active camera.
 	//! w=1 for point and spot light, otherwise 0 for infinite directional source.
@@ -221,8 +225,8 @@ public:
 
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

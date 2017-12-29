@@ -112,9 +112,10 @@ public:
 		DRAW_PORTAL,
 		DRAW_MESH_LOCAL_AXIS,
 		DRAW_POINT_LIGHT,
-		DRAW_SPOT_LIGHT,
+        DRAW_SPOT_LIGHT,    //!< light volume symbolics
 		DRAW_DIRECTIONAL_LIGHT,
-        DRAW_LIGHT_VOLUME,       //!< light volume symbolic
+        DRAW_LIGHT_VOLUME,
+        DRAW_LIGHT_MAP,
 		DRAW_CAMERA,
 		DRAW_CUBE_GIZMO,
 		DRAW_CYLINDER_GYZMO,
@@ -154,10 +155,7 @@ public:
      * @param rootPath Path where to finds data folders.
      * @param renderer Instance to an OpenGL renderer.
      */
-	Scene(
-		BaseObject *parent,
-		const String &rootPath = "",
-        Renderer *renderer = nullptr);
+    Scene(BaseObject *parent, const String &rootPath = "", Renderer *renderer = nullptr);
 
 	//! Virtual destructor.
 	virtual ~Scene();
@@ -210,7 +208,7 @@ public:
     // Physic manager
     //
 
-    inline       PhysicEntityManager* getPhysicEntityManager()       { return m_physicEntityManager; }
+    inline PhysicEntityManager* getPhysicEntityManager() { return m_physicEntityManager; }
     inline const PhysicEntityManager* getPhysicEntityManager() const { return m_physicEntityManager; }
 
     //
@@ -248,58 +246,58 @@ public:
 	// Accessors
     //
 
-	inline       Context* getContext()       { return m_context; }
+    inline Context* getContext() { return m_context; }
 	inline const Context* getContext() const { return m_context; }
 
-	inline       AlphaPipeline* getAlphaPipeline()       { return m_alphaPipeline; }
+    inline AlphaPipeline* getAlphaPipeline() { return m_alphaPipeline; }
 	inline const AlphaPipeline* getAlphaPipeline() const { return m_alphaPipeline; }
 
-	inline       SpecialEffectsManager* getSpecialEffectsManager()       { return m_specialEffectsManager; }
+    inline SpecialEffectsManager* getSpecialEffectsManager() { return m_specialEffectsManager; }
 	inline const SpecialEffectsManager* getSpecialEffectsManager() const { return m_specialEffectsManager; }
 
-	inline       ViewPortManager* getViewPortManager()       { return m_viewPortManager; }
+    inline ViewPortManager* getViewPortManager() { return m_viewPortManager; }
 	inline const ViewPortManager* getViewPortManager() const { return m_viewPortManager; }
 
-	inline       TextureManager* getTextureManager()       { return m_textureManager; }
+    inline TextureManager* getTextureManager() { return m_textureManager; }
 	inline const TextureManager* getTextureManager() const { return m_textureManager; }
 
-	inline       AnimationManager* getAnimationManager()       { return m_animationManager; }
+    inline AnimationManager* getAnimationManager() { return m_animationManager; }
 	inline const AnimationManager* getAnimationManager() const { return m_animationManager; }
 
-	inline       FrameManager* getFrameManager()       { return m_frameManager; }
+    inline FrameManager* getFrameManager() { return m_frameManager; }
 	inline const FrameManager* getFrameManager() const { return m_frameManager; }
 
-	inline       MeshDataManager* getMeshDataManager()       { return m_meshDataManager; }
+    inline MeshDataManager* getMeshDataManager() { return m_meshDataManager; }
 	inline const MeshDataManager* getMeshDataManager() const { return m_meshDataManager; }
 
-	inline       HierarchyTree* getHierarchyTree()       { return m_hierarchyTree; }
+    inline HierarchyTree* getHierarchyTree() { return m_hierarchyTree; }
 	inline const HierarchyTree* getHierarchyTree() const { return m_hierarchyTree; }
 
-	inline       Frustum* getFrustum()       { return m_frustum; }
+    inline Frustum* getFrustum() { return m_frustum; }
 	inline const Frustum* getFrustum() const { return m_frustum; }
 
-	inline       Landscape* getLandscape()       { return m_landscape; }
+    inline Landscape* getLandscape() { return m_landscape; }
 	inline const Landscape* getLandscape() const { return m_landscape; }
 
-	inline       AnimationPlayerManager* getAnimationPlayerManager()       { return m_animationPlayerManager; }
+    inline AnimationPlayerManager* getAnimationPlayerManager() { return m_animationPlayerManager; }
 	inline const AnimationPlayerManager* getAnimationPlayerManager() const { return m_animationPlayerManager; }
 
-	inline       ShaderManager* getShaderManager()       { return m_shaderManager; }
+    inline ShaderManager* getShaderManager() { return m_shaderManager; }
 	inline const ShaderManager* getShaderManager() const { return m_shaderManager; }
 
-	inline       Picking* getPicking()       { return m_picking; }
+    inline Picking* getPicking() { return m_picking; }
 	inline const Picking* getPicking() const { return m_picking; }
 
-	inline       SceneObjectManager* getSceneObjectManager()       { return m_sceneObjectManager; }
+    inline SceneObjectManager* getSceneObjectManager() { return m_sceneObjectManager; }
 	inline const SceneObjectManager* getSceneObjectManager() const { return m_sceneObjectManager; }
 
-	inline       ClothManager* getClothManager()       { return m_clothManager; }
+    inline ClothManager* getClothManager() { return m_clothManager; }
 	inline const ClothManager* getClothManager() const { return m_clothManager; }
 
-	inline       VisibilityManager* getVisibilityManager()       { return m_visibilityManager; }
+    inline VisibilityManager* getVisibilityManager() { return m_visibilityManager; }
 	inline const VisibilityManager* getVisibilityManager() const { return m_visibilityManager; }
 
-	inline       PrimitiveManager* getPrimitiveManager()       { return m_primitiveManager; }
+    inline PrimitiveManager* getPrimitiveManager() { return m_primitiveManager; }
 	inline const PrimitiveManager* getPrimitiveManager() const { return m_primitiveManager; }
 
     //
@@ -307,7 +305,7 @@ public:
     //
 
 	//! Get the scene info
-	inline       SceneInfo& getSceneInfo()       { return m_sceneInfo; }
+    inline SceneInfo& getSceneInfo() { return m_sceneInfo; }
 	//! Get the scene info (const version)
 	inline const SceneInfo& getSceneInfo() const { return m_sceneInfo; }
 
@@ -328,7 +326,7 @@ public:
     void setRenderer(Renderer *renderer);
 
 	//! Get current OpenGL renderer and context
-    inline       Renderer* getRenderer()       { return m_renderer; }
+    inline Renderer* getRenderer() { return m_renderer; }
 	//! Get current OpenGL renderer and context (const version)
     inline const Renderer* getRenderer() const { return m_renderer; }
 
@@ -336,7 +334,7 @@ public:
 	void setActiveCamera(Camera* camera) { m_activeCamera = camera; }
 
 	//! Get the active camera. Valid at draw pass
-	inline       Camera* getActiveCamera()       { return m_activeCamera; }
+    inline Camera* getActiveCamera() { return m_activeCamera; }
 	//! Get the active camera. Valid at draw pass (const version)
 	inline const Camera* getActiveCamera() const { return m_activeCamera; }
 

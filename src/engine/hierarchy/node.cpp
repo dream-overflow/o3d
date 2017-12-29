@@ -181,29 +181,30 @@ void Node::update()
 	}
 
     // compute the absolute matrix
-    if (m_rigidBody)
-    {
+    if (m_rigidBody) {
         m_worldMatrix = m_rigidBody->getWorldToBody();
     }
 
 	// update each son (recursively if necessary)
-	for (IT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it)
-	{
+    for (IT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it) {
 		SceneObject *object = (*it);
 
-		if (object->getActivity())
-		{
-			// compute object absolute matrix
+        // the object must be enabled to be performed
+        if (object->getActivity()) {
+            // compute object absolute matrix and somes others specifics updates
 			object->update();
 
-            if (object->hasUpdated())
-            {
-                // only for drawable and dynamic objects
-                if (object->hasDrawable() &&
-                    object->getVisibility() &&
-                    getScene()->getDrawObject((Scene::DrawObjectType)object->getDrawType()) )
-                        // && object->isMovable() )
-                {
+            // object as been update since last update
+            if (object->hasUpdated()) {
+                // two cases :
+                if (object->hasDrawable() && object->getVisibility() &&
+                    getScene()->getDrawObject((Scene::DrawObjectType)object->getDrawType())) {
+                    // somes objects are drawable and visible (shadable or symbolics)
+                    // and if it is globally performed at the scene level
+                    getScene()->getVisibilityManager()->updateObject(object);
+
+                } else if (object->isLight()) {
+                    // a light must be processed by visibility to known if it is effective or not
                     getScene()->getVisibilityManager()->updateObject(object);
                 }
             }
@@ -494,16 +495,16 @@ void Node::addSonFirst(SceneObject *object)
 {
 	O3D_ASSERT(object);
 
-	if (object)
-	{
+    if (object) {
 		object->setParent(this);
 		object->setNode(this);
 		object->setPersistant(True);
 
 		m_objectList.push_front(object);
 
-        if (object->hasDrawable())
+        if (object->hasDrawable() || object->isLight()) {
             getScene()->getVisibilityManager()->addObject(object);
+        }
 	}
 }
 
@@ -519,7 +520,7 @@ void Node::addSonLast(SceneObject *object)
 
 		m_objectList.push_back(object);
 
-        if (object->hasDrawable()) {
+        if (object->hasDrawable() || object->isLight()) {
             getScene()->getVisibilityManager()->addObject(object);
         }
 	}
@@ -662,10 +663,8 @@ void Node::addTransform(Transform *transform)
 // Remove and delete a transform
 void Node::deleteTransform(Transform *transform)
 {
-	for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it)
-	{
-		if ((*it) == transform)
-		{
+    for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it) {
+        if ((*it) == transform) {
 			deletePtr(*it);
 			m_transformList.erase(it);
 		}
@@ -677,8 +676,9 @@ void Node::deleteTransform(Transform *transform)
 // Remove and delete all transforms
 void Node::deleteAllTransforms()
 {
-	for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it)
+    for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it) {
 		deletePtr(*it);
+    }
 
 	m_transformList.clear();
 }
@@ -686,10 +686,10 @@ void Node::deleteAllTransforms()
 // Find a transform
 Bool Node::findTransform(Transform *transform) const
 {
-	for (CIT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it)
-	{
-		if ((*it) == transform)
+    for (CIT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it) {
+        if ((*it) == transform) {
 			return True;
+        }
 	}
 	return False;
 }
@@ -697,10 +697,10 @@ Bool Node::findTransform(Transform *transform) const
 // Find a transform given its name (read only)
 const Transform* Node::findTransform(const String &name) const
 {
-	for (CIT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it)
-	{
-		if ((*it)->getName() == name)
+    for (CIT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it) {
+        if ((*it)->getName() == name) {
 			return (*it);
+        }
 	}
     return nullptr;
 }
@@ -708,10 +708,10 @@ const Transform* Node::findTransform(const String &name) const
 // Find a transform given its name
 Transform* Node::findTransform(const String &name)
 {
-	for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it)
-	{
-		if ((*it)->getName() == name)
+    for (IT_TransformList it = m_transformList.begin(); it != m_transformList.end(); ++it) {
+        if ((*it)->getName() == name) {
 			return (*it);
+        }
 	}
     return nullptr;
 }
@@ -728,19 +728,21 @@ T_TransformList& Node::getTransforms()
 
 const Transform* Node::getTransform() const
 {
-	if (m_transformList.size())
+    if (m_transformList.size()) {
 		return m_transformList.front();
-    else
+    } else {
         return nullptr;
+    }
 }
 
 //! Get the front transform or null if none
 Transform* Node::getTransform()
 {
-	if (m_transformList.size())
+    if (m_transformList.size()) {
 		return m_transformList.front();
-    else
+    } else {
         return nullptr;
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -748,8 +750,9 @@ Transform* Node::getTransform()
 //---------------------------------------------------------------------------------------
 Bool Node::writeToFile(OutStream &os)
 {
-    if (!BaseNode::writeToFile(os))
+    if (!BaseNode::writeToFile(os)) {
 		return False;
+    }
 
 	// number of sons
     os << getNumSon();

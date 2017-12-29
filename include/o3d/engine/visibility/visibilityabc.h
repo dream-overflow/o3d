@@ -35,13 +35,11 @@ struct VisibilityInfos
 	Bool	viewUseMaxDistance;
 };
 
-//---------------------------------------------------------------------------------------
-//! @class VisibilityABC
-//-------------------------------------------------------------------------------------
-//! VisibilityABC is the base class for all object visibility methods computation.
-//! A visibility object inherit from a node because it can be put anywhere in the
-//! hierarchy tree (scene graph).
-//---------------------------------------------------------------------------------------
+/**
+ * @brief VisibilityABC is the base class for all object visibility methods computation.
+ * @details A visibility object inherit from a node because it can be put anywhere in the
+ * hierarchy tree (scene graph).
+ */
 class O3D_API VisibilityABC : public SceneEntity
 {
 public:
@@ -95,4 +93,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_VISIBILITYABC_H
-

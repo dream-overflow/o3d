@@ -196,22 +196,35 @@ Bool SceneObject::getVisibility() const
 
 void SceneObject::enableVisibility()
 {
+    // and updated because of the treatment necessessary
 	m_capacities.setBit(STATE_VISIBILITY, True);
+    setUpdated();
 }
 
 void SceneObject::disableVisibility()
 {
+    // and updated because of the treatment necessessary
 	m_capacities.setBit(STATE_VISIBILITY, False);
+    setUpdated();
+}
+
+Bool SceneObject::isLight() const
+{
+    return False;
 }
 
 void SceneObject::enable()
 {
+    // and updated because of the treatment necessessary
 	m_capacities.setBit(STATE_ACTIVITY, True);
+    setUpdated();
 }
 
 void SceneObject::disable()
 {
+    // and updated because of the treatment necessessary
 	m_capacities.setBit(STATE_ACTIVITY, False);
+    setUpdated();
 }
 
 void SceneObject::enablePicking()
