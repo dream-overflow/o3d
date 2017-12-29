@@ -135,7 +135,7 @@ static Int32 pending(::Display *display, UInt32 timeout)
 			return 1;
 		}
 
-		// More drastic measures are required -- see if X is ready to talk
+        // More drastic measures are required. see if X is ready to communicate
 		{
 			static struct timeval zero_time;        // static == 0
 			int x11_fd;
@@ -163,27 +163,25 @@ void Application::runPrivate(oBool runOnce)
     Bool quit = False;
     ::Display *display = reinterpret_cast<::Display*>(ms_display);
 	XEvent event;
-    // Bool isEvent = False;
 	AppWindow::EventData eventData;
 
     while (!quit || EvtManager::instance()->isPendingEvent()) {
-        //isEvent = False;
         ms_currAppWindow = nullptr;
 
         EvtManager::instance()->processEvent();
 
         if (display) {
             // handle the events in the queue
-            while (pending(display, 2)/*XPending(display)*/ > 0) {
+            while (pending(display, 2) > 0) { // while (XPending(display) > 0) {
                 XNextEvent(display, &event);
 
-                //isEvent = True;
                 switch (event.type) {
-                    /*case CreateNotify:
-                    ms_currAppWindow = searchAppWindow(static_cast<_HWND>(event.xcreatewindow.window));
-                    if (ms_currAppWindow)
-                        ms_currAppWindow->processEvent(AppWindow::EVT_CREATE, eventData);
-                    break;*/
+                    case CreateNotify:  // not necessary
+//                    ms_currAppWindow = searchAppWindow(static_cast<_HWND>(event.xcreatewindow.window));
+//                    if (ms_currAppWindow) {
+//                        ms_currAppWindow->processEvent(AppWindow::EVT_CREATE, eventData);
+//                    }
+                    break;
 
                     case MappingNotify:
                         XRefreshKeyboardMapping(&event.xmapping);
@@ -226,7 +224,6 @@ void Application::runPrivate(oBool runOnce)
                         // origin and indicate the position of the upper-left outside corner of the window.
                         // The width and height members are set to the inside size of the window, not including
                         // the border. The border_width member is set to the width of the window's border, in pixels.
-
                         ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xconfigure.window));
                         if (ms_currAppWindow) {
                             if ((ms_currAppWindow->getWidth() != event.xconfigure.width) ||
@@ -253,34 +250,28 @@ void Application::runPrivate(oBool runOnce)
                         ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xkey.window));
                         if (ms_currAppWindow) {
                             //eventData.key = XLookupKeysym(&event.xkey, 0);
-                            {
-                                char text[8] = { 0 };
-                                KeySym keysym = NoSymbol;
-                                Status status = 0;
+                            char text[8] = {0};
+                            KeySym keysym = NoSymbol;
+                            Status status = 0;
 
-                                Xutf8LookupString(
-                                            (XIC)ms_currAppWindow->getIC(),
-                                            &event.xkey,
-                                            text,
-                                            sizeof(text),
-                                            &keysym,
-                                            &status);
+                            Xutf8LookupString((XIC)ms_currAppWindow->getIC(), &event.xkey,
+                                              text, sizeof(text),
+                                              &keysym, &status);
 
-                                //XLookupString(&event.xkey, text, sizeof(text), &keysym, NULL);
-                                //printf("compose %i %i", res, status);
+                            // XLookupString(&event.xkey, text, sizeof(text), &keysym, NULL);
+                            // printf("compose %i %i", res, status);
 
-                                if (text[0] != 0) {
-                                    String utf8;
-                                    utf8.fromUtf8(text);
-                                    eventData.unicode = utf8.toWChar();
-                                    //printf("%C (%s) %i %i\n", eventData.unicode, text, status, keysym);
-                                } else {
-                                    eventData.unicode = 0;
-                                }
-
-                                eventData.character = keysym;
-                                eventData.key = XLookupKeysym(&event.xkey, 0);
+                            if (text[0] != 0) {
+                                String utf8;
+                                utf8.fromUtf8(text);
+                                eventData.unicode = utf8.toWChar();
+                                // printf("%C (%s) %i %i\n", eventData.unicode, text, status, keysym);
+                            } else {
+                                eventData.unicode = 0;
                             }
+
+                            eventData.character = keysym;
+                            eventData.key = XLookupKeysym(&event.xkey, 0);
 
                             ms_currAppWindow->processEvent(AppWindow::EVT_KEYDOWN, eventData);
                         }
@@ -358,34 +349,31 @@ void Application::runPrivate(oBool runOnce)
                         break;
 
                     case PropertyNotify:
-                    {
                         if (event.xproperty.atom == XKLAVIER_STATE) {
-                            /*	            	int keysyms_per_keycode = 0;
-                        int min_keycode, max_keycode;
+//                            int keysyms_per_keycode = 0;
+//                            int min_keycode, max_keycode;
 
-                        XDisplayKeycodes(display, &min_keycode, &max_keycode);
-                        KeySym *keySym = XGetKeyboardMapping(display, min_keycode, max_keycode - min_keycode + 1, &keysyms_per_keycode);
-                        printf("%i %i %i\n",min_keycode,max_keycode,keysyms_per_keycode);
-                        //keySym[(max_keycode-min_keycode-1)*keysyms_per_keycode]=1;
-//	            		XChangeKeyboardMapping(display, min_keycode, keysyms_per_keycode, keySym, max_keycode - min_keycode);
-                        XFree(keySym);
-//	            		XFlush(display);
-                        XMappingEvent *e = new XMappingEvent;
-                        e->type = 34;//MappingKeyboard;
-                        e->serial = 99;//109;
-                        e->send_event = 0;
-                        e->first_keycode = 8;//min_keycode;
-                        e->count = 248;//max_keycode - min_keycode;
-                        e->window = 0;//event.xproperty.window;
-                        e->display = display;
-                        e->request = 1;
-                        XRefreshKeyboardMapping(e);
-*/
+//                            XDisplayKeycodes(display, &min_keycode, &max_keycode);
+//                            KeySym *keySym = XGetKeyboardMapping(display, min_keycode, max_keycode - min_keycode + 1, &keysyms_per_keycode);
+//                            printf("%i %i %i\n",min_keycode,max_keycode,keysyms_per_keycode);
+//                            //keySym[(max_keycode-min_keycode-1)*keysyms_per_keycode]=1;
+//                            //	            		XChangeKeyboardMapping(display, min_keycode, keysyms_per_keycode, keySym, max_keycode - min_keycode);
+//                            XFree(keySym);
+//                            //	            		XFlush(display);
+//                            XMappingEvent *e = new XMappingEvent;
+//                            e->type = 34;//MappingKeyboard;
+//                            e->serial = 99;//109;
+//                            e->send_event = 0;
+//                            e->first_keycode = 8;//min_keycode;
+//                            e->count = 248;//max_keycode - min_keycode;
+//                            e->window = 0;//event.xproperty.window;
+//                            e->display = display;
+//                            e->request = 1;
+//                            XRefreshKeyboardMapping(e);
+
                             ::Display *display = reinterpret_cast<::Display*>(ms_display);
 
                             //Atom atom = 0;
-
-                            //for (int i=0; i<4; ++i) {
                             XEvent event;
                             memset(&event, 0, sizeof(event));
 
@@ -394,22 +382,14 @@ void Application::runPrivate(oBool runOnce)
                             event.xmapping.window = RootWindow(display, DefaultScreen(display));
                             event.xmapping.serial = 0;
                             event.xmapping.send_event = True;
-                            event.xmapping.type = MappingKeyboard;//34;
+                            event.xmapping.type = MappingKeyboard;  // 34;
                             event.xmapping.first_keycode = 8;
                             event.xmapping.count = 248;
                             event.xmapping.request = 1;
 
-                            XSendEvent(
-                                        display,
-                                        RootWindow(display, DefaultScreen(display)),
-                                        False,
-                                        0,
-                                        &event);
-
+                            XSendEvent(display, RootWindow(display, DefaultScreen(display)), False, 0, &event);
                             XFlush(display);
-                            //}
                         }
-                    }
                         break;
 
                     case SelectionRequest:
@@ -432,18 +412,14 @@ void Application::runPrivate(oBool runOnce)
 
                         // They want to know what we can provide/offer
                         if (request->target == XA_TARGETS) {
-                            Atom possibleTargets[] = {
-                                XA_STRING,
-                                XA_UTF8_STRING,
-                                XA_COMPOUND_TEXT
-                            };
+                            Atom possibleTargets[] = {XA_STRING, XA_UTF8_STRING, XA_COMPOUND_TEXT};
 
                             XChangeProperty(display, request->requestor,
                                             request->property, XA_ATOM, 32, PropModeReplace,
                                             (unsigned char *) possibleTargets, 3);
-                        } else if (request->target == XA_STRING ||
-                                   request->target == XA_UTF8_STRING ||
+                        } else if (request->target == XA_STRING || request->target == XA_UTF8_STRING ||
                                    request->target == XA_COMPOUND_TEXT) {
+
                             // They want a string (all we can provide)
                             int len;
                             char *xdata = XFetchBytes(display, &len);
@@ -459,8 +435,7 @@ void Application::runPrivate(oBool runOnce)
                         }
 
                         // Dispatch the event
-                        XSendEvent(request->display, request->requestor, 0, NoEventMask,
-                                   (XEvent*)&reply);
+                        XSendEvent(request->display, request->requestor, 0, NoEventMask, (XEvent*)&reply);
                     }
 
                     default:
@@ -477,11 +452,11 @@ void Application::runPrivate(oBool runOnce)
 			}
 		}
 
-//		if (!isEvent) {
-//			System::waitMs(2);
-//      }
-
         if (ms_appWindowMap.empty()) {
+            // dont waste the CPU when no window
+            // System::waitMs(2);
+
+            // break the main loop when no more window
 			quit = True;
         }
 
