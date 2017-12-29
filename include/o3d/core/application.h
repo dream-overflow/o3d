@@ -79,10 +79,10 @@ public:
      * Offers a common settings for most of the usages.
      */
     AppSettings() :
-        useDisplay(True),
         sizeOfFastAlloc16(16384),
         sizeOfFastAlloc32(16384),
         sizeOfFastAlloc64(16384),
+        useDisplay(True),
         clearLog(True)
     {
     }

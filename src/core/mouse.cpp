@@ -51,7 +51,7 @@ void Mouse::commonInit(Int32 xlimit, Int32 ylimit)
 
 	m_aquired = False;
 
-	m_dblClickTime = 300;
+    m_dblClickDelay = DOUBLE_CLICK_DELAY;
 
 	// default window rect
 	m_window.set(0, 0, xlimit, ylimit);
@@ -128,9 +128,9 @@ void Mouse::setMousePos(Int32 x, Int32 y)
 void Mouse::setMouseWheel(Int32 dir)
 {
     if (dir < 0) {
-		m_data.lZ = -120;
+        m_data.lZ = -WHEEL_UNIT_STEPS;
     } else if (dir > 0) {
-		m_data.lZ = 120;
+        m_data.lZ = WHEEL_UNIT_STEPS;
     }
 
 	wheelUpdate();
@@ -146,7 +146,7 @@ Bool Mouse::checkDblClick(Buttons button)
 {
 	UInt32 curTime = System::getMsTime();
 
-    if ((curTime - m_lastDblClickTime[button]) > m_dblClickTime) {
+    if ((curTime - m_lastDblClickTime[button]) > m_dblClickDelay) {
 		m_dblClick[button] = 0;
     }
 
@@ -231,7 +231,7 @@ void Mouse::wheelUpdate()
 			m_wheelOldDir = m_wheelSpeed = 0;
 		}
 
-		m_wheelSpeed += (m_wheelDelta / 120);
+        m_wheelSpeed += (m_wheelDelta / WHEEL_UNIT_STEPS);
 		m_wheelOldDir = m_wheelDelta;
 	}
 
@@ -264,6 +264,32 @@ void Mouse::updateSmoother(Float time)
                         Vector2f((Float)m_posNoAccel.x(), (Float)m_posNoAccel.y()),
                         time);
         }
+    }
+}
+
+void Mouse::setWheelSpeed(UInt32 delay, Float scale)
+{
+    m_wheelDelay = delay;
+    m_wheelScale = scale;
+}
+
+void Mouse::setMouseRegion(const Box2i &window)
+{
+    m_window = window;
+
+    // compute the mouse centered position
+    m_windowPos.x() = ((m_window.width() + m_window.x()) >> 1) - 1;
+    m_windowPos.y() = ((m_window.height() + m_window.y()) >> 1) - 1;
+}
+
+Float Mouse::getSmoothedWheel() const
+{
+    if (m_wheelSpeed < 0) {
+        return -(Float)WHEEL_UNIT_STEPS;
+    } else if (m_wheelSpeed > 0) {
+        return (Float)WHEEL_UNIT_STEPS;
+    } else {
+        return 0.f;
     }
 }
 

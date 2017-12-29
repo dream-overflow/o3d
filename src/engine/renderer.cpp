@@ -469,11 +469,11 @@ void Renderer::disableDebug()
 
 void Renderer::computeVersion()
 {
+    // Since GL3 we have major and minor integers directly
     GLint majorVersion, minorVersion;
     _glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
     _glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
 
     // compute the gl version
-    UInt32 glVersion = majorVersion * 100 + minorVersion * 10;
     m_version = (UInt32)(majorVersion * 100 + minorVersion * 10);
 }

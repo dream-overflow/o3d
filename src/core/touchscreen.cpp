@@ -26,7 +26,8 @@ TouchScreen::Pointer::Pointer() :
     pressure(0),
     oldPressure(0),
     deltaPressure(0),
-    downTime(0)
+    downTime(0),
+    dblTapTime(0)
 {
 }
 
@@ -44,6 +45,7 @@ void TouchScreen::commonInit(Int32 xlimit, Int32 ylimit)
 {
     m_name = "TouchScreen";
 
+    m_dblTapDelay = DOUBLE_TAP_DELAY;
     m_oldSize = m_deltaSize = 0;
 
     m_pointers.clear();
@@ -168,6 +170,15 @@ Bool TouchScreen::isLongTap() const
     }
 }
 
+Bool TouchScreen::isDoubleTap() const
+{
+    if (m_pointers.size() >= 1 && !isSize()) {
+        return m_pointers[0].tap == 4;
+    } else {
+         return False;
+    }
+}
+
 Bool TouchScreen::isSize() const
 {
     // at least 2 pointers down
@@ -186,6 +197,16 @@ Float TouchScreen::getSize() const
 Float TouchScreen::getDeltaSize() const
 {
     return m_deltaSize;
+}
+
+void TouchScreen::setDoubleTapDelay(Int32 time)
+{
+    m_dblTapDelay = time;
+}
+
+Int32 TouchScreen::getDoubleTapDelay() const
+{
+    return m_dblTapDelay;
 }
 
 // For now, not supported on Windows and Linux desktop
@@ -302,12 +323,25 @@ void TouchScreen::setPointerState(UInt32 index, Bool state, Float x, Float y, Fl
     m_oldSize = m_deltaSize = 0;
 
     if (state) {
-        // possible tap
-        pointer.tap = 1;
+        if (pointer.tap == 1 || pointer.tap == 2) {
+            // possible double tap
+            Int64 elapsed = time - pointer.dblTapTime;
+            if (elapsed < (Int64)(m_dblTapDelay * 1000 * 1000)) {
+                pointer.tap = 4;
+            }
+        } else {
+            // possible tap
+            pointer.tap = 1;
+        }
+
         pointer.downTime = time;
+        pointer.dblTapTime = 0;
     } else {
-        if (pointer.tap == 1) {
+        if (pointer.tap == 1 || pointer.tap == 2) {
             Int64 elapsed = time - pointer.downTime;
+
+            // possible double tap
+            pointer.dblTapTime = time;
 
             // tap occurs
             if (elapsed > (Int64)(LONG_TAP_DURATION * 1000 * 1000)) {

@@ -28,7 +28,13 @@ public:
 
 	O3D_DECLARE_CLASS(Mouse)
 
-	//! Mouse buttons
+    //! Double click default delay in millisecond;
+    const Int32 DOUBLE_CLICK_DELAY = 300;
+
+    //! Standard wheel unit steps.
+    const Int32 WHEEL_UNIT_STEPS = 120;
+
+    //! Mouse buttonss
 	enum Buttons
 	{
 		LEFT = 0,
@@ -82,10 +88,10 @@ public:
 	// Global settings
 	//-----------------------------------------------------------------------------------
 
-	//! set the mouse double click delay between two clicks (default 500ms)
-	inline void setMouseDblClickTime(Int32 time) { m_dblClickTime = time; }
-	//! Get the mouse double click delay between two clicks (default 500ms).
-	inline Int32 getMouseDlbClickTime() const { return m_dblClickTime; }
+    //! set the mouse double click delay between two clicks (default 300ms)
+    inline void setDoubleClickDelay(Int32 time) { m_dblClickDelay = time; }
+    //! Get the mouse double click delay between two clicks (default 300ms).
+    inline Int32 getDoubleClickDelay() const { return m_dblClickDelay; }
 
 	//! set the mouse smoother activity.
 	//! @note Works only if the mouse is locked.
@@ -100,14 +106,7 @@ public:
 	inline Bool getSmootherPeriod() const { return m_smoother.getSamplingPeriod(); }
 
 	//! Set the window mouse region.
-	inline void setMouseRegion(const Box2i &window)
-	{
-		m_window = window;
-
-		// compute the mouse centered position
-		m_windowPos.x() = ((m_window.width() + m_window.x()) >> 1) - 1;
-		m_windowPos.y() = ((m_window.height() + m_window.y()) >> 1) - 1;
-	}
+    void setMouseRegion(const Box2i &window);
 
 	//! Get the window mouse region.
 	inline const Box2i& getMouseRegion() { return m_window; }
@@ -129,11 +128,7 @@ public:
 	//! Set the smoothed wheel speed.
 	//! @param delay Attenuation delay (50ms is default).
 	//! @param scale A scale factor.
-	inline void setWheelSpeed(UInt32 delay, Float scale)
-	{
-		m_wheelDelay = delay;
-		m_wheelScale = scale;
-	}
+    void setWheelSpeed(UInt32 delay, Float scale);
 
 	//! Get the inertia attenuation delay (50ms is default).
 	inline UInt32 getWheelDelay() const { return m_wheelDelay; }
@@ -219,16 +214,7 @@ public:
 
 	//! Get the smoothed wheel speed according to a delay and a scale.
 	//! @note Wheel unit is 120.
-	inline Float getSmoothedWheel() const
-	{
-        if (m_wheelSpeed < 0) {
-			return -120.f;
-        } else if (m_wheelSpeed > 0) {
-			return 120.f;
-        } else {
-			return 0.f;
-        }
-	}
+    Float getSmoothedWheel() const;
 
 	//-------------------------------------------------------------------------------
 	// virtual
@@ -289,7 +275,7 @@ protected:
     Bool m_cursor;             //!< cursor drawing state
 
 	UInt8 m_dblClick[8];          //!< double clicked buttons arrays
-	UInt32 m_dblClickTime;        //!< max time between to click for have a double click
+    UInt32 m_dblClickDelay;        //!< max time between to click for have a double click
 	UInt32 m_lastDblClickTime[8]; //!< last time that a button have been clicked
 
     MouseData m_data;           //!< mouse data
@@ -337,7 +323,7 @@ public:
 	ButtonEvent(Mouse::Buttons button, Bool pressed, Bool dblClick) :
 		m_button(button)
 	{
-		m_state = (pressed ? PRESSED : RELEASED) | (dblClick ? DBL_CLICK : 0);
+        m_state = (pressed ? PRESSED : RELEASED) | (dblClick ? DOUBLE_CLICK : 0);
 	}
 	
 	//! Get the mouse button.
@@ -354,7 +340,7 @@ public:
 	inline Bool isReleased() const { return m_state & RELEASED; }
 
 	//! Is a double click.
-	inline Bool isDblClick() const { return m_state & DBL_CLICK; }
+    inline Bool isDoubleClick() const { return m_state & DOUBLE_CLICK; }
 
 private:
 
@@ -365,7 +351,7 @@ private:
 		PRESSED = 0x02,
 		DOWN = PRESSED,
 		UP = RELEASED,
-		DBL_CLICK = 0x04
+        DOUBLE_CLICK = 0x04
 	};
 
 	Mouse::Buttons m_button;      //!< Mouse button.

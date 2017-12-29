@@ -215,19 +215,12 @@ static void handleCmd(struct android_app* app, int32_t cmd)
 
         case APP_CMD_INIT_WINDOW:
             O3D_MESSAGE("Init window");
-            Application::setState(Application::getState() | STATE_WINDOW_INIT);
             // get the window ready for showing, but wait for a start/resume
+            Application::setState(Application::getState() | STATE_WINDOW_INIT);
             break;
 
         case APP_CMD_TERM_WINDOW:
             O3D_MESSAGE("Terminate window");
-/*
-            // destroy he window
-            if (appWindow) {
-                Application::removeAppWindow(static_cast<_HWND>(appWindow->getHWND()));
-                appWindow->destroy();
-            }
-*/
             Application::setState(Application::getState() & ~STATE_WINDOW_INIT);
             break;
 
@@ -242,7 +235,7 @@ static void handleCmd(struct android_app* app, int32_t cmd)
 
         case APP_CMD_GAINED_FOCUS:
             if (appWindow) {
-                // bring back a certain functionality
+                // bring back certains functionalities
                 appWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_GAIN, eventData);
             }
 

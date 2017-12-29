@@ -30,6 +30,9 @@ public:
     //! Long tap minimum duration in millisecond;
     const Int32 LONG_TAP_DURATION = 500;
 
+    //! Double tap default delay in millisecond;
+    const Int32 DOUBLE_TAP_DELAY = 500;
+
     //! Default constructor.
     TouchScreen(BaseObject *parent = nullptr);
 
@@ -53,6 +56,11 @@ public:
     void setPosition(UInt32 index, Float x, Float y, Float pressure, Int64 time);
     //! Set the state up or down of the pointer.
     void setPointerState(UInt32 index, Bool down, Float x, Float y, Float pressure, Int64 time);
+
+    //! set the double tap delay (default 500ms)
+    void setDoubleTapDelay(Int32 time);
+    //! Get the double tap delay (default 500ms).
+    Int32 getDoubleTapDelay() const;
 
     //! Is the pointer up.
     Bool isPointerUp(UInt32 index = 0) const;
@@ -85,6 +93,9 @@ public:
 
     //! Is a long tap occurs (greater than 500ms).
     Bool isLongTap() const;
+
+    //! Is a double tap occurs.
+    Bool isDoubleTap() const;
 
     //! True if at least two pointer are defined.
     Bool isSize() const;
@@ -136,12 +147,15 @@ protected:
 
         Int64 time;
         Int64 downTime;
+        Int64 dblTapTime;
     };
 
     std::vector<Pointer> m_pointers;
 
     Float m_oldSize;
     Float m_deltaSize;
+
+    Int32 m_dblTapDelay;
 
     void commonInit(Int32 xlimit, Int32 ylimit);
 };
