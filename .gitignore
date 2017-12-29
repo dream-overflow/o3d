@@ -19,7 +19,7 @@ ui_*.h
 *.qbs.user
 *.qbs.user.*
 *.moc
-shaders.zip
+glsl*.zip
 .qmake.stash
 
 # Qt unit tests
