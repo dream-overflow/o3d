@@ -394,11 +394,17 @@ void Application::runPrivate(Bool runOnce)
 
                 Application::setState(Application::getState() & ~STATE_WINDOW_STARTED);
             }
+
+            // dont waste the CPU until completeness
+            System::waitMs(2);
+
         } else if (!(Application::getState() & STATE_APP_RUNNING)) {
             // break the loop when destroy was received
             if (!EvtManager::instance()->isPendingEvent()) {
                 EvtManager::instance()->processEvent();
             }
+
+            // destroy then out of the main loop
             break;
         }
 

@@ -172,168 +172,169 @@ void Application::runPrivate(oBool runOnce)
 
         EvtManager::instance()->processEvent();
 
-	    // handle the events in the queue
-        while (pending(display, 2)/*XPending(display)*/ > 0) {
-            XNextEvent(display, &event);
+        if (display) {
+            // handle the events in the queue
+            while (pending(display, 2)/*XPending(display)*/ > 0) {
+                XNextEvent(display, &event);
 
-			//isEvent = True;
-            switch (event.type) {
-	        	/*case CreateNotify:
-	        		ms_currAppWindow = searchAppWindow(static_cast<_HWND>(event.xcreatewindow.window));
-	        		if (ms_currAppWindow)
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_CREATE, eventData);
-	        		break;*/
+                //isEvent = True;
+                switch (event.type) {
+                    /*case CreateNotify:
+                    ms_currAppWindow = searchAppWindow(static_cast<_HWND>(event.xcreatewindow.window));
+                    if (ms_currAppWindow)
+                        ms_currAppWindow->processEvent(AppWindow::EVT_CREATE, eventData);
+                    break;*/
 
-	            case MappingNotify:
-            		XRefreshKeyboardMapping(&event.xmapping);
-					break;
+                    case MappingNotify:
+                        XRefreshKeyboardMapping(&event.xmapping);
+                        break;
 
-	        	case DestroyNotify:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xdestroywindow.window));
-                    if (ms_currAppWindow) {
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_DESTROY, eventData);
-	        			removeAppWindow(static_cast<_HWND>(event.xdestroywindow.window));
-                        ms_currAppWindow = nullptr;
-	        		}
-	        		break;
-
-	        	case EnterNotify:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xcrossing.window));
-                    if (ms_currAppWindow) {
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_GAIN, eventData);
-                    }
-	        		break;
-
-	        	case LeaveNotify:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xcrossing.window));
-                    if (ms_currAppWindow) {
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_LOST, eventData);
-                    }
-	        		break;
-
-	        	case Expose:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xexpose.window));
-                    if (ms_currAppWindow) {
-                        if (event.xexpose.count == 0) {
-	        				ms_currAppWindow->processEvent(AppWindow::EVT_PAINT, eventData);
+                    case DestroyNotify:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xdestroywindow.window));
+                        if (ms_currAppWindow) {
+                            ms_currAppWindow->processEvent(AppWindow::EVT_DESTROY, eventData);
+                            removeAppWindow(static_cast<_HWND>(event.xdestroywindow.window));
+                            ms_currAppWindow = nullptr;
                         }
-	        		}
-	        		break;
+                        break;
 
-	        	case ConfigureNotify:
-                    // The x and y members are set to the coordinates relative to the parent window's
-					// origin and indicate the position of the upper-left outside corner of the window.
-					// The width and height members are set to the inside size of the window, not including
-					// the border. The border_width member is set to the width of the window's border, in pixels.
+                    case EnterNotify:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xcrossing.window));
+                        if (ms_currAppWindow) {
+                            ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_GAIN, eventData);
+                        }
+                        break;
 
-					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xconfigure.window));
-                    if (ms_currAppWindow) {
-						if ((ms_currAppWindow->getWidth() != event.xconfigure.width) ||
-                            (ms_currAppWindow->getHeight() != event.xconfigure.height)) {
+                    case LeaveNotify:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xcrossing.window));
+                        if (ms_currAppWindow) {
+                            ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_LOST, eventData);
+                        }
+                        break;
 
-							eventData.w = event.xconfigure.width;
-							eventData.h = event.xconfigure.height;
+                    case Expose:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xexpose.window));
+                        if (ms_currAppWindow) {
+                            if (event.xexpose.count == 0) {
+                                ms_currAppWindow->processEvent(AppWindow::EVT_PAINT, eventData);
+                            }
+                        }
+                        break;
 
-							ms_currAppWindow->processEvent(AppWindow::EVT_RESIZE, eventData);
-						}
+                    case ConfigureNotify:
+                        // The x and y members are set to the coordinates relative to the parent window's
+                        // origin and indicate the position of the upper-left outside corner of the window.
+                        // The width and height members are set to the inside size of the window, not including
+                        // the border. The border_width member is set to the width of the window's border, in pixels.
 
-						if ((ms_currAppWindow->getPositionX() != event.xconfigure.x) ||
-                            (ms_currAppWindow->getPositionY() != event.xconfigure.y)) {
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xconfigure.window));
+                        if (ms_currAppWindow) {
+                            if ((ms_currAppWindow->getWidth() != event.xconfigure.width) ||
+                                (ms_currAppWindow->getHeight() != event.xconfigure.height)) {
 
-							eventData.x = event.xconfigure.x;
-							eventData.y = event.xconfigure.y;
+                                eventData.w = event.xconfigure.width;
+                                eventData.h = event.xconfigure.height;
 
-							ms_currAppWindow->processEvent(AppWindow::EVT_MOVE, eventData);
-						}
-					}
-					break;
+                                ms_currAppWindow->processEvent(AppWindow::EVT_RESIZE, eventData);
+                            }
 
-	        	case KeyPress:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xkey.window));
-                    if (ms_currAppWindow) {
-						//eventData.key = XLookupKeysym(&event.xkey, 0);
-						{
-							char text[8] = { 0 };
-							KeySym keysym = NoSymbol;
-							Status status = 0;
+                            if ((ms_currAppWindow->getPositionX() != event.xconfigure.x) ||
+                                (ms_currAppWindow->getPositionY() != event.xconfigure.y)) {
 
-							Xutf8LookupString(
-										(XIC)ms_currAppWindow->getIC(),
-										&event.xkey,
-										text,
-										sizeof(text),
-										&keysym,
-										&status);
+                                eventData.x = event.xconfigure.x;
+                                eventData.y = event.xconfigure.y;
 
-							//XLookupString(&event.xkey, text, sizeof(text), &keysym, NULL);
-							//printf("compose %i %i", res, status);
+                                ms_currAppWindow->processEvent(AppWindow::EVT_MOVE, eventData);
+                            }
+                        }
+                        break;
 
-                            if (text[0] != 0) {
-								String utf8;
-								utf8.fromUtf8(text);
-								eventData.unicode = utf8.toWChar();
-								//printf("%C (%s) %i %i\n", eventData.unicode, text, status, keysym);
-                            } else {
-								eventData.unicode = 0;
-							}
+                    case KeyPress:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xkey.window));
+                        if (ms_currAppWindow) {
+                            //eventData.key = XLookupKeysym(&event.xkey, 0);
+                            {
+                                char text[8] = { 0 };
+                                KeySym keysym = NoSymbol;
+                                Status status = 0;
 
-                            eventData.character = keysym;
+                                Xutf8LookupString(
+                                            (XIC)ms_currAppWindow->getIC(),
+                                            &event.xkey,
+                                            text,
+                                            sizeof(text),
+                                            &keysym,
+                                            &status);
+
+                                //XLookupString(&event.xkey, text, sizeof(text), &keysym, NULL);
+                                //printf("compose %i %i", res, status);
+
+                                if (text[0] != 0) {
+                                    String utf8;
+                                    utf8.fromUtf8(text);
+                                    eventData.unicode = utf8.toWChar();
+                                    //printf("%C (%s) %i %i\n", eventData.unicode, text, status, keysym);
+                                } else {
+                                    eventData.unicode = 0;
+                                }
+
+                                eventData.character = keysym;
+                                eventData.key = XLookupKeysym(&event.xkey, 0);
+                            }
+
+                            ms_currAppWindow->processEvent(AppWindow::EVT_KEYDOWN, eventData);
+                        }
+                        break;
+
+                    case KeyRelease:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xkey.window));
+                        if (ms_currAppWindow) {
                             eventData.key = XLookupKeysym(&event.xkey, 0);
-						}
+                            eventData.character = eventData.key;
+                            ms_currAppWindow->processEvent(AppWindow::EVT_KEYUP, eventData);
+                        }
+                        break;
 
-						ms_currAppWindow->processEvent(AppWindow::EVT_KEYDOWN, eventData);
-	        		}
-	        		break;
+                    case FocusIn:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xfocus.window));
+                        if (ms_currAppWindow) {
+                            ms_currAppWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_LOST, eventData);
+                        }
+                        break;
 
-	        	case KeyRelease:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xkey.window));
-                    if (ms_currAppWindow) {
-                        eventData.key = XLookupKeysym(&event.xkey, 0);
-                        eventData.character = eventData.key;
-                        ms_currAppWindow->processEvent(AppWindow::EVT_KEYUP, eventData);
-	        		}
-	        		break;
+                    case FocusOut:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xfocus.window));
+                        if (ms_currAppWindow) {
+                            ms_currAppWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_GAIN, eventData);
+                        }
+                        break;
 
-	        	case FocusIn:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xfocus.window));
-                    if (ms_currAppWindow) {
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_LOST, eventData);
-                    }
-	        		break;
+                    case ButtonPress:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xbutton.window));
+                        if (ms_currAppWindow) {
+                            eventData.button = event.xbutton.button;
+                            ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_DOWN, eventData);
+                        }
+                        break;
 
-	        	case FocusOut:
-	        		ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xfocus.window));
-                    if (ms_currAppWindow) {
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_INPUT_FOCUS_GAIN, eventData);
-                    }
-	        		break;
+                    case ButtonRelease:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xbutton.window));
+                        if (ms_currAppWindow) {
+                            eventData.button = event.xbutton.button;
+                            ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_UP, eventData);
+                        }
+                        break;
 
-	        	case ButtonPress:
-					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xbutton.window));
-                    if (ms_currAppWindow) {
-	        			eventData.button = event.xbutton.button;
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_DOWN, eventData);
-	        		}
-	        		break;
+                    case MotionNotify:
+                        ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xmotion.window));
+                        if (ms_currAppWindow) {
+                            eventData.x = event.xmotion.x;
+                            eventData.y = event.xmotion.y;
+                            ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_MOTION, eventData);
+                        }
+                        break;
 
-	        	case ButtonRelease:
-					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xbutton.window));
-                    if (ms_currAppWindow) {
-	        			eventData.button = event.xbutton.button;
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_BUTTON_UP, eventData);
-	        		}
-	        		break;
-
-	        	case MotionNotify:
-					ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xmotion.window));
-                    if (ms_currAppWindow) {
-	        			eventData.x = event.xmotion.x;
-	        			eventData.y = event.xmotion.y;
-	        			ms_currAppWindow->processEvent(AppWindow::EVT_MOUSE_MOTION, eventData);
-	        		}
-	        		break;
-
-	            case ClientMessage:
+                    case ClientMessage:
                     {
                         // O3D_XEVENT
                         if (event.xclient.message_type == O3D_XEVENT) {
@@ -350,122 +351,123 @@ void Application::runPrivate(oBool runOnce)
                             }
                         } else if (event.xclient.message_type == WM_PROTOCOLS) {
                             // Close window button
-							ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xclient.window));
-							ms_currAppWindow->processEvent(AppWindow::EVT_CLOSE, eventData);
-						}
-					}
-					break;
+                            ms_currAppWindow = getAppWindow(static_cast<_HWND>(event.xclient.window));
+                            ms_currAppWindow->processEvent(AppWindow::EVT_CLOSE, eventData);
+                        }
+                    }
+                        break;
 
-	            case PropertyNotify:
-	            {
-                    if (event.xproperty.atom == XKLAVIER_STATE) {
-	/*	            	int keysyms_per_keycode = 0;
-		            	int min_keycode, max_keycode;
+                    case PropertyNotify:
+                    {
+                        if (event.xproperty.atom == XKLAVIER_STATE) {
+                            /*	            	int keysyms_per_keycode = 0;
+                        int min_keycode, max_keycode;
 
-	            		XDisplayKeycodes(display, &min_keycode, &max_keycode);
-	            		KeySym *keySym = XGetKeyboardMapping(display, min_keycode, max_keycode - min_keycode + 1, &keysyms_per_keycode);
-	            		printf("%i %i %i\n",min_keycode,max_keycode,keysyms_per_keycode);
-            			//keySym[(max_keycode-min_keycode-1)*keysyms_per_keycode]=1;
+                        XDisplayKeycodes(display, &min_keycode, &max_keycode);
+                        KeySym *keySym = XGetKeyboardMapping(display, min_keycode, max_keycode - min_keycode + 1, &keysyms_per_keycode);
+                        printf("%i %i %i\n",min_keycode,max_keycode,keysyms_per_keycode);
+                        //keySym[(max_keycode-min_keycode-1)*keysyms_per_keycode]=1;
 //	            		XChangeKeyboardMapping(display, min_keycode, keysyms_per_keycode, keySym, max_keycode - min_keycode);
-	            		XFree(keySym);
+                        XFree(keySym);
 //	            		XFlush(display);
-	            		XMappingEvent *e = new XMappingEvent;
-	            		e->type = 34;//MappingKeyboard;
-	            		e->serial = 99;//109;
-	            		e->send_event = 0;
-	            		e->first_keycode = 8;//min_keycode;
-	            		e->count = 248;//max_keycode - min_keycode;
-	            		e->window = 0;//event.xproperty.window;
-	            		e->display = display;
-	            		e->request = 1;
-	            		XRefreshKeyboardMapping(e);
+                        XMappingEvent *e = new XMappingEvent;
+                        e->type = 34;//MappingKeyboard;
+                        e->serial = 99;//109;
+                        e->send_event = 0;
+                        e->first_keycode = 8;//min_keycode;
+                        e->count = 248;//max_keycode - min_keycode;
+                        e->window = 0;//event.xproperty.window;
+                        e->display = display;
+                        e->request = 1;
+                        XRefreshKeyboardMapping(e);
 */
-                        ::Display *display = reinterpret_cast<::Display*>(ms_display);
+                            ::Display *display = reinterpret_cast<::Display*>(ms_display);
 
-						//Atom atom = 0;
+                            //Atom atom = 0;
 
-	            		//for (int i=0; i<4; ++i) {
-							XEvent event;
-							memset(&event, 0, sizeof(event));
+                            //for (int i=0; i<4; ++i) {
+                            XEvent event;
+                            memset(&event, 0, sizeof(event));
 
-							event.type = MappingNotify;
-							event.xmapping.display = display;
-							event.xmapping.window = RootWindow(display, DefaultScreen(display));
-							event.xmapping.serial = 0;
-							event.xmapping.send_event = True;
-							event.xmapping.type = MappingKeyboard;//34;
-							event.xmapping.first_keycode = 8;
-							event.xmapping.count = 248;
-							event.xmapping.request = 1;
+                            event.type = MappingNotify;
+                            event.xmapping.display = display;
+                            event.xmapping.window = RootWindow(display, DefaultScreen(display));
+                            event.xmapping.serial = 0;
+                            event.xmapping.send_event = True;
+                            event.xmapping.type = MappingKeyboard;//34;
+                            event.xmapping.first_keycode = 8;
+                            event.xmapping.count = 248;
+                            event.xmapping.request = 1;
 
-							XSendEvent(
-									display,
-									RootWindow(display, DefaultScreen(display)),
-									False,
-									0,
-									&event);
+                            XSendEvent(
+                                        display,
+                                        RootWindow(display, DefaultScreen(display)),
+                                        False,
+                                        0,
+                                        &event);
 
-							XFlush(display);
-	            		//}
-	            	}
-	            }
-				break;
+                            XFlush(display);
+                            //}
+                        }
+                    }
+                        break;
 
-                case SelectionRequest:
-                {
-                    // Get the request in question
-                    XSelectionRequestEvent *request = &event.xselectionrequest;
+                    case SelectionRequest:
+                    {
+                        // Get the request in question
+                        XSelectionRequestEvent *request = &event.xselectionrequest;
 
-                    // Generate a reply to the selection request
-                    XSelectionEvent reply;
+                        // Generate a reply to the selection request
+                        XSelectionEvent reply;
 
-                    reply.type = SelectionNotify;
-                    reply.serial = event.xany.serial;
-                    reply.send_event = True;
-                    reply.display = display;
-                    reply.requestor = request->requestor;
-                    reply.selection = request->selection;
-                    reply.property = request->property;
-                    reply.target = None;
-                    reply.time = request->time;
+                        reply.type = SelectionNotify;
+                        reply.serial = event.xany.serial;
+                        reply.send_event = True;
+                        reply.display = display;
+                        reply.requestor = request->requestor;
+                        reply.selection = request->selection;
+                        reply.property = request->property;
+                        reply.target = None;
+                        reply.time = request->time;
 
-                    // They want to know what we can provide/offer
-                    if (request->target == XA_TARGETS) {
-                        Atom possibleTargets[] = {
-                            XA_STRING,
-                            XA_UTF8_STRING,
-                            XA_COMPOUND_TEXT
-                        };
+                        // They want to know what we can provide/offer
+                        if (request->target == XA_TARGETS) {
+                            Atom possibleTargets[] = {
+                                XA_STRING,
+                                XA_UTF8_STRING,
+                                XA_COMPOUND_TEXT
+                            };
 
-                        XChangeProperty(display, request->requestor,
-                                        request->property, XA_ATOM, 32, PropModeReplace,
-                                        (unsigned char *) possibleTargets, 3);
-                    } else if (request->target == XA_STRING ||
-                               request->target == XA_UTF8_STRING ||
-                               request->target == XA_COMPOUND_TEXT) {
-                        // They want a string (all we can provide)
-                        int len;
-                        char *xdata = XFetchBytes(display, &len);
+                            XChangeProperty(display, request->requestor,
+                                            request->property, XA_ATOM, 32, PropModeReplace,
+                                            (unsigned char *) possibleTargets, 3);
+                        } else if (request->target == XA_STRING ||
+                                   request->target == XA_UTF8_STRING ||
+                                   request->target == XA_COMPOUND_TEXT) {
+                            // They want a string (all we can provide)
+                            int len;
+                            char *xdata = XFetchBytes(display, &len);
 
-                        XChangeProperty(display, request->requestor,
-                                        request->property, request->target, 8,
-                                        PropModeReplace, (unsigned char *) xdata,
-                                        len);
-                        XFree(xdata);
-                    } else {
-                        // Did not have what they wanted, so no property set
-                        reply.property = None;
+                            XChangeProperty(display, request->requestor,
+                                            request->property, request->target, 8,
+                                            PropModeReplace, (unsigned char *) xdata,
+                                            len);
+                            XFree(xdata);
+                        } else {
+                            // Did not have what they wanted, so no property set
+                            reply.property = None;
+                        }
+
+                        // Dispatch the event
+                        XSendEvent(request->display, request->requestor, 0, NoEventMask,
+                                   (XEvent*)&reply);
                     }
 
-                    // Dispatch the event
-                    XSendEvent(request->display, request->requestor, 0, NoEventMask,
-                               (XEvent*)&reply);
+                    default:
+                        break;
                 }
-
-	            default:
-	                break;
-	        }
-	    }
+            }
+        }
 
 		// process update/paint event if necessary for each window
         for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it) {
