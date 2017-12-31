@@ -264,8 +264,8 @@ public:
 	void useKeyRange(Animatable* target, UInt32 id) const;
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -353,13 +353,13 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	//! draw the trajectory of the animation
-	virtual void drawTrajectory(SceneObject* pObject);
+    virtual void drawTrajectory(SceneObject* pObject) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -394,10 +394,10 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -432,10 +432,10 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -475,10 +475,10 @@ public:
 	void initEvaluator(IT_KeyFrameList it);
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -518,13 +518,13 @@ public:
 	void initEvaluator(IT_KeyFrameList it);
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	//! draw the trajectory of the animation
-	virtual void drawTrajectory(SceneObject* pObject);
+    virtual void drawTrajectory(SceneObject* pObject) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -564,10 +564,10 @@ public:
 	void initEvaluator(IT_KeyFrameList it);
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -607,10 +607,10 @@ public:
 	void initEvaluator(IT_KeyFrameList it);
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -645,10 +645,10 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget, Float time, UInt32& ValSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -683,10 +683,10 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize);
+    virtual const void* compute(Animatable* pTarget, Float time, UInt32& ValSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -724,10 +724,10 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* target, Float time, UInt32 &valSize);
+    virtual const void* compute(Animatable* target, Float time, UInt32 &valSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -765,10 +765,10 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable* target, Float time, UInt32 &valSize);
+    virtual const void* compute(Animatable* target, Float time, UInt32 &valSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -778,4 +778,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_ANIMATIONTRACK_H
-

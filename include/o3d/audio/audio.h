@@ -72,8 +72,8 @@ public:
 
 	virtual ~Audio();
 
-    virtual void init();
-    virtual void release();
+    virtual void init() override;
+    virtual void release() override;
 
 	//-----------------------------------------------------------------------------------
 	// General sound settings
@@ -94,7 +94,6 @@ public:
     //! get the distance attenuation model (DistanceModel_Inverse is default)
 	inline DistanceModel getDistanceModel() const { return m_distanceModel; }
 
-
 	//-----------------------------------------------------------------------------------
 	// Variables global access
 	//-----------------------------------------------------------------------------------
@@ -113,7 +112,6 @@ public:
 	//! Get the active listener
 	inline SndListener* getActiveListener() { return m_activeListener; }
 
-
 	//-----------------------------------------------------------------------------------
 	// Accessors
 	//-----------------------------------------------------------------------------------
@@ -128,7 +126,6 @@ public:
 	//! Get the sound source manager (read only).
 	inline const SndSourceManager* getSourceManager() const { return m_sourceManager; }
 
-
 	//-----------------------------------------------------------------------------------
 	// Processing
 	//-----------------------------------------------------------------------------------
@@ -136,25 +133,24 @@ public:
     /**
      * @brief update Update managers.
      */
-    virtual void update();
+    virtual void update() override;
 
     /**
      * @brief focus Called when get the focus.
      */
-    virtual void focus();
+    virtual void focus() override;
 
     /**
      * @brief lostFocus Call when the focus is lost.
      */
-    virtual void lostFocus();
-
+    virtual void lostFocus() override;
 
 	//-----------------------------------------------------------------------------------
 	// serialization (processed by Scene)
 	//-----------------------------------------------------------------------------------
 
-    virtual Bool writeToFile(OutStream &os);
-    virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -177,4 +173,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_AUDIO_H
-

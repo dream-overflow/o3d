@@ -108,10 +108,10 @@ public:
 	//! Get range id for a name.
 	inline Int32 getAnimRangeId(const String &name) const
 	{
-		for (Int32 i = 0; i < (Int32)m_animRange.size(); ++i)
-		{
-			if (m_animRange[i].name == name)
+        for (Int32 i = 0; i < (Int32)m_animRange.size(); ++i) {
+            if (m_animRange[i].name == name) {
 				return i;
+            }
 		}
 		return -1;
 	}
@@ -156,10 +156,10 @@ public:
 
 
 	// serialization
-	virtual Bool writeToFile(OutStream &os);
+    virtual Bool writeToFile(OutStream &os) override;
 	//! export from a given node of the hierarchy (pSelectedNode) with his relative hierarchy node root
 	virtual Bool writeToFile(OutStream &os, Node *hierarchyRoot, Node *selectedNode);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! Save the animation file (*.o3dan) into the specified path and using the defined filename.
 	Bool save();
@@ -190,4 +190,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_ANIMATION_H
-

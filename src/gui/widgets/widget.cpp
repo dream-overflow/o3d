@@ -830,13 +830,13 @@ void Widget::drawCache()
 void Widget::processCache(Bool clear)
 {
 	// only if a redraw is necessary
-	if (isDirty())
-	{
+    if (isDirty()) {
 		Vector2i size = m_size;
 
 		// empty surface
-		if (m_size.x() <= 0 || m_size.y() <= 0)
+        if (m_size.x() <= 0 || m_size.y() <= 0) {
 			return;
+        }
 
 		// setup
 		Int32 oldViewPort[4];
@@ -846,16 +846,17 @@ void Widget::processCache(Bool clear)
 		// compute the needed texture size in power of two
 		Vector2i tmp(size), textureSize(2,2);
 
-		while ((tmp.x() = tmp.x() >> 1) != 0)
+        while ((tmp.x() = tmp.x() >> 1) != 0) {
 			textureSize.x() <<= 1;
+        }
 
-		while ((tmp.y() = tmp.y() >> 1) != 0)
+        while ((tmp.y() = tmp.y() >> 1) != 0) {
 			textureSize.y() <<= 1;
+        }
 
 		// limits to max texture size
 		if ((textureSize.x() > getScene()->getContext()->getTextureMaxSize()) ||
-			(textureSize.y() > getScene()->getContext()->getTextureMaxSize()))
-		{
+            (textureSize.y() > getScene()->getContext()->getTextureMaxSize())) {
 			O3D_ERROR(E_InvalidParameter("Unsupported texture width"));
 		}
 
@@ -870,23 +871,26 @@ void Widget::processCache(Bool clear)
 		pFBO->bindBuffer();
 
 		// create/resize the texture
-		if ((m_texture.getWidth() != (UInt32)textureSize.x()) || (m_texture.getHeight() != (UInt32)textureSize.y()))
-		{
-			if (!m_texture.create(False, textureSize.x(), textureSize.y(), PF_RGBA_U8, True))
+        if ((m_texture.getWidth() != (UInt32)textureSize.x()) || (m_texture.getHeight() != (UInt32)textureSize.y())) {
+            if (!m_texture.create(False, textureSize.x(), textureSize.y(), PF_RGBA_U8, True)) {
 				return;
+            }
 		}
 
         pFBO->attachTexture2D(&m_texture,FrameBuffer::COLOR_ATTACHMENT0);
 
-		if (!pFBO->isCompleteness())
-			return;
+        // not efficient but necessary because fbo is defined at this time
+        if (!pFBO->isCompleteness()) {
+            return;
+        }
 
         // here we dont care of an active scissor test
         Bool scissor = getScene()->getContext()->getScissorTest();
         Box2i oldScissor = getScene()->getContext()->getScissor();
 
-        if (scissor)
+        if (scissor) {
             getScene()->getContext()->disableScissorTest();
+        }
 
 		getScene()->getContext()->modelView().push();
 		getScene()->getContext()->modelView().identity();
@@ -902,8 +906,9 @@ void Widget::processCache(Bool clear)
 		getScene()->getContext()->getViewPort(oldViewPort);
 		getScene()->getContext()->setViewPort(0, 0, size.x(), size.y());
 
-		if (clear)
+        if (clear) {
             pFBO->clearColor(FrameBuffer::COLOR_ATTACHMENT0, Color(0.f, 0.f, 0.f, 0.f));
+        }
 
 		// call the draw
 		updateCache();
@@ -915,8 +920,7 @@ void Widget::processCache(Bool clear)
         pFBO->unbindBuffer();
 
         // restore previous active scissor test
-        if (scissor)
-        {
+        if (scissor) {
             getScene()->getContext()->setScissor(oldScissor);
             getScene()->getContext()->enableScissorTest();
         }
@@ -949,12 +953,13 @@ void Widget::defineLayoutItem()
 {
 	deletePtr(m_layoutItem);
 
-	if (isLayoutObject())
+    if (isLayoutObject()) {
 		m_layoutItem = new LayoutItem(reinterpret_cast<Layout*>(this));
-	else if (typeOf<Spacer>(this))
+    } else if (typeOf<Spacer>(this)) {
 		m_layoutItem = new LayoutItem(reinterpret_cast<Spacer*>(this));
-	else
+    } else {
 		m_layoutItem = new LayoutItem(reinterpret_cast<Widget*>(this));
+    }
 }
 
 // INTERNAL : get the layout item
@@ -973,3 +978,12 @@ void Widget::setBlendFunc(Blending::FuncProfile func)
     m_shader.blendFunc = func;
 }
 
+void Widget::update()
+{
+    // nothing
+}
+
+void Widget::postImportPass()
+{
+    // nothing
+}

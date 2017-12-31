@@ -109,7 +109,7 @@ void Fog::disable()
 
 	getScene()->getContext()->setBackgroundColor(back);
 
-	m_capacities.setBit(STATE_ACTIVITY, False);
+    m_capacities.setBit(STATE_ACTIVITY, False);
 }
 
 // serialisation

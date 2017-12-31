@@ -152,36 +152,36 @@ public:
 		AnimationTrack::Target target,
 		UInt32 subTarget,
 		Animation::BlendMode blendMode,
-		Float weight);
+        Float weight) override;
 
 	virtual void update(
 			class Animatable* father,
 			Float t,
 			Animation::BlendMode blendMode,
-			Float weight);
+            Float weight);
 
 	//! Return the father node of the track sub-tree
-	virtual AnimationNode* getFatherNode();
+    virtual AnimationNode* getFatherNode();
 
 	//! Set the father node of the track sub-tree
-	virtual void setFatherNode(AnimationNode* father);
+    virtual void setFatherNode(AnimationNode* father);
 
 	//! Draw the trajectories of all sub-tree
-	virtual void drawTrajectory(Node* curNode);
+    virtual void drawTrajectory(Node* curNode);
 
-	virtual Animatable* getFirstSon() { return NULL; }
-	virtual Animatable* getNextSon() { return NULL; }
-	virtual Bool hasMoreSons() { return False; }
-	virtual void resetAnim() {}
-	virtual Int32 getAnimatableId(Animatable::AnimatableManager &type) { return -1; }
-	virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* track) { return NULL; }
-	virtual const Matrix4& getPrevAnimationMatrix() const { return Matrix4::getIdentity(); }
+    virtual Animatable* getFirstSon() override { return nullptr; }
+    virtual Animatable* getNextSon() override { return nullptr; }
+    virtual Bool hasMoreSons() override { return False; }
+    virtual void resetAnim() override {}
+    virtual Int32 getAnimatableId(Animatable::AnimatableManager &type) override { return -1; }
+    virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* track) override { return nullptr; }
+    virtual const Matrix4& getPrevAnimationMatrix() const override { return Matrix4::getIdentity(); }
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
+    virtual Bool writeToFile(OutStream &os) override;
 	//! Export from a given node of the hierarchy (pSelectedNode) with his relative hierarchy node root
 	virtual Bool writeToFile(OutStream &os, Node *hierarchyRoot, Node *selectedNode);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -191,4 +191,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_ANIMATIONBLEND_H
-

@@ -365,5 +365,10 @@ Bool SndListener::readFromFile(InStream &is)
 	if (m_EAX.dwEnvironment != EAX_Personalised)
 		m_modifiermodel = True;
 
-	return True;
+    return True;
+}
+
+void SndListener::postImportPass()
+{
+
 }

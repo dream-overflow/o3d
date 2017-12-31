@@ -271,16 +271,16 @@ public:
 	//! get velocity
 	inline Vector3 getVelocity()const { return m_velocity; }
 
-	virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
 	//! Send OpenAL source settgins.
-	virtual void put();
+    virtual void put();
 
 	//! Update the source position and direction.
-	virtual void update();
+    virtual void update() override;
 
 	//! Draw a symbolic representation of the source.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -470,11 +470,11 @@ public:
 	inline void forceUpdateEAX() { m_modifiedEAX = True; }
 
 	// Serialization
-    virtual Bool writeToFile(OutStream &os);
-    virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! nothing for post import pass
-	virtual void postImportPass() {}
+    virtual void postImportPass()  override;
 
     //
     // Signals
@@ -574,7 +574,7 @@ public:
 	virtual ~DirectSource() {}
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -602,17 +602,17 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Send OpenAL source settings.
-	virtual void put();
+    virtual void put() override;
 
 	//! Update the source position and direction.
-	virtual void update();
+    virtual void update() override;
 
 	//! Draw a symbolic representation of the source.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	// serialization
-    virtual Bool writeToFile(OutStream &os);
-    virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -667,4 +667,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SOURCE_H
-

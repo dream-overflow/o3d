@@ -132,12 +132,12 @@ public:
 		// Find the corresponding queue and return the value for the first player in the queue
 		IT_PlayerQueueMap it = m_Map.find(queueId);
 
-		if (it != m_Map.end())
-		{
+        if (it != m_Map.end()) {
 			T_AnimationPlayerList& Queue = (*it).second;
 
-			if (!Queue.empty())
+            if (!Queue.empty()) {
 				return Queue.front()->isPlaying();
+            }
 		}
 		return False;
 	}
@@ -148,12 +148,12 @@ public:
 		// Find the corresponding queue and return the value for the first player in the queue
 		IT_PlayerQueueMap it = m_Map.find(queueId);
 
-		if (it != m_Map.end())
-		{
+        if (it != m_Map.end()) {
 			T_AnimationPlayerList& Queue = (*it).second;
 
-			if (!Queue.empty())
+            if (!Queue.empty()) {
 				return Queue.front()->setTime(Time);
+            }
 		}
 	}
 
@@ -163,12 +163,12 @@ public:
 		// Find the corresponding queue and return the value for the first player in the queue
 		IT_PlayerQueueMap it = m_Map.find(queueId);
 
-		if (it != m_Map.end())
-		{
+        if (it != m_Map.end()) {
 			T_AnimationPlayerList& Queue = (*it).second;
 
-			if (!Queue.empty())
+            if (!Queue.empty()) {
 				return Queue.front()->getTime();
+            }
 		}
 		return 0.f;
 	}
@@ -177,10 +177,10 @@ public:
 	// Serialisation
 	//---------------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
-	inline       T_PlayerVector& getImportedPlayers()      { return m_ImportedPlayer; }
+    inline T_PlayerVector& getImportedPlayers() { return m_ImportedPlayer; }
 	inline const T_PlayerVector& getImportedPlayers()const { return m_ImportedPlayer; }
 
 private:
@@ -189,8 +189,7 @@ private:
 
 	inline void doAction(AnimationPlayer* player, Player_Action action, Float param)
 	{
-		switch (action)
-		{
+        switch (action) {
 			case PLAYER_PLAY:
 				player->play();
 			break;
@@ -231,4 +230,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_ANIMATIONPLAYMGER_H
-

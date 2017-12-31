@@ -68,13 +68,13 @@ public:
 	inline Float getAlpha() const { return m_alpha; }
 
 	//! Show/hide the widget.
-	virtual void show(Bool show = True) { m_capacities.setBit(STATE_VISIBILITY, show); }
+    virtual void show(Bool show = True);
 
 	//! Is the widget activity.
 	inline Bool isShown() const { return m_capacities.getBit(STATE_VISIBILITY); }
 
 	//! Enable/disable the widget.
-	virtual void enable(Bool active = True) { m_capacities.setBit(STATE_ACTIVITY, active); }
+    virtual void enable(Bool active = True);
 
 	//! Is the widget activity.
 	inline Bool isActive() const { return m_capacities.getBit(STATE_ACTIVITY); }
@@ -202,4 +202,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_WIDGETPROPERTIES_H
-

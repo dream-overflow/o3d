@@ -21,11 +21,9 @@ namespace o3d {
 class Scene;
 class AnimationTrack;
 
-//---------------------------------------------------------------------------------------
-//! @class Animatable
-//-------------------------------------------------------------------------------------
-//! An animatable is an object whose have the possibility to be animated
-//---------------------------------------------------------------------------------------
+/**
+ * @brief An animatable is an object whose have the possibility to be animated
+ */
 class O3D_API Animatable
 {
 public:
@@ -95,4 +93,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_ANIMATABLE_H
-

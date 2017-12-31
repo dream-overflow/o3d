@@ -40,7 +40,7 @@ public:
 	virtual ~TerrainManager();
 
 	//! Delete a child object.
-	Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Add a terrain object.
 	void addTerrain(TerrainBase *terrain);
@@ -119,7 +119,7 @@ public:
 	//! Virtual destructor.
 	virtual ~TerrainDefManager();
 
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Insert an existing terrain definition in the manager.
 	//! @note Once the terrain definition is inserted into the manager, it become its parent.

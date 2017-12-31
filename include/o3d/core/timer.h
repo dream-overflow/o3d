@@ -336,7 +336,7 @@ private:
 #endif
 
     //! Runnable
-    Int32 run(void*);
+    virtual Int32 run(void*) override;
 };
 
 } // namespace o3d

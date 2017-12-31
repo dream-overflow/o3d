@@ -108,7 +108,7 @@ public:
 	virtual ~SndListener();
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 
 	//! Set the gain
@@ -137,16 +137,16 @@ public:
 	// Processing
 	//-----------------------------------------------------------------------------------
 
-	virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
 	//! Send OpenAL listener setting.
-	virtual void put();
+    virtual void put();
 
 	//! Update listener position and direction.
-	virtual void update();
+    virtual void update() override;
 
 	//! Draw a symbolic representation of the listener.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -350,10 +350,10 @@ public:
 
 
 	// serialisation
-	Bool writeToFile(OutStream &os);
-	Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
-	virtual void postImportPass() {}
+    virtual void postImportPass() override;
 
 protected:
 
@@ -374,4 +374,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_LISTENER_H
-

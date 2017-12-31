@@ -1097,7 +1097,12 @@ Bool SndSource::readFromFile(InStream &is)
 		addBufferQueue(sndBuffer);
 	}
 
-	return True;
+    return True;
+}
+
+void SndSource::postImportPass()
+{
+
 }
 
 //---------------------------------------------------------------------------------------

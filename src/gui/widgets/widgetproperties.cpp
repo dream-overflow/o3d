@@ -31,3 +31,12 @@ WidgetProperties::WidgetProperties(BaseObject *parent) :
 	m_capacities.enable(STATE_DIRTY);
 }
 
+void WidgetProperties::show(Bool show)
+{
+    m_capacities.setBit(STATE_VISIBILITY, show);
+}
+
+void WidgetProperties::enable(Bool active)
+{
+    m_capacities.setBit(STATE_ACTIVITY, active);
+}

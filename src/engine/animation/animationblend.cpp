@@ -274,4 +274,3 @@ Bool AnimationBlend::readFromFile(InStream &is)
 
 	return True;
 }
-

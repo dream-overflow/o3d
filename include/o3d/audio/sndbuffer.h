@@ -125,8 +125,8 @@ public:
 	inline Float getDecodeMaxDuration() const { return m_decodeMaxDuration; }
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 public:
 
@@ -166,9 +166,9 @@ public:
 			const String &filename,
 			Float decodeMaxDuration);
 
-	virtual Bool execute();
+    virtual Bool execute() override;
 
-	virtual Bool finalize();
+    virtual Bool finalize() override;
 
 private:
 
@@ -191,4 +191,3 @@ typedef T_SmartBufferList::const_iterator CIT_SmartBufferList;
 } // namespace o3d
 
 #endif // _O3D_SNDBUFFER_H
-

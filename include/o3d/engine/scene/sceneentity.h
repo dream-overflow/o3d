@@ -27,9 +27,9 @@ class Scene;
  */
 class O3D_API SceneEntity : public BaseObject
 {
-public:
+    O3D_DECLARE_ABSTRACT_CLASS(SceneEntity)
 
-	O3D_DECLARE_ABSTRACT_CLASS(SceneEntity)
+public:
 
 	SceneEntity(BaseObject *parent) :
 		BaseObject(parent)
@@ -43,7 +43,7 @@ public:
 	inline const Scene* getScene() const { return reinterpret_cast<Scene*>(m_topLevelParent); }
 
 	//! The top level parent must be a scene.
-	virtual Bool hasTopLevelParentTypeOf() const;
+    virtual Bool hasTopLevelParentTypeOf() const override;
 };
 
 /**
@@ -53,9 +53,9 @@ public:
  */
 class O3D_API SceneResource : public Resource
 {
-public:
+    O3D_DECLARE_ABSTRACT_CLASS(SceneResource)
 
-	O3D_DECLARE_ABSTRACT_CLASS(SceneResource)
+public:
 
 	SceneResource(BaseObject *parent) :
 		Resource(parent)
@@ -69,7 +69,7 @@ public:
 	inline const Scene* getScene() const { return reinterpret_cast<Scene*>(m_topLevelParent); }
 
 	//! The top level parent must be a scene.
-	virtual Bool hasTopLevelParentTypeOf() const;
+    virtual Bool hasTopLevelParentTypeOf() const override;
 };
 
 /**
@@ -79,9 +79,9 @@ public:
  */
 class O3D_API SceneResourceManager : public ResourceManager
 {
-public:
+    O3D_DECLARE_ABSTRACT_CLASS(SceneResourceManager)
 
-	O3D_DECLARE_ABSTRACT_CLASS(SceneResourceManager)
+public:
 
 	SceneResourceManager(
 			BaseObject *parent,
@@ -98,7 +98,7 @@ public:
 	inline const Scene* getScene() const { return reinterpret_cast<Scene*>(m_topLevelParent); }
 
 	//! The top level parent must be a scene.
-	virtual Bool hasTopLevelParentTypeOf() const;
+    virtual Bool hasTopLevelParentTypeOf() const override;
 };
 
 } // namespace o3d

@@ -533,7 +533,7 @@ public:
     Blending::FuncProfile getBlendFunc() const { return m_shader.blendFunc; }
 
 	//! Unused update
-	virtual void update() {}
+    virtual void update();
 
 	//! Draw the widget and all of its sons
 	virtual void draw() = 0;
@@ -545,10 +545,10 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
-	virtual void postImportPass() {}
+    virtual void postImportPass();
 
 public:
 
@@ -594,7 +594,6 @@ protected:
     //! Update the tab index for top-level widgets
     virtual void updateTabIndex(Widget *widget);
 
-
 	//-----------------------------------------------------------------------------------
 	// Physical size
 	//-----------------------------------------------------------------------------------
@@ -605,7 +604,6 @@ protected:
 	Vector2i m_minSize;        //!< minimal size (and set by the initial size)
 	Vector2i m_maxSize;        //!< maximal size
 
-
 	//-----------------------------------------------------------------------------------
 	// Virtual size (scrolling)
 	//-----------------------------------------------------------------------------------
@@ -613,7 +611,6 @@ protected:
 	Vector2i m_virtualSize;    //!< virtual size (ie the scrolled area)
 	Vector2i m_minVirtualSize; //!< minimal virtual size
 	Vector2i m_maxVirtualSize; //!< maximal virtual size
-
 
 	//-----------------------------------------------------------------------------------
 	// Others
@@ -671,4 +668,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_WIDGET_H
-

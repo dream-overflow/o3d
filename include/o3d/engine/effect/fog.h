@@ -67,14 +67,12 @@ public:
 	inline Float getDensity()const { return density; }
 
 	//! active/désactive le fog
-	virtual void enable();
-	virtual void disable();
-
-	virtual void drawgetPicking() {}
+    virtual void enable() override;
+    virtual void disable() override;
 
 	//! sérialisation
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -89,4 +87,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_FOG_H
-

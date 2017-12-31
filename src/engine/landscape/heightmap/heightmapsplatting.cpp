@@ -503,9 +503,6 @@ void HeightmapSplatting::draw()
 
 			m_fbo.attachTexture2D(m_fboDepthTex.get(), FrameBuffer::DEPTH_ATTACHMENT);
 			m_fbo.unbindBuffer();
-
-			getScene()->getRenderer()->isError();
-            // int test = 4;
 		}
 	}
 
@@ -516,8 +513,6 @@ void HeightmapSplatting::draw()
     } else {
 		drawDeferred();
     }
-
-	getScene()->getRenderer()->isError();
 
 	getScene()->getContext()->setViewPort(0, 0, viewPort.width(), viewPort.height());
 
@@ -679,21 +674,14 @@ void HeightmapSplatting::draw()
 
     //m_fboDepthTex->create(False, lFboSize.x(), lFboSize.y(), PF_DEPTH_U16);
     //m_fboDepthTex->create(False, lFboSize.x(), lFboSize.y(), PF_DEPTH_F32);
-
-	O3D_ASSERT(!getScene()->getRenderer()->isError());
 }
 
 void HeightmapSplatting::drawDeferred()
 {
-	O3D_ASSERT(!getScene()->getRenderer()->isError());
-
 	Context *glContext = getScene()->getContext();
 
 	m_fbo.bindBuffer();
 	m_fbo.clearDepth();
-
-	O3D_ASSERT(m_fbo.isCompleteness());
-	O3D_ASSERT(!getScene()->getRenderer()->isError());
 
 	// Depth pass
 	m_blackShader.bindShader();
@@ -707,8 +695,6 @@ void HeightmapSplatting::drawDeferred()
 		glContext->disableVertexAttribArray(m_blackShader.getAttribute(A_VEC4_VERTEX));
 	m_blackShader.unbindShader();
 
-	O3D_ASSERT(!getScene()->getRenderer()->isError());
-	
     const GLenum attch[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
     glDrawBuffers(2, attch);
 	m_fbo.clearColor();

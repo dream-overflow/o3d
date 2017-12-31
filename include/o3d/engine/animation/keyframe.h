@@ -42,8 +42,8 @@ public:
 	inline Float getTime() const {return m_time; }
 
 	// Serialization
-    virtual Bool writeToFile(OutStream &os)  { os << m_time; return True; }
-    virtual Bool readFromFile(InStream &is) { is >> m_time; return True; }
+    virtual Bool writeToFile(OutStream &os) override { os << m_time; return True; }
+    virtual Bool readFromFile(InStream &is) override { is >> m_time; return True; }
 
 protected:
 
@@ -73,14 +73,14 @@ public:
 	KeyFrameLinear<T>(Float time = 0.f, const T &data = T()): KeyFrame(time) { Data = data; }
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os)
+    virtual Bool writeToFile(OutStream &os) override
 	{
         os << m_time
            << Data;
 
 		return True;
 	}
-	virtual Bool readFromFile(InStream &is)
+    virtual Bool readFromFile(InStream &is) override
 	{
         is >> m_time
            >> Data;
@@ -108,14 +108,14 @@ public:
 	KeyFrameSmooth<T>(Float time = 0.f, const T &data = T()): KeyFrame(time) { Data = data; }
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os)
+    virtual Bool writeToFile(OutStream &os) override
 	{
         os << m_time
            << Data;
 
 		return True;
 	}
-	virtual Bool readFromFile(InStream &is)
+    virtual Bool readFromFile(InStream &is) override
 	{
         is >> m_time
            >> Data;
@@ -143,14 +143,14 @@ public:
 	KeyFrameConstant<T>(Float time = 0.f, const T &data = T()): KeyFrame(time) { Data = data; }
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os)
+    virtual Bool writeToFile(OutStream &os) override
 	{
         os << m_time
            << Data;
 
 		return True;
 	}
-	virtual Bool readFromFile(InStream &is)
+    virtual Bool readFromFile(InStream &is) override
 	{
         is >> m_time
            >> Data;
@@ -184,9 +184,9 @@ public:
 	KeyFrameBezier<T>(Float time = 0.f, const T &data = T()): KeyFrame(time)
 	{
 		Data = data;
-		TangentLeft  = NULL;
-		TangentRight = NULL;
-		Evaluator = NULL;
+        TangentLeft  = nullptr;
+        TangentRight = nullptr;
+        Evaluator = nullptr;
 	}
 
 	// destructor
@@ -207,23 +207,20 @@ public:
 	}
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os)
+    virtual Bool writeToFile(OutStream &os) override
 	{
         os << m_time
            << Data;
 
 		// write tangents list
-		if (sizeof(T) == sizeof(Vector3))
-		{
+        if (sizeof(T) == sizeof(Vector3)) {
             os   << TangentLeft[X]
 	 			 << TangentLeft[Y]
 			  	 << TangentLeft[Z]
 				 << TangentRight[X]
 				 << TangentRight[Y]
 			 	 << TangentRight[Z];
-		}
-		else if (sizeof(T) == sizeof(Float))
-		{
+        } else if (sizeof(T) == sizeof(Float)) {
             os   << *TangentLeft
 			     << *TangentRight;
 		}
@@ -231,14 +228,13 @@ public:
 		return True;
 	}
 
-	virtual Bool readFromFile(InStream &is)
+    virtual Bool readFromFile(InStream &is) override
 	{
         is >> m_time
            >> Data;
 
 		// read tangents list
-		if (sizeof(T) == sizeof(Vector3))
-		{
+        if (sizeof(T) == sizeof(Vector3)) {
 			Evaluator    = new Evaluator1D_Bezier[3];
 			TangentLeft  = new Vector2f[3];
 			TangentRight = new Vector2f[3];
@@ -249,9 +245,7 @@ public:
 				 >> TangentRight[X]
 				 >> TangentRight[Y]
 			 	 >> TangentRight[Z];
-		}
-		else if (sizeof(T) == sizeof(Float))
-		{
+        } else if (sizeof(T) == sizeof(Float)) {
 			Evaluator    = new Evaluator1D_Bezier;
 			TangentLeft  = new Vector2f;
 			TangentRight = new Vector2f;
@@ -289,23 +283,20 @@ public:
 	KeyFrameTCB<T>(Float time = 0.f, const T &data = T()): KeyFrame(time)
 	{
 		Data       = data;
-		Tension    = NULL;
-		Continuity = NULL;
-		Bias       = NULL;
-		Evaluator  = NULL;
+        Tension    = nullptr;
+        Continuity = nullptr;
+        Bias       = nullptr;
+        Evaluator  = nullptr;
 	}
 	// destructor
 	~KeyFrameTCB<T>()
 	{
-		if (sizeof(T) == sizeof(Vector3))
-		{
+        if (sizeof(T) == sizeof(Vector3)) {
 			deleteArray(Tension);
 			deleteArray(Continuity);
 			deleteArray(Bias);
 			deleteArray(Evaluator);
-		}
-		else if (sizeof(T) == sizeof(Float))
-		{
+        } else if (sizeof(T) == sizeof(Float)) {
 			deletePtr(Tension);
 			deletePtr(Continuity);
 			deletePtr(Bias);
@@ -314,14 +305,13 @@ public:
 	}
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os)
+    virtual Bool writeToFile(OutStream &os) override
 	{
         os << m_time
            << Data;
 
 		// write tangents list
-		if (sizeof(T) == sizeof(Vector3))
-		{
+        if (sizeof(T) == sizeof(Vector3)) {
             os   << Tension[X]
 	 			 << Tension[Y]
 			  	 << Tension[Z]
@@ -331,9 +321,7 @@ public:
 				 << Bias[X]
 				 << Bias[Y]
 			 	 << Bias[Z];
-		}
-		else if (sizeof(T) == sizeof(Float))
-		{
+        } else if (sizeof(T) == sizeof(Float)) {
             os   << *Tension
 			     << *Continuity
 				 << *Bias;
@@ -342,14 +330,13 @@ public:
 		return True;
 	}
 
-	virtual Bool readFromFile(InStream &is)
+    virtual Bool readFromFile(InStream &is) override
 	{
         is >> m_time
            >> Data;
 
 		// read tangents list
-		if (sizeof(T) == sizeof(Vector3))
-		{
+        if (sizeof(T) == sizeof(Vector3)) {
 			Evaluator  = new Evaluator1D_TCB[3];
 			Tension    = new Float[3];
 			Continuity = new Float[3];
@@ -364,9 +351,7 @@ public:
 				 >> Bias[X]
 				 >> Bias[Y]
                  >> Bias[Z];
-		}
-		else if (sizeof(T) == sizeof(Float))
-		{
+        } else if (sizeof(T) == sizeof(Float)) {
 			Evaluator  = new Evaluator1D_TCB;
 			Tension    = new Float;
 			Continuity = new Float;
@@ -388,4 +373,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_KEYFRAME_H
-

@@ -131,8 +131,8 @@ public:
 	void rescaleTime(Float start, Float end);
 
 	// serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -144,4 +144,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_ANIMATIONNODE_H
-

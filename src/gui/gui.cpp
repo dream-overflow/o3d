@@ -40,13 +40,13 @@ public:
 	{
 	}
 
-	virtual void draw()
+    virtual void draw() override
 	{
 		// draw recursively and Z orderer all widgets
 		m_widgetManager->draw();
 	}
 
-	virtual void drawgetPicking()
+    virtual void drawPicking() override
 	{
 
 	}

@@ -15,13 +15,12 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class SceneIO
-//-------------------------------------------------------------------------------------
-//! Used for import/export options. There is too a default setting for general export.
-//! Take care: if you choose to write the tree and not some of object used by this tree
-//! the result will be undefined.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Used for import/export options.
+ * There is too a default setting for general export.
+ * Take care: if you choose to write the tree and not some of object used by this tree
+ * the result will be undefined.
+ */
 class O3D_API SceneIO : public Serialize
 {
 	O3D_DEFINE_SERIALIZATION(SceneIO)
@@ -65,10 +64,8 @@ public:
 
 	inline void set(UInt32 setting, Bool value)
 	{
-		if (setting >= NUM_SETTINGS)
-		{
+        if (setting >= NUM_SETTINGS) {
 			O3D_ERROR(E_IndexOutOfRange("setting"));
-            return;
 		}
 		if (value) m_setting |= (1 << setting);  // put the bit to 1
 		else	   m_setting &= ~(1 << setting); // put the bit to 0
@@ -76,10 +73,8 @@ public:
 
 	inline Bool get(UInt32 setting) const
 	{
-		if (setting >= NUM_SETTINGS)
-		{
+        if (setting >= NUM_SETTINGS) {
 			O3D_ERROR(E_IndexOutOfRange("setting"));
-            return False;
 		}
 		return (m_setting & (1 << setting));
 	}
@@ -88,8 +83,8 @@ public:
 	Bool isIO(const class SceneObject &object) const;
 
 	//! Serialization
-    virtual Bool writeToFile(OutStream& os);
-    virtual Bool readFromFile(InStream& is);
+    virtual Bool writeToFile(OutStream& os) override;
+    virtual Bool readFromFile(InStream& is) override;
 
 private:
 
@@ -99,4 +94,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SCENEIO_H
-
