@@ -36,6 +36,10 @@ if(NOT MINGW AND ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 else()
     # compiler options
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fvisibility=hidden")
+
+    # until we have fixed any missing overried keyword waited by c++17
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-inconsistent-missing-override")
+
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -ggdb -D_DEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE        "-O2 -DNDEBUG -ffunction-sections")
     set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -ggdb -D_DEBUG")

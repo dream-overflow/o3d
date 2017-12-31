@@ -26,9 +26,9 @@ namespace o3d {
  */
 class O3D_API ABCForce : public SceneEntity
 {
-public:
+    O3D_DECLARE_ABSTRACT_CLASS(ABCForce)
 
-	O3D_DECLARE_ABSTRACT_CLASS(ABCForce)
+public:
 
 	//! Default constructor
 	ABCForce(BaseObject *pParent) :
@@ -50,22 +50,20 @@ public:
     //! Set the object activity.
     inline void setActivity(Bool state)
     {
-        if (state)
+        if (state) {
             enable();
-        else
+        } else {
             disable();
+        }
     }
 
     //! Toggle the object activity.
     inline Bool toggleActivity()
     {
-        if (getActivity())
-        {
+        if (getActivity()) {
             disable();
             return False;
-        }
-        else
-        {
+        } else {
             enable();
             return True;
         }
@@ -79,7 +77,7 @@ public:
 	virtual void processObject(class RigidBody& rigidBody) = 0;
 
 	//! process the force on the particle
-	virtual void processParticule(class Particule& particule) {} // = 0;
+    virtual void processParticule(class Particule& /*particule*/) {} // = 0;
 
 protected:
 
@@ -89,4 +87,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_FORCE_H
-

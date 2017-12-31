@@ -1167,16 +1167,17 @@ Bool ClothManager::importClothModelDef(const String& filename)
     // read xml content
     // element TextureFont
     TiXmlElement *pNode = xmlDoc.getDoc()->FirstChildElement("ClothModel");
-    if (!pNode)
+    if (!pNode) {
         O3D_ERROR(E_InvalidFormat("Invalid O3DClothModel token in " + filename));
+    }
 
-    TiXmlNode *pClothNode = NULL;
-    while ((pClothNode = pNode->IterateChildren("Cloth",pClothNode)) != NULL)
-    {
+    TiXmlNode *pClothNode = nullptr;
+    while ((pClothNode = pNode->IterateChildren("Cloth",pClothNode)) != nullptr) {
         ClothModel* clothModel = new ClothModel;
 
-        if (clothModel->readFromFile(pClothNode))
+        if (clothModel->readFromXmlFile(pClothNode)) {
             m_ClothModelMap[clothModel->getName()] = clothModel;
+        }
     }
 
     return True;
@@ -1197,12 +1198,12 @@ Bool ClothManager::exportClothModelDef(const String& filename)
 
     TiXmlElement* pClothModelElt =xmlDoc.getDoc()->FirstChildElement("ClothModel");
 
-    for (IT_ClothModelMap it = m_ClothModelMap.begin() ; it != m_ClothModelMap.end() ; ++it)
-    {
+    for (IT_ClothModelMap it = m_ClothModelMap.begin() ; it != m_ClothModelMap.end() ; ++it) {
         TiXmlElement cloth("Cloth");
 
-        if (!it->second->writeToFile(cloth))
+        if (!it->second->writeToXmlFile(cloth)) {
             return False;
+        }
 
         pClothModelElt->InsertEndChild(cloth);
     }
@@ -1215,8 +1216,9 @@ Bool ClothManager::exportClothModelDef(const String& filename)
 // clear all cloth defintion
 void ClothManager::clearClothModelDef()
 {
-    for (IT_ClothModelMap it = m_ClothModelMap.begin() ; it != m_ClothModelMap.end() ; ++it)
+    for (IT_ClothModelMap it = m_ClothModelMap.begin() ; it != m_ClothModelMap.end() ; ++it) {
         deletePtr(it->second);
+    }
 
     m_ClothModelMap.clear();
 }

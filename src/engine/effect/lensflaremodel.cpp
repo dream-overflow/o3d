@@ -32,21 +32,25 @@ LensFlareModel::LensFlareModel()
 	m_fadeOutPersistence = 0;
 	m_simpleOcclusion = False;
 
-	for (Int32 i = 0; i < MAX_NUM_FLARES; ++i)
+    for (Int32 i = 0; i < MAX_NUM_FLARES; ++i) {
         m_flareManager[i] = nullptr;
+    }
 
-	for (Int32 i = 0; i < MAX_NUM_GLOWS; ++i)
+    for (Int32 i = 0; i < MAX_NUM_GLOWS; ++i) {
         m_glowManager[i] = nullptr;
+    }
 }
 
 // Destructor.
 LensFlareModel::~LensFlareModel()
 {
-	for (Int32 i = 0; i < MAX_NUM_FLARES; ++i)
+    for (Int32 i = 0; i < MAX_NUM_FLARES; ++i) {
 		deletePtr(m_flareManager[i]);
+    }
 
-	for (Int32 i = 0; i < MAX_NUM_GLOWS; ++i)
+    for (Int32 i = 0; i < MAX_NUM_GLOWS; ++i) {
 		deletePtr(m_glowManager[i]);
+    }
 }
 
 // Copy operator
@@ -98,44 +102,36 @@ LensFlareModel& LensFlareModel::operator=(const LensFlareModel &dup)
 	m_simpleOcclusion = dup.m_simpleOcclusion;
 
 	// duplicates flares
-	for (Int32 i = 0; i < MAX_NUM_FLARES; ++i)
-	{
-		if (dup.m_flareManager[i])
-		{
-			if (!m_flareManager[i])
+    for (Int32 i = 0; i < MAX_NUM_FLARES; ++i) {
+        if (dup.m_flareManager[i]) {
+            if (!m_flareManager[i]) {
 				m_flareManager[i] = new LensFlareItem;
+            }
 
 			*m_flareManager[i] = *dup.m_flareManager[i];
-		}
-		else
-		{
-			if (m_flareManager[i])
-			{
+        } else {
+            if (m_flareManager[i]) {
 				deletePtr(m_flareManager[i]);
-			}
-			else
-				m_flareManager[i] = NULL;
+            } else {
+                m_flareManager[i] = nullptr;
+            }
 		}
 	}
 
 	// duplicates glows
-	for (Int32 i = 0; i < MAX_NUM_GLOWS; ++i)
-	{
-		if (dup.m_glowManager[i])
-		{
-			if (!m_glowManager[i])
+    for (Int32 i = 0; i < MAX_NUM_GLOWS; ++i) {
+        if (dup.m_glowManager[i]) {
+            if (!m_glowManager[i]) {
 				m_glowManager[i] = new LensGlowItem;
+            }
 
 			*m_glowManager[i] = *dup.m_glowManager[i];
-		}
-		else
-		{
-			if (m_glowManager[i])
-			{
+        } else {
+            if (m_glowManager[i]) {
 				deletePtr(m_glowManager[i]);
-			}
-			else
-				m_glowManager[i] = NULL;
+            } else {
+                m_glowManager[i] = nullptr;
+            }
 		}
 	}
 
@@ -145,18 +141,17 @@ LensFlareModel& LensFlareModel::operator=(const LensFlareModel &dup)
 // Add a flare
 Int32 LensFlareModel::addFlare(const LensFlareItem &flare)
 {
-	for (Int32 i = 0; i < MAX_NUM_FLARES; ++i)
-	{
-		if (!m_flareManager[i])
-		{
+    for (Int32 i = 0; i < MAX_NUM_FLARES; ++i) {
+        if (!m_flareManager[i]) {
 			m_flareManager[i] = new LensFlareItem;
 
 			// duplicate
 			*m_flareManager[i] = flare;
 
 			// set the name if necessary
-			if (m_flareManager[i]->name.isEmpty())
+            if (m_flareManager[i]->name.isEmpty()) {
 				m_flareManager[i]->name = String("Flare") << i;
+            }
 
 			return i;
 		}
@@ -170,10 +165,8 @@ Int32 LensFlareModel::addFlare(
 	Float SizeY,
 	Float Position)
 {
-	for (Int32 i = 0; i < MAX_NUM_FLARES; ++i)
-	{
-		if (!m_flareManager[i])
-		{
+    for (Int32 i = 0; i < MAX_NUM_FLARES; ++i) {
+        if (!m_flareManager[i]) {
 			// create and add a new flare
 			LensFlareItem *pNewFlare = new LensFlareItem;
 
@@ -198,18 +191,17 @@ Int32 LensFlareModel::addFlare(
 ---------------------------------------------------------------------------------------*/
 Int32 LensFlareModel::addGlow(const LensGlowItem &Glow)
 {
-	for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i)
-	{
-		if (!m_glowManager[i])
-		{
+    for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i) {
+        if (!m_glowManager[i]) {
 			m_glowManager[i] = new LensGlowItem;
 
 			// duplicate
 			*m_glowManager[i] = Glow;
 
 			// set the name if necessary
-			if (m_glowManager[i]->name.length() == 0)
-				m_glowManager[i]->name = "Glow" + i;
+            if (m_glowManager[i]->name.length() == 0) {
+                m_glowManager[i]->name = String("Glow") << i;
+            }
 
 			return i;
 		}
@@ -223,10 +215,8 @@ Int32 LensFlareModel::addGlow(
 	Float SizeY,
 	Bool isBehindEffect)
 {
-	for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i)
-	{
-		if (!m_glowManager[i])
-		{
+    for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i) {
+        if (!m_glowManager[i]) {
 			// create and add a new flare
 			LensGlowItem *pNewGlow = new LensGlowItem;
 
@@ -239,7 +229,7 @@ Int32 LensFlareModel::addGlow(
 			pNewGlow->minIntensity = 0.0f;
 			pNewGlow->is3dGlow = False;
 			pNewGlow->isBehindEffect = isBehindEffect;
-			pNewGlow->name = "Glow" + i;
+            pNewGlow->name = String("Glow") << i;
 
 			m_glowManager[i] = pNewGlow;
 			return i;
@@ -248,13 +238,11 @@ Int32 LensFlareModel::addGlow(
 	return -1;
 }
 
-/*---------------------------------------------------------------------------------------
-  remove a flare
----------------------------------------------------------------------------------------*/
 void LensFlareModel::removeFlare(Int32 index)
 {
-	if (index < MAX_NUM_FLARES)
+    if (index < MAX_NUM_FLARES) {
 		deletePtr(m_flareManager[index]);
+    }
 }
 
 /*---------------------------------------------------------------------------------------
@@ -273,8 +261,9 @@ Int32 LensFlareModel::getNumFlares()const
 {
 	Int32 ret = 0;
 
-	for (Int32 i = 0 ; i < MAX_NUM_FLARES ; ++i)
+    for (Int32 i = 0 ; i < MAX_NUM_FLARES ; ++i) {
 		if (m_flareManager[i]) ++ret;
+    }
 
 	return ret;
 }
@@ -286,8 +275,9 @@ Int32 LensFlareModel::getNumGlows()const
 {
 	Int32 ret = 0;
 
-	for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i)
+    for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i) {
 		if (m_glowManager[i]) ++ret;
+    }
 
 	return ret;
 }
@@ -311,11 +301,11 @@ Bool LensFlareModel::writeToFile(OutStream &os) const
 
     os << getNumFlares();
 	// write all flares
-	for (Int32 i = 0 ; i < MAX_NUM_FLARES ; ++i)
-		if (m_flareManager[i])
-		{
-			if (!m_flareManager[i]->texture)
+    for (Int32 i = 0 ; i < MAX_NUM_FLARES ; ++i) {
+        if (m_flareManager[i]) {
+            if (!m_flareManager[i]->texture) {
                 O3D_ERROR(E_InvalidPrecondition("Flare(s) texture(s) must be defined"));
+            }
 
             os   << m_flareManager[i]->color
 				 << m_flareManager[i]->blending
@@ -326,14 +316,15 @@ Bool LensFlareModel::writeToFile(OutStream &os) const
 				 << m_flareManager[i]->name
 				 << *m_flareManager[i]->texture;
 		}
+    }
 
     os << getNumGlows();
 	// write all glow
-	for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i)
-		if (m_glowManager[i])
-		{
-			if (!m_glowManager[i]->texture)
+    for (Int32 i = 0 ; i < MAX_NUM_GLOWS ; ++i) {
+        if (m_glowManager[i]) {
+            if (!m_glowManager[i]->texture) {
                 O3D_ERROR(E_InvalidPrecondition("Glow(s) texture(s) must be defined"));
+            }
 
             os   << m_glowManager[i]->color
 				 << m_glowManager[i]->blending
@@ -346,6 +337,7 @@ Bool LensFlareModel::writeToFile(OutStream &os) const
 				 << m_glowManager[i]->name
 				 << *m_glowManager[i]->texture;
 		}
+    }
 
 	return True;
 }
@@ -356,8 +348,9 @@ Bool LensFlareModel::readFromFile(Scene *pScene, InStream &is)
 
     is >> tmp;
 
-	if (tmp != ENGINE_LENSFLARE_MODEL)
+    if (tmp != ENGINE_LENSFLARE_MODEL) {
         O3D_ERROR(E_InvalidFormat("Invalid lensflare effect token"));
+    }
 
     is   >>	m_infinite
 		 >>	m_halfSizeX
@@ -374,15 +367,14 @@ Bool LensFlareModel::readFromFile(Scene *pScene, InStream &is)
 
     is >> nFlares;
 
-	if (nFlares > MAX_NUM_FLARES)
+    if (nFlares > MAX_NUM_FLARES) {
         O3D_ERROR(E_InvalidFormat("Invalid flares number"));
+    }
 
 	// read all flares
-	for (Int32 i = 0 ; i < nFlares ; ++i)
-	{
-		m_flareManager[i] = new LensFlareItem;
-		if (m_flareManager[i])
-		{
+    for (Int32 i = 0 ; i < nFlares ; ++i) {
+        m_flareManager[i] = new LensFlareItem;
+        if (m_flareManager[i]) {
             is   >> m_flareManager[i]->color
 				 >> m_flareManager[i]->blending
 				 >> m_flareManager[i]->attenuationRange
@@ -392,23 +384,22 @@ Bool LensFlareModel::readFromFile(Scene *pScene, InStream &is)
 				 >> m_flareManager[i]->name;
 
             m_flareManager[i]->texture = pScene->getTextureManager()->readTexture2D(is);
-		}
-		else
+        } else {
             O3D_ERROR(E_InvalidAllocation("New flare is null"));
+        }
 	}
 
     is >> nGlows;
 
-	if (nGlows > MAX_NUM_GLOWS)
+    if (nGlows > MAX_NUM_GLOWS) {
         O3D_ERROR(E_InvalidFormat("Invalid glows number"));
+    }
 
 	// read all flares
-	for (Int32 i = 0 ; i < nGlows ; ++i)
-	{
+    for (Int32 i = 0 ; i < nGlows ; ++i) {
 		m_glowManager[i] = new LensGlowItem;
 
-		if (m_flareManager[i])
-		{
+        if (m_flareManager[i]) {
             is >> m_glowManager[i]->color
 				 >> m_glowManager[i]->blending
 				 >> m_glowManager[i]->halfSizeX
@@ -420,12 +411,10 @@ Bool LensFlareModel::readFromFile(Scene *pScene, InStream &is)
 				 >> m_glowManager[i]->name;
 
             m_glowManager[i]->texture = pScene->getTextureManager()->readTexture2D(is);
-		}
-		else
+        } else {
             O3D_ERROR(E_InvalidAllocation("New glow is null"));
-
+        }
 	}
 
 	return True;
 }
-

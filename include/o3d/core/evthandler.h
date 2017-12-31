@@ -38,10 +38,9 @@ class EvtFunctionAsyncBase;
 class O3D_API EvtHandler
 {
 	O3D_NONCOPYABLE(EvtHandler)
+    O3D_DECLARE_BASE_ABSTRACT_CLASS(EvtHandler)
 
 public:
-
-	O3D_DECLARE_ABSTRACT_CLASS(EvtHandler)
 
 	typedef void (EvtHandler::*T_EvtHandlerFunction)(void);
 
@@ -189,4 +188,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_EVTHANDLER_H
-

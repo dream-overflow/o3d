@@ -21,10 +21,7 @@ ClothModel::ClothModel()
 {
 }
 
-/*---------------------------------------------------------------------------------------
-  XML serialisation
----------------------------------------------------------------------------------------*/
-Bool ClothModel::writeToFile(TiXmlElement& node)
+Bool ClothModel::writeToXmlFile(TiXmlElement& node)
 {
 	node.SetAttribute("name", m_name.toUtf8().getData());
 	node.SetAttribute("relativeBone", m_LocateBone.toUtf8().getData());
@@ -119,7 +116,7 @@ Bool ClothModel::writeToFile(TiXmlElement& node)
 	return True;
 }
 
-Bool ClothModel::readFromFile(TiXmlNode* node)
+Bool ClothModel::readFromXmlFile(TiXmlNode* node)
 {
 	// read xml content
 	// element TextureFont
@@ -154,9 +151,9 @@ Bool ClothModel::readFromFile(TiXmlNode* node)
 	pElt = node->FirstChildElement("Bones");
 	if (pElt)
 	{
-		TiXmlNode *pBoneNode = NULL;
+        TiXmlNode *pBoneNode = nullptr;
 
-		while ((pBoneNode = pElt->IterateChildren("Bone",pBoneNode)) != NULL)
+        while ((pBoneNode = pElt->IterateChildren("Bone",pBoneNode)) != nullptr)
 		{
 			Vector3 Plimit(o3d::Limits<Float>::max(), o3d::Limits<Float>::max(), o3d::Limits<Float>::max());
 			Vector3 Nlimit(o3d::Limits<Float>::min(), o3d::Limits<Float>::min(), o3d::Limits<Float>::min());
@@ -188,10 +185,10 @@ Bool ClothModel::readFromFile(TiXmlNode* node)
 	pElt = node->FirstChildElement("Hides");
 	if (pElt)
 	{
-		TiXmlNode *pMaskNode = NULL;
+        TiXmlNode *pMaskNode = nullptr;
 		String str;
 
-		while ((pMaskNode = pElt->IterateChildren("Hide",pMaskNode)) != NULL)
+        while ((pMaskNode = pElt->IterateChildren("Hide",pMaskNode)) != nullptr)
 		{
 			str = tinyString(pMaskNode->ToElement()->FirstChild());
 
@@ -203,4 +200,3 @@ Bool ClothModel::readFromFile(TiXmlNode* node)
 
 	return True;
 }
-

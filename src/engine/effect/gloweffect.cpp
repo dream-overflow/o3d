@@ -72,7 +72,7 @@ GlowEffect::GlowEffect(BaseObject *parent, Texture2D* texture) :
 }
 
 // draw the effect (ex. particle, lens-flare)
-void GlowEffect::draw(const DrawInfo &drawInfo)
+void GlowEffect::draw(const DrawInfo &/*drawInfo*/)
 {
     if (!getActivity() || !getVisibility()) {
 		return;

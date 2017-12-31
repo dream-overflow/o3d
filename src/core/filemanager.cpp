@@ -767,8 +767,6 @@ void FileManager::setSpeedManager(FileSpeedManager type, UInt32 delay,UInt32 blo
 {
 	FastMutexLocker locker(O3D_FileManagerMutex);
 
-	O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
-
     m_flowCtrl[type].m_delay = delay;
     m_flowCtrl[type].m_size = blocksize;
     m_flowCtrl[type].m_bytesec = (UInt32)(blocksize * (1000.f / (Float)delay));

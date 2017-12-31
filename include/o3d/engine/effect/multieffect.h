@@ -20,20 +20,18 @@ typedef std::list<SmartObject<SpecialEffects> > T_SpecialEffectsList;
 typedef T_SpecialEffectsList::iterator IT_SpecialEffectsList;
 typedef T_SpecialEffectsList::const_iterator CIT_SpecialEffectsList;
 
-//---------------------------------------------------------------------------------------
-//! @class MultiEffect
-//-------------------------------------------------------------------------------------
-//! Use this interface if you have effects composed of more than one effect.
-//! For example, a lens effect is composed of :
-//!  - more than one glow effect
-//!  - a ray effect
-//!  - etc
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Use this interface if you have effects composed of more than one effect.
+ * For example, a lens effect is composed of :
+ *  - more than one glow effect
+ *  - a ray effect
+ *  - etc
+ */
 class O3D_API MultiEffect
 {
-public:
+    O3D_DECLARE_BASE_ABSTRACT_CLASS(MultiEffect)
 
-	O3D_DECLARE_ABSTRACT_CLASS(MultiEffect)
+public:
 
 	//! destructor
 	virtual ~MultiEffect();
@@ -65,4 +63,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_MULTIEFFECT_H
-

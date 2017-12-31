@@ -22,11 +22,9 @@ typedef std::list<Vector3> T_Vector3List;
 typedef T_Vector3List::iterator IT_Vector3List;
 typedef T_Vector3List::const_iterator CIT_Vector3List;
 
-//---------------------------------------------------------------------------------------
-//! @class ClothModel
-//-------------------------------------------------------------------------------------
-//! A model for define and create a cloth object
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A model for define and create a cloth object
+ */
 class O3D_API ClothModel : public BaseObject
 {
 public:
@@ -49,11 +47,10 @@ public:
 	String m_materialName;    //!< name of the used material if specific one otherwise ""
 
 	// XML serialisation
-	Bool writeToFile(TiXmlElement& node);
-	Bool readFromFile(TiXmlNode* node);
+    Bool writeToXmlFile(TiXmlElement& node);
+    Bool readFromXmlFile(TiXmlNode* node);
 };
 
 } // namespace o3d
 
 #endif // _O3D_CLOTHMODEL_H
-

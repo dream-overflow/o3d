@@ -60,4 +60,3 @@ void MultiEffect::updateAll()
 	for (IT_SpecialEffectsList it = m_effectlist.begin(); it != m_effectlist.end(); ++it)
 		(*it)->update();
 }
-

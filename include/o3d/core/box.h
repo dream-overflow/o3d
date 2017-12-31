@@ -213,7 +213,7 @@ public:
 
 	//! exclude a box from this box (@see operators - and -= )
 	//! @note exclude only if possible
-	inline void exclude(const Box &box)
+    inline void exclude(const Box &/*box*/)
 	{
 		O3D_ASSERT(0); // TODO
 	}

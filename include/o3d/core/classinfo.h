@@ -394,10 +394,15 @@ protected:
     public:                                                                   \
         static o3d::ClassInfo ms_classInfo;
 
-#define O3D_DECLARE_ABSTRACT_CLASS(name)                                      \
+#define O3D_DECLARE_BASE_ABSTRACT_CLASS(name)                                 \
     public:                                                                   \
         static o3d::ClassInfo ms_classInfo;                                   \
         virtual o3d::ClassInfo *getClassInfo() const { return &name::ms_classInfo; }
+
+#define O3D_DECLARE_ABSTRACT_CLASS(name)                                      \
+    public:                                                                   \
+        static o3d::ClassInfo ms_classInfo;                                   \
+        virtual o3d::ClassInfo *getClassInfo() const override { return &name::ms_classInfo; }
 
 //! declare a non assignable class (no operator= )
 #define O3D_DECLARE_DYNAMIC_CLASS_NO_ASSIGN(name)                             \

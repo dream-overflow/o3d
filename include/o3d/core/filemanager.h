@@ -258,21 +258,18 @@ public:
 	//! Enable transfer flow control (not thread safe methods).
 	inline void enableFileSpeedManager(FileSpeedManager type)
 	{
-		O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
         m_flowCtrl[type].m_use = True;
 	}
 
 	//! Disable transfer flow control (not thread safe methods).
 	inline void disableFileSpeedManager(FileSpeedManager type)
 	{
-		O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
         m_flowCtrl[type].m_use = False;
 	}
 
 	//! Is the transfer flow control is enable or disable for a type.
 	inline Bool isFileSpeedManagerFor(FileSpeedManager type) const
 	{
-		O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
         return m_flowCtrl[type].m_use;
 	}
 
@@ -282,28 +279,24 @@ public:
 	//! Get the transfer flow control data for a type.
 	inline const BlockData& getSpeedManagerData(FileSpeedManager type) const
 	{
-		O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
         return m_flowCtrl[type];
 	}
 
 	//! Get the transfer flow control rate in bytes per second.
 	inline UInt32 getSpeedManagerBytePerSec(FileSpeedManager type) const
 	{
-		O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
         return m_flowCtrl[type].m_bytesec;
 	}
 
 	//! Get the transfer flow control delay per chunk.
 	inline UInt32 getSpeedManagerDelay(FileSpeedManager type) const
 	{
-		O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
         return m_flowCtrl[type].m_delay;
 	}
 
 	//! Get the transfer flow control chunk-size per second.
 	inline UInt32 getSpeedManagerBlockSize(FileSpeedManager type) const
 	{
-		O3D_ASSERT(type < NUM_FILE_SPEED_MANAGER);
         return m_flowCtrl[type].m_size;
 	}
 

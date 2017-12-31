@@ -22,3 +22,11 @@ SndStream::SndStream() :
 	m_type = AUDIO_SND_STREAM;
 }
 
+Bool SndStream::isStream() const
+{
+    return True;
+}
+
+void SndStream::load(const Sound &/*snd*/)
+{
+}

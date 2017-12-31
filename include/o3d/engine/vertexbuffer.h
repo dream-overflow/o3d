@@ -287,6 +287,8 @@ public:
 			UInt32 size = 0,
 			LockMode flags = READ_WRITE)
 	{
+        O3D_UNUSED(size)
+
 		// already locked ?
         if (m_lockCount > 0) {
 			// with the same mode ?

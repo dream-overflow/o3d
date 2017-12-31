@@ -16,21 +16,20 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class LensFlareModel
-//-------------------------------------------------------------------------------------
-//! The SetPosition method accepts a float value from -1 to 1 :
-//!  - 1 Indicates that the flare is on the source (on the glow)
-//!  - 0 Indicates that the flare is on the center of the screen
-//!  - -1 Indicates that the flare is on the symmetry of the source by the center
-//!
-//! The AttenuationRange accepts a float value from 0 to 1.
-//! This parameter define how the attenuation is computed :
-//!  - 1 means that the effect is completely attenuated when the source is on the border
-//!  of the screen
-//!  - 0.5 means that the effect is completely attenuated at half the border of the
-//!  screen to the screen center.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief LensFlareModel
+ * The SetPosition method accepts a float value from -1 to 1 :
+ *  - 1 Indicates that the flare is on the source (on the glow)
+ *  - 0 Indicates that the flare is on the center of the screen
+ *  - -1 Indicates that the flare is on the symmetry of the source by the center
+ *
+ * The AttenuationRange accepts a float value from 0 to 1.
+ * This parameter define how the attenuation is computed :
+ *  - 1 means that the effect is completely attenuated when the source is on the border
+ *  of the screen
+ *  - 0.5 means that the effect is completely attenuated at half the border of the
+ *  screen to the screen center.*
+ */
 class O3D_API LensFlareModel
 {
 public:
@@ -213,7 +212,7 @@ public:
 	Int32 getNumGlows()const;
 
 	// serialization
-	Bool writeToFile(OutStream &os) const;
+    Bool writeToFile(OutStream &os) const;
     Bool readFromFile(Scene *pScene, InStream& is);
 
 protected :
@@ -240,4 +239,3 @@ protected :
 } // namespace o3d
 
 #endif // _O3D_LENSFLAREMODEL_H
-

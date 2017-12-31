@@ -66,9 +66,9 @@ public:
  */
 class O3D_API BaseObject : public EvtHandler, public virtual Sharable
 {
-public:
+    O3D_DECLARE_BASE_ABSTRACT_CLASS(BaseObject)
 
-	O3D_DECLARE_ABSTRACT_CLASS(BaseObject)
+public:
 
 	typedef std::list<BaseSmartObject*> T_UserList;
 	typedef T_UserList::iterator IT_UserList;
@@ -312,7 +312,7 @@ inline _T dynamicCast(_OBJ const &object)
 
 //! Is an object if a type of _T.
 template <class _OBJ, class _T>
-inline Bool typeOf(_OBJ object)
+inline Bool typeOf(_OBJ /*object*/)
 {
     return False;
 }
@@ -335,14 +335,14 @@ inline Bool typeOf(BaseObject *object)
 template <class _T>
 inline Bool typeOf(const BaseObject &object)
 {
-    return &object != nullptr ? object.getTypeOf(&PtrCast<_T>::PointedType::ms_classInfo) : False;
+    return object.getTypeOf(&PtrCast<_T>::PointedType::ms_classInfo);
 }
 
 //! Is a BaseObject& a type of _T.
 template <class _T>
 inline Bool typeOf(BaseObject &object)
 {
-    return &object != nullptr ? object.getTypeOf(&PtrCast<_T>::PointedType::ms_classInfo) : False;
+    return object.getTypeOf(&PtrCast<_T>::PointedType::ms_classInfo);
 }
 
 } // namespace o3d

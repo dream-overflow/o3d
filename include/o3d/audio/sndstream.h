@@ -16,11 +16,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! class SndStream
-//-------------------------------------------------------------------------------------
-//! Internal sound buffer streamer object.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Internal sound buffer streamer object.
+ */
 class O3D_API SndStream : public SndBufferObject
 {
 public:
@@ -33,10 +31,10 @@ public:
 	SndStream();
 
 	//! Is a streamed buffer.
-	virtual Bool isStream() const { return True; }
+    virtual Bool isStream() const;
 
 	//! Load from a valid sound object. Does mean nothing for O3DSndStream.
-	virtual void load(const Sound &snd) {}
+    virtual void load(const Sound &snd);
 
 	//! destroy all content
 	virtual void destroy() = 0;
@@ -65,4 +63,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SNDSTREAM_H
-
