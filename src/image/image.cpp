@@ -907,7 +907,7 @@ Bool Image::convertRtoRGB8()
 		Float *src = (Float*)m_data->data;
 		UInt8 *dst = data;
 		UInt8 *end = dst + m_size;
-		register UInt8 p;
+        /*register*/ UInt8 p;
 
 		while (dst < end)
 		{
@@ -964,7 +964,7 @@ Bool Image::convertRtoRGBA8()
 		Float *src = (Float*)m_data->data;
 		UInt8 *dst = data;
 		UInt8 *end = dst + m_size;
-		register UInt8 p;
+        /*register*/ UInt8 p;
 
 		while (dst < end)
 		{
@@ -1028,7 +1028,7 @@ Bool Image::convertRtoRGBA8(Rgb colorKey)
 		Float *src = (Float*)m_data->data;
 		UInt8 *dst = data;
 		UInt8 *end = dst + m_size;
-		register UInt8 p;
+        /*register*/ UInt8 p;
 
 		while (dst < end)
 		{

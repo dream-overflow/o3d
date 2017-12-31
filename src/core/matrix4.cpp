@@ -214,7 +214,7 @@ void Matrix4::rotateAbsX(Float alpha)
 	Float sin = sinf(alpha);
 	Float cos = cosf(alpha);
 
-	register UInt8 r;
+    /*register*/ UInt8 r;
 	Float tmp;
 
 	for (UInt8 i = 0; i <= 2; ++i)
@@ -233,7 +233,7 @@ void Matrix4::rotateAbsY(Float alpha)
 	Float sin = sinf(alpha);
 	Float cos = cosf(alpha);
 
-	register UInt8 r;
+    /*register*/ UInt8 r;
 	Float tmp;
 
 	for (UInt8 i = 0; i <= 2; ++i)
@@ -252,7 +252,7 @@ void Matrix4::rotateAbsZ(Float alpha)
 	Float sin = sinf(alpha);
 	Float cos = cosf(alpha);
 
-	register UInt8 r;
+    /*register*/ UInt8 r;
 	Float tmp;
 
     for (UInt8 i = 0; i <= 2; ++i) {

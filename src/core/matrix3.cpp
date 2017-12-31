@@ -396,7 +396,7 @@ void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenV
 
 	Matrix3 inp;
 	Int32 rot = 0;
-	register Int32 i;
+    /*register*/ Int32 i;
 	Vector3 B;
 	Vector3 Z;
 
@@ -413,7 +413,7 @@ void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenV
     for (Int32 sweep = 0; sweep < maxSweeps; ++sweep) {
 		Float sum = o3d::abs(inp(0,1)) + o3d::abs(inp(0,2)) + o3d::abs(inp(1,2));
 		Float thresh;
-		register Int32 p, q;
+        /*register*/ Int32 p, q;
 
         if (o3d::abs(sum) < epsilon) { // Normal return relies on quadratic
 			break;
@@ -423,17 +423,17 @@ void Matrix3::computeSymmetricEigenSystem(Matrix3 &eigenVectors, Vector3 &eigenV
 
         for (p = 0; p < 2; p++) {
             for (q = p+1; q < 3; q++) {
-				register Float g = 100.0f * o3d::abs(inp(p,q));
+                /*register*/ Float g = 100.0f * o3d::abs(inp(p,q));
 
 				// After 4 sweeps, skip the rotation if the
 				// off-diagonal element is small.
                 if ((sweep > 4) && (o3d::abs(g) < epsilon)) {
 					inp(p,q) = 0.0;
                 } else if (o3d::abs(inp(p,q)) > thresh) {
-					register Float h = eigenValues[q] - eigenValues[p];
+                    /*register*/ Float h = eigenValues[q] - eigenValues[p];
 					Float c, s, t;  // cosine, sine, tangent of rotation angle
 					Float tau;
-					register Int32 j;
+                    /*register*/ Int32 j;
 
                     if (o3d::abs(g) < epsilon) {
 						t = inp(p,q) / h;

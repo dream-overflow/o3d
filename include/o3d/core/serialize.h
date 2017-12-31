@@ -20,18 +20,18 @@ namespace o3d {
 //---------------------------------------------------------------------------------------
 
 //! Define for no parent class whose want to be serialized
-#define O3D_DEFINE_SERIALIZATION(class)                              \
-    public:                                                          \
-    virtual String getClassName() const { return String(#class); }   \
-    static Serialize* createInstance() { return new class; }         \
-    virtual Serialize* makeInstance() const { return new class(); }
+#define O3D_DEFINE_SERIALIZATION(class)                                       \
+    public:                                                                   \
+    virtual String getClassName() const override { return String(#class); }   \
+    static Serialize* createInstance() { return new class; }                  \
+    virtual Serialize* makeInstance() const override { return new class(); }
 
 //! Define for no parent template class whose want to be serialized
-#define O3D_DEFINE_SERIALIZATION_TEMPLATE(class,T)                       \
-    public:                                                              \
-    virtual String getClassName() const { return String(#class); }       \
-    static Serialize* createInstance() { return new class<T>; }          \
-    virtual Serialize* makeInstance() const { return (new class<T>()); }
+#define O3D_DEFINE_SERIALIZATION_TEMPLATE(class,T)                                \
+    public:                                                                       \
+    virtual String getClassName() const override { return String(#class); }       \
+    static Serialize* createInstance() { return new class<T>; }                   \
+    virtual Serialize* makeInstance() const override { return (new class<T>()); }
 
 /**
  * @brief Used for serialize classes data to files

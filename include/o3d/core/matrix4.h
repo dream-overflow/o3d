@@ -363,7 +363,7 @@ public:
 		 	_mm_mul_ps(_mm_shuffle_ps(_M.__M128[3], _M.__M128[3], _MM_SHUFFLE(2,2,2,2)), __M128[2])),
 		 	_mm_mul_ps(_mm_shuffle_ps(_M.__M128[3], _M.__M128[3], _MM_SHUFFLE(3,3,3,3)), __M128[3]));
 	#else
-		register UInt32 i,j,r; // i column, j row
+        /*register*/ UInt32 i,j,r; // i column, j row
 
 		for ( i = 0 ; i < 4 ; ++i)
 		{
@@ -420,7 +420,7 @@ public:
 		__M128[2] = m2;
 		__M128[3] = m3;
 	#else
-		register UInt32 i,j,r; // i column, j row
+        /*register*/ UInt32 i,j,r; // i column, j row
 		O3D_ALIGN(16) Float __M[16];
 
 		for ( i = 0 ; i < 4 ; ++i)

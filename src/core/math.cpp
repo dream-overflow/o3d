@@ -64,7 +64,7 @@ Float Math::_Std::sqrt(Float x)
         fsqrt
     }
   #elif defined(__GNUC__)
-    register Float ret;
+    /*register*/ Float ret;
     asm("fsqrt" : "=t"(ret): "0"(x));
     return ret;
   #else

@@ -481,7 +481,7 @@ inline void System::swapBytes2(void* value)
     }
 #else
 #ifdef O3D_BIG_ENDIAN
-    register UInt8 t0,t1;
+    /*register*/ UInt8 t0,t1;
 
     t0 = ((UInt8*)value)[0];
     t1 = ((UInt8*)value)[1];
@@ -506,7 +506,7 @@ inline void System::swapBytes4(void* value)
     }
 #else
 #ifdef O3D_BIG_ENDIAN
-    register UInt8 t0,t1,t2,t3;
+    /*register*/ UInt8 t0,t1,t2,t3;
 
     t0 = ((UInt8*)value)[0];
     t1 = ((UInt8*)value)[1];
@@ -527,7 +527,7 @@ inline void System::swapBytes4(void* value)
 inline void System::swapBytes8(void* value)
 {
     // swap 8 bytes type
-    register UInt8 t0,t1,t2,t3,t4,t5,t6,t7;
+    /*register*/ UInt8 t0,t1,t2,t3,t4,t5,t6,t7;
 
     t0 = ((UInt8*)value)[0];
     t1 = ((UInt8*)value)[1];
