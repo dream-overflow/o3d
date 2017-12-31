@@ -67,8 +67,7 @@ Sound& Sound::operator=(const Sound& dup)
 	m_sampling = dup.m_sampling;
 	m_dataType = dup.m_dataType;
 
-	if (dup.m_data.get())
-	{
+    if (dup.m_data.get()) {
 		// shallow copy
 		m_data = dup.m_data;
 	}
@@ -79,26 +78,27 @@ Sound& Sound::operator=(const Sound& dup)
 // Get the data buffer and size.
 const UInt8* Sound::getData() const
 {
-	if (m_data.get())
+    if (m_data.get()) {
 		return m_data->getData();
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Get the sound duration in seconds.
 Float Sound::getDuration() const
 {
-	if (m_data.get())
+    if (m_data.get()) {
 		return m_data->getDuration();
-	else
+    } else {
 		return 0.f;
+    }
 }
 
 // Get the number of channels (1 or 2).
 UInt32 Sound::getNumChannels() const
 {
-	switch (m_format)
-	{
+    switch (m_format) {
 		case AL_FORMAT_MONO8:
 		case AL_FORMAT_MONO16:
 			return 1;
@@ -201,8 +201,7 @@ void Sound::load(const String& filename, Float decodeMaxDuration)
     load(*is);
 
     // fully decode
-    if (getDuration() <= decodeMaxDuration)
-    {
+    if (getDuration() <= decodeMaxDuration) {
         m_data->decode();
         m_size = m_data->getSize();
     }
@@ -219,14 +218,14 @@ void Sound::load(InStream &is, Float decodeMaxDuration)
     is.read(buf, 6);
     is.seek(-6);
 
-	if (buf[0] == 'R' && buf[1] == 'I' && buf[2] == 'F' && buf[3] == 'F')
+    if (buf[0] == 'R' && buf[1] == 'I' && buf[2] == 'F' && buf[3] == 'F') {
         loadWav(is); // WAV
-	else if (buf[0] == 'O' && buf[1] == 'g' && buf[2] == 'g' && buf[3] == 'S')
+    } else if (buf[0] == 'O' && buf[1] == 'g' && buf[2] == 'g' && buf[3] == 'S') {
         loadOgg(is); // OGG
-	else if ((buf[0] == 0xFF && buf[1] == 0xB0) || (buf[0] == 'I' && buf[1] == 'D' && buf[2] == '3' && buf[3] == 0x03))
+    } else if ((buf[0] == 0xFF && buf[1] == 0xB0) || (buf[0] == 'I' && buf[1] == 'D' && buf[2] == '3' && buf[3] == 0x03)) {
         loadMp3(is); // MP3
-	else // unknown
-	{
+    } else {
+        // unknown
 		m_dataType = AUDIO_SOUND;
         O3D_ERROR(E_InvalidFormat("Unsupported sound format"));
 	}
@@ -235,8 +234,7 @@ void Sound::load(InStream &is, Float decodeMaxDuration)
 // Create a streamer
 SndStream* Sound::createStreamer()
 {
-	switch (m_dataType)
-	{
+    switch (m_dataType) {
 		case AUDIO_SOUND_RAW:
 			return new SndRawStreamer(*static_cast<SndRaw*>(m_data.get()));
 
@@ -247,7 +245,7 @@ SndStream* Sound::createStreamer()
 			return new OggStreamer(*static_cast<OggVorbis*>(m_data.get()));
 
 		case AUDIO_SOUND_MP3:
-			//return new O3DMp3Streamer(*static_cast<O3DMp3*>(m_data.get()));
+            //return new Mp3Streamer(*static_cast<Mp3*>(m_data.get()));
             return nullptr;
 
 		default:
@@ -259,12 +257,12 @@ SndStream* Sound::createStreamer()
 void Sound::destroy()
 {
 	// sound data
-	if (m_data.get())
+    if (m_data.get()) {
         m_data = nullptr;
+    }
 
 	m_sampling = 0;
 	m_format = 0;
 	m_size = 0;
 	m_dataType = AUDIO_SOUND;
 }
-

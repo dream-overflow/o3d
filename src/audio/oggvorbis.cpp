@@ -38,13 +38,12 @@ static Int32 VorbisSeek(void *datasource, ogg_int64_t offset, Int32 whence)
 {
     InStream* is = (InStream*)datasource;
 
-	switch (whence)
-	{
+    switch (whence) {
 		case SEEK_SET:
-            is->reset((UInt32)offset);
+            is->reset((UInt64)offset);
 			break;
 		case SEEK_CUR:
-            is->seek((Int32)offset);
+            is->seek((Int64)offset);
 			break;
 		case SEEK_END:
             is->end((Int64)offset);
@@ -375,4 +374,3 @@ Bool OggStreamer::isFinished() const
 	else
 		return (m_position >= (UInt32)m_source->m_decodedData.getSize());
 }
-

@@ -57,7 +57,13 @@ UInt32 InStreamAndroid::reader(void *buf, UInt32 size, UInt32 count)
         return 0;
     }
 
-    return (UInt32)AAsset_read(m_asset, buf, size*count);
+    Int32 len = AAsset_read(m_asset, buf, size*count);
+    if (len > 0) {
+        m_pos += len;
+        return (UInt32)len;
+    } else {
+        return 0;
+    }
 }
 
 void InStreamAndroid::close()
@@ -65,34 +71,48 @@ void InStreamAndroid::close()
     if (m_asset) {
         AAsset_close(m_asset);
         m_asset = nullptr;
+        m_pos = 0;
     }
 }
 
 void InStreamAndroid::reset(UInt64 n)
 {
-    if (AAsset_seek64(m_asset, n, SEEK_SET) < 0) {
+    Int64 pos;
+
+    if ((pos = AAsset_seek64(m_asset, n, SEEK_SET)) < 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
+
+    m_pos = (UInt64)pos;
 }
 
 void InStreamAndroid::seek(Int64 n)
 {
-    if (AAsset_seek64(m_asset, n, SEEK_CUR) < 0) {
+    Int64 pos;
+
+    if ((pos = AAsset_seek64(m_asset, n, SEEK_CUR)) < 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
+
+    m_pos = (UInt64)pos;
 }
 
 void InStreamAndroid::end(Int64 n)
 {
-    if (AAsset_seek64(m_asset, n, SEEK_END) < 0) {
+    Int64 pos;
+
+    if ((pos = AAsset_seek64(m_asset, n, SEEK_END)) < 0) {
         O3D_ERROR(E_IndexOutOfRange(""));
     }
+
+    m_pos = (UInt64)pos;
 }
 
-inline Int32 AAgetc(AAsset *asset)
+inline Int32 AAgetc(AAsset *asset, UInt64 &pos)
 {
     UInt8 value;
     if (AAsset_read(asset, &value, 1) == 1) {
+        ++pos;
         return (Int32)value;
     } else {
         return EOF;
@@ -102,7 +122,7 @@ inline Int32 AAgetc(AAsset *asset)
 UInt8 InStreamAndroid::peek()
 {
     if (m_pos < m_length) {
-        Int32 value = AAgetc(m_asset);
+        Int32 value = AAgetc(m_asset, m_pos);
         if (value != EOF) {
             AAsset_seek(m_asset, -1, SEEK_CUR);
             return value;
@@ -117,9 +137,11 @@ void InStreamAndroid::ignore(Int32 limit, UInt8 delim)
     Int32 value;
     Int32 counter = 0;
 
-    while ((counter < limit) && ((value = AAgetc(m_asset)) != EOF) && ((UInt8)value != delim)) {
+    while ((counter < limit) && ((value = AAgetc(m_asset, m_pos)) != EOF) && ((UInt8)value != delim)) {
         ++counter;
     }
+
+    m_pos += counter;
 }
 
 Int32 InStreamAndroid::getAvailable() const
@@ -143,7 +165,7 @@ Int32 InStreamAndroid::readLine(String &str, CharacterEncoding encoding)
     ArrayChar read;
 
     Int32 c;
-    while( ((c = AAgetc(m_asset)) != '\n') && ( c != EOF)) {
+    while (((c = AAgetc(m_asset, m_pos)) != '\n') && ( c != EOF)) {
         if (c != '\r') {
             read.push((Char)c);
         }
@@ -175,7 +197,7 @@ Int32 InStreamAndroid::readLine(String &str, Int32 limit, UInt8 delim, Character
 
     Int32 c = EOF, counter = 0;
 
-    while((counter < limit) && ((c = AAgetc(m_asset)) != '\n') && (c != EOF) && (c != delim)) {
+    while ((counter < limit) && ((c = AAgetc(m_asset, m_pos)) != '\n') && (c != EOF) && (c != delim)) {
         if (c != '\r') {
             read.push((Char)c);
         }
@@ -204,9 +226,9 @@ Int32 InStreamAndroid::readLine(String &str, Int32 limit, UInt8 delim, Character
 Int32 InStreamAndroid::readWord(String &str, CharacterEncoding encoding)
 {
     ArrayChar read;
-/*
+
     Int32 c;
-    while( ((c = getc(m_file)) != ' ') && ( c != EOF) && (c != '\n') && (c != '\r')) {
+    while (((c = AAgetc(m_asset, m_pos)) != ' ') && ( c != EOF) && (c != '\n') && (c != '\r')) {
         read.push((Char)c);
     }
 
@@ -223,7 +245,7 @@ Int32 InStreamAndroid::readWord(String &str, CharacterEncoding encoding)
         str.set(read.getData(),0);
     } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
-    }*/
+    }
 
     return str.length();
 }

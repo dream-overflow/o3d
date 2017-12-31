@@ -23,6 +23,11 @@ namespace o3d {
 //! Open and read a Microsoft WAV file. The sound can be directly decoded, or streamed
 //! using an O3DWavStreamer.
 //---------------------------------------------------------------------------------------
+
+/**
+ * @brief Open and read a Microsoft WAV file. The sound can be directly decoded,
+ * or streamed using an WavStreamer.
+ */
 class O3D_API Wav : public SndFormat
 {
 	friend class WavStreamer;
@@ -35,15 +40,15 @@ public:
 	//! Destructor.
 	virtual ~Wav();
 
-    virtual void prepare(InStream &is);
+    virtual void prepare(InStream &is) override;
 
-    virtual void prepare(const String &filename);
+    virtual void prepare(const String &filename) override;
 
-	virtual void destroy();
+    virtual void destroy() override;
 
-	virtual Float getDuration() const;
+    virtual Float getDuration() const override;
 
-	virtual Bool decode();
+    virtual Bool decode() override;
 
 protected:
 
@@ -54,12 +59,9 @@ protected:
 	UInt32 m_dataSize;  //!< Size of the sound data in bytes.
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class WavStreamer
-//-------------------------------------------------------------------------------------
-//! Stream a WAV sound.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Stream a WAV sound.
+ */
 class O3D_API WavStreamer : public SndStream
 {
 public:
@@ -70,19 +72,19 @@ public:
 	//! Destructor.
 	virtual ~WavStreamer();
 
-	virtual void destroy();
+    virtual void destroy() override;
 
-	virtual Bool isDefined() const;
-	virtual Bool isValid() const;
-	virtual UInt32 getSize() const;
-	virtual UInt32 getFormat() const;
-	virtual UInt32 getSamplingRate() const;
-	virtual Float getDuration() const;
+    virtual Bool isDefined() const override;
+    virtual Bool isValid() const override;
+    virtual UInt32 getSize() const override;
+    virtual UInt32 getFormat() const override;
+    virtual UInt32 getSamplingRate() const override;
+    virtual Float getDuration() const override;
 
-	virtual const UInt8* getStreamChunk(UInt32 seek, UInt32 &size, Bool &finished);
-	virtual UInt32 getStreamPos() const;
-	virtual void rewind();
-	virtual Bool isFinished() const;
+    virtual const UInt8* getStreamChunk(UInt32 seek, UInt32 &size, Bool &finished) override;
+    virtual UInt32 getStreamPos() const override;
+    virtual void rewind() override;
+    virtual Bool isFinished() const override;
 
 protected:
 
@@ -95,4 +97,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_WAV_H
-

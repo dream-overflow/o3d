@@ -38,8 +38,9 @@ Wav::~Wav()
 
 void Wav::prepare(InStream &is)
 {
-	if (m_is || m_decodedData.getSize())
+    if (m_is || m_decodedData.getSize()) {
 		destroy();
+    }
 
 	Char   riff[4]; // 'RIFF'
 	Int32  riffSize;
@@ -222,8 +223,7 @@ Float Wav::getDuration() const
 
 Bool Wav::decode()
 {
-	if (m_is)
-	{
+    if (m_is) {
 		UInt32 result;
         Int32 size = m_is->getAvailable() - m_rewindPos;
         m_is->reset(m_rewindPos);
@@ -233,14 +233,13 @@ Bool Wav::decode()
 
 		deletePtr(m_is);
 		return ((UInt32)m_decodedData.getSize() == result);
-	}
-	else
+    } else {
 		return (m_decodedData.getSize() > 0);
+    }
 }
 
-
 //---------------------------------------------------------------------------------------
-// O3DWavStreamer
+// WavStreamer
 //---------------------------------------------------------------------------------------
 
 // Default constructor. Take a valid O3DWav object.
@@ -253,8 +252,9 @@ WavStreamer::WavStreamer(Wav &wav) :
 	O3D_ASSERT(m_source.isValid());
 
 	// create a stream buffer if the source is a file
-	if (m_source->m_is)
+    if (m_source->m_is) {
 		m_stream = new UInt8[SndStream::BUFFER_SIZE];
+    }
 }
 
 // Destructor.
@@ -304,19 +304,16 @@ const UInt8* WavStreamer::getStreamChunk(UInt32 seek, UInt32 &size, Bool &finish
 	size = 0;
 
 	// If file
-	if (m_source->m_is)
-	{
+    if (m_source->m_is) {
 		// out of memory
-		if (seek >= m_source->m_dataSize)
-		{
+        if (seek >= m_source->m_dataSize) {
 			size = 0;
 			finished = True;
             return nullptr;
 		}
 
 		// is need to seek
-        if (seek != (UInt32)m_source->m_is->getPosition() - m_source->m_rewindPos)
-		{
+        if (seek != (UInt32)m_source->m_is->getPosition() - m_source->m_rewindPos) {
             m_source->m_is->reset(seek + m_source->m_rewindPos);
 			m_position = seek;
 		}
@@ -399,4 +396,3 @@ Bool WavStreamer::isFinished() const
 	else
 		return (m_position >= (UInt32)m_source->m_decodedData.getSize());
 }
-

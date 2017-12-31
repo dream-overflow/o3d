@@ -80,7 +80,7 @@ public:
 	virtual ~ALBuffer();
 
 	//! Load from a valid sound object.
-	virtual void load(const Sound &snd);
+    virtual void load(const Sound &snd) override;
 
 	//! Define the sound parameters.
 	//! @param format OpenAL buffer format.
@@ -90,28 +90,28 @@ public:
 	Bool define(UInt32 format, UInt32 size, UInt32 samplingRate);
 
 	//! Is the sound data defined.
-	virtual Bool isDefined() const { return m_format != 0; }
+    virtual Bool isDefined() const override { return m_format != 0; }
 
 	//! Is a streamed buffer.
-	virtual Bool isStream() const { return False; }
+    virtual Bool isStream() const override { return False; }
 
 	//! Is the sound buffer is valid.
-	virtual Bool isValid() const { return m_bufferId != O3D_UNDEFINED; }
+    virtual Bool isValid() const override { return m_bufferId != O3D_UNDEFINED; }
 
 	//! Get the OpenAL buffer id.
-	inline UInt32 getBufferId() const { return m_bufferId; }
+    inline UInt32 getBufferId() const { return m_bufferId; }
 
 	//! Get the size of the buffer (in bytes).
-	virtual UInt32 getSize() const { return m_size; }
+    virtual UInt32 getSize() const override { return m_size; }
 
 	//! Get the sound OpenAL format.
-	virtual UInt32 getFormat() const { return m_format; }
+    virtual UInt32 getFormat() const override { return m_format; }
 
 	//! Get the sound sampling rate frequency in Hz.
-	virtual UInt32 getSamplingRate() const { return m_samplingRate; }
+    virtual UInt32 getSamplingRate() const override { return m_samplingRate; }
 
 	//! Get the buffer duration in seconds.
-	virtual Float getDuration() const { return m_duration; }
+    virtual Float getDuration() const override { return m_duration; }
 
 	//! Load a sound to OpenAL.
 	static UInt32 loadSound(UInt32 id, const Sound &snd);
@@ -129,4 +129,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_ALBUFFER_H
-

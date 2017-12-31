@@ -32,7 +32,7 @@ SndBufferObject::~SndBufferObject()
 }
 
 //---------------------------------------------------------------------------------------
-// O3DALBuffer
+// ALBuffer
 //---------------------------------------------------------------------------------------
 
 // Default constructor.
@@ -50,8 +50,7 @@ ALBuffer::ALBuffer() :
 // Virtual destructor.
 ALBuffer::~ALBuffer()
 {
-	if (m_bufferId != 0)
-	{
+    if (m_bufferId != 0) {
 		O3D_SFREE(MemoryManager::SFX_SINGLE_BUFFER, m_bufferId);
 		alDeleteBuffers(1, &m_bufferId);
 	}
@@ -60,19 +59,20 @@ ALBuffer::~ALBuffer()
 // Load a sound sample according the the type previously defined.
 void ALBuffer::load(const Sound &snd)
 {
-	if (snd.isEmpty())
+    if (snd.isEmpty()) {
 		return;
+    }
 
 	UInt32 sndSize;
 	Bool realloc = False;
 
-	if (m_bufferId == O3D_UNDEFINED)
+    if (m_bufferId == O3D_UNDEFINED) {
 		alGenBuffers(1, &m_bufferId);
-	else
+    } else {
 		realloc = True;
+    }
 
-	switch (m_type)
-	{
+    switch (m_type) {
 		case AUDIO_AL_BUFFER:
 			sndSize = loadSound(m_bufferId, snd);
 			break;
@@ -83,10 +83,11 @@ void ALBuffer::load(const Sound &snd)
             break;
 	}
 
-	if (realloc)
+    if (realloc) {
 		O3D_SREALLOC(MemoryManager::SFX_SINGLE_BUFFER, m_bufferId, sndSize);
-	else
+    } else {
 		O3D_SALLOC(MemoryManager::SFX_SINGLE_BUFFER, m_bufferId, sndSize);
+    }
 
 	m_size = snd.getSize();
 	m_format = snd.getFormat();
@@ -102,8 +103,7 @@ Bool ALBuffer::define(
 {
 	Bool created = False;
 
-	if (m_bufferId == O3D_UNDEFINED)
-	{
+    if (m_bufferId == O3D_UNDEFINED) {
 		alGenBuffers(1, &m_bufferId);
 		created = True;
 	}
@@ -112,8 +112,7 @@ Bool ALBuffer::define(
 	m_size = size;
 	m_samplingRate = samplingRate;
 
-	switch (format)
-	{
+    switch (format) {
 		case AL_FORMAT_MONO8:
 			m_duration = (Float)(m_size) / m_samplingRate;
 			break;

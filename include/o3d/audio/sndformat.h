@@ -17,11 +17,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class SndFormat
-//-------------------------------------------------------------------------------------
-//! Sound format interface.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Sound format interface.
+ */
 class O3D_API SndFormat : public SmartCounter<SndFormat>
 {
 public:
@@ -85,4 +83,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SNDFORMAT_H
-

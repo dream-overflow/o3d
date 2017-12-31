@@ -52,8 +52,9 @@ SndBuffer::SndBuffer(
 			m_streamPos(0),
 			m_decodeMaxDuration(decodeMaxDuration)
 {
-	if (sound.isEmpty())
+    if (sound.isEmpty()) {
 		O3D_ERROR(E_InvalidParameter("Sound must be valid"));
+    }
 
 	m_sound = sound;
 }
@@ -67,23 +68,25 @@ SndBuffer::~SndBuffer()
 // Get the sound buffer sampling rate (8,11,22,44kHz).
 UInt32 SndBuffer::getSamplingRate() const
 {
-	if (m_sound.isValid())
+    if (m_sound.isValid()) {
 		return m_sound.getSamplingRate();
-	else if (m_bufferObject)
+    } else if (m_bufferObject) {
 		return m_bufferObject->getSamplingRate();
-	else
+    } else {
 		return 0;
+    }
 }
 
 // Get the size of a channel in bits (8 or 16bits).
 UInt32 SndBuffer::getChannelFormat() const
 {
-	if (m_sound.isValid())
+    if (m_sound.isValid()) {
 		return m_sound.getFormat();
-	else if (m_bufferObject)
+    } else if (m_bufferObject) {
 		return m_bufferObject->getFormat();
-	else
+    } else {
 		return 0;
+    }
 }
 
 // Get bit per sample (8,16).
@@ -91,13 +94,13 @@ UInt32 SndBuffer::getBitsPerSample() const
 {
 	UInt32 format = 0;
 
-	if (m_sound.isValid())
+    if (m_sound.isValid()) {
 		format = m_sound.getFormat();
-	else if (m_bufferObject)
+    } else if (m_bufferObject) {
 		format = m_bufferObject->getFormat();
+    }
 
-	switch (format)
-	{
+    switch (format) {
 		case AL_FORMAT_MONO16:
 		case AL_FORMAT_STEREO16:
 			return 16;
@@ -114,13 +117,13 @@ UInt32 SndBuffer::getNumChannels() const
 {
 	UInt32 format = 0;
 
-	if (m_sound.isValid())
+    if (m_sound.isValid()) {
 		format = m_sound.getFormat();
-	else if (m_bufferObject)
+    } else if (m_bufferObject) {
 		format = m_bufferObject->getFormat();
+    }
 
-	switch (format)
-	{
+    switch (format) {
 		case AL_FORMAT_MONO8:
 		case AL_FORMAT_MONO16:
 			return 1;
@@ -135,14 +138,15 @@ UInt32 SndBuffer::getNumChannels() const
 // Create OpenAL buffer.
 Bool SndBuffer::create(Bool unloadSound)
 {
-	if (m_bufferObject)
+    if (m_bufferObject) {
 		return True;
+    }
 
 	// if the sound data is no longer in memory we try to load it before
-	if (m_sound.isEmpty())
-	{
-        if (getResourceName().startsWith("<"))
+    if (m_sound.isEmpty()) {
+        if (getResourceName().startsWith("<")) {
 			return False;
+        }
 
 		// load the sound
         m_sound.load(getResourceName(), m_decodeMaxDuration);
@@ -150,15 +154,12 @@ Bool SndBuffer::create(Bool unloadSound)
 
 	// single buffer
 	if ((m_sound.getDuration() <= m_decodeMaxDuration) ||
-		((m_sound.getSize() <= SndStream::BUFFER_SIZE) && (m_sound.getSize() != 0)))
-	{
+        ((m_sound.getSize() <= SndStream::BUFFER_SIZE) && (m_sound.getSize() != 0))) {
 		m_bufferObject = new ALBuffer();
 
 		// single buffer object
 		m_bufferObject->load(m_sound);
-	}
-	else
-	{
+    } else {
 		// streamed with front and back buffers
 		m_bufferObject = m_sound.createStreamer();
 
@@ -166,8 +167,9 @@ Bool SndBuffer::create(Bool unloadSound)
 		alGenBuffers(1, &m_backBuffer);
 	}
 
-	if (unloadSound)
+    if (unloadSound) {
 		m_sound.destroy();
+    }
 
 	// Valid sound buffer
 	onSndBufferValid(this);
@@ -182,16 +184,14 @@ void SndBuffer::destroy()
 
 	deletePtr(m_bufferObject);
 
-	if (m_frontBuffer != O3D_UNDEFINED)
-	{
+    if (m_frontBuffer != O3D_UNDEFINED) {
 		O3D_SFREE(MemoryManager::SFX_STREAM_BUFFER, m_frontBuffer);
 
 		alDeleteBuffers(1, &m_frontBuffer);
 		m_frontBuffer = O3D_UNDEFINED;
 	}
 
-	if (m_backBuffer != O3D_UNDEFINED)
-	{
+    if (m_backBuffer != O3D_UNDEFINED) {
 		O3D_SFREE(MemoryManager::SFX_STREAM_BUFFER, m_backBuffer);
 
 		alDeleteBuffers(1, &m_backBuffer);
@@ -210,37 +210,38 @@ void SndBuffer::unloadSound()
 // Get the front or single buffer id.
 UInt32 SndBuffer::getFrontBufferId() const
 {
-	if (m_bufferObject)
-	{
-		if (m_bufferObject->isStream())
+    if (m_bufferObject) {
+        if (m_bufferObject->isStream()) {
 			return m_frontBuffer;
-		else
+        } else {
 			return static_cast<ALBuffer*>(m_bufferObject)->getBufferId();
-	}
-	else
+        }
+    } else {
 		return 0;
+    }
 }
 
 // Get the back buffer id.
 UInt32 SndBuffer::getBackBufferId() const
 {
-	if (m_bufferObject)
-	{
-		if (m_bufferObject->isStream())
+    if (m_bufferObject) {
+        if (m_bufferObject->isStream()) {
 			return m_backBuffer;
-		else
+        } else {
 			return 0;
-	}
-	else
+        }
+    } else {
 		return 0;
+    }
 }
 
 // update the buffer: only for streamed buffer (with a back-buffer)
 Bool SndBuffer::updateStream(UInt32 sourceId, Bool loop, UInt32 &position)
 {
 	// only for a streamed sound
-	if (!m_bufferObject->isStream())
+    if (!m_bufferObject->isStream()) {
 		return False;
+    }
 
 	Int32 processed;
 	Bool finished = False;
@@ -251,22 +252,19 @@ Bool SndBuffer::updateStream(UInt32 sourceId, Bool loop, UInt32 &position)
 
 	m_streamPos = position;
 
-	while (processed--)
-	{
+    while (processed--) {
 		ALuint bufferId;
 
 		// un-queue the read buffer
 		alSourceUnqueueBuffers(sourceId, 1, &bufferId);
 
 		// update buffer data if not finished
-		if (!finished)
-		{
+        if (!finished) {
 			UInt32 size;
 			const UInt8 *data = sndStream->getStreamChunk(m_streamPos, size, finished);
 
 			// is finished and loop needed
-			if (finished && loop)
-			{
+            if (finished && loop) {
 				finished = False;
 				m_streamPos = position = 0;
 
@@ -276,8 +274,7 @@ Bool SndBuffer::updateStream(UInt32 sourceId, Bool loop, UInt32 &position)
 			}
 
 			// data to fill in ?
-			if (data)
-			{
+            if (data) {
 				m_streamPos = position = sndStream->getStreamPos();
 
 				// fill the buffer
@@ -296,8 +293,9 @@ Bool SndBuffer::updateStream(UInt32 sourceId, Bool loop, UInt32 &position)
 Bool SndBuffer::prepareStream(UInt32 sourceId, UInt32 &position)
 {
 	// only for a streamed sound
-	if (!m_bufferObject->isStream())
+    if (!m_bufferObject->isStream()) {
 		return False;
+    }
 
 	UInt32 size;
 	Bool finished = True;
@@ -307,11 +305,11 @@ Bool SndBuffer::prepareStream(UInt32 sourceId, UInt32 &position)
 	m_streamPos = 0;
 
 	// set the front buffer
-	if (m_frontBuffer != O3D_UNDEFINED)
-	{
+    if (m_frontBuffer != O3D_UNDEFINED) {
 		const UInt8* data = sndStream->getStreamChunk(m_streamPos, size, finished);
-		if (!data)
+        if (!data) {
 			return False;
+        }
 
 		O3D_SALLOC(MemoryManager::SFX_STREAM_BUFFER, m_frontBuffer, size);
 
@@ -329,11 +327,11 @@ Bool SndBuffer::prepareStream(UInt32 sourceId, UInt32 &position)
 	}
 
 	// set the back buffer
-	if ((m_backBuffer != O3D_UNDEFINED) && !finished)
-	{
+    if ((m_backBuffer != O3D_UNDEFINED) && !finished) {
 		const UInt8* data = sndStream->getStreamChunk(m_streamPos, size, finished);
-		if (!data)
+        if (!data) {
 			return False;
+        }
 
 		O3D_SALLOC(MemoryManager::SFX_STREAM_BUFFER, m_backBuffer, size);
 
@@ -386,8 +384,9 @@ SndBufferTask::SndBufferTask(
 			m_sndBuffer(sndBuffer),
 			m_decodeMaxDuration(decodeMaxDuration)
 {
-	if (!sndBuffer)
+    if (!sndBuffer) {
 		O3D_ERROR(E_InvalidParameter("The sound buffer must be valid"));
+    }
 
 	m_filename = FileManager::instance()->getFullFileName(filename);
 }
@@ -395,30 +394,26 @@ SndBufferTask::SndBufferTask(
 Bool SndBufferTask::execute()
 {
 	O3D_ASSERT(m_filename.isValid());
-	if (m_filename.isValid())
-	{
+    if (m_filename.isValid()) {
         try {
             m_sound.load(m_filename, m_decodeMaxDuration);
         }
-        catch (E_BaseException &)
-        {
+        catch (E_BaseException &) {
             return False;
         }
 
         return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 Bool SndBufferTask::finalize()
 {
-	if (m_sound.isValid())
-	{
+    if (m_sound.isValid()) {
 		m_sndBuffer->getSound() = m_sound;
 		return m_sndBuffer->create();
-	}
-	else
+    } else {
 		return False;
+    }
 }
-
