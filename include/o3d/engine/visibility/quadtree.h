@@ -154,7 +154,7 @@ public:
 	inline const T_ZoneObjectList & getObjectList() const { return m_objectList; }
 
 	// Accessors
-	inline Bool hasParent() const { return (m_pParent != NULL); }
+    inline Bool hasParent() const { return (m_pParent != nullptr); }
 	void setParent(QuadZone * _parent);
 	inline QuadZone * getParent() { return m_pParent; }
 	inline const QuadZone * getParent() const { return m_pParent; }

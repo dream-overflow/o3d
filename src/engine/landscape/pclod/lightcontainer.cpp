@@ -127,7 +127,7 @@ Bool PCLODLight::generateLightmap(
 		Vector2i & _computedSize,
 		UInt32 _level)
 {
-	O3D_ASSERT(_pTopZone != NULL);
+    O3D_ASSERT(_pTopZone != nullptr);
 	O3D_ASSERT(!_normalMap.isEmpty());
 	O3D_ASSERT((_pTopZone->getZoneSize()[X] == _lightmap.width()+1) && (_pTopZone->getZoneSize()[Y] == _lightmap.height()+1));
 	O3D_ASSERT(UInt32(_normalMap.elt()) == _lightmap.elt());
@@ -268,7 +268,7 @@ void PCLODLight::invalidate()
 
 Bool PCLODLight::mtAffectLightmap(const PCLODLightmap * _pLightmap) const
 {
-	O3D_ASSERT(_pLightmap != NULL);
+    O3D_ASSERT(_pLightmap != nullptr);
 	O3D_ASSERT(m_pLight);
 
 	switch(m_pLight->getLightType())
@@ -321,7 +321,7 @@ const PCLODTerrain * PCLODLight::getTerrain() const
 
 const PCLODTextureManager * PCLODLight::getTextureManager() const
 {
-	O3D_ASSERT(getParent() != NULL);
+    O3D_ASSERT(getParent() != nullptr);
 
 	return (PCLODTextureManager*)getParent();
 }

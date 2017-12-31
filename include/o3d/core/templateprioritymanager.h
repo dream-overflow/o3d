@@ -33,8 +33,8 @@ public:
 	//!  default constructor
 	PriorityManagerElt()
 	{
-		Element = NULL;
-		Son = NULL;
+        Element = nullptr;
+        Son = nullptr;
 		Priority = 0;
 		Number = 0;
 	}
@@ -54,7 +54,7 @@ public:
     PriorityManagerElt(T *element)
 	{
     	Element = element;
-		Son = NULL;
+        Son = nullptr;
 		Priority = 0;
 		Number = 0;
 	}
@@ -81,8 +81,8 @@ public:
 	{
 		m_NextId = 0;
 		m_size = 0;
-		m_Root = NULL;
-		m_Selected = NULL;
+        m_Root = nullptr;
+        m_Selected = nullptr;
 	}
 
 	virtual ~TemplatePriorityManager() { destroy(); }
@@ -92,7 +92,7 @@ public:
 	{
 		deletePtr(m_Root);
 
-		m_Selected = NULL;
+        m_Selected = nullptr;
 		m_size = 0;
 		m_NextId = 0;
 	}
@@ -103,13 +103,13 @@ public:
 	//! add new element with priority. return its index
 	Int32 addElement(T* t, Int32 priority)
 	{
-		if (m_Root != NULL)
+        if (m_Root != nullptr)
 		{
 			PriorityManagerElt<T> *elt = m_Root;
 			PriorityManagerElt<T> *eltFather = m_Root;
 
 			// find an element with a superior priority (0 = first, 1 =second, ...) and use it as father
-			while (elt != NULL && elt->Priority < priority)
+            while (elt != nullptr && elt->Priority < priority)
 			{
 				eltFather = elt;
 				elt = elt->Son;
@@ -128,7 +128,7 @@ public:
 			}
 			//else
 			//{
-			//	O3DPriorityManagerElt<T> *new_elt = new O3DPriorityManagerElt<T>(t,NULL,priority,m_NextId);
+            //	O3DPriorityManagerElt<T> *new_elt = new O3DPriorityManagerElt<T>(t,nullptr,priority,m_NextId);
 			//	elt_father->m_Son = new_elt;
 			//	m_Selected = new_elt;
 			//}
@@ -139,7 +139,7 @@ public:
 		}
 		else
 		{
-			m_Root = new PriorityManagerElt<T>(t,NULL,priority,m_NextId);
+            m_Root = new PriorityManagerElt<T>(t,nullptr,priority,m_NextId);
 			m_Selected = m_Root;
 			++m_NextId;
 			++m_size;
@@ -154,13 +154,13 @@ public:
 		PriorityManagerElt<T> *eltFather = m_Root;
 
 		// find element
-		while (elt != NULL && elt->Number != index)
+        while (elt != nullptr && elt->Number != index)
 		{
 			eltFather = elt;
 			elt = elt->Son;
 		}
 
-		if (elt != NULL && elt->Number == index)
+        if (elt != nullptr && elt->Number == index)
 		{
 			// ordering
 			if (eltFather != elt)
@@ -169,7 +169,7 @@ public:
 				m_Root = elt->Son;
 
 			// delete item
-			elt->Son = NULL;
+            elt->Son = nullptr;
 			deletePtr(elt);
 			--m_size;
 
@@ -184,13 +184,13 @@ public:
 		PriorityManagerElt<T> *elt = m_Root;
 		PriorityManagerElt<T> *eltFather = m_Root;
 
-		while (elt != NULL && elt != m_Selected)
+        while (elt != nullptr && elt != m_Selected)
 		{
 			eltFather = elt;
 			elt = elt->Son;
 		}
 
-		if (elt != NULL && elt == m_Selected)
+        if (elt != nullptr && elt == m_Selected)
 		{
 			// reset sons
 			if (eltFather != elt)
@@ -199,7 +199,7 @@ public:
 				m_Root = elt->Son;
 
 			// delete item data
-			elt->Son = NULL;
+            elt->Son = nullptr;
 			deletePtr(elt);
 			--m_size;
 
@@ -213,23 +213,23 @@ public:
 	T* find(Int32 index)
 	{
 		PriorityManagerElt<T> *elt = m_Root;
-		while (elt != NULL && elt->Number != index) elt = elt->Son;
+        while (elt != nullptr && elt->Number != index) elt = elt->Son;
 		if (elt->Number == index) return elt->Element;
-		return NULL;
+        return nullptr;
 	}
 	const T* find(Int32 index)const
 	{
 		PriorityManagerElt<T> *elt = m_Root;
-		while (elt != NULL && elt->Number != index) elt = elt->Son;
+        while (elt != nullptr && elt->Number != index) elt = elt->Son;
 		if (elt->Number == index) return elt->Element;
-		return NULL;
+        return nullptr;
 	}
 
 	//! select an element by its index
 	Int32 select(Int32 index)
 	{
 		PriorityManagerElt<T> *elt = m_Root;
-		while (elt != NULL && elt->Number != index) elt = elt->Son;
+        while (elt != nullptr && elt->Number != index) elt = elt->Son;
 		if (elt->Number == index) m_Selected = elt;
 		return m_Selected->Number;
 	}
@@ -237,14 +237,14 @@ public:
 	//! select next element and return its index
 	Int32 selectNext()
 	{
-		if (m_Selected == NULL)
+        if (m_Selected == nullptr)
 		{
 			m_Selected = m_Root;
-			if (m_Root == NULL) return -1;
+            if (m_Root == nullptr) return -1;
 		}
 
 		m_Selected = m_Selected->Son;
-		if (m_Selected == NULL) m_Selected = m_Root;
+        if (m_Selected == nullptr) m_Selected = m_Root;
 		return m_Selected->Number;
 	}
 
@@ -265,7 +265,7 @@ public:
 	//! return the selected index
 	inline Int32 getSelectedIndex()const
 	{
-		if (m_Selected == NULL)
+        if (m_Selected == nullptr)
 			return -1;
 		else
 			return m_Selected->Number;
@@ -283,14 +283,14 @@ public:
 		PriorityManagerElt<T> *eltFather = m_Root;
 
 		// find selected item and his father
-		while (elt != NULL && elt != m_Selected)
+        while (elt != nullptr && elt != m_Selected)
 		{
 			eltFather = elt;
 			elt = elt->Son;
 		}
 
 		// do with
-		if (elt != NULL && elt == m_Selected)
+        if (elt != nullptr && elt == m_Selected)
 		{
 			elt->Priority = priority;
 
@@ -302,7 +302,7 @@ public:
 
 			// reset elements
 			eltFather = m_Root;
-			while (eltFather != NULL && eltFather->Priority > priority)
+            while (eltFather != nullptr && eltFather->Priority > priority)
 				eltFather = eltFather->Son;
 
 			elt->Son = eltFather->Son;

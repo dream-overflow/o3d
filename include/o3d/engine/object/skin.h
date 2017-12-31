@@ -201,7 +201,7 @@ public:
 
 	//! Access to a currently active vertex element.
 	//! @param type The array type to retrieve.
-	//! @return The vertex element or NULL.
+    //! @return The vertex element or null.
 	virtual VertexElement* getVertexElement(VertexAttributeArray type) const;
 
 

@@ -247,7 +247,7 @@ Bool Wav::decode()
 WavStreamer::WavStreamer(Wav &wav) :
 	SndStream(),
 		m_source(&wav),
-		m_stream(NULL),
+        m_stream(nullptr),
 		m_position(0)
 {
 	O3D_ASSERT(m_source.isValid());
@@ -311,7 +311,7 @@ const UInt8* WavStreamer::getStreamChunk(UInt32 seek, UInt32 &size, Bool &finish
 		{
 			size = 0;
 			finished = True;
-			return NULL;
+            return nullptr;
 		}
 
 		// is need to seek
@@ -335,7 +335,7 @@ const UInt8* WavStreamer::getStreamChunk(UInt32 seek, UInt32 &size, Bool &finish
 
 		// no data
 		if (size == 0)
-			return NULL;
+            return nullptr;
 
 		// some data
 		return m_stream;
@@ -347,7 +347,7 @@ const UInt8* WavStreamer::getStreamChunk(UInt32 seek, UInt32 &size, Bool &finish
 		{
 			size = 0;
 			finished = True;
-			return NULL;
+            return nullptr;
 		}
 
 		// is need to seek
@@ -370,13 +370,13 @@ const UInt8* WavStreamer::getStreamChunk(UInt32 seek, UInt32 &size, Bool &finish
 
 		// no data
 		if (size == 0)
-			return NULL;
+            return nullptr;
 
 		// some data
 		return m_source->m_decodedData.getData() + offset;
 	}
 	else
-		return NULL;
+        return nullptr;
 }
 
 // Get the current stream position.

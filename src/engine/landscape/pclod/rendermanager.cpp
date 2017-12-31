@@ -120,7 +120,7 @@ void PCLODRenderManager::update()
 			{
 				PCLODRendererInfo ** pInfo1 = &m_rendererOrder[0];
 				PCLODRendererInfo ** pInfo2 = &m_rendererOrder[1];
-				PCLODRendererInfo * pPtr = NULL;
+                PCLODRendererInfo * pPtr = nullptr;
 
 				while (pInfo1 != m_rendererOrder.rbegin().operator ->())
 				{
@@ -148,7 +148,7 @@ void PCLODRenderManager::update()
 /* Add or remove an object from the manager */
 void PCLODRenderManager::addObject(PCLODRendererBase * _pRenderer)
 {
-	O3D_ASSERT(_pRenderer != NULL);
+    O3D_ASSERT(_pRenderer != nullptr);
 	O3D_ASSERT(!findObject(_pRenderer));
 
 	PCLODRendererInfo * pNewRendererInfo = new PCLODRendererInfo();
@@ -163,7 +163,7 @@ void PCLODRenderManager::addObject(PCLODRendererBase * _pRenderer)
 
 void PCLODRenderManager::removeObject(PCLODRendererBase * _pRenderer)
 {
-	O3D_ASSERT(_pRenderer != NULL);
+    O3D_ASSERT(_pRenderer != nullptr);
 	O3D_ASSERT(findObject(_pRenderer));
 
 	_pRenderer->clean();
@@ -183,7 +183,7 @@ void PCLODRenderManager::removeObject(PCLODRendererBase * _pRenderer)
 
 Bool PCLODRenderManager::findObject(PCLODRendererBase * _pRenderer)
 {
-	O3D_ASSERT(_pRenderer != NULL);
+    O3D_ASSERT(_pRenderer != nullptr);
 	return (m_rendererTable.find(_pRenderer) != m_rendererTable.end());
 }
 

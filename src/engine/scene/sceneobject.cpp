@@ -161,7 +161,7 @@ void SceneObject::setRigidBody(RigidBody *rigidBody)
     // Nothing
 }
 
-// Return the absolute matrix of the node or NULL.
+// Return the absolute matrix of the node or null.
 const Matrix4& SceneObject::getObjectWorldMatrix() const
 {
     if (m_node) {
@@ -262,13 +262,13 @@ void SceneObject::processAllFaces(ProcessingPass pass)
 {
 }
 
-// Return NULL.
+// Return null.
 VertexElement* SceneObject::getVertexElement(VertexAttributeArray type) const
 {
     return nullptr;
 }
 
-// Return NULL.
+// Return null.
 FaceArray* SceneObject::getFaceArray() const
 {
     return nullptr;
@@ -290,7 +290,7 @@ Bool SceneObject::isOperation(Operations what) const
 	return False;
 }
 
-// Return NULL.
+// Return null.
 const Float* SceneObject::getMatrixArray() const
 {
     return nullptr;
@@ -302,7 +302,7 @@ Bool SceneObject::isExternalFaceArray() const
 	return False;
 }
 
-// Return NULL.
+// Return null.
 FaceArray* SceneObject::getFaceArrayToProcess(UInt32 &first, UInt32 &last)
 {
 	first = last = 0;

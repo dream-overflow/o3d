@@ -71,7 +71,7 @@ public:
 	//! @return TRUE if the data are successfully created.
 	virtual Bool create(UInt32 numElt) = 0;
 
-	//! Is the data are created (Create called, and system RAM = NULL if VBO used).
+    //! Is the data are created (Create called, and system RAM = null if VBO used).
 	inline Bool isCreated()const { return !m_isDirty; }
 
 	//! Get the face element type size in bytes.

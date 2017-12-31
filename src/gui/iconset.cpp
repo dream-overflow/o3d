@@ -118,7 +118,7 @@ UInt32 IconSet::browseFolder(const String &path)
 	Vector2i size;
 	m_pathName = FileManager::instance()->getFullFileName(lPath);
 
-	while ((fileItem = fileListing.searchNextFile()) != NULL)
+    while ((fileItem = fileListing.searchNextFile()) != nullptr)
 	{
 		// a sub directory
 		if (fileItem->FileType == FILE_DIR)
@@ -167,7 +167,7 @@ UInt32 IconSet::browseSizeFolder(const String &path, const Vector2i &size)
 	std::list<String> files;
 	std::list<String> inis;
 
-	while ((fileItem = fileListing.searchNextFile()) != NULL)
+    while ((fileItem = fileListing.searchNextFile()) != nullptr)
 	{
 		if (fileItem->FileType == FILE_FILE)
 		{
@@ -377,7 +377,7 @@ IconSet::Icon* IconSet::getIconInfo(const String &name, const Vector2i &size)
 	// not found
 	O3D_ERROR(E_InvalidParameter(String("Icon name/size doesn't exists into the icon set: ") + name + " " + size));
 
-	return NULL;
+    return nullptr;
 }
 
 void IconSet::draw(

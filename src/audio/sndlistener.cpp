@@ -174,7 +174,7 @@ void SndListener::put()
 
 		// commit deferred setting to EAX
 		//alEAXSet(&DSPROPSETID_EAX20_ListenerProperties,
-		//	DSPROPERTY_EAXLISTENER_COMMITDEFERREDSETTINGS,0,NULL,0);
+        //	DSPROPERTY_EAXLISTENER_COMMITDEFERREDSETTINGS,0,nullptr,0);
 
 		// get all settings (useful for know value when there is size scale flag active)
 		alEAXGet(&DSPROPSETID_EAX_ListenerProperties,DSPROPERTY_EAXLISTENER_ALLPARAMETERS,0,&m_EAX,
@@ -186,7 +186,7 @@ void SndListener::put()
 // Setup the modelview matrix to OpenGL
 void SndListener::setUpModelView()
 {
-	O3D_ASSERT(getScene()->getActiveCamera() != NULL);
+    O3D_ASSERT(getScene()->getActiveCamera() != nullptr);
 	if (m_node)
 		getScene()->getContext()->modelView().set(
 				getScene()->getActiveCamera()->getModelviewMatrix() *

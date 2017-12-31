@@ -711,7 +711,7 @@ Widget* ListBox::findWidget(const String &name)
 		}
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 const Widget* ListBox::findWidget(const String &name) const
@@ -734,7 +734,7 @@ const Widget* ListBox::findWidget(const String &name) const
 		}
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 Bool ListBox::isWidgetExist(Widget *pWidget) const

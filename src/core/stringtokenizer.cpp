@@ -27,17 +27,17 @@ CStringTokenizer::CStringTokenizer(const CString &str)
 
 	if (str.isEmpty())
 	{
-		m_origStr = NULL;
-		m_workStr = NULL;
-		m_listOfDl = NULL;
+        m_origStr = nullptr;
+        m_workStr = nullptr;
+        m_listOfDl = nullptr;
 		return;
 	}
 
 	m_origStr = o3d::strdup(str.getData());
 	m_workStr = o3d::strdup(str.getData());
 
-	O3D_ASSERT(m_origStr != NULL);
-	O3D_ASSERT(m_workStr != NULL);
+    O3D_ASSERT(m_origStr != nullptr);
+    O3D_ASSERT(m_workStr != nullptr);
 
 	prepWorkStr();
 }
@@ -49,17 +49,17 @@ CStringTokenizer::CStringTokenizer(const CString &str, const CString &delimiters
 
 	if (str.isEmpty())
 	{
-		m_origStr = NULL;
-		m_workStr = NULL;
-		m_listOfDl = NULL;
+        m_origStr = nullptr;
+        m_workStr = nullptr;
+        m_listOfDl = nullptr;
 		return;
 	}
 
 	m_origStr = o3d::strdup(str.getData());
 	m_workStr = o3d::strdup(str.getData());
 
-	O3D_ASSERT(m_origStr != NULL);
-	O3D_ASSERT(m_workStr != NULL);
+    O3D_ASSERT(m_origStr != nullptr);
+    O3D_ASSERT(m_workStr != nullptr);
 
 	prepWorkStr(delimiters.getData(), delimiters.length());
 }
@@ -74,17 +74,17 @@ CStringTokenizer::CStringTokenizer(
 
 	if (str.isEmpty())
 	{
-		m_origStr = NULL;
-		m_workStr = NULL;
-		m_listOfDl = NULL;
+        m_origStr = nullptr;
+        m_workStr = nullptr;
+        m_listOfDl = nullptr;
 		return;
 	}
 
 	m_origStr = o3d::strdup(str.getData());
 	m_workStr = o3d::strdup(str.getData());
 
-	O3D_ASSERT(m_origStr != NULL);
-	O3D_ASSERT(m_workStr != NULL);
+    O3D_ASSERT(m_origStr != nullptr);
+    O3D_ASSERT(m_workStr != nullptr);
 
 	prepWorkStr(delimiters.getData());
 }
@@ -95,19 +95,19 @@ CStringTokenizer::~CStringTokenizer()
 	if (m_origStr)
 	{
 		O3D_FREE(m_origStr);
-		m_origStr = NULL;
+        m_origStr = nullptr;
 	}
 
 	if (m_workStr)
 	{
 		O3D_FREE(m_workStr);
-		m_workStr = NULL;
+        m_workStr = nullptr;
 	}
 
 	if (m_listOfDl)
 	{
 		O3D_FREE(m_listOfDl);
-		m_listOfDl = NULL;
+        m_listOfDl = nullptr;
 	}
 }
 
@@ -165,7 +165,7 @@ void CStringTokenizer::prepWorkStr(const Char* delimiters, Int32 delimiterSize)
 
 	if (!m_workStr)
 	{
-		m_listOfDl = NULL;
+        m_listOfDl = nullptr;
 		O3D_ERROR(E_InvalidPrecondition("string must be valid"));
 	}
 
@@ -182,7 +182,7 @@ void CStringTokenizer::prepWorkStr(const Char* delimiters, Int32 delimiterSize)
 				m_totalTokens++;
 			}
 		}
-		m_listOfDl = NULL;
+        m_listOfDl = nullptr;
 	}
 	else
 	{
@@ -231,17 +231,17 @@ StringTokenizer::StringTokenizer(const String &str)
 
 	if (str.isEmpty())
 	{
-		m_origStr = NULL;
-		m_workStr = NULL;
-		m_listOfDl = NULL;
+        m_origStr = nullptr;
+        m_workStr = nullptr;
+        m_listOfDl = nullptr;
 		return;
 	}
 
 	m_origStr = o3d::wcsdup(str.getData());
 	m_workStr = o3d::wcsdup(str.getData());
 
-	O3D_ASSERT(m_origStr != NULL);
-	O3D_ASSERT(m_workStr != NULL);
+    O3D_ASSERT(m_origStr != nullptr);
+    O3D_ASSERT(m_workStr != nullptr);
 
 	prepWorkStr();
 }
@@ -253,17 +253,17 @@ StringTokenizer::StringTokenizer(const String &str, const String &delimiters)
 
 	if (str.isEmpty())
 	{
-		m_origStr = NULL;
-		m_workStr = NULL;
-		m_listOfDl = NULL;
+        m_origStr = nullptr;
+        m_workStr = nullptr;
+        m_listOfDl = nullptr;
 		return;
 	}
 
 	m_origStr = o3d::wcsdup(str.getData());
 	m_workStr = o3d::wcsdup(str.getData());
 
-	O3D_ASSERT(m_origStr != NULL);
-	O3D_ASSERT(m_workStr != NULL);
+    O3D_ASSERT(m_origStr != nullptr);
+    O3D_ASSERT(m_workStr != nullptr);
 
 	prepWorkStr(delimiters.getData(), delimiters.length());
 }
@@ -278,17 +278,17 @@ StringTokenizer::StringTokenizer(
 
 	if (str.isEmpty())
 	{
-		m_origStr = NULL;
-		m_workStr = NULL;
-		m_listOfDl = NULL;
+        m_origStr = nullptr;
+        m_workStr = nullptr;
+        m_listOfDl = nullptr;
 		return;
 	}
 
 	m_origStr = o3d::wcsdup(str.getData());
 	m_workStr = o3d::wcsdup(str.getData());
 
-	O3D_ASSERT(m_origStr != NULL);
-	O3D_ASSERT(m_workStr != NULL);
+    O3D_ASSERT(m_origStr != nullptr);
+    O3D_ASSERT(m_workStr != nullptr);
 
 	prepWorkStr(delimiters.getData(), delimiters.length());
 }
@@ -299,19 +299,19 @@ StringTokenizer::~StringTokenizer()
 	if (m_origStr)
 	{
 		O3D_FREE(m_origStr);
-		m_origStr = NULL;
+        m_origStr = nullptr;
 	}
 
 	if (m_workStr)
 	{
 		O3D_FREE(m_workStr);
-		m_workStr = NULL;
+        m_workStr = nullptr;
 	}
 
 	if (m_listOfDl)
 	{
 		O3D_FREE(m_listOfDl);
-		m_listOfDl = NULL;
+        m_listOfDl = nullptr;
 	}
 }
 

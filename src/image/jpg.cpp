@@ -303,7 +303,7 @@ static void out_term_destination(j_compress_ptr cinfo)
 //    src->indexinmem = 0;
 //    src->lenght = lenght;
 //    src->pub.bytes_in_buffer = 0; /* forces fill_input_buffer on first read */
-//    src->pub.next_input_byte = NULL; /* until buffer loaded */
+//    src->pub.next_input_byte = nullptr; /* until buffer loaded */
 //}
 
 static void jpeg_istream_src(j_decompress_ptr cinfo, InStream *is)
@@ -332,7 +332,7 @@ static void jpeg_istream_src(j_decompress_ptr cinfo, InStream *is)
     src->is = is;
     src->init_pos = is->getPosition();
     src->pub.bytes_in_buffer = 0;    /* forces fill_input_buffer on first read */
-	src->pub.next_input_byte = NULL; /* until buffer loaded */
+    src->pub.next_input_byte = nullptr; /* until buffer loaded */
 }
 
 static void jpeg_ostream_dst(j_compress_ptr cinfo, OutStream *os)
@@ -358,7 +358,7 @@ static void jpeg_ostream_dst(j_compress_ptr cinfo, OutStream *os)
     dest->pub.term_destination = out_term_destination;
     dest->os = os;
     dest->pub.free_in_buffer = 0;
-    dest->pub.next_output_byte = NULL; /* until buffer created */
+    dest->pub.next_output_byte = nullptr; /* until buffer created */
 }
 
 // check the first bytes of the file for see his format
@@ -416,7 +416,7 @@ Bool Jpg::loadDefault(InStream &is)
 	struct jpeg_error_mgr jerr;
 
 	UInt8 *ligne;
-	UInt8 *pData = NULL;
+    UInt8 *pData = nullptr;
 
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_decompress(&cinfo);

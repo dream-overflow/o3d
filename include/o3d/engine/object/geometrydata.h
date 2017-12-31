@@ -99,11 +99,11 @@ public:
 			const SmartArrayFloat &data);
 
 	//! Get an element array of a given type.
-	//! @note Can be NULL if the element was not previously created.
+    //! @note Can be null if the element was not previously created.
 	inline VertexElement* getElement(VertexAttributeArray mode) { return m_elements[mode]; }
 
 	//! Get an element array of a given type (read only).
-	//! @note Can be NULL if the element was not previously created.
+    //! @note Can be null if the element was not previously created.
 	inline const VertexElement* getElement(VertexAttributeArray mode) const { return m_elements[mode]; }
 
 	//! Delete an element array given a type
@@ -122,16 +122,16 @@ public:
 	inline VertexElement* getNormals() { return m_elements[V_NORMALS_ARRAY]; }
 
 	//! Check for an elements
-	inline Bool isElement(VertexAttributeArray mode) const { return (m_elements[mode] != NULL); }
+    inline Bool isElement(VertexAttributeArray mode) const { return (m_elements[mode] != nullptr); }
 
 	//! Check for the vertices element
-	inline Bool isVertices() const { return (m_elements[V_VERTICES_ARRAY] != NULL); }
+    inline Bool isVertices() const { return (m_elements[V_VERTICES_ARRAY] != nullptr); }
 
 	//! Check for the normal element
-	inline Bool isNormals() const { return (m_elements[V_NORMALS_ARRAY] != NULL); }
+    inline Bool isNormals() const { return (m_elements[V_NORMALS_ARRAY] != nullptr); }
 
 	//! Check for the first unit of texture coordinates element
-	inline Bool isTexCoords1() const { return (m_elements[V_TEXCOORDS_2D_1_ARRAY] != NULL); }
+    inline Bool isTexCoords1() const { return (m_elements[V_TEXCOORDS_2D_1_ARRAY] != nullptr); }
 
 	//! Count the number of valid elements.
 	UInt32 getNumElements() const;
@@ -157,7 +157,7 @@ public:
 		if (it == m_faceArrays.end())
 		{
 			O3D_ERROR(E_InvalidParameter("The face array id is not available"));
-			return NULL;
+            return nullptr;
 		}
 		else
 			return it->second;
@@ -171,7 +171,7 @@ public:
 		if (it == m_faceArrays.end())
 		{
 			O3D_ERROR(E_InvalidParameter("The face array key is not available"));
-			return NULL;
+            return nullptr;
 		}
 		else
 			return it->second;

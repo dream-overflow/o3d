@@ -19,13 +19,13 @@ PixelBuffer::PixelBuffer(
 		BaseObject *parent,
 		Storage storageType):
 		m_parent(parent),
-		m_context(NULL),
+        m_context(nullptr),
 		m_bufferId(O3D_UNDEFINED),
 		m_count(0),
 		m_storageType(storageType),
 		m_lockCount(0),
 		m_lockMode(READ_ONLY),
-		m_mapped(NULL)
+        m_mapped(nullptr)
 {
 	if (!m_parent)
 		O3D_ERROR(E_NullPointer("Parent must be a valid pointer"));
@@ -182,7 +182,7 @@ Float* PixelBuffer::lock(
 		m_context->bindPixelUnpackBuffer(m_bufferId);
 		m_mapped = reinterpret_cast<Float*>(glMapBuffer(GL_PIXEL_UNPACK_BUFFER, flags));
 
-		// Return NULL if buffer is really NULL
+        // Return null if buffer is really null
 		if (m_mapped)
 		{
 			m_lockMode = flags;
@@ -191,7 +191,7 @@ Float* PixelBuffer::lock(
 			return m_mapped + offset;
 		}
 		else
-			return NULL;
+            return nullptr;
 	}
 }
 
@@ -214,7 +214,7 @@ void PixelBuffer::copyToTexture(Texture *texture, Bool dontUnbind)
 	if (m_bufferId == 0)
 		O3D_ERROR(E_InvalidPrecondition("PixelBuffer must be valid"));
 
-	if (texture == NULL)
+    if (texture == nullptr)
 		O3D_ERROR(E_InvalidPrecondition("Texture must be valid"));
 
 	// bind the texture and PBO

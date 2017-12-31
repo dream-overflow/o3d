@@ -96,7 +96,7 @@ public:
 	virtual Bool isExternalFaceArray() const = 0;
 
 	//! Get the specific faces list.
-	//! @return The external face array to process or NULL if none.
+    //! @return The external face array to process or null if none.
 	//! @note first and last contains the first and last faces index to process.
 	virtual FaceArray* getFaceArrayToProcess(UInt32 &first, UInt32 &last) = 0;
 
@@ -113,11 +113,11 @@ public:
 
 	//! Access to a currently processed vertex element.
 	//! @param type The array type to retrieve.
-	//! @return The vertex element or NULL.
+    //! @return The vertex element or null.
 	virtual VertexElement* getVertexElement(VertexAttributeArray type) const = 0;
 
 	//! Access to the currently processed face array.
-	//! @return The face array or NULL.
+    //! @return The face array or null.
 	virtual FaceArray* getFaceArray() const = 0;
 
 	//! Bind an array in the specified attribute array location.

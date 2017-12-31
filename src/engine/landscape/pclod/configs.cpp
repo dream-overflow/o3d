@@ -32,7 +32,7 @@ PCLODConfigs::PCLODConfigs(BaseObject *pParent) :
 	m_colormapPolicy(COLORMAP_AUTO),
 	m_colormapPrecision(1),
 	m_useColormapStaticNoise(False),
-	m_pColormapNoisePicture(NULL),
+    m_pColormapNoisePicture(nullptr),
 	m_colormapStaticNoiseFactor(0.1f),
 	m_useWireFrame(False),
 	m_viewDistance(150),
@@ -226,7 +226,7 @@ Bool PCLODConfigs::useColormapStaticNoise() const
 
 void PCLODConfigs::setColormapStaticNoise(const Image & _picture)
 {
-	if ((m_pColormapNoisePicture == NULL) && (!_picture.isEmpty()))
+    if ((m_pColormapNoisePicture == nullptr) && (!_picture.isEmpty()))
 		m_pColormapNoisePicture = new Image;
 
 	*m_pColormapNoisePicture = _picture;

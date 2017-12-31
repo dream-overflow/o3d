@@ -64,7 +64,7 @@ public:
 	//! Use Update to replace the data.
 	//! @param mipmaps If true it generate mipmaps levels.
 	//! @param pixelFormat Internal texture pixel format, can be one of the PixelFormat enum.
-	//! @param buffer data or NULL. Size of the data is defined by w*h*l*bufferFormat.bpp.
+    //! @param buffer data or null. Size of the data is defined by w*h*l*bufferFormat.bpp.
 	//! @param bufferFormat Pixel format of the buffer.
 	Bool create(
 		Bool mipmaps,

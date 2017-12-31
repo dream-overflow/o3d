@@ -92,7 +92,7 @@ void OcclusionQuery::begin(Context *pContext)
 void OcclusionQuery::end(Context *pContext)
 {
 	glEndQuery(GL_SAMPLES_PASSED);
-	pContext->setCurrentOcclusionQuery(NULL);
+    pContext->setCurrentOcclusionQuery(nullptr);
 }
 
 /*---------------------------------------------------------------------------------------

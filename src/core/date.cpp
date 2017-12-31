@@ -445,7 +445,7 @@ void Date::setCurrent()
 
     tzset();
 
-    gettimeofday(&ltime, NULL);
+    gettimeofday(&ltime, nullptr);
     local = localtime(&ltime.tv_sec);
     year = local->tm_year + 1900;
     month = Month(local->tm_mon);

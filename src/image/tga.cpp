@@ -82,8 +82,8 @@ Bool Tga::loadDefault(InStream &is)
     if (!checkFormat(is))
         O3D_ERROR(E_InvalidFormat("Invalid TGA token"));
 
-	UInt8 *_data = NULL;
-	UInt8 *palette = NULL;
+    UInt8 *_data = nullptr;
+    UInt8 *palette = nullptr;
 
 	UInt32 palcol = 0;
 	UInt32 palbpp = 0;
@@ -431,8 +431,8 @@ Bool Tga::loadRgb24(InStream &is)
 	UInt32 palcol = 0;
 	UInt32 palbpp = 0;
 
-	UInt8* _data = NULL;
-	UInt8 *palette = NULL;
+    UInt8* _data = nullptr;
+    UInt8 *palette = nullptr;
 
 	UInt32 ofs = 0;
 	UInt8 buf;
@@ -751,8 +751,8 @@ Bool Tga::loadRgba32(InStream &is)
 	UInt32 palcol = 0;
 	UInt32 palbpp = 0;
 
-	UInt8 *_data = NULL;
-	UInt8 *palette = NULL;
+    UInt8 *_data = nullptr;
+    UInt8 *palette = nullptr;
 
 	UInt32 ofs = 0;
 	UInt8 buf;

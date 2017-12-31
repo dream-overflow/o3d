@@ -309,7 +309,7 @@ public:
 		else if (m_data.get())
 			return m_data->data;
 		else
-			return NULL;
+            return nullptr;
 	}
 
 	//! Bitmap data accessor for write. Set it modified.
@@ -325,7 +325,7 @@ public:
 		else if (m_data.get())
 			return m_data->data;
 		else
-			return NULL;
+            return nullptr;
 	}
 
 	//! Get a pixel.
@@ -487,7 +487,7 @@ protected:
 
 	PixelFormat m_pixelFormat;     //!< Picture data pixel format
 
-	SmartPtr<ImgFormat> m_pic;     //!< we remember it only for complex bitmap (ex:DDS), otherwise NULL
+    SmartPtr<ImgFormat> m_pic;     //!< we remember it only for complex bitmap (ex:DDS), otherwise null
 	SmartPtr<ImageData> m_data;    //!< picture data
 
 	UInt32 m_size;      //!< picture data size

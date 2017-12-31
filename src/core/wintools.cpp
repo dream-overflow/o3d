@@ -88,10 +88,10 @@ _HWND WinTools::createWindow(
 			0,
 			rect.right-rect.left,
 			rect.bottom-rect.top,
-			NULL,
-			NULL,
+            nullptr,
+            nullptr,
 			(HINSTANCE)hInstance,
-			NULL);
+            nullptr);
 
 	ShowWindow(hWnd, SW_SHOW);
 	SetForegroundWindow(hWnd);
@@ -292,7 +292,7 @@ HICON WinTools::createIconFromBitmap(
     }
 
 	HBITMAP hBitmap = (HBITMAP)::LoadImageW(
-			NULL,
+            nullptr,
 			filePath.getData(),
 			IMAGE_BITMAP,
 			width,
@@ -304,7 +304,7 @@ HICON WinTools::createIconFromBitmap(
 		O3D_ERROR(E_InvalidResult("Unable to retrieve the bitmap object from its handle."));
 
 	// Creations of various DC to manipulate bitmaps
-	HDC hDC	= ::GetDC(NULL);
+    HDC hDC	= ::GetDC(nullptr);
 	HDC hBitmapDC = ::CreateCompatibleDC(hDC);
 	HDC hAndMaskDC = ::CreateCompatibleDC(hDC);
 	HDC hXorMaskDC = ::CreateCompatibleDC(hDC);
@@ -320,15 +320,15 @@ HICON WinTools::createIconFromBitmap(
 	HBITMAP hOldAndMask = (HBITMAP)::SelectObject(hAndMaskDC, hAndMask);
 	HBITMAP hOldXorMask = (HBITMAP)::SelectObject(hXorMaskDC, hXorMask);
 
-	if (	(hAndMask == NULL) ||
-			(hXorMask == NULL) ||
-			(hDC == NULL) ||
-			(hBitmapDC == NULL) ||
-			(hAndMaskDC == NULL) ||
-			(hXorMaskDC == NULL) ||
-			(hOldBitmap == NULL) ||
-			(hOldAndMask == NULL) ||
-			(hOldXorMask == NULL))
+    if (	(hAndMask == nullptr) ||
+            (hXorMask == nullptr) ||
+            (hDC == nullptr) ||
+            (hBitmapDC == nullptr) ||
+            (hAndMaskDC == nullptr) ||
+            (hXorMaskDC == nullptr) ||
+            (hOldBitmap == nullptr) ||
+            (hOldAndMask == nullptr) ||
+            (hOldXorMask == nullptr))
 		O3D_ERROR(E_InvalidResult("Error during creation of icon masks."));
 
 	// If no transparency color is provided, the first pixel of the bitmap is used
@@ -365,7 +365,7 @@ HICON WinTools::createIconFromBitmap(
 	::DeleteDC(hAndMaskDC);
 	::DeleteDC(hXorMaskDC);
 
-	::ReleaseDC(NULL,hDC);
+    ::ReleaseDC(nullptr,hDC);
 
 	ICONINFO iconInfos;
 	iconInfos.fIcon = TRUE;	// TRUE for icon, FALSE for cursor

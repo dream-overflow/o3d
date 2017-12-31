@@ -77,13 +77,13 @@ void AlphaPipeline::setInputListSize(UInt32 size)
 		Float*			   InputZTmp    = new Float[newsize];
 
 		// copy
-		if (m_inputList != NULL)
+        if (m_inputList != nullptr)
 		{
 			memcpy(InputListTmp,m_inputList,m_inputSize*sizeof(AlphaPipelineToken));
 			deleteArray(m_inputList);
 		}
 
-		if (m_inputZ != NULL)
+        if (m_inputZ != nullptr)
 		{
 			memcpy(InputZTmp,m_inputZ,m_inputSize*sizeof(Float));
 			deleteArray(m_inputList);
@@ -109,8 +109,8 @@ void AlphaPipeline::sort()
 	UInt32 index = 0;			// vertex index
 	UInt32 packedCount = 0;		// number of faces for the object
 
-	Shadable *shadable = NULL;	// object to compact
-	MaterialTechnique *material = NULL;   // material technique to compact
+    Shadable *shadable = nullptr;	// object to compact
+    MaterialTechnique *material = nullptr;   // material technique to compact
 
 	UInt32 startIndex = 0;      // object start position
 	UInt32 endIndex = 0;        // object start position

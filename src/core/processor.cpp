@@ -455,7 +455,7 @@ static Int32 _getNumCPU()
 #endif
 #ifdef HAVE_SYSCTLBYNAME
     size_t size = sizeof(n);
-    sysctlbyname("hw.ncpu", &n, &size, NULL, 0);
+    sysctlbyname("hw.ncpu", &n, &size, nullptr, 0);
 #endif
 #ifdef O3D_WINDOWS
     SYSTEM_INFO info;
@@ -507,7 +507,7 @@ static Int32 _getSystemRAMSize()
     Uint64 memsize = 0;
     size_t len = sizeof(memsize);
 
-    if (sysctl(mib, 2, &memsize, &len, NULL, 0) == 0) {
+    if (sysctl(mib, 2, &memsize, &len, nullptr, 0) == 0) {
         n = (Int32)(memsize / (1024*1024));
     }
 #endif

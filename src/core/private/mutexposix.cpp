@@ -30,7 +30,7 @@ using namespace o3d;
 
 // create a new mutex
 Mutex::Mutex() :
-	m_handle(NULL)
+    m_handle(nullptr)
 {
 #ifdef __APPLE__
 	char name[16+2];
@@ -78,7 +78,7 @@ Bool Mutex::lock(UInt32 timeout) const
 	else
 	{
 		struct timeval curTime;
-                gettimeofday(&curTime, NULL);
+                gettimeofday(&curTime, nullptr);
 
 		struct timespec absTime;
 		absTime.tv_nsec = (curTime.tv_usec + (timeout % 1000) * 1000) * 1000;
@@ -131,7 +131,7 @@ Bool Mutex::unlock() const
 FastMutex::FastMutex()
 {
 	// use PTHREAD_MUTEX_DEFAULT
-	if (pthread_mutex_init(&m_handle, NULL) != 0)
+    if (pthread_mutex_init(&m_handle, nullptr) != 0)
 	{
 		O3D_ERROR(E_InvalidAllocation("Unable to init the mutex"));
 	}

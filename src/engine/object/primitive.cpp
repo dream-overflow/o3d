@@ -641,7 +641,7 @@ void Sphere::constructVertices(Float radius, UInt32 slices, UInt32 stacks)
 	UInt32 lVerticesCount = 2 + stacks * slices + (isTexCoords() ? stacks : 0);
 
 	// Reallocate a new buffer only if needed
-	if ((m_pVertices != NULL) && (m_verticesCount != lVerticesCount))
+    if ((m_pVertices != nullptr) && (m_verticesCount != lVerticesCount))
 	{
 		deleteArray(m_pVertices);
 		deleteArray(m_pTexCoords);
@@ -649,10 +649,10 @@ void Sphere::constructVertices(Float radius, UInt32 slices, UInt32 stacks)
 		
 	m_verticesCount = lVerticesCount;
 
-	if (m_pVertices == NULL)
+    if (m_pVertices == nullptr)
 		m_pVertices = new Float[3*m_verticesCount];
 
-	if ((m_pTexCoords == NULL) && isTexCoords())
+    if ((m_pTexCoords == nullptr) && isTexCoords())
 		m_pTexCoords = new Float[2*m_verticesCount];
 
 	UInt32 offSet = 0;
@@ -760,12 +760,12 @@ void Sphere::constructFilled(Float radius, UInt32 slices, UInt32 stacks)
 	const UInt32 lNewIndicesCount = (2 * lRealSlices * stacks)* 3;
 
 	// Reallocate a new buffer only if needed
-	if ((m_pIndices != NULL) && (m_indicesCount != lNewIndicesCount))
+    if ((m_pIndices != nullptr) && (m_indicesCount != lNewIndicesCount))
 		deleteArray(m_pIndices);
 	
 	m_indicesCount = lNewIndicesCount;
 
-	if (m_pIndices == NULL)
+    if (m_pIndices == nullptr)
 		m_pIndices = new UInt32[m_indicesCount]; 
 
 	UInt32 offSet = 0;
@@ -833,12 +833,12 @@ void Sphere::constructWired(Float radius, UInt32 slices, UInt32 stacks)
 	const UInt32 lNewIndicesCount = (stacks * slices + slices * (stacks + 1)) * 2;
 
 	// Reallocate a new buffer only if needed
-	if ((m_pIndices != NULL) && (m_indicesCount != lNewIndicesCount))
+    if ((m_pIndices != nullptr) && (m_indicesCount != lNewIndicesCount))
 		deleteArray(m_pIndices);
 	
 	m_indicesCount = lNewIndicesCount;
 
-	if (m_pIndices == NULL)
+    if (m_pIndices == nullptr)
 		m_pIndices = new UInt32[m_indicesCount]; 
 
 	UInt32 offSet = 0;

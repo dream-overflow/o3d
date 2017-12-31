@@ -23,8 +23,8 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(Cloth, ENGINE_CLOTH_OBJECT, BaseObject)
 //! Default constructor
 Cloth::Cloth(BaseObject *pParent) :
 	SceneEntity(pParent),
-	m_locateBone(NULL),
-	m_object(NULL)
+    m_locateBone(nullptr),
+    m_object(nullptr)
 {
 }
 
@@ -43,7 +43,7 @@ Bool Cloth::setClothModel(Humanoid* pHumanoid,const ClothModel& model)
 	m_tagName = model.m_TagName;
 
 	// find the locate bone
-	if ((m_locateBone = pHumanoid->searchBone(model.m_LocateBone)) == NULL)
+    if ((m_locateBone = pHumanoid->searchBone(model.m_LocateBone)) == nullptr)
 	{
 		O3D_ERROR(E_InvalidParameter("LocateBone is null"));
 		return False;
@@ -53,14 +53,14 @@ Bool Cloth::setClothModel(Humanoid* pHumanoid,const ClothModel& model)
 	switch (model.m_ObjectType)
 	{
 	case ENGINE_MESH:
-		if ((m_object = getScene()->getSceneObjectManager()->searchName(model.m_objName)) == NULL)
+        if ((m_object = getScene()->getSceneObjectManager()->searchName(model.m_objName)) == nullptr)
 		{
 			O3D_ERROR(E_InvalidParameter("Object is null"));
 			return False;
 		}
 		break;
 	case ENGINE_SKINNING:
-		if ((m_object = getScene()->getSceneObjectManager()->searchName(model.m_objName)) == NULL)
+        if ((m_object = getScene()->getSceneObjectManager()->searchName(model.m_objName)) == nullptr)
 		{
 			O3D_ERROR(E_InvalidParameter("Object is null"));
 			return False;
@@ -76,7 +76,7 @@ Bool Cloth::setClothModel(Humanoid* pHumanoid,const ClothModel& model)
 		((Skin*)m_object)->attachToHumanoidSkeleton(pHumanoid);
 		break;
 	case ENGINE_RIGGING:
-		if ((m_object = getScene()->getSceneObjectManager()->searchName(model.m_objName)) == NULL)
+        if ((m_object = getScene()->getSceneObjectManager()->searchName(model.m_objName)) == nullptr)
 		{
 			O3D_ERROR(E_InvalidParameter("Object is null"));
 			return False;

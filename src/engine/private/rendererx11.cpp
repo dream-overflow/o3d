@@ -320,7 +320,7 @@ void Renderer::destroy()
                 EGL::destroyContext(eglDisplay, reinterpret_cast<EGLContext>(m_HGLRC));
             #endif
             } else {
-                GLX::makeCurrent(display, None, NULL);
+                GLX::makeCurrent(display, None, nullptr);
                 GLX::destroyContext(display, reinterpret_cast<GLXContext>(m_HGLRC));
             }
 

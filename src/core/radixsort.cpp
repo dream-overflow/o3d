@@ -18,8 +18,8 @@ using namespace o3d;
   constructor
 ---------------------------------------------------------------------------------------*/
 RadixSort::RadixSort() :
-	m_pIndices(NULL),
-	m_pIndices2(NULL),
+    m_pIndices(nullptr),
+    m_pIndices2(nullptr),
 	m_CurrentSize(0),
 	m_PrevSize(0),
 	m_TotalCalls(0),

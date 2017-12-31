@@ -237,7 +237,7 @@ void SkyScattering::draw(const DrawInfo &drawInfo)
 		}
 
 		m_indexBuffer.bindBuffer();
-		getScene()->drawElementsUInt32(P_TRIANGLES, m_indexBuffer.getCount(), NULL);
+        getScene()->drawElementsUInt32(P_TRIANGLES, m_indexBuffer.getCount(), nullptr);
 		m_indexBuffer.unbindBuffer();
 
 		if (m_forecastData.isValid())
@@ -508,7 +508,7 @@ void SkyScattering::update()
 //! Add an object
 void SkyScattering::addObject(SkyObjectBase* _pObject)
 {
-	if (_pObject == NULL)
+    if (_pObject == nullptr)
 		O3D_ERROR(E_InvalidOperation(String("SkyScattering : Attempt to add an invalid object")));
 
 	if (findObject(_pObject))
@@ -522,7 +522,7 @@ void SkyScattering::addObject(SkyObjectBase* _pObject)
 //! Remove an object
 void SkyScattering::removeObject(SkyObjectBase* _pObject)
 {
-	if (_pObject == NULL)
+    if (_pObject == nullptr)
 		O3D_ERROR(E_InvalidOperation(String("SkyScattering : Attempt to remove an invalid object")));
 
 	for (IT_SkyObjectArray it = m_objectArray.begin() ; it != m_objectArray.end() ; it++)
@@ -550,7 +550,7 @@ Bool SkyScattering::findObject(SkyObjectBase * _pObject) const
 //! Add a cloud layer
 void SkyScattering::addCloudLayer(CloudLayerBase* _layer)
 {
-	if (_layer == NULL)
+    if (_layer == nullptr)
 		O3D_ERROR(E_InvalidOperation(String("SkyScattering : Attempt to add an invalid cloud layer")));
 
 	if (findCloudLayer(_layer))
@@ -562,7 +562,7 @@ void SkyScattering::addCloudLayer(CloudLayerBase* _layer)
 //! Remove a cloud layer
 void SkyScattering::removeCloudLayer(CloudLayerBase* _layer)
 {
-	if (_layer == NULL)
+    if (_layer == nullptr)
 		O3D_ERROR(E_InvalidOperation(String("SkyScattering : Attempt to remove an invalid cloud layer")));
 
 	for (IT_CloudLayerArray it = m_cloudArray.begin() ; it != m_cloudArray.end() ; it++)

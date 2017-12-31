@@ -80,7 +80,7 @@ MessageBox::MessageBox(
                 BORDER_STYLE | TITLE_ICON | TITLE_BAR)
 {
 	for (Int32 i = 0; i < 5; ++i)
-		m_buttons[i] = NULL;
+        m_buttons[i] = nullptr;
 
 	build(title, message, buttonsStyle, iconStyle);
 }
@@ -100,7 +100,7 @@ MessageBox::MessageBox(
                 BORDER_STYLE | TITLE_ICON | TITLE_BAR)
 {
 	for (Int32 i = 0; i < 5; ++i)
-		m_buttons[i] = NULL;
+        m_buttons[i] = nullptr;
 
 	build(title, message, buttonsStyle, iconStyle);
 }
@@ -129,7 +129,7 @@ void MessageBox::build(
 	// icons
 	//
 
-	Icon *icon = NULL;
+    Icon *icon = nullptr;
 
 	if (iconStyle == ICON_WARNING)
 		icon = new Icon(hLayout, &getUsedTheme()->getIconSet(), "alert", Vector2i(32, 32));

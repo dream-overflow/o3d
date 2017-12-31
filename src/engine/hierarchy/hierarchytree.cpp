@@ -90,7 +90,7 @@ Node* HierarchyTree::addNode(SceneObject *object)
 //Node* HierarchyTree::dupTree(const Node *dup, Node *father)
 //{
 //	O3D_ASSERT(0);
-//	return NULL;
+//	return nullptr;
 //	// @todo
 
 //	// le nouveau noeud

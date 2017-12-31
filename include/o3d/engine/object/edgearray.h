@@ -62,7 +62,7 @@ public:
 	//! Create the GUP data.
 	Bool create();
 
-	//! Is the data are created (Create called, and system RAM = NULL if VBO used)
+    //! Is the data are created (Create called, and system RAM = null if VBO used)
 	inline Bool isCreated()const { return !m_isDirty; }
 
 	//! Build the edge from an O3DFaceArray object.

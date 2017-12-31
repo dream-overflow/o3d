@@ -534,14 +534,14 @@ void Shader::compileProgram(ProgramType _programType, Int32 _programIndex, const
 //			}
 //			catch(const O3D_E_InvalidOperation &)
 //			{
-//				if (_vProgramArray != NULL)
+//				if (_vProgramArray != nullptr)
 //				{
 //					_vProgramArray->push_back(k);
 //					lRet = False;
 //				}
 //			}
 //		}
-//		else if ((m_vertexProgramArray[k].programState == PROGRAM_INVALID) && (_vProgramArray != NULL))
+//		else if ((m_vertexProgramArray[k].programState == PROGRAM_INVALID) && (_vProgramArray != nullptr))
 //		{
 //			_vProgramArray->push_back(k);
 //			lRet = False;
@@ -557,14 +557,14 @@ void Shader::compileProgram(ProgramType _programType, Int32 _programIndex, const
 //			}
 //			catch(const O3D_E_InvalidOperation &)
 //			{
-//				if (_fProgramArray != NULL)
+//				if (_fProgramArray != nullptr)
 //				{
 //					_fProgramArray->push_back(k);
 //					lRet = False;
 //				}
 //			}
 //		}
-//		else if ((m_fragmentProgramArray[k].programState == PROGRAM_INVALID) && (_fProgramArray != NULL))
+//		else if ((m_fragmentProgramArray[k].programState == PROGRAM_INVALID) && (_fProgramArray != nullptr))
 //		{
 //			_fProgramArray->push_back(k);
 //			lRet = False;
@@ -580,14 +580,14 @@ void Shader::compileProgram(ProgramType _programType, Int32 _programIndex, const
 //			}
 //			catch(const O3D_E_InvalidOperation &)
 //			{
-//				if (_gProgramArray != NULL)
+//				if (_gProgramArray != nullptr)
 //				{
 //					_gProgramArray->push_back(k);
 //					lRet = False;
 //				}
 //			}
 //		}
-//		else if ((m_geometryProgramArray[k].programState == PROGRAM_INVALID) && (_gProgramArray != NULL))
+//		else if ((m_geometryProgramArray[k].programState == PROGRAM_INVALID) && (_gProgramArray != nullptr))
 //		{
 //			_gProgramArray->push_back(k);
 //			lRet = False;

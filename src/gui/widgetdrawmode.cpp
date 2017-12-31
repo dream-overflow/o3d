@@ -129,7 +129,7 @@ void WidgetDrawMode::processAllFaces(Shadable::ProcessingPass pass)
 				0,
 				(m_verticesOffs >> 1) - 1,
 				m_facesOffs,
-				NULL);
+                nullptr);
 
 		// and reset the arrays's offset
 		m_verticesOffs = m_facesOffs = 0;

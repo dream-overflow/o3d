@@ -89,7 +89,7 @@ void AppWindow::setIcon(const Image &icon)
 		SDL_FreeSurface(surface);
     } else if (m_hWnd) {
 		// remove icon
-		SDL_SetWindowIcon(reinterpret_cast<SDL_Window*>(m_HDC), NULL);
+        SDL_SetWindowIcon(reinterpret_cast<SDL_Window*>(m_HDC), nullptr);
 	}
 
 	m_icon = icon;
@@ -312,9 +312,9 @@ void AppWindow::destroy()
 
 		SDL_DestroyWindow(reinterpret_cast<SDL_Window*>(m_HDC));
 
-		m_hWnd = NULL_HWND;
-		m_HDC = NULL_HDC;
-		m_PF = NULL_PF;
+        m_hWnd = NULL_HWND;
+        m_HDC = NULL_HDC;
+        m_PF = NULL_PF;
 	}
 
 	m_running = False;

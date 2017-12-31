@@ -22,7 +22,7 @@
 
 using namespace o3d;
 
-O3D_IMPLEMENT_CLASS_COMMON(Shadable, ENGINE_SHADABLE, NULL)
+O3D_IMPLEMENT_CLASS_COMMON(Shadable, ENGINE_SHADABLE, nullptr)
 O3D_IMPLEMENT_ABSTRACT_CLASS1(Material, ENGINE_MATERIAL, SceneResource)
 
 // Default constructor.

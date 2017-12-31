@@ -412,7 +412,7 @@ Bool VertexElement::readFromFile(InStream &is)
 {
 	O3D_ASSERT(m_locked == LOCK_NONE);
 
-	m_vbo = NULL;
+    m_vbo = nullptr;
 	m_locked = LOCK_NONE;
 
     is   >> m_type

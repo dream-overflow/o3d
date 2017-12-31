@@ -25,9 +25,9 @@ using namespace o3d;
 
 // create a new mutex
 Mutex::Mutex() :
-    m_handle(NULL)
+    m_handle(nullptr)
 {
-    if ((m_handle = CreateMutexA(NULL,FALSE,NULL)) == NULL)
+    if ((m_handle = CreateMutexA(nullptr,FALSE,nullptr)) == nullptr)
 		O3D_ERROR(E_InvalidAllocation("Null mutex handle"));
 }
 

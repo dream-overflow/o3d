@@ -393,7 +393,7 @@ void Dome::enableTextureCoordinate(Bool _value, Bool _update)
 const Float* Dome::getVerticesAtStack(UInt32 _stacks) const
 {
 	if (!isUpToDate() || (_stacks > getStackCount()))
-		return NULL;
+        return nullptr;
 	
 	UInt32 lIndex = 0;
 	for (UInt32 k = 0 ; k < _stacks ; ++k)
@@ -401,4 +401,3 @@ const Float* Dome::getVerticesAtStack(UInt32 _stacks) const
 
 	return m_pVertices + 3*lIndex;
 }
-

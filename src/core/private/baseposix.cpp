@@ -63,7 +63,7 @@ void System::initTime()
     // nanosecond precision
     timerFrequency = (Int64)timerResolution.tv_sec + 1000000000LL / (Int64)timerResolution.tv_nsec;
 #else
-    gettimeofday(&timerStartTime, NULL);
+    gettimeofday(&timerStartTime, nullptr);
     timerFrequency = 1000000; // microsecond
 #endif
 }
@@ -81,7 +81,7 @@ Int64 System::getTime()
 #else
     // get time in microsecond
     struct timeval curTime;
-    gettimeofday(&curTime, NULL);
+    gettimeofday(&curTime, nullptr);
 
     return (curTime.tv_sec - timerStartTime.tv_sec) * 1000000 +
            (curTime.tv_usec - timerStartTime.tv_usec);
@@ -111,7 +111,7 @@ Int64 System::getTime(TimeUnit unit)
                ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec);
 #else
     struct timeval curTime;
-    gettimeofday(&curTime, NULL);
+    gettimeofday(&curTime, nullptr);
 
     if (unit == TIME_SECOND)
         return (curTime.tv_sec - timerStartTime.tv_sec) +
@@ -142,7 +142,7 @@ Int32 System::getMsTime()
            ((Int64)curTime.tv_nsec - (Int64)timerStartTime.tv_nsec) / 1000000;
 #else
     struct timeval curTime;
-    gettimeofday(&curTime, NULL);
+    gettimeofday(&curTime, nullptr);
 
     return (curTime.tv_sec - timerStartTime.tv_sec) * 1000 +
            (curTime.tv_usec - timerStartTime.tv_usec) / 1000;

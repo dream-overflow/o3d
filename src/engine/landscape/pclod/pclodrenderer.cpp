@@ -25,7 +25,7 @@ PCLODRendererBase::PCLODRendererBase():
 	m_refCounter(0),
 	m_refMutex(),
 	m_isInit(False),
-	m_pRenderManager(NULL)
+    m_pRenderManager(nullptr)
 {
 	m_instanceCounter++;
 }

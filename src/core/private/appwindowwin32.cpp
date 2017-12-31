@@ -134,14 +134,14 @@ void AppWindow::applySettings(Bool fullScreen)
 
     if ((pixelFormat = ChoosePixelFormat((HDC)m_HDC, &pfd)) == 0) {
         WinTools::destroyWindow(m_hWnd);
-        WinTools::unregisterWindowClass(NULL, m_title);
+        WinTools::unregisterWindowClass(nullptr, m_title);
 
         O3D_ERROR(E_InvalidResult("Unable to choose the pixel format"));
     }
 
     if ((SetPixelFormat((HDC)m_HDC, pixelFormat, &pfd)) == FALSE) {
         WinTools::destroyWindow(m_hWnd);
-        WinTools::unregisterWindowClass(NULL, m_title);
+        WinTools::unregisterWindowClass(nullptr, m_title);
 
         O3D_ERROR(E_InvalidResult("Unable to set the pixel format"));
     }
@@ -200,7 +200,7 @@ void AppWindow::applySettings(Bool fullScreen)
         // we create a dummy OpenGL context into the dummy window,
         if ((hGLRC = WGL::createContext((HDC)m_HDC)) == nullptr) {
             WinTools::destroyWindow(m_hWnd);
-            WinTools::unregisterWindowClass(NULL, m_title);
+            WinTools::unregisterWindowClass(nullptr, m_title);
 
             O3D_ERROR(E_InvalidResult("Unable to create a dummy OpenGL context"));
         }
@@ -209,7 +209,7 @@ void AppWindow::applySettings(Bool fullScreen)
             WGL::deleteContext((HGLRC)hGLRC);
 
             WinTools::destroyWindow(m_hWnd);
-            WinTools::unregisterWindowClass(NULL, m_title);
+            WinTools::unregisterWindowClass(nullptr, m_title);
 
             O3D_ERROR(E_InvalidResult("Unable to set the dummy OpenGL context as current"));
         }
@@ -222,7 +222,7 @@ void AppWindow::applySettings(Bool fullScreen)
             WGL::deleteContext((HGLRC)hGLRC);
 
             WinTools::destroyWindow(m_hWnd);
-            WinTools::unregisterWindowClass(NULL, m_title);
+            WinTools::unregisterWindowClass(nullptr, m_title);
 
             O3D_ERROR(E_InvalidResult("Missing WGL::choosePixelFormatARB"));
         }
@@ -234,7 +234,7 @@ void AppWindow::applySettings(Bool fullScreen)
                 WGL::deleteContext((HGLRC)hGLRC);
 
                 WinTools::destroyWindow(m_hWnd);
-                WinTools::unregisterWindowClass(NULL, m_title);
+                WinTools::unregisterWindowClass(nullptr, m_title);
 
                 O3D_ERROR(E_InvalidResult("Missing WGL_ARB_multisample extension"));
             }
@@ -290,7 +290,7 @@ void AppWindow::applySettings(Bool fullScreen)
 
     // destroy the dummy window
     WinTools::destroyWindow(m_hWnd);
-    WinTools::unregisterWindowClass(NULL, m_title);
+    WinTools::unregisterWindowClass(nullptr, m_title);
 
     // and recreate the final window
     m_hWnd = WinTools::createWindow(
@@ -313,7 +313,7 @@ void AppWindow::applySettings(Bool fullScreen)
     // now we can set our customized pixel format
     if ((SetPixelFormat((HDC)m_HDC, pixelFormat, &pfd)) == FALSE) {
         WinTools::destroyWindow(m_hWnd);
-        WinTools::unregisterWindowClass(NULL, m_title);
+        WinTools::unregisterWindowClass(nullptr, m_title);
 
         O3D_ERROR(E_InvalidResult("Unable to set the pixel format"));
     }
@@ -350,12 +350,12 @@ void AppWindow::destroy()
 		WinTools::destroyWindow(m_hWnd);
         WinTools::unregisterWindowClass(nullptr, m_title);
 
-		m_hWnd = NULL_HWND;
+        m_hWnd = NULL_HWND;
 	}
 
 	m_running = False;
-	m_HDC = NULL_HDC;
-	m_PF = NULL_PF;
+    m_HDC = NULL_HDC;
+    m_PF = NULL_PF;
 }
 
 // Window settings
@@ -420,11 +420,11 @@ void AppWindow::setIcon(const Image &icon)
 
 		// If the window exists send a message, otherwise the ApplySettings will use
 		// the value set in m_icon.
-		HICON smallIcon = NULL;
-		HICON largeIcon = NULL;
+        HICON smallIcon = nullptr;
+        HICON largeIcon = nullptr;
 
 		smallIcon = CreateIcon(
-			NULL,
+            nullptr,
 			16,
 			16,
 			1,
@@ -433,7 +433,7 @@ void AppWindow::setIcon(const Image &icon)
 			xorBits16);
 
 		largeIcon = CreateIcon(
-			NULL,
+            nullptr,
 			32,
 			32,
 			1,
@@ -459,8 +459,8 @@ void AppWindow::setIcon(const Image &icon)
 		// remove icon
 		// If the window exists send a message, otherwise the ApplySettings will use
 		// the value set in m_icon.
-		HICON smallIcon = NULL;
-		HICON largeIcon = NULL;
+        HICON smallIcon = nullptr;
+        HICON largeIcon = nullptr;
 
 		// Set the icon for the window
         if (smallIcon) {
@@ -602,7 +602,7 @@ void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
     }
 
-    if ((Display::instance()->getAppWindow() != NULL) &&
+    if ((Display::instance()->getAppWindow() != nullptr) &&
         (Display::instance()->getAppWindow() != this)) {
 		O3D_ERROR(E_InvalidOperation("Another window is currently taking the fullscreen"));
 	}
@@ -890,7 +890,7 @@ LRESULT CALLBACK AppWindow::wndProc(
 		case WM_INPUT:
 		{
 			UINT bufferSize;
-			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &bufferSize, sizeof (RAWINPUTHEADER));
+            GetRawInputData((HRAWINPUT)lParam, RID_INPUT, nullptr, &bufferSize, sizeof (RAWINPUTHEADER));
 
             if (bufferSize > 4096) {
 				O3D_ERROR(E_InvalidOperation("Raw input buffer size is too big"));

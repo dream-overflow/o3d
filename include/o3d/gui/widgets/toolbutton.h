@@ -43,9 +43,9 @@ public:
 	ToolButton(
 			Widget *parent,
 			Icon *iconFalse,
-			Icon *iconTrue = NULL,
-			Icon *iconHover = NULL,
-			Icon *iconDisable = NULL,
+            Icon *iconTrue = nullptr,
+            Icon *iconHover = nullptr,
+            Icon *iconDisable = nullptr,
 			ToolButtonStyle style = PUSH_BUTTON);
 
 	//! Construct from a parent, icon template, and a button style.
@@ -120,7 +120,7 @@ public:
 	inline ToolButtonStyle getToolButtonStyle() const { return m_ButtonStyle; }
 
 	//! is an icon tool button
-	inline Bool isIconToolButton() const { return m_iconFalse.get() != NULL; }
+    inline Bool isIconToolButton() const { return m_iconFalse.get() != nullptr; }
 
 	//! is the button is in push state
 	inline Bool isToolButtonPushed() const { return m_pushed; }

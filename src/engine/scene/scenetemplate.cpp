@@ -104,7 +104,7 @@ SceneTplInstance* SceneTemplate::create(Scene *scene, const String &specifyName)
     scene->keepImportArrays(True);
 
     if (!scene->importScene(*m_is, nullptr))
-		return NULL;
+        return nullptr;
 
     SceneTplInstance *instance = new SceneTplInstance(scene);
 

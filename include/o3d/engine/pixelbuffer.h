@@ -126,37 +126,37 @@ public:
 	//! @note The current PBO is changed to this or by 0.
 	inline void create(UInt32 count, Bool dontUnbind = False)
 	{
-		create(count, m_storageType, NULL, dontUnbind);
+        create(count, m_storageType, nullptr, dontUnbind);
 	}
 
 	//! Create or update the PBO. An update is performed if the count and storageType are
 	//! the same as previously defined.
 	//! @param count Number of element to store/allocate.
 	//! @param storageType Storage type (stream, static, dynamic).
-	//! @param data Data to store or NULL to only allocate.
+    //! @param data Data to store or nullptr to only allocate.
 	//! @param dontUnbind Don't process to the unbound if TRUE.
 	//! @note The current PBO is changed to this or by 0.
 	void create(
 		UInt32 count,
 		Storage storageType,
-		const Float* data = NULL,
+        const Float* data = nullptr,
 		Bool dontUnbind = False);
 
 	//! Create or update the PBO. An update is performed if the count and storageType are
 	//! the same as previously defined.
 	//! @param count Number of element to store/allocate.
 	//! @param storageType Storage type (stream, static, dynamic).
-	//! @param data Data to store or NULL to only allocate.
+    //! @param data Data to store or nullptr to only allocate.
 	//! @param dontUnbind Don't process to the unbound if TRUE.
 	//! @note The current PBO is changed to this or by 0.
 	void copyFromTexture(
 		UInt32 count,
 		Storage storageType,
-		const Float* data = NULL,
+        const Float* data = nullptr,
 		Bool dontUnbind = False);
 
 	//! Bind the PBO if necessary and copy its content to the texture.
-	//! @param data Data to store or NULL to only allocate.
+    //! @param data Data to store or nullptr to only allocate.
 	//! @param dontUnbind Don't process to the unbound if TRUE.
 	void copyToTexture(Texture *texture, Bool dontUnbind = False);
 

@@ -21,7 +21,7 @@ using namespace o3d;
 
 Texture2DStreaming::Texture2DStreaming(BaseObject *parent) :
 	m_parent(parent),
-	m_context(NULL),
+    m_context(nullptr),
 	m_state(False),
 	m_level(0),
 	m_size(0),
@@ -83,13 +83,13 @@ void Texture2DStreaming::create(const Box2i &box)
 
 	O3D_GALLOC(MemoryManager::GPU_PBO, m_buffersId[0], m_size);
 
-	glBufferData(GL_PIXEL_UNPACK_BUFFER, m_size, NULL, PixelBuffer::STREAM_DRAW);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, m_size, nullptr, PixelBuffer::STREAM_DRAW);
 
 	m_context->bindPixelUnpackBuffer(m_buffersId[1]);
 
 	O3D_GALLOC(MemoryManager::GPU_PBO, m_buffersId[1], m_size);
 
-	glBufferData(GL_PIXEL_UNPACK_BUFFER, m_size, NULL, PixelBuffer::STREAM_DRAW);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, m_size, nullptr, PixelBuffer::STREAM_DRAW);
 
 	m_context->bindPixelUnpackBuffer(0);
 
@@ -116,7 +116,7 @@ void Texture2DStreaming::release()
 	}
 
 	m_size = 0;
-	m_texture = NULL;
+    m_texture = nullptr;
 	m_state = False;
 }
 
@@ -124,7 +124,7 @@ void Texture2DStreaming::setTexture(Texture2D *texture, UInt32 level)
 {
 	if (m_state)
 	{
-		if (texture != NULL)
+        if (texture != nullptr)
 		{
 			if ((m_texture->getPixelFormat() != texture->getPixelFormat()) ||
 				(m_texture->getWidth() != texture->getWidth()) ||
@@ -186,7 +186,7 @@ void Texture2DStreaming::update(UInt8 *data, UInt32 size)
 		m_box.height(),
 	    m_format,
 	    m_type,
-	    NULL);
+        nullptr);
 
 	m_context->bindPixelUnpackBuffer(pboB);
 
@@ -239,7 +239,7 @@ void Texture2DStreaming::update(UInt8 *data, UInt32 size, UInt32 offset)
 		m_box.height(),
 	    m_format,
 	    m_type,
-	    NULL);
+        nullptr);
 
 	m_context->bindPixelUnpackBuffer(pboB);
 

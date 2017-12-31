@@ -21,7 +21,7 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(SpecialEffectsManager, ENGINE_EFFET_LIST, SceneEnti
 
 SpecialEffectsManager::SpecialEffectsManager(BaseObject *parent) :
 	SceneEntity(parent),
-	m_indexToEffect(NULL),
+    m_indexToEffect(nullptr),
 	m_indexToEffectSize(0)
 {
 }

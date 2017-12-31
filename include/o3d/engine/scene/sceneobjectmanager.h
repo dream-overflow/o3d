@@ -42,7 +42,7 @@ public:
 	//! @note Parent stay unchanged
 	Int32 addElement(SceneObject *element)
 	{
-		O3D_ASSERT(element != NULL);
+        O3D_ASSERT(element != nullptr);
 		O3D_ASSERT(element->getId() == -1);
 
 		if (!element)
@@ -84,7 +84,7 @@ public:
 		if (it != m_idMap.end())
 			return it->second;
 		else
-			return NULL;
+            return nullptr;
 	}
 
 	//! Find an element by its identifier
@@ -94,7 +94,7 @@ public:
 		if (it != m_idMap.end())
 			return it->second;
 		else
-			return NULL;
+            return nullptr;
 	}
 
 	//! Find an element by its name
@@ -105,7 +105,7 @@ public:
 			if (it->second->getName() == name)
 				return it->second;
 		}
-		return NULL;
+        return nullptr;
 	}
 
 	//! Find an element by its name
@@ -116,7 +116,7 @@ public:
 			if (it->second->getName() == name)
 				return it->second;
 		}
-		return NULL;
+        return nullptr;
 	}
 
 	//-----------------------------------------------------------------------------------

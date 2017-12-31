@@ -38,13 +38,13 @@ public:
     virtual ~FileOutStream();
 
     //! False
-    virtual Bool isMemory() const;
+    virtual Bool isMemory() const override;
 
-    virtual UInt32 writer(const void* buf, UInt32 size, UInt32 count);
+    virtual UInt32 writer(const void* buf, UInt32 size, UInt32 count) override;
 
-    virtual void close();
+    virtual void close() override;
 
-    virtual void flush();
+    virtual void flush() override;
 
     //! Get the C file descriptor.
     int getFD() const;
@@ -54,11 +54,11 @@ public:
 
     virtual Int32 writeLine(
             const String &str,
-            CharacterEncoding encoding = ENCODING_UTF8);
+            CharacterEncoding encoding = ENCODING_UTF8) override;
 
     virtual Int32 writeString(
             const String &str,
-            CharacterEncoding encoding = ENCODING_UTF8);
+            CharacterEncoding encoding = ENCODING_UTF8) override;
 
 protected:
 

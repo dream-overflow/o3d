@@ -26,7 +26,7 @@ Sound::Sound() :
 	m_format(0),
 	m_size(0),
 	m_sampling(0),
-	m_data(NULL),
+    m_data(nullptr),
 	m_dataType(AUDIO_SOUND)
 {
 }
@@ -36,7 +36,7 @@ Sound::Sound(const Sound &dup) :
 	m_format(0),
 	m_size(0),
 	m_sampling(0),
-	m_data(NULL),
+    m_data(nullptr),
 	m_dataType(AUDIO_SOUND)
 {
 	m_format = dup.m_format;
@@ -82,7 +82,7 @@ const UInt8* Sound::getData() const
 	if (m_data.get())
 		return m_data->getData();
 	else
-		return NULL;
+        return nullptr;
 }
 
 // Get the sound duration in seconds.

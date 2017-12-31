@@ -56,7 +56,7 @@ const String* Command::findCommand(const String &find)
 	}
 
 	if (m_currentCommand == m_command.end())
-		return NULL;
+        return nullptr;
 
 	m_foundCommand = find;
 	return &((*m_currentCommand).Command);
@@ -68,12 +68,12 @@ const String* Command::findSubCommand(
 	const String &find)
 {
 	if (m_currentCommand == m_command.end())
-		return NULL;
+        return nullptr;
 
 	if ((*m_currentCommand).Command != command)
 	{
 		if (!findCommand(command))
-			return NULL;
+            return nullptr;
 	}
 
 	for (	m_currentSub = (*m_currentCommand).SubCommand.begin();
@@ -85,7 +85,7 @@ const String* Command::findSubCommand(
 	}
 
 	if (m_currentSub == (*m_currentCommand).SubCommand.end())
-		return NULL;
+        return nullptr;
 
 	m_foundSubCommand = find;
 	return &(*m_currentSub);

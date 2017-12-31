@@ -76,7 +76,7 @@ Serialize* ClassFactory::readFromFile(InStream& is)
 	else
 	{
 		deletePtr(object);
-		return NULL;
+        return nullptr;
 	}
 }*/
 

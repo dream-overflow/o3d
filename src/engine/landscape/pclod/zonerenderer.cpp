@@ -52,18 +52,18 @@ PCLODZoneRenderer::PCLODZoneRenderer(PCLODZone * _pZone):
 	m_dataAttribBuffer(),
 	m_dataCoordBuffer(),
 	m_dataRenderingParts(),
-	m_pDataColormap(NULL),
-	m_pDataLightmap(NULL),
+    m_pDataColormap(nullptr),
+    m_pDataLightmap(nullptr),
 
-	m_glVertexBuffer(NULL),
-	m_glIndexBuffer(NULL),
-	m_glAttribBuffer(NULL),
-	m_glTexCoordBuffer(NULL),
+    m_glVertexBuffer(nullptr),
+    m_glIndexBuffer(nullptr),
+    m_glAttribBuffer(nullptr),
+    m_glTexCoordBuffer(nullptr),
 	m_glRenderingParts(),
-	m_pGlColormap(NULL),
-	m_pGlLightmap(NULL)
+    m_pGlColormap(nullptr),
+    m_pGlLightmap(nullptr)
 {
-	O3D_ASSERT(_pZone != NULL);
+    O3D_ASSERT(_pZone != nullptr);
 
 	/* Initialisation de la structure d'infos */
 	m_infos.zoneSize = _pZone->getZoneSize();
@@ -191,13 +191,13 @@ void PCLODZoneRenderer::clean()
 	if (m_pGlColormap)
 	{
 		m_pGlColormap->releaseIt();
-		m_pGlColormap = NULL;
+        m_pGlColormap = nullptr;
 	}
 
 	if (m_pGlLightmap)
 	{
 		m_pGlLightmap->releaseIt();
-		m_pGlLightmap = NULL;
+        m_pGlLightmap = nullptr;
 	}
 }
 
@@ -220,20 +220,20 @@ void PCLODZoneRenderer::setData(	const SmartArrayFloat & _vertexBuffer,
 
     FastMutexLocker locker(m_mutex);
 
-	if (_vertexBuffer.getData() != NULL)
+    if (_vertexBuffer.getData() != nullptr)
 	{
 		O3D_ASSERT((_vertexBuffer.getNumElt() / 3) * 3 == _vertexBuffer.getNumElt());
 
 		m_dataVertexBuffer = _vertexBuffer;
 	}
 
-	if (_indexBuffer.getData() != NULL)
+    if (_indexBuffer.getData() != nullptr)
 		m_dataIndexBuffer = _indexBuffer;
 
-	if (_attribBuffer.getData() != NULL)
+    if (_attribBuffer.getData() != nullptr)
 		m_dataAttribBuffer = _attribBuffer;
 
-	if (_coordBuffer.getData() != NULL)
+    if (_coordBuffer.getData() != nullptr)
 		m_dataCoordBuffer = _coordBuffer;
 
 	if (_renderingBlock.size() > 0)
@@ -254,7 +254,7 @@ void PCLODZoneRenderer::setData(	const SmartArrayFloat & _vertexBuffer,
 
 			for (UInt32 k = 0 ; k < it->matNb ; ++k)
 			{
-				O3D_ASSERT(it->matPtr[k] != NULL);
+                O3D_ASSERT(it->matPtr[k] != nullptr);
 				it->matPtr[k]->useIt();
 			}
 
@@ -312,18 +312,18 @@ void PCLODZoneRenderer::destroyData()
 
 	unsafeFreeRamRenderingParts();
 
-	if (m_pDataColormap != NULL)
+    if (m_pDataColormap != nullptr)
 	{
 		O3D_ASSERT(m_pDataColormap->getReferenceCounter() > 1);
 		m_pDataColormap->releaseIt();
-		m_pDataColormap = NULL;
+        m_pDataColormap = nullptr;
 	}
 
-	if (m_pDataLightmap != NULL)
+    if (m_pDataLightmap != nullptr)
 	{
 		O3D_ASSERT(m_pDataLightmap->getReferenceCounter() > 1);
 		m_pDataLightmap->releaseIt();
-		m_pDataLightmap = NULL;
+        m_pDataLightmap = nullptr;
 	}
 }
 
@@ -384,7 +384,7 @@ void PCLODZoneRenderer::unsafeUpdate()
 		}
 	}
 
-	if (m_pDataColormap != NULL)
+    if (m_pDataColormap != nullptr)
 	{
 		if (m_pGlColormap)
 			m_pGlColormap->releaseIt();
@@ -394,7 +394,7 @@ void PCLODZoneRenderer::unsafeUpdate()
 		m_pGlColormap->loadToGL();
 	}
 
-	if (m_pDataLightmap != NULL)
+    if (m_pDataLightmap != nullptr)
 	{
 		if (m_pGlLightmap)
 			m_pGlLightmap->releaseIt();
@@ -420,7 +420,7 @@ void PCLODZoneRenderer::unsafeFreeGLRenderingParts()
 		for (UInt32 k = 0 ; k < it->matNb ; ++k)
 		{
 			it->matPtr[k]->releaseIt();
-			it->matPtr[k] = NULL;
+            it->matPtr[k] = nullptr;
 		}
 	}
 
@@ -440,7 +440,7 @@ void PCLODZoneRenderer::unsafeFreeRamRenderingParts()
 		for (UInt32 k = 0 ; k < it->matNb ; ++k)
 		{
 			it->matPtr[k]->releaseIt();
-			it->matPtr[k] = NULL;
+            it->matPtr[k] = nullptr;
 		}
 	}
 
@@ -620,7 +620,7 @@ void PCLODZoneRenderer::drawWireFrame()
 	m_glVertexBuffer->attribute(V_VERTICES_ARRAY, 3, 0, 0);
 
 	m_glIndexBuffer->bindBuffer();
-	getScene()->drawElementsUInt32(P_TRIANGLES, m_glIndexBuffer->getCount(), NULL);
+    getScene()->drawElementsUInt32(P_TRIANGLES, m_glIndexBuffer->getCount(), nullptr);
 
 	glContext->disableVertexAttribArray(V_VERTICES_ARRAY);
 

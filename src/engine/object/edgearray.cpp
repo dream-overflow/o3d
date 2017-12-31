@@ -18,7 +18,7 @@ using namespace o3d;
 // Default constructor.
 EdgeArray::EdgeArray(VertexBuffer::Storage storage) :
 	m_storage(storage),
-	m_edges(NULL),
+    m_edges(nullptr),
 	m_isDirty(True)
 {
 }

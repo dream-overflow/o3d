@@ -17,7 +17,7 @@ O3D_IMPLEMENT_ABSTRACT_CLASS1(SpecialEffects, ENGINE_EFFECT, SceneObject)
 // Default contructor.
 SpecialEffects::SpecialEffects(BaseObject *parent) :
 	SceneObject(parent),
-	m_manager(NULL)
+    m_manager(nullptr)
 {
 }
 

@@ -15,7 +15,7 @@
 
 using namespace o3d;
 
-TaskManager* TaskManager::m_instance = NULL;
+TaskManager* TaskManager::m_instance = nullptr;
 
 // Singleton instantiation
 TaskManager* TaskManager::instance()
@@ -31,7 +31,7 @@ void TaskManager::destroy()
 	if (m_instance)
 	{
 		delete m_instance;
-		m_instance = NULL;
+        m_instance = nullptr;
 	}
 }
 

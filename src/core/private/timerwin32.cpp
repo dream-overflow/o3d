@@ -59,7 +59,7 @@ Bool Timer::create(
             m_pCallback = pCallback;
         }
 
-        if ((m_handle = (_Timer)SetTimer(NULL, 0, timeout, O3D_TimerProc)) == 0) {
+        if ((m_handle = (_Timer)SetTimer(nullptr, 0, timeout, O3D_TimerProc)) == 0) {
             O3D_ERROR(E_InvalidAllocation("Unable to create a system timer"));
         }
 
@@ -75,7 +75,7 @@ Bool Timer::create(
 void Timer::destroy()
 {
     if (m_handle) {
-        ::KillTimer(NULL, m_handle);
+        ::KillTimer(nullptr, m_handle);
 		TimerManager::instance()->removeTimerInternal(this);
 		m_handle = 0;
 	}
@@ -93,7 +93,7 @@ void Timer::throwTimer(UInt32 timeout)
 
 	m_timeout = timeout;
 
-    if ((m_handle = (_Timer)SetTimer(NULL, 0, m_timeout, O3D_TimerProc)) == 0) {
+    if ((m_handle = (_Timer)SetTimer(nullptr, 0, m_timeout, O3D_TimerProc)) == 0) {
 		O3D_ERROR(E_InvalidAllocation("Unable to create a system timer"));
     } else {
 		TimerManager::instance()->addTimerInternal(this);
@@ -104,7 +104,7 @@ void Timer::throwTimer(UInt32 timeout)
 void Timer::killTimer()
 {
     if (m_handle) {
-        ::KillTimer(NULL, m_handle);
+        ::KillTimer(nullptr, m_handle);
 		TimerManager::instance()->removeTimerInternal(this);
 		m_handle = 0;
 	}

@@ -849,7 +849,7 @@ Widget* MenuWidget::findWidget(const String &name)
 		}
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 const Widget* MenuWidget::findWidget(const String &name) const
@@ -872,7 +872,7 @@ const Widget* MenuWidget::findWidget(const String &name) const
 		}
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 Bool MenuWidget::isWidgetExist(Widget *pWidget) const

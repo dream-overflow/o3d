@@ -65,7 +65,7 @@ private:
 	public:
 
 		/* Constructors */
-		PCLODZoneManage(PCLODTopZone * _pZone = NULL);
+        PCLODZoneManage(PCLODTopZone * _pZone = nullptr);
 		PCLODZoneManage(const PCLODZoneManage & _which);
 		~PCLODZoneManage();
 

@@ -303,10 +303,10 @@ public:
 	//! Nothing to reset.
     virtual void resetAnim();
 
-	//! Return NULL.
+    //! Return null.
     virtual Animatable* getFirstSon();
 
-	//! Return NULL.
+    //! Return null.
     virtual Animatable* getNextSon();
 
 	//! Return FALSE.
@@ -338,10 +338,10 @@ public:
 	//! Nothing to process.
 	virtual void processAllFaces(ProcessingPass pass);
 
-	//! Return NULL.
+    //! Return null.
 	virtual VertexElement* getVertexElement(VertexAttributeArray type) const;
 
-	//! Return NULL.
+    //! Return null.
 	virtual FaceArray* getFaceArray() const;
 
 	//! Nothing to attribute.
@@ -353,13 +353,13 @@ public:
 	//! Always return FALSE.
 	virtual Bool isOperation(Operations what) const;
 
-	//! Return NULL.
+    //! Return null.
 	virtual const Float* getMatrixArray() const;
 
 	//! Return FALSE.
 	virtual Bool isExternalFaceArray() const;
 
-	//! Return NULL.
+    //! Return null.
 	virtual FaceArray* getFaceArrayToProcess(UInt32 &first, UInt32 &last);
 
 	//! Returns 0.0f.

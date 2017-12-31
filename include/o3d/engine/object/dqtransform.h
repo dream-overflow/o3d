@@ -33,7 +33,7 @@ class O3D_API DQTransform : public Transform
 public:
 
 	//! Default constructor. No rotation, no translation, and uniform scale of one.
-	DQTransform(BaseObject *parent = NULL) :
+    DQTransform(BaseObject *parent = nullptr) :
 		Transform(parent),
 		m_Scale(1.f,1.f,1.f)
 	{}

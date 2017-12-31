@@ -410,7 +410,7 @@ void AppWindow::setIcon(const Image &icon)
 		UInt32 i;
 		int numItems;
 
-		long *newSet = NULL;
+        long *newSet = nullptr;
 		long *icon;
 
 		newSet = new long[(localPicture.getWidth() * localPicture.getHeight() + 2)];
@@ -938,7 +938,7 @@ void AppWindow::applySettings(Bool fullScreen)
     }
 
     // Set the size, input and class hints, and define WM_CLIENT_MACHINE and WM_LOCALE_NAME
-    XSetWMProperties(display, window, NULL, NULL, NULL, 0, sizeHints, wmHints, classHints);
+    XSetWMProperties(display, window, nullptr, nullptr, nullptr, 0, sizeHints, wmHints, classHints);
     XFree(sizeHints);
     XFree(classHints);
     XFree(wmHints);
@@ -997,7 +997,7 @@ void AppWindow::applySettings(Bool fullScreen)
 				XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
                 XNResourceName, resourceName.getData(),
 				XNResourceClass, className.getData(),
-				NULL);
+                nullptr);
 
 	XSelectInput(
 			display,
@@ -1060,9 +1060,9 @@ void AppWindow::destroy()
 	}
 
     m_ic = nullptr;
-	m_hWnd = NULL_HWND;
-	m_PF = NULL_PF;
-	m_HDC = NULL_HDC;
+    m_hWnd = NULL_HWND;
+    m_PF = NULL_PF;
+    m_HDC = NULL_HDC;
 
 	m_running = False;
 }
@@ -1127,7 +1127,7 @@ static Int32 pending(::Display *display, UInt32 timeout)
             x11_fd = ConnectionNumber(display);
             FD_ZERO(&fdset);
             FD_SET(x11_fd, &fdset);
-            if (select(x11_fd + 1, &fdset, NULL, NULL, &zero_time) == 1) {
+            if (select(x11_fd + 1, &fdset, nullptr, nullptr, &zero_time) == 1) {
                 return (XPending(display));
             }
         }

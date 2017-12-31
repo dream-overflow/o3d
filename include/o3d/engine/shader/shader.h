@@ -74,7 +74,7 @@ public:
 	typedef std::vector<Int32> T_ProgramIndexArray;
 
 	//! Default constructor.
-	//! @param parent Parent owner. It can be NULL if necessary.
+    //! @param parent Parent owner. It can be null if necessary.
 	Shader(BaseObject *parent);
 
 	//! Virtual destructor.
@@ -286,7 +286,7 @@ private:
 
 		Int32 refCounter;
 
-		ShaderInstance * pOwner;  //!< Instance which bound the program. NULL if not bound.
+        ShaderInstance * pOwner;  //!< Instance which bound the program. null if not bound.
 	};
 
 	typedef std::vector<T_ProgramInfo>		T_ProgramArray;
@@ -340,7 +340,7 @@ public:
 
 	//! @brief Attach the instance to a shader
 	//! If the instance is already attached, it will be detach first.
-	//! attach(NULL) has the same effect as detach()
+    //! attach(nullptr) has the same effect as detach()
 	//! @param _ptr a pointer to a shader language object.
 	void attach(Shader* _ptr);
 	void detach();
@@ -350,7 +350,7 @@ public:
     inline Bool isValid() const { return (m_shader != nullptr); }
 
 	//! @brief Return the attached object
-	//! @return NULL if the instance is not attached
+    //! @return null if the instance is not attached
 	inline Shader * getShader() const { return m_shader; }
 
 	//! @brief Return the name of the attached shader.

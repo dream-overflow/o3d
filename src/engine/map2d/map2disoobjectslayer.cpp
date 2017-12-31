@@ -80,7 +80,7 @@ Bool Map2dIsoObjectsLayer::deleteChild(BaseObject *child)
 					m_sort = True;
 
 					m_objects.erase(it);
-					object->setNode(NULL);
+                    object->setNode(nullptr);
 				}
 
 				deletePtr(object);
@@ -244,7 +244,7 @@ SceneObject* Map2dIsoObjectsLayer::findSon(const String &name)
 			return object;
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 const SceneObject* Map2dIsoObjectsLayer::findSon(const String &name) const
@@ -265,7 +265,7 @@ const SceneObject* Map2dIsoObjectsLayer::findSon(const String &name) const
 			return object;
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 Bool Map2dIsoObjectsLayer::findSon(SceneObject *object) const
@@ -355,7 +355,7 @@ void Map2dIsoObjectsLayer::removeObject(Map2dObject *object)
 
 		// no node
 		object->setParent(getScene());
-		object->setNode(NULL);
+        object->setNode(nullptr);
 		object->setPersistant(False);
 
 		m_sort = True;

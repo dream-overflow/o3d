@@ -420,10 +420,10 @@ Bool Theme::load(const String &filename)
 					currDrawMode->setDefaultTextColor(Color::fromHex(textColor));
 
 				// WidgetDataSets
-				TiXmlNode *pElementNode = NULL;
+                TiXmlNode *pElementNode = nullptr;
 				WidgetDrawCompass::CompassElement elementName;
 
-				while ((pElementNode = themeNode->IterateChildren("Element",pElementNode)) != NULL)
+                while ((pElementNode = themeNode->IterateChildren("Element",pElementNode)) != nullptr)
 				{
 					if (!pElementNode->ToElement()->Attribute("x",&x))
 						O3D_ERROR(E_InvalidFormat("Missing <Element> attribute 'x'' in " + filename));
@@ -650,7 +650,7 @@ const WidgetDrawMode* Theme::getWidgetDrawMode(WidgetDraw widget) const
 	if (widget < NUM_WIDGET_DRAW)
 		return m_widgetDraw[widget];
 	else
-		return NULL;
+        return nullptr;
 }
 
 //Return the default widget size (defined by the theme)

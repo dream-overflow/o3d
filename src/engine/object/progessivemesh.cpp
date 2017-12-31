@@ -217,8 +217,8 @@ void LODVertex::removeIfNonNeighbor(LODVertex *n)
 //---------------------------------------------------------------------------------------
 ProgressiveMesh::ProgressiveMesh()
 {
-	m_vertices = NULL;
-	m_triangles = NULL;
+    m_vertices = nullptr;
+    m_triangles = nullptr;
 }
 
 // Destructor
@@ -324,13 +324,13 @@ void ProgressiveMesh::computeEdgeCostAtVertex(LODVertex *v)
 	{
 		// v doesn't have neighbors so it costs nothing to collapse
 
-		v->collapse = NULL;
+        v->collapse = nullptr;
 
 		return;
 	}
 
 	v->objdist = 1000000;
-	v->collapse = NULL;
+    v->collapse = nullptr;
 
 	// search all neighboring edges for "least cost" edge
 	for (Int32 i = 0; i < v->neighbor.getSize(); i++)

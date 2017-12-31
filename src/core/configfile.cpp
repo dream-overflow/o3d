@@ -284,7 +284,7 @@ Bool ConfigFile::getBool(const String & _path, Bool _default, Bool * _ok) const
 			return lValue.toBool(_default, _ok);
 		else
 		{
-			if (_ok != NULL)
+            if (_ok != nullptr)
 				*_ok = False;
 
 			return _default;
@@ -302,7 +302,7 @@ Int32 ConfigFile::getInt(const String & _path, Int32 _default, Bool * _ok) const
 			return lValue.toInt(_default, _ok);
 		else
 		{
-			if (_ok != NULL)
+            if (_ok != nullptr)
 				*_ok = False;
 
 			return _default;
@@ -320,7 +320,7 @@ Double ConfigFile::getDouble(const String & _path, Double _default, Bool * _ok) 
 			return lValue.toDouble(_default, _ok);
 		else
 		{
-			if (_ok != NULL)
+            if (_ok != nullptr)
 				*_ok = False;
 
 			return _default;
@@ -338,7 +338,7 @@ const String ConfigFile::getString(const String & _path, const String & _default
 			return lValue.toString(_default, _ok);
 		else
 		{
-			if (_ok != NULL)
+            if (_ok != nullptr)
 				*_ok = False;
 
 			return _default;
@@ -365,7 +365,7 @@ Bool ConfigFile::removeKey(const String & _key)
 
 Bool ConfigFile::insertGroup(const String & _group)
 {
-	return (m_currentGroup.back()->createGroup(_group) != NULL);
+    return (m_currentGroup.back()->createGroup(_group) != nullptr);
 }
 
 Bool ConfigFile::removeGroup(const String & _group)
@@ -375,7 +375,7 @@ Bool ConfigFile::removeGroup(const String & _group)
 
 Bool ConfigFile::findGroup(const String & _group)
 {
-	return (m_currentGroup.back()->getGroup(_group) != NULL);
+    return (m_currentGroup.back()->getGroup(_group) != nullptr);
 }
 
 Bool ConfigFile::enter(const String & _path)
@@ -400,7 +400,7 @@ Bool ConfigFile::enter(const String & _path)
 		{
 			ConfigFileGroup * lNext = lCurrent->getGroup(lElt);
 
-			if (lNext == NULL)
+            if (lNext == nullptr)
 				return False;
 			else
 			{
@@ -567,7 +567,7 @@ Bool ConfigFile::ConfigFileGroup::setKey(const String & _key, const ConfigFileVa
 
 	ConfigFileValue * lKeyValue = findLocalKey(lKeyName);
 
-	if (lKeyValue != NULL)
+    if (lKeyValue != nullptr)
 		*lKeyValue = _value;
 	else if (!lKeyName.isEmpty())
 		m_keys[lKeyName] = _value;
@@ -585,10 +585,10 @@ Bool ConfigFile::ConfigFileGroup::getKey(const String & _key, ConfigFileValue & 
 
 	const ConfigFileValue * lKeyValue = findLocalKey(lKeyName);
 
-	if (lKeyValue != NULL)
+    if (lKeyValue != nullptr)
 		_value = *lKeyValue;
 
-	return (lKeyValue != NULL);
+    return (lKeyValue != nullptr);
 }
 
 Bool ConfigFile::ConfigFileGroup::findKey(const String & _key) const
@@ -597,7 +597,7 @@ Bool ConfigFile::ConfigFileGroup::findKey(const String & _key) const
 	lKeyName.trimLeftChars(String(" \\/"));
 	lKeyName.trimRightChars(String(" \\/"));
 
-	return (findLocalKey(lKeyName) != NULL);
+    return (findLocalKey(lKeyName) != nullptr);
 }
 
 Bool ConfigFile::ConfigFileGroup::findKey(const String & _key, std::vector<String> & _array) const
@@ -626,7 +626,7 @@ ConfigFile::ConfigFileGroup * ConfigFile::ConfigFileGroup::createGroup(const Str
 	{
 		ConfigFileGroup * lGroup = findLocalGroup(lPath);
 
-		if (lGroup == NULL)
+        if (lGroup == nullptr)
 		{
 			m_groups.push_back(new ConfigFileGroup(lPath));
 			return m_groups.back();
@@ -641,10 +641,10 @@ ConfigFile::ConfigFileGroup * ConfigFile::ConfigFileGroup::createGroup(const Str
 
 		ConfigFileGroup * lGroupPtr = findLocalGroup(lGroup);
 
-		if (lGroupPtr != NULL)
+        if (lGroupPtr != nullptr)
 			return lGroupPtr->createGroup(lPath.sub(lFirstBrace));
 		else
-			return NULL;
+            return nullptr;
 	}
 }
 
@@ -677,7 +677,7 @@ ConfigFile::ConfigFileGroup * ConfigFile::ConfigFileGroup::getGroup(const String
 			return (*it)->getGroup(lFullPath.sub(lGroup.length()));
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 Bool ConfigFile::ConfigFileGroup::removeGroup(const String & _fullpath)
@@ -689,7 +689,7 @@ Bool ConfigFile::ConfigFileGroup::removeGroup(const String & _fullpath)
 
     Int32 lLastBrace = lFullPath.reverseFind('/');
 
-	ConfigFileGroup * lGroupPtr = NULL;
+    ConfigFileGroup * lGroupPtr = nullptr;
 	String lGroupName = lFullPath;
 
 	if (lLastBrace == -1) // Alors le groupe est un sous groupe du group courant
@@ -702,7 +702,7 @@ Bool ConfigFile::ConfigFileGroup::removeGroup(const String & _fullpath)
 		lGroupPtr = getGroup(lFullPath);
 	}
 
-	if (lGroupPtr != NULL)
+    if (lGroupPtr != nullptr)
 	{
 		for (IT_GroupArray it = lGroupPtr->m_groups.begin() ; it != lGroupPtr->m_groups.end() ; it++)
 			if (lGroupName.compare((*it)->getName(), String::CASE_INSENSITIVE) == 0)
@@ -1075,7 +1075,7 @@ ConfigFile::ConfigFileGroup * ConfigFile::ConfigFileGroup::findLocalGroup(const 
 		if (_group.compare((*it)->getName(), String::CASE_INSENSITIVE) == 0)
 			return (*it);
 
-	return NULL;
+    return nullptr;
 }
 
 const ConfigFile::ConfigFileGroup * ConfigFile::ConfigFileGroup::findLocalGroup(const String & _group) const
@@ -1084,7 +1084,7 @@ const ConfigFile::ConfigFileGroup * ConfigFile::ConfigFileGroup::findLocalGroup(
 		if (_group.compare((*it)->getName(), String::CASE_INSENSITIVE) == 0)
 			return (*it);
 
-	return NULL;
+    return nullptr;
 }
 
 ConfigFile::ConfigFileValue * ConfigFile::ConfigFileGroup::findLocalKey(const String & _key)
@@ -1093,7 +1093,7 @@ ConfigFile::ConfigFileValue * ConfigFile::ConfigFileGroup::findLocalKey(const St
 		if (_key.compare(it->first, String::CASE_INSENSITIVE) == 0)
 			return &it->second;
 
-	return NULL;
+    return nullptr;
 }
 
 const ConfigFile::ConfigFileValue * ConfigFile::ConfigFileGroup::findLocalKey(const String & _key) const
@@ -1102,7 +1102,7 @@ const ConfigFile::ConfigFileValue * ConfigFile::ConfigFileGroup::findLocalKey(co
 		if (_key.compare(it->first, String::CASE_INSENSITIVE) == 0)
 			return &it->second;
 
-	return NULL;
+    return nullptr;
 }
 
 void ConfigFile::ConfigFileGroup::recFindKey(
@@ -1114,7 +1114,7 @@ void ConfigFile::ConfigFileGroup::recFindKey(
 
 	const ConfigFileValue * lValuePtr = findLocalKey(_keyName);
 
-	if (lValuePtr != NULL)
+    if (lValuePtr != nullptr)
 		_array.push_back(lCurrentPath);
 
 	for (CIT_GroupArray it = m_groups.begin() ; it != m_groups.end() ; it++)
@@ -1136,7 +1136,7 @@ const Char * const ConfigFile::ConfigFileValue::m_enumString[] = {
 	"CONFIG_FILE_KEY_STRING" };
 
 ConfigFile::ConfigFileValue::ConfigFileValue():
-	m_pData(NULL),
+    m_pData(nullptr),
 	m_type(CONFIG_FILE_KEY_UNDEFINED)
 {
 }
@@ -1168,7 +1168,7 @@ ConfigFile::ConfigFileValue::ConfigFileValue(const String & _value):
 
 
 ConfigFile::ConfigFileValue::ConfigFileValue(const ConfigFileValue & _which):
-	m_pData(NULL),
+    m_pData(nullptr),
 	m_type(_which.m_type)
 {
 	switch (m_type)
@@ -1258,12 +1258,12 @@ void ConfigFile::ConfigFileValue::destroy()
 	}
 
 	m_type = CONFIG_FILE_KEY_UNDEFINED;
-	m_pData = NULL;
+    m_pData = nullptr;
 }
 
 Bool ConfigFile::ConfigFileValue::toBool(Bool _default, Bool * _ok) const
 {
-	if (_ok != NULL)
+    if (_ok != nullptr)
 		*_ok = (m_type == CONFIG_FILE_KEY_BOOL);
 
 	if (m_type != CONFIG_FILE_KEY_BOOL)
@@ -1274,7 +1274,7 @@ Bool ConfigFile::ConfigFileValue::toBool(Bool _default, Bool * _ok) const
 
 Int32 ConfigFile::ConfigFileValue::toInt(Int32 _default, Bool * _ok) const
 {
-	if (_ok != NULL)
+    if (_ok != nullptr)
 		*_ok = (m_type == CONFIG_FILE_KEY_INT);
 
 	if (m_type != CONFIG_FILE_KEY_INT)
@@ -1285,7 +1285,7 @@ Int32 ConfigFile::ConfigFileValue::toInt(Int32 _default, Bool * _ok) const
 
 Double ConfigFile::ConfigFileValue::toDouble(Double _default, Bool * _ok) const
 {
-	if (_ok != NULL)
+    if (_ok != nullptr)
 		*_ok = (m_type == CONFIG_FILE_KEY_DOUBLE);
 
 	if (m_type != CONFIG_FILE_KEY_DOUBLE)
@@ -1296,7 +1296,7 @@ Double ConfigFile::ConfigFileValue::toDouble(Double _default, Bool * _ok) const
 
 const String ConfigFile::ConfigFileValue::toString(const String & _default, Bool * _ok) const
 {
-	if (_ok != NULL)
+    if (_ok != nullptr)
 		*_ok = (m_type == CONFIG_FILE_KEY_STRING);
 
 	if (m_type != CONFIG_FILE_KEY_STRING)

@@ -133,7 +133,7 @@ public:
 	//! Get the format of bounding volume generation
 	inline GeometryData::BoundingMode getBoundingVolumeGen() const { return m_bmode; }
 
-	//! root parent node. NULL mean scene root.
+    //! root parent node. null mean scene root.
 	inline void setParentNode(Node* node) { m_parentNode = node; }
 
 	//! Texture filtering mode for any imported textures
@@ -142,10 +142,10 @@ public:
 	//! Texture anisotropy level for any imported textures
 	inline void setTextureAnisotropy(Float anisotropy) { m_anisotropy = anisotropy; }
 
-	//! Set a result class or NULL if none. The delete of this object is at your responsibility.
+    //! Set a result class or null if none. The delete of this object is at your responsibility.
 	inline void setResultContainer(Ms3dResult *result) { m_result = result; }
 
-	//! Get the result class or NULL if none. The delete of this object is at your responsibility.
+    //! Get the result class or null if none. The delete of this object is at your responsibility.
 	inline Ms3dResult* setResultContainer() const { return m_result; }
 
 private:

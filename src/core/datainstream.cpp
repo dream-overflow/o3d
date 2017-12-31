@@ -21,8 +21,9 @@ DataInStream::DataInStream(const ArrayUInt8 &array, Bool own) :
     m_data(&array),
     m_pos(nullptr)
 {
-    if (!m_data || m_data->isNull())
+    if (!m_data || m_data->isNull()) {
         O3D_ERROR(E_NullPointer("array must be valid"));
+    }
 
     m_pos = m_data->getData();
 }
@@ -41,8 +42,9 @@ UInt32 DataInStream::reader(void *buf, UInt32 size, UInt32 count)
 {
     UInt32 len = size * count;
 
-    if (m_pos + len > m_data->getData() + m_data->getSize())
+    if (m_pos + len > m_data->getData() + m_data->getSize()) {
         len = (UInt32)((m_data->getData() + m_data->getSize()) - m_pos);
+    }
 
     memcpy(buf, m_pos, len);
 
@@ -53,40 +55,46 @@ UInt32 DataInStream::reader(void *buf, UInt32 size, UInt32 count)
 
 void DataInStream::close()
 {
-    if (m_own)
+    if (m_own) {
         deletePtr(m_data);
-    else
+    } else {
         m_data = nullptr;
+    }
 
     m_pos = nullptr;
 }
 
 void DataInStream::reset(UInt64 n)
 {
-    if (n > (UInt64)m_data->getSize())
+    if (n > (UInt64)m_data->getSize()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
     m_pos = m_data->getData() + n;
 }
 
 void DataInStream::seek(Int64 n)
 {
-    if (m_pos + n > m_data->getData() + m_data->getSize())
+    if (m_pos + n > m_data->getData() + m_data->getSize()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
-    if (m_pos + n < m_data->getData())
+    if (m_pos + n < m_data->getData()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
     m_pos += n;
 }
 
 void DataInStream::end(Int64 n)
 {
-    if (n > 0)
+    if (n > 0) {
         O3D_ERROR(E_IndexOutOfRange("value must be negative"));
+    }
 
-    if (m_pos + n < m_data->getData())
+    if (m_pos + n < m_data->getData()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
     m_pos = m_data->getData() + m_data->getSize() - n;
 }
@@ -108,18 +116,18 @@ Bool DataInStream::isEnd() const
 
 UInt8 DataInStream::peek()
 {
-    if (m_pos > m_data->getData() + m_data->getSize() - 1)
+    if (m_pos > m_data->getData() + m_data->getSize() - 1) {
         return (UInt8)EOF;
-    else
+    } else {
         return *m_pos;
+    }
 }
 
 void DataInStream::ignore(Int32 limit, UInt8 delim)
 {
     const UInt8* plimit = o3d::min<const UInt8*>(m_data->getData() + m_data->getSize(), m_data->getData() + limit);
 
-    while ((m_pos < plimit) && (*m_pos != delim))
-    {
+    while ((m_pos < plimit) && (*m_pos != delim)) {
         ++m_pos;
     }
 }
@@ -131,19 +139,19 @@ Int32 DataInStream::readLine(String &str, CharacterEncoding encoding)
     ArrayChar read;
 
     Int32 c;
-    while((m_pos < plimit) && ((c = *m_pos) != '\n'))
-    {
-        if (c != '\r')
+    while((m_pos < plimit) && ((c = *m_pos) != '\n')) {
+        if (c != '\r') {
             read.push((Char)c);
+        }
 
         ++m_pos;
     }
 
-    if (m_pos < plimit && *m_pos == '\n')
+    if (m_pos < plimit && *m_pos == '\n') {
         ++m_pos;
+    }
 
-    if ((read.getSize() == 0) && (m_pos == plimit))
-    {
+    if ((read.getSize() == 0) && (m_pos == plimit)) {
         // empty string
         str.destroy();
         return EOF;
@@ -152,12 +160,13 @@ Int32 DataInStream::readLine(String &str, CharacterEncoding encoding)
     read.push(0);
 
     // set using the specified encoding
-    if (encoding == ENCODING_UTF8)
+    if (encoding == ENCODING_UTF8) {
         str.fromUtf8(read.getData());
-    else if (encoding == ENCODING_ANSI)
+    } else if (encoding == ENCODING_ANSI) {
         str.set(read.getData(),0);
-    else
+    } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
+    }
 
     return str.length();
 }
@@ -171,19 +180,18 @@ Int32 DataInStream::readLine(String &str, Int32 limit, UInt8 delim, CharacterEnc
     ArrayChar read;
 
     Int32 c;
-    while((m_pos < plimit) && ((c = *m_pos) != '\n') && (*m_pos != delim))
-    {
+    while((m_pos < plimit) && ((c = *m_pos) != '\n') && (*m_pos != delim)) {
         if (c != '\r')
             read.push((Char)c);
 
         ++m_pos;
     }
 
-    if (m_pos < plimit && *m_pos == '\n')
+    if (m_pos < plimit && *m_pos == '\n') {
         ++m_pos;
+    }
 
-    if ((str.length() == 0) && (m_pos == plimit))
-    {
+    if ((str.length() == 0) && (m_pos == plimit)) {
         // empty string
         str.destroy();
         return EOF;
@@ -192,12 +200,13 @@ Int32 DataInStream::readLine(String &str, Int32 limit, UInt8 delim, CharacterEnc
     read.push(0);
 
     // set using the specified encoding
-    if (encoding == ENCODING_UTF8)
+    if (encoding == ENCODING_UTF8) {
         str.fromUtf8(read.getData());
-    else if (encoding == ENCODING_ANSI)
+    } else if (encoding == ENCODING_ANSI) {
         str.set(read.getData(),0);
-    else
+    } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
+    }
 
     return str.length();
 }
@@ -209,31 +218,34 @@ Int32 DataInStream::readWord(String &str, CharacterEncoding encoding)
     ArrayChar read;
 
     Int32 c;
-    while((m_pos < limit-1) && ((c = *m_pos) != ' ') && (c != '\n') && (c != '\r'))
-    {
+    while((m_pos < limit-1) && ((c = *m_pos) != ' ') && (c != '\n') && (c != '\r')) {
         read.push((Char)c);
         ++m_pos;
     }
 
-    if (*m_pos == '\r')
+    if (*m_pos == '\r') {
         ++m_pos;
+    }
 
-    if (*m_pos == 10)
+    if (*m_pos == 10) {
         ++m_pos;
+    }
 
-    if ((read.getSize() == 0) && (m_pos == limit))
+    if ((read.getSize() == 0) && (m_pos == limit)) {
         return EOF;
+    }
 
     read.push(0);
     str.fromUtf8(read.getData());
 
     // set using the specified encoding
-    if (encoding == ENCODING_UTF8)
+    if (encoding == ENCODING_UTF8) {
         str.fromUtf8(read.getData());
-    else if (encoding == ENCODING_ANSI)
+    } else if (encoding == ENCODING_ANSI) {
         str.set(read.getData(),0);
-    else
+    } else {
         O3D_ERROR(E_InvalidParameter("Unsupported character encoding"));
+    }
 
     return str.length();
 }
@@ -242,8 +254,9 @@ SharedDataInStream::SharedDataInStream(const SmartArrayUInt8 &sharedArray) :
     m_data(sharedArray),
     m_pos(nullptr)
 {
-    if (m_data.isNull())
+    if (m_data.isNull()) {
         O3D_ERROR(E_NullPointer("shared array must be valid"));
+    }
 
     m_pos = m_data.getData();
 }
@@ -262,8 +275,9 @@ UInt32 SharedDataInStream::reader(void *buf, UInt32 size, UInt32 count)
 {
     UInt32 len = size * count;
 
-    if (m_pos + len > m_data.getData() + m_data.getSize())
+    if (m_pos + len > m_data.getData() + m_data.getSize()) {
         len = (UInt32)((m_data.getData() + m_data.getSize()) - m_pos);
+    }
 
     memcpy(buf, m_pos, len);
 
@@ -280,30 +294,35 @@ void SharedDataInStream::close()
 
 void SharedDataInStream::reset(UInt64 n)
 {
-    if (n > (UInt64)m_data.getSize())
+    if (n > (UInt64)m_data.getSize()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
     m_pos = m_data.getData() + n;
 }
 
 void SharedDataInStream::seek(Int64 n)
 {
-    if (m_pos + n > m_data.getData() + m_data.getSize())
+    if (m_pos + n > m_data.getData() + m_data.getSize()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
-    if (m_pos + n < m_data.getData())
+    if (m_pos + n < m_data.getData()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
     m_pos += n;
 }
 
 void SharedDataInStream::end(Int64 n)
 {
-    if (n > 0)
+    if (n > 0) {
         O3D_ERROR(E_IndexOutOfRange("value must be negative"));
+    }
 
-    if (m_pos + n < m_data.getData())
+    if (m_pos + n < m_data.getData()) {
         O3D_ERROR(E_IndexOutOfRange(""));
+    }
 
     m_pos = m_data.getData() + m_data.getSize() - n;
 }
@@ -335,8 +354,7 @@ void SharedDataInStream::ignore(Int32 limit, UInt8 delim)
 {
     const UInt8* plimit = o3d::min<const UInt8*>(m_data.getData() + m_data.getSize(), m_data.getData() + limit);
 
-    while ((m_pos < plimit) && (*m_pos != delim))
-    {
+    while ((m_pos < plimit) && (*m_pos != delim)) {
         ++m_pos;
     }
 }

@@ -59,7 +59,7 @@ void BitStream::destroy()
 // push nb_bits data from buf to the BitStream
 void BitStream::addData(const UInt8 *buf,Int32 nb_bits)
 {
-	O3D_ASSERT(buf != NULL);
+    O3D_ASSERT(buf != nullptr);
 
 	Int32 k=0,l=0;
 
@@ -113,7 +113,7 @@ void BitStream::addDataDebug(const UInt8 *buf,Int32 nb_bits)
 // push nb_bits data from the BitStream to buf
 void BitStream::getData(UInt8 *buf,Int32 nb_bits)
 {
-	O3D_ASSERT(buf != NULL);
+    O3D_ASSERT(buf != nullptr);
 
 	Int32 l = (nb_bits-1) / 8;
 	Int32 k = nb_bits - 1 - l*8;
@@ -144,7 +144,7 @@ void BitStream::getData(UInt8 *buf,Int32 nb_bits)
 // push nb_bits data from the debug buffer to buf
 void BitStream::getDataDebug(UInt8 *buf,Int32 nb_bits)
 {
-	O3D_ASSERT(buf != NULL);
+    O3D_ASSERT(buf != nullptr);
 
 	Int32 l = (nb_bits-1) / 8;
 	Int32 k = nb_bits - 1 - l*8;

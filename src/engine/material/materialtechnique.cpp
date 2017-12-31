@@ -331,7 +331,7 @@ void MaterialTechnique::processAlphaPipeline(
 		{
 			// process sorted material passes only
 			if (m_pass[i]->needsSorting())
-				m_pass[i]->processMaterial(shadable, NULL, NULL, drawInfo);
+                m_pass[i]->processMaterial(shadable, nullptr, nullptr, drawInfo);
 		}
 	}
 }

@@ -157,7 +157,7 @@ protected:
 		Vector2i size;       //!< Size of the icon sub-set.
 
 		IconSubSet() :
-			texture(NULL)
+            texture(nullptr)
 		{
 		}
 	};

@@ -21,7 +21,7 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(SceneObjectManager, ENGINE_SCENEOBJECT_LIST, SceneE
 SceneObjectManager::SceneObjectManager(BaseObject *parent) :
 	SceneEntity(parent),
 	m_singleId(0),
-	m_indexToObject(NULL),
+    m_indexToObject(nullptr),
 	m_indexToObjectSize(0)
 {
 	m_name = "SceneObjectManager";

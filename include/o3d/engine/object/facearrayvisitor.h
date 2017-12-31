@@ -282,7 +282,7 @@ private:
 	void (*getData)(FaceArrayVisitor *in, UInt32 id, UInt32 &, UInt32 &, UInt32 &);
 	void (*getArray)(FaceArrayVisitor *in, UInt32 id, UInt32 *);
 
-	FaceArray *m_faceArray;    //!< Currently locked face array (can be NULL).
+    FaceArray *m_faceArray;    //!< Currently locked face array (can be null).
 
 	PrimitiveFormat m_format;     //!< Face format.
 

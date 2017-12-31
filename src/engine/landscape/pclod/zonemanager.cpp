@@ -123,7 +123,7 @@ void PCLODZoneManager::rtRemoveZone(UInt32 _zoneId)
 
 	PCLODZoneInfo & zoneInfo = itZone->second;
 
-	O3D_ASSERT(zoneInfo.pZone.get() != NULL);
+    O3D_ASSERT(zoneInfo.pZone.get() != nullptr);
 	PCLODTopZone * pZone = zoneInfo.pZone.get();
 
 	O3D_ASSERT(pZone->unused());
@@ -249,7 +249,7 @@ void PCLODZoneManager::rtBuildgetRenderer(PCLODZone & _zone)
 	if ((lodRequested > maxLod) && _zone.hasChildren())
 	{
 		// Si ce niveau de zone était deja affiché, il faut aussi libérer le renderer
-		if (_zone.getRenderer() != NULL)
+        if (_zone.getRenderer() != nullptr)
 		{
 			PCLOD_MESSAGE(String("ZoneManager : Zone ") << _zone.getTopParent()->getId() << " : Zone splitted");
 
@@ -272,7 +272,7 @@ void PCLODZoneManager::rtBuildgetRenderer(PCLODZone & _zone)
 		lodRequested = maxLod;
 
 	// Si le renderer n'existe pas encore, on le créé et on l'ajoute a la liste
-	if (_zone.getRenderer() == NULL)
+    if (_zone.getRenderer() == nullptr)
 	{
 		// On sait que la zone en question a son renderer inactif, la fonction retourne donc vrai
 		// si des zones filles ont leur renderer actif.
@@ -715,8 +715,8 @@ UInt32 PCLODZoneManager::getZoneIdFromPosition(const Vector2i & _worldOrigin)
 /* If we receive this event, it means a zone was just inserted in the visible array */
 void PCLODZoneManager::rteOnZoneVisible(SmartPtr<PCLODZone> _zone)
 {
-	O3D_ASSERT(_zone.get() != NULL);
-	O3D_ASSERT(_zone->getRenderer() == NULL);
+    O3D_ASSERT(_zone.get() != nullptr);
+    O3D_ASSERT(_zone->getRenderer() == nullptr);
 	O3D_ASSERT(_zone->getTopParent()->getCounter(PCLODTopZone::ZONE_VISIBILITY) > 0);
 
 	PCLOD_MESSAGE(String("ZoneManager : Event zoneVisible : Zone ") << _zone->getTopParent()->getId() << " just appeared");
@@ -730,9 +730,9 @@ void PCLODZoneManager::rteOnZoneVisible(SmartPtr<PCLODZone> _zone)
  * was already removed from the render manager */
 void PCLODZoneManager::rteOnZoneHide(SmartPtr<PCLODZone> _zone)
 {
-	O3D_ASSERT(_zone.get() != NULL);
+    O3D_ASSERT(_zone.get() != nullptr);
 	O3D_ASSERT(_zone->getTopParent()->getCounter(PCLODTopZone::ZONE_VISIBILITY) == 0);
-	O3D_ASSERT(_zone->getRenderer() == NULL);
+    O3D_ASSERT(_zone->getRenderer() == nullptr);
 
 	PCLOD_MESSAGE(String("ZoneManager : Event zoneHide : Zone ") << _zone->getTopParent()->getId() << " is not more visible");
 
@@ -742,9 +742,9 @@ void PCLODZoneManager::rteOnZoneHide(SmartPtr<PCLODZone> _zone)
 
 void PCLODZoneManager::rteOnZoneUnused(SmartPtr<PCLODZone> _zone)
 {
-	O3D_ASSERT(_zone.get() != NULL);
+    O3D_ASSERT(_zone.get() != nullptr);
 	O3D_ASSERT(_zone->getTopParent()->unused());
-	O3D_ASSERT(_zone->getRenderer() == NULL);
+    O3D_ASSERT(_zone->getRenderer() == nullptr);
 
 	PCLOD_MESSAGE(String("ZoneManager : Event zoneUnused : Zone ") << _zone->getTopParent()->getId() << " is no more used.");
 
@@ -761,8 +761,8 @@ void PCLODZoneManager::rteOnMainUpdate(Vector3 _newViewPosition)
  * On enleve juste le renderer du renderManager */
 void PCLODZoneManager::rteOnRendererRemoved(SmartPtr<PCLODZone> _zone, SmartPtr<PCLODZoneRenderer> _renderer)
 {
-	O3D_ASSERT(_zone.get() != NULL);
-	O3D_ASSERT(_renderer.get() != NULL);
+    O3D_ASSERT(_zone.get() != nullptr);
+    O3D_ASSERT(_renderer.get() != nullptr);
 
 	if (!m_pRenderManager->findObject(_renderer.get()))
 	{

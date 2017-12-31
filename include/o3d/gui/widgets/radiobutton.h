@@ -19,7 +19,7 @@ namespace o3d {
 //! @class RadioButton
 //-------------------------------------------------------------------------------------
 //! A widget representing a radio button. Radio buttons are grouped by setting the
-//! previous radio button for any radio button, and NULL when it is the first.
+//! previous radio button for any radio button, and null when it is the first.
 //! When a radio button is checked it received the signal OnRadioButtonChanged(True).
 //! The previous check radio button receive the signal OnRadioButtonChanged(False).
 //---------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ public:
 
 	//! Construct given a parent widget and previous radio button.
 	//! @param parent Parent widget.
-	//! @param previous Previous radio button or NULL if first.
+    //! @param previous Previous radio button or null if first.
 	//! @param label Text message.
 	//! @param pos Position.
 	//! @param size Size.

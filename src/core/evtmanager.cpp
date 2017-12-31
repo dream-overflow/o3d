@@ -215,7 +215,7 @@ UInt32 EvtManager::processEvent(EvtHandler * _pHandler)
 	}
 
 	for(IT_EventList itList = lList.begin() ; itList != lList.end() ; itList++)	{
-		O3D_ASSERT((ThreadManager::getMainThreadId() == lCurrentThreadId) || (((*itList)->getThread() != NULL) && ((*itList)->getThread()->getThreadID() == lCurrentThreadId)));
+        O3D_ASSERT((ThreadManager::getMainThreadId() == lCurrentThreadId) || (((*itList)->getThread() != nullptr) && ((*itList)->getThread()->getThreadID() == lCurrentThreadId)));
 
 		(*itList)->process();
 		deletePtr(*itList);

@@ -41,7 +41,7 @@ void Display::setDisplayMode(AppWindow *appWindow, CIT_DisplayModeList mode)
 
 	VideoMode.dmSize = sizeof(VideoMode);
 
-	EnumDisplaySettings(NULL, mode->index, &VideoMode);
+    EnumDisplaySettings(nullptr, mode->index, &VideoMode);
 	//VideoMode.dmFields = DM_BITSPERPEL | DM_PELSHEIGHT | DM_PELSWIDTH;
 	//VideoMode.dmFields |= DM_DISPLAYFREQUENCY;
 
@@ -63,7 +63,7 @@ void Display::setDisplayMode(AppWindow *appWindow, CIT_DisplayModeList mode)
 void Display::restoreDisplayMode()
 {
     if (m_currentMode != m_desktop) {
-		ChangeDisplaySettings(NULL, 0);
+        ChangeDisplaySettings(nullptr, 0);
 		m_currentMode = m_desktop;
 	}
 
@@ -80,7 +80,7 @@ void Display::listDisplayModes()
 	// list display mode
 	Int32 i = 0;
 
-    while (EnumDisplaySettings(NULL,i++,&videoMode)) {
+    while (EnumDisplaySettings(nullptr,i++,&videoMode)) {
         // list only 16 or 32bpp video mode
         if (((videoMode.dmBitsPerPel == 16) || (videoMode.dmBitsPerPel == 32))) {
             DisplayMode displayMode;
@@ -111,7 +111,7 @@ void Display::listDisplayModes()
 	}
 
 	// desktop mode
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &videoMode);
+    EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &videoMode);
 
     DisplayMode desktop;
 

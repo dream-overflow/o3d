@@ -80,7 +80,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
     if (version && (version[0] == '1') && (version[2] < '2')) {
 		SDL_GL_DeleteContext(reinterpret_cast<SDL_GLContext>(m_HGLRC));
 
-		m_HGLRC = NULL;
+        m_HGLRC = NULL_HGLRC;
 
 		O3D_ERROR(E_InvalidPrecondition("OpenGL 1.2 or greater must be available"));
 	}
@@ -179,7 +179,7 @@ void Renderer::destroy()
 		if (m_appWindow)
 		{
 			disconnect(m_appWindow);
-			m_appWindow = NULL;
+            m_appWindow = nullptr;
 		}
 
 		m_glErrno = GL_NO_ERROR;

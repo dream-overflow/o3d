@@ -99,7 +99,7 @@ public:
 
 	//! @brief Load a program from its name.
 	//! @param name A valid program name from previously browsed path.
-	//! @return A new shader object, or NULL if the path was not found.
+    //! @return A new shader object, or null if the path was not found.
 	//! @note All file contained into the given path are pre-loaded and kept in memory for a while.
     Shader* addShader(const String &name);
 
@@ -115,7 +115,7 @@ public:
 	//! @param name The name of the program you want to get. An case sensitive
 	//!             comparison is used.
 	//! @param version Version to get (cannot be AnyVersion).
-	//! @return NULL if the shader was not found and not loaded.
+    //! @return null if the shader was not found and not loaded.
     //! @exception E_FileNotFoundOrInvalidRights
     Shader* get(const String &name) const;
 

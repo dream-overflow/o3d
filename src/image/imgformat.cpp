@@ -47,7 +47,7 @@ ImgFormat::~ImgFormat()
 	destroy();
 }
 
-// Detach its data array. The internal data member is then NULL.
+// Detach its data array. The internal data member is then null.
 void ImgFormat::detach()
 {
     m_data = nullptr;

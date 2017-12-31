@@ -121,13 +121,13 @@ Bool Png::loadDefault(InStream &is)
 
 	UInt8 png_check[PNG_BYTES_TO_CHECK];
 
-	png_structp png_ptr = NULL;
-    png_infop info_ptr = NULL;
+    png_structp png_ptr = nullptr;
+    png_infop info_ptr = nullptr;
 
-    png_bytepp row_pointers = NULL;
+    png_bytepp row_pointers = nullptr;
 
 	//curpos = 0;
-	m_palette = NULL;
+    m_palette = nullptr;
 
 	//***********************************************************************************
 	// first stape: read header info
@@ -142,7 +142,7 @@ Bool Png::loadDefault(InStream &is)
 	}
 
 	/********************************************************************/
-	// could pass pointers to user-defined error handlers instead of NULL
+    // could pass pointers to user-defined error handlers instead of nullptr
 	png_ptr = png_create_read_struct(
 			PNG_LIBPNG_VER_STRING,
 			(png_voidp)error_handler,
@@ -154,7 +154,7 @@ Bool Png::loadDefault(InStream &is)
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
-		png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+        png_destroy_read_struct(&png_ptr, (png_infopp)nullptr, (png_infopp)nullptr);
         O3D_ERROR(E_InvalidAllocation("info_ptr"));
 	}
 
@@ -163,7 +163,7 @@ Bool Png::loadDefault(InStream &is)
 	// must be called in every function that calls a PNG-reading libpng function
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+        png_destroy_read_struct(&png_ptr,&info_ptr,nullptr);
         O3D_ERROR(E_InvalidFormat("Invalid PNG format"));
 	}
 
@@ -176,12 +176,12 @@ Bool Png::loadDefault(InStream &is)
 
 	/* alternatively, could make separate calls to png_get_image_width(), etc., but want
 	 * bit_depth and color_type for later [don't care about compression_type and
-	 * filter_type => NULLs]
+     * filter_type => nullptrs]
 	 */
 	png_uint_32 width,height;
     Int32 bitperpel, color_type, interlace_type;
 
-    png_get_IHDR(png_ptr,info_ptr, &width, &height, &bitperpel, &color_type, &interlace_type, NULL, NULL);
+    png_get_IHDR(png_ptr,info_ptr, &width, &height, &bitperpel, &color_type, &interlace_type, nullptr, nullptr);
 
 	m_width = (UInt32)width;
 	m_height = (UInt32)height;
@@ -233,7 +233,7 @@ Bool Png::loadDefault(InStream &is)
 			break;
 
 		default:
-			png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+            png_destroy_read_struct(&png_ptr,&info_ptr,nullptr);
             O3D_ERROR(E_InvalidFormat("Unsupported PNG color type"));
 	}
 
@@ -253,9 +253,9 @@ Bool Png::loadDefault(InStream &is)
 
 	// if this image has transparency, store the trns values
 
-	png_bytep trans               = NULL;
+    png_bytep trans               = nullptr;
 	Int32 num_trans           = 0;
-	png_color_16p trans_values    = NULL;
+    png_color_16p trans_values    = nullptr;
 	/*png_uint_32 transparent_value = */png_get_tRNS(png_ptr,info_ptr,&trans,&num_trans,&trans_values);
 
 	// unlike the example in the libpng documentation, we have *no* idea where
@@ -309,7 +309,7 @@ Bool Png::loadDefault(InStream &is)
 				// test palette
 				if (!m_palette)
 				{
-					png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+                    png_destroy_read_struct(&png_ptr,&info_ptr,nullptr);
                     O3D_ERROR(E_InvalidAllocation("palette"));
 				}
 
@@ -332,7 +332,7 @@ Bool Png::loadDefault(InStream &is)
 				// test palette
 				if (!m_palette)
 				{
-					png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+                    png_destroy_read_struct(&png_ptr,&info_ptr,nullptr);
                     O3D_ERROR(E_InvalidAllocation("palette"));
 				}
 
@@ -363,7 +363,7 @@ Bool Png::loadDefault(InStream &is)
 	// test data
 	if (!m_data)
 	{
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+        png_destroy_read_struct(&png_ptr,&info_ptr,nullptr);
 
 		deleteArray(m_palette);
 
@@ -375,7 +375,7 @@ Bool Png::loadDefault(InStream &is)
 
 	if (!row_pointers)
 	{
-		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+        png_destroy_read_struct(&png_ptr,&info_ptr,nullptr);
 
 		deleteArray(m_palette);
 		deleteArray(m_data);
@@ -396,12 +396,12 @@ Bool Png::loadDefault(InStream &is)
 	png_read_end(png_ptr,info_ptr);
 
 	if (png_ptr)
-		png_destroy_read_struct(&png_ptr,&info_ptr,(png_infopp)NULL);
+        png_destroy_read_struct(&png_ptr,&info_ptr,(png_infopp)nullptr);
 
 	m_size = m_width * m_height * m_bpp;
 	m_state = True;
 
-	if ((m_palbpp != 0) && (m_palette != NULL))
+    if ((m_palbpp != 0) && (m_palette != nullptr))
 		return convert8to24();
 
 	return True;
@@ -684,10 +684,10 @@ Bool Image::savePng(const String &filename)
 
     FileOutStream *os = FileManager::instance()->openOutStream(filename, FileOutStream::CREATE);
 
-	png_structp png_ptr = NULL;
-	png_infop info_ptr = NULL;
+    png_structp png_ptr = nullptr;
+    png_infop info_ptr = nullptr;
 
-	png_bytepp row_pointers = NULL;
+    png_bytepp row_pointers = nullptr;
 
     // initialize
     png_ptr = png_create_write_struct(
@@ -787,7 +787,7 @@ Bool Image::savePng(const String &filename)
 	if (row_pointers)
 		O3D_FREE(row_pointers);
 
-    png_write_end(png_ptr, NULL);
+    png_write_end(png_ptr, nullptr);
 
 	if (png_ptr)
 		png_destroy_write_struct(&png_ptr, &info_ptr);
@@ -823,13 +823,13 @@ Bool Image::saveRgbPng(const String &filename)
 
     FileOutStream *os = FileManager::instance()->openOutStream(filename, FileOutStream::CREATE);
 
-	png_structp png_ptr = NULL;
-	png_infop info_ptr = NULL;
+    png_structp png_ptr = nullptr;
+    png_infop info_ptr = nullptr;
 
-	png_bytepp row_pointers = NULL;
+    png_bytepp row_pointers = nullptr;
 
 	// initialize
-	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
 	if (!png_ptr)
         O3D_ERROR(E_InvalidResult("Cannot write PNG structure"));
@@ -913,7 +913,7 @@ Bool Image::saveRgbPng(const String &filename)
 	if (row_pointers)
 		O3D_FREE(row_pointers);
 
-	png_write_end(png_ptr, NULL);
+    png_write_end(png_ptr, nullptr);
 
 	if (png_ptr)
 		png_destroy_write_struct(&png_ptr, &info_ptr);

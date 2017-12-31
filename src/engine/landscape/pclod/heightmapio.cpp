@@ -25,7 +25,7 @@ HeightmapIO * HeightmapIO::m_instance;
 /* Return the instance of the singleton */
 HeightmapIO * HeightmapIO::instance()
 {
-	if (m_instance == NULL)
+    if (m_instance == nullptr)
 		m_instance = new HeightmapIO();
 
 	return m_instance;
@@ -37,7 +37,7 @@ void HeightmapIO::destroy()
 	if (m_instance)
 	{
 		delete m_instance;
-		m_instance = NULL;
+        m_instance = nullptr;
 	}
 }
 
@@ -87,7 +87,7 @@ Bool HeightmapIO::readFromFile(InStream & _is, Float * & _buffer, UInt32 & _widt
 
 void HeightmapIO::registerFormat(HeightmapIOFormat _format, HeightmapIOBase * _ptr)
 {
-	if (_ptr == NULL)
+    if (_ptr == nullptr)
 	{
 		/* In this case, we erase the existing format */
 		IT_O3DFormatMap it = m_formatMap.find(_format);
@@ -141,7 +141,7 @@ HeightmapIOBasic::HeightmapIOBasic():
 /* Functions */
 Bool HeightmapIOBasic::writeToFile(OutStream & _os, HeightmapIOFormat _format, Float * _buffer, UInt32 _width, UInt32 _height, const T_HeightmapParams & _params)
 {
-	O3D_ASSERT(_buffer != NULL);
+    O3D_ASSERT(_buffer != nullptr);
 	O3D_ASSERT((_width > 0) && (_height > 0));
 
     _os << UInt32(getFormat());
@@ -232,7 +232,7 @@ Bool HeightmapIODelta::writeToFile(OutStream & _os, HeightmapIOFormat _format, F
 	O3D_ASSERT(0);
 	return False;
 /*	O3D_ASSERT(_file.isOpenWriting());
-	O3D_ASSERT(_buffer != NULL);
+    O3D_ASSERT(_buffer != nullptr);
 	O3D_ASSERT((_width > 0) && (_height > 0));
 
 	Float _precision;
@@ -286,7 +286,7 @@ Bool HeightmapIODelta::readFromFile(InStream & _is, Float * & _buffer, UInt32 & 
 	O3D_ASSERT(0);
 	return False;
 /*	O3D_ASSERT(_file.isOpenReading());
-	O3D_ASSERT(_buffer == NULL);
+    O3D_ASSERT(_buffer == nullptr);
 
 	UInt32 format;
 	_file >> format;

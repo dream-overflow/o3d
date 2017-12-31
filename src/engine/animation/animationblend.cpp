@@ -44,7 +44,7 @@ UInt32 AnimationBlend::addAnimation(
 	Float offset,
 	Float scale)
 {
-	O3D_ASSERT(animation != NULL);
+    O3D_ASSERT(animation != nullptr);
 	if (!animation)
 		return 0;
 
@@ -170,7 +170,7 @@ void AnimationBlend::update(
 ---------------------------------------------------------------------------------------*/
 AnimationNode* AnimationBlend::getFatherNode()
 {
-	return NULL;
+    return nullptr;
 }
 
 /*---------------------------------------------------------------------------------------

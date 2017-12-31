@@ -32,7 +32,7 @@ FaceArray::FaceArray(
 		m_format(format),
 		m_storage(storage),
 		m_isDirty(True),
-		m_edgeArray(NULL)
+        m_edgeArray(nullptr)
 {
 }
 

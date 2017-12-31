@@ -39,10 +39,10 @@ void GenLightMap::buildLinearNormalMapInfiniteLight(
 	Array2DFloat _source(_pSource, width, height);
 
 	// We can compute all points easily, but the border needs specials cares
-	if (_pTarget == NULL)
+    if (_pTarget == nullptr)
 		_pTarget = new Float[3*width*height];
 
-	Float * pNormal = NULL;
+    Float * pNormal = nullptr;
 
 	UInt32 widthLength = 3 * width;
 	UInt32 maxWidthLength = 3 * (width - 1);
@@ -52,7 +52,7 @@ void GenLightMap::buildLinearNormalMapInfiniteLight(
 
 	for (UInt32 y = 1 ; y < height-1 ; ++y)
 	{
-		if (_pCallback != NULL)
+        if (_pCallback != nullptr)
 		{
 			Int32 progress = (100*(y-1))/height;
 			if (_pCallback->call((void*)&progress) != 0)
@@ -151,7 +151,7 @@ void GenLightMap::buildLinearNormalMapInfiniteLight(
 	pNormal[Y] = _source(maxWidth, maxHeight-1) - _source(maxWidth, maxHeight);
 	pNormal[Z] = _units;
 
-	if (_pCallback != NULL)
+    if (_pCallback != nullptr)
 	{
 		Int32 progress = 100;
 		_pCallback->call((void*)&progress);
@@ -196,14 +196,14 @@ void GenLightMap::buildLinearNormalMapInfiniteLightBorders(const Float * _pSourc
 	for (UInt32 y = 0 ; y < bufferHeight ; ++y, ++rIndex)
 		buffer(0, y) = _pBorder[rIndex];
 
-	Float * normalMap = NULL;
+    Float * normalMap = nullptr;
 
 	GenLightMap::buildLinearNormalMapInfiniteLight(
 		&buffer[0], bufferWidth, bufferHeight, _units, normalMap, _callback);
 
 	rIndex = 0;
 
-	if (_pTarget == NULL)
+    if (_pTarget == nullptr)
 		_pTarget = new Float[3*_width * _height];
 
 	for (UInt32 y = 1 ; y < maxBufferHeight - 1; ++y, rIndex += maxBufferWidth - 2)
@@ -241,7 +241,7 @@ void GenLightMap::buildLinearLightmap(const Vector3 & _lightDir, const Float * _
 	_tWidth = _sWidth - 1;
 	_tHeight = _sHeight - 1;
 
-	if (_pTarget == NULL)
+    if (_pTarget == nullptr)
 		_pTarget = new Float[_tWidth * _tHeight];
 
 	Vector3 normal;
@@ -298,11 +298,11 @@ void GenLightMap::buildLinearShadowmapInfiniteLightX(const Array2DFloat & _sourc
 
 	Float * pSourceRow = &_source[0];
 	Float * pSourceRowEnd = &_source[width*height];
-	Float * pSourcePoint = NULL;
-	Float * pSourcePointEnd = NULL;
+    Float * pSourcePoint = nullptr;
+    Float * pSourcePointEnd = nullptr;
 
 	Float * pTargetRow = &_target[maxWidth];
-	Float * pTargetPoint = NULL;
+    Float * pTargetPoint = nullptr;
 
 	while (pSourceRow != pSourceRowEnd)
 	{
@@ -393,13 +393,13 @@ void GenLightMap::buildShadowmapInfiniteLight(const Array2DFloat & _source, Floa
 
 	_target.setSize(width, height);
 
-	const Float * currentSourcePoint = NULL;
+    const Float * currentSourcePoint = nullptr;
 
-	Float * currentTargetPoint = NULL;
+    Float * currentTargetPoint = nullptr;
 
 	for (Int32 y = -Hdeltai ; y < Int32(height); ++y)
 	{
-		if (_pCallback != NULL)
+        if (_pCallback != nullptr)
 		{
 			UInt8 progress = (UInt8)( 100*(y+Hdeltai)/(height + Hdeltai - 1) );
 
@@ -601,7 +601,7 @@ static void fillEdge(Int32 _dir, PCLODLightInfo & lInfos, Float _value)
 	O3D_ASSERT((lRelativeStart[X] >= 0) && (lRelativeStart[X] < lSize[X]));
 	O3D_ASSERT((lRelativeStart[Y] >= 0) && (lRelativeStart[Y] < lSize[Y]));
 
-	const Float * lPtrSource = NULL;
+    const Float * lPtrSource = nullptr;
 	Float * lPtrTarget = _pBuffer;
 
 	if (lRelativeStart[X] == lRelativeEnd[X])
@@ -713,14 +713,14 @@ static void computeShadowMap(PCLODLight * _pLight, const Vector3 & _dirVec, Int3
 	fillEdge(_dirLight[0], lInfos, -1.0f);
 	fillEdge(_dirLight[1], lInfos, -1.0f);
 
-	if ((_pLightmap->getNeighbor(_dirLight[0], 0) != NULL) || (_pLightmap->getNeighbor(_dirLight[1], 0) != NULL))
+    if ((_pLightmap->getNeighbor(_dirLight[0], 0) != nullptr) || (_pLightmap->getNeighbor(_dirLight[1], 0) != nullptr))
 	{
 		Int32 k = 0;
-		PCLODLightmap * lPtr = NULL;
+        PCLODLightmap * lPtr = nullptr;
 
 		Vector2i lP1, lP2;
 
-		while ((lPtr = _pLightmap->getNeighbor(_dirLight[0], k)) != NULL)
+        while ((lPtr = _pLightmap->getNeighbor(_dirLight[0], k)) != nullptr)
 		{
 			if (!lPtr->getLightInfo(_pLight).shadowUpToDate)
 				computeShadowMap(_pLight, _dirVec, _dirLight, _neighborFind, lPtr);
@@ -746,7 +746,7 @@ static void computeShadowMap(PCLODLight * _pLight, const Vector3 & _dirVec, Int3
 		}
 
 		k = 0;
-		while ((lPtr = _pLightmap->getNeighbor(_dirLight[1], k)) != NULL)
+        while ((lPtr = _pLightmap->getNeighbor(_dirLight[1], k)) != nullptr)
 		{
 			if (!lPtr->getLightInfo(_pLight).shadowUpToDate)
 				computeShadowMap(_pLight, _dirVec, _dirLight, _neighborFind, lPtr);
@@ -916,10 +916,10 @@ void GenLightMap::buildShadowMapFromDirectionalLight(PCLODLight * _pLight, const
 	}
 
 	PCLODLightmap * lBorderLightmap = _lightmaps.front();
-	PCLODLightmap * lNeighborLightmap = NULL;
+    PCLODLightmap * lNeighborLightmap = nullptr;
 
-	while (((lNeighborLightmap = lBorderLightmap->getNeighbor(lLightDir[0], lNeighborFind[0])) != NULL) ||
-		  ((lNeighborLightmap = lBorderLightmap->getNeighbor(lLightDir[1], lNeighborFind[1])) != NULL))
+    while (((lNeighborLightmap = lBorderLightmap->getNeighbor(lLightDir[0], lNeighborFind[0])) != nullptr) ||
+          ((lNeighborLightmap = lBorderLightmap->getNeighbor(lLightDir[1], lNeighborFind[1])) != nullptr))
 		  lBorderLightmap = lNeighborLightmap;
 
 	for (std::vector<PCLODLightmap*>::const_iterator it = _lightmaps.begin() ; it != _lightmaps.end() ; it++)

@@ -26,7 +26,7 @@ CursorManager::CursorManager(BaseObject *parent) :
 	m_cursorType(DEFAULT),
 	m_cursorName(),
 	m_size(0),
-	m_icon(NULL),
+    m_icon(nullptr),
 	m_lastTime(0),
 	m_lastFrame(0)
 {
@@ -80,7 +80,7 @@ void CursorManager::browseFolder(const String &path)
 	lPath.replace('\\','/');
 	lPath.trimRight('/');
 
-	while ((fileItem = fileListing.searchNextFile()) != NULL)
+    while ((fileItem = fileListing.searchNextFile()) != nullptr)
 	{
 		// a sub directory
 		if (fileItem->FileType == FILE_DIR)
@@ -144,7 +144,7 @@ void CursorManager::loadXmlFile(const String &filename, UInt32 size)
 	if (!node)
 		O3D_ERROR(E_InvalidFormat("Missing Cursors token in " + filename));
 
-	TiXmlNode *cursorNode = NULL;
+    TiXmlNode *cursorNode = nullptr;
 
 	String name;
 	Int32 xhot;
@@ -166,7 +166,7 @@ void CursorManager::loadXmlFile(const String &filename, UInt32 size)
 	}
 
 	// for each cursor
-	while ((cursorNode = node->IterateChildren("Cursor",cursorNode)) != NULL)
+    while ((cursorNode = node->IterateChildren("Cursor",cursorNode)) != nullptr)
 	{
 		name = cursorNode->ToElement()->Attribute("name");
 
@@ -281,7 +281,7 @@ void CursorManager::draw(const Vector2i &pos, Float intensity)
 // Compute the frame index.
 UInt32 CursorManager::computeFrame()
 {
-	O3D_ASSERT(m_icon != NULL);
+    O3D_ASSERT(m_icon != nullptr);
 
 	if (m_icon->frames.size() <= 1)
 		return 0;

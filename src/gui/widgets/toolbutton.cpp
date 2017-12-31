@@ -70,7 +70,7 @@ ToolButton::ToolButton(
     m_WidgetDrawDisabled((Theme::WidgetDraw)0),
 	m_ButtonStyle(style)
 {
-	O3D_ASSERT(iconFalse != NULL);
+    O3D_ASSERT(iconFalse != nullptr);
 
 	if (iconFalse)
 		setIconFalse(iconFalse);

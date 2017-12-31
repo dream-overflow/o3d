@@ -519,7 +519,7 @@ void HeightmapSplatting::draw()
     // Screen rendering of generated texture
 //    pbo->bindUnpackBuffer();
 
-//    //glReadPixels(0, 0, lVboSize.x(), lVboSize.y(), GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+//    //glReadPixels(0, 0, lVboSize.x(), lVboSize.y(), GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 //    Float *data = pbo->lock(0, 0, PixelBuffer::READ_ONLY);
 //    Image out;
 //    out.loadBuffer(lVboSize.x(), lVboSize.y(), lVboSize.x()*lVboSize.y()*4, PF_DEPTH_F32, (UInt8*)data);
@@ -537,7 +537,7 @@ void HeightmapSplatting::draw()
 
 ////    getScene()->getContext()->bindPixelPackBuffer(depthTex.getPBO0Id());
 ////    m_fboDepthTex->bind();
-////    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+////    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 ////    getScene()->getContext()->bindPixelPackBuffer(0);
 //    depthTex.copyToTexture(m_fboDepthTex.get(), 0);
@@ -548,11 +548,11 @@ void HeightmapSplatting::draw()
 
 //    glBufferData(GL_PIXEL_PACK_BUFFER,
 //                 sizeof(Float) * lFboSize.x() * lFboSize.y(),
-//                 NULL,
+//                 nullptr,
 //                 GL_STATIC_COPY);
 
 //    m_fboDepthTex->bind();
-//    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+//    glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
 //    getScene()->getContext()->bindPixelPackBuffer(0);
 //    getScene()->getContext()->bindPixelUnpackBuffer(lBuffer);
@@ -567,7 +567,7 @@ void HeightmapSplatting::draw()
 //                lFboSize.y(),
 //                m_fboDepthTex.get()->getGLInternalFormat(),
 //                GL_FLOAT,
-//                NULL);
+//                nullptr);
 
 //    getScene()->getRenderer()->isError();
 //    getScene()->getContext()->bindPixelUnpackBuffer(0);

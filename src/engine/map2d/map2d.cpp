@@ -52,7 +52,7 @@ Bool Map2d::deleteChild(BaseObject *child)
 				if (it != m_layers.end())
 				{
 					m_layers.erase(it);
-					object->setNode(NULL);
+                    object->setNode(nullptr);
 				}
 
 				deletePtr(object);
@@ -199,7 +199,7 @@ SceneObject* Map2d::findSon(const String &name)
 			return object;
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 const SceneObject* Map2d::findSon(const String &name) const
@@ -220,7 +220,7 @@ const SceneObject* Map2d::findSon(const String &name) const
 			return object;
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 Bool Map2d::findSon(SceneObject *object) const
@@ -296,7 +296,7 @@ void Map2d::removeLayer(Map2dLayer *layer)
 
 		// no node
 		layer->setParent(getScene());
-		layer->setNode(NULL);
+        layer->setNode(nullptr);
 		layer->setPersistant(False);
 
 		//m_visibility->removeLayer(layer);

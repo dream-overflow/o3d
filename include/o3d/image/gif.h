@@ -53,7 +53,7 @@ protected:
 			nbits_left(0),
 			lbyte(0),
 			navail_bytes(0),
-			pbytes(NULL)
+            pbytes(nullptr)
 		{
 		}
 

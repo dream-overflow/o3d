@@ -103,7 +103,7 @@ static void* O3D_RunThread(void *data)
 	// delete the callback
     deletePtr(pCallBack);
 
-	pthread_exit(NULL);
+    pthread_exit(nullptr);
     return nullptr;
 }
 
@@ -190,7 +190,7 @@ void Thread::kill()
 #else
     pthread_cancel(m_pThread);
 #endif
-	pthread_join(m_pThread, NULL);
+    pthread_join(m_pThread, nullptr);
 
 	// one less thread
 	ThreadManager::removeThread();
@@ -248,7 +248,7 @@ Semaphore::Semaphore(UInt32 initialValue, UInt32 maxValue) :
 	if (sem_init((sem_t*)m_handle,0,initialValue) != 0)
 	{
 		free(m_handle);
-		m_handle = NULL;
+        m_handle = nullptr;
 
 		O3D_ERROR(E_InvalidAllocation("Null semaphore handle"));
 	}
@@ -286,7 +286,7 @@ Bool Semaphore::waitSignal(UInt32 timeout)
 	else
 	{
 		struct timeval curTime;
-		gettimeofday(&curTime, NULL);
+        gettimeofday(&curTime, nullptr);
 
 		struct timespec absTime;
 		absTime.tv_nsec = (curTime.tv_usec + (timeout % 1000) * 1000) * 1000;
@@ -351,7 +351,7 @@ UInt32 Semaphore::getValue() const
 // default constructor
 WaitCondition::WaitCondition()
 {
-	if (pthread_cond_init(&m_handle, NULL) != 0)
+    if (pthread_cond_init(&m_handle, nullptr) != 0)
 	{
 		O3D_ERROR(E_InvalidAllocation("Unable to init the wait condition"));
 	}
@@ -367,7 +367,7 @@ WaitCondition::~WaitCondition()
 Bool WaitCondition::wait(FastMutex &mutex, UInt32 timeout)
 {
 	struct timeval curTime;
-	gettimeofday(&curTime, NULL);
+    gettimeofday(&curTime, nullptr);
 
 	struct timespec absTime;
 	absTime.tv_nsec = (curTime.tv_usec + (timeout % 1000) * 1000) * 1000;

@@ -75,7 +75,7 @@ public:
 	}
 
 	//! Get a pointer to the texture coordinates buffer
-	//! @return A pointer to the first texture coordinate or NULL if none
+    //! @return A pointer to the first texture coordinate or null if none
 	const Float* getTexCoords() const { return m_pTexCoords; }
 
 	//! Is texture coordinates generation set

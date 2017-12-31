@@ -334,7 +334,7 @@ Bool TextureManager::isTexture2D(
 	return findTexture(
             resourceName,
 			ENGINE_TEXTURE_2D,
-			mipMaps) != NULL;
+            mipMaps) != nullptr;
 }
 
 // add a new normal cubemap texture and compute it, and then return it's key
@@ -381,7 +381,7 @@ Bool TextureManager::isNormalCubeMapTex(
 	return findTexture(
             resourceName,
 			ENGINE_TEXTURE_NORMCUBEMAP,
-			False) != NULL;
+            False) != nullptr;
 }
 
 // add a new normal cubemap texture and compute it, and then return it's key

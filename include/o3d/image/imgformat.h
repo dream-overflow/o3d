@@ -80,7 +80,7 @@ public:
 	//! Get the data ptr.
 	virtual UInt8* getData() { return m_data; }
 
-	//! Detach its data array. The internal data member is then NULL.
+    //! Detach its data array. The internal data member is then null.
 	void detach();
 
 

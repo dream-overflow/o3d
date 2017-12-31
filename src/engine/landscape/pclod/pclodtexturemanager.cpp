@@ -240,7 +240,7 @@ void PCLODTextureManager::destroy()
     m_text.releaseCheckAndDelete();
     deletePtr(m_pFrameBuffer);
 
-    m_pZoneManager = NULL;
+    m_pZoneManager = nullptr;
 }
 
 /* Load/Unload texture.
@@ -495,8 +495,8 @@ void PCLODTextureManager::mtUpdate()
             it->second->mtUpdateContent(
                     m_text.get(),
                     m_pFrameBuffer,
-                    itColormap != m_colormapMap.end() ? itColormap->second : NULL,
-                    itLightmap != m_lightmapMap.end() ? itLightmap->second : NULL);
+                    itColormap != m_colormapMap.end() ? itColormap->second : nullptr,
+                    itLightmap != m_lightmapMap.end() ? itLightmap->second : nullptr);
         }
     }
 }
@@ -595,10 +595,10 @@ void PCLODTextureManager::init()
     PCLOD_MESSAGE("TextureManager : Initialisation");
 
     // Next, if a statisNoise is specified in terrain configs, we must scale it to the zone dimension
-    const Image * pPicture = NULL;
+    const Image * pPicture = nullptr;
 
     if ((getTerrain()->getCurrentConfigs().useColormapStaticNoise()) &&
-            ((pPicture = getTerrain()->getCurrentConfigs().colormapStaticNoisePicture()) != NULL))
+            ((pPicture = getTerrain()->getCurrentConfigs().colormapStaticNoisePicture()) != nullptr))
     {
         PCLOD_MESSAGE("TextureManager : Colormap static noise defined in terrain configs.");
         Vector2ui baseSize;
@@ -836,7 +836,7 @@ void PCLODTextureManager::mtUpdateLight(Light * _pLight)
 // Load and release all used materials and colormap
 void PCLODTextureManager::rtLoadZone(PCLODTopZone * _pZone)
 {
-    O3D_ASSERT(_pZone != NULL);
+    O3D_ASSERT(_pZone != nullptr);
 
     // First, we load all materials used by this zone
     T_MaterialSet matSet;
@@ -870,7 +870,7 @@ void PCLODTextureManager::rtLoadZone(PCLODTopZone * _pZone)
     }
 
     // We create a label to display debug informations
-    PCLODDebugLabel * lpLabel = NULL;
+    PCLODDebugLabel * lpLabel = nullptr;
 
     if (getTerrain()->getCurrentConfigs().debugLabelEnabled())
     {
@@ -915,7 +915,7 @@ void PCLODTextureManager::rtLoadZone(PCLODTopZone * _pZone)
 
 void PCLODTextureManager::rtReleaseZone(PCLODTopZone * _pZone)
 {
-    O3D_ASSERT(_pZone != NULL);
+    O3D_ASSERT(_pZone != nullptr);
 
     // First we unload all materials
     T_MaterialSet matSet;
@@ -949,7 +949,7 @@ void PCLODTextureManager::rtReleaseZone(PCLODTopZone * _pZone)
 
     // On enleve le label si il existe
     IT_LabelMap itLabel = m_labelMap.find(_pZone->getId());
-    PCLODDebugLabel * lpLabel = (itLabel != m_labelMap.end() ? itLabel->second : NULL);
+    PCLODDebugLabel * lpLabel = (itLabel != m_labelMap.end() ? itLabel->second : nullptr);
 
     if (itLabel != m_labelMap.end())
         m_labelMap.erase(itLabel);
@@ -993,7 +993,7 @@ PCLODLightmap * PCLODTextureManager::rtGetLightmap(UInt32 _zoneId)
 void PCLODTextureManager::rteOnColormapUnused()
 {
     PCLODColormap * lColormap = static_cast<PCLODColormap*>(getSender());
-    O3D_ASSERT(lColormap != NULL);
+    O3D_ASSERT(lColormap != nullptr);
 
     PCLOD_MESSAGE(String("TextureManager : Event textureUnused : Colormap ") << lColormap->getZoneId());
 
@@ -1003,7 +1003,7 @@ void PCLODTextureManager::rteOnColormapUnused()
 void PCLODTextureManager::rteOnLightmapUnused()
 {
     PCLODLightmap * lLightmap = static_cast<PCLODLightmap*>(getSender());
-    O3D_ASSERT(lLightmap != NULL);
+    O3D_ASSERT(lLightmap != nullptr);
 
     PCLOD_MESSAGE(String("TextureManager : Event textureUnused : Lightmap") << lLightmap->getZoneId());
 
@@ -1013,7 +1013,7 @@ void PCLODTextureManager::rteOnLightmapUnused()
 void PCLODTextureManager::rteOnMaterialUnused()
 {
     PCLODMaterial * lMaterial = static_cast<PCLODMaterial*>(getSender());
-    O3D_ASSERT(lMaterial != NULL);
+    O3D_ASSERT(lMaterial != nullptr);
 
     PCLOD_MESSAGE(String("TextureManager : Event textureUnused : Material ") << lMaterial->getMatId());
 

@@ -183,7 +183,7 @@ Bool Texture2D::create(
 	PixelFormat textureFormat,
 	Bool dontUnbind)
 {
-	return create(mipmaps, width, height, textureFormat, NULL, textureFormat, dontUnbind);
+    return create(mipmaps, width, height, textureFormat, nullptr, textureFormat, dontUnbind);
 }
 
 // Create an texture from a buffer
@@ -374,7 +374,7 @@ void Texture2D::resize(UInt32 width, UInt32 height, Bool dontUnbind)
 			 0,
 			 format,
 			 type,
-			 NULL);
+             nullptr);
 
 	m_width = width;
 	m_height = height;

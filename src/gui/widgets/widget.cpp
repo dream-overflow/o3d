@@ -879,10 +879,10 @@ void Widget::processCache(Bool clear)
 
         pFBO->attachTexture2D(&m_texture,FrameBuffer::COLOR_ATTACHMENT0);
 
-        // not efficient but necessary because fbo is defined at this time
-        if (!pFBO->isCompleteness()) {
-            return;
-        }
+        // not efficient so only for debug
+//        if (!pFBO->isCompleteness()) {
+//            return;
+//        }
 
         // here we dont care of an active scissor test
         Bool scissor = getScene()->getContext()->getScissorTest();

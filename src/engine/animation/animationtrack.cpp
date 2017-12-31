@@ -1097,7 +1097,7 @@ const void* AnimationTrack_TCBVector::compute(
 		return(&m_Data);
 
 	// find keyframe couple
-	const KeyFrameTCB<Float> *pKeyBefore=NULL,*pKeyAfter=NULL;
+    const KeyFrameTCB<Float> *pKeyBefore=nullptr,*pKeyAfter=nullptr;
 	findKeyFrame(target,time,(KeyFrame*&)pKeyBefore,(KeyFrame*&)pKeyAfter);
 
 	Float tBefore = pKeyBefore->getTime();  // key time start
@@ -1236,7 +1236,7 @@ const void* AnimationTrack_ConstantQuaternion::compute(
 		return(&m_Data);
 
 	// find keyframe couple
-	const KeyFrameConstant<Quaternion> *pKeyBefore=NULL,*pKeyAfter=NULL;
+    const KeyFrameConstant<Quaternion> *pKeyBefore=nullptr,*pKeyAfter=nullptr;
 	findKeyFrame(pTarget,time,(KeyFrame*&)pKeyBefore,(KeyFrame*&)pKeyAfter);
 
 	// compute animation values with coef

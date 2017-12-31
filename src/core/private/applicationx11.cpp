@@ -74,7 +74,7 @@ void Application::apiInitPrivate()
 	// because our app is multi-threaded
 	XInitThreads();
 
-    ms_display = reinterpret_cast<_DISP>(XOpenDisplay(NULL));
+    ms_display = reinterpret_cast<_DISP>(XOpenDisplay(nullptr));
 
     if (!ms_display) {
 		O3D_ERROR(E_InvalidResult("Failed to open a connection on X11 display"));
@@ -144,7 +144,7 @@ static Int32 pending(::Display *display, UInt32 timeout)
 			x11_fd = ConnectionNumber(display);
 			FD_ZERO(&fdset);
 			FD_SET(x11_fd, &fdset);
-			if (select(x11_fd + 1, &fdset, NULL, NULL, &zero_time) == 1) {
+            if (select(x11_fd + 1, &fdset, nullptr, nullptr, &zero_time) == 1) {
 				return (XPending(display));
 			}
 		}
@@ -258,7 +258,7 @@ void Application::runPrivate(oBool runOnce)
                                               text, sizeof(text),
                                               &keysym, &status);
 
-                            // XLookupString(&event.xkey, text, sizeof(text), &keysym, NULL);
+                            // XLookupString(&event.xkey, text, sizeof(text), &keysym, nullptr);
                             // printf("compose %i %i", res, status);
 
                             if (text[0] != 0) {

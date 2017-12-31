@@ -94,7 +94,7 @@ void Thread::create(Callback* pFunc,void *pData)
     args->pRunning = &m_running;
 
 	// create the new thread
-	if ((m_pThread = CreateThread(NULL,0/*(SIZE_T)stackSize*/,O3D_RunThread,args,0,&id)) == NULL)
+    if ((m_pThread = CreateThread(nullptr,0/*(SIZE_T)stackSize*/,O3D_RunThread,args,0,&id)) == nullptr)
 	{
 		deletePtr(args);
 		O3D_ERROR(E_InvalidAllocation("Null thread handle"));
@@ -220,9 +220,9 @@ void Thread::setCPUAffinity(const std::list<UInt32> &cpuIds)
 // constructor
 Semaphore::Semaphore(UInt32 initialValue, UInt32 maxValue) :
 	m_value(0),
-	m_handle(NULL)
+    m_handle(nullptr)
 {
-	if ((m_handle = CreateSemaphoreW(NULL,initialValue,maxValue,NULL)) == NULL)
+    if ((m_handle = CreateSemaphoreW(nullptr,initialValue,maxValue,nullptr)) == nullptr)
 	{
 		O3D_ERROR(E_InvalidAllocation("Null semaphore handle"));
 	}
@@ -288,7 +288,7 @@ Bool Semaphore::postSignal()
 {
 	m_value++;
 
-	if (!ReleaseSemaphore(m_handle,1,NULL))
+    if (!ReleaseSemaphore(m_handle,1,nullptr))
 	{
 		m_value--;
 		return False;

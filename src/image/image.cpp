@@ -32,8 +32,8 @@ Image::Image() :
 	m_width(0),
 	m_height(0),
 	m_pixelFormat(PF_RGBA_U8),
-	m_pic(NULL),
-	m_data(NULL),
+    m_pic(nullptr),
+    m_data(nullptr),
 	m_size(0),
 	m_isDirty(False)
 {
@@ -45,8 +45,8 @@ Image::Image(const String& filename) :
 	m_width(0),
 	m_height(0),
 	m_pixelFormat(PF_RGBA_U8),
-	m_pic(NULL),
-	m_data(NULL),
+    m_pic(nullptr),
+    m_data(nullptr),
 	m_size(0),
 	m_isDirty(False)
 {
@@ -59,8 +59,8 @@ Image::Image(const String& filename, PixelFormat pixelFormat) :
 	m_width(0),
 	m_height(0),
 	m_pixelFormat(PF_RGBA_U8),
-	m_pic(NULL),
-	m_data(NULL),
+    m_pic(nullptr),
+    m_data(nullptr),
 	m_size(0),
 	m_isDirty(False)
 {
@@ -73,8 +73,8 @@ Image::Image(InStream &is) :
 	m_width(0),
 	m_height(0),
 	m_pixelFormat(PF_RGBA_U8),
-	m_pic(NULL),
-	m_data(NULL),
+    m_pic(nullptr),
+    m_data(nullptr),
 	m_size(0),
 	m_isDirty(False)
 {
@@ -87,8 +87,8 @@ Image::Image(InStream &is, PixelFormat pixelFormat) :
 	m_width(0),
 	m_height(0),
 	m_pixelFormat(PF_RGBA_U8),
-	m_pic(NULL),
-	m_data(NULL),
+    m_pic(nullptr),
+    m_data(nullptr),
 	m_size(0),
 	m_isDirty(False)
 {
@@ -101,8 +101,8 @@ Image::Image(const Image &pic) :
 	m_width(0),
 	m_height(0),
 	m_pixelFormat(PF_RGBA_U8),
-	m_pic(NULL),
-	m_data(NULL),
+    m_pic(nullptr),
+    m_data(nullptr),
 	m_size(0),
 	m_isDirty(False)
 {
@@ -152,9 +152,9 @@ Image& Image::operator= (const Image &pic)
 
 	if (!pic.m_state)
 	{
-		m_pic = NULL;
+        m_pic = nullptr;
 		m_width = m_height = m_size = 0;
-		m_data = NULL;
+        m_data = nullptr;
 
 		m_state = False;
 
@@ -391,7 +391,7 @@ Bool Image::load(InStream &is, PixelFormat pixelFormat)
 
 		// no longer needed
 		m_pic->detach();
-		m_pic = NULL;
+        m_pic = nullptr;
 	}
 	// PNG
 	else if (((UInt8)id[0] == 0x89) && ((UInt8)id[1] == 'P') && ((UInt8)id[2] == 'N') &&
@@ -670,9 +670,9 @@ void Image::destroy()
 	{
 		// remove shared data
 		if (m_pic.get())
-			m_pic = NULL;
+            m_pic = nullptr;
 		else if (m_data.get())
-			m_data = NULL;
+            m_data = nullptr;
 
 		m_pixelFormat = PF_RGBA_U8;
 
@@ -1420,7 +1420,7 @@ Bool Image::loadBuffer(
 	if (m_state)
 		destroy();
 
-	if (buffer == NULL)
+    if (buffer == nullptr)
 		O3D_ERROR(E_NullPointer("Buffer data must be valid"));
 
 	if ((cx == 0) || (cy == 0) || (_size == 0))
@@ -1473,7 +1473,7 @@ void Image::attach(UInt32 w, UInt32 h, UInt32 size, PixelFormat pf, UInt8* data)
 	if (m_state)
 		destroy();
 
-	if (data == NULL)
+    if (data == nullptr)
 		O3D_ERROR(E_NullPointer("Buffer data must be valid"));
 
 	if ((w == 0) || (h == 0) || (size == 0))

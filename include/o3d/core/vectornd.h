@@ -29,12 +29,12 @@ class O3D_API VectorND
 public:
 
 	//! constructor
-	VectorND() { V = NULL; dim = 0; }
-	VectorND(UInt32 Dim) { V = NULL; dim = 0; reset(Dim); }
+    VectorND() { V = nullptr; dim = 0; }
+    VectorND(UInt32 Dim) { V = nullptr; dim = 0; reset(Dim); }
 	//! copy constructor
 	VectorND(const VectorND& vec)
 	{
-		if (vec.getData() == NULL)
+        if (vec.getData() == nullptr)
 		{
 			deleteArray(V);
 			dim = 0;
@@ -50,7 +50,7 @@ public:
 	//! build from a float*
 	VectorND(const Float* vec,UInt32 Dim)
 	{
-		if (vec == NULL || Dim == 0)
+        if (vec == nullptr || Dim == 0)
 		{
 			deleteArray(V);
 			dim = 0;
@@ -110,7 +110,7 @@ public:
 	//! copie le vecteur à this
 	inline VectorND& operator= (const VectorND& vec)
 	{
-		if (vec.getData() == NULL)
+        if (vec.getData() == nullptr)
 		{
 			deleteArray(V);
 			dim = 0;

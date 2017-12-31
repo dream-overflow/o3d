@@ -132,7 +132,7 @@ void System::print(
 	}
 
 	DWORD ignore;
-	WriteConsoleW(console, out.getData(), out.length()+1, &ignore, NULL);
+    WriteConsoleW(console, out.getData(), out.length()+1, &ignore, nullptr);
 }
 
 #endif // O3D_WINAPI_SYS

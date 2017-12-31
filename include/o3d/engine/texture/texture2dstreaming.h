@@ -63,7 +63,7 @@ public:
 	//! Coordinates of the box are reset to the entire area of the texture.
 	//! When changing the texture after create, the must must have the same size and
 	//! pixel format.
-	//! @param texture NULL to detach the previous texture.
+    //! @param texture null to detach the previous texture.
 	//! @param level Mipmap level to update (default 0).
 	void setTexture(Texture2D *texture, UInt32 level = 0);
 

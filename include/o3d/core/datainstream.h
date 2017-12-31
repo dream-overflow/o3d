@@ -96,41 +96,41 @@ public:
     virtual ~SharedDataInStream();
 
     //! True
-    virtual Bool isMemory() const;
+    virtual Bool isMemory() const override;
 
-    virtual UInt32 reader(void *buf, UInt32 size, UInt32 count);
+    virtual UInt32 reader(void *buf, UInt32 size, UInt32 count) override;
 
-    virtual void close();
+    virtual void close() override;
 
-    virtual void reset(UInt64 n = 0);
+    virtual void reset(UInt64 n = 0) override;
 
-    virtual void seek(Int64 n);
+    virtual void seek(Int64 n) override;
 
-    virtual void end(Int64 n = 0);
+    virtual void end(Int64 n = 0) override;
 
-    virtual Int32 getAvailable() const;
+    virtual Int32 getAvailable() const override;
 
-    virtual Int32 getPosition() const;
+    virtual Int32 getPosition() const override;
 
-    virtual Bool isEnd() const;
+    virtual Bool isEnd() const override;
 
-    virtual UInt8 peek();
+    virtual UInt8 peek() override;
 
-    virtual void ignore(Int32 limit, UInt8 delim);
+    virtual void ignore(Int32 limit, UInt8 delim) override;
 
     virtual Int32 readLine(
             String &str,
-            CharacterEncoding encoding = ENCODING_UTF8);
+            CharacterEncoding encoding = ENCODING_UTF8) override;
 
     virtual Int32 readLine(
             String &str,
             Int32 limit,
             UInt8 delim,
-            CharacterEncoding encoding = ENCODING_UTF8);
+            CharacterEncoding encoding = ENCODING_UTF8) override;
 
     virtual Int32 readWord(
             String &str,
-            CharacterEncoding encoding = ENCODING_UTF8);
+            CharacterEncoding encoding = ENCODING_UTF8) override;
 private:
 
     SmartArrayUInt8 m_data;

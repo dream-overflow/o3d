@@ -52,8 +52,8 @@ AudioRenderer::AudioRenderer(const String& device, Bool useEAX) :
     O3D_MESSAGE("Sound output devices :");
 
     if (alcIsExtensionPresent(nullptr, (ALchar*)"ALC_ENUMERATION_EXT") == AL_TRUE) {
-		defaultDevice = (Char*)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
-		devicesList = (Char*)alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+        defaultDevice = (Char*)alcGetString(nullptr, ALC_DEFAULT_DEVICE_SPECIFIER);
+        devicesList = (Char*)alcGetString(nullptr, ALC_DEVICE_SPECIFIER);
 
 		Int32 ndevices;
         for (ndevices = 0 ; ndevices < 12 ; ++ndevices) {
@@ -149,7 +149,7 @@ Bool AudioRenderer::create(const String &device, Bool useEAX)
 			UInt32 idevice = 0;
 
 			// try in order with all others detected devices
-			while (((m_alDevice = alcOpenDevice((const ALchar*)m_devicesList[idevice].toAscii().getData())) == NULL) &&
+            while (((m_alDevice = alcOpenDevice((const ALchar*)m_devicesList[idevice].toAscii().getData())) == nullptr) &&
 					(idevice < m_numDevices))
 			{
 				idevice++;

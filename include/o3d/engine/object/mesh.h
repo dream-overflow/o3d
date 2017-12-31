@@ -118,11 +118,11 @@ public:
 
 	//! Access to a currently active vertex element.
 	//! @param type The array type to retrieve.
-	//! @return The vertex element or NULL.
+    //! @return The vertex element or null.
 	virtual VertexElement* getVertexElement(VertexAttributeArray type) const;
 
 	//! Access to the currently active face array.
-	//! @return The face array or NULL.
+    //! @return The face array or null.
 	virtual FaceArray* getFaceArray() const;
 
 	//! Bind the array in a specified attribute array location.
@@ -137,7 +137,7 @@ public:
 	virtual Bool isOperation(Operations what) const;
 
 	//! Get the matrix array for hardware skinning/rigging.
-	//! @return NULL.
+    //! @return null.
 	virtual const Float* getMatrixArray() const;
 
 	//! Get the minimal square distance of the object bounding volume from the given point.

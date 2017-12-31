@@ -21,7 +21,7 @@
 
 using namespace o3d;
 
-O3D_IMPLEMENT_CLASS_COMMON(Animatable, ENGINE_ANIMATABLE, NULL)
+O3D_IMPLEMENT_CLASS_COMMON(Animatable, ENGINE_ANIMATABLE, nullptr)
 
 // serialization
 void Animatable::writeToFile(Scene *scene,

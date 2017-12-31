@@ -752,14 +752,14 @@ Image* Image::retNormalMap(Float scale, Bool wrap)
 		O3D_ERROR(E_InvalidFormat("Complex picture are not supported at this time"));
 
 	if (!m_data.get() || !m_data->data || !m_width || !m_height)
-		return NULL;
+        return nullptr;
 
 	Image* nmap = new Image;
 
 	if (!nmap->allocate(m_width, m_height, 4))
 	{
 		deletePtr(nmap);
-		return NULL;
+        return nullptr;
 	}
 
 	genNormalMap(nmap->m_data->data, scale, wrap);

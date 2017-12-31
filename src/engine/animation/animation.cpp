@@ -25,7 +25,7 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(Animation, ENGINE_ANIMATION, SceneResource)
 ---------------------------------------------------------------------------------------*/
 Animation::Animation(BaseObject *parent) :
 	SceneResource(parent),
-	m_fatherNode(NULL),
+    m_fatherNode(nullptr),
 	m_numObjects(0),
 	m_duration(1.f),
 	m_computed(False)
@@ -160,7 +160,7 @@ AnimationNode* Animation::computeStartNode(
 		{
 			// animation node has not enough sons
 			O3D_WARNING("Animation node has not enough sons");
-			return NULL;
+            return nullptr;
 		}
 
 		// recurse childs
@@ -168,7 +168,7 @@ AnimationNode* Animation::computeStartNode(
 		{
 			AnimationNode *pRet = computeStartNode(*a_it, ((Node*)(*n_it)), selectedNode);
 
-			if (pRet != NULL)
+            if (pRet != nullptr)
 				return pRet;
 		}
 
@@ -179,10 +179,10 @@ AnimationNode* Animation::computeStartNode(
 	{
 		// animation node has too much sons
 		O3D_WARNING("Animation node has too much sons");
-		return NULL;
+        return nullptr;
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 /*---------------------------------------------------------------------------------------
@@ -217,7 +217,7 @@ Bool Animation::writeToFile(
 	// compute the animation node corresponding to the hierarchy selected node
 	AnimationNode *pStartNode = computeStartNode(m_fatherNode, hierarchyRoot, selectedNode);
 
-	if (pStartNode == NULL)
+    if (pStartNode == nullptr)
 	{
         O3D_ERROR(E_InvalidFormat("Can't retrieve the root node of the animation"));
 	}

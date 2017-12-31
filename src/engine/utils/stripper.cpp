@@ -61,7 +61,7 @@ Bool Stripper::start(T_Ui16Index _array, ResultType _type, T_Ui16ListArray & _ta
 			SetStitchStrips(_type == RESULT_SINGLE_TRIANGLE_STRIP);
 			SetListsOnly(_type == RESULT_OPTIMIZED_TRIANGLES);
 
-			PrimitiveGroup * pPrimGroup = NULL;
+            PrimitiveGroup * pPrimGroup = nullptr;
 			UInt16 primGroupCount = 0;
 
 			if (!GenerateStrips((const UInt16*)&_array[0], (const unsigned int)_array.size(), &pPrimGroup, &primGroupCount))
@@ -193,7 +193,7 @@ Bool Stripper::start(T_Ui16Index _array, ResultType _type, T_Ui16ListArray & _ta
 
 			if (triangleList.size() > 0)
 			{
-				if (_triangles == NULL)
+                if (_triangles == nullptr)
 				{
 					if (_type == RESULT_SINGLE_TRIANGLE_STRIP)
 						_target.back().push_back(_target.back().back());
@@ -320,7 +320,7 @@ Bool Stripper::start(T_Ui32Index _array, ResultType _type, T_Ui32ListArray & _ta
 
 			if (triangleList.size() > 0)
 			{
-				if (_triangles == NULL)
+                if (_triangles == nullptr)
 				{
 					if (_type == RESULT_SINGLE_TRIANGLE_STRIP)
 						_target.back().push_back(_target.back().back());

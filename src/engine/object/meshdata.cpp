@@ -166,7 +166,7 @@ MeshDataTask::MeshDataTask(
 		MeshData *meshData,
 		const String &filename) :
 			m_meshData(meshData),
-			m_geometry(NULL)
+            m_geometry(nullptr)
 {
 	if (!meshData)
 		O3D_ERROR(E_InvalidParameter("The mesh-data must be valid"));

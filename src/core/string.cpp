@@ -2161,7 +2161,7 @@ void String::fromUtf8(const Char* utf8, UInt32 maxSize)
 	// The string must be destroyed if the specified pointer is null
 	destroy();
 
-	// NULL or empty input string
+    // null or empty input string
     if (utf8 == nullptr)
 		return;
     UInt32 utf8Len;

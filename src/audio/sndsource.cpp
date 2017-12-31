@@ -670,7 +670,7 @@ void SndSource::put()
 		//	&DSPROPSETID_EAX_SourceProperties,
 		//	DSPROPERTY_EAXBUFFER_COMMITDEFERREDSETTINGS,
 		//	0,
-		// NULL,
+        // nullptr,
 		// 0);
 
 		// get all settings (useful for know value when there is size scale flag active)
@@ -1305,7 +1305,7 @@ UInt32 SndSourceManager::getSourceID(SndSource* sndSource)
 		Float minorPriority = o3d::Limits<Float>::max();
 		Float newSourceGain = sndSource->computeGain();
 		SndSource *sndTempSource;
-		SndSource *sndMinorSource = NULL;
+        SndSource *sndMinorSource = nullptr;
 
 		// first pass we compute for the lesser source priority
 	 	for (IT_SourceSet it = m_registredSources.begin(); it != m_registredSources.end(); ++it)

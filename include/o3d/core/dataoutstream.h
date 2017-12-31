@@ -34,24 +34,24 @@ public:
     virtual ~DataOutStream();
 
     //! True
-    virtual Bool isMemory() const;
+    virtual Bool isMemory() const override;
 
     //! write buf with size * count. reallocate the array as necessary
-    virtual UInt32 writer(const void* buf, UInt32 size, UInt32 count);
+    virtual UInt32 writer(const void* buf, UInt32 size, UInt32 count) override;
 
     //! close the stream.
-    virtual void close();
+    virtual void close() override;
 
     //! flush the stream.
-    virtual void flush();
+    virtual void flush() override;
 
     virtual Int32 writeLine(
             const String &str,
-            CharacterEncoding encoding = ENCODING_UTF8);
+            CharacterEncoding encoding = ENCODING_UTF8) override;
 
     virtual Int32 writeString(
             const String &str,
-            CharacterEncoding encoding = ENCODING_UTF8);
+            CharacterEncoding encoding = ENCODING_UTF8) override;
 
 private:
 

@@ -22,8 +22,8 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(Humanoid, ENGINE_HUMANOID, Skinning)
 ---------------------------------------------------------------------------------------*/
 Humanoid::Humanoid(BaseObject *pParent) :
 	Skinning(pParent),
-	m_pBonesLimitP(NULL),
-	m_pBonesLimitN(NULL)
+    m_pBonesLimitP(nullptr),
+    m_pBonesLimitN(nullptr)
 {
 	updateShaderList();
 }
@@ -31,7 +31,7 @@ Humanoid::Humanoid(BaseObject *pParent) :
 void Humanoid::updateShaderList()
 {
 	/*for (Int32 i = 0; i < NbrParts; ++i)
-		m_bodyParts[i] = NULL;
+        m_bodyParts[i] = nullptr;
 
 	UInt32 numMaterials = getNumMaterials();
 	for (UInt32 i = 0; i < numMaterials; ++i)

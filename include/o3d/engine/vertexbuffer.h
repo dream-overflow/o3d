@@ -176,7 +176,7 @@ public:
 	//! the same as previously defined.
 	//! @param count Number of element to store/allocate.
 	//! @param storageType Storage type (stream, static, dynamic).
-	//! @param data Data to store or NULL to only allocate.
+    //! @param data Data to store or null to only allocate.
 	//! @param dontUnbind Don't process to the unbound if TRUE.
 	//! @note The current VBO is changed to this or by 0.
 	void create(
@@ -302,7 +302,7 @@ public:
 			bindBuffer();
 			m_mapped = reinterpret_cast<T*>(glMapBuffer(bufferType, flags));
 
-			// Return NULL if buffer is really NULL
+            // Return null if buffer is really null
             if (m_mapped) {
 				m_lockMode = flags;
 

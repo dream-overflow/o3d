@@ -92,33 +92,33 @@ void PCLODDebugLabel::mtUpdateContent(
 	String lTitleText("Zone : "), lLightmapText("Lightmap : "), lColormapText("Colormap : ");
 	Int32 lLightCount = 0;
 	
-	if (_pLightmap != NULL)
+    if (_pLightmap != nullptr)
 	{
 		if (_pLightmap->generated())
 			lLightmapText << "(" << _pLightmap->getTexture()->getWidth() << ":" << _pLightmap->getTexture()->getHeight() << ")";
 		else
 			lLightmapText << "NOT LOADED";
 
-		if (_pLightmap->getZone() != NULL)
+        if (_pLightmap->getZone() != nullptr)
 			lTitleText << _pLightmap->getZoneId();
 
 		lLightCount = _pLightmap->getLightCount();
 	}
 	else
-		lLightmapText << "NULL";
+        lLightmapText << "nullptr";
 
-	if (_pColormap != NULL)
+    if (_pColormap != nullptr)
 	{
 		if (_pColormap->loaded())
 			lColormapText << "(" << _pColormap->getTexture()->getWidth() << ":" << _pColormap->getTexture()->getHeight() << ")";
 		else
 			lColormapText << "NOT LOADED";
 
-		if ((_pLightmap == NULL) || (_pLightmap->getZone() == NULL))
+        if ((_pLightmap == nullptr) || (_pLightmap->getZone() == nullptr))
 			lTitleText << _pColormap->getZoneId();
 	}
 	else
-		lColormapText << "NULL";
+        lColormapText << "nullptr";
 	
 	if ((lLightmapText != m_lightmapText) ||
 		(lColormapText != m_colormapText) ||
@@ -130,7 +130,7 @@ void PCLODDebugLabel::mtUpdateContent(
 		m_titleText = lTitleText;
 		m_lightCount = lLightCount;
 
-		if (m_pTexture == NULL)
+        if (m_pTexture == nullptr)
 		{
 			m_pTexture = new Texture2D(this);
 			m_pTexture->setFiltering(Texture::NO_FILTERING);

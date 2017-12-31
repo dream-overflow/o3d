@@ -266,10 +266,10 @@ static void isoSphereSubDivideCenter(
 
 void IsoSphere::buildIsoSphere()
 {
-	if (m_pVertices != NULL)
+    if (m_pVertices != nullptr)
 		O3D_ERROR(E_InvalidPrecondition(String("Vertex array is not null")));
 
-	if (m_pIndices != NULL)
+    if (m_pIndices != nullptr)
 		O3D_ERROR(E_InvalidPrecondition(String("Index array is not null")));
 
 	if (m_radius <= 0.0f)

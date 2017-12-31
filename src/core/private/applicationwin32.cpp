@@ -70,7 +70,7 @@ void Application::message(
 	}
 
 	::MessageBoxW(
-			NULL,
+            nullptr,
 			content.isValid() ? content.getData() : L"<undefined>",
 			title.isValid() ? title.getData() : L"<untitled>",
 			ico);
@@ -88,13 +88,13 @@ void Application::mapSingleFile(const String &name)
 			PAGE_READWRITE,
 			0,
 			4,
-            name.getData())) == NULL) {
+            name.getData())) == nullptr) {
 		O3D_ERROR(E_InvalidOperation("Unable to create the file lock (mapped file)"));
 	}
 
 	pmem = ::MapViewOfFile(hmap, FILE_MAP_WRITE, 0, 0, 0);
 
-    if (pmem == NULL) {
+    if (pmem == nullptr) {
 		O3D_ERROR(E_InvalidOperation("The single file is already mapped by another instance"));
     }
 }
@@ -105,11 +105,11 @@ Bool Application::isMappedFileExists(const String &name)
 	HANDLE hmap;
 	LPVOID pmem;
 
-    if ((hmap = ::OpenFileMappingW(FILE_MAP_READ, 0, name.getData())) == NULL) {
+    if ((hmap = ::OpenFileMappingW(FILE_MAP_READ, 0, name.getData())) == nullptr) {
 		return False;
     }
 
-    if ((pmem = ::MapViewOfFile(hmap, FILE_MAP_READ, 0, 0, 0)) == NULL) {
+    if ((pmem = ::MapViewOfFile(hmap, FILE_MAP_READ, 0, 0, 0)) == nullptr) {
 		::CloseHandle(hmap);
 		return False;
 	}
@@ -152,7 +152,7 @@ void Application::runPrivate(Bool runOnce)
     while (!quit || EvtManager::instance()->isPendingEvent()) {
         EvtManager::instance()->processEvent();
 
-        while (!quit && PeekMessageW(&message, NULL, 0, 0, PM_REMOVE)) {
+        while (!quit && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
 
 			// Retrieve the AppWindow object
 			ms_currAppWindow = getAppWindow(reinterpret_cast<_HWND>(message.hwnd));
@@ -178,7 +178,7 @@ void Application::runPrivate(Bool runOnce)
             }
 		}
 
-		DWORD result = MsgWaitForMultipleObjectsEx(0, NULL, 2, QS_ALLEVENTS, MWMO_ALERTABLE);
+        DWORD result = MsgWaitForMultipleObjectsEx(0, nullptr, 2, QS_ALLEVENTS, MWMO_ALERTABLE);
 
 		// process update/paint event if necessary for each window
         for (IT_AppWindowMap it = ms_appWindowMap.begin(); it != ms_appWindowMap.end(); ++it) {
@@ -229,7 +229,7 @@ void Application::pushEventPrivate(EventType type, _HWND hWnd, void *data)
 void Application::getBaseNamePrivate(Int32 argc, Char **argv)
 {
     WChar buf[MAX_PATH];
-    GetModuleFileNameW(NULL, buf, MAX_PATH);
+    GetModuleFileNameW(nullptr, buf, MAX_PATH);
 
     if (buf) {
         String path(buf);

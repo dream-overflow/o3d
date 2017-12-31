@@ -68,7 +68,7 @@ public:
 	//! material was not used anymore.
 	void rtUnload();
 
-	Bool loaded() const { return (m_pTexture != NULL); }
+    Bool loaded() const { return (m_pTexture != nullptr); }
 	UInt32 getMatId() const { return m_matId; }
 
 

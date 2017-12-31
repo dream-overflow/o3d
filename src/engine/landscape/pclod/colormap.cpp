@@ -35,7 +35,7 @@ PCLODColormap::PCLODColormap(BaseObject *pParent, PCLODTopZone * _pZone) :
 	m_filePath(),
 	m_filePosition(),
 	m_refCounter(0),
-	m_pTexture(NULL),
+    m_pTexture(nullptr),
 	m_pTopZone(_pZone),
 	m_mutex(),
 	m_staticNoise(),
@@ -53,7 +53,7 @@ PCLODColormap::PCLODColormap(BaseObject *pParent, PCLODTopZone * _pZone, UInt32 
 	m_filePath(_path),
 	m_filePosition(_position),
 	m_refCounter(0),
-	m_pTexture(NULL),
+    m_pTexture(nullptr),
 	m_pTopZone(_pZone),
 	m_mutex(),
 	m_staticNoise(),
@@ -146,7 +146,7 @@ Bool PCLODColormap::rtLoad()
 // MTE_OnColormapDelection.
 void PCLODColormap::mtUnload()
 {
-	O3D_ASSERT(m_pTexture != NULL);
+    O3D_ASSERT(m_pTexture != nullptr);
 
 	UInt32 texSize = m_pTexture->getImage().getSize();
 
@@ -158,14 +158,14 @@ void PCLODColormap::mtUnload()
 
 	m_pTopZone->release(PCLODTopZone::ZONE_MATERIAL);
 	m_pTopZone->releaseIt();
-	m_pTopZone = NULL;
+    m_pTopZone = nullptr;
 
 	m_staticNoise.releaseCheckAndDelete();
 	m_staticNoiseSize = Vector2ui(0, 0);
 
 	PCLOD_MESSAGE(String("Colormap : Colormap (") << m_filePath << ") released (" << texSize/1024 << "Ko).");
 
-	m_pParent = NULL;
+    m_pParent = nullptr;
 }
 
 /** Génère la colormap à partir de la table des matériaux et de la précision demandée.
@@ -173,7 +173,7 @@ void PCLODColormap::mtUnload()
  *    avec k la précision demandée. Dans tous les cas, la taille maximale est 4096*4096 */
 void PCLODColormap::rtGenerate(O3D_T_MatTable & _matTable, UInt32 _samplePrecision)
 {
-	O3D_ASSERT(m_pTexture != NULL);
+    O3D_ASSERT(m_pTexture != nullptr);
 
 	// Si _sampleSize n'est pas disponible pour certain matériau, ils génèreront le sample.
 	TimeCounter timeCounter(0.0f);
@@ -196,7 +196,7 @@ void PCLODColormap::rtGenerate(O3D_T_MatTable & _matTable, UInt32 _samplePrecisi
 
 	PCLODMaterial::PCLODRgba * const pData = (PCLODMaterial::PCLODRgba*)m_pTexture->getImage().getData();
 
-	const PCLODMaterial::PCLODRgba * pSample = NULL;
+    const PCLODMaterial::PCLODRgba * pSample = nullptr;
 
 	// Création du sample null.
 	PCLODMaterial::PCLODRgba * pNullSample = new PCLODMaterial::PCLODRgba[_sampleSize*_sampleSize];
@@ -256,11 +256,11 @@ void PCLODColormap::rtGenerate(O3D_T_MatTable & _matTable, UInt32 _samplePrecisi
 		{
 			if ((_samplePrecision == 0) || ((*row0Id == *row1Id) && (*(row0Id+1) == *row0Id) && (*(row1Id+1) == *row1Id)))
 			{
-				if ((*row0Id != lastMaterialId) || (pSample == NULL))
+                if ((*row0Id != lastMaterialId) || (pSample == nullptr))
 				{
 					O3D_IT_MatTable it = _matTable.find(*row0Id);
 
-					if ((it == _matTable.end() || (pSample = it->second->getSample(_samplePrecision)) == NULL))
+                    if ((it == _matTable.end() || (pSample = it->second->getSample(_samplePrecision)) == nullptr))
 						pSample = pNullSample;
 
 					lastMaterialId = *row0Id;
@@ -332,7 +332,7 @@ void PCLODColormap::rtGenerate(O3D_T_MatTable & _matTable, UInt32 _samplePrecisi
 	deleteArray(pTransitionSample);
 
 	// Application d'un bruit statique si l'option est activé
-//	const Image * pPicture = NULL;
+//	const Image * pPicture = nullptr;
 
 	if ((m_staticNoise.getNumElt() > 0) && (m_staticNoiseSize != Vector2ui(0, 0)))
 	{

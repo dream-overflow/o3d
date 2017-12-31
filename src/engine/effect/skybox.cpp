@@ -226,7 +226,7 @@ Int32 SkyBox::create(
 	Texture::FilteringMode filtering,
 	Float anisotropy)
 {
-	m_textures[0] = m_textures[1] = m_textures[2] = m_textures[3] = m_textures[4] = m_textures[5] = NULL;
+    m_textures[0] = m_textures[1] = m_textures[2] = m_textures[3] = m_textures[4] = m_textures[5] = nullptr;
 
 	m_size = size;
 	m_halfHeight = halfHeight;

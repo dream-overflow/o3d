@@ -39,7 +39,7 @@ public:
 												   const UInt32,
 												   Float,
 												   Float * &,
-												   Callback * = NULL);
+                                                   Callback * = nullptr);
 
 	/* This function is just provided for convenience.
 	 * - It allows to specify borders to compute the lightmaps.
@@ -50,7 +50,7 @@ public:
 												   Float,
 												   Float * &,
 												   const Float *,
-												   Callback * = NULL);
+                                                   Callback * = nullptr);
 
 	/* This function normalize a normal map */
 	static void normalizeNormalMap(Float *, const UInt32, const UInt32);
@@ -73,7 +73,7 @@ public:
 	 * RELEASE : about 2000 shadowmap/sec */
 
 	/* On suppose pour le moment, dir[X] >> 1 et dir[Y] >= 0 */
-	static void buildShadowmapInfiniteLight(const Array2DFloat &, Float, const Vector3 &, Array2DFloat &, Callback * = NULL);
+    static void buildShadowmapInfiniteLight(const Array2DFloat &, Float, const Vector3 &, Array2DFloat &, Callback * = nullptr);
 
 	static void buildShadowMapFromDirectionalLight(PCLODLight *, const Vector3 &, const std::vector<PCLODLightmap*> &);
 };

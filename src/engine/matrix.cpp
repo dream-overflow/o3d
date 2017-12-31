@@ -171,7 +171,7 @@ void Matrix::addObserver(MatrixObserver *observer)
 // Remove an observer.
 void Matrix::removeObserver(MatrixObserver *observer)
 {
-	m_observer = NULL;
+    m_observer = nullptr;
 }
 
 //---------------------------------------------------------------------------------------

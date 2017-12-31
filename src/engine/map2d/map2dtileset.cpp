@@ -187,7 +187,7 @@ UInt32 Map2dTileSet::browseFolder(const String &path)
 	T_StringList files;
 	T_StringList inis;
 
-	while ((fileItem = fileListing.searchNextFile()) != NULL)
+    while ((fileItem = fileListing.searchNextFile()) != nullptr)
 	{
 		if (fileItem->FileType == FILE_FILE)
 		{

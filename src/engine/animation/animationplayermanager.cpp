@@ -147,7 +147,7 @@ void AnimationPlayerManager::update()
 	for (it = m_Map.begin() ; it != m_Map.end() ; ++it)
 	{
 		T_AnimationPlayerList& Queue = (*it).second;
-		AnimationPlayer* Player = NULL;
+        AnimationPlayer* Player = nullptr;
 
 		// pop the queue until we find a player that's not finished
 		while (!Queue.empty())
@@ -260,7 +260,7 @@ AnimationPlayer* AnimationPlayerManager::getFirstPlayer(Int32 QueueId)
 			return Queue.front();
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 // Get the last animation player for a queue ID
@@ -277,7 +277,7 @@ AnimationPlayer* AnimationPlayerManager::getLastPlayer(Int32 QueueId)
 			return Queue.back();
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 // get an animation player by its position in a queue and the queue ID
@@ -305,7 +305,7 @@ AnimationPlayer* AnimationPlayerManager::getPlayer(Int32 QueueId,UInt32 PlayerId
 		}
 	}
 
-	return NULL;
+    return nullptr;
 }
 
 // serialisation
@@ -319,7 +319,7 @@ Bool AnimationPlayerManager::writeToFile(OutStream &os)
 	for (IT_PlayerQueueMap it = m_Map.begin() ; it != m_Map.end() ; ++it)
 	{
 		T_AnimationPlayerList& Queue = (*it).second;
-		AnimationPlayer* Player = NULL;
+        AnimationPlayer* Player = nullptr;
 
         os   << ENGINE_ANIMATION_PLAYER_QUEUE
 			 << (UInt32)Queue.size();
@@ -376,7 +376,7 @@ Bool AnimationPlayerManager::readFromFile(InStream &is)
 		// read all players
 		for (UInt32 j = 0 ; j < nb_player ; ++j)
 		{
-			AnimationPlayer *pPlayer = new AnimationPlayer(this,NULL);
+            AnimationPlayer *pPlayer = new AnimationPlayer(this,nullptr);
             if (!pPlayer->readFromFile(is))
 				return False;
 
