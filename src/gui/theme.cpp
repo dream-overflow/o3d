@@ -663,4 +663,3 @@ Vector2i Theme::getDefaultWidgetSize(WidgetDraw widget) const
 	else
 		return Vector2i(0,0);
 }
-

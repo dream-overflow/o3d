@@ -781,8 +781,9 @@ void Widget::setToolTip(const String &label)
 void Widget::drawCache()
 {
 	// empty surface
-	if (m_size.x() <= 0 || m_size.y() <= 0)
+    if (m_size.x() <= 0 || m_size.y() <= 0) {
 		return;
+    }
 
 	Context *glContext = getScene()->getContext();
 

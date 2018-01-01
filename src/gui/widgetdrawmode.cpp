@@ -2,7 +2,7 @@
  * @file widgetdrawmode.cpp
  * @brief Base class for drawing widgets.
  * @author RinceWind
- * @author  Frederic SCHERMA
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-10-11
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -118,12 +118,9 @@ void WidgetDrawMode::setMaterial(Material* material)
 
 void WidgetDrawMode::processAllFaces(Shadable::ProcessingPass pass)
 {
-	if (pass == Shadable::PREPARE_GEOMETRY)
-	{
+    if (pass == Shadable::PREPARE_GEOMETRY) {
 		m_faces.create(m_facesOffs, VertexBuffer::STREAMED, m_facesArray.getData(), True);
-	}
-	else if (pass == Shadable::PROCESS_GEOMETRY)
-	{
+    } else if (pass == Shadable::PROCESS_GEOMETRY) {
 		m_material.getScene()->drawRangeElementsUInt32(
 				P_TRIANGLES,
 				0,
@@ -141,21 +138,15 @@ void WidgetDrawMode::attribute(VertexAttributeArray mode, UInt32 location)
 	// because this material is processed only on change of vertex data,
 	// we update (or create) VBOs in this method
 
-	if (mode == V_VERTICES_ARRAY)
-	{
+    if (mode == V_VERTICES_ARRAY) {
 		m_vertices.create(m_verticesOffs, VertexBuffer::STREAMED, m_verticesArray.getData(), True);
 		m_vertices.getContext()->vertexAttribArray(location, 2, 0, 0);
-	}
-	else if (mode == V_TEXCOORDS_2D_1_ARRAY)
-	{
+    } else if (mode == V_TEXCOORDS_2D_1_ARRAY) {
 		m_texCoords.create(m_verticesOffs, VertexBuffer::STREAMED, m_texCoordsArray.getData(), True);
 		m_vertices.getContext()->vertexAttribArray(location, 2, 0, 0);
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  Drawing methods for widget elements
----------------------------------------------------------------------------------------*/
 void WidgetDrawMode::drawWidgetElement(
 	WidgetDataSet widget,
 	Int32 x,
@@ -281,4 +272,3 @@ void WidgetDrawMode::repeatWidgetElement(
 	m_facesArray[m_facesOffs++] = vertexId + 2;
 	m_facesArray[m_facesOffs++] = vertexId + 3;
 }
-

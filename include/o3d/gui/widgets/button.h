@@ -2,7 +2,7 @@
  * @file button.h
  * @brief A widget representing a simple button.
  * @author RinceWind
- * @author  Frederic SCHERMA
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-06-26
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

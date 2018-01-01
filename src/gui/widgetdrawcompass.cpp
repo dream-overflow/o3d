@@ -2,7 +2,7 @@
  * @file widgetdrawcompass.cpp
  * @brief Drawing mode based on compass (9 parts).
  * @author RinceWind
- * @author  Frederic SCHERMA
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-10-11
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -95,4 +95,3 @@ void WidgetDrawCompass::draw(Int32 x, Int32 y, Int32 width, Int32 height)
 	// finally process the rendering
     m_material.processMaterial(*this, nullptr, nullptr, DrawInfo());
 }
-

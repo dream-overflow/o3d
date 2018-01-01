@@ -14,11 +14,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class WidgetDrawCompass
-//-------------------------------------------------------------------------------------
-//! Drawing mode based on compass (9 parts).
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Drawing mode based on compass (9 parts).
+ */
 class O3D_API WidgetDrawCompass : public WidgetDrawMode
 {
 public:
@@ -93,4 +91,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_WIDGETDRAWCOMPASS_H
-

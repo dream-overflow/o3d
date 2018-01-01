@@ -50,8 +50,9 @@ void WidgetDrawMaterial::initialize(
 {
 	m_valid = False;
 
-	if (initMode != AMBIENT)
-			O3D_ERROR(E_InvalidParameter("InitMode::AMBIENT only is accepted"));
+    if (initMode != AMBIENT) {
+        O3D_ERROR(E_InvalidParameter("InitMode::AMBIENT only is accepted"));
+    }
 
 	m_options = "";
 
@@ -94,8 +95,8 @@ void WidgetDrawMaterial::processAmbient(
 	ShaderInstance &shader = m_shaderInstance;
 
 	if ((m_initMode == AMBIENT) && shader.isOperational() &&
-			materialPass.getAmbientMap() && materialPass.getAmbientMap()->isValid())
-	{
+        materialPass.getAmbientMap() && materialPass.getAmbientMap()->isValid()) {
+
 		Context *glContext = getScene()->getContext();
 
 		shader.bindShader();

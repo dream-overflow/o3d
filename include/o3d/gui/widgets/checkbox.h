@@ -2,7 +2,7 @@
  * @file checkbox.h
  * @brief A widget representing a checkbox
  * @author RinceWind
- * @author  Frederic SCHERMA
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-10-13
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 

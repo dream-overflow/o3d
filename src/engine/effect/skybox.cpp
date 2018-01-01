@@ -313,7 +313,6 @@ void SkyBox::setUpModelView()
 	getScene()->getContext()->modelView().set(mat);
 }
 
-// draw all faces
 void SkyBox::processAllFaces(Shadable::ProcessingPass pass)
 {
     if (pass == Shadable::PREPARE_GEOMETRY) {
@@ -332,7 +331,6 @@ void SkyBox::attribute(VertexAttributeArray mode, UInt32 location)
     }
 }
 
-// draw skybox
 void SkyBox::draw(const DrawInfo &drawInfo)
 {
     if (!getActivity() || !getVisibility()) {

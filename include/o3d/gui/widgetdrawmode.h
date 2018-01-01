@@ -2,7 +2,7 @@
  * @file widgetdrawmode.h
  * @brief Base class for drawing widgets.
  * @author RinceWind
- * @author  Frederic SCHERMA
+ * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2006-10-11
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
@@ -19,11 +19,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class WidgetDrawMode
-//---------------------------------------------------------------------------------------
-//! Base class for drawing widgets.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Base class for drawing widgets.
+ */
 class O3D_API WidgetDrawMode : public Shadable
 {
 public:
@@ -157,13 +155,12 @@ public:
 	O3D_SHADABLE_NO_MISC1
 	O3D_SHADABLE_NO_EXT_ARRAY
 
-	virtual VertexProgramType getVertexProgramType() const;
+    virtual VertexProgramType getVertexProgramType() const override;
 
-	virtual void attribute(VertexAttributeArray mode, UInt32 location);
-	virtual void processAllFaces(Shadable::ProcessingPass pass);
+    virtual void attribute(VertexAttributeArray mode, UInt32 location) override;
+    virtual void processAllFaces(Shadable::ProcessingPass pass) override;
 };
 
 } // namespace o3d
 
 #endif // _O3D_WIDGETDRAWMODE_H
-
