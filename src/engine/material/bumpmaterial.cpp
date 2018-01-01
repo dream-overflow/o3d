@@ -264,25 +264,20 @@ void BumpMaterial::initialize(
     m_initMode = initMode;
 
     // need normals to process this shader
-    if (!shadable.isOperation(Shadable::NORMALS))
-    {
+    if (!shadable.isOperation(Shadable::NORMALS)) {
         shadable.operation(Shadable::NORMALS);
         shadable.operation(Shadable::CREATE);
     }
 
     // need tangent space to process this shader
-    if (!shadable.isOperation(Shadable::TANGENT_SPACE))
-    {
+    if (!shadable.isOperation(Shadable::TANGENT_SPACE)) {
         shadable.operation(Shadable::TANGENT_SPACE);
         shadable.operation(Shadable::CREATE);
     }
 
-    buildVertexArray(shadable);
+    //buildVertexArray(shadable);
 
     m_valid = True;
-
-
-	buildVertexArray(shadable);
 }
 
 void BumpMaterial::getCommonLoc(ShaderInstance &shaderInstance, Int32 dest)

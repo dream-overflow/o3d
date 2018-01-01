@@ -143,9 +143,9 @@ protected:
 	ArrayFloat m_texCoordsArray;
 	ArrayUInt16 m_facesArray;
 
-	VertexBufferObjf m_vertices;
-	VertexBufferObjf m_texCoords;
-	ElementBufferObjus m_faces;
+	ArrayBufferf m_vertices;
+	ArrayBufferf m_texCoords;
+	ElementArrayBufferus m_faces;
 
 	Bool loadTexture(const String& filename);
 };

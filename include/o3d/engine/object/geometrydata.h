@@ -348,7 +348,7 @@ protected:
 	typedef T_FaceArrays::iterator IT_FaceArrays;
 	typedef T_FaceArrays::const_iterator CIT_FaceArrays;
 
-	VertexBufferObjf *m_vbo;      //!< VBO containing the geometry data.
+	ArrayBufferf *m_vbo;      //!< VBO containing the geometry data.
 	BitSet32 m_flags;             //!< Flag of update.
 
 	VertexElement *m_elements[NUM_VERTEX_ATTRIBUTES];

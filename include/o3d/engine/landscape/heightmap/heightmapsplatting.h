@@ -137,7 +137,7 @@ private:
 	VertexElement m_vertices;
 	VertexElement m_texCoords;
 
-	VertexBufferObjf m_vbo;
+	ArrayBufferf m_vbo;
 
 	SmartObject<Texture2D> m_normalTex;
 	SmartObject<Texture2D> m_colormapTex;

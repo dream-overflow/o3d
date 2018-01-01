@@ -30,7 +30,8 @@ void SpecialEffects::animate(
 	UInt32 subTarget,
 	Animation::BlendMode blendMode,
 	Float weight)
-{}
+{
+}
 
 Int32 SpecialEffects::getAnimatableId(Animatable::AnimatableManager &type)
 {
@@ -48,3 +49,6 @@ Bool SpecialEffects::readFromFile(InStream &is)
     return SceneObject::readFromFile(is);
 }
 
+void SpecialEffects::postImportPass()
+{
+}

@@ -75,7 +75,7 @@ Context::Context(Renderer *renderer) :
 
     // Create a default VAO and bind it
     glGenVertexArrays(1, (GLuint*)&m_defaultVAOId);
-    bindVertexArray(0, nullptr);
+    bindDefaultVertexArray();
 
     _glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
 
@@ -205,6 +205,7 @@ Context::~Context()
 {
 	// default VAO
     if (m_defaultVAOId != O3D_UNDEFINED) {
+        glBindVertexArray(0);
 		glDeleteVertexArrays(1, &m_defaultVAOId);
     }
 
@@ -310,10 +311,10 @@ void Context::forceVertexAttribArray(UInt32 array, Bool state)
 	O3D_ASSERT(array < UInt32(m_maxVertexAttribs));
     if (state) {
 		glEnableVertexAttribArray(array);
-		m_currentVaoState->attributeArray.setBit(array, True);
+        m_currentVaoState->attributeArray.setBit(array, True);
     } else {
 		glDisableVertexAttribArray(array);
-		m_currentVaoState->attributeArray.setBit(array, False);
+        m_currentVaoState->attributeArray.setBit(array, False);
 	}
 }
 
@@ -345,7 +346,7 @@ void Context::bindVertexBuffer(UInt32 id)
     if ((id != m_currentVaoState->vbo) || (id == 0)) {
 		glBindBuffer(GL_ARRAY_BUFFER, id);
 		m_currentVaoState->vbo = id;
-	}
+    }
 }
 
 // Delete a vertex buffer object.
@@ -365,10 +366,10 @@ void Context::deleteVertexArray(UInt32 vao)
 {
     if (vao != 0) {
         if (vao == m_currentVAOId) {
-			m_currentVAOId = 0;
+            m_currentVAOId = m_defaultVAOId;
 			m_currentVaoState = &m_defaultVaoState;
 
-			glBindVertexArray(m_defaultVAOId/*0*/);
+            glBindVertexArray(m_defaultVAOId);
 		}
 
 		glDeleteVertexArrays(1, &vao);
@@ -379,10 +380,10 @@ void Context::deleteVertexArray(UInt32 vao)
 void Context::bindVertexArray(UInt32 id, VertexArrayState *vaoState)
 {
     if (id == 0) {
-		glBindVertexArray(m_defaultVAOId/*0*/);
+        glBindVertexArray(m_defaultVAOId);
 
 		m_currentVaoState = &m_defaultVaoState;
-		m_currentVAOId = 0/*m_defaultVAOId*/;
+        m_currentVAOId = m_defaultVAOId;
 		
 		return;
     } else if (id != m_currentVAOId) {
@@ -392,7 +393,19 @@ void Context::bindVertexArray(UInt32 id, VertexArrayState *vaoState)
 		m_currentVAOId = id;
 
 		O3D_ASSERT(m_currentVaoState);
-	}
+    }
+}
+
+void Context::bindDefaultVertexArray()
+{
+    if (m_currentVAOId != m_defaultVAOId) {
+        glBindVertexArray(m_defaultVAOId);
+
+        m_currentVaoState = &m_defaultVaoState;
+        m_currentVAOId = m_defaultVAOId;
+
+        return;
+    }
 }
 
 // Index buffer object binding.
@@ -408,8 +421,9 @@ void Context::bindIndexBuffer(UInt32 id)
 void Context::deleteIndexBuffer(UInt32 id)
 {
     if (id != 0) {
-		if (id == m_currentVaoState->ibo)
+        if (id == m_currentVaoState->ibo) {
 			m_currentVaoState->ibo = 0;
+        }
 
 		glDeleteBuffers(1, (GLuint*)&id);
 	}

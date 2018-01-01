@@ -16,12 +16,10 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class SkyBox
-//-------------------------------------------------------------------------------------
-//! A skybox, this is the single object who is not inherit from O3DShadable
-//! because this shader can be only a color, with 5 or 6 simple textures.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A skybox, this is the single object who is not inherit from Shadable
+ * because this shader can be only a color, with 5 or 6 simple textures.
+ */
 class O3D_API SkyBox : public SpecialEffects
 {
 public:
@@ -60,22 +58,24 @@ public:
 	void destroy();
 
 	//! draw all faces
-	virtual void processAllFaces(Shadable::ProcessingPass pass);
+    virtual void processAllFaces(Shadable::ProcessingPass pass) override;
 
-	virtual void attribute(VertexAttributeArray mode, UInt32 location);
-	virtual void setUpModelView();
+    virtual void attribute(VertexAttributeArray mode, UInt32 location) override;
+    virtual void setUpModelView() override;
 
 	//! draw the effect
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
-	VertexBufferObjf *m_vertices[6];
-	VertexBufferObjf *m_texCoords[6];
+    ArrayBufferf *m_vertices[6];
+    ArrayBufferf *m_texCoords[6];
+
+    VertexArray *m_vaos[6];
 
 	Int32 m_currentSide;  //!< Currently rendered side.
 	Float m_size;         //!< Size of the cube.
@@ -86,9 +86,6 @@ protected:
     //! start skybox at half height (superior part only) need the left,right,back,front texture are half too
 	Bool m_halfHeight;
 
-	Float m_vertexData[12];
-	Float m_texCoordsData[8];
-
 	//! Initialize vertex buffer object for the valid skybox sides.
 	void initVBO();
 };
@@ -96,4 +93,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SKYBOX_H
-

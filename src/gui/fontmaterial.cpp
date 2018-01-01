@@ -152,4 +152,3 @@ void FontMaterial::processDeferred(
 {
 	O3D_ERROR(E_InvalidOperation("Not permit"));
 }
-

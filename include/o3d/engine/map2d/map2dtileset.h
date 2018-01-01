@@ -102,8 +102,8 @@ public:
      * @param texture
      */
     void draw(
-            VertexBufferObjf &vertices,
-            VertexBufferObjf &texCoords);
+            ArrayBufferf &vertices,
+            ArrayBufferf &texCoords);
 
 	//! Get the tile set path.
 	inline const String& getPath() const { return m_pathName; }
@@ -236,8 +236,8 @@ private:
 
 	String m_pathName;
 
-	VertexBufferObjf m_vertices;
-	VertexBufferObjf m_texCoords;
+	ArrayBufferf m_vertices;
+	ArrayBufferf m_texCoords;
 
 	struct DefaultShader
 	{

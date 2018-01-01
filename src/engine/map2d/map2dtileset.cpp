@@ -120,8 +120,8 @@ void Map2dTileSet::draw(const Vector2i &pos, const String &name, Float intensity
     }
 }
 
-void Map2dTileSet::draw(VertexBufferObjf &vertices,
-        VertexBufferObjf &texCoords)
+void Map2dTileSet::draw(ArrayBufferf &vertices,
+        ArrayBufferf &texCoords)
 {
     if (m_firstTexture == nullptr)
         return;

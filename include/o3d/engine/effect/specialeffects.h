@@ -17,11 +17,9 @@ namespace o3d {
 
 class SpecialEffectsManager;
 
-//---------------------------------------------------------------------------------------
-//! @class SpecialEffects
-//-------------------------------------------------------------------------------------
-//! Base class to any special effect.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Base class to any special effect (pre or post)
+ */
 class O3D_API SpecialEffects : public SceneObject
 {
 	friend class SpecialEffectsManager;
@@ -43,14 +41,14 @@ public:
 		AnimationTrack::Target target,
 		UInt32 subTarget,
 		Animation::BlendMode blendMode,
-		Float weight);
+        Float weight) override;
 
-	virtual Int32 getAnimatableId(Animatable::AnimatableManager &type);
+    virtual Int32 getAnimatableId(Animatable::AnimatableManager &type) override;
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
-	virtual void postImportPass() {}
+    virtual void postImportPass() override;
 
 protected:
 
@@ -60,4 +58,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SPECIALEFFECTS_H
-

@@ -125,9 +125,9 @@ public:
 
 protected:
 
-	VertexBufferObjf m_vertices;
-	VertexBufferObjf m_texCoords;
-	ElementBufferObjui m_faces;
+	ArrayBufferf m_vertices;
+	ArrayBufferf m_texCoords;
+	ElementArrayBufferui m_faces;
 
 	UInt32 m_verticesOffs;
 	UInt32 m_facesOffs;

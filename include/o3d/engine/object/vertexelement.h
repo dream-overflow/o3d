@@ -47,7 +47,7 @@ public:
 	//! Create the VBO and validate any vertex elements.
 	//! @param vbo Reference to an existing object.
 	//! @note If the given vbo contains data it will be release before.
-	void create(VertexBufferObjf &vbo);
+	void create(ArrayBufferf &vbo);
 
 private:
 
@@ -147,7 +147,7 @@ public:
 	//! @param keepLocalData If TRUE local data are kept.
 	//! @note Stride and offsets are expressed in float entity.
 	void create(
-			VertexBufferObjf &vbo,
+			ArrayBufferf &vbo,
 			UInt32 offset,
 			UInt32 stride,
 			Bool keepLocalData = False);
@@ -156,7 +156,7 @@ public:
 	inline Bool isValid() const { return m_isValid; }
 
 	//! Get the associated VBO (read only).
-	inline const VertexBufferObjf& getVbo() const { return *m_vbo; }
+	inline const ArrayBufferf& getVbo() const { return *m_vbo; }
 
 	//! Update partially or entirely the content of the VBO.
 	//! @param data Data to set.
@@ -229,7 +229,7 @@ protected:
 	UInt32 m_numElt;    //!< Number of elements. m_numElt*m_eltSize = number of value.
 	UInt32 m_eltSize;   //!< Size of an elements (3 for x,y,z, 2 for u,v...).
 
-	VertexBufferObjf *m_vbo;
+	ArrayBufferf *m_vbo;
 	UInt32 m_offset;    //!< Offset in bytes into the associated VBO.
 	UInt32 m_stride;    //!< Stride in bytes into the associated VBO.
 
@@ -278,7 +278,7 @@ public:
 
 protected:
 
-    VertexBufferObjf m_vbo;       //!< Internal VBO.
+    ArrayBufferf m_vbo;       //!< Internal VBO.
 
 	VertexElement *m_vertices;    //!< Final vertices element.
 	VertexElement *m_normals;     //!< Final normal element.

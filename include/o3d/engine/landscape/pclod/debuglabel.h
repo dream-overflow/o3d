@@ -58,8 +58,8 @@ private:
 
 	Vector3 m_position;
 
-	VertexBufferObjf m_drawVerticesVbo;
-	VertexBufferObjf m_drawTexCoordsVbo;
+	ArrayBufferf m_drawVerticesVbo;
+	ArrayBufferf m_drawTexCoordsVbo;
 
 	ShaderInstance m_ambientColor;
 	ShaderInstance m_ambientMap;

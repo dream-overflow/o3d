@@ -123,19 +123,19 @@ public:
 			const ArrayFloat &colors);
 
 	//! Get the vertices quad VBOs for a 4 indices P_TRIANGLE_STRIP.
-	inline VertexBufferObjf& getQuadVerticesVBO() { return m_quadVertices; }
+	inline ArrayBufferf& getQuadVerticesVBO() { return m_quadVertices; }
 	//! Get the vertices quad VBOs for a 4 indices P_TRIANGLE_STRIP (read only).
-	inline const VertexBufferObjf& getQuadVerticesVBO() const { return m_quadVertices; }
+	inline const ArrayBufferf& getQuadVerticesVBO() const { return m_quadVertices; }
 
 	//! Get the textures coordinates quad VBOs for a 4 indices P_TRIANGLE_STRIP.
-	inline VertexBufferObjf& getQuadTexCoordsVBO() { return m_quadTexCoords; }
+	inline ArrayBufferf& getQuadTexCoordsVBO() { return m_quadTexCoords; }
 	//! Get the textures coordinates quad VBOs for a 4 indices P_TRIANGLE_STRIP (read only).
-	inline const VertexBufferObjf& getQuadTexCoordsVBO() const { return m_quadTexCoords; }
+	inline const ArrayBufferf& getQuadTexCoordsVBO() const { return m_quadTexCoords; }
 
     //! Get the color quad VBOs for a 4 indices P_TRIANGLE_STRIP.
-    inline VertexBufferObjf& getQuadColorsVBO() { return m_quadColors; }
+    inline ArrayBufferf& getQuadColorsVBO() { return m_quadColors; }
     //! Get the color quad VBOs for a 4 indices P_TRIANGLE_STRIP (read only).
-    inline const VertexBufferObjf& getQuadColorsVBO() const { return m_quadColors; }
+    inline const ArrayBufferf& getQuadColorsVBO() const { return m_quadColors; }
 
 
 	//-----------------------------------------------------------------------------------
@@ -213,8 +213,8 @@ public:
 	//! @param scale Scale over the three directions.
 	void drawArray(
 			PrimitiveFormat format,
-			const VertexBufferObjf &vertices,
-			const VertexBufferObjf &colors,
+			const ArrayBufferf &vertices,
+			const ArrayBufferf &colors,
 			const Vector3 &scale = Vector3(1,1,1));
 
 	//-----------------------------------------------------------------------------------
@@ -293,16 +293,16 @@ protected:
 	ArrayFloat m_vertices;
 	ArrayFloat m_colors;
 
-	VertexBufferObjf m_verticesVbo;
-	VertexBufferObjf m_colorsVbo;
+	ArrayBufferf m_verticesVbo;
+	ArrayBufferf m_colorsVbo;
 
 	PrimitiveFormat m_format;
 
 	struct Object
 	{
 		PrimitiveFormat format;
-		VertexBufferObjf vertices;
-		VertexBufferObjf colors;
+		ArrayBufferf vertices;
+		ArrayBufferf colors;
 
         Object(Context *context) :
             vertices(context),
@@ -318,9 +318,9 @@ protected:
 	T_ObjectVector m_objects;
 	T_ObjectVector m_registeredObjects;
 
-	VertexBufferObjf m_quadVertices;
-	VertexBufferObjf m_quadTexCoords;
-    VertexBufferObjf m_quadColors;
+	ArrayBufferf m_quadVertices;
+	ArrayBufferf m_quadTexCoords;
+    ArrayBufferf m_quadColors;
 
 	void createPrimitive(Primitives type, Primitive &primitive);
 };

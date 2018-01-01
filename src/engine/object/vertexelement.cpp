@@ -86,7 +86,7 @@ UInt32 VertexBufferBuilder::addData(
 }
 
 // Create the VBO.
-void VertexBufferBuilder::create(VertexBufferObjf &vbo)
+void VertexBufferBuilder::create(ArrayBufferf &vbo)
 {
     vbo.create(m_size, True);
 
@@ -267,7 +267,7 @@ void VertexElement::attribute(UInt32 index)
 
 // Create and validate the data array
 void VertexElement::create(
-	VertexBufferObjf &vbo,
+	ArrayBufferf &vbo,
 	UInt32 offset,
 	UInt32 stride,
 	Bool keepLocalData)
@@ -276,7 +276,7 @@ void VertexElement::create(
 		O3D_ERROR(E_InvalidParameter("Element size must be different from zero"));
     }
 
-    if (/*!(&vbo) || */!vbo.isExist()) {
+    if (/*!(&vbo) || */!vbo.exists()) {
 		O3D_ERROR(E_InvalidParameter("VBO must be defined"));
     }
 
@@ -304,7 +304,7 @@ const Float* VertexElement::lockArray(UInt32 offset, UInt32 numElt)
         if (m_data.isValid() && !m_isDirty) {
 			m_locked = LOCK_DATA;
 			return m_data.getData() + (offset * m_eltSize);
-        } else if (m_vbo && m_vbo->isExist()) {
+        } else if (m_vbo && m_vbo->exists()) {
 			m_locked = LOCK_VBO;
 
 			return m_vbo->lock(
@@ -336,7 +336,7 @@ Float* VertexElement::lockArray(
 			m_locked = LOCK_DATA;
 			return m_data.getData() + (offset * m_eltSize);
 		}
-		else if (m_vbo && m_vbo->isExist())
+		else if (m_vbo && m_vbo->exists())
 		{
 			m_locked = LOCK_VBO;
 
@@ -361,7 +361,7 @@ Float* VertexElement::lockArray(
 void VertexElement::unlockArray()
 {
     if (m_locked == LOCK_VBO) {
-        if (m_vbo && m_vbo->isExist() && m_vbo->isLocked()) {
+        if (m_vbo && m_vbo->exists() && m_vbo->isLocked()) {
             m_vbo->unlock();
         } else {
 			O3D_ERROR(E_InvalidOperation("Inconsistent unlock operation"));
@@ -380,7 +380,7 @@ void VertexElement::update(const Float *data, UInt32 offset, UInt32 numElt)
 
 	if (m_data.isValid() && !m_isValid)	{
 		memcpy(m_data.getData() + (offset * m_eltSize), data, numElt * m_eltSize);
-    } else if (m_vbo && m_vbo->isExist()) {
+    } else if (m_vbo && m_vbo->exists()) {
 		m_vbo->update(data, (m_offset / sizeof(Float)) + (offset * m_eltSize), numElt * m_eltSize);
     } else {
 		O3D_ERROR(E_InvalidOperation("Cannot update an invalid array"));

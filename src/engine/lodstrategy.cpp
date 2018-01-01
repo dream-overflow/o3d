@@ -34,10 +34,10 @@ UInt32 LodStrategy::getIndex(Float value, const std::vector<Float> &lodVector)
 	UInt32 id = 0;
 	UInt32 numIndex = static_cast<UInt32>(lodVector.size());
 
-	for (id = 0; id < numIndex; ++id)
-	{
-		if ((id+1 < numIndex) && (lodVector[id+1] > value))
+    for (id = 0; id < numIndex; ++id) {
+        if ((id+1 < numIndex) && (lodVector[id+1] > value)) {
 			break;
+        }
 	}
 
 	UInt32 index = o3d::min<UInt32>(
@@ -46,4 +46,3 @@ UInt32 LodStrategy::getIndex(Float value, const std::vector<Float> &lodVector)
 
 	return index;
 }
-

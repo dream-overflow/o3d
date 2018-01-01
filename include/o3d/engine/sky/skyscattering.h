@@ -290,10 +290,10 @@ private:
         T_SkyDatas(Context *context);
 
 		//! @brief Returns whether or not the data is defined
-		Bool isValid() const { return vertexColorBuffer.isExist(); }
+		Bool isValid() const { return vertexColorBuffer.exists(); }
 
 		// members //
-		VertexBufferObjf vertexColorBuffer;		//!< Color attrib buffer
+		ArrayBufferf vertexColorBuffer;		//!< Color attrib buffer
 
 		Double time;						//!< The time
 
@@ -307,8 +307,8 @@ private:
 	//-----------------------------------------------------------------------------------
 	Dome m_skyDome;							//!< Sky geometry
 
-	ElementBufferObjui m_indexBuffer;		//!< Index buffer of the dome.
-	VertexBufferObjf m_vertexBuffer;		//!< Vertex buffer of the dome.
+	ElementArrayBufferui m_indexBuffer;		//!< Index buffer of the dome.
+	ArrayBufferf m_vertexBuffer;		//!< Vertex buffer of the dome.
 
 	T_SkyDatas m_currentData;				//!< The current or the last data
 	T_SkyDatas m_forecastData;				//!< The forecast data

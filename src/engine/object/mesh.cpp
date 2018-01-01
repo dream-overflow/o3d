@@ -447,6 +447,8 @@ void Mesh::processAllFaces(Shadable::ProcessingPass pass)
 				m_meshData->getGeometry()->bindExternalFaceArray(faceArray);
 			}
 		}
+
+        // @todo VAOs and same for skin/rigg
     } else if (pass == Shadable::PROCESS_GEOMETRY) {
 		// external face array
         if (isExternalFaceArray()) {
@@ -465,10 +467,9 @@ void Mesh::processAllFaces(Shadable::ProcessingPass pass)
 			// draw the bound face array
 			m_meshData->getGeometry()->draw();
 		}
-	}
+    }
 }
 
-//Access to a currently active vertex element.
 VertexElement* Mesh::getVertexElement(VertexAttributeArray type) const
 {
     if (m_meshData) {
@@ -478,7 +479,6 @@ VertexElement* Mesh::getVertexElement(VertexAttributeArray type) const
     }
 }
 
-// Access to the currently active face array.
 FaceArray* Mesh::getFaceArray() const
 {
     if (m_shadableInfo.faceArray) {

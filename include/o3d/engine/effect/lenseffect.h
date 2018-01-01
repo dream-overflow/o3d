@@ -189,8 +189,8 @@ protected:
 	//! Manager for flares textures.
 	SmartObject<Texture2D> m_flareTextures[LensFlareModel::MAX_NUM_FLARES];
 
-	VertexBufferObjf m_vertices;
-	VertexBufferObjf m_texCoords;
+	ArrayBufferf m_vertices;
+	ArrayBufferf m_texCoords;
 
 	Vector3 m_lensVector;          //!< lens effect source position or direction (world space)
 

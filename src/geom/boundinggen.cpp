@@ -169,4 +169,3 @@ void BoundingGen::getAxisAlignedBoundingBoxExt(AABBoxExt& bBoxExt)
 	System::print(bbox.getHalfSize(), "");
 	System::print(bbox.getCenter(), "");*/
 }
-

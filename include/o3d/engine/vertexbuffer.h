@@ -19,7 +19,7 @@ namespace o3d {
 class Context;
 
 /**
- * @brief Vertex buffer base class.
+ * @brief Vertex buffer object base class.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
@@ -77,8 +77,8 @@ public:
 	//! Return how/where the buffer is stored.
 	inline Storage getStorageType() const { return m_storageType; }
 
-	//! Return TRUE if the buffer exist.
-	inline Bool isExist() const { return (m_bufferId != O3D_UNDEFINED); }
+    //! Return True if the buffer exists.
+    inline Bool exists() const { return (m_bufferId != O3D_UNDEFINED); }
 
 	//! Return TRUE if the buffer is currently locked.
 	inline Bool isLocked() const { return (m_lockCount > 0); }
@@ -119,19 +119,18 @@ protected:
 	void deleteElementArrayBuffer();
 };
 
-
 /**
  * @brief Generic vertex buffer.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
 template <UInt32 bufferType, class T>
-class O3D_API_TEMPLATE VertexBufferTpl : public VertexBuffer
+class O3D_API_TEMPLATE TemplateVertexBuffer : public VertexBuffer
 {
 public:
 
 	//! Default constructor.
-	VertexBufferTpl(
+    TemplateVertexBuffer(
             Context *context,
 			Storage storageType = STATIC) :
         VertexBuffer(context, storageType),
@@ -140,7 +139,7 @@ public:
 	}
 
 	//! Destructor.
-	~VertexBufferTpl() { release(); }
+    ~TemplateVertexBuffer() { release(); }
 
 	//! Release the VBO content and identifier.
 	void release();
@@ -202,7 +201,7 @@ public:
 		// simply perform an update
         if ((count == m_count) && (storageType == m_storageType)) {
 			glBufferSubData(bufferType, 0, m_count*sizeof(T), data);
-        } else  {
+        } else {
             // or a create
 			// Define global parameters
 			m_count = count;
@@ -346,146 +345,145 @@ protected:
 
 //! Release the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, Float>::release()
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, Float>::release()
 {
 	deleteVertexBuffer();
 }
 
 //! Release the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, Double>::release()
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, Double>::release()
 {
 	deleteVertexBuffer();
 }
 
 //! Release the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, UInt16>::release()
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, UInt16>::release()
 {
 	deleteVertexBuffer();
 }
 
 //! Release the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, UInt32>::release()
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, UInt32>::release()
 {
 	deleteVertexBuffer();
 }
 
 //! Release the IBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt16>::release()
+inline void TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt16>::release()
 {
 	deleteElementArrayBuffer();
 }
 
 //! Release the IBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt32>::release()
+inline void TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt32>::release()
 {
 	deleteElementArrayBuffer();
 }
 
 //! Bind the VBO if necessary.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, Float>::bindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, Float>::bindBuffer() const
 {
 	bindArrayBuffer();
 }
 
 //! Bind the VBO if necessary.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, Double>::bindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, Double>::bindBuffer() const
 {
 	bindArrayBuffer();
 }
 
 //! Bind the VBO if necessary.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, UInt16>::bindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, UInt16>::bindBuffer() const
 {
 	bindArrayBuffer();
 }
 
 //! Bind the VBO if necessary.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, UInt32>::bindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, UInt32>::bindBuffer() const
 {
 	bindArrayBuffer();
 }
 
 //! Bind the VBO if necessary.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt16>::bindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt16>::bindBuffer() const
 {
 	bindElementArrayBuffer();
 }
 
 //! Bind the VBO if necessary.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt32>::bindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt32>::bindBuffer() const
 {
 	bindElementArrayBuffer();
 }
 
 //! Unbind the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, Float>::unbindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, Float>::unbindBuffer() const
 {
 	unbindArrayBuffer();
 }
 
 //! Unbind the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, Double>::unbindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, Double>::unbindBuffer() const
 {
 	unbindArrayBuffer();
 }
 
 //! Unbind the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, UInt16>::unbindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, UInt16>::unbindBuffer() const
 {
 	unbindArrayBuffer();
 }
 
 //! Unbind the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, UInt32>::unbindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, UInt32>::unbindBuffer() const
 {
 	unbindArrayBuffer();
 }
 
 //! Unbind the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt16>::unbindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt16>::unbindBuffer() const
 {
 	unbindElementArrayBuffer();
 }
 
 //! Unbind the VBO.
 template <>
-inline void VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt32>::unbindBuffer() const
+inline void TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, UInt32>::unbindBuffer() const
 {
 	unbindElementArrayBuffer();
 }
-
 
 /**
- * @brief Vertex buffer object (vertex array object).
+ * @brief Vertex buffer object based on array buffer.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
 template <class T>
-class O3D_API_TEMPLATE VertexArrayObject : public VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, T>
+class O3D_API_TEMPLATE ArrayBuffer : public TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, T>
 {
 public:
 
 	//! Default constructor.
-	VertexArrayObject(
+    ArrayBuffer(
             Context *context,
 			VertexBuffer::Storage storageType = VertexBuffer::STATIC) :
-        VertexBufferTpl<VertexBuffer::ARRAY_BUFFER, T>(context, storageType)
+        TemplateVertexBuffer<VertexBuffer::ARRAY_BUFFER, T>(context, storageType)
 	{
 	}
 
@@ -501,38 +499,40 @@ public:
 	}
 };
 
-
 /**
- * @brief Element buffer object (index buffer object).
+ * @brief Vertex buffer object based on element array buffer (geometry index).
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
 template <class T>
-class O3D_API_TEMPLATE ElementArrayObject : public VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, T>
+class O3D_API_TEMPLATE ElementArrayBuffer : public TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, T>
 {
 public:
 
 	//! Default constructor.
-	ElementArrayObject(
+    ElementArrayBuffer(
             Context *context,
 			VertexBuffer::Storage storageType = VertexBuffer::STATIC) :
-        VertexBufferTpl<VertexBuffer::ELEMENT_ARRAY_BUFFER, T>(context, storageType)
+        TemplateVertexBuffer<VertexBuffer::ELEMENT_ARRAY_BUFFER, T>(context, storageType)
 	{
 	}
 };
 
 //---------------------------------------------------------------------------------------
-// Predefined array type
+// Predefined array buffer types
 //---------------------------------------------------------------------------------------
 
-typedef VertexArrayObject<Float>    VertexBufferObjf;
-typedef VertexArrayObject<UInt32>   VertexBufferObjui;
-typedef VertexArrayObject<Int32>    VertexBufferObji;
-typedef VertexArrayObject<UInt16>   VertexBufferObjus;
-typedef VertexArrayObject<Int16>    VertexBufferObjs;
+typedef ArrayBuffer<Float> ArrayBufferf;
+typedef ArrayBuffer<Double> ArrayBufferd;
+typedef ArrayBuffer<Int32> ArrayBufferi;
+typedef ArrayBuffer<UInt32> ArrayBufferui;
+typedef ArrayBuffer<Int16> ArrayBuffers;
+typedef ArrayBuffer<UInt16> ArrayBufferus;
+typedef ArrayBuffer<Int8> ArrayBufferb;
+typedef ArrayBuffer<UInt8> ArrayBufferub;
 
-typedef ElementArrayObject<UInt32>  ElementBufferObjui;
-typedef ElementArrayObject<UInt16>  ElementBufferObjus;
+typedef ElementArrayBuffer<UInt32> ElementArrayBufferui;
+typedef ElementArrayBuffer<UInt16> ElementArrayBufferus;
 
 } // namespace o3d
 

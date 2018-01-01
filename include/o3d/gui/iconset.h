@@ -170,8 +170,8 @@ protected:
 
 	String m_pathName;
 
-	VertexBufferObjf m_vertices;
-	VertexBufferObjf m_texCoords;
+	ArrayBufferf m_vertices;
+	ArrayBufferf m_texCoords;
 
 	ShaderInstance m_shaderInstance;
 

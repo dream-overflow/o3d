@@ -63,7 +63,7 @@ Bool BaseDir::setPathName(const String &pathName)
 	m_isValid = True;
 
 //	// Don't perform the existence check, because we could manage non existing dir
-//    if (!isExist()) {
+//    if (!exists()) {
 //		m_fullPathname = "";
 //		m_pathName = "";
 

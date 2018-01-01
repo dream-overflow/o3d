@@ -83,11 +83,11 @@ private:
 	PCLODLightmap * m_pDataLightmap;
 
 	/* OpenGL members */
-	VertexBufferObjf *m_glVertexBuffer;
-	ElementBufferObjui *m_glIndexBuffer;
+	ArrayBufferf *m_glVertexBuffer;
+	ElementArrayBufferui *m_glIndexBuffer;
 
-	VertexBufferObjf *m_glAttribBuffer;
-	VertexBufferObjf *m_glTexCoordBuffer;
+	ArrayBufferf *m_glAttribBuffer;
+	ArrayBufferf *m_glTexCoordBuffer;
 
 	T_RenderingBlockInfoArray m_glRenderingParts;
 

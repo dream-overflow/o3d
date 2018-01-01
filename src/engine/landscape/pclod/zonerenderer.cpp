@@ -333,7 +333,7 @@ void PCLODZoneRenderer::unsafeUpdate()
 	if (m_dataVertexBuffer.getNumElt() > 0)
 	{
 		if (!m_glVertexBuffer)
-            m_glVertexBuffer = new VertexBufferObjf(getScene()->getContext());
+            m_glVertexBuffer = new ArrayBufferf(getScene()->getContext());
 
 		m_glVertexBuffer->create(m_dataVertexBuffer.getNumElt(), VertexBuffer::STATIC, m_dataVertexBuffer.getData());
 	}
@@ -341,7 +341,7 @@ void PCLODZoneRenderer::unsafeUpdate()
 	if (m_dataIndexBuffer.getNumElt() > 0)
 	{
 		if (!m_glIndexBuffer)
-            m_glIndexBuffer = new ElementBufferObjui(getScene()->getContext());
+            m_glIndexBuffer = new ElementArrayBufferui(getScene()->getContext());
 
 		m_glIndexBuffer->create(m_dataIndexBuffer.getNumElt(), VertexBuffer::STATIC, m_dataIndexBuffer.getData());
 	}
@@ -349,7 +349,7 @@ void PCLODZoneRenderer::unsafeUpdate()
 	if (m_dataAttribBuffer.getNumElt() > 0)
 	{
 		if (!m_glAttribBuffer)
-            m_glAttribBuffer = new VertexBufferObjf(getScene()->getContext());
+            m_glAttribBuffer = new ArrayBufferf(getScene()->getContext());
 
 		m_glAttribBuffer->create(m_dataAttribBuffer.getNumElt(), VertexBuffer::STATIC, m_dataAttribBuffer.getData());
 	}

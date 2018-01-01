@@ -35,8 +35,9 @@ UInt32 MeshData::getCapacity(Bool countOptional) const
 {
 	UInt32 size = 0;
 
-	if (m_geometry.isValid())
+    if (m_geometry.isValid()) {
 		size += m_geometry->getCapacity();
+    }
 
 	return size;
 }
@@ -44,8 +45,9 @@ UInt32 MeshData::getCapacity(Bool countOptional) const
 // create for OpenGL all non already created sub-mesh
 void MeshData::createGeometry()
 {
-	if (m_geometry.isValid())
+    if (m_geometry.isValid()) {
 		m_geometry->create();
+    }
 }
 
 // Destroy the contained geometry and clear the filename
@@ -58,15 +60,24 @@ void MeshData::destroy()
 // compute the TBN space
 void MeshData::genTangentSpace()
 {
-	if (m_geometry.isValid())
+    if (m_geometry.isValid()) {
 		m_geometry->genTangentSpace();
+    }
 }
 
 // compute the vertex normals
 void MeshData::genNormals()
 {
-	if (m_geometry.isValid())
+    if (m_geometry.isValid()) {
 		m_geometry->genNormals();
+    }
+}
+
+void MeshData::computeBounding(GeometryData::BoundingMode mode)
+{
+    if (m_geometry.isValid()) {
+        return m_geometry->computeBounding(mode);
+    }
 }
 
 // compute the total number of vertices for this mesh-data
@@ -208,4 +219,3 @@ Bool MeshDataTask::finalize()
 	else
 		return False;
 }
-

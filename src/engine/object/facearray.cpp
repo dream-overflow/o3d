@@ -216,7 +216,7 @@ Bool FaceArrayUInt16::create()
 	m_vbo.create(m_faces.getNumElt(),m_storage,m_faces.getData());
 	m_faces.releaseCheckAndDelete();
 
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 	{
 		m_isDirty = False;
 		return True;
@@ -233,7 +233,7 @@ Bool FaceArrayUInt16::create(UInt32 numElt)
 
 	m_numElements = numElt;
 
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 	{
 		m_isDirty = False;
 		return True;
@@ -275,7 +275,7 @@ Bool FaceArrayUInt16::create(
 	m_vbo.create(numElt, m_storage, faces);
 	m_faces.releaseCheckAndDelete(); // a previous set...
 
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 	{
 		m_isDirty = False;
 		return True;
@@ -292,7 +292,7 @@ void FaceArrayUInt16::update(
 {
 	O3D_ASSERT(numElt > 0);
 
-	if (!m_vbo.isExist())
+	if (!m_vbo.exists())
 		O3D_ERROR(E_InvalidPrecondition("Must be previously created"));
 
 	if (!faces)
@@ -318,7 +318,7 @@ UInt8* FaceArrayUInt16::lockArray(
 {
 	if (m_faces.isValid())
 		return reinterpret_cast<UInt8*>(m_faces.getData() + offset);
-	else if (m_vbo.isExist())
+	else if (m_vbo.exists())
 		return reinterpret_cast<UInt8*>(m_vbo.lock(offset, size, flags));
 	else
         return nullptr;
@@ -327,7 +327,7 @@ UInt8* FaceArrayUInt16::lockArray(
 // Unlock the data array
 void FaceArrayUInt16::unlockArray()
 {
-	if (m_vbo.isExist() && m_vbo.isLocked())
+	if (m_vbo.exists() && m_vbo.isLocked())
 		m_vbo.unlock();
 }
 
@@ -336,7 +336,7 @@ UInt32 FaceArrayUInt16::getCapacity() const
 {
 	if (m_faces.isValid())
 		return m_faces.getNumElt() << 1;
-	else if (m_vbo.isExist())
+	else if (m_vbo.exists())
 		return m_vbo.getCount() << 1;
 	else
 		return 0;
@@ -345,7 +345,7 @@ UInt32 FaceArrayUInt16::getCapacity() const
 // Bind the data array 
 void FaceArrayUInt16::bindArray()
 {
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 		return m_vbo.bindBuffer();
 }
 
@@ -357,7 +357,7 @@ void FaceArrayUInt16::draw(Scene *scene)
 
 	O3D_ASSERT(scene);
 
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 	{
 		UInt32 numElements = m_vbo.getCount() - m_offset;
 
@@ -379,7 +379,7 @@ void FaceArrayUInt16::drawPart(Scene *scene, UInt32 firstIndex, UInt32 lastIndex
 
 	O3D_ASSERT(scene);
 
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 	{
 		UInt32 numElements = lastIndex - firstIndex;
 
@@ -401,7 +401,7 @@ Bool FaceArrayUInt16::writeToFile(OutStream &os)
 	{
         os << m_faces;
 	}
-	else if (m_vbo.isExist())
+	else if (m_vbo.exists())
 	{
 		UInt16 *data = m_vbo.lock(0, 0, VertexBuffer::READ_ONLY);
 		UInt32 count = m_vbo.getCount();
@@ -563,7 +563,7 @@ Bool FaceArrayUInt32::create()
 	m_vbo.create(m_faces.getNumElt(), m_storage, m_faces.getData());
 	m_faces.releaseCheckAndDelete();
 
-    if (m_vbo.isExist()) {
+    if (m_vbo.exists()) {
 		m_isDirty = False;
 		return True;
     } else {
@@ -579,7 +579,7 @@ Bool FaceArrayUInt32::create(UInt32 numElt)
 
 	m_numElements = numElt;
 
-    if (m_vbo.isExist()) {
+    if (m_vbo.exists()) {
 		m_isDirty = False;
 		return True;
     } else {
@@ -623,7 +623,7 @@ Bool FaceArrayUInt32::create(
 	m_vbo.create(numElt, m_storage, faces);
 	m_faces.releaseCheckAndDelete(); // a previous set...
 
-    if (m_vbo.isExist()) {
+    if (m_vbo.exists()) {
 		m_isDirty = False;
 		return True;
     } else {
@@ -639,7 +639,7 @@ void FaceArrayUInt32::update(
 {
 	O3D_ASSERT(numElt > 0);
 
-    if (!m_vbo.isExist()) {
+    if (!m_vbo.exists()) {
 		O3D_ERROR(E_InvalidPrecondition("Must be previously created"));
     }
 
@@ -671,7 +671,7 @@ UInt8* FaceArrayUInt32::lockArray(
 {
     if (m_faces.getData()) {
 		return reinterpret_cast<UInt8*>(m_faces.getData() + offset);
-    } else if (m_vbo.isExist()) {
+    } else if (m_vbo.exists()) {
 		return reinterpret_cast<UInt8*>(m_vbo.lock(offset, size, flags));
     } else {
         return nullptr;
@@ -681,7 +681,7 @@ UInt8* FaceArrayUInt32::lockArray(
 // Unlock the data array
 void FaceArrayUInt32::unlockArray()
 {
-    if (m_vbo.isExist() && m_vbo.isLocked()) {
+    if (m_vbo.exists() && m_vbo.isLocked()) {
 		m_vbo.unlock();
     }
 }
@@ -691,7 +691,7 @@ UInt32 FaceArrayUInt32::getCapacity() const
 {
     if (m_faces.isValid()) {
 		return m_faces.getNumElt() << 2;
-    } else if (m_vbo.isExist()) {
+    } else if (m_vbo.exists()) {
 		return m_vbo.getCount() << 2;
     } else {
 		return 0;
@@ -701,7 +701,7 @@ UInt32 FaceArrayUInt32::getCapacity() const
 // Bind the data array 
 void FaceArrayUInt32::bindArray()
 {
-    if (m_vbo.isExist()) {
+    if (m_vbo.exists()) {
 		return m_vbo.bindBuffer();
     }
 }
@@ -714,7 +714,7 @@ void FaceArrayUInt32::draw(Scene *scene)
 
 	O3D_ASSERT(scene);
 
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 	{
 		UInt32 numElements = m_vbo.getCount() - m_offset;
 
@@ -736,7 +736,7 @@ void FaceArrayUInt32::drawPart(Scene *scene, UInt32 firstIndex, UInt32 lastIndex
 
 	O3D_ASSERT(scene);
 
-	if (m_vbo.isExist())
+	if (m_vbo.exists())
 	{
 		UInt32 numElements = lastIndex - firstIndex;
 
@@ -758,7 +758,7 @@ Bool FaceArrayUInt32::writeToFile(OutStream &os)
 	{
         os << m_faces;
 	}
-	else if (m_vbo.isExist())
+	else if (m_vbo.exists())
 	{
 		UInt32 *data = m_vbo.lock(0, 0, VertexBuffer::READ_ONLY);
 		UInt32 count = m_vbo.getCount();

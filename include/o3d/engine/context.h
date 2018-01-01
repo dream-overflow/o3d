@@ -139,9 +139,15 @@ public:
 
 	//! Vertex array object binding.
 	//! @param id Vertex array object identifier.
-    //! @param vaoState Valid pointer (or null if id is 0) to a VertexArrayState structure.
-	//!                 It must stay valid during the bind usage.
+    //! @param vaoState Valid pointer to a VertexArrayState structure staying valid
+    //! all usage long.
+    //! @note If 0 is used so the default VAO is bound (@see bindDefaultVertexArray)
+    //! It is not permit to bound the VAO 0 because nothing can be done
+    //! without a default VAO.
 	void bindVertexArray(UInt32 id, VertexArrayState *vaoState);
+
+    //! Bind the default vertex array object.
+    void bindDefaultVertexArray();
 
 	//! Delete a vertex array object.
 	//! @param vao Vertex array.
@@ -149,6 +155,9 @@ public:
 
 	//! Get the current bound vertex array object.
 	inline UInt32 getCurrentVertexArray() const { return m_currentVAOId; }
+
+    //! Is the current vertex array object is the default one.
+    inline Bool isDefaultVertexArray() const { return m_currentVAOId == m_defaultVAOId; }
 
 	//-----------------------------------------------------------------------------------
 	// IBO (see FaceArray and VertexBuffer)

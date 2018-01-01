@@ -141,14 +141,14 @@ void LensEffect::createShader()
 		m_occlusionShader.a_vertex = m_occlusionShader.instance.getAttributeLocation("a_vertex");
 	}
 
-	if (!m_texCoords.isExist())
+	if (!m_texCoords.exists())
 	{
 		// texture coordinates VBO
 		static Float texCoords[8] = { 0,0, 1,0, 0,1, 1,1 };
 		m_texCoords.create(8, VertexBuffer::STATIC, texCoords);
 	}
 
-	if (!m_vertices.isExist())
+	if (!m_vertices.exists())
 	{
 		// vertices VBO
 		static Float vertices[12] = {

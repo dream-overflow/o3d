@@ -21,20 +21,17 @@ namespace o3d {
 
 class MeshDataManager;
 
-//--------------------------------------------------------------------------------------
-//! @class MeshData
-//------------------------------------------------------------------------------------
-//! A mesh data object contain any geometry data, and skinning weighting/bones id
-//! informations.
-//! It contain a GeometryData object and its geometry object contain one or many
-//! FaceArray objects.
-//! 
-//! @note Important consideration: For save memory and increase OpenGL performance,
-//! use face arrays in 16bits (UInt16) for meshdata for vertices lesser
-//! than 65536. Otherwise use a 32bits (UInt32) face array. So take care of using the
-//! optimal format. You can process an optimize method to process many optimization for
-//! you, but this cost some CPU time, and only recommended at authoring state.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A mesh data object contain any geometry data, and skinning weighting/bones id
+ * informations.
+ * @details It contain a GeometryData object and its geometry object contain one or many
+ * FaceArray objects.
+ * @note Important consideration: For save memory and increase OpenGL performance,
+ * use face arrays in 16bits (UInt16) for meshdata for vertices lesser
+ * than 65536. Otherwise use a 32bits (UInt32) face array. So take care of using the
+ * optimal format. You can process an optimize method to process many optimization for
+ * you, but this cost some CPU time, and only recommended at authoring state.
+ */
 class O3D_API MeshData : public SceneResource
 {
 public:
@@ -48,7 +45,6 @@ public:
 	//! @param countOptional count the size of additional arrays of MeshData
 	UInt32 getCapacity(Bool countOptional) const;
 
-
 	//-----------------------------------------------------------------------------------
 	// Global data
 	//-----------------------------------------------------------------------------------
@@ -58,7 +54,6 @@ public:
 
 	//! Compute the total number of faces
 	UInt32 getNumFaces() const;
-
 
 	//-----------------------------------------------------------------------------------
 	// Generation methods
@@ -71,12 +66,7 @@ public:
 	void genNormals();
 
 	//! Compute the bounding volume given the mode
-	void computeBounding(GeometryData::BoundingMode mode)
-	{
-		if (m_geometry.isValid())
-			return m_geometry->computeBounding(mode);
-	}
-
+    void computeBounding(GeometryData::BoundingMode mode);
 
 	//-----------------------------------------------------------------------------------
 	// General settings
@@ -87,13 +77,12 @@ public:
 	//! Get the .o3dms mesh data file name.
 	inline const String& getFileName() const { return m_filename; }
 
-
 	//-----------------------------------------------------------------------------------
 	// Geometry data methods
 	//-----------------------------------------------------------------------------------
 
 	//! Define the geometry object. The previous is deleted.
-	inline void setGeometry(GeometryData *geometry) { m_geometry = geometry; }
+    inline void setGeometry(GeometryData *geometry) { m_geometry = geometry; }
 
 	//! Get the geometry object, or null if none.
 	inline GeometryData* getGeometry() const { return m_geometry.get(); }
@@ -103,8 +92,9 @@ public:
 	//! @note 0 always mean the first face array.
 	inline void bindGeometry(UInt32 arrayId)
 	{
-		if (m_geometry.isValid())
+        if (m_geometry.isValid()) {
 			m_geometry->bindFaceArray(arrayId);
+        }
 	}
 
 	//! Create/validate geometry data. Create VBO if necessary or validate for VertexArray.
@@ -114,7 +104,6 @@ public:
 	//! Destroy the contained geometry and clear the filename
 	void destroy();
 
-
 	//-----------------------------------------------------------------------------------
 	// LOD management
 	//-----------------------------------------------------------------------------------
@@ -122,35 +111,38 @@ public:
 	//! Set the current LOD percent
 	inline void setCurrentLod(UInt32 lvl)
 	{
-		if (m_geometry.isValid())
+        if (m_geometry.isValid()) {
 			return m_geometry->setLodLvl(lvl);
+        }
 	}
 
 	//! Get the current LOD percent (100 if not supported)
 	inline UInt32 getCurrentLod()const
 	{
-		if (m_geometry.isValid())
+        if (m_geometry.isValid()) {
 			return m_geometry->getLodLvl();
-		else
+        } else {
 			return 100;
+        }
 	}
 
 	//! Is progressive mesh supported
 	inline Bool isProgressive() const
 	{
-		if (m_geometry.isValid())
+        if (m_geometry.isValid()) {
 			return m_geometry->isProgressive();
-		else
+        } else {
 			return False;
+        }
 	}
 
 	//! Compute the the progressive mesh data
 	inline void genProgressiveMesh()
 	{
-		if (m_geometry.isValid())
+        if (m_geometry.isValid()) {
 			return m_geometry->genProgressiveMesh();
+        }
 	}
-
 
 	//-----------------------------------------------------------------------------------
 	// Serialization
@@ -162,8 +154,8 @@ public:
 	//! Save the geometry file (*.o3dms) into the defined filename.
 	Bool save();
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -171,11 +163,9 @@ protected:
 	SmartObject<GeometryData> m_geometry; //!< Geometry data
 };
 
-//--------------------------------------------------------------------------------------
-//! @class MeshDataTask
-//------------------------------------------------------------------------------------
-//! Task responsible of the loading of a mesh-data object.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Task responsible of the loading of a mesh-data object.
+ */
 class O3D_API MeshDataTask : public Task
 {
 public:
@@ -183,13 +173,10 @@ public:
 	//! Default constructor.
 	//! @param meshData Mesh-data target.
 	//! @param filename Filename of the mesh-data to load.
-	MeshDataTask(
-			MeshData *meshData,
-			const String &filename);
+    MeshDataTask(MeshData *meshData, const String &filename);
 
-	virtual Bool execute();
-
-	virtual Bool finalize();
+    virtual Bool execute() override;
+    virtual Bool finalize() override;
 
 private:
 
@@ -201,4 +188,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MESHDATA_H
-

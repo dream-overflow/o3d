@@ -26,6 +26,7 @@ include/o3d/core/virtualdir.h
 include/o3d/core/virtualfile.h
 include/o3d/core/wgl.h
 include/o3d/engine/glextdefines.h
+include/o3d/engine/uniformbuffer.h
 src/core/basedir.cpp
 src/core/basefile.cpp
 src/core/dir.cpp
@@ -112,6 +113,7 @@ src/engine/private/rendererandroid.cpp
 src/engine/private/renderersdl.cpp
 src/engine/private/rendererwin32.cpp
 src/engine/private/rendererx11.cpp
+src/engine/uniformbuffer.cpp
 src/shaders/330_fp.glsl
 src/shaders/330_fp.glsl
 src/shaders/330_vp.glsl

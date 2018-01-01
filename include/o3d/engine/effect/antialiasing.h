@@ -62,7 +62,7 @@ private:
     Vector2f m_pixelSize;    //!< Pixel size (default is (1,1)).
     Float m_weight;          //!< Effect weight factor (default is 1).
 
-    VertexBufferObjf m_vertices;
+    ArrayBufferf m_vertices;
     Matrix4 m_modelviewProj;
 
     struct AAShader

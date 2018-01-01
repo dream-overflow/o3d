@@ -78,39 +78,39 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Transform the bounding box if necessary.
-	virtual void update();
+    virtual void update() override;
 
 	//! Draw the mesh.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	//! Check the global bounding volume with an AABBox.
 	//! The outside is pointed by the normal direction of the plane.
 	//! @return Geometry::CLIP_INSIDE if the plane clip back with the object bounding,
 	//!         Geometry::CLIP_INTERSECT if the plane clip front and back,
 	//!         Geometry::CLIP_OUTSIDE otherwise.
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 
 	//! Check the global bounding volume with an infinite plane.
 	//! The outside is pointed by the normal direction of the plane.
 	//! @return Geometry::CLIP_INSIDE if the plane clip back with the object bounding,
 	//!         Geometry::CLIP_INTERSECT if the plane clip front and back,
 	//!         Geometry::CLIP_OUTSIDE otherwise.
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 
 	//! Check the global bounding volume with the frustum.
 	//! @return Geometry::CLIP_INSIDE if the plane clip back with the object bounding,
 	//!         Geometry::CLIP_INTERSECT if the plane clip front and back,
 	//!         Geometry::CLIP_OUTSIDE otherwise.
-	virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const;
+    virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const override;
 
 	//! Get the drawing type.
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Rendering
 	//-----------------------------------------------------------------------------------
 
-	virtual void processAllFaces(Shadable::ProcessingPass pass);
+    virtual void processAllFaces(Shadable::ProcessingPass pass) override;
 
 	//-----------------------------------------------------------------------------------
 	// Shadable
@@ -119,43 +119,43 @@ public:
 	//! Access to a currently active vertex element.
 	//! @param type The array type to retrieve.
     //! @return The vertex element or null.
-	virtual VertexElement* getVertexElement(VertexAttributeArray type) const;
+    virtual VertexElement* getVertexElement(VertexAttributeArray type) const override;
 
 	//! Access to the currently active face array.
     //! @return The face array or null.
-	virtual FaceArray* getFaceArray() const;
+    virtual FaceArray* getFaceArray() const override;
 
 	//! Bind the array in a specified attribute array location.
 	//! @note The destination array must be enabled before to bind.
-	virtual void attribute(VertexAttributeArray mode, UInt32 location);
+    virtual void attribute(VertexAttributeArray mode, UInt32 location) override;
 
 	//! Make an operation.
-	virtual void operation(Operations what);
+    virtual void operation(Operations what) override;
 
 	//! Is an operation is already done. For example ask if the tangent space is defined,
 	//! or is the geometry data is create.
-	virtual Bool isOperation(Operations what) const;
+    virtual Bool isOperation(Operations what) const override;
 
 	//! Get the matrix array for hardware skinning/rigging.
     //! @return null.
-	virtual const Float* getMatrixArray() const;
+    virtual const Float* getMatrixArray() const override;
 
 	//! Get the minimal square distance of the object bounding volume from the given point.
-	virtual Float getDistanceFrom(const Vector3 &point) const;
+    virtual Float getDistanceFrom(const Vector3 &point) const override;
 
     //-----------------------------------------------------------------------------------
 	// Shadowable
 	//-----------------------------------------------------------------------------------
 
 	//! Project the silhouette according to a specified light.
-	virtual void projectSilhouette(const DrawInfo &drawInfo);
+    virtual void projectSilhouette(const DrawInfo &drawInfo) override;
 
     //-----------------------------------------------------------------------------------
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -172,7 +172,7 @@ protected:
 	std::vector<MaterialProfile*> m_matProfiles;  //! One material profile per sub-mesh.
 
 	//! Update the global bounding volume.
-	virtual void updateBounding();
+    virtual void updateBounding();
 
 	//! Draw the symbolics objects.
 	void drawSymbolics();

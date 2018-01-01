@@ -238,4 +238,3 @@ Bool GlowEffect::readFromFile(InStream &is)
 
     return True;
 }
-

@@ -56,8 +56,8 @@ public:
 		PREPARE_GEOMETRY,       //!< Prepare the geometry data.
 		PROCESS_GEOMETRY,       //!< Process the geometry data (draw faces).
 		PREPARE_SHADOW_VOLUME,  //!< Prepare the geometry for shadow volume rendering.
-		PROCESS_SHADOW_VOLUME   //!< Process the rendering of shadow volume.
-	};
+        PROCESS_SHADOW_VOLUME   //!< Process the rendering of shadow volume.
+    };
 
 	//! Number of processing passes.
 	static const Int32 NUM_PROCESSING_PASS = 4;
@@ -67,12 +67,12 @@ public:
 	{
 		NORMALS,             //!< Normals element array.
 		TANGENT_SPACE,       //!< Tangent space, include normals.
-		CREATE               //!< Validate data query.
+        CREATE,              //!< Validate data query.
+        CREATE_VAO           //!< Create vertex array object as possible.
 	};
 
 	//! Get the shadable vertex program type.
 	virtual VertexProgramType getVertexProgramType() const = 0;
-
 
 	//-----------------------------------------------------------------------------------
 	// Processing
@@ -105,7 +105,6 @@ public:
 
 	//! Process the rendering of any faces of the current face array.
 	virtual void processAllFaces(ProcessingPass pass) = 0;
-
 
     //-----------------------------------------------------------------------------------
 	// Access methods for current object state.

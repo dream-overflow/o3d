@@ -417,8 +417,8 @@ void PrimitiveManager::draw(PrimitiveManager::Primitives type, const Vector3 &sc
 // Draw a set of VBO (need vertex(XYZ) and color(RGBA).
 void PrimitiveManager::drawArray(
 		PrimitiveFormat format,
-		const VertexBufferObjf &vertices,
-		const VertexBufferObjf &colors,
+		const ArrayBufferf &vertices,
+		const ArrayBufferf &colors,
 		const Vector3 &scale)
 {
 	m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);

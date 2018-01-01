@@ -52,57 +52,61 @@ void ColorMaterial::initialize(
     m_arrays.clear();
     m_valid = False;
 
-    if ((initMode != AMBIENT) && (initMode != DEFERRED))
+    if ((initMode != AMBIENT) && (initMode != DEFERRED)) {
         O3D_ERROR(E_InvalidParameter("InitMode::AMBIENT or DEFERRED only are accepted"));
+    }
 
     m_options = "";
 
     a_rigging = a_skinning = 0;
 
+    // @todo and shdable must have vertex attribute for that...
     // diffuse map ?
-    if (materialPass.getDiffuseMap())
-    {
+    if (materialPass.getDiffuseMap()) {
         m_options += "DIFFUSE_MAP;";
         m_diffuseMap = True;
-    }
-    else
+    } else {
         m_diffuseMap = False;
+    }
 
-    if (materialPass.getAlphaTest())
-    {
-        if (materialPass.getAlphaTestFunc() == COMP_GREATER)
+    // @todo prefer a box (function) than a #ifdef and copy past of code
+    // @todo same for mesh/rigg/skin
+    if (materialPass.getAlphaTest()) {
+        if (materialPass.getAlphaTestFunc() == COMP_GREATER) {
             m_options += String("ALPHA_FUNC_GREATER;ALPHA_TEST_REF=") << materialPass.getAlphaTestFuncRef() << ";";
-        else if (materialPass.getAlphaTestFunc() == COMP_LESS)
+        } else if (materialPass.getAlphaTestFunc() == COMP_LESS)  {
             m_options += String("ALPHA_FUNC_LESS;ALPHA_TEST_REF=") << materialPass.getAlphaTestFuncRef() << ";";
+        }
     }
     //GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER, GL_NOTEQUAL, GL_GEQUAL, and GL_ALWAYS
     m_arrays.push_back(V_VERTICES_ARRAY);
 
-    if (m_diffuseMap)
+    if (m_diffuseMap) {
         m_arrays.push_back(V_TEXCOORDS_2D_1_ARRAY);
+    }
 
-    // static mesh ?
-    if (shadable.getVertexProgramType() == Shadable::VP_MESH)
+    // static mesh ? @todo more factorized avoid this per material, options could comes from shadable
+    if (shadable.getVertexProgramType() == Shadable::VP_MESH) {
         m_options += "MESH;";
-    else if (shadable.getVertexProgramType() == Shadable::VP_RIGGING)
-    {
+    } else if (shadable.getVertexProgramType() == Shadable::VP_RIGGING) {
         m_arrays.push_back(V_RIGGING_ARRAY);
         m_options += String("NUM_BONES=") << Int32(O3D_MAX_SKINNING_MATRIX_ARRAY) << ";RIGGING;";
-    }
-    else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING)
-    {
+    } else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING) {
         m_arrays.push_back(V_WEIGHTING_ARRAY);
         m_arrays.push_back(V_SKINNING_ARRAY);
         m_options += String("NUM_BONES=") << Int32(O3D_MAX_SKINNING_MATRIX_ARRAY) << ";SKINNING;";
-    }
-    else if (shadable.getVertexProgramType() == Shadable::VP_BILLBOARD)
+    } else if (shadable.getVertexProgramType() == Shadable::VP_BILLBOARD) {
         m_options += "BILLBOARD;";
-    else
+    } else {
         m_options += "MESH;";
+    }
+
+    // @todo could uses UBO. @todo if possible preferes uses of layout from shaders
+    // avoid getUniformLocation (synced call) but how to be consistent with
+    // per shadable uniforms too ?
 
     // ambient mode
-    if (initMode == AMBIENT)
-    {
+    if (initMode == AMBIENT) {
         Shader *shader = getScene()->getShaderManager()->addShader(m_shaderName);
         ShaderInstance &shaderInstance = m_shaderInstance;
 
@@ -114,28 +118,24 @@ void ColorMaterial::initialize(
 
         u_modelViewProjectionMatrix = shaderInstance.getUniformLocation("u_modelViewProjectionMatrix");
 
-        if (m_diffuseMap)
+        if (m_diffuseMap) {
             u_diffuseMap = shaderInstance.getUniformLocation("u_diffuseMap");
+        }
 
         u_diffuse = shaderInstance.getUniformLocation("u_diffuse");
 
-        if (shadable.getVertexProgramType() == Shadable::VP_RIGGING)
-        {
+        if (shadable.getVertexProgramType() == Shadable::VP_RIGGING) {
             a_rigging = shaderInstance.getAttributeLocation("a_rigging");
             u_bonesMatrixArray = shaderInstance.getUniformLocation("u_bonesMatrixArray");
-        }
-        else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING)
-        {
+        } else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING) {
             a_skinning = shaderInstance.getAttributeLocation("a_skinning");
             a_weighting = shaderInstance.getAttributeLocation("a_weighting");
             u_bonesMatrixArray = shaderInstance.getUniformLocation("u_bonesMatrixArray");
         }
 
         shaderInstance.unbindShader();
-    }
-    // deferred mode
-    else if (initMode == DEFERRED)
-    {
+    } else if (initMode == DEFERRED) {
+        // deferred mode
         Shader *shader = getScene()->getShaderManager()->addShader(m_shaderName);
         ShaderInstance &shaderInstance = m_shaderInstance;
 
@@ -149,18 +149,16 @@ void ColorMaterial::initialize(
         u_worldMatrix = shaderInstance.getUniformLocation("u_worldMatrix");
         u_normalMatrix = shaderInstance.getUniformLocation("u_normalMatrix");
 
-        if (m_diffuseMap)
+        if (m_diffuseMap) {
             u_diffuseMap = shaderInstance.getUniformLocation("u_diffuseMap");
+        }
 
         u_diffuse = shaderInstance.getUniformLocation("u_diffuse");
 
-        if (shadable.getVertexProgramType() == Shadable::VP_RIGGING)
-        {
+        if (shadable.getVertexProgramType() == Shadable::VP_RIGGING) {
             a_rigging = shaderInstance.getAttributeLocation("a_rigging");
             u_bonesMatrixArray = shaderInstance.getUniformLocation("u_bonesMatrixArray");
-        }
-        else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING)
-        {
+        } else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING) {
             a_skinning = shaderInstance.getAttributeLocation("a_skinning");
             a_weighting = shaderInstance.getAttributeLocation("a_weighting");
             u_bonesMatrixArray = shaderInstance.getUniformLocation("u_bonesMatrixArray");
@@ -171,7 +169,7 @@ void ColorMaterial::initialize(
 
     m_initMode = initMode;
 
-    buildVertexArray(shadable);
+    // buildVertexArray(shadable);
 
     m_valid = True;
 }
@@ -187,78 +185,70 @@ void ColorMaterial::release()
 
 // Shadable object rendering for ambient pass.
 void ColorMaterial::processAmbient(
-        Shadable &object,
+        Shadable &shadable,
         const DrawInfo &drawInfo,
         const MaterialPass &materialPass)
 {
     ShaderInstance &shader = m_shaderInstance;
     Context *glContext = getScene()->getContext();
 
-    if (shader.isOperational())
-    {
+    // @todo VAO, UBO or manual
+    if (shader.isOperational()) {
         shader.bindShader();
 
-        object.processAllFaces(Shadable::PREPARE_GEOMETRY);
+        shadable.processAllFaces(Shadable::PREPARE_GEOMETRY);
 
-        if (m_diffuseMap)
-        {
+        // if no VAO then setup the vertex attrib arrays
+        if (glContext->isDefaultVertexArray()) {
+            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+                shadable.attribute(m_arrays[i], m_arrays[i]);
+            }
+        }
+
+        // @todo if no UBO then setup the uniform buffer objects
+        if (m_diffuseMap) {
             materialPass.assignMapSetting(MaterialPass::DIFFUSE_MAP);
             shader.setConstTexture(u_diffuseMap, materialPass.getDiffuseMap(), 0);
-
-            object.attribute(V_TEXCOORDS_2D_1_ARRAY, V_TEXCOORDS_2D_1_ARRAY);
         }
 
         shader.setConstColor(u_diffuse, materialPass.getDiffuse());
-
         shader.setConstMatrix4(u_modelViewProjectionMatrix, False, getScene()->getContext()->modelViewProjection());
 
-        object.attribute(V_VERTICES_ARRAY, V_VERTICES_ARRAY);
-
-        // rigging
-        if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
+        if ((a_rigging > 0) && (shadable.getVertexProgramType() == Shadable::VP_RIGGING)) {
+            // rigging
             shader.setNConstMatrix4(
                     u_bonesMatrixArray,
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
                     False,
-                    object.getMatrixArray());
-
-            object.attribute(V_RIGGING_ARRAY, a_rigging);
-        }
-        // skinning
-        else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
+                    shadable.getMatrixArray());
+        } else if ((a_skinning > 0) && (shadable.getVertexProgramType() == Shadable::VP_SKINNING)) {
+            // skinning
             shader.setNConstMatrix4(
                     u_bonesMatrixArray,
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
                     False,
-                    object.getMatrixArray());
-
-            object.attribute(V_SKINNING_ARRAY, a_skinning);
-            object.attribute(V_WEIGHTING_ARRAY, a_weighting);
+                    shadable.getMatrixArray());
         }
 
-        object.processAllFaces(Shadable::PROCESS_GEOMETRY);
+        shadable.processAllFaces(Shadable::PROCESS_GEOMETRY);
 
-        if (m_diffuseMap)
-        {
+        // cleanup default vertex attrib array
+        if (glContext->isDefaultVertexArray()) {
+            // @todo we should agree with letting active by default at least
+            // the two first units. or something else like this.
+            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+                glContext->disableVertexAttribArray(m_arrays[i]);
+            }
+        } else {
+            glContext->bindDefaultVertexArray();
+        }
+
+        // cleanup uniforms
+        if (m_diffuseMap) {
             glContext->setActiveTextureUnit(0);
             glContext->bindTexture(TEXTURE_2D, 0);
-
-            glContext->disableVertexAttribArray(V_TEXCOORDS_2D_1_ARRAY);
         }
 
-        if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
-            glContext->disableVertexAttribArray(a_rigging);
-        }
-        else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
-            glContext->disableVertexAttribArray(a_skinning);
-            glContext->disableVertexAttribArray(a_weighting);
-        }
-
-        glContext->disableVertexAttribArray(V_VERTICES_ARRAY);
         shader.unbindShader();
     }
 }
@@ -285,25 +275,28 @@ void ColorMaterial::processLighting(
 
 // Shadable object rendering for deferred diffuse pass.
 void ColorMaterial::processDeferred(
-        Shadable &object,
+        Shadable &shadable,
         const DrawInfo &drawInfo,
         const MaterialPass &materialPass)
 {
     ShaderInstance &shader = m_shaderInstance;
     Context *glContext = getScene()->getContext();
 
-    if ((m_initMode == DEFERRED) && shader.isOperational())
-    {
+    if ((m_initMode == DEFERRED) && shader.isOperational()) {
         shader.bindShader();
 
-        object.processAllFaces(Shadable::PREPARE_GEOMETRY);
+        shadable.processAllFaces(Shadable::PREPARE_GEOMETRY);
 
-        if (m_diffuseMap)
-        {
+        // if no VAO then setup the vertex attrib arrays
+        if (glContext->isDefaultVertexArray()) {
+            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+                shadable.attribute(m_arrays[i], m_arrays[i]);
+            }
+        }
+
+        if (m_diffuseMap) {
             materialPass.assignMapSetting(MaterialPass::DIFFUSE_MAP);
             shader.setConstTexture(u_diffuseMap, materialPass.getDiffuseMap(), 0);
-
-            object.attribute(V_TEXCOORDS_2D_1_ARRAY, V_TEXCOORDS_2D_1_ARRAY);
         }
 
         shader.setConstColor(u_diffuse, materialPass.getDiffuse());
@@ -316,62 +309,48 @@ void ColorMaterial::processDeferred(
         shader.setConstMatrix4(
                 u_worldMatrix,
                 False,
-                object.getObjectWorldMatrix());
+                shadable.getObjectWorldMatrix());
 
         shader.setConstMatrix3(
                 u_normalMatrix,
                 False,
-                object.getObjectWorldMatrix().getRotation().invert().transposeTo());
-
-        object.attribute(V_VERTICES_ARRAY, V_VERTICES_ARRAY);
-        object.attribute(V_NORMALS_ARRAY, V_NORMALS_ARRAY);
+                shadable.getObjectWorldMatrix().getRotation().invert().transposeTo());
 
         // rigging
-        if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
+        if ((a_rigging > 0) && (shadable.getVertexProgramType() == Shadable::VP_RIGGING)) {
             shader.setNConstMatrix4(
                     u_bonesMatrixArray,
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
                     False,
-                    object.getMatrixArray());
-
-            object.attribute(V_RIGGING_ARRAY, a_rigging);
-        }
-        // skinning
-        else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
+                    shadable.getMatrixArray());
+        } else if ((a_skinning > 0) && (shadable.getVertexProgramType() == Shadable::VP_SKINNING)) {
+            // skinning
             shader.setNConstMatrix4(
                     u_bonesMatrixArray,
                     O3D_MAX_SKINNING_MATRIX_ARRAY,
                     False,
-                    object.getMatrixArray());
-
-            object.attribute(V_SKINNING_ARRAY, a_skinning);
-            object.attribute(V_WEIGHTING_ARRAY, a_weighting);
+                    shadable.getMatrixArray());
         }
 
-        object.processAllFaces(Shadable::PROCESS_GEOMETRY);
+        shadable.processAllFaces(Shadable::PROCESS_GEOMETRY);
 
-        if (m_diffuseMap)
-        {
+        // cleanup uniforms
+        if (m_diffuseMap) {
             glContext->setActiveTextureUnit(0);
             glContext->bindTexture(TEXTURE_2D, 0);
-
-            glContext->disableVertexAttribArray(V_TEXCOORDS_2D_1_ARRAY);
         }
 
-        if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-        {
-            glContext->disableVertexAttribArray(a_rigging);
-        }
-        else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-        {
-            glContext->disableVertexAttribArray(a_skinning);
-            glContext->disableVertexAttribArray(a_weighting);
+        // cleanup default vertex attrib array
+        if (glContext->isDefaultVertexArray()) {
+            // @todo we should agree with letting active by default at least
+            // the two first units. or something else like this.
+            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+                glContext->disableVertexAttribArray(m_arrays[i]);
+            }
+        } else {
+            glContext->bindDefaultVertexArray();
         }
 
-        glContext->disableVertexAttribArray(V_NORMALS_ARRAY);
-        glContext->disableVertexAttribArray(V_VERTICES_ARRAY);
         shader.unbindShader();
     }
 }

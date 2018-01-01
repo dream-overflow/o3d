@@ -133,7 +133,7 @@ void AmbientMaterial::initialize(
 
     m_initMode = initMode;
 
-	buildVertexArray(shadable);
+    // buildVertexArray(shadable);
 
 	m_valid = True;
 }

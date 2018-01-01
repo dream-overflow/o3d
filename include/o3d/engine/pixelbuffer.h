@@ -98,7 +98,7 @@ public:
 	inline Storage getStorageType() const { return m_storageType; }
 
 	//! Return TRUE if the buffer exist.
-	inline Bool isExist() const { return (m_bufferId != O3D_UNDEFINED); }
+    inline Bool exists() const { return (m_bufferId != O3D_UNDEFINED); }
 
 	//! Return TRUE if the buffer is currently locked.
 	inline Bool isLocked() const { return (m_lockCount > 0); }

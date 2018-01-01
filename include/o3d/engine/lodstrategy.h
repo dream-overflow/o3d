@@ -15,13 +15,11 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class LodStrategy
-//-------------------------------------------------------------------------------------
-//! Level of detail strategy for any LOD level according to the distance.
-//! You can inherit from this class and override the GetIndex method to make your own
-//! LOD index computation.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Level of detail strategy for any LOD level according to the distance.
+ * You can inherit from this class and override the GetIndex method to make your own
+ * LOD index computation.
+ */
 class O3D_API LodStrategy
 {
 public:
@@ -61,4 +59,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_LODSTRATEGY_H
-

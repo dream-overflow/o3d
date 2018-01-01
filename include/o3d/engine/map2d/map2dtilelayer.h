@@ -115,8 +115,8 @@ private:
 	 UInt32 m_backgroundTile;
 	 Bool m_background;
 
-     VertexBufferObjf m_vertices;
-     VertexBufferObjf m_texCoords;
+     ArrayBufferf m_vertices;
+     ArrayBufferf m_texCoords;
 
      void fillBuffers();
 };

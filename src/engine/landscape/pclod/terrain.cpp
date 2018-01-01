@@ -31,7 +31,7 @@ void PCLODTerrain::log(PCLODLogType _type, const String & _msg) const
 			return;
         }
 
-        switch(_type) {
+        switch((Logger::LogLevel)_type) {
             case Logger::TRACE:
                 break;
             case Logger::INFO:

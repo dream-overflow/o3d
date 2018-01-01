@@ -168,3 +168,4 @@ src/shaders/glsles320/pclodTerrain/lightmaps/shader1
 src/shaders/glsl450/lambert
 src/shaders/glsles320/map2d/colorMask
 src/shaders/glsles320/shadowMap/hardShadow
+src/engine

@@ -225,8 +225,8 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	Bool writeToFile(OutStream &os);
-	Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

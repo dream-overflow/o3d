@@ -1600,68 +1600,78 @@ void ShaderInstance::setConstFloat(const Char* name,const Float constant)
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
 }
 
-//! Define an uniform O3DVector2f constant
+//! Define an uniform Vector2f constant
 void ShaderInstance::setConstVector2(const Char* name,const Vector2f& constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniform2fv(location,1,constant.getData());
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
-//! Define an uniform O3DColor (4f) constant
+//! Define an uniform Color (4f) constant
 void ShaderInstance::setConstColor(const Char* name,const Color& constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniform4fv(location,1,constant.getData());
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
 //! Define an uniform O3DVector3 (3f) constant
 void ShaderInstance::setConstVector3(const Char* name,const Vector3& constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniform3fv(location,1,constant.getData());
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
 //! Define an uniform O3DVector3 (4f) with w to 1.0 constant
 void ShaderInstance::setConstVector4(const Char* name,const Vector3& constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniform4f(location,constant[X],constant[Y],constant[Z],1.0f);
-	else
-		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    } else {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
 void ShaderInstance::setConstVector4(const Char* name,const Vector4& constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniform4fv(location,1,constant.getData());
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
 //! Define an uniform O3DMatrix3 (9f) constant
@@ -1670,14 +1680,16 @@ void ShaderInstance::setConstMatrix3(
 	const Bool transpose,
 	const Matrix3& constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniformMatrix3fv(location,1,transpose,constant.getData());
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
 //! Define an uniform O3DMatrix4 (16f) constant
@@ -1686,14 +1698,16 @@ void ShaderInstance::setConstMatrix4(
 	const Bool transpose,
 	const Matrix4& constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniformMatrix4fv(location,1,transpose,constant.getData());
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
 //! Define n uniforms O3DMatrix4 (16f) constant from an array of O3DObject
@@ -1703,69 +1717,71 @@ void ShaderInstance::setNConstMatrix4(
 	const Bool transpose,
 	const Float* constant)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
 	Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
-	if (location >= 0)
+    if (location >= 0) {
 		glUniformMatrix4fv(location,num,transpose,constant);
-	else
+    } else {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
 }
 
 void ShaderInstance::setConstTexture(const Char* name, Texture* pTexture, Int32 texUnit)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define define a texture if the shader is not bound")));
+    }
 
-    if (pTexture != nullptr)
-	{
+    if (pTexture != nullptr) {
 		Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
 
-		if (location >= 0)
-		{
+        if (location >= 0) {
 			pTexture->getScene()->getContext()->setActiveTextureUnit(texUnit);
 			pTexture->bind();
 			glUniform1i(location,texUnit);
-		}
-		else
+        } else {
 			O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid texture name <") << name << " >"));
-	}
-	else
+        }
+    } else {
 		O3D_ERROR(E_InvalidParameter(String("ShaderInstance : Null texture")));
+    }
 }
 
 void ShaderInstance::setConstTexture(Int32 Location, Texture* pTexture, Int32 texUnit)
 {
-	if (!isInUse())
+    if (!isInUse()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
 
-    if (pTexture != nullptr)
-	{
-		if (Location >= 0)
-		{
+    if (pTexture != nullptr) {
+        if (Location >= 0) {
 			pTexture->getScene()->getContext()->setActiveTextureUnit(texUnit);
 			pTexture->bind();
 			glUniform1i(Location,texUnit);
-		}
-		else
+        } else {
 			O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid texture location <") << pTexture->getName() << " >"));
-	}
-	else
+        }
+    } else {
 		O3D_ERROR(E_InvalidParameter(String("ShaderInstance : Null texture")));
+    }
 }
 
 Int32 ShaderInstance::getAttributeLocation(const Char * name) const
 {
-	if (!isLinked())
+    if (!isLinked()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : The shader must be linked to be able to get uniform variable location")));
+    }
 
 	Int32 lLocation = glGetAttribLocation(m_pInstance->shaderId,name);
 
-	if (lLocation == -1)
+    if (lLocation == -1) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : There is not attribute called <") << name << "> in the program <" << getProgramName() << ">"));
-	else
+    } else {
 		return lLocation;
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -1776,11 +1792,13 @@ void ShaderInstance::setUniform(Int32 _key, Int32 _value)
 {
 	O3D_ASSERT((_key >= 0) && (_key < 128));
 
-	if ((_key < 0) || (_key >= 128))
+    if ((_key < 0) || (_key >= 128)) {
 		O3D_ERROR(E_InvalidOperation("Invalid key : must be <= 128"));
+    }
 
-	if (UInt32(_key) >= m_uniformLocations.size())
+    if (UInt32(_key) >= m_uniformLocations.size()) {
 		m_uniformLocations.resize(1+_key, Int32(O3D_INFINITE));
+    }
 
 	m_uniformLocations[_key] = _value;
 }
@@ -1789,11 +1807,13 @@ Int32 ShaderInstance::getUniform(Int32 _key) const
 {
 	O3D_ASSERT((_key >= 0) && (_key < 128));
 
-	if ((_key < 0) || (_key >= 128))
+    if ((_key < 0) || (_key >= 128)) {
 		O3D_ERROR(E_InvalidOperation("Invalid uniform key : must be <= 128"));
+    }
 
-	if ((UInt32(_key) >= m_uniformLocations.size()) || (m_uniformLocations[_key] == Int32(O3D_INFINITE)))
+    if ((UInt32(_key) >= m_uniformLocations.size()) || (m_uniformLocations[_key] == Int32(O3D_INFINITE))) {
 		O3D_ERROR(E_InvalidOperation(String::print("Uniform key %d is not assigned", _key)));
+    }
 
 	return m_uniformLocations[_key];
 }
@@ -1802,11 +1822,13 @@ void ShaderInstance::setAttribute(Int32 _key, UInt32 _value)
 {
 	O3D_ASSERT((_key >= 0) && (_key < 128));
 
-	if ((_key < 0) || (_key >= 128))
+    if ((_key < 0) || (_key >= 128)) {
 		O3D_ERROR(E_InvalidOperation("Invalid attribute key : must be <= 128"));
+    }
 
-	if (UInt32(_key) >= m_attribLocations.size())
+    if (UInt32(_key) >= m_attribLocations.size()) {
 		m_attribLocations.resize(1+_key, UInt32(O3D_INFINITE));
+    }
 
 	m_attribLocations[_key] = _value;
 }
@@ -1815,11 +1837,13 @@ UInt32 ShaderInstance::getAttribute(Int32 _key) const
 {
 	O3D_ASSERT((_key >= 0) && (_key < 128));
 
-	if ((_key < 0) || (_key >= 128))
+    if ((_key < 0) || (_key >= 128)) {
 		O3D_ERROR(E_InvalidOperation("Invalid attribute key : must be <= 128"));
+    }
 
-	if ((UInt32(_key) >= m_attribLocations.size()) || (m_attribLocations[_key] == O3D_INFINITE))
+    if ((UInt32(_key) >= m_attribLocations.size()) || (m_attribLocations[_key] == O3D_INFINITE)) {
 		O3D_ERROR(E_InvalidOperation(String::print("Attribute key %d is not assigned", _key)));
+    }
 
 	return m_attribLocations[_key];
 }
@@ -1828,11 +1852,13 @@ void ShaderInstance::removeUniform(Int32 _key)
 {
 	O3D_ASSERT((_key >= 0) && (_key < 128));
 
-	if ((_key < 0) || (_key >= 128))
+    if ((_key < 0) || (_key >= 128)) {
 		O3D_ERROR(E_InvalidOperation("Invalid uniform key : must be <= 128"));
+    }
 
-	if (UInt32(_key) < m_uniformLocations.size())
+    if (UInt32(_key) < m_uniformLocations.size()) {
 		m_uniformLocations[_key] = O3D_INFINITE;
+    }
 }
 
 void ShaderInstance::removeUniforms()
@@ -1844,11 +1870,13 @@ void ShaderInstance::removeAttribute(Int32 _key)
 {
 	O3D_ASSERT((_key >= 0) && (_key < 128));
 
-	if ((_key < 0) || (_key >= 128))
+    if ((_key < 0) || (_key >= 128)) {
 		O3D_ERROR(E_InvalidOperation("Invalid attribute key : must be <= 128"));
+    }
 
-	if (UInt32(_key) < m_attribLocations.size())
+    if (UInt32(_key) < m_attribLocations.size()) {
 		m_attribLocations[_key] = O3D_INFINITE;
+    }
 }
 
 void ShaderInstance::removeAttributes()

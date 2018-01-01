@@ -53,13 +53,13 @@ public:
 		FaceArray *faceArray,
 		UInt32 numFaces,
 		UInt32 firstFace,
-		UInt32 lastFace);
+        UInt32 lastFace) override;
 
 	//! return true if there is a specified list of faces
-	virtual Bool isExternalFaceArray() const;
+    virtual Bool isExternalFaceArray() const override;
 
 	//! get the specified faces list
-	virtual FaceArray* getFaceArrayToProcess(UInt32 &first, UInt32 &last);
+    virtual FaceArray* getFaceArrayToProcess(UInt32 &first, UInt32 &last) override;
 
 protected:
 

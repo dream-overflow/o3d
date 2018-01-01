@@ -86,7 +86,7 @@ public:
     const Widget* findWidget(const String &name) const;
 
 	//! Recursively search for an existing widget by its pointer.
-	Bool isExist(Widget* widget) const;
+    Bool exists(Widget* widget) const;
 
 	//-----------------------------------------------------------------------------------
 	// Events

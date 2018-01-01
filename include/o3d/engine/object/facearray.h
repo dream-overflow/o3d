@@ -236,7 +236,7 @@ public:
 
 	//! Get the VBO.
 	//! @note It is not valid before Create().
-	inline const ElementBufferObjus& getVbo() const { return m_vbo; }
+	inline const ElementArrayBufferus& getVbo() const { return m_vbo; }
 
 
 	//-----------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ public:
 protected:
 
 	SmartArrayUInt16 m_faces;       //!< memory array
-	ElementBufferObjus m_vbo;       //!< VBO data (used only if created)
+	ElementArrayBufferus m_vbo;       //!< VBO data (used only if created)
 
 	ArrayUInt16 m_permutation;
 	ArrayUInt16 m_collapseMap;
@@ -377,7 +377,7 @@ public:
 
 	//! Get the VBO.
 	//! @note It is not valid before Create().
-	inline const ElementBufferObjui& getVbo() const { return m_vbo; }
+	inline const ElementArrayBufferui& getVbo() const { return m_vbo; }
 
 
 	//-----------------------------------------------------------------------------------
@@ -452,7 +452,7 @@ public:
 protected:
 
 	SmartArrayUInt32 m_faces;       //!< memory array
-	ElementBufferObjui m_vbo;       //!< VBO data (used only if created)
+	ElementArrayBufferui m_vbo;       //!< VBO data (used only if created)
 
 	ArrayUInt32 m_permutation;
 	ArrayUInt32 m_collapseMap;

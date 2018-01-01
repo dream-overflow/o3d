@@ -129,7 +129,7 @@ void PickingMaterial::initialize(
 
 	shaderInstance.unbindShader();
 
-	buildVertexArray(shadable);
+    //buildVertexArray(shadable);
 
 	m_valid = True;
 }

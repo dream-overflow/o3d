@@ -91,8 +91,8 @@ protected:
 
     SmartObject<GBuffer> m_gbuffer;
 
-    VertexBufferObjf m_vertices;
-    VertexBufferObjf m_texCoords;
+    ArrayBufferf m_vertices;
+    ArrayBufferf m_texCoords;
 
     Bool m_blitting;
     Bool m_lightGeometry;

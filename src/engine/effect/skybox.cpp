@@ -31,15 +31,17 @@ SkyBox::SkyBox(BaseObject *parent) :
 	m_material(this),
 	m_halfHeight(False)
 {
-	for (Int32 i = 0; i < 6; ++i)
-	{
+    // @todo must use a single vbo...
+    for (Int32 i = 0; i < 6; ++i) {
 		m_textures[i].setUser(this);
-        m_vertices[i] = new VertexBufferObjf(getScene()->getContext());
-        m_texCoords[i] = new VertexBufferObjf(getScene()->getContext());
+        m_vertices[i] = new ArrayBufferf(getScene()->getContext());
+        m_texCoords[i] = new ArrayBufferf(getScene()->getContext());
+        m_vaos[i] = new VertexArray(getScene()->getContext());
 	}
 
-	if (!getScene())
+    if (!getScene()) {
 		return;
+    }
 
 	// material
 	m_material.setNumTechniques(1);
@@ -61,8 +63,8 @@ SkyBox::~SkyBox()
 {
     destroy();
 
-	for (Int32 i = 0; i < 6; ++i)
-	{
+    for (Int32 i = 0; i < 6; ++i) {
+        deletePtr(m_vaos[i]);
 		deletePtr(m_vertices[i]);
 		deletePtr(m_texCoords[i]);
 	}
@@ -74,14 +76,12 @@ void SkyBox::initVBO()
 	Float boxSize = m_size * 0.5f;
 	Float yBase = boxSize;
 
-	if (m_halfHeight)
+    if (m_halfHeight) {
 		yBase = 0.f;
-
-	// TODO 1 seul VBO avec offset
+    }
 
 	// X+
-	if (m_textures[0].isValid())
-	{
+    if (m_textures[0].isValid()) {
 		const Float vertices[12] = {
 				boxSize,   -yBase, -boxSize,
 				boxSize,   -yBase,  boxSize,
@@ -99,8 +99,7 @@ void SkyBox::initVBO()
 	}
 
 	// X-
-	if (m_textures[1].isValid())
-	{
+    if (m_textures[1].isValid()) {
 		const Float vertices[12] = {
 				-boxSize,   -yBase,  boxSize,
 				-boxSize,   -yBase, -boxSize,
@@ -118,8 +117,7 @@ void SkyBox::initVBO()
 	}
 
 	// Y+
-	if (m_textures[2].isValid())
-	{
+    if (m_textures[2].isValid()) {
 		const Float vertices[12] = {
 				-boxSize, boxSize, -boxSize,
 				 boxSize, boxSize, -boxSize,
@@ -137,8 +135,7 @@ void SkyBox::initVBO()
 	}
 
 	// Y-
-	if (m_textures[3].isValid())
-	{
+    if (m_textures[3].isValid()) {
 		const Float vertices[12] = {
 				-boxSize, -yBase,  boxSize,
 				 boxSize, -yBase,  boxSize,
@@ -156,8 +153,7 @@ void SkyBox::initVBO()
 	}
 
 	// Z+
-	if (m_textures[4].isValid())
-	{
+    if (m_textures[4].isValid()) {
 		const Float vertices[12] = {
 			 boxSize,  -yBase, boxSize,
 			-boxSize,  -yBase, boxSize,
@@ -175,8 +171,7 @@ void SkyBox::initVBO()
 	}
 
 	// Z-
-	if (m_textures[5].isValid())
-	{
+    if (m_textures[5].isValid()) {
 		const Float vertices[12] = {
 			-boxSize,   -yBase, -boxSize,
 			 boxSize,   -yBase, -boxSize,
@@ -192,6 +187,27 @@ void SkyBox::initVBO()
 		m_vertices[5]->create(12, VertexBuffer::STATIC, vertices);
 		m_texCoords[5]->create(8, VertexBuffer::STATIC, texCoords);
 	}
+
+    // Create VAOs for valid faces
+    for (Int32 i = 0; i < 6; ++i) {
+        if (m_vertices[i]->exists() && m_texCoords[i]->exists()) {
+            VertexArray::T_ElementsList attrs;
+
+            VertexArray::Element verts;
+            verts.vbo = m_vertices[i]->getBufferId();
+            verts.array = V_VERTICES_ARRAY;
+            verts.eltSize = 3;
+            attrs.push_back(verts);
+
+            VertexArray::Element texts;
+            texts.vbo = m_texCoords[i]->getBufferId();
+            texts.array = V_TEXCOORDS_2D_1_ARRAY;
+            texts.eltSize = 2;
+            attrs.push_back(texts);
+
+            m_vaos[i]->create(attrs);
+        }
+    }
 }
 
 void SkyBox::create(
@@ -235,25 +251,33 @@ Int32 SkyBox::create(
     m_material.getTechnique(0).getPass(0).setMapWarp(MaterialPass::DIFFUSE_MAP, Texture::CLAMP);
     m_material.getTechnique(0).getPass(0).setMapAnisotropy(MaterialPass::DIFFUSE_MAP, anisotropy);
 
-    if (xp.isValid())
+    if (xp.isValid()) {
 		m_textures[0] = getScene()->getTextureManager()->addTexture2D(xp, filtering > Texture::LINEAR_FILTERING);
-    if (xn.isValid())
+    }
+    if (xn.isValid()) {
 		m_textures[1] = getScene()->getTextureManager()->addTexture2D(xn, filtering > Texture::LINEAR_FILTERING);
-    if (yp.isValid())
+    }
+    if (yp.isValid()) {
 		m_textures[2] = getScene()->getTextureManager()->addTexture2D(yp, filtering > Texture::LINEAR_FILTERING);
-    if (yn.isValid())
+    }
+    if (yn.isValid()) {
 		m_textures[3] = getScene()->getTextureManager()->addTexture2D(yn, filtering > Texture::LINEAR_FILTERING);
-    if (zp.isValid())
+    }
+    if (zp.isValid()) {
 		m_textures[4] = getScene()->getTextureManager()->addTexture2D(zp, filtering > Texture::LINEAR_FILTERING);
-    if (zn.isValid())
+    }
+    if (zn.isValid()) {
 		m_textures[5] = getScene()->getTextureManager()->addTexture2D(zn, filtering > Texture::LINEAR_FILTERING);
+    }
 
 	Int32 n = 0;
 
 	// check textures
-	for (Int32 i = 0 ; i < 6 ; ++i)
-		if (m_textures[i])
+    for (Int32 i = 0 ; i < 6 ; ++i) {
+        if (m_textures[i]) {
 			n++;
+        }
+    }
 
 	initVBO();
 
@@ -268,9 +292,10 @@ void SkyBox::destroy()
 
     m_material.setDiffuse(Color(1.0f,1.0f,1.0f,1.f));
 
-	for (Int32 i = 0; i < 6; ++i)
-	{
-		m_vertices[i]->release();
+    for (Int32 i = 0; i < 6; ++i) {
+        m_vaos[i]->release();
+
+        m_vertices[i]->release();
 		m_texCoords[i]->release();
 
         m_textures[i] = nullptr;
@@ -291,10 +316,11 @@ void SkyBox::setUpModelView()
 // draw all faces
 void SkyBox::processAllFaces(Shadable::ProcessingPass pass)
 {
-	if (pass == Shadable::PROCESS_GEOMETRY)
-	{
+    if (pass == Shadable::PREPARE_GEOMETRY) {
+        m_vaos[m_currentSide]->bindArray();
+    } else if (pass == Shadable::PROCESS_GEOMETRY) {
 		getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
-	}
+    }
 }
 
 void SkyBox::attribute(VertexAttributeArray mode, UInt32 location)

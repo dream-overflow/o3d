@@ -196,7 +196,7 @@ void PCLODDebugLabel::mtUpdateContent(
 			lHalfWidth-1.5f, -lHalfHeight+0.5f,
 			    -lHalfWidth, -lHalfHeight+0.5f };
 		
-        VertexBufferObjf updateLinesVerticesVbo(getScene()->getContext());
+        ArrayBufferf updateLinesVerticesVbo(getScene()->getContext());
 
 		updateLinesVerticesVbo.create(8, VertexBuffer::STATIC, lLineLoopCoords, True);
 		updateLinesVerticesVbo.attribute(V_VERTICES_ARRAY, 2, 0, 0);
@@ -209,7 +209,7 @@ void PCLODDebugLabel::mtUpdateContent(
                 -lHalfWidth, -lHalfHeight+0.5f + _pText->getTextHeight() + 2*lBorder,
             lHalfWidth-1.5f, -lHalfHeight+0.5f + _pText->getTextHeight() + 2*lBorder };
 		
-        VertexBufferObjf updateLineLoopVerticesVbo(getScene()->getContext());
+        ArrayBufferf updateLineLoopVerticesVbo(getScene()->getContext());
 
 		updateLineLoopVerticesVbo.create(4, VertexBuffer::STATIC, lLinesCoords, True);
 		updateLineLoopVerticesVbo.attribute(V_VERTICES_ARRAY, 2, 0, 0);

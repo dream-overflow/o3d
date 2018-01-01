@@ -37,10 +37,10 @@ public:
 	{
 		VertexAttributeArray array;  //!< Vertex attribute array.
 		DataType type;               //!< Data type.
-		UInt32 vbo;              //!< Vertex buffer object identifier.
-		UInt32 stride;           //!< Stride in bytes.
-		UInt32 offset;           //!< Offset in bytes.
-		UInt32 eltSize;          //!< Number of element.
+        UInt32 vbo;                  //!< Vertex buffer object identifier.
+        UInt32 stride;               //!< Stride in bytes.
+        UInt32 offset;               //!< Offset in bytes.
+        UInt32 eltSize;              //!< Number of element.
 
 		Element() :
 			array(V_VERTICES_ARRAY),
@@ -107,4 +107,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_VERTEXARRAY_H
-

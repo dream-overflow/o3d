@@ -69,15 +69,15 @@ Bool Material::readFromFile(InStream &is)
 Bool Material::save()
 {
 	// need to define a filename
-	if (m_filename.isEmpty())
+    if (m_filename.isEmpty()) {
 		O3D_ERROR(E_InvalidPrecondition("The material file name must be previously defined"));
+    }
 
 	// open the file
     FileOutStream *os = FileManager::instance()->openOutStream(m_filename, FileOutStream::CREATE);
 
 	// write the material according to its object type
-    if (!ClassFactory::writeToFile(*os, *this))
-	{
+    if (!ClassFactory::writeToFile(*os, *this)) {
         deletePtr(os);
 		return False;
 	}

@@ -113,7 +113,7 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 		Bool keepData;
 		UInt32 size = 0;
 
-        VertexBufferObjf *newVbo = new VertexBufferObjf(getScene()->getContext());
+        ArrayBufferf *newVbo = new ArrayBufferf(getScene()->getContext());
 
 		// interleave data
         if (m_flags.getBit(INTERLEAVE_ELEMENTS)) {
@@ -453,22 +453,17 @@ void GeometryData::attribute(VertexAttributeArray mode, UInt32 location)
 {
 	O3D_ASSERT(m_elements[mode]);
 
-	if (m_vertexBlender)
-	{
-		if (mode == V_VERTICES_ARRAY)
-		{
+    if (m_vertexBlender) {
+        if (mode == V_VERTICES_ARRAY) {
 			m_vertexBlender->getVertices().attribute(location);
 			return;
-		}
-		else if (mode == V_NORMALS_ARRAY)
-		{
+        } else if (mode == V_NORMALS_ARRAY) {
 			m_vertexBlender->getNormals().attribute(location);
 			return;
 		}
 	}
 
-	if (m_elements[mode])
-	{
+    if (m_elements[mode]) {
 			m_elements[mode]->attribute(location);
 	}
 }
@@ -477,10 +472,11 @@ void GeometryData::attribute(VertexAttributeArray mode, UInt32 location)
 void GeometryData::bindFaceArray(UInt32 idArray)
 {
 	IT_FaceArrays it = m_faceArrays.find(idArray);
-	if (it != m_faceArrays.end())
+    if (it != m_faceArrays.end()) {
 		m_boundFaceArray = it->second;
-	else
+    } else {
         m_boundFaceArray = nullptr;
+    }
 }
 
 // Bind a face array before to draw given the face array unique identifier.
@@ -492,10 +488,10 @@ void GeometryData::bindExternalFaceArray(FaceArray *faceArray)
 // Draw using the current bound face array.
 void GeometryData::draw()
 {
-	if (!m_flags.getBit(UPDATE_VERTEX_BUFFER) &&
-		!m_flags.getBit(UPDATE_INDEX_BUFFER) &&
-		m_boundFaceArray)
-	{
+    if (!m_flags.getBit(UPDATE_VERTEX_BUFFER) &&
+        !m_flags.getBit(UPDATE_INDEX_BUFFER) &&
+        m_boundFaceArray) {
+
 		m_boundFaceArray->draw(getScene());
 	}
 }
@@ -506,8 +502,9 @@ void GeometryData::drawPart(
 	UInt32 firstIndex,
 	UInt32 lastIndex)
 {
-	if (!m_flags.getBit(UPDATE_VERTEX_BUFFER) && faceArray)
+    if (!m_flags.getBit(UPDATE_VERTEX_BUFFER) && faceArray) {
 		faceArray->drawPart(getScene(), firstIndex, lastIndex);
+    }
 }
 
 // Draw the local space using an external face array, and with a specified range.
@@ -521,15 +518,15 @@ void GeometryData::drawLocalSpacePart(
 		!m_flags.getBit(UPDATE_INDEX_BUFFER) &&
 		!m_flags.getBit(UPDATE_NORMALS) &&
 		!m_flags.getBit(UPDATE_TANGENT_SPACE) &&
-		faceArray)
-	{
-		if (faceArray->getNumElements() == 0)
+        faceArray) {
+
+        if (faceArray->getNumElements() == 0) {
 			return;
+        }
 
 		// need vertices, normals, tangents and bi-tangents
 		if (!m_elements[V_VERTICES_ARRAY] || !m_elements[V_NORMALS_ARRAY] ||
-			!m_elements[V_TANGENT_ARRAY] || !m_elements[V_BITANGENT_ARRAY])
-		{
+            !m_elements[V_TANGENT_ARRAY] || !m_elements[V_BITANGENT_ARRAY]) {
 			return;
 		}
 
@@ -540,8 +537,7 @@ void GeometryData::drawLocalSpacePart(
 		const Float *bitangents = m_elements[V_BITANGENT_ARRAY]->lockArray(0, 0);
 
 		// error...
-		if (!vertices || !normals || !tangents || !bitangents)
-		{
+        if (!vertices || !normals || !tangents || !bitangents) {
 			if (vertices) m_elements[V_VERTICES_ARRAY]->unlockArray();
 			if (normals) m_elements[V_NORMALS_ARRAY]->unlockArray();
 			if (tangents) m_elements[V_TANGENT_ARRAY]->unlockArray();
@@ -565,23 +561,20 @@ void GeometryData::drawLocalSpacePart(
 
 		/*UInt32 verticesOfs, normalOfs, tangentOfs, bitangentOfs;
 
-		if (isInterleaved()) TODO
-		{
+          // @todo
+        if (isInterleaved()) {
 			verticesOfs = m_elements[V_VERTICES_ARRAY]->getElementSize() * m_elements[V_VERTICES_ARRAY]->getStride();
 			normalOfs = m_elements[V_NORMALS_ARRAY]->getElementSize() * m_elements[V_NORMALS_ARRAY]->getStride();
 			tangentOfs = m_elements[V_TANGENT_ARRAY]->getElementSize() * m_elements[V_TANGENT_ARRAY]->getStride();
 			bitangentOfs = m_elements[V_BITANGENT_ARRAY]->getElementSize() * m_elements[V_BITANGENT_ARRAY]->getStride();
-		}
-		else
-		{
+        } else {
 			verticesOfs = m_elements[V_VERTICES_ARRAY]->getElementSize();
 			normalOfs = m_elements[V_NORMALS_ARRAY]->getElementSize();
 			tangentOfs = m_elements[V_TANGENT_ARRAY]->getElementSize();
 			bitangentOfs = m_elements[V_BITANGENT_ARRAY]->getElementSize();
 		}*/
 
-		for (FaceArrayIterator it = triangles.begin(); it != triangles.end(); ++it)
-		{
+        for (FaceArrayIterator it = triangles.begin(); it != triangles.end(); ++it) {
 			// tangent in red
 			indice = it.a*3;
 			vector[0] = vertices[indice]   + tangents[indice];

@@ -199,8 +199,8 @@ private:
 	SmartObject<Texture2D> m_noiseTexture;
 
 	FaceArrayUInt32 m_indices;
-	VertexBufferObjf m_vertices;
-	VertexBufferObjf m_texCoords;
+	ArrayBufferf m_vertices;
+	ArrayBufferf m_texCoords;
 };
 
 } // namespace o3d

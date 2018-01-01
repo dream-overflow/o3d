@@ -134,10 +134,10 @@ void MaterialPass::prepareAndCompile(Shadable &shadable)
 	// load textures maps
 	loadMaps();
 
-	for (Int32 i = 0; i < Material::NUM_INIT_MODES; ++i)
-	{
-		if (m_materials[i].isValid() && !m_materials[i]->isValid())
+    for (Int32 i = 0; i < Material::NUM_INIT_MODES; ++i) {
+        if (m_materials[i].isValid() && !m_materials[i]->isValid()) {
 			m_materials[i]->initialize(Material::InitMode(i), *this, shadable);
+        }
 	}
 }
 
@@ -178,8 +178,7 @@ void MaterialPass::processMaterial(
 		Pickable *pickable,
 		const DrawInfo &drawInfo)
 {
-	if (m_activity)
-	{
+    if (m_activity){
 		// establish the draw context
 		if (m_depthTest)
 			m_glContext->enableDepthTest();
@@ -220,8 +219,7 @@ void MaterialPass::processMaterial(
 void MaterialPass::assignMapSetting(MapType type) const
 {
 	const Sampler &sampler = m_mapTypes[type];
-	if (sampler.texture.isValid())
-	{
+    if (sampler.texture.isValid()) {
 		Texture *texture = sampler.texture.get();
 
 		texture->setFiltering(sampler.filtering);

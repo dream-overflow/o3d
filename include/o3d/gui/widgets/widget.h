@@ -646,8 +646,8 @@ protected:
 		Int32 u_alpha;
 		Int32 u_texture;
 
-        VertexBufferObjf vertices;
-        VertexBufferObjf texCoords;
+        ArrayBufferf vertices;
+        ArrayBufferf texCoords;
 
         Blending::FuncProfile blendFunc;
 	};

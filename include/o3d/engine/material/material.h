@@ -158,15 +158,15 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! Save the material definition according to its class type and file name.
 	Bool save();
 
 protected:
 
-	Bool m_valid;           //!< TRUE mean valid for usage.
+    Bool m_valid;               //!< True means valid for usage.
 	VertexArray m_vertexArray;  //!< Vertex array object.
 
 	InitMode m_initMode;        //!< Specialization mode.

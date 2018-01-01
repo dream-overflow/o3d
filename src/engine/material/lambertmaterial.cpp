@@ -247,13 +247,12 @@ void LambertMaterial::initialize(
 	m_initMode = initMode;
 
 	// need normals to process this shader
-	if (!shadable.isOperation(Shadable::NORMALS))
-	{
+    if (!shadable.isOperation(Shadable::NORMALS)) {
 		shadable.operation(Shadable::NORMALS);
         shadable.operation(Shadable::CREATE);
 	}
 
-	buildVertexArray(shadable);
+    //buildVertexArray(shadable);
 
 	m_valid = True;
 }

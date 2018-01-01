@@ -297,23 +297,20 @@ void MaterialTechnique::processMaterial(
 		Pickable *pickable,
 		const DrawInfo &drawInfo)
 {
-	if (m_valid)
-	{
+    if (m_valid) {
 		size_t numPasses = m_pass.size();
 
 		Bool sorted = False;
 
-		for (size_t i = 0; i < numPasses; ++i)
-		{
+        for (size_t i = 0; i < numPasses; ++i) {
 			// process alpha pipeline once if necessary
-			if (m_pass[i]->needsSorting() && !sorted && (drawInfo.pass == DrawInfo::AMBIENT_PASS))
-			{
+            if (m_pass[i]->needsSorting() && !sorted && (drawInfo.pass == DrawInfo::AMBIENT_PASS)) {
 				sortFaces(shadable);
 				sorted = True;
-			}
-			// process non sorted material passes
-			else
+            } else {
+                // process non sorted material passes
 				m_pass[i]->processMaterial(shadable, shadowable, pickable, drawInfo);
+            }
 		}
 	}
 }

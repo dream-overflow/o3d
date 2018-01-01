@@ -359,7 +359,7 @@ const Widget* WidgetManager::findWidget(const String &name) const
 }
 
 // search for an existing widget by its pointer
-Bool WidgetManager::isExist(Widget* widget) const
+Bool WidgetManager::exists(Widget* widget) const
 {
 	// recursive search
     for (CIT_WindowList it = m_windowList.begin(); it != m_windowList.end(); ++it) {
