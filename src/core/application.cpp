@@ -151,11 +151,6 @@ void Application::quit()
         O3D_WARNING("Still always exists mapped object");
     }
 
-	// Global destruction
-	o3d::deletePtr(ms_appsCommandLine);
-	o3d::deletePtr(ms_appsName);
-    o3d::deletePtr(ms_appsPath);
-
 	// terminate the task manager if running
 	TaskManager::destroy();
 
@@ -170,6 +165,14 @@ void Application::quit()
 
     // display manager
     Display::destroy();
+
+    // Specific quit
+    if (ms_displayInit) {
+        apiQuitPrivate();
+        GL::quit();
+
+        ms_displayInit = False;
+    }
 
 	// deletion of the main thread
     EvtManager::instance()->unRegisterThread(nullptr);
@@ -196,13 +199,10 @@ void Application::quit()
 	// release memory manager allocators
 	MemoryManager::instance()->releaseFastAllocator();
 
-	// Specific quit
-    if (ms_displayInit) {
-        apiQuitPrivate();
-        GL::quit();
-
-        ms_displayInit = False;
-    }
+    // common members
+    deletePtr(ms_appsCommandLine);
+    deletePtr(ms_appsName);
+    deletePtr(ms_appsPath);
 
     ms_app = nullptr;
 }

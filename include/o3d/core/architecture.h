@@ -78,6 +78,7 @@
 
     #undef INPUT_KEYBOARD
     #undef INPUT_MOUSE
+    #undef DOUBLE_CLICK
 
 	#undef min
 	#undef max

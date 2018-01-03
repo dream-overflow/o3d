@@ -188,12 +188,11 @@ void WinTools::centerWindow(_HWND hWnd)
 	screenwidth  = GetSystemMetrics(SM_CXSCREEN);
 	screenheight = GetSystemMetrics(SM_CYSCREEN);
 
-	if (hwndParent) // parent
-	{
+	if (hwndParent) {
+		// parent
 		GetWindowRect(hwndParent,&rectP);
-	}
-	else // no parent
-	{
+	} else {
+		// no parent
 		rectP.left = 0;
 		rectP.right = screenwidth;
 		rectP.top = 0;
@@ -225,8 +224,7 @@ void WinTools::resizeWindow(
 	DWORD exStyle = GetWindowLong((HWND)hWnd, GWL_EXSTYLE);
 	DWORD style = GetWindowLong((HWND)hWnd, GWL_STYLE);
 
-	if (!(style & WS_OVERLAPPED))
-	{
+	if (!(style & WS_OVERLAPPED)) {
 		RECT rect;
 		GetWindowRect((HWND)hWnd, &rect);
 
@@ -245,9 +243,7 @@ void WinTools::resizeWindow(
 			rect.right-rect.left,
 			rect.bottom-rect.top,
 			/*SWP_SHOWWINDOW | */SWP_NOZORDER | SWP_NOCOPYBITS | SWP_NOMOVE);
-	}
-	else
-	{
+	} else {
 		SetWindowPos(
 			(HWND)hWnd,
 			HWND_TOPMOST,
@@ -280,7 +276,7 @@ HICON WinTools::createIconFromBitmap(
     if (!filePath.isEmpty()) {
         LocalFile localFile(filePath);
 
-        if (file.getFileExt().compare("bmp", String::CASE_INSENSITIVE) != 0) {
+        if (localFile.getFileExt().compare("bmp", String::CASE_INSENSITIVE) != 0) {
 			O3D_ERROR(E_InvalidFormat("Icon must be a bmp file."));
 		}
 
@@ -328,26 +324,22 @@ HICON WinTools::createIconFromBitmap(
             (hXorMaskDC == nullptr) ||
             (hOldBitmap == nullptr) ||
             (hOldAndMask == nullptr) ||
-            (hOldXorMask == nullptr))
+            (hOldXorMask == nullptr)) {
 		O3D_ERROR(E_InvalidResult("Error during creation of icon masks."));
+	}
 
 	// If no transparency color is provided, the first pixel of the bitmap is used
 	const COLORREF TransparentPixel =
         (colorTransparency != (COLORREF)(-1) ? colorTransparency : ::GetPixel(hBitmapDC, 0, 0));
 
-	for (Int32 j = 0 ; j < bitmapObject.bmHeight ; ++j)
-	{
-		for (Int32 i = 0 ; i < bitmapObject.bmWidth ; ++i)
-		{
+	for (Int32 j = 0 ; j < bitmapObject.bmHeight ; ++j) {
+		for (Int32 i = 0 ; i < bitmapObject.bmWidth ; ++i) {
 			COLORREF CurrentPixel = ::GetPixel(hBitmapDC, i, j);
 
-			if(CurrentPixel == TransparentPixel)
-			{
+			if(CurrentPixel == TransparentPixel) {
 				::SetPixel(hAndMaskDC,i,j,	RGB(255,255,255));
 				::SetPixel(hXorMaskDC,i,j,	RGB(0,0,0));
-			}
-			else
-			{
+			} else {
 				::SetPixel(hAndMaskDC,i,j,	RGB(0,0,0));
 				::SetPixel(hXorMaskDC,i,j,	CurrentPixel);
 			}

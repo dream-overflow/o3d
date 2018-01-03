@@ -25,7 +25,6 @@ include/o3d/gui
 include/o3d/gui/widgets
 include/o3d/image
 include/o3d/physic
-third/MD5
 third/nvDXTlib/dds
 third/nvDXTlib/dxtlib
 third/nvTriStrip
@@ -35,11 +34,6 @@ third/TriStripper/Include/detail
 third/TriStripper/TriStripper/Include
 third/TriStripper/TriStripper/Include/detail
 src/core
-third/uuid/src
-third/uuid/include
-third/uuid
-third/sha
-third
 src/shaders/smoothline/smoothline1
 src/shaders/smoothline/smoothline1/450
 src/shaders/primitiveShader/330
