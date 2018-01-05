@@ -845,12 +845,11 @@ LRESULT CALLBACK AppWindow::wndProc(
 		// size hints
 		case WM_GETMINMAXINFO:
 			{
-				LPMINMAXINFO minMaxInfo = nullptr;
-				memcpy(minMaxInfo, (void*)lParam, sizeof(MINMAXINFO));
-				// min size hint
+                LPMINMAXINFO minMaxInfo = (MINMAXINFO FAR*)lParam;
+                // min size hint
 				{
-					minMaxInfo->ptMinTrackSize.x = inst->m_minSize.x();
-					minMaxInfo->ptMinTrackSize.y = inst->m_minSize.y();
+                    minMaxInfo->ptMinTrackSize.x = inst->m_minSize.x();
+                    minMaxInfo->ptMinTrackSize.y = inst->m_minSize.y();
 				}
 
 				// max size hint
@@ -881,7 +880,7 @@ LRESULT CALLBACK AppWindow::wndProc(
 					inst->callBackMinimize();
 					break;
 				default:
-					inst->setSize(LOWORD(lParam), HIWORD(lParam));
+                    inst->setSize(LOWORD(lParam), HIWORD(lParam));
 					inst->callBackResize();
 					break;
 			}
