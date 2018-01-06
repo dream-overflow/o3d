@@ -51,7 +51,7 @@ HeightmapSplatting::HeightmapSplatting(BaseObject *pParent, Camera *pCamera, UIn
 	TerrainBase(pParent, pCamera),
     m_indices(getScene()->getContext()),
 	m_vertices(V_VERTICES_ARRAY),
-	m_texCoords(V_TEXCOORDS_2D_1_ARRAY),
+	m_texCoords(V_UV_MAP_ARRAY),
     m_vbo(getScene()->getContext(), VertexBuffer::STATIC),
 	m_normalTex(this),
 	m_colormapTex(this),

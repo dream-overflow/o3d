@@ -10,12 +10,13 @@ uniform float u_layerAltitude;			// Altitude of the cloud layer (same unit as <u
 uniform vec3 u_lightDirection;			// Direction from camera to the light source
 
 uniform vec2 u_velocity;				// Translation velocity of clouds (in <texture coordinates>/sec)
-in vec2 a_texCoords;
-in vec4 a_vertex;
 
-smooth out vec2 io_texCoords;
-smooth out vec4 io_fragPosition;			// Position of the processed fragment
-smooth out float io_occluded;				// Occlusion rate (in [0;1] where 0 means totaly occluded)
+layout(location = 0) in vec4 a_vertex;
+layout(location = 5) in vec2 a_texCoords;
+
+layout(location = 0) smooth out vec4 io_fragPosition;  // Position of the processed fragment
+layout(location = 1) smooth out vec2 io_texCoords;
+layout(location = 2) smooth out float io_occluded;  // Occlusion rate (in [0;1] where 0 means totaly occluded)
 
 void main()
 {

@@ -36,7 +36,7 @@ uniform sampler2D O3D_Lightmap;
 smooth out vec2 O3D_TextureWeight;
 
 uniform mat4 u_modelViewProjectionMatrix;
-in vec4 a_vertex;
+layout(location = 0) in vec4 a_vertex;
 
 smooth out vec2 io_texCoords[2];
 

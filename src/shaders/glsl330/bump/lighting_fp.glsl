@@ -25,8 +25,8 @@ uniform float u_shine;
 
 uniform sampler2D u_bumpMap;
 
-smooth in vec2 io_texCoords1;
-smooth in vec3 io_position;
+layout(location = 4) smooth in vec2 io_texCoords1;
+layout(location = 0) smooth in vec3 io_position;
 smooth in vec3 io_lightVec;
 
 #ifdef POINT_LIGHT
@@ -48,7 +48,7 @@ uniform vec3 u_lightDir;
 
 uniform vec3 u_eyePos;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 void main()
 {

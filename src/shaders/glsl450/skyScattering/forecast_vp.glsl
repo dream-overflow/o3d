@@ -3,12 +3,12 @@
 
 uniform vec2 uCoef;
 
-in vec3 VertexColor;
-in vec3 NextVertexColor;
+layout(location = 0) in vec4 a_vertex;
+layout(location = 1) in vec3 VertexColor;
+layout(location = 2) in vec3 NextVertexColor;
 
-smooth out vec3 io_color;
+layout(location = 0) smooth out vec3 io_color;
 
-in vec4 a_vertex;
 uniform mat4 u_modelViewProjectionMatrix;
 
 invariant gl_Position;

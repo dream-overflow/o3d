@@ -33,12 +33,11 @@ uniform vec4 u_intensityParams;
 uniform vec4 u_colorParams;
 uniform vec4 u_lightParams;
 
-smooth in vec2 io_texCoords;
+layout(location = 0) smooth in vec4 io_fragPosition;  // Position of the processed fragment from the camera (in km)
+layout(location = 1) smooth in vec2 io_texCoords;
+layout(location = 2) smooth in float io_occluded;
 
-smooth in vec4 io_fragPosition;		// Position of the processed fragment from the camera (in km)
-smooth in float io_occluded;
-
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 #ifdef ALPHA_TEST_REF
 void alphaTest(float alpha)

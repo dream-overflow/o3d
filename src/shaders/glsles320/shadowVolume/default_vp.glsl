@@ -1,6 +1,6 @@
 #version 320 es
 
-in vec4 a_vertex;
+layout(location = 0) in vec4 a_vertex;
 
 uniform mat4 u_modelViewProjectionMatrix;
 

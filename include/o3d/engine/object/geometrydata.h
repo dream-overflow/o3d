@@ -131,7 +131,7 @@ public:
     inline Bool isNormals() const { return (m_elements[V_NORMALS_ARRAY] != nullptr); }
 
 	//! Check for the first unit of texture coordinates element
-    inline Bool isTexCoords1() const { return (m_elements[V_TEXCOORDS_2D_1_ARRAY] != nullptr); }
+    inline Bool isTexCoords1() const { return (m_elements[V_UV_MAP_ARRAY] != nullptr); }
 
 	//! Count the number of valid elements.
 	UInt32 getNumElements() const;
@@ -349,7 +349,7 @@ protected:
 	typedef T_FaceArrays::const_iterator CIT_FaceArrays;
 
 	ArrayBufferf *m_vbo;      //!< VBO containing the geometry data.
-	BitSet32 m_flags;             //!< Flag of update.
+    BitSet32 m_flags;         //!< Flag of update.
 
 	VertexElement *m_elements[NUM_VERTEX_ATTRIBUTES];
 	T_FaceArrays m_faceArrays;
@@ -359,15 +359,13 @@ protected:
 	BSphere   m_BSphere;           //!< Global bounding sphere.
 	BoundingMode m_boundingMode;   //!< Bounding mode (BSphere, AABBox or AABBoxExt).
 
-	UInt32 m_lodLvl;           //!< LOD level in percent.
+    UInt32 m_lodLvl;               //!< LOD level in percent.
 
 	FaceArray *m_boundFaceArray;   //!< Current bound face array.
 	VertexBlend *m_vertexBlender;  //!< Vertex blender for software rigging/skinning.
 
 	//! Create/Get/Recreate a VertexElement.
-	VertexElement* newVertexElement(
-			VertexAttributeArray mode,
-			const SmartArrayFloat &data);
+    VertexElement* newVertexElement(VertexAttributeArray mode, const SmartArrayFloat &data);
 
 	//! Build from an O3DPrimitive object
 	void buildFromPrimitive(const Primitive & primitive);

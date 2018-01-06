@@ -34,13 +34,10 @@ GeometryData::GeometryData(BaseObject *parent) :
     m_boundFaceArray(nullptr),
     m_vertexBlender(nullptr)
 {
-	//m_flags.fillTrue();
-
     m_flags.enable(UPDATE_VERTEX_BUFFER);
     m_flags.disable(UPDATE_PROGRESSIVE_MESH);
 
-	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-	{
+    for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
         m_elements[i] = nullptr;
 	}
 }
@@ -55,13 +52,10 @@ GeometryData::GeometryData(BaseObject *parent, const Primitive &primitive) :
     m_boundFaceArray(nullptr),
     m_vertexBlender(nullptr)
 {
-	//m_flags.fillTrue();
-
     m_flags.enable(UPDATE_VERTEX_BUFFER);
     m_flags.disable(UPDATE_PROGRESSIVE_MESH);
 
-	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-	{
+    for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
         m_elements[i] = nullptr;
 	}
 
@@ -71,13 +65,11 @@ GeometryData::GeometryData(BaseObject *parent, const Primitive &primitive) :
 // Virtual destructor
 GeometryData::~GeometryData()
 {
-	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-	{
+    for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
 		deletePtr(m_elements[i]);
 	}
 
-	for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-	{
+    for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
 		deletePtr(it->second);
 	}
 
@@ -161,7 +153,9 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 							case V_NORMALS_ARRAY:
 							case V_RIGGING_ARRAY:
 							case V_SKINNING_ARRAY:
+                            case V_SKINNING_EXT_ARRAY:
 							case V_WEIGHTING_ARRAY:
+                            case V_WEIGHTING_EXT_ARRAY:
 								keepData = True;
 								break;
 
@@ -205,7 +199,9 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 							case V_NORMALS_ARRAY:
 							case V_RIGGING_ARRAY:
 							case V_SKINNING_ARRAY:
+                            case V_SKINNING_EXT_ARRAY:
 							case V_WEIGHTING_ARRAY:
+                            case V_WEIGHTING_EXT_ARRAY:
 								keepData = True;
 								break;
 
@@ -264,37 +260,44 @@ VertexElement* GeometryData::createElement(
 		VertexAttributeArray mode,
 		const SmartArrayFloat &data)
 {
-	if (m_elements[mode])
+    if (m_elements[mode]) {
 		O3D_ERROR(E_ValueRedefinition("This array has a previous definition"));
+    }
 
 	VertexElement *element = newVertexElement(mode, data);
 
-	switch (mode)
-	{
+    switch (mode) {
 		case V_VERTICES_ARRAY:
 			m_flags.setBit(UPDATE_BOUNDING, True);
 			m_flags.setBit(UPDATE_PROGRESSIVE_MESH, True);
 
-			if (!m_elements[V_NORMALS_ARRAY])
+            if (!m_elements[V_NORMALS_ARRAY]) {
 				m_flags.setBit(UPDATE_NORMALS, True);
+            }
 
-			if (!m_elements[V_TANGENT_ARRAY] || !m_elements[V_BITANGENT_ARRAY])
+            if (!m_elements[V_TANGENT_ARRAY] || !m_elements[V_BITANGENT_ARRAY]) {
 				m_flags.setBit(UPDATE_TANGENT_SPACE, True);
+            }
+
 			break;
 
 		// validate normals and invalidate tangent space
 		case V_NORMALS_ARRAY:
 			m_flags.setBit(UPDATE_NORMALS, False);
 
-			if (!m_elements[V_TANGENT_ARRAY] || !m_elements[V_BITANGENT_ARRAY])
+            if (!m_elements[V_TANGENT_ARRAY] || !m_elements[V_BITANGENT_ARRAY]) {
 				m_flags.setBit(UPDATE_TANGENT_SPACE, True);
+            }
+
 			break;
 
 		// validate tangent space
 		case V_TANGENT_ARRAY:
 		case V_BITANGENT_ARRAY:
-			if (m_elements[V_TANGENT_ARRAY] && m_elements[V_BITANGENT_ARRAY])
+            if (m_elements[V_TANGENT_ARRAY] && m_elements[V_BITANGENT_ARRAY]) {
 				m_flags.setBit(UPDATE_TANGENT_SPACE, False);
+            }
+
 			break;
 
 		default:
@@ -309,12 +312,10 @@ VertexElement* GeometryData::createElement(
 // Delete an element array given a type
 void GeometryData::deleteElement(VertexAttributeArray mode)
 {
-	if (m_elements[mode])
-	{
+    if (m_elements[mode]) {
 		deletePtr(m_elements[mode]);
 
-		switch (mode)
-		{
+        switch (mode) {
 			case V_VERTICES_ARRAY:
 				m_flags.setBit(UPDATE_BOUNDING, True);
 				m_flags.setBit(UPDATE_NORMALS, True);
@@ -344,10 +345,10 @@ UInt32 GeometryData::getNumElements() const
 {
 	UInt32 count = 0;
 
-	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-	{
-		if (m_elements[i])
+    for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+        if (m_elements[i]) {
 			++count;
+        }
 	}
 
 	return count;
@@ -356,8 +357,7 @@ UInt32 GeometryData::getNumElements() const
 // Set if data are interleaved.
 void GeometryData::setInterleave(Bool interleave)
 {
-	if (m_flags.getBit(INTERLEAVE_ELEMENTS) != interleave)
-	{
+    if (m_flags.getBit(INTERLEAVE_ELEMENTS) != interleave) {
 		m_flags.setBit(INTERLEAVE_ELEMENTS, interleave);
 		m_flags.setBit(UPDATE_VERTEX_BUFFER, True);
 	}
@@ -374,10 +374,9 @@ void GeometryData::addFaceArray(UInt32 idArray, FaceArray *faceArray)
 {
 	O3D_ASSERT(faceArray);
 
-	if (m_faceArrays.find(idArray) == m_faceArrays.end())
+    if (m_faceArrays.find(idArray) == m_faceArrays.end()) {
 		m_faceArrays[idArray] = faceArray;
-	else
-	{
+    } else {
 		O3D_ERROR(E_InvalidParameter("The face array id is already in usage"));
 	}
 
@@ -389,12 +388,9 @@ void GeometryData::addFaceArray(UInt32 idArray, FaceArray *faceArray)
 void GeometryData::deleteFaceArray(UInt32 idArray)
 {
 	IT_FaceArrays it = m_faceArrays.find(idArray);
-	if (it == m_faceArrays.end())
-	{
+    if (it == m_faceArrays.end()) {
 		O3D_ERROR(E_InvalidParameter("The face array id is not available"));
-	}
-	else
-	{
+    } else {
 		deletePtr(it->second);
 		m_faceArrays.erase(it);
 	}
@@ -408,8 +404,7 @@ UInt32 GeometryData::getNumFaces() const
 {
 	UInt32 count = 0;
 
-	for (CIT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-	{
+    for (CIT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
 		count += it->second->getNumFaces();
 	}
 
@@ -428,14 +423,13 @@ UInt32 GeometryData::getCapacity() const
 {
 	UInt32 count = 0;
 
-	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-	{
-		if (m_elements[i])
+    for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+        if (m_elements[i]) {
 			count += m_elements[i]->getCapacity();
+        }
 	}
 
-	for (CIT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-	{
+    for (CIT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
 		count += it->second->getCapacity();
 	}
 
@@ -464,7 +458,7 @@ void GeometryData::attribute(VertexAttributeArray mode, UInt32 location)
 	}
 
     if (m_elements[mode]) {
-			m_elements[mode]->attribute(location);
+        m_elements[mode]->attribute(location);
 	}
 }
 
@@ -615,25 +609,27 @@ void GeometryData::drawLocalSpacePart(
 // Draw the local space using the current bound face array.
 void GeometryData::drawLocalSpace()
 {
-	if (m_boundFaceArray)
+    if (m_boundFaceArray) {
 		drawLocalSpacePart(m_boundFaceArray, 0, 0);
+    }
 }
 
 // compute the bounding volume of this geometry, using all face arrays.
 void GeometryData::computeBounding(BoundingMode mode)
 {
-	if (!isVertices())
+    if (!isVertices()) {
 		O3D_ERROR(E_InvalidPrecondition("Vertices must must defined"));
+        }
 
 	const Float *vertices = getVertices()->lockArray(0, 0);
 	UInt32 numVertices = getNumVertices();
 
-	if (!vertices)
+    if (!vertices) {
 		O3D_ERROR(E_InvalidPrecondition("Unable to access to the vertices array"));
+    }
 
 	// fast bounding box computation
-	if (mode == BOUNDING_FAST)
-	{
+    if (mode == BOUNDING_FAST) {
 		// build the bounding box by using the minimum and maximum of the
 		// vertices present in the vertex array.
 		Vector3 curVertex;
@@ -650,8 +646,7 @@ void GeometryData::computeBounding(BoundingMode mode)
 
 		UInt32 numIndices = numVertices * 3;
 
-		for (UInt32 vert = 0; vert < numIndices; vert += 3)
-		{
+        for (UInt32 vert = 0; vert < numIndices; vert += 3) {
 			curVertex.set(vertices + vert);
 
 			minCoords.minOf(minCoords, curVertex);
@@ -666,10 +661,8 @@ void GeometryData::computeBounding(BoundingMode mode)
 		m_BSphere.setRadius(m_AABBoxExt.getRadius());
 
 		m_boundingMode = GeometryData::BOUNDING_BOXEXT;
-	}
-	// precise bounding box computation
-	else
-	{
+    } else {
+        // precise bounding box computation
 		BoundingGen bounding;
 		UInt32 numIndices = numVertices * 3;
 
@@ -708,40 +701,30 @@ void GeometryData::computeBounding(BoundingMode mode)
 	// unlock data array
 	getVertices()->unlockArray();
 
-	// if we use the bounding sphere
-	if (mode == BOUNDING_SPHERE)
-	{
+    if (mode == BOUNDING_SPHERE) {
+        // if we use the bounding sphere
 		m_boundingMode = GeometryData::BOUNDING_SPHERE;
-	}
-	// if we use the (extended) bounding box
-	else if (mode == BOUNDING_BOX)
-	{
+    } else if (mode == BOUNDING_BOX) {
+        // if we use the bounding box
 		m_boundingMode = BOUNDING_BOX;
-	}
-	else if (mode == BOUNDING_BOXEXT)
-	{
+    } else if (mode == BOUNDING_BOXEXT) {
+        // if we use the extended bounding box
 		m_boundingMode = BOUNDING_BOXEXT;
-	}
-	// or if we let the automatic mode choose for us
-	else if (mode == BOUNDING_AUTO)
-	{
+    } else if (mode == BOUNDING_AUTO) {
+        // or if we let the automatic mode choose for us
 		// compute the standard deviation of the bounding box
 		Vector3 vec = m_AABBoxExt.getHalfSize();
 		Float average = (vec[X] + vec[Y] + vec[Z]) / 3.f;
 		Float ecart = 0.f;
 
-		for (Int32 i = 0 ; i < 3 ; ++i)
-		{
+        for (Int32 i = 0 ; i < 3 ; ++i) {
 			ecart += (vec[i] - average) * (vec[i] - average);
 		}
 
 		// standard deviation is null so bounding sphere
-		if (ecart == 0.f)
-		{
+        if (ecart == 0.f) {
 			m_boundingMode = BOUNDING_SPHERE;
-		}
-		else
-		{
+        } else {
             ecart = Math::sqrt(ecart / 3.f);
 
 			// check with the largest component
@@ -750,13 +733,14 @@ void GeometryData::computeBounding(BoundingMode mode)
 
 			// standard deviation is lesser than 0.2 so bounding sphere,
 			// if in 0.2+ and and 0.5 use bounding box ext,
-			// otherwise use bounding box.
-			if (ecart <= 0.2f)
+            // otherwise use bounding box.
+            if (ecart <= 0.2f) {
 				m_boundingMode = BOUNDING_SPHERE;
-			else if (ecart <= 0.5f)
+            } else if (ecart <= 0.5f) {
 				m_boundingMode = BOUNDING_BOXEXT;
-			else
+            } else {
 				m_boundingMode = BOUNDING_BOX;
+            }
 		}
 	}
 
@@ -767,8 +751,7 @@ void GeometryData::computeBounding(BoundingMode mode)
 // Compute the normal.
 void GeometryData::genNormals(Bool generate)
 {
-	if (m_flags.getBit(GEN_NORMALS) != generate)
-	{
+    if (m_flags.getBit(GEN_NORMALS) != generate) {
 		m_flags.setBit(GEN_NORMALS, generate);
 		m_flags.setBit(UPDATE_NORMALS, generate);
 	}
@@ -777,8 +760,7 @@ void GeometryData::genNormals(Bool generate)
 // Compute the tangent space (tangents and bi-tangents arrays).
 void GeometryData::genTangentSpace(Bool generate)
 {
-	if (m_flags.getBit(GEN_TANGENT_SPACE) != generate)
-	{
+    if (m_flags.getBit(GEN_TANGENT_SPACE) != generate) {
 		m_flags.setBit(GEN_TANGENT_SPACE, generate);
 		m_flags.setBit(UPDATE_TANGENT_SPACE, generate);
 	}
@@ -793,8 +775,7 @@ Bool GeometryData::isTangentSpace() const
 // Compute the progressive mesh for each face arrays.
 void GeometryData::genProgressiveMesh(Bool generate)
 {
-	if (m_flags.getBit(GEN_PROGRESSIVE_MESH) != generate)
-	{
+    if (m_flags.getBit(GEN_PROGRESSIVE_MESH) != generate) {
 		m_flags.setBit(GEN_PROGRESSIVE_MESH, generate);
 		m_flags.setBit(UPDATE_PROGRESSIVE_MESH, generate);
 	}
@@ -803,7 +784,7 @@ void GeometryData::genProgressiveMesh(Bool generate)
 // Define the LOD level in percent for each face arrays.
 void GeometryData::setLodLvl(UInt32 lvl)
 {
-	// TODO
+    // @todo
 }
 
 // Is progressive mesh is computed for each face arrays.
@@ -829,10 +810,8 @@ Bool GeometryData::writeToFile(OutStream &os)
 
 	// write elements
     os << getNumElements();
-	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-	{
-		if (m_elements[i])
-		{
+    for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
+        if (m_elements[i]) {
             os << m_elements[i]->getType();
 
             m_elements[i]->writeToFile(os);
@@ -841,10 +820,8 @@ Bool GeometryData::writeToFile(OutStream &os)
 
 	// write face array
     os << (UInt32)m_faceArrays.size();
-	for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-	{
-		if (it->second)
-		{
+    for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
+        if (it->second) {
             os   << it->first
 				 << it->second->getTypeSize();
 
@@ -864,13 +841,11 @@ Bool GeometryData::readFromFile(InStream &is)
 	m_flags.setBit(UPDATE_PROGRESSIVE_MESH, False);
 
 	// destroy if necessary
-	for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i)
-	{
+    for (Int32 i = 0; i < NUM_VERTEX_ATTRIBUTES; ++i) {
 		deletePtr(m_elements[i]);
 	}
 
-	for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-	{
+    for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
 		deletePtr(it->second);
 	}
 
@@ -894,8 +869,7 @@ Bool GeometryData::readFromFile(InStream &is)
 	// read elements
 	UInt32 numElements;
     is >> numElements;
-	for (UInt32 i = 0; i < numElements; ++i)
-	{
+    for (UInt32 i = 0; i < numElements; ++i) {
 		VertexAttributeArray type;
 		SmartArrayFloat data;
 
@@ -909,20 +883,16 @@ Bool GeometryData::readFromFile(InStream &is)
 	UInt32 numFaceArray, faceArrayId, typeSize;
 
     is >> numFaceArray;
-	for (UInt32 i = 0; i < numFaceArray; ++i)
-	{
+    for (UInt32 i = 0; i < numFaceArray; ++i) {
         is   >> faceArrayId
 			 >> typeSize;
 
-		if (typeSize == 2)
-		{
+        if (typeSize == 2) {
             FaceArrayUInt16 *faceArray = new FaceArrayUInt16(getScene()->getContext());
             faceArray->readFromFile(is);
 
 			addFaceArray(faceArrayId, faceArray);
-		}
-		else if (typeSize == 4)
-		{
+        } else if (typeSize == 4) {
             FaceArrayUInt32 *faceArray = new FaceArrayUInt32(getScene()->getContext());
             faceArray->readFromFile(is);
 
@@ -942,20 +912,10 @@ void GeometryData::computeTexCoords(
 		UInt32 vFrom)
 {
 	// dest must be one of the 2d textures units
-	switch (dest)
-	{
-		case V_TEXCOORDS_2D_1_ARRAY:
-		case V_TEXCOORDS_2D_2_ARRAY:
-		case V_TEXCOORDS_2D_3_ARRAY:
-		case V_TEXCOORDS_2D_4_ARRAY:
-		case V_TEXCOORDS_2D_5_ARRAY:
-		case V_TEXCOORDS_2D_6_ARRAY:
-		case V_TEXCOORDS_2D_7_ARRAY:
-		case V_TEXCOORDS_2D_8_ARRAY:
-		case V_TEXCOORDS_2D_9_ARRAY:
-		case V_TEXCOORDS_2D_10_ARRAY:
-		case V_TEXCOORDS_2D_11_ARRAY:
-		case V_TEXCOORDS_2D_12_ARRAY:
+    switch (dest) {
+        case V_UV_MAP_ARRAY:
+        case V_UV_MAP2_ARRAY:
+        case V_UV_MAP3_ARRAY:
 			break;
 
 		default:
@@ -963,29 +923,30 @@ void GeometryData::computeTexCoords(
 			break;
 	}
 
-	if (!m_elements[V_VERTICES_ARRAY])
+    if (!m_elements[V_VERTICES_ARRAY]) {
 		O3D_ERROR(E_InvalidPrecondition("Vertices are required"));
+    }
 
-	if (m_elements[dest])
+    if (m_elements[dest]) {
 		deletePtr(m_elements[dest]);
+    }
 
 	const Float *vertices = m_elements[V_VERTICES_ARRAY]->lockArray(0, 0);
 
-	if (!vertices)
+    if (!vertices) {
 		O3D_ERROR(E_InvalidPrecondition("Unable to lock vertices data array"));
+    }
 
 	UInt32 numVertices = getNumVertices();
 
 	// normalize method
-	if (method == TEXGEN_VERTEX_NORMALIZE)
-	{
+    if (method == TEXGEN_VERTEX_NORMALIZE) {
 		SmartArrayFloat texCoordsArray(numVertices*2);
 
 		Vector3 vert;
 
 		// for each vertex
-		for (UInt32 i = 0; i < numVertices; ++i)
-		{
+        for (UInt32 i = 0; i < numVertices; ++i) {
 			vert.set(&vertices[i*3]);
 			vert[X] *= scale[X];
 			vert[Y] *= scale[Y];
@@ -1000,16 +961,13 @@ void GeometryData::computeTexCoords(
 
 		// finally create the texCoord element if necessary
 		newVertexElement(dest, texCoordsArray);
-	}
-	else if (method == TEXGEN_VERTEX_PLANAR)
-	{
+    } else if (method == TEXGEN_VERTEX_PLANAR) {
 		SmartArrayFloat texCoordsArray(numVertices*2);
 
 		Vector3 vert;
 
 		// for each vertex
-		for (UInt32 i = 0; i < numVertices; ++i)
-		{
+        for (UInt32 i = 0; i < numVertices; ++i) {
 			vert.set(&vertices[i*3]);
 			vert[X] *= scale[X];
 			vert[Y] *= scale[Y];
@@ -1023,9 +981,7 @@ void GeometryData::computeTexCoords(
 
 		// finally create the texCoord element if necessary
 		newVertexElement(dest, texCoordsArray);
-	}
-	else
-	{
+    } else {
 		m_elements[V_VERTICES_ARRAY]->unlockArray();
 		O3D_ERROR(E_InvalidParameter("Invalid generation method"));
 	}
@@ -1037,45 +993,28 @@ void GeometryData::computeTexCoords(
 UInt32 GeometryData::getElementSize(VertexAttributeArray mode) const
 {
 	// check the element size
-	switch (mode)
-	{
+    switch (mode) {
 		case V_RIGGING_ARRAY:
 			return 1;
 	
-		case V_TEXCOORDS_2D_1_ARRAY:
-		case V_TEXCOORDS_2D_2_ARRAY:
-		case V_TEXCOORDS_2D_3_ARRAY:
-		case V_TEXCOORDS_2D_4_ARRAY:
-		case V_TEXCOORDS_2D_5_ARRAY:
-		case V_TEXCOORDS_2D_6_ARRAY:
-		case V_TEXCOORDS_2D_7_ARRAY:
-		case V_TEXCOORDS_2D_8_ARRAY:
-		case V_TEXCOORDS_2D_9_ARRAY:
-		case V_TEXCOORDS_2D_10_ARRAY:
-		case V_TEXCOORDS_2D_11_ARRAY:
-		case V_TEXCOORDS_2D_12_ARRAY:
+        case V_UV_MAP_ARRAY:
+        case V_UV_MAP2_ARRAY:
+        case V_UV_MAP3_ARRAY:
 			return 2;
 
 		case V_VERTICES_ARRAY:
 		case V_NORMALS_ARRAY:
 		case V_TANGENT_ARRAY:
 		case V_BITANGENT_ARRAY:
-		case V_TEXCOORDS_3D_1_ARRAY:
-		case V_TEXCOORDS_3D_2_ARRAY:
-		case V_TEXCOORDS_3D_3_ARRAY:
-		case V_TEXCOORDS_3D_4_ARRAY:
-		case V_TEXCOORDS_3D_5_ARRAY:
-		case V_TEXCOORDS_3D_6_ARRAY:
-		case V_TEXCOORDS_3D_7_ARRAY:
-		case V_TEXCOORDS_3D_8_ARRAY:
-		case V_TEXCOORDS_3D_9_ARRAY:
-		case V_TEXCOORDS_3D_10_ARRAY:
-		case V_TEXCOORDS_3D_11_ARRAY:
-		case V_TEXCOORDS_3D_12_ARRAY:
+        case V_UVW_ARRAY:
+        case V_UVW_2_ARRAY:
+        case V_UVW_3_ARRAY:
 			return 3;
 
 		case V_SKINNING_ARRAY:
+        case V_SKINNING_EXT_ARRAY:
 		case V_WEIGHTING_ARRAY:
+        case V_WEIGHTING_EXT_ARRAY:
 		case V_COLOR_ARRAY:
 			return 4;
 
@@ -1091,15 +1030,14 @@ VertexElement* GeometryData::newVertexElement(
 {
 	UInt32 eltSize = getElementSize(mode);
 
-	if (m_elements[mode])
-	{
+    if (m_elements[mode]) {
 		if ((m_elements[mode]->getNumElements() != data.getNumElt() / eltSize) ||
-			(m_elements[mode]->getElementSize() != eltSize))
-		{
+            (m_elements[mode]->getElementSize() != eltSize)) {
+
 			deletePtr(m_elements[mode]);
-		}
-		else
+        } else {
 			return m_elements[mode];
+        }
 	}
 
 	m_elements[mode] = new VertexElement(mode, data, eltSize);
@@ -1115,29 +1053,26 @@ void GeometryData::buildFromPrimitive(const Primitive &primitive)
 			SmartArrayFloat(primitive.getVertices(), primitive.getNumVertices() * 3));
 
 	// set texture coordinates
-	if (primitive.isTexCoords())
-	{
+    if (primitive.isTexCoords()) {
 		newVertexElement(
-				V_TEXCOORDS_2D_1_ARRAY,
+                V_UV_MAP_ARRAY,
 				SmartArrayFloat(primitive.getTexCoords(), primitive.getNumVertices() * 2));
 	}
 
 	// set face array
-	if (primitive.getNumVertices() < 65536)
-	{
+    if (primitive.getNumVertices() < 65536) {
 		SmartArrayUInt16 faceData(primitive.getNumIndices());
 		const UInt32 *primitiveFace = primitive.getFacesIndices();
 
-		for (UInt32 i = 0; i < primitive.getNumIndices(); ++i)
+        for (UInt32 i = 0; i < primitive.getNumIndices(); ++i) {
 			faceData[i] = (UInt16) primitiveFace[i];
+        }
 
         FaceArrayUInt16 *facesArray = new FaceArrayUInt16(getScene()->getContext(), primitive.getFaceType());
 		facesArray->setFaces(faceData);
 
 		addFaceArray(0, facesArray);
-	}
-	else
-	{
+    } else {
 		SmartArrayUInt32 faceData(primitive.getFacesIndices(), primitive.getNumIndices());
 
         FaceArrayUInt32 *facesArray = new FaceArrayUInt32(getScene()->getContext(), primitive.getFaceType());
@@ -1304,7 +1239,7 @@ void GeometryData::computeTangentSpace()
 		computeNormals();
 		//O3D_ERROR(O3D_E_InvalidPrecondition("Normals are required"));
 
-	if (!m_elements[V_TEXCOORDS_2D_1_ARRAY])
+    if (!m_elements[V_UV_MAP_ARRAY])
 		O3D_ERROR(E_InvalidPrecondition("Primary texture coordinates unit are required"));
 
 	if (m_elements[V_TANGENT_ARRAY])
@@ -1315,7 +1250,7 @@ void GeometryData::computeTangentSpace()
 
 	const Float *vertices  = m_elements[V_VERTICES_ARRAY]->lockArray(0, 0);
 	const Float *normals   = m_elements[V_NORMALS_ARRAY]->lockArray(0, 0);
-	const Float *texCoords = m_elements[V_TEXCOORDS_2D_1_ARRAY]->lockArray(0, 0);
+    const Float *texCoords = m_elements[V_UV_MAP_ARRAY]->lockArray(0, 0);
 
 	if (!vertices || !normals || !texCoords)
 	{
@@ -1326,7 +1261,7 @@ void GeometryData::computeTangentSpace()
 		if (normals)
 			m_elements[V_NORMALS_ARRAY]->unlockArray();
 		if (texCoords)
-			m_elements[V_TEXCOORDS_2D_1_ARRAY]->unlockArray();
+            m_elements[V_UV_MAP_ARRAY]->unlockArray();
 	}
 
 	UInt32 numVertices = getNumVertices();
@@ -1375,7 +1310,7 @@ void GeometryData::computeTangentSpace()
 	}
 
 	m_elements[V_VERTICES_ARRAY]->unlockArray();
-	m_elements[V_TEXCOORDS_2D_1_ARRAY]->unlockArray();
+    m_elements[V_UV_MAP_ARRAY]->unlockArray();
 	m_elements[V_NORMALS_ARRAY]->unlockArray();
 
 	SmartArrayFloat tangents(numVertices*3);

@@ -99,7 +99,7 @@ void LambertMaterial::initialize(
 	m_arrays.push_back(V_NORMALS_ARRAY);
 
     if (m_ambientMap || m_diffuseMap || m_specularMap) {
-        m_arrays.push_back(V_TEXCOORDS_2D_1_ARRAY);
+        m_arrays.push_back(V_UV_MAP_ARRAY);
     }
 
     // static mesh ?
@@ -251,8 +251,6 @@ void LambertMaterial::initialize(
 		shadable.operation(Shadable::NORMALS);
         shadable.operation(Shadable::CREATE);
 	}
-
-    //buildVertexArray(shadable);
 
 	m_valid = True;
 }
@@ -408,7 +406,7 @@ void LambertMaterial::processLighting(
         }
 
         if (m_diffuseMap || m_specularMap || m_shineMap) {
-			object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1[drawInfo.light.type]);
+            object.attribute(V_UV_MAP_ARRAY, a_texCoords1[drawInfo.light.type]);
 		}
 
 		shader.setConstMatrix4(
@@ -552,7 +550,7 @@ void LambertMaterial::processDeferred(
         }
 
         if (m_ambientMap || m_diffuseMap || m_specularMap || m_shineMap) {
-			object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1[0]);
+            object.attribute(V_UV_MAP_ARRAY, a_texCoords1[0]);
 		}
 
 		shader.setConstMatrix4(

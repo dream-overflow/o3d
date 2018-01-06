@@ -6,7 +6,7 @@ precision highp float;
 uniform vec4 u_diffuse;
 
 #ifdef DIFFUSE_MAP
-layout(location = 8) smooth in vec2 io_texCoords1;
+layout(location = 4) smooth in vec2 io_texCoords1;
 uniform sampler2D u_diffuseMap;
 #endif
 

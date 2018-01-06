@@ -12,7 +12,7 @@ uniform sampler2D u_depthMap;
 uniform sampler2D u_normalMap;
 uniform sampler2D u_colorMap;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 vec2 getTexCoord()
 {

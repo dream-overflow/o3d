@@ -290,13 +290,13 @@ void PCLODDebugLabel::drawContent()
 			1.0f, 1.0f };
 
 	m_drawTexCoordsVbo.create(8, VertexBuffer::DYNAMIC, lTexCoords, True);
-	m_drawTexCoordsVbo.attribute(V_TEXCOORDS_2D_1_ARRAY, 2, 0, 0);
+	m_drawTexCoordsVbo.attribute(V_UV_MAP_ARRAY, 2, 0, 0);
 
 	getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
 
 	m_pTexture->unbind();
 
-	glContext->disableVertexAttribArray(V_TEXCOORDS_2D_1_ARRAY);
+	glContext->disableVertexAttribArray(V_UV_MAP_ARRAY);
 	glContext->disableVertexAttribArray(V_VERTICES_ARRAY);
 
 	m_ambientMap.unbindShader();

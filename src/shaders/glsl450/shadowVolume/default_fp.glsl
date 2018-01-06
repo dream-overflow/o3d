@@ -2,7 +2,7 @@
 
 precision highp float;
 
-//out vec4 o_finalColor;
+//layout(location = 0) out vec4 o_finalcolor;
 
 void main()
 {

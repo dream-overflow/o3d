@@ -5,10 +5,10 @@ uniform mat4 u_modelViewProjectionMatrix;
 uniform vec4 u_color;
 uniform vec3 u_scale;
 
-in vec4 a_vertex;
-in vec4 a_color;
+layout(location = 0) in vec4 a_vertex;
+layout(location = 4) in vec4 a_color;
 
-smooth out vec4 io_color;
+layout(location = 0) smooth out vec4 io_color;
 
 invariant gl_Position;
 

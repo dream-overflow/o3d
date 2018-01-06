@@ -111,7 +111,7 @@ void BumpMaterial::initialize(
     m_arrays.push_back(V_NORMALS_ARRAY);
     m_arrays.push_back(V_TANGENT_ARRAY);
     m_arrays.push_back(V_BITANGENT_ARRAY);
-    m_arrays.push_back(V_TEXCOORDS_2D_1_ARRAY);
+    m_arrays.push_back(V_UV_MAP_ARRAY);
 
     // static mesh ?
     if (shadable.getVertexProgramType() == Shadable::VP_MESH)
@@ -275,8 +275,6 @@ void BumpMaterial::initialize(
         shadable.operation(Shadable::CREATE);
     }
 
-    //buildVertexArray(shadable);
-
     m_valid = True;
 }
 
@@ -365,7 +363,7 @@ void BumpMaterial::processLighting(
         materialPass.assignMapSetting(MaterialPass::BUMP_MAP);
         shader.setConstTexture(u_bumpMap[drawInfo.light.type], materialPass.getBumpMap(), 3);
 
-		object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1[drawInfo.light.type]);
+        object.attribute(V_UV_MAP_ARRAY, a_texCoords1[drawInfo.light.type]);
 
 		shader.setConstMatrix4(
 				u_modelViewProjectionMatrix[drawInfo.light.type],
@@ -525,7 +523,7 @@ void BumpMaterial::processDeferred(
         materialPass.assignMapSetting(MaterialPass::BUMP_MAP);
         shader.setConstTexture(u_bumpMap[drawInfo.light.type], materialPass.getBumpMap(), 4);
 
-        object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1[0]);
+        object.attribute(V_UV_MAP_ARRAY, a_texCoords1[0]);
 
         shader.setConstMatrix4(
                 u_modelViewProjectionMatrix[0],

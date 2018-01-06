@@ -82,7 +82,7 @@ void ColorMaterial::initialize(
     m_arrays.push_back(V_VERTICES_ARRAY);
 
     if (m_diffuseMap) {
-        m_arrays.push_back(V_TEXCOORDS_2D_1_ARRAY);
+        m_arrays.push_back(V_UV_MAP_ARRAY);
     }
 
     // static mesh ? @todo more factorized avoid this per material, options could comes from shadable
@@ -168,8 +168,6 @@ void ColorMaterial::initialize(
     }
 
     m_initMode = initMode;
-
-    // buildVertexArray(shadable);
 
     m_valid = True;
 }

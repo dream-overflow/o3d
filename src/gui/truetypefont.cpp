@@ -866,7 +866,7 @@ void TrueTypeFont::attribute(VertexAttributeArray mode, UInt32 location)
 {
     if (mode == V_VERTICES_ARRAY) {
 		m_vertices.attribute(location, 2, 0, 0);
-    } else if (mode == V_TEXCOORDS_2D_1_ARRAY) {
+    } else if (mode == V_UV_MAP_ARRAY) {
 		m_texCoords.attribute(location, 2, 0, 0);
     }
 }

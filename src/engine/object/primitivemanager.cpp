@@ -56,8 +56,8 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
     m_quadColors(getScene()->getContext())
 {
     m_primitives.resize(SOLID_CUBE1+1);
-	// TODO remplacer avec des VBO plus globaux
 
+    // @todo remplacer avec des VBO plus globaux
 	createPrimitive(WIRE_CYLINDER1, m_wireCylinder1);
 	createPrimitive(WIRE_CYLINDER2, m_wireCylinder2);
 	createPrimitive(SOLID_CYLINDER1, m_solidCylinder1);
@@ -81,8 +81,9 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 	m_colorShader.a_vertex = m_colorShader.instance.getAttributeLocation("a_vertex");
 	m_colorShader.a_color = m_colorShader.instance.getAttributeLocation("a_color");
 
-	if (!m_colorShader.instance.isOperational())
+    if (!m_colorShader.instance.isOperational()) {
 		O3D_ERROR(E_InvalidResult("Primitive rendering color shader is not operational"));
+    }
 
 	m_verticesVbo.create(1024*3, VertexBuffer::STREAMED);
 	m_colorsVbo.create(1024*4, VertexBuffer::STREAMED);
@@ -170,6 +171,7 @@ void PrimitiveManager::bind()
 
 		m_colorShader.instance.bindShader();
 
+        getScene()->getContext()->bindDefaultVertexArray();
 		getScene()->getContext()->enableVertexAttribArray(m_colorShader.a_vertex);
 		getScene()->getContext()->enableVertexAttribArray(m_colorShader.a_color);
 	}

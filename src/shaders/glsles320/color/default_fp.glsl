@@ -6,11 +6,11 @@ precision highp float;
 uniform vec4 u_diffuse;
 
 #ifdef DIFFUSE_MAP
-smooth in vec2 io_texCoords1;
+layout(location = 4) smooth in vec2 io_texCoords1;
 uniform sampler2D u_diffuseMap;
 #endif
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 #ifdef ALPHA_TEST_REF
 void alphaTest(float alpha)

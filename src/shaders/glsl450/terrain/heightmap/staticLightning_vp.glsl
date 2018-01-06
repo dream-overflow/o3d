@@ -4,11 +4,11 @@
 uniform mat4 u_modelViewProjectionMatrix;
 uniform vec4 u_units;
 
-in vec4 a_vertex;
-in vec2 a_texCoords;
+layout(location = 0) in vec4 a_vertex;
+layout(location = 5) in vec2 a_texCoords;
 
-out vec2 io_texCoords;
-out vec2 io_fragPosition;
+layout(location = 0) out vec2 io_fragPosition;
+layout(location = 1) out vec2 io_texCoords;
 
 //=================== MAIN =====================//
 void main()

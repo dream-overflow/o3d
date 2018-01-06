@@ -9,10 +9,10 @@ uniform sampler2D u_colormap;
 uniform sampler2D u_normalmap;
 uniform sampler2D u_noise;
 
-in vec2 io_texCoords;
-in vec2 io_fragPosition;
+layout(location = 0) in vec2 io_fragPosition;
+layout(location = 1) in vec2 io_texCoords;
 
-out vec4 o_finalColor[2];
+layout(location = 0) out vec4 o_finalColor[2];
 
 void main()
 {

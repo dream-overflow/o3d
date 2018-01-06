@@ -81,7 +81,7 @@ void AmbientMaterial::initialize(
 	m_arrays.push_back(V_VERTICES_ARRAY);
 
     if (m_materialMap) {
-		m_arrays.push_back(V_TEXCOORDS_2D_1_ARRAY);
+        m_arrays.push_back(V_UV_MAP_ARRAY);
     }
 
 	// static mesh ?
@@ -133,8 +133,6 @@ void AmbientMaterial::initialize(
 
     m_initMode = initMode;
 
-    // buildVertexArray(shadable);
-
 	m_valid = True;
 }
 
@@ -166,7 +164,7 @@ void AmbientMaterial::processAmbient(
             materialPass.assignMapSetting(MaterialPass::AMBIENT_MAP);
             shader.setConstTexture(u_ambientMap, materialPass.getAmbientMap(), 0);
 
-			object.attribute(V_TEXCOORDS_2D_1_ARRAY, V_TEXCOORDS_2D_1_ARRAY);
+            object.attribute(V_UV_MAP_ARRAY, V_UV_MAP_ARRAY);
 
             // global ambient
             shader.setConstColor(u_ambient, getScene()->getGlobalAmbient());
@@ -175,7 +173,7 @@ void AmbientMaterial::processAmbient(
             materialPass.assignMapSetting(MaterialPass::DIFFUSE_MAP);
             shader.setConstTexture(u_ambientMap, materialPass.getDiffuseMap(), 0);
 
-            object.attribute(V_TEXCOORDS_2D_1_ARRAY, V_TEXCOORDS_2D_1_ARRAY);
+            object.attribute(V_UV_MAP_ARRAY, V_UV_MAP_ARRAY);
 
             // global ambient
             shader.setConstColor(u_ambient, materialPass.getAmbient() * getScene()->getGlobalAmbient());
@@ -215,7 +213,7 @@ void AmbientMaterial::processAmbient(
 			glContext->setActiveTextureUnit(0);
 			glContext->bindTexture(TEXTURE_2D, 0);
 
-			glContext->disableVertexAttribArray(V_TEXCOORDS_2D_1_ARRAY);
+            glContext->disableVertexAttribArray(V_UV_MAP_ARRAY);
 		}
 
         if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING)) {
@@ -258,4 +256,3 @@ void AmbientMaterial::processDeferred(
 {
     O3D_ERROR(E_InvalidOperation("Not permit"));
 }
-

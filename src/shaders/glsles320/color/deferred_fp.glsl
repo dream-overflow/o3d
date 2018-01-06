@@ -5,26 +5,26 @@ precision highp float;
 
 uniform vec4 u_diffuse;
 
-smooth in vec3 io_position;
-smooth in vec3 io_normal;
+layout(location = 0) smooth in vec3 io_position;
+layout(location = 1) smooth in vec3 io_normal;
 
 #ifdef DIFFUSE_MAP
-smooth in vec2 io_texCoords1;
+layout(location = 4) smooth in vec2 io_texCoords1;
 uniform sampler2D u_diffuseMap;
 #endif
 
 #ifdef AMBIENT
-out vec4 o_ambient;
+layout (location = 0) out vec4 o_ambient;
 #endif
 
-out vec4 o_diffuse;
+layout(location = 3) out vec4 o_diffuse;
 
 #ifdef SPECULAR
-out vec4 o_specular;
+layout(location = 4) out vec4 o_specular;
 #endif
 
-out vec4 o_normal;
-out vec3 o_position;
+layout(location = 1) out vec4 o_normal;
+layout(location = 2) out vec3 o_position;
 
 #ifdef ALPHA_TEST_REF
 void alphaTest(float alpha)

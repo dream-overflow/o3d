@@ -320,7 +320,7 @@ Bool Ms3d::load(InStream &is, const String& baseName, const String &path)
 		meshNormals.destroy();
 
 		meshData->getGeometry()->createElement(
-				V_TEXCOORDS_2D_1_ARRAY,
+				V_UV_MAP_ARRAY,
 				SmartArrayFloat(meshUV.getData(),meshUV.getNumElt()));
 		meshUV.destroy();
 

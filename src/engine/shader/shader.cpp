@@ -142,50 +142,33 @@ void Shader::linkInstance(T_InstanceInfo & _instance)
 		_instance.shaderId = glCreateProgram();
     }
 
-	// Bind the attribute's slots
-	glBindAttribLocation(_instance.shaderId, V_VERTICES_ARRAY, "a_vertex");
-	glBindAttribLocation(_instance.shaderId, V_NORMALS_ARRAY, "a_normal");
-	glBindAttribLocation(_instance.shaderId, V_TANGENT_ARRAY, "a_tangent");
-	glBindAttribLocation(_instance.shaderId, V_BITANGENT_ARRAY, "a_bitangent");
-	glBindAttribLocation(_instance.shaderId, V_COLOR_ARRAY, "a_color");
-	glBindAttribLocation(_instance.shaderId, V_RIGGING_ARRAY, "a_rigging");
-	glBindAttribLocation(_instance.shaderId, V_SKINNING_ARRAY, "a_skinning");
-	glBindAttribLocation(_instance.shaderId, V_WEIGHTING_ARRAY, "a_weighting");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_1_ARRAY, "a_texCoords1");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_1_ARRAY, "a_tex3D_1");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_2_ARRAY, "a_tex2D_2");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_2_ARRAY, "a_tex3D_2");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_3_ARRAY, "a_tex2D_3");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_3_ARRAY, "a_tex3D_3");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_4_ARRAY, "a_tex2D_4");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_4_ARRAY, "a_tex3D_4");
-/*	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_5_ARRAY, "a_tex2D_5");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_5_ARRAY, "a_tex3D_5");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_6_ARRAY, "a_tex2D_6");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_6_ARRAY, "a_tex3D_6");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_7_ARRAY, "a_tex2D_7");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_7_ARRAY, "a_tex3D_7");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_8_ARRAY, "a_tex2D_8");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_8_ARRAY, "a_tex3D_8");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_9_ARRAY, "a_tex2D_9");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_9_ARRAY, "a_tex3D_9");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_10_ARRAY, "a_tex2D_10");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_10_ARRAY, "a_tex3D_10");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_11_ARRAY, "a_tex2D_11");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_11_ARRAY, "a_tex3D_11");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_2D_12_ARRAY, "a_tex2D_12");
-	glBindAttribLocation(_instance.shaderId, V_TEXCOORDS_3D_12_ARRAY, "a_tex3D_12");
-*/
+    // Bind the attribute's slots @todo layout everywhere and remove that
+//    glBindAttribLocation(_instance.shaderId, V_VERTICES_ARRAY, "a_vertex");
+//    glBindAttribLocation(_instance.shaderId, V_NORMALS_ARRAY, "a_normal");
+//    glBindAttribLocation(_instance.shaderId, V_TANGENT_ARRAY, "a_tangent");
+//    glBindAttribLocation(_instance.shaderId, V_BITANGENT_ARRAY, "a_bitangent");
+//    glBindAttribLocation(_instance.shaderId, V_COLOR_ARRAY, "a_color");
+//    glBindAttribLocation(_instance.shaderId, V_RIGGING_ARRAY, "a_rigging");
+//    glBindAttribLocation(_instance.shaderId, V_SKINNING_ARRAY, "a_skinning");
+//    glBindAttribLocation(_instance.shaderId, V_WEIGHTING_ARRAY, "a_weighting");
+//    glBindAttribLocation(_instance.shaderId, V_UV_MAP_ARRAY, "a_texCoords1");
+//    glBindAttribLocation(_instance.shaderId, V_UVW_ARRAY, "a_tex3D_1");
+//    glBindAttribLocation(_instance.shaderId, V_UV_MAP2_ARRAY, "a_tex2D_2");
+//    glBindAttribLocation(_instance.shaderId, V_UVW_2_ARRAY, "a_tex3D_2");
+//    glBindAttribLocation(_instance.shaderId, V_UV_MAP3_ARRAY, "a_tex2D_3");
+//    glBindAttribLocation(_instance.shaderId, V_UVW_3_ARRAY, "a_tex3D_3");
+
     // Since OpenGL 3.3 bind out fragments, but not for GLES
-    if (glBindFragDataLocation) {
-        glBindFragDataLocation(_instance.shaderId, 0, "o_finalColor");
-        glBindFragDataLocation(_instance.shaderId, 0, "o_fragData");
-        glBindFragDataLocation(_instance.shaderId, 0, "o_ambient");
-        glBindFragDataLocation(_instance.shaderId, 1, "o_normal");
-        glBindFragDataLocation(_instance.shaderId, 2, "o_position");
-        glBindFragDataLocation(_instance.shaderId, 3, "o_diffuse");
-        glBindFragDataLocation(_instance.shaderId, 4, "o_specular");
-    }
+    // @todo Uses layouts everywhere and remove that
+//    if (glBindFragDataLocation) {
+//        glBindFragDataLocation(_instance.shaderId, 0, "o_finalColor");
+//        glBindFragDataLocation(_instance.shaderId, 0, "o_fragData");
+//        glBindFragDataLocation(_instance.shaderId, 0, "o_ambient");
+//        glBindFragDataLocation(_instance.shaderId, 1, "o_normal");
+//        glBindFragDataLocation(_instance.shaderId, 2, "o_position");
+//        glBindFragDataLocation(_instance.shaderId, 3, "o_diffuse");
+//        glBindFragDataLocation(_instance.shaderId, 4, "o_specular");
+//    }
 
 	T_ProgramInfo::CIT_ProgramMap lVpCit = lVertexProgram.programs.find(lOptions);
 	T_ProgramInfo::CIT_ProgramMap lFpCit = lFragmentProgram.programs.find(lOptions);

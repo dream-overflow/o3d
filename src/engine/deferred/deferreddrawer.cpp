@@ -646,7 +646,7 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
 
         m_backShader.shader.bindShader();
         m_vertices.attribute(V_VERTICES_ARRAY, 4, 0, 0);
-        m_texCoords.attribute(V_TEXCOORDS_2D_1_ARRAY, 2, 0, 0);
+        m_texCoords.attribute(V_UV_MAP_ARRAY, 2, 0, 0);
 
         m_backShader.shader.setConstMatrix4(m_backShader.u_modelViewProjectionMatrix, False, m_modelviewProj);
 

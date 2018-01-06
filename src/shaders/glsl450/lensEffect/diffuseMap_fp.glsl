@@ -6,9 +6,9 @@ precision highp float;
 uniform vec4 u_color;
 uniform sampler2D u_diffuseMap;
 
-smooth in vec2 io_texCoords;
+layout(location = 5) smooth in vec2 io_texCoords;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 void main()
 {

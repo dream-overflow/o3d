@@ -141,7 +141,7 @@ void WidgetDrawMode::attribute(VertexAttributeArray mode, UInt32 location)
     if (mode == V_VERTICES_ARRAY) {
 		m_vertices.create(m_verticesOffs, VertexBuffer::STREAMED, m_verticesArray.getData(), True);
 		m_vertices.getContext()->vertexAttribArray(location, 2, 0, 0);
-    } else if (mode == V_TEXCOORDS_2D_1_ARRAY) {
+    } else if (mode == V_UV_MAP_ARRAY) {
 		m_texCoords.create(m_verticesOffs, VertexBuffer::STREAMED, m_texCoordsArray.getData(), True);
 		m_vertices.getContext()->vertexAttribArray(location, 2, 0, 0);
 	}

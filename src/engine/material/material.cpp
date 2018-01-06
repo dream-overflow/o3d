@@ -28,8 +28,7 @@ O3D_IMPLEMENT_ABSTRACT_CLASS1(Material, ENGINE_MATERIAL, SceneResource)
 // Default constructor.
 Material::Material(BaseObject *parent) :
     SceneResource(parent),
-	m_valid(False),
-    m_vertexArray(getScene()->getContext()),
+    m_valid(False),
 	m_initMode(AMBIENT)
 {
 }
@@ -37,13 +36,6 @@ Material::Material(BaseObject *parent) :
 // Virtual destructor.
 Material::~Material()
 {
-}
-
-// Build/rebuild the vertex attribute array according to the actual parameters
-// of the shadable object.
-void Material::buildVertexArray(Shadable &shadable)
-{
-	m_vertexArray.create(m_arrays, shadable);
 }
 
 // Serialization

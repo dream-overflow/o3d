@@ -19,7 +19,7 @@ uniform vec2 O3D_MaterialTable;
 smooth out vec3 O3D_TextureWeight;
 
 uniform mat4 u_modelViewProjectionMatrix;
-in vec4 a_vertex;
+layout(location = 0) in vec4 a_vertex;
 
 smooth out vec2 io_texCoords[2];
 

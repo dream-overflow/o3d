@@ -3,23 +3,23 @@
 
 uniform mat4 u_modelViewProjectionMatrix;
 
-in vec4 a_vertex;
+layout(location = 0) in vec4 a_vertex;
 
 #ifdef RIGGING
 uniform mat4 u_bonesMatrixArray[NUM_BONES];
 
-in float a_rigging;
+layout(location = 7) in float a_rigging;
 #endif
 #ifdef SKINNING
 uniform mat4 u_bonesMatrixArray[NUM_BONES];
 
-in vec4 a_skinning;
-in vec4 a_weighting;
+layout(location = 8) in vec4 a_skinning;
+layout(location = 10) in vec4 a_weighting;
 #endif
 
 #ifdef DIFFUSE_MAP
-in vec2 a_texCoords1;
-smooth out vec2 io_texCoords1;
+layout(location = 5) in vec2 a_texCoords1;
+layout(location = 4) smooth out vec2 io_texCoords1;
 #endif
 
 void main()

@@ -43,13 +43,13 @@ uniform vec3 u_lightDir;
 uniform vec3 u_eyePos;
 
 #if /*defined(AMBIENT_MAP) ||*/ defined(DIFFUSE_MAP) || defined(SPECULAR_MAP) || defined(SHINE_MAP)
-smooth in vec2 io_texCoords1;
+layout(location = 4) smooth in vec2 io_texCoords1;
 #endif
 
-smooth in vec3 io_normal;
-smooth in vec3 io_position;
+layout(location = 1) smooth in vec3 io_normal;
+layout(location = 0) smooth in vec3 io_position;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 void main()
 {

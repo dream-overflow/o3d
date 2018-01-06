@@ -70,7 +70,7 @@ void DepthPassMaterial::initialize(
 	m_arrays.push_back(V_VERTICES_ARRAY);
 
 	if (m_opacityMap)
-		m_arrays.push_back(V_TEXCOORDS_2D_1_ARRAY);
+        m_arrays.push_back(V_UV_MAP_ARRAY);
 
 	// static mesh ?
 	if (shadable.getVertexProgramType() == Shadable::VP_MESH)
@@ -126,8 +126,6 @@ void DepthPassMaterial::initialize(
 
 	shaderInstance.unbindShader();
 
-	buildVertexArray(shadable);
-
 	m_valid = True;
 }
 
@@ -160,7 +158,7 @@ void DepthPassMaterial::processAmbient(
 			materialPass.assignMapSetting(MaterialPass::OPACITY_MAP);
 			shader.setConstTexture(u_opacityMap, materialPass.getOpacityMap(), 0);
 
-			object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1);
+            object.attribute(V_UV_MAP_ARRAY, a_texCoords1);
 		}
 
 		shader.setConstMatrix4(
@@ -247,4 +245,3 @@ void DepthPassMaterial::processDeferred(
 {
 	O3D_ERROR(E_InvalidOperation("Not permit"));
 }
-

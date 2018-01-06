@@ -300,7 +300,7 @@ void TextureFont::attribute(VertexAttributeArray mode, UInt32 location)
 		m_vertices.bindBuffer();
 		getScene()->getContext()->vertexAttribArray(location, 2, 0, 0);
 	}
-	else if (mode == V_TEXCOORDS_2D_1_ARRAY)
+	else if (mode == V_UV_MAP_ARRAY)
 	{
 		m_texCoords.bindBuffer();
 		getScene()->getContext()->vertexAttribArray(location, 2, 0, 0);

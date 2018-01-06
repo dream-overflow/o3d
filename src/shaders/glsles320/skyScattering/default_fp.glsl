@@ -3,9 +3,9 @@
 
 precision highp float;
 
-smooth in vec3 io_color;
+layout(location = 0) smooth in vec3 io_color;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 void main()
 {

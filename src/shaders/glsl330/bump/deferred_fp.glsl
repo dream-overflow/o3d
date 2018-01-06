@@ -28,24 +28,24 @@ uniform float u_shine;
 
 uniform sampler2D u_bumpMap;
 
-smooth in vec2 io_texCoords1;
-smooth in vec3 io_position;
+layout(location = 4) smooth in vec2 io_texCoords1;
+layout(location = 0) smooth in vec3 io_position;
 in mat3 io_matrixTBN;
 
 #ifdef AMBIENT
-out vec4 o_ambient;
+layout (location = 0) out vec4 o_ambient;
 #endif
 
 #ifdef DIFFUSE
-out vec4 o_diffuse;
+layout(location = 3) out vec4 o_diffuse;
 #endif
 
 #ifdef SPECULAR
-out vec4 o_specular;
+layout(location = 4) out vec4 o_specular;
 #endif
 
-out vec4 o_normal;   // A is SHINE
-out vec3 o_position;
+layout(location = 1) out vec4 o_normal;   // A is SHINE
+layout(location = 2) out vec3 o_position;
 
 #ifdef ALPHA_TEST_REF
 void alphaTest(float alpha)

@@ -235,42 +235,26 @@ enum Comparison
 //! Vertex attributes arrays.
 enum VertexAttributeArray
 {
-	V_VERTICES_ARRAY = 0,     //!< Vertices array (3 float).
-	V_NORMALS_ARRAY,          //!< Normals array (3 float).
-	V_TANGENT_ARRAY,          //!< Tangent array (3 float).
-	V_BITANGENT_ARRAY,        //!< Bi-tangent array (3 float).
-	V_COLOR_ARRAY,            //!< Vertex color array (4 float).
-	V_RIGGING_ARRAY,          //!< Rigging bones reference id (1 float).
-	V_SKINNING_ARRAY,         //!< Array that contain bones reference id (4 float).
-	V_WEIGHTING_ARRAY,        //!< Array that contain skinning bones weights (4 float).
-	V_TEXCOORDS_2D_1_ARRAY,   //!< First 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_1_ARRAY,   //!< First 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_2_ARRAY,   //!< Second 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_2_ARRAY,   //!< Second 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_3_ARRAY,   //!< Third 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_3_ARRAY,   //!< Third 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_4_ARRAY,   //!< 4th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_4_ARRAY,   //!< 4th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_5_ARRAY,   //!< 5th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_5_ARRAY,   //!< 5th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_6_ARRAY,   //!< 6th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_6_ARRAY,   //!< 6th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_7_ARRAY,   //!< 7th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_7_ARRAY,   //!< 7th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_8_ARRAY,   //!< 8th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_8_ARRAY,   //!< 8th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_9_ARRAY,   //!< 9th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_9_ARRAY,   //!< 9th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_10_ARRAY,  //!< 10th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_10_ARRAY,  //!< 10th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_11_ARRAY,  //!< 11th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_11_ARRAY,  //!< 11th 3d texture coordinate unit (3 float).
-	V_TEXCOORDS_2D_12_ARRAY,  //!< 12th 2d texture coordinate unit (2 float).
-	V_TEXCOORDS_3D_12_ARRAY   //!< 12th 3d texture coordinate unit (3 float).
+    V_VERTICES_ARRAY = 0,         //!< Vertices array (3 float).
+    V_NORMALS_ARRAY = 1,          //!< Normals array (3 float).
+    V_TANGENT_ARRAY = 2,          //!< Tangent array (3 float).
+    V_BITANGENT_ARRAY = 3,        //!< Bi-tangent array (3 float).
+    V_COLOR_ARRAY = 4,            //!< Vertex color array (4 float).
+    V_UV_MAP_ARRAY = 5,           //!< 2d texture coordinates (uv) (2 float).
+    V_UVW_ARRAY = 6,              //!< 3d texture coordinates (uvw) (3 float).
+    V_RIGGING_ARRAY = 7,          //!< Rigging bones reference id (1 float).
+    V_SKINNING_ARRAY = 8,         //!< Array that contain bones reference id 0..3 (4 float).
+    V_SKINNING_EXT_ARRAY = 9,     //!< Array that contain bones reference id 4..7 (4 float).
+    V_WEIGHTING_ARRAY = 10,       //!< Array that contain skinning bones weights 0..3 (4 float).
+    V_WEIGHTING_EXT_ARRAY = 11,   //!< Array that contain skinning bones weights 4..7 (4 float).
+    V_UV_MAP2_ARRAY = 12,         //!< Second 2d texture coordinate unit (2 float).
+    V_UVW_2_ARRAY = 13,           //!< Second 3d texture coordinate unit (3 float).
+    V_UV_MAP3_ARRAY = 14,         //!< Third 2d texture coordinate unit (2 float).
+    V_UVW_3_ARRAY = 15,           //!< Third 3d texture coordinate unit (3 float).
 };
 
 //! Number of vertex attributes arrays.
-static const Int32 NUM_VERTEX_ATTRIBUTES = 32;
+static const Int32 NUM_VERTEX_ATTRIBUTES = 16;
 
 //! OpenGL Data type.
 enum DataType

@@ -3,12 +3,12 @@
 
 precision highp float;
 
-smooth in vec2 io_texCoords1;
+layout(location = 4) smooth in vec2 io_texCoords1;
 
 uniform sampler2D u_colorMap;
 uniform sampler2D u_depthMap;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 void main()
 {

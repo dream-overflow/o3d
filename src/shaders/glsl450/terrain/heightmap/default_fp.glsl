@@ -8,10 +8,10 @@ uniform float u_invNoiseScale;						// Ex: a value of 2.0 means the noise textur
 uniform sampler2D u_colormap;
 uniform sampler2D u_noise;
 
-in vec2 io_texCoords;
-in vec2 io_fragPosition;
+layout(location = 0) in vec2 io_fragPosition;
+layout(location = 1) in vec2 io_texCoords;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 void main()
 {

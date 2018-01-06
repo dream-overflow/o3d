@@ -1,33 +1,32 @@
-// static mesh
 #version 450
 
 uniform mat4 u_modelViewProjectionMatrix;
 uniform mat4 u_worldMatrix;
 uniform mat3 u_normalMatrix;
 
-in vec4 a_vertex;
-in vec3 a_normal;
+layout(location = 0) in vec4 a_vertex;
+layout(location = 1) in vec3 a_normal;
 
 #if defined(AMBIENT_MAP) || defined(DIFFUSE_MAP) || defined(SPECULAR_MAP) || defined(SHINE_MAP)
-in vec2 a_texCoords1;
-smooth out vec2 io_texCoords1;
+layout(location = 5) in vec2 a_texCoords1;
+layout(location = 4) smooth out vec2 io_texCoords1;
 #endif
 
 #ifdef RIGGING
 uniform mat4 u_bonesMatrixArray[NUM_BONES];
 
-in float a_rigging;
+layout(location = 7) in float a_rigging;
 #endif
 
 #ifdef SKINNING
 uniform mat4 u_bonesMatrixArray[NUM_BONES];
 
-in vec4 a_skinning;
-in vec4 a_weighting;
+layout(location = 8) in vec4 a_skinning;
+layout(location = 10) in vec4 a_weighting;
 #endif
 
-smooth out vec3 io_normal;
-smooth out vec3 io_position;
+layout(location = 1) smooth out vec3 io_normal;
+layout(location = 0) smooth out vec3 io_position;
 
 void main()
 {

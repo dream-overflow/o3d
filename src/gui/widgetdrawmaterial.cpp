@@ -107,7 +107,7 @@ void WidgetDrawMaterial::processAmbient(
 		shader.setConstTexture(u_ambientMap, materialPass.getAmbientMap(), 0);
 		shader.setConstColor(u_ambient, materialPass.getAmbient());
 
-		object.attribute(V_TEXCOORDS_2D_1_ARRAY, a_texCoords1);
+		object.attribute(V_UV_MAP_ARRAY, a_texCoords1);
 
 		shader.setConstMatrix4(
 				u_modelViewProjectionMatrix,

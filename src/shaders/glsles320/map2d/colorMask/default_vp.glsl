@@ -3,8 +3,8 @@
 
 uniform mat4 u_modelViewProjectionMatrix;
 
-in vec4 a_vertex;
-in vec2 a_texCoords;
+layout(location = 0) in vec4 a_vertex;
+layout(location = 5) in vec2 a_texCoords;
 
 smooth out vec2 io_texCoords;
 

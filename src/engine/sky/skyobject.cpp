@@ -104,7 +104,7 @@ void SkyObject::draw(const DrawInfo &drawInfo)
 		m_shader.setConstFloat("u_brightness", smoothBrightness(getBrightness(), getBrightnessThreshold()));
 
 		getScene()->getPrimitiveManager()->getQuadTexCoordsVBO().attribute(
-				V_TEXCOORDS_2D_1_ARRAY,
+				V_UV_MAP_ARRAY,
 				2,
 				0,
 				0);
@@ -117,7 +117,7 @@ void SkyObject::draw(const DrawInfo &drawInfo)
 
 		getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
 
-		glContext->disableVertexAttribArray(V_TEXCOORDS_2D_1_ARRAY);
+		glContext->disableVertexAttribArray(V_UV_MAP_ARRAY);
 		glContext->disableVertexAttribArray(V_VERTICES_ARRAY);
 
 		m_shader.unbindShader();

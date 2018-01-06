@@ -33,8 +33,8 @@ class MaterialPass;
  * array, and define uniforms parameters (like ambient, diffuse, bump offset...).
  * @details A material can be manually specified by inheriting from this class, but it can also
  * use the programmable definition or by importing its definition from an o3dmt file.
- * And here the naming convention :
- *  - For uniforms parameters :
+ * Uniforms locations :
+ *  - For uniforms parameters @deprecated @todo UBO :
  *    - vec4 u_ambient : Premultiplied object ambient * current light ambient color.
  *    - vec4 u_diffuse : Premultiplied object diffuse * current light diffuse color.
  *    - vec4 u_specular : Premultiplied object specular * current light specular color
@@ -44,18 +44,23 @@ class MaterialPass;
  *    - vec4 u_matEmission : Object material emission/self illumination color.
  *    - float u_shine : Object material specular shininess [0..+oo].
  *    - float u_transparency : Object material transparency [0..1].
- *    - TODO
- *  - For attributes array :
- *    - vec4 a_vertex (location 0) : Vertex position attribute.
- *    - vec3 a_normal (location 1) : Vertex normal (TBN) attribute.
- *    - vec3 a_tangent (location 2) : Vertex tangent (TBN) attribute.
- *    - vec3 a_bitangent (location 3) : Vertex bi-tangent (TBN) attribute.
- *    - vec4 a_color (location 4) : Vertex color attribute.
- *    - float a_rigging (location 5) : Vertex rigging bones ID attribute.
- *    - vec4 a_skinning (location 6) : Vertex skinning 4 bones ID attribute.
- *    - vec4 a_weighting (location 7) : Vertex weighting 4 bones weight attribute.
- *    - xxx a_texCoords1 (location 8) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
- *    - xxx a_texCoords2 (location 9) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
+ *
+ * Vertex attribute locations :
+ *  -  layout(location = 0) in vec3 a_vertex;
+ *  - @see VertexAttributeArray @todo update following values
+ *  - vec3 a_normal (location 1) : Vertex normal (TBN) attribute.
+ *  - vec3 a_tangent (location 2) : Vertex tangent (TBN) attribute.
+ *  - vec3 a_bitangent (location 3) : Vertex bi-tangent (TBN) attribute.
+ *  - vec4 a_color (location 4) : Vertex color attribute.
+ *  - float a_rigging (location 5) : Vertex rigging bones ID attribute.
+ *  - vec4 a_skinning (location 6) : Vertex skinning 4 bones ID attribute.
+ *  - vec4 a_weighting (location 7) : Vertex weighting 4 bones weight attribute.
+ *  - xxx a_texCoords1 (location 8) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
+ *  - xxx a_texCoords2 (location 9) : Vertex texture 1d, 2d, 3d or 4d coordinates 0 attribute.
+ *
+ * Link in/out locations :
+ *  - layout(location = 0) smooth {in,out} vec3 io_position;
+ *  - layout(location = 1) smooth {in,out} vec3 io_normal;
  */
 class O3D_API Material : public SceneResource, NonCopyable<>
 {
@@ -94,10 +99,6 @@ public:
 	//! Release initialized data.
 	virtual void release() = 0;
 
-	//! Build/rebuild the vertex array object according to the actual parameters
-	//! of the shadable object.
-	void buildVertexArray(Shadable &shadable);
-
 	//! Is the material operational for use.
 	inline Bool isValid() const { return m_valid; }
 
@@ -106,9 +107,6 @@ public:
 
 	//! Get the option string used to build the shader instance.
 	inline const String& getOptions() const { return m_options; }
-
-	//! Get the vertex array object (read only).
-	inline const VertexArray& getVertexArray() const { return m_vertexArray; }
 
 	//-----------------------------------------------------------------------------------
 	// Processing
@@ -167,7 +165,6 @@ public:
 protected:
 
     Bool m_valid;               //!< True means valid for usage.
-	VertexArray m_vertexArray;  //!< Vertex array object.
 
 	InitMode m_initMode;        //!< Specialization mode.
 

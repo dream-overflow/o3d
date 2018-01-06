@@ -14,7 +14,7 @@ uniform sampler2D O3D_Material;
 
 smooth in vec2 io_texCoords[2];
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 //=================== MAIN =====================//
 void main()

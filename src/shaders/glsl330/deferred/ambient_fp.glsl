@@ -10,7 +10,7 @@ uniform vec4 u_ambient;
 uniform sampler2D u_ambientMap;
 //uniform sampler2D u_diffuseMap;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 vec2 getTexCoord()
 {

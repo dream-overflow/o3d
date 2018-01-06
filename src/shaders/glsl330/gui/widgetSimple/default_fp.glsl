@@ -6,9 +6,9 @@ precision highp float;
 uniform float u_alpha;
 uniform sampler2D u_texture;
 
-smooth in vec2 io_texCoords;
+layout(location = 0) smooth in vec2 io_texCoords;
 
-out vec4 o_finalColor;
+layout(location = 0) out vec4 o_finalColor;
 
 #ifdef ALPHA_TEST_REF
 void alphaTest(float alpha)

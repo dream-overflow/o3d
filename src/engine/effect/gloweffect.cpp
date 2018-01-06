@@ -164,7 +164,7 @@ void GlowEffect::attribute(VertexAttributeArray mode, UInt32 location)
 {
     if (mode == V_VERTICES_ARRAY) {
 		getScene()->getPrimitiveManager()->getQuadVerticesVBO().attribute(location, 3, 0, 0);
-    } else if (mode == V_TEXCOORDS_2D_1_ARRAY) {
+    } else if (mode == V_UV_MAP_ARRAY) {
 		getScene()->getPrimitiveManager()->getQuadTexCoordsVBO().attribute(location, 2, 0, 0);
     }
 }

@@ -201,7 +201,7 @@ void SkyBox::initVBO()
 
             VertexArray::Element texts;
             texts.vbo = m_texCoords[i]->getBufferId();
-            texts.array = V_TEXCOORDS_2D_1_ARRAY;
+            texts.array = V_UV_MAP_ARRAY;
             texts.eltSize = 2;
             attrs.push_back(texts);
 
@@ -326,7 +326,7 @@ void SkyBox::attribute(VertexAttributeArray mode, UInt32 location)
 {
     if (mode == V_VERTICES_ARRAY) {
 		m_vertices[m_currentSide]->attribute(location, 3, 0, 0);
-    } else if (mode == V_TEXCOORDS_2D_1_ARRAY) {
+    } else if (mode == V_UV_MAP_ARRAY) {
 		m_texCoords[m_currentSide]->attribute(location, 2, 0, 0);
     }
 }
