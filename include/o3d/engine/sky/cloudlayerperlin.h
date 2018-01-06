@@ -14,7 +14,7 @@
 
 #include "o3d/engine/object/facearray.h"
 #include "o3d/engine/sky/cloudlayerbase.h"
-#include "o3d/engine/object/dome.h"
+#include "o3d/engine/primitive/dome.h"
 #include "o3d/engine/shader/shader.h"
 #include "o3d/engine/texture/texture2d.h"
 

@@ -15,7 +15,7 @@
 #include "o3d/engine/sky/cloudlayerbase.h"
 
 #include "o3d/engine/vertexbuffer.h"
-#include "o3d/engine/object/dome.h"
+#include "o3d/engine/primitive/dome.h"
 
 #include "o3d/engine/shader/shader.h"
 

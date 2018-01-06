@@ -13,7 +13,7 @@
 
 #include "o3d/engine/object/meshdatamanager.h"
 #include "o3d/engine/context.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/engine/object/edgearray.h"
 #include "o3d/engine/alphapipeline.h"
 #include "o3d/engine/object/camera.h"

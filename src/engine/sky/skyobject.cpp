@@ -12,7 +12,7 @@
 #include "o3d/engine/shader/shadermanager.h"
 #include "o3d/engine/texture/texture2d.h"
 #include "o3d/engine/sky/skyobject.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 
 #include "o3d/engine/context.h"
 #include "o3d/engine/scene/scene.h"

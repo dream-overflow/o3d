@@ -24,7 +24,7 @@
 #include "o3d/core/filemanager.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"
-#include "o3d/engine/object/primitive.h"
+#include "o3d/engine/primitive/primitive.h"
 
 #include "o3d/engine/viewportmanager.h"
 #include "o3d/engine/renderer.h"
@@ -75,7 +75,7 @@
 #include "o3d/engine/utils/ms3d.h"
 
 #include "o3d/engine/visibility/visibilitymanager.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 
 using namespace o3d;
 

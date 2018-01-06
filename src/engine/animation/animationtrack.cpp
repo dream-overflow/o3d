@@ -9,7 +9,7 @@
 
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/animation/animationtrack.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/engine/scene/sceneobject.h"
 
 #include "o3d/core/debug.h"

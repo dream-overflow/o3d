@@ -9,7 +9,7 @@
 
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/effect/gloweffect.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/object/camera.h"

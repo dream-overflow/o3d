@@ -15,7 +15,6 @@
 #include "o3d/core/smartpointer.h"
 #include "o3d/core/memorydbg.h"
 #include "o3d/core/vector3.h"
-#include "o3d/engine/object/primitive.h"
 
 namespace o3d {
 

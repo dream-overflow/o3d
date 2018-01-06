@@ -1,6 +1,6 @@
 /**
  * @file primitivemanager.h
- * @brief 
+ * @brief Primitive display manager.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -11,7 +11,6 @@
 #define _O3D_PRIMITIVEMANAGER_H
 
 #include "o3d/core/baseobject.h"
-#include "primitive.h"
 #include "../scene/sceneentity.h"
 #include "../vertexbuffer.h"
 #include "../matrix.h"
@@ -29,6 +28,7 @@ class PrimitiveManager;
 class BSphere;
 class AABBox;
 class AABBoxExt;
+class Primitive;
 
 /**
  * @brief Manager manager usage helper.
@@ -282,17 +282,6 @@ protected:
 	ColorShader m_colorShader;
 	Int32 m_numUsage;
 
-	Cylinder m_wireCylinder1;
-	Cylinder m_wireCylinder2;
-	Cylinder m_solidCylinder1;
-	Cylinder m_wireCone1;
-	Cylinder m_solidCone1;
-	Sphere m_wireSphere1;
-	Sphere m_wireSphere2;
-	Sphere m_solidSphere1;
-	Cube m_wireCube1;
-    Cube m_solidCube1;
-
 	ArrayFloat m_vertices;
 	ArrayFloat m_colors;
 
@@ -325,7 +314,7 @@ protected:
 	ArrayBufferf m_quadTexCoords;
     ArrayBufferf m_quadColors;
 
-	void createPrimitive(Primitives type, Primitive &primitive);
+    void createPrimitive(Primitives type, Primitive *primitive);
 };
 
 } // namespace o3d

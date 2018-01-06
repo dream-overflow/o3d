@@ -40,7 +40,7 @@ Map2dObject::~Map2dObject()
 {
 }
 
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/engine/context.h"
 
 // X, Y

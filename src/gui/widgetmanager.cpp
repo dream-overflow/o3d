@@ -14,7 +14,7 @@
 #include "o3d/gui/widgets/layout.h"
 #include "o3d/gui/gui.h"
 #include "o3d/gui/guitype.h"
-#include "o3d/engine/object/primitive.h"
+#include "o3d/engine/primitive/primitive.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"

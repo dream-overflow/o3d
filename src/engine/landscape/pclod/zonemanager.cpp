@@ -19,7 +19,7 @@
 #include "o3d/engine/landscape/pclod/rendermanager.h"
 #include "o3d/engine/landscape/pclod/heightmapio.h"
 #include "o3d/engine/object/camera.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/scene/scene.h"
 

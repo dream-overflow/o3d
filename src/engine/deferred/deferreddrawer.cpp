@@ -11,7 +11,8 @@
 
 #include "o3d/engine/glextdefines.h"
 #include "o3d/engine/deferred/deferreddrawer.h"
-#include "o3d/engine/object/primitive.h"
+#include "o3d/engine/primitive/sphere.h"
+#include "o3d/engine/primitive/cylinder.h"
 #include "o3d/engine/object/geometrydata.h"
 
 #include "o3d/core/gl.h"

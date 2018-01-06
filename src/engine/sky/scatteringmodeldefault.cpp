@@ -11,7 +11,7 @@
 #include "o3d/engine/sky/scatteringmodeldefault.h"
 
 #include "o3d/core/smartarray.h"
-#include "o3d/engine/object/dome.h"
+#include "o3d/engine/primitive/dome.h"
 #include "o3d/image/imagetype.h"
 
 using namespace o3d;

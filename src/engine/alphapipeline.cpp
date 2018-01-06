@@ -10,7 +10,7 @@
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/alphapipeline.h"
 
-#include "o3d/engine/object/primitive.h"
+#include "o3d/engine/primitive/primitive.h"
 #include "o3d/engine/object/vertexelement.h"
 #include "o3d/engine/scene/sceneobject.h"
 #include "o3d/engine/matrix.h"

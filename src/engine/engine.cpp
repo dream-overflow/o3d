@@ -12,7 +12,7 @@
 #include "o3d/core/filemanager.h"
 #include "o3d/engine/renderer.h"
 #include "o3d/engine/context.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/engine/shader/shadermanager.h"
 #include "o3d/engine/texture/texturemanager.h"
 #include "o3d/engine/animation/animationmanager.h"
@@ -20,9 +20,7 @@
 #include "o3d/engine/utils/framemanager.h"
 #include "o3d/engine/viewportmanager.h"
 
-
 using namespace o3d;
-
 
 Engine::Engine(const String &rootPath, Renderer *renderer) :
     BaseObject(nullptr),  // no parent

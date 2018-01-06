@@ -15,9 +15,9 @@
 #include "o3d/core/filemanager.h"
 #include "o3d/engine/glextensionmanager.h"
 #include "o3d/core/math.h"
-#include "o3d/engine/object/primitive.h"
+#include "o3d/engine/primitive/primitive.h"
 #include "o3d/engine/matrix.h"
-#include "o3d/engine//scene/scene.h"
+#include "o3d/engine/scene/scene.h"
 
 using namespace o3d;
 

@@ -15,7 +15,7 @@
 #include "o3d/engine/context.h"
 #include "o3d/geom/frustum.h"
 #include "o3d/geom/bcone.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/engine/object/camera.h"
 #include "o3d/engine/hierarchy/node.h"
 

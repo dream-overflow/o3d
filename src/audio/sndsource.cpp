@@ -20,7 +20,7 @@
 #include "o3d/audio/sndbuffermanager.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/object/camera.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 
 #include <algorithm>
 

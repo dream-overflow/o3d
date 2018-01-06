@@ -21,7 +21,7 @@
 #include "o3d/geom/plane.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 
 #include <algorithm>
 

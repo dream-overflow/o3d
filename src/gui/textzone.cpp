@@ -15,7 +15,7 @@
 #include "o3d/gui/gui.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/core/templatemanager.h"
 
 using namespace o3d;

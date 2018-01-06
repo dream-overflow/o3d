@@ -8,7 +8,7 @@
  */
 
 #include "o3d/engine/precompiled.h"
-#include "o3d/engine/object/isosphere.h"
+#include "o3d/engine/primitive/isosphere.h"
 
 #include "o3d/core/math.h"
 #include "o3d/core/debug.h"

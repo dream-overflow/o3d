@@ -8,12 +8,16 @@
  */
 
 #include "o3d/engine/precompiled.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
 
 #include "o3d/engine/object/geometrydata.h"
 #include "o3d/engine/shader/shadermanager.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
+
+#include "o3d/engine/primitive/cube.h"
+#include "o3d/engine/primitive/sphere.h"
+#include "o3d/engine/primitive/cylinder.h"
 
 using namespace o3d;
 
@@ -37,16 +41,6 @@ PrimitiveAccess::~PrimitiveAccess()
 PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 		SceneEntity(parent),
 	m_numUsage(0),
-    m_wireCylinder1(1.f, 1.f, 1.f, 12, 1, Primitive::WIRED_MODE),
-    m_wireCylinder2(1.f, 1.f, 1.f, 8, 1, Primitive::WIRED_MODE),
-    m_solidCylinder1(1.f, 1.f, 1.f, 8, 1, Primitive::FILLED_MODE),
-    m_wireCone1(1.f, 0.f, 1.f, 8, 1, Primitive::WIRED_MODE),
-    m_solidCone1(1.f, 0.f, 1.f, 12, 1, Primitive::FILLED_MODE),
-    m_wireSphere1(1.f, 12, 8, Primitive::WIRED_MODE),
-    m_wireSphere2(1.f, 8, 6, Primitive::WIRED_MODE),
-    m_solidSphere1(1.f, 12, 8, Primitive::FILLED_MODE),
-    m_wireCube1(1.f, 0, Cube::GRID_CUBE),  // WIRED_MODE),
-    m_solidCube1(1.f, 0, Primitive::FILLED_MODE),
     m_vertices(1024*3, 1024*3),
     m_colors(1024*4, 1024*4),
     m_verticesVbo(getScene()->getContext()),
@@ -58,16 +52,16 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
     m_primitives.resize(SOLID_CUBE1+1);
 
     // @todo remplacer avec des VBO plus globaux
-	createPrimitive(WIRE_CYLINDER1, m_wireCylinder1);
-	createPrimitive(WIRE_CYLINDER2, m_wireCylinder2);
-	createPrimitive(SOLID_CYLINDER1, m_solidCylinder1);
-	createPrimitive(WIRE_CONE1, m_wireCone1);
-	createPrimitive(SOLID_CONE1, m_solidCone1);
-	createPrimitive(WIRE_SPHERE1, m_wireSphere1);
-	createPrimitive(WIRE_SPHERE2, m_wireSphere2);
-	createPrimitive(SOLID_SPHERE1, m_solidSphere1);
-	createPrimitive(WIRE_CUBE1, m_wireCube1);
-    createPrimitive(SOLID_CUBE1, m_solidCube1);
+    createPrimitive(WIRE_CYLINDER1, new Cylinder(1.f, 1.f, 1.f, 12, 1, Primitive::WIRED_MODE));
+    createPrimitive(WIRE_CYLINDER2, new Cylinder(1.f, 1.f, 1.f, 8, 1, Primitive::WIRED_MODE));
+    createPrimitive(SOLID_CYLINDER1, new Cylinder(1.f, 1.f, 1.f, 8, 1, Primitive::FILLED_MODE));
+    createPrimitive(WIRE_CONE1, new Cylinder(1.f, 0.f, 1.f, 8, 1, Primitive::WIRED_MODE));
+    createPrimitive(SOLID_CONE1, new Cylinder(1.f, 0.f, 1.f, 12, 1, Primitive::FILLED_MODE));
+    createPrimitive(WIRE_SPHERE1, new Sphere(1.f, 12, 8, Primitive::WIRED_MODE));
+    createPrimitive(WIRE_SPHERE2, new Sphere(1.f, 8, 6, Primitive::WIRED_MODE));
+    createPrimitive(SOLID_SPHERE1, new Sphere(1.f, 12, 8, Primitive::FILLED_MODE));
+    createPrimitive(WIRE_CUBE1, new Cube(1.f, 0, Cube::GRID_CUBE/*WIRED_MODE*/));
+    createPrimitive(SOLID_CUBE1, new Cube(1.f, 0, Primitive::FILLED_MODE));
 
 	// create a simple uniform color shader
 	Shader *shader = getScene()->getShaderManager()->addShader("primitiveShader");
@@ -197,11 +191,11 @@ void PrimitiveManager::unbind()
 	--m_numUsage;
 }
 
-void PrimitiveManager::createPrimitive(PrimitiveManager::Primitives type, Primitive &primitive)
+void PrimitiveManager::createPrimitive(PrimitiveManager::Primitives type, Primitive *primitive)
 {
-	GeometryData *geometry = new GeometryData(this, primitive);
+    GeometryData *geometry = new GeometryData(this, *primitive);
 
-	SmartArrayFloat colorArray(primitive.getNumVertices()*4);
+    SmartArrayFloat colorArray(primitive->getNumVertices()*4);
     for (UInt32 i = 0; i < colorArray.getNumElt(); ++i) {
 		colorArray.getData()[i] = 1.0f;
 	}
@@ -211,6 +205,8 @@ void PrimitiveManager::createPrimitive(PrimitiveManager::Primitives type, Primit
 	geometry->bindFaceArray(0);
 
 	m_primitives[type] = geometry;
+
+    delete primitive;
 }
 
 // Register a user object.

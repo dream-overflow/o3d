@@ -8,7 +8,7 @@
  */
 
 #include "o3d/engine/precompiled.h"
-#include "o3d/engine/object/dome.h"
+#include "o3d/engine/primitive/dome.h"
 
 #include "o3d/core/vector3.h"
 

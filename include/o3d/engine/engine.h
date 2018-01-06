@@ -24,7 +24,6 @@ class MeshDataManager;
 class FrameManager;
 class ViewPortManager;
 
-
 /**
  * @brief Engine entry point.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
@@ -108,4 +107,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_ENGINE_H
-

@@ -11,7 +11,8 @@
 #include "o3d/engine/object/geometrydata.h"
 
 #include "o3d/engine/object/facearrayvisitor.h"
-#include "o3d/engine/object/primitivemanager.h"
+#include "o3d/engine/primitive/primitivemanager.h"
+#include "o3d/engine/primitive/primitive.h"
 #include "o3d/engine/object/progressivemesh.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/scene/scene.h"
