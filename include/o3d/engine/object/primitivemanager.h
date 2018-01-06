@@ -202,6 +202,9 @@ public:
 	//! Draw a registered object given its identifier.
 	void drawObject(UInt32 objectId, const Vector3 &scale);
 
+    //! Set shader uniform scale.
+    void setScale(const Vector3 &scale);
+
 	//-----------------------------------------------------------------------------------
 	// Draw a set of VBO (need vertex(XYZ) and color(RGBA).
 	//-----------------------------------------------------------------------------------

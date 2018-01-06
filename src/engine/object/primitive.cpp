@@ -137,15 +137,15 @@ Cube::Cube(
     if (isSimpleGrid()) {
         // simple grid cube
         m_verticesCount = (8 + 12 * division);
-        m_indicesCount = (12 + m_division * 2 * 6) * 2;
+        m_indicesCount = (12 + division * 2 * 6) * 2;
     } else if (isMeta()) {
         // wired without triangulation
-        m_verticesCount = (8 + 12 * division);
-        m_indicesCount = (12 + m_division * 2 * 6) * 2;
+        m_verticesCount = (8 + 12 * division + division * division * 6);
+        m_indicesCount = (2 * (division+1) * (division+1) + division+1) * 2 * 6;
     } else if (isWired()) {
         // wired with triangulation
-		m_verticesCount = (8 + 12 * division);
-        m_indicesCount = (((3 * (m_division+1)) + 1) * (m_division+1) + m_division+1) * 2 * 6;
+        m_verticesCount = (8 + 12 * division + division * division * 6);
+        m_indicesCount = (3 * (division+1) * (division+1) + division+1) * 2 * 6;
     } else {
         // filled with triangles
 		m_verticesCount = (8 + 12 * division + division * division * 6);
@@ -197,79 +197,110 @@ Cube::Cube(
     }
 
     if (isWired()) {
-		constructWired(size);
+        constructWired(size, offSet);
     } else {
-		constructFilled(size,offSet);
+        constructFilled(size, offSet);
     }
 
 	deleteArray(m_pEdgeOffSet);
 	deleteArray(m_pFaceOffSet);
 }
 
-void Cube::constructFilled(Float size, UInt32 offSet)
+void Cube::buildVertices(UInt32 offSet)
 {
-	// Construct the vertices face
+    // Construct the vertices per face
     if (m_division != 0) {
         for (UInt32 face = 0 ; face < 6 ; ++face) {
-			m_pFaceOffSet[face] = offSet / 3;
-			const Vector3 begin(&(m_pVertices[ getBeginVertice(FACES[face][0], FACE_EDGE_DIR[face][0])*3 ]));
+            m_pFaceOffSet[face] = offSet / 3;
+            const Vector3 begin(&(m_pVertices[ getBeginVertice(FACES[face][0], FACE_EDGE_DIR[face][0])*3 ]));
 
-			Vector3 iStep;
+            Vector3 iStep;
             for (UInt32 c = 0 ; c < 3 ; ++c) {
-				iStep[c] = (
-						m_pVertices[getEndVertice(FACES[face][0],FACE_EDGE_DIR[face][0])*3 + c] -
-						m_pVertices[ getBeginVertice(FACES[face][0], FACE_EDGE_DIR[face][0])*3 + c]) /
-					Float(m_division + 1);
+                iStep[c] = (
+                        m_pVertices[getEndVertice(FACES[face][0],FACE_EDGE_DIR[face][0])*3 + c] -
+                        m_pVertices[ getBeginVertice(FACES[face][0], FACE_EDGE_DIR[face][0])*3 + c]) /
+                    Float(m_division + 1);
             }
-			
-			Vector3 jStep;
+
+            Vector3 jStep;
             for (UInt32 c = 0 ; c < 3 ; ++c) {
-				jStep[c] = (
-						m_pVertices[getEndVertice(FACES[face][3],FACE_EDGE_DIR[face][3])*3 + c] -
-						m_pVertices[ getBeginVertice(FACES[face][3],FACE_EDGE_DIR[face][3])*3 + c]) /
-					Float(m_division + 1);
+                jStep[c] = (
+                        m_pVertices[getEndVertice(FACES[face][3],FACE_EDGE_DIR[face][3])*3 + c] -
+                        m_pVertices[ getBeginVertice(FACES[face][3],FACE_EDGE_DIR[face][3])*3 + c]) /
+                    Float(m_division + 1);
             }
-		
+
             for (UInt32 i = 0 ; i < m_division ; ++i) {
                 for (UInt32 j = 0 ; j < m_division ; ++j) {
-					const Vector3 pos(begin + iStep * Float(i + 1) + jStep * Float(j + 1));
+                    const Vector3 pos(begin + iStep * Float(i + 1) + jStep * Float(j + 1));
 
-					pos.copyTo(&(m_pVertices[offSet]));
-					offSet += 3;
-				}
-			}
-		}
+                    pos.copyTo(&(m_pVertices[offSet]));
+                    offSet += 3;
+                }
+            }
+        }
     }
-
-	// Construct the faces
-	UInt32 offSetFace = 0;
-    for(UInt32 face = 0 ; face < 6 ; ++face) {
-        for(UInt32 j = 0 ; j < m_division + 1 ; ++j) {
-            for(UInt32 i = 0 ; i < m_division + 1 ; ++i) {
-				// First triangle
-				m_pIndices[offSetFace] = getVertice(face,i,j);
-				++offSetFace;
-				m_pIndices[offSetFace] = getVertice(face,i+1,j);
-				++offSetFace;
-				m_pIndices[offSetFace] = getVertice(face,i,j+1);
-				++offSetFace;
-				// Second triangle
-				m_pIndices[offSetFace] = getVertice(face,i+1,j);
-				++offSetFace;
-				m_pIndices[offSetFace] = getVertice(face,i+1,j+1);
-				++offSetFace;
-				m_pIndices[offSetFace] = getVertice(face,i,j+1);
-				++offSetFace;
-			}
-		}
-	}
 }
 
-void Cube::constructWired(Float size)
+void Cube::constructFilled(Float /*size*/, UInt32 offSet)
+{
+    buildVertices(offSet);
+
+	// Construct the faces
+    UInt32 *indices = m_pIndices;
+
+    if (isAlternateTriangle()) {
+        for(UInt32 face = 0 ; face < 6 ; ++face) {
+            for(UInt32 y = 0 ; y < m_division + 1 ; ++y) {
+                for(UInt32 x = 0 ; x < m_division + 1 ; ++x) {
+                    if ((x+y) % 2 == 0) {
+                        // First triangle
+                        *indices++ = getVertice(face,x,y);
+                        *indices++ = getVertice(face,x+1,y);
+                        *indices++ = getVertice(face,x,y+1);
+
+                        // Second triangle
+                        *indices++ = getVertice(face,x+1,y);
+                        *indices++ = getVertice(face,x+1,y+1);
+                        *indices++ = getVertice(face,x,y+1);
+                    } else {
+                        // First triangle
+                        *indices++ = getVertice(face,x,y);
+                        *indices++ = getVertice(face,x+1,y+1);
+                        *indices++ = getVertice(face,x,y+1);
+
+                        // Second triangle
+                        *indices++ = getVertice(face,x,y);
+                        *indices++ = getVertice(face,x+1,y);
+                        *indices++ = getVertice(face,x+1,y+1);
+                    }
+                }
+            }
+        }
+    } else {
+        for(UInt32 face = 0 ; face < 6 ; ++face) {
+            for(UInt32 y = 0 ; y < m_division + 1 ; ++y) {
+                for(UInt32 x = 0 ; x < m_division + 1 ; ++x) {
+                    // First triangle
+                    *indices++ = getVertice(face,x,y);
+                    *indices++ = getVertice(face,x+1,y);
+                    *indices++ = getVertice(face,x,y+1);
+
+                    // Second triangle
+                    *indices++ = getVertice(face,x+1,y);
+                    *indices++ = getVertice(face,x+1,y+1);
+                    *indices++ = getVertice(face,x,y+1);
+                }
+            }
+        }
+    }
+}
+
+void Cube::constructWired(Float /*size*/, UInt32 offSet)
 {
 	// Generate lines
-	UInt32 offSetLine = 0;
     UInt32 *indices = m_pIndices;
+    UInt32 p1,p2,p3,p4;
 
     if (isSimpleGrid()) {
         // Generate edges lines
@@ -291,32 +322,110 @@ void Cube::constructWired(Float size)
             }
         }
     } else if (isMeta()) {
-        for (UInt32 face = 0 ; face < 6 ; ++face) {
-            // @todo
+        buildVertices(offSet);
+
+        // 1...2
+        // .   .
+        // 3...x
+
+        for(UInt32 face = 0 ; face < 6 ; ++face) {
+            for(UInt32 y = 0 ; y < m_division + 1 ; ++y) {
+                for(UInt32 x = 0 ; x < m_division + 1 ; ++x) {
+                    p1 = getVertice(face, x, y);
+                    p2 = getVertice(face, x+1, y);
+                    p3 = getVertice(face, x, y+1);
+
+                    // hor. line
+                    *indices++ = p1;
+                    *indices++ = p2;
+
+                    // vert. line 2
+                    *indices++ = p1;
+                    *indices++ = p3;
+                }
+            }
+
+            // last hor. lines
+            for (UInt32 x = 0 ; x < m_division+1 ; ++x) {
+                p3 = getVertice(face, x, m_division+1);
+                p4 = getVertice(face, x+1, m_division+1);
+
+                *indices++ = p3;
+                *indices++ = p4;
+            }
         }
     } else {
+        buildVertices(offSet);
+
         if (isAlternateTriangle()) {
             // Generate 6 surfaces but avoid redefinitions of edges
-            for (UInt32 face = 0 ; face < 6 ; ++face) {
-                for (UInt32 y = 0 ; y < m_division+1 ; ++y) {
-                    for (UInt32 x = 0 ; x < m_division+1 ; ++x) {
-                        // @todo
+            for(UInt32 face = 0 ; face < 6 ; ++face) {
+                for(UInt32 y = 0 ; y < m_division + 1 ; ++y) {
+                    for(UInt32 x = 0 ; x < m_division + 1 ; ++x) {
+                        p1 = getVertice(face, x, y);
+                        p2 = getVertice(face, x+1, y);
+                        p3 = getVertice(face, x, y+1);
+                        p4 = getVertice(face, x+1, y+1);
 
+                        // hor. line
+                        *indices++ = p1;
+                        *indices++ = p2;
+
+                        // vert. line 2
+                        *indices++ = p1;
+                        *indices++ = p3;
+
+                        // triangulation line
                         if (((x+y) % 2) == 0) {
-
+                            *indices++ = p1;
+                            *indices++ = p4;
                         } else {
-
+                            *indices++ = p2;
+                            *indices++ = p3;
                         }
                     }
+                }
+
+                // last hor. lines
+                for (UInt32 x = 0 ; x < m_division+1 ; ++x) {
+                    p3 = getVertice(face, x, m_division+1);
+                    p4 = getVertice(face, x+1, m_division+1);
+
+                    *indices++ = p3;
+                    *indices++ = p4;
                 }
             }
         } else {
             // Generate 6 surfaces but avoid redefinitions of edges
-            for (UInt32 face = 0 ; face < 6 ; ++face) {
-                for (UInt32 y = 0 ; y < m_division+1 ; ++y) {
-                    for (UInt32 x = 0 ; x < m_division+1 ; ++x) {
-                        // @todo
+            for(UInt32 face = 0 ; face < 6 ; ++face) {
+                for(UInt32 y = 0 ; y < m_division + 1 ; ++y) {
+                    for(UInt32 x = 0 ; x < m_division + 1 ; ++x) {
+                        p1 = getVertice(face, x, y);
+                        p2 = getVertice(face, x+1, y);
+                        p3 = getVertice(face, x, y+1);
+                        p4 = getVertice(face, x+1, y+1);
+
+                        // hor. line
+                        *indices++ = p1;
+                        *indices++ = p2;
+
+                        // vert. line 2
+                        *indices++ = p1;
+                        *indices++ = p3;
+
+                        // triangulation line
+                        *indices++ = p1;
+                        *indices++ = p4;
                     }
+                }
+
+                // last hor. lines
+                for (UInt32 x = 0 ; x < m_division+1 ; ++x) {
+                    p3 = getVertice(face, x, m_division+1);
+                    p4 = getVertice(face, x+1, m_division+1);
+
+                    *indices++ = p3;
+                    *indices++ = p4;
                 }
             }
         }
@@ -645,7 +754,7 @@ Sphere::TexCoordCorrectionPolicy Sphere::getTexCoordCorrectionPolicy() const
 void Sphere::constructVertices(Float radius, UInt32 slices, UInt32 stacks)
 {
 	// If texture is enabled, one vertex must be added on each stack.
-	UInt32 lVerticesCount = 2 + stacks * slices + (isTexCoords() ? stacks : 0);
+    UInt32 lVerticesCount = 2 + stacks * slices + (isTexCoords() ? stacks : 0);
 
 	// Reallocate a new buffer only if needed
     if ((m_pVertices != nullptr) && (m_verticesCount != lVerticesCount)) {
@@ -666,10 +775,10 @@ void Sphere::constructVertices(Float radius, UInt32 slices, UInt32 stacks)
 	UInt32 offSet = 0;
 	// Construct the vertices
 	m_pVertices[offSet++] = 0.f;
-	m_pVertices[offSet++] = - radius;
+    m_pVertices[offSet++] = -radius;
 	m_pVertices[offSet++] = 0.f;
 	m_pVertices[offSet++] = 0.f;
-	m_pVertices[offSet++] = radius;
+    m_pVertices[offSet++] = radius;
 	m_pVertices[offSet++] = 0.f;
 	
 	Float lStackAngle = 0.0f;
@@ -750,7 +859,7 @@ void Sphere::constructVertices(Float radius, UInt32 slices, UInt32 stacks)
 	}
 }
 
-void Sphere::constructFilled(Float radius, UInt32 slices, UInt32 stacks)
+void Sphere::constructFilled(Float /*radius*/, UInt32 slices, UInt32 stacks)
 {
 	const UInt32 lRealSlices = slices + (isTexCoords() ? 1 : 0);
 	const UInt32 lNewIndicesCount = (2 * lRealSlices * stacks)* 3;
@@ -823,7 +932,7 @@ void Sphere::constructFilled(Float radius, UInt32 slices, UInt32 stacks)
 	}
 }
 
-void Sphere::constructWired(Float radius, UInt32 slices, UInt32 stacks)
+void Sphere::constructWired(Float /*radius*/, UInt32 slices, UInt32 stacks)
 {
 	const UInt32 lNewIndicesCount = (stacks * slices + slices * (stacks + 1)) * 2;
 
@@ -1246,8 +1355,8 @@ void Surface::constructWired(UInt32 widthDiv, UInt32 heightDiv)
             }
 
             // last vert. line
-            *indices++ = *(indices-3);
-            *indices++ = *(indices-1) + verticeOffset;
+            *indices++ = p2; // *(indices-3);
+            *indices++ = p2 /**(indices-1)*/ + verticeOffset;
         }
 
         // last hor. lines
@@ -1289,8 +1398,8 @@ void Surface::constructWired(UInt32 widthDiv, UInt32 heightDiv)
                 }
 
                 // last vert. line
-                *indices++ = *(indices-5);
-                *indices++ = *(indices-1) + verticeOffset;
+                *indices++ = p4; // *(indices-5);
+                *indices++ = p4 /**(indices-1)*/ + verticeOffset;
             }
 
             // last hor. lines
@@ -1321,8 +1430,8 @@ void Surface::constructWired(UInt32 widthDiv, UInt32 heightDiv)
                 }
 
                 // last vert. line
-                *indices++ = *(indices-5);
-                *indices++ = *(indices-1) + verticeOffset;
+                *indices++ = p4; //*(indices-5);
+                *indices++ = p4 /**(indices-1)*/ + verticeOffset;
             }
 
             // last hor. lines

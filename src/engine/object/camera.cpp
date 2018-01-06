@@ -33,7 +33,7 @@ Camera::Camera(BaseObject *parent) :
 	m_bottom(480),
 	m_top(0),
 	m_coef(1.33333f),
-	m_fov(60.f),
+    m_fov(60.f),
 	m_znear(0.5f),
 	m_zfar(1000.0f),
 	m_ortho(False),

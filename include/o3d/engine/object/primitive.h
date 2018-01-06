@@ -142,6 +142,7 @@ public:
 	//! Default constructor
 	//! @param the size of the edges of the cube
     //! @param division the number of division between the vertices of the cube
+    //! @param flags
     //! @note In wired mode the cells are not triangulated (@todo could be done later)
     Cube(Float size, UInt32 division, UInt32 flags = 0);
 
@@ -252,8 +253,9 @@ private:
 
 protected:
 
+    void buildVertices(UInt32 offSet);
 	void constructFilled(const Float size, UInt32 offSet);
-	void constructWired(const Float size);
+    void constructWired(const Float size, UInt32 offSet);
 
 	//! Restricted copy constructor
 	Cube(Cube &dup) : Primitive(dup), m_size(0.f), m_division(0) {}

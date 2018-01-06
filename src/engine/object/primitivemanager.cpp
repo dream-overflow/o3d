@@ -37,18 +37,18 @@ PrimitiveAccess::~PrimitiveAccess()
 PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 		SceneEntity(parent),
 	m_numUsage(0),
-	m_wireCylinder1(1.f,1.f,1.f,12,1,Primitive::WIRED_MODE),
-	m_wireCylinder2(1.f,1.f,1.f,8,1,Primitive::WIRED_MODE),
-	m_solidCylinder1(1.f,1.f,1.f,8,1,Primitive::FILLED_MODE),
-	m_wireCone1(1.f,0.f,1.f,8,1,Primitive::WIRED_MODE),
-	m_solidCone1(1.f,0.f,1.f,12,1,Primitive::FILLED_MODE),
-	m_wireSphere1(1.f,12,8,Primitive::WIRED_MODE),
-	m_wireSphere2(1.f,8,6,Primitive::WIRED_MODE),
-	m_solidSphere1(1.f,12,8,Primitive::FILLED_MODE),
-	m_wireCube1(1.f,0,Primitive::WIRED_MODE),
-    m_solidCube1(1.f,0,Primitive::FILLED_MODE),
-	m_vertices(1024*3, 1024*3),
-	m_colors(1024*4, 1024*4),
+    m_wireCylinder1(1.f, 1.f, 1.f, 12, 1, Primitive::WIRED_MODE),
+    m_wireCylinder2(1.f, 1.f, 1.f, 8, 1, Primitive::WIRED_MODE),
+    m_solidCylinder1(1.f, 1.f, 1.f, 8, 1, Primitive::FILLED_MODE),
+    m_wireCone1(1.f, 0.f, 1.f, 8, 1, Primitive::WIRED_MODE),
+    m_solidCone1(1.f, 0.f, 1.f, 12, 1, Primitive::FILLED_MODE),
+    m_wireSphere1(1.f, 12, 8, Primitive::WIRED_MODE),
+    m_wireSphere2(1.f, 8, 6, Primitive::WIRED_MODE),
+    m_solidSphere1(1.f, 12, 8, Primitive::FILLED_MODE),
+    m_wireCube1(1.f, 0, Cube::GRID_CUBE),  // WIRED_MODE),
+    m_solidCube1(1.f, 0, Primitive::FILLED_MODE),
+    m_vertices(1024*3, 1024*3),
+    m_colors(1024*4, 1024*4),
     m_verticesVbo(getScene()->getContext()),
     m_colorsVbo(getScene()->getContext()),
     m_quadVertices(getScene()->getContext()),
@@ -372,7 +372,12 @@ void PrimitiveManager::drawObject(UInt32 objectId, const Vector3 &scale)
 		O3D_ERROR(E_InvalidParameter("Null object"));
     }
 
-	drawArray(object->format, object->vertices, object->colors, scale);
+    drawArray(object->format, object->vertices, object->colors, scale);
+}
+
+void PrimitiveManager::setScale(const Vector3 &scale)
+{
+    m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);
 }
 
 // Access to the ModelView matrix.
