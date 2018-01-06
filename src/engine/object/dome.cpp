@@ -376,28 +376,30 @@ void Dome::setTextureCoordinatePolicy(TexCoordPolicy _policy)
 
 void Dome::enableTextureCoordinate(Bool _value, Bool _update)
 {
-	if (_value != isTexCoords())
-	{
-		if (_value)
-			m_capacities |= GEN_TEX_COORDS;
-		else
-			m_capacities &= ~GEN_TEX_COORDS;
+    if (_value != isTexCoords()) {
+        if (_value) {
+            m_capacities |= GEN_TEX_COORDS;
+        } else {
+            m_capacities &= ~GEN_TEX_COORDS;
+        }
 
-		m_upToDate = False;
+        m_upToDate = False;
 
-		if (_update)
-			update();
+        if (_update) {
+            update();
+        }
 	}
 }
 
 const Float* Dome::getVerticesAtStack(UInt32 _stacks) const
 {
-	if (!isUpToDate() || (_stacks > getStackCount()))
+    if (!isUpToDate() || (_stacks > getStackCount())) {
         return nullptr;
+    }
 	
 	UInt32 lIndex = 0;
-	for (UInt32 k = 0 ; k < _stacks ; ++k)
-		lIndex += ::getVertexCount(this, k);
+    for (UInt32 k = 0 ; k < _stacks ; ++k)
+        lIndex += ::getVertexCount(this, k);
 
 	return m_pVertices + 3*lIndex;
 }

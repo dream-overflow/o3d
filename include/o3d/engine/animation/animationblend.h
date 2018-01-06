@@ -31,11 +31,9 @@ typedef std::vector<AnimationBlendElt> T_AnimationBlendEltVector;
 typedef T_AnimationBlendEltVector::iterator IT_AnimationBlendEltVector;
 typedef T_AnimationBlendEltVector::const_iterator CIT_AnimationBlendEltVector;
 
-//---------------------------------------------------------------------------------------
-//! @class Animation
-//-------------------------------------------------------------------------------------
-//! An animation blending manager
-//---------------------------------------------------------------------------------------
+/**
+ * @brief An animation blending controller.
+ */
 class O3D_API AnimationBlend : public Animation, public Animatable
 {
 public:
@@ -173,8 +171,8 @@ public:
     virtual Animatable* getNextSon() override { return nullptr; }
     virtual Bool hasMoreSons() override { return False; }
     virtual void resetAnim() override {}
-    virtual Int32 getAnimatableId(Animatable::AnimatableManager &type) override { return -1; }
-    virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* track) override { return nullptr; }
+    virtual Int32 getAnimatableId(Animatable::AnimatableManager &/*type*/) override { return -1; }
+    virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* /*track*/) override { return nullptr; }
     virtual const Matrix4& getPrevAnimationMatrix() const override { return Matrix4::getIdentity(); }
 
 	// Serialization

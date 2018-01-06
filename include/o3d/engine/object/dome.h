@@ -14,11 +14,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Dome
-//-------------------------------------------------------------------------------------
-//! Object used to create a dome.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Dome geometry generator.
+ */
 class O3D_API Dome : public Primitive
 {
 	O3D_DECLARE_ABSTRACT_CLASS(Dome)
@@ -139,4 +137,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_DOME_H
-

@@ -33,13 +33,13 @@ IsoSphere::IsoSphere(
 	buildIsoSphere();
 }
 
-// Nombre de plan sur la triangle sup�rieure, ou nombre de vertex � la base d'un triangle
+// Nombre de plan sur la triangle superieure, ou nombre de vertex a la base d'un triangle
 static inline UInt32 ht(UInt32 _n)
 {
 	return (1 << _n) + 1;
 }
 
-// Indice du premier vertex de la rang�e k
+// Indice du premier vertex de la rangee k
 static inline UInt32 in(UInt32 _k, UInt32 _part)
 {
 	return (1 - (_k == 0 ? 1 : 0) + (5*(_k-1)*_k)/2 + _part * _k);
@@ -278,12 +278,12 @@ void IsoSphere::buildIsoSphere()
 	if ((m_subDiv == 0) && (isHalfSphere()))
 		O3D_ERROR(E_InvalidPrecondition(String("Incompatible option : subdivision = 0 and half sphere <") << m_radius << ">"));
 
-	const UInt32 n = m_subDiv; // Subdivision de la sph�re
+    const UInt32 n = m_subDiv; // Subdivision de la sphere
 
 	UInt32 lVertexCount = 0, lIndexCount = 0;
 
 	if (isHalfSphere())
-		lVertexCount = 1+5*(1 << (n-1))*((2 << n)+1); // Nombre de vertex d'une demi sph�re V(n) = 1+5.2^(n-1)*(2^(n+1)+1)
+        lVertexCount = 1+5*(1 << (n-1))*((2 << n)+1); // Nombre de vertex d'une demi sphere V(n) = 1+5.2^(n-1)*(2^(n+1)+1)
 	else
 		lVertexCount = 2+10*(1 << (2*n)); // Nombre de vertex V(n) = 2+10*2^(2*n)
 
@@ -301,14 +301,14 @@ void IsoSphere::buildIsoSphere()
 	//if ((lVertexCount > 65535) || (lIndexCount > 65535))
 	//	O3D_ERROR(O3D_E_InvalidPrecondition(O3DString("Too many vertices or indices")));
 
-	// Allocation de la m�moire
-	m_verticesCount = lVertexCount;   // Nombre de vertex d'une demi sph�re V(n) = 1+5.2^(n-1)*(2^(n+1)+1)
+    // Allocation de la memoire
+    m_verticesCount = lVertexCount;   // Nombre de vertex d'une demi sphere V(n) = 1+5.2^(n-1)*(2^(n+1)+1)
 	m_indicesCount = lIndexCount;     // Nombre de face F(n) = 20*4^n
 
 	m_pVertices = new Float[m_verticesCount*3];
 	m_pIndices = new UInt32[m_indicesCount];
 
-	// Vertex sup�rieur d'un icosahedrone de rayon 1.
+    // Vertex superieur d'un icosahedrone de rayon 1.
 	const Float lIco[] = {
 		0.0f,				1.0f,				0.0f,				
 		0.0f,				0.4472135955f,		+0.894427191f,				
@@ -319,7 +319,7 @@ void IsoSphere::buildIsoSphere()
 
 	if (n > 0)
 	{
-		// Si la subdivision est sup�rieure � 0. On rentre dans le calcul.
+        // Si la subdivision est superieure a 0. On rentre dans le calcul.
 		memcpy((void*)m_pVertices, (const void*)lIco, 3*sizeof(Float));
 
 		// Vertex principaux
@@ -334,7 +334,7 @@ void IsoSphere::buildIsoSphere()
 		const Float lStep = 2.0f*3.14159265f/(5*(lCenterCount-1));
 		const Float lOffset = 2.0f*3.14159265f/20.0f;
 
-		// Vertex de l'�quateur
+        // Vertex de l'equateur
 		for (UInt32 k = 0 ; k < 5*(lCenterCount-1) ; ++k)
 		{
 			Float * lPtr = &m_pVertices[3*(lCenterIndex + k)];
@@ -344,7 +344,7 @@ void IsoSphere::buildIsoSphere()
 			lPtr[2] = cosf(lOffset + k * lStep);
 		}
 
-		// On subdivise de facon r�cursive chaque face du pentagone.
+        // On subdivise de facon recursive chaque face du pentagone.
 		isoSphereSubDivide(1, 0, 0, 0, n, m_pVertices);
 		isoSphereSubDivide(1, 0, 0, 1, n, m_pVertices);
 		isoSphereSubDivide(1, 0, 0, 2, n, m_pVertices);
@@ -357,8 +357,8 @@ void IsoSphere::buildIsoSphere()
 
 		if (!isHalfSphere())
 		{
-			// Calcul des vertices sur la sph�re inf�rieure
-			// Le principe est ici de faire la sym�trie centrale de la sph�re sup�rieure
+            // Calcul des vertices sur la sphere inferieure
+            // Le principe est ici de faire la symetrie centrale de la sphere superieure
 			const UInt32 lVertexToCompute = (m_verticesCount - 5*(ht(n)-1))/2;
 			const Float * lSourcePtr = m_pVertices;
 			Float * lTargetPtr = m_pVertices + 3*(m_verticesCount-1);
@@ -373,7 +373,7 @@ void IsoSphere::buildIsoSphere()
 	}
 	else
 	{
-		// Dans le cas non subdivis�, on utilise directement les points d'un icosahedron de rayon 1.
+        // Dans le cas non subdivise, on utilise directement les points d'un icosahedron de rayon 1.
 		const Float lIcoBottom[] = {
 			0.0f,				-0.4472135955f,		-0.894427191f,				
 			-0.8506508084f,		-0.4472135955f,		-0.2763932023f,		
@@ -399,10 +399,10 @@ void IsoSphere::buildIsoSphere()
 
 		if (!isWired())
 		{
-			// Les indices de la partie sup�rieure de la sph�re
+            // Les indices de la partie superieure de la sphere
 			for (UInt32 i = 0 ; i < UInt32(1 << n) ; ++i)
 			{
-				const UInt32 lBaseVertexIndex = 1 - (i == 0 ? 1 : 0) + (5*(i-1)*i)/2; // Indice du premier vertex de la rang�e i
+                const UInt32 lBaseVertexIndex = 1 - (i == 0 ? 1 : 0) + (5*(i-1)*i)/2; // Indice du premier vertex de la rangee i
 				const UInt32 lBaseNextVertexIndex = 1 + (5*i*(i+1))/2;
 
 				UInt32 lVertexIndex = lBaseVertexIndex;
@@ -451,10 +451,10 @@ void IsoSphere::buildIsoSphere()
 				}
 			}
 
-			// Partie centrale de la sph�re
+            // Partie centrale de la sphere
 			const UInt32 lVertexCount = 5*(1 << n);
 
-			const UInt32 lBaseVertexIndex = 1 + (5*((1 << n)-1)*(1 << n))/2; // Indice du premier vertex de la rang�e i
+            const UInt32 lBaseVertexIndex = 1 + (5*((1 << n)-1)*(1 << n))/2; // Indice du premier vertex de la rangee i
 
 			for (UInt32 i = 0 ; i < (UInt32)(1 << (n-1)) ; ++i)
 			{
@@ -475,7 +475,7 @@ void IsoSphere::buildIsoSphere()
 
 			if (!isHalfSphere())
 			{
-				// Maillage sym�trique
+                // Maillage symetrique
 				const UInt32 lCenterVertexCount = ht(n);
 				const UInt32 lFirstCenterIndex = in(lCenterVertexCount - 1, 0) + (ht(n)-1)/2 * 5*(lCenterVertexCount-1);
 				const UInt32 lLastCenterIndex = lFirstCenterIndex + 5*(lCenterVertexCount-1) - 1;
@@ -499,7 +499,7 @@ void IsoSphere::buildIsoSphere()
 			// Les indices de la partie superieure de la sphere
 			for (UInt32 i = 0 ; i < UInt32(1 << n) ; ++i)
 			{
-				const UInt32 lBaseVertexIndex = 1 - (i == 0 ? 1 : 0) + (5*(i-1)*i)/2; // Indice du premier vertex de la rang�e i
+                const UInt32 lBaseVertexIndex = 1 - (i == 0 ? 1 : 0) + (5*(i-1)*i)/2; // Indice du premier vertex de la rangee i
 				const UInt32 lBaseNextVertexIndex = 1 + (5*i*(i+1))/2;
 
 				UInt32 lVertexIndex = lBaseVertexIndex;
@@ -532,10 +532,10 @@ void IsoSphere::buildIsoSphere()
 				}
 			}
 
-			// Partie centrale de la sph�re
+            // Partie centrale de la sphere
 			const UInt32 lVertexCount = 5*(1 << n);
 
-			const UInt32 lBaseVertexIndex = 1 + (5*((1 << n)-1)*(1 << n))/2; // Indice du premier vertex de la rang�e i
+            const UInt32 lBaseVertexIndex = 1 + (5*((1 << n)-1)*(1 << n))/2; // Indice du premier vertex de la rangee i
 
 			for (UInt32 i = 0 ; i < (UInt32)(1 << (n-1)) ; ++i)
 			{

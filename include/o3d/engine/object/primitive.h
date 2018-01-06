@@ -20,7 +20,10 @@ namespace o3d {
 
 /**
  * @brief Abstract definition of a 3d primitive
- * @todo Generation of VBO using a methode CreateVBO and VBOs's accessors.
+ * @details Most of the primitives can be created with filled mode (triangles primitives)
+ * or in wired mode (lines primitives).
+ * Texture UV mapping can be generated in filled mode.
+ * Some primitives have specifics options.
  */
 class O3D_API Primitive : NonAssignable<>, public BaseObject
 {
@@ -30,19 +33,19 @@ public:
 
 	enum PrimitiveFlags
 	{
-		FILLED_MODE = 0,
-		WIRED_MODE = 1,
-		GEN_TEX_COORDS = 2
-	};
+        FILLED_MODE = 0,     //!< Triangle mode.
+        WIRED_MODE = 1,      //!< Lines with triangulations.
+        GEN_TEX_COORDS = 2,  //!< UV mapping generation as possible.
+        BACK_SIDE = 4,       //!< Generate back side for filled mode (when implemented).
+        META = 8,            //!< If meta, no triangulation are done in wired (depend of implementation).
+        ALTERNATE_TRIANGLE = 16  //! Alternate the generation of the triangulation (when triangulation on wired)
+    };
 
 	//! Default constructor
 	Primitive(UInt32 flags = 0);
 
 	//! Internal constructor
-	Primitive(
-		UInt32 verticesCount,
-		UInt32 indicesCount,
-		UInt32 flags = 0);
+    Primitive(UInt32 verticesCount, UInt32 indicesCount, UInt32 flags = 0);
 
 	//! Destructor
 	virtual ~Primitive();
@@ -79,20 +82,32 @@ public:
 	const Float* getTexCoords() const { return m_pTexCoords; }
 
 	//! Is texture coordinates generation set
-	inline Bool isTexCoords() const { return m_capacities & GEN_TEX_COORDS; }
+    inline Bool isTexCoords() const { return (m_capacities & GEN_TEX_COORDS) == GEN_TEX_COORDS; }
 
 	//! Is wired mode
-	inline Bool isWired() const { return m_capacities & WIRED_MODE; }
+    inline Bool isWired() const { return (m_capacities & WIRED_MODE) == WIRED_MODE; }
 
 	//! Is filled mode
-	inline Bool isFilled() const { return m_capacities & FILLED_MODE; }
+    inline Bool isFilled() const { return (m_capacities & WIRED_MODE) == 0; }
+
+    //! Is one sided plane (useless in wired surface)
+    inline Bool isOneSided() const { return (m_capacities & BACK_SIDE) == 0; }
+
+    //! Is double sided plane (useless in wired surface)
+    inline Bool isDoubleSided() const { return (m_capacities & BACK_SIDE) == BACK_SIDE; }
+
+    //! Is meta (useless in filled surface)
+    inline Bool isMeta() const { return (m_capacities & META) == META; }
+
+    //! Is alternated triangulation.
+    inline Bool isAlternateTriangle() const { return (m_capacities & ALTERNATE_TRIANGLE) == ALTERNATE_TRIANGLE; }
 
 protected:
 
 	//! Restricted copy constructor
 	Primitive(const Primitive &dup);
 
-	UInt32 m_capacities;
+    UInt32 m_capacities;
 
 	UInt32 m_verticesCount;
 	Float *m_pVertices;
@@ -112,19 +127,32 @@ class O3D_API Cube : public Primitive
 
 public:
 
+    enum CubeFlags
+    {
+        GRID = 32  //!< Only simple lines per division and no triangulation
+    };
+
+    enum CubeMode
+    {
+        ONE_SIDED = FILLED_MODE,
+        GRID_CUBE = WIRED_MODE | GRID,
+        META_CUBE = WIRED_MODE | META,
+    };
+
 	//! Default constructor
 	//! @param the size of the edges of the cube
-	//! @param division the number of division between the vertices of the cube
-	Cube(
-		Float size,
-		UInt32 division,
-		UInt32 flags = 0);
+    //! @param division the number of division between the vertices of the cube
+    //! @note In wired mode the cells are not triangulated (@todo could be done later)
+    Cube(Float size, UInt32 division, UInt32 flags = 0);
 
 	//! Get the number of divisions
 	inline UInt32 getNumDivisions() const { return m_division ; }
 
 	//! Get the size
 	inline Float getSize() const { return m_size; }
+
+    //! Is simple grid (useless in filled cube)
+    inline Bool isSimpleGrid() const { return (m_capacities & GRID) == GRID; }
 
 private:
 
@@ -137,63 +165,77 @@ private:
 
 	inline UInt32 getBeginVertice(const UInt32 edge, const Bool sens)
 	{
-		if (sens)
+        if (sens) {
 			return EDGES[edge][0];
-		else
+        } else {
 			return EDGES[edge][1];
+        }
 	}
 
 	inline UInt32 getEndVertice(const UInt32 edge, const Bool sens)
 	{
-		if (sens)
+        if (sens) {
 			return EDGES[edge][1];
-		else 
+        } else {
 			return EDGES[edge][0];
+        }
 	}
 
 	inline UInt32 getVertice(const UInt32 edge, const UInt32 vertice, const Bool sens)
 	{
-		if(sens)
+        if(sens) {
 			return vertice + m_pEdgeOffSet[edge];
-		else
+        } else {
 			return m_pEdgeOffSet[edge] + (m_division - 1) - vertice;
+        }
 	}
 
 	inline UInt32 getVertice(const UInt32 face, const UInt32 i, const UInt32 j)
 	{
-		if(i == 0)
-		{
-			if(j == 0)
+        if (i == 0) {
+            if (j == 0) {
 				return getBeginVertice(FACES[face][3], FACE_EDGE_DIR[face][3]);
-			if(j == m_division + 1)
+            }
+
+            if (j == m_division + 1) {
 				return getEndVertice(FACES[face][3], FACE_EDGE_DIR[face][3]);
+            }
 
 			return getVertice(FACES[face][3], j - 1, FACE_EDGE_DIR[face][3]);
 		}
-		if(i == m_division + 1)
-		{
-			if(j == 0)
+
+        if (i == m_division + 1) {
+            if (j == 0) {
 				return getBeginVertice(FACES[face][1], FACE_EDGE_DIR[face][1]);
-			if(j == m_division + 1)
+            }
+
+            if (j == m_division + 1) {
 				return getEndVertice(FACES[face][1], FACE_EDGE_DIR[face][1]);
+            }
 
 			return getVertice(FACES[face][1], j - 1, FACE_EDGE_DIR[face][1]);
 		}
-		if(j == 0)
-		{
-			if(i == 0)
+
+        if (j == 0) {
+            if (i == 0) {
 				return getBeginVertice(FACES[face][0], FACE_EDGE_DIR[face][0]);
-			if(i == m_division + 1)
+            }
+
+            if (i == m_division + 1) {
 				return getEndVertice(FACES[face][0], FACE_EDGE_DIR[face][0]);
+            }
 
 			return getVertice(FACES[face][0], i - 1, FACE_EDGE_DIR[face][0]);
 		}
-		if(j == m_division + 1)
-		{
-			if(i == 0)
+
+        if (j == m_division + 1) {
+            if (i == 0) {
 				return getBeginVertice(FACES[face][2], FACE_EDGE_DIR[face][2]);
-			if(i == m_division + 1)
+            }
+
+            if (i == m_division + 1) {
 				return getEndVertice(FACES[face][2], FACE_EDGE_DIR[face][2]);
+            }
 
 			return getVertice(FACES[face][2], i - 1, FACE_EDGE_DIR[face][2]);
 		}
@@ -300,19 +342,15 @@ public:
 
 	enum TexCoordCorrectionPolicy
 	{
-		NO_CORRECTION = 4,
-		FAST_CORRECTION = 8
+        NO_CORRECTION = 32,
+        FAST_CORRECTION = 64
 	};
 
 	//! Default constructor. Build a sphere Y axis aligned.
 	//! @param radius the radius of the sphere
 	//! @param stacks the number of division on latitude
 	//! @param slices the number of division on longitude
-	Sphere(
-		Float radius,
-		UInt32 slices,
-		UInt32 stacks,
-		UInt32 flags = 0);
+    Sphere(Float radius, UInt32 slices, UInt32 stacks, UInt32 flags = 0);
 
 	//! Get the radius
 	inline Float getRadius() const { return m_radius; }
@@ -342,6 +380,12 @@ protected:
 
 /**
  * @brief Definition of a plane surface primitive
+ * @details Many options :
+ *  - Filled or wired mode
+ *  - One or double sided generation of indexes for filled mode only
+ *  - Simple grid (only horizontals and verticals lines).
+ *  - Texture UV coordinates generation (not available for simple grid mode).
+ *  - Alternate the generation of the triangle for filled and wired modes only.
  */
 class O3D_API Surface : public Primitive
 {
@@ -349,11 +393,17 @@ class O3D_API Surface : public Primitive
 
 public:
 
+    enum SurfaceFlags
+    {
+        GRID = 32  //!< Only simple lines per division and no triangulation
+    };
+
 	enum SurfaceMode
 	{
-		ONE_SIDED = FILLED_MODE | 4,
-		DOUBLE_SIDED = FILLED_MODE | 8,
-		SIMPLE_GRID = WIRED_MODE | 16
+        ONE_SIDED = FILLED_MODE,
+        DOUBLE_SIDED = FILLED_MODE | BACK_SIDE,
+        SIMPLE_GRID = WIRED_MODE | GRID,
+        META_WIRED = WIRED_MODE | META
 	};
 
 	//! Constructor. Build a plane surface primitive on X+Z+ (normal at Y+).
@@ -382,29 +432,13 @@ public:
 	//! Get the number of divisions on height (Z)
 	inline UInt32 getNumHeightDiv() const { return m_heightDiv; }
 
-	//! Is one sided plane (useless in wired surface)
-	inline Bool isOneSided() const { return m_capacities & ONE_SIDED; }
-
-	//! Is double sided plane (useless in wired surface)
-	inline Bool isDoubleSided() const { return m_capacities & DOUBLE_SIDED; }
-
 	//! Is simple grid (useless in filled surface)
-	inline Bool isSimpleGrid() const { return m_capacities & SIMPLE_GRID; }
+    inline Bool isSimpleGrid() const { return (m_capacities & GRID) == GRID; }
 
 protected:
 
-	void constructFilled(
-		Float width,
-		Float height,
-		UInt32 widthDiv,
-		UInt32 heightDiv,
-		Bool doubleSided);
-
-	void constructWired(
-		Float width,
-		Float height,
-		UInt32 widthDiv,
-		UInt32 heightDiv);
+    void constructFilled(UInt32 widthDiv, UInt32 heightDiv, Bool doubleSided);
+    void constructWired(UInt32 widthDiv, UInt32 heightDiv);
 
 	//! Restricted copy constructor
 	Surface(Surface &dup) : Primitive(dup) {}

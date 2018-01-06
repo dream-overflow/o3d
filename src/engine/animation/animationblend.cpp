@@ -176,7 +176,7 @@ AnimationNode* AnimationBlend::getFatherNode()
 /*---------------------------------------------------------------------------------------
   set the father node of the track sub-tree
 ---------------------------------------------------------------------------------------*/
-void AnimationBlend::setFatherNode(AnimationNode* father)
+void AnimationBlend::setFatherNode(AnimationNode* /*father*/)
 {
 	// Nothing
 }
@@ -203,13 +203,13 @@ Bool AnimationBlend::writeToFile(
 		Node *hierarchyRoot,
 		Node *selectedNode)
 {
-    if (!Animation::writeToFile(os, hierarchyRoot, selectedNode))
+    if (!Animation::writeToFile(os, hierarchyRoot, selectedNode)) {
 		return False;
+    }
 
     os << (UInt32)m_animations.size();
 
-	for (IT_AnimationBlendEltVector it = m_animations.begin(); it != m_animations.end(); ++it)
-	{
+    for (IT_AnimationBlendEltVector it = m_animations.begin(); it != m_animations.end(); ++it) {
 		AnimationBlendElt elt = (*it);
 
         os   << elt.animation->getResourceName()

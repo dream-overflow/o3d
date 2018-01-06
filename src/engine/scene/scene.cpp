@@ -95,7 +95,7 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(Scene, ENGINE_SCENE, SceneEntity)
 
 // Initialize
 Scene::Scene(
-	BaseObject *parent,
+    BaseObject */*parent*/,
 	const String &rootPath,
     Renderer *renderer) :
         SceneEntity(nullptr),  // no parent
