@@ -167,7 +167,6 @@ public:
 	//! destructor
 	virtual ~AnimationTrack();
 
-
 	//! Get the keyframe list (read only).
 	inline const T_KeyFrameList& getKeyFrameList() const { return m_keyFrameList; }
 	//! Get the keyframe list.
@@ -312,16 +311,15 @@ public:
 	}
 
 	//! compute the object animation depend of time
-	virtual const void* compute(Animatable *target, Float time, UInt32 &valSize);
+    virtual const void* compute(Animatable *target, Float time, UInt32 &valSize) override;
 
 	// Serialization
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
 	Float m_Data;
 };
-
 
 //---------------------------------------------------------------------------------------
 //! @class AnimationTrack_LinearVector (3 float values)
