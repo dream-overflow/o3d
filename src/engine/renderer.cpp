@@ -31,7 +31,7 @@ Renderer::Renderer() :
 	m_HDC(NULL_HDC),
 	m_HGLRC(NULL_HGLRC),
     m_state(),
-    m_debugLevel(DEBUG_TYPE_PERFORMANCE),
+    m_debugLevel(DEBUG_TYPE_PORTABILITY),
 	m_bpp(0),
 	m_depth(0),
     m_stencil(0),
@@ -393,6 +393,7 @@ static void formatDebugOutputARB(
 //        id);
 }
 
+// @todo move me to a dedicated file and class
 #include <unwind.h>
 #include <dlfcn.h>
 #include <cxxabi.h>
@@ -439,14 +440,14 @@ void dumpBacktrace(String &ouput, void** buffer, size_t count)
         int status = 0;
         char *demangled = __cxxabiv1::__cxa_demangle(symbol, 0, 0, &status);
 
-        ouput += String("#{0}:{1} ").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') +
+        ouput += String("#{0}:0x{1} ").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') +
                  ((nullptr != demangled && 0 == status) ? demangled : symbol);
 
         if (nullptr != demangled) {
             free(demangled);
         }
 
-        // ouput += String("#{0}:{1} ").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') + symbol;
+        // ouput += String("#{0}:0x{1} ").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') + symbol;
     }
 }
 
@@ -473,7 +474,7 @@ static void CALLBACK debugCallbackARB(
     void* buffer[max];
     dumpBacktrace(backtrace, buffer, captureBacktrace(buffer, max));
 
-    if (severity == GL_DEBUG_SEVERITY_HIGH_ARB) {
+    if (type == GL_DEBUG_TYPE_ERROR_ARB) {
         O3D_ERROR(E_OpenGLDebug(lmessage + " - Backtrace" + backtrace));
     } else {
         O3D_WARNING(lmessage + " - Backtrace" + backtrace);
