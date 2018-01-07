@@ -44,6 +44,11 @@ OcclusionQuery::Result OcclusionQuery::getOcclusionType()
     if (m_occlusionType == NOT_AVAILABLE) {
 		UInt32 tempResult;
 
+        // @todo
+        if (m_context->getRenderer()->isGLES()) {
+            return NOT_OCCLUDED;
+        }
+
 		// Check if the result is ready
         glGetQueryObjectuiv(m_id, GL_QUERY_RESULT_AVAILABLE, (GLuint*)&tempResult);
 
@@ -71,7 +76,7 @@ void OcclusionQuery::begin()
     // Check if we aren't already in a begin/end occlusion test
     if (!m_context->getCurrentOcclusionQuery()) {
         if (m_context->getRenderer()->isGLES()) {
-            glBeginQuery(GL_ANY_SAMPLES_PASSED, m_id);
+            //glBeginQuery(GL_ANY_SAMPLES_PASSED, m_id);
         } else {
             glBeginQuery(GL_SAMPLES_PASSED, m_id);
         }
@@ -88,7 +93,7 @@ void OcclusionQuery::begin()
 void OcclusionQuery::end()
 {
     if (m_context->getRenderer()->isGLES()) {
-        glEndQuery(GL_ANY_SAMPLES_PASSED);
+        //glEndQuery(GL_ANY_SAMPLES_PASSED);
     } else {
         glEndQuery(GL_SAMPLES_PASSED);
     }
@@ -100,7 +105,7 @@ void OcclusionQuery::forceResults()
     if (m_occlusionType == NOT_AVAILABLE) {
         if (m_context->getRenderer()->isGLES()) {
             // true or false
-            glGetQueryObjectuiv(m_id, GL_QUERY_RESULT_AVAILABLE, (GLuint*)&m_visibleCount);
+            //glGetQueryObjectuiv(m_id, GL_QUERY_RESULT_AVAILABLE, (GLuint*)&m_visibleCount);
         } else {
             // The result is available gets the number of visible fragments
             glGetQueryObjectuiv(m_id, GL_QUERY_RESULT, (GLuint*)&m_visibleCount);
