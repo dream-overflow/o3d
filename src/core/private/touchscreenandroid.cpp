@@ -135,11 +135,13 @@ void TouchScreen::setPointerState(UInt32 index, Bool state, Float x, Float y, Fl
     m_oldSize = m_deltaSize = 0;
 
     if (state) {
-        if (pointer.tap == 1 || pointer.tap == 2) {
+        if (pointer.tap == 2) {
             // possible double tap
             Int64 elapsed = time - pointer.dblTapTime;
             if (elapsed < (Int64)(m_dblTapDelay * 1000 * 1000)) {
                 pointer.tap = 4;
+            } else {
+                pointer.tap = 1;
             }
         } else {
             // possible tap
@@ -149,17 +151,17 @@ void TouchScreen::setPointerState(UInt32 index, Bool state, Float x, Float y, Fl
         pointer.downTime = time;
         pointer.dblTapTime = 0;
     } else {
-        if (pointer.tap == 1 || pointer.tap == 2) {
+        if (pointer.tap == 1 || pointer.tap == 4) {
             Int64 elapsed = time - pointer.downTime;
-
-            // possible double tap
-            pointer.dblTapTime = time;
 
             // tap occurs
             if (elapsed > (Int64)(LONG_TAP_DURATION * 1000 * 1000)) {
                 pointer.tap = 3;  // a long tap
             } else {
                 pointer.tap = 2; // a short tap
+
+                // possible double tap
+                pointer.dblTapTime = time;
             }
         } else {
             // reset no tap
