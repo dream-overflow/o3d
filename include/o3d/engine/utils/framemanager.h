@@ -70,6 +70,18 @@ public:
     //! Get the numbers of drawn vertices for the last frame.
     UInt32 getNumVertices() const;
 
+    //! Get the current number of drawn triangles (actually renderer frame).
+    UInt32 getCurrentNumTriangles() const;
+
+    //! Get the current number of drawn lines (actually renderer frame).
+    UInt32 getCurrentNumLines() const;
+
+    //! Get the current number of drawn point (actually renderer frame).
+    UInt32 getCurrentNumPoints() const;
+
+    //! Get the current numbers of drawn vertices (actually renderer frame).
+    UInt32 getCurrentNumVertices() const;
+
 protected:
 
 	struct Frame

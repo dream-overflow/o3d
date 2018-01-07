@@ -352,13 +352,13 @@ void FaceArrayUInt16::bindArray()
 // Draw using the data array
 void FaceArrayUInt16::draw(Scene *scene)
 {
-	if (m_isDirty)
+    if (m_isDirty) {
 		return;
+    }
 
 	O3D_ASSERT(scene);
 
-	if (m_vbo.exists())
-	{
+    if (m_vbo.exists()) {
 		UInt32 numElements = m_vbo.getCount() - m_offset;
 
 		m_vbo.bindBuffer();
@@ -374,13 +374,13 @@ void FaceArrayUInt16::draw(Scene *scene)
 // Draw using the data array, and with a specified range.
 void FaceArrayUInt16::drawPart(Scene *scene, UInt32 firstIndex, UInt32 lastIndex)
 {
-	if (m_isDirty)
+    if (m_isDirty) {
 		return;
+    }
 
 	O3D_ASSERT(scene);
 
-	if (m_vbo.exists())
-	{
+    if (m_vbo.exists()) {
 		UInt32 numElements = lastIndex - firstIndex;
 
 		m_vbo.bindBuffer();

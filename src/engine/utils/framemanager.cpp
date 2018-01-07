@@ -179,3 +179,23 @@ UInt32 FrameManager::getNumVertices() const
         return 0;
     }
 }
+
+UInt32 FrameManager::getCurrentNumTriangles() const
+{
+    return m_numTris;
+}
+
+UInt32 FrameManager::getCurrentNumLines() const
+{
+    return m_numLines;
+}
+
+UInt32 FrameManager::getCurrentNumPoints() const
+{
+    return m_numPoints;
+}
+
+UInt32 FrameManager::getCurrentNumVertices() const
+{
+    return m_numVertices;
+}
