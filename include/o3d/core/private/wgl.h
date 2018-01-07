@@ -25,6 +25,9 @@ public:
     static void init();
     static void quit();
 
+    static Int32 majorVersion();
+    static Int32 minorVersion();
+
     static Bool isValid();
 
     //! Init context dependants functions

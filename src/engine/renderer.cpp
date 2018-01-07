@@ -381,13 +381,73 @@ static void formatDebugOutputARB(
             break;
     }
 
-    output = String::print(
-        "OpenGL: %s [source=%ls type=%ls severity=%ls id=%u]",
-        msg,
-        lsource.getData(),
-        ltype.getData(),
-        lseverity.getData(),
-        id);
+    output = String("OpenGL: {0} [source={1} type={2} severity={3} id={4}]").
+             arg(msg).arg(lsource).arg(ltype).arg(lseverity).arg(id);
+
+//    output = String::print(
+//        "OpenGL: %s [source=%ls type=%ls severity=%ls id=%u]",
+//        msg,
+//        lsource.getData(),
+//        ltype.getData(),
+//        lseverity.getData(),
+//        id);
+}
+
+#include <unwind.h>
+#include <dlfcn.h>
+#include <cxxabi.h>
+
+struct BacktraceState
+{
+    void** current;
+    void** end;
+};
+
+static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context* context, void* arg)
+{
+    BacktraceState* state = static_cast<BacktraceState*>(arg);
+    uintptr_t pc = _Unwind_GetIP(context);
+    if (pc) {
+        if (state->current == state->end) {
+            return _URC_END_OF_STACK;
+        } else {
+            *state->current++ = reinterpret_cast<void*>(pc);
+        }
+    }
+    return _URC_NO_REASON;
+}
+
+size_t captureBacktrace(void** buffer, size_t max)
+{
+    BacktraceState state = {buffer, buffer + max};
+    _Unwind_Backtrace(unwindCallback, &state);
+
+    return state.current - buffer;
+}
+
+void dumpBacktrace(String &ouput, void** buffer, size_t count)
+{
+    for (size_t idx = 0; idx < count; ++idx) {
+        const void* addr = buffer[idx];
+        const char* symbol = "";
+
+        Dl_info info;
+        if (dladdr(addr, &info) && info.dli_sname) {
+            symbol = info.dli_sname;
+        }
+
+        int status = 0;
+        char *demangled = __cxxabiv1::__cxa_demangle(symbol, 0, 0, &status);
+
+        ouput += String("#{0}:{1} ").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') +
+                 ((nullptr != demangled && 0 == status) ? demangled : symbol);
+
+        if (nullptr != demangled) {
+            free(demangled);
+        }
+
+        // ouput += String("#{0}:{1} ").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') + symbol;
+    }
 }
 
 static void CALLBACK debugCallbackARB(
@@ -408,10 +468,15 @@ static void CALLBACK debugCallbackARB(
 
     formatDebugOutputARB(lmessage, source, type, id, severity, message);
 
+    String backtrace;
+    const size_t max = 30;
+    void* buffer[max];
+    dumpBacktrace(backtrace, buffer, captureBacktrace(buffer, max));
+
     if (severity == GL_DEBUG_SEVERITY_HIGH_ARB) {
-        O3D_ERROR(E_OpenGLDebug(lmessage));
+        O3D_ERROR(E_OpenGLDebug(lmessage + " - Backtrace" + backtrace));
     } else {
-        O3D_WARNING(lmessage);
+        O3D_WARNING(lmessage + " - Backtrace" + backtrace);
     }
 }
 

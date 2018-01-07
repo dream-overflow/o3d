@@ -11,6 +11,7 @@
 #define _O3D_EGLDEFINES_H
 
 #include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 typedef EGLDisplay (*EGLNATIVEDISPLAYPROC)(EGLNativeDisplayType display_id);
 typedef EGLBoolean (*EGLINITIALIZEPROC)(EGLDisplay dpy, EGLint *major, EGLint *minor);

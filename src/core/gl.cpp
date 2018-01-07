@@ -48,7 +48,7 @@ void GL::init(const Char *library)
   #if defined(O3D_X11)
     try {
         GLX::init();
-        ms_nativeImpl = ms_usedImpl = IMPL_GLX_14;
+        ms_nativeImpl = ms_usedImpl = IMPL_GLX;
         return;
     } catch(E_BaseException &e) {}
   #endif
@@ -62,7 +62,7 @@ void GL::init(const Char *library)
   #if defined(O3D_EGL)
     try {
         EGL::init();
-        ms_nativeImpl = ms_usedImpl = IMPL_EGL_15;
+        ms_nativeImpl = ms_usedImpl = IMPL_EGL;
         return;
     } catch(E_BaseException &e) {}
   #endif
@@ -70,7 +70,7 @@ void GL::init(const Char *library)
   #if defined(O3D_X11)
     try {
         GLX::init();
-        ms_nativeImpl = ms_usedImpl = IMPL_GLX_14;
+        ms_nativeImpl = ms_usedImpl = IMPL_GLX;
         return;
     } catch(E_BaseException &e) {}
   #endif
@@ -84,7 +84,7 @@ void GL::init(const Char *library)
   #if defined(O3D_EGL)
     try {
         EGL::init();
-        ms_nativeImpl = ms_usedImpl = IMPL_EGL_15;
+        ms_nativeImpl = ms_usedImpl = IMPL_EGL;
         return;
     } catch(E_BaseException &e) {}
   #endif
@@ -92,7 +92,7 @@ void GL::init(const Char *library)
   #if defined(O3D_X11)
     try {
         GLX::init();
-        ms_nativeImpl = ms_usedImpl = IMPL_GLX_14;
+        ms_nativeImpl = ms_usedImpl = IMPL_GLX;
         return;
     } catch(E_BaseException &e) {}
   #endif
@@ -121,7 +121,7 @@ void GL::init(const Char *library)
   #if defined(O3D_EGL)
     try {
         EGL::init();
-        ms_nativeImpl = ms_usedImpl = IMPL_EGL_15;
+        ms_nativeImpl = ms_usedImpl = IMPL_EGL;
         return;
     } catch(E_BaseException &e) {}
   #endif
@@ -180,11 +180,11 @@ void *GL::getProcAddress(const Char *ext)
             }
             break;
         #ifdef O3D_EGL
-        case IMPL_EGL_15:
+        case IMPL_EGL:
             return EGL::getProcAddress(ext);
         #endif
         #ifdef O3D_X11
-        case IMPL_GLX_14:
+        case IMPL_GLX:
             return GLX::getProcAddress(ext);
         #endif
         #ifdef O3D_SDL2
@@ -215,9 +215,9 @@ const Char *GL::getImplementationName()
                 return "CUSTOM";
             }
             break;
-        case IMPL_EGL_15:
+        case IMPL_EGL:
             return "EGL";
-        case IMPL_GLX_14:
+        case IMPL_GLX:
             return "GLX";
         case IMPL_SDL_2:
             return "SDL2";
@@ -239,10 +239,10 @@ GL::GLAPIType GL::getType()
             }
             break;
         #ifdef O3D_EGL
-        case IMPL_EGL_15:
+        case IMPL_EGL:
             return EGL::getType();
         #endif
-        case IMPL_GLX_14:
+        case IMPL_GLX:
             return API_GL;  // desktop always GL
         #ifdef O3D_SDL2
         case IMPL_SDL_2:
@@ -266,7 +266,7 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
             }
             break;
         #ifdef O3D_EGL
-        case IMPL_EGL_15:
+        case IMPL_EGL:
             {
             #ifdef O3D_X11
                 EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<Display*>(display));
@@ -279,7 +279,7 @@ void GL::swapBuffers(_DISP display, _HWND hWnd, _HDC hdc)
             break;
         #endif
         #ifdef O3D_X11
-        case IMPL_GLX_14:
+        case IMPL_GLX:
             GLX::swapBuffers(reinterpret_cast<Display*>(display), static_cast<Window>(hWnd));
             break;
         #endif

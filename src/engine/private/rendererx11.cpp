@@ -67,7 +67,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
     //
     // GLX implementation
     //
-    if (GL::getImplementation() == GL::IMPL_GLX_14) {
+    if (GL::getImplementation() == GL::IMPL_GLX) {
         // Install an X error handler so the application won't exit if GL 3.0+
         // context allocation fails.
         // Note this error handler is global. All display connections in all threads
@@ -156,7 +156,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
                 GLX_CONTEXT_MAJOR_VERSION_ARB, queryMajor,
                 GLX_CONTEXT_MINOR_VERSION_ARB, queryMinor,
                 GLX_CONTEXT_FLAGS_ARB, flagsARB,
-                //queryMajor > 2 ? GLX_CONTEXT_PROFILE_MASK_ARB : (int)None, queryMajor > 2 ? GLX_CONTEXT_CORE_PROFILE_BIT_ARB : (int)None,
+                queryMajor > 2 ? GLX_CONTEXT_PROFILE_MASK_ARB : (int)None, queryMajor > 2 ? GLX_CONTEXT_CORE_PROFILE_BIT_ARB : (int)None,
                 None };
 
             context = GLX::createContextAttribsARB(
@@ -219,7 +219,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         m_HDC = appWindow->getHDC();
         m_HGLRC = reinterpret_cast<_HGLRC>(context);
         m_state.enable(STATE_DEFINED);
-    } else if (GL::getImplementation() == GL::IMPL_EGL_15) {
+    } else if (GL::getImplementation() == GL::IMPL_EGL) {
         //
         // EGL implementation
         //
@@ -230,7 +230,9 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
         EGLint contextAttributes[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 3,
+            /*EGL_CONTEXT_MAJOR_VERSION_KHR*/EGL_CONTEXT_CLIENT_VERSION, 3,
+            /* EGL_CONTEXT_MINOR_VERSION_KHR, 2,*/
+            debug ? EGL_CONTEXT_FLAGS_KHR : EGL_NONE, debug ? EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR : EGL_NONE,
             EGL_NONE
         };
 

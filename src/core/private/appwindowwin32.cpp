@@ -277,7 +277,7 @@ void AppWindow::applySettings(Bool fullScreen)
         if (!valid || numFormats <= 0) {
             O3D_ERROR(E_InvalidResult("Unable to choose the pixel format"));
         }
-    } else if (GL::getImplementation() == GL::IMPL_EGL_15) {
+    } else if (GL::getImplementation() == GL::IMPL_EGL) {
       #ifdef O3D_EGL
         EGLDisplay eglDisplay = EGL::getDisplay(EGL_DEFAULT_DISPLAY);
         // @todo

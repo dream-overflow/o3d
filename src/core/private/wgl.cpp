@@ -90,6 +90,16 @@ void WGL::quit()
     }
 }
 
+Int32 WGL::majorVersion()
+{
+    return 1;
+}
+
+Int32 WGL::minorVersion()
+{
+    return 0;
+}
+
 Bool WGL::isValid()
 {
     return ms_wgl && _wglGetProcAddress;

@@ -636,7 +636,7 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     // and same for the non blitting method shader
 
     // @todo how to have blit working with GLES
-    if (GL::getType() != GL::API_GLES_3 && m_blitting) { // && m_gbuffer->getNumSamples() <= 1) {
+    if (!context.getRenderer()->isGLES() && m_blitting) { // && m_gbuffer->getNumSamples() <= 1) {
         m_gbuffer->draw();
     } else {
         // use the same projection as lighting

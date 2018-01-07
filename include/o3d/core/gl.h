@@ -33,10 +33,10 @@ public:
     {
         IMPL_NONE = 0,
         IMPL_CUSTOM = 1,
-        IMPL_GLX_14 = 2,
+        IMPL_GLX = 2,
         IMPL_WGL = 3,
-        IMPL_EGL_15 = 4,
-        IMPL_SDL_2 = 5
+        IMPL_EGL = 4,
+        IMPL_SDL_2 = 6
     };
 
     /**

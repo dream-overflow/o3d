@@ -29,6 +29,7 @@ typedef __GLXextFuncPtr (* PFNGLXGETPROCADDRESSPROC) (const GLubyte *procName);
 static PFNGLXGETPROCADDRESSPROC _glXGetProcAddress = nullptr;
 
 DynamicLibrary* GLX::ms_glX = nullptr;
+Int32 GLX::ms_version[2] = {0, 0};
 
 GLXQUERYEXTENSIONSSTRINGPROC GLX::queryExtensionsString = nullptr;
 GLXCREATECONTEXTPROC GLX::createContext = nullptr;
@@ -77,6 +78,9 @@ void GLX::init()
 
         O3D_ERROR(E_InvalidResult("Invalid GLX version. Need 1.4+"));
     }
+
+    ms_version[0] = (Int32)glxMajor;
+    ms_version[1] = (Int32)glxMinor;
 }
 
 void GLX::quit()
@@ -87,6 +91,16 @@ void GLX::quit()
         DynamicLibrary::unload(ms_glX);
         ms_glX = nullptr;
     }
+}
+
+Int32 GLX::majorVersion()
+{
+    return ms_version[0];
+}
+
+Int32 GLX::minorVersion()
+{
+    return ms_version[1];
 }
 
 Bool GLX::isValid()

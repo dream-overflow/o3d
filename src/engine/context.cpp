@@ -31,16 +31,16 @@ Context::Context(Renderer *renderer) :
 	O3D_ASSERT(m_renderer);
 
 	// force to default values
-	forceDefaultDrawingMode();
+    forceDefaultDrawingMode();
 	forceDefaultPointSize();
     forceDefaultLineWidth();
 	forceDefaultCullingMode();
 	forceDefaultDepthTest();
 	forceDefaultBackgroundColor();
 	forceDefaultDepthClear();
-	forceDefaultDepthRange();
-	forceDefaultDepthFunc();
-	forceDefaultAntiAliasing();
+    forceDefaultDepthRange();
+    forceDefaultDepthFunc();
+    forceDefaultAntiAliasing();
 	forceDefaultDepthWrite();
 	forceDefaultDoubleSide();
 	forceDefaultScissorTest();
@@ -85,10 +85,19 @@ Context::Context(Renderer *renderer) :
 
     _glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
     _glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessControlTextureImageUnits);
-    _glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
+
+    if (!m_renderer->isGLES()) {
+        _glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
+    } else {
+        m_maxViewports = 0;
+    }
 
 	// anisotropy
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat*)&m_maxAnisotropy);
+    if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat*)&m_maxAnisotropy);
+    } else {
+        m_maxAnisotropy = 1;
+    }
 
     if (glDrawBuffers) {
         const GLenum buffers[] = {GL_BACK};
@@ -97,7 +106,7 @@ Context::Context(Renderer *renderer) :
         glDrawBuffer(GL_BACK);
     }
 
-	glDisable(GL_DITHER);
+    glDisable(GL_DITHER);
 
 	// texture
     _glGetIntegerv(GL_MAX_TEXTURE_SIZE, (GLint*)&m_textureMaxSize);
@@ -112,7 +121,12 @@ Context::Context(Renderer *renderer) :
     _glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, (GLint*)&m_maxVertexAttribs);
 
     glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, (GLfloat*)m_aliasedLineWidthRange);
-    glGetFloatv(GL_SMOOTH_LINE_WIDTH_RANGE, (GLfloat*)m_smoothLineWidthRange);
+
+    if (!m_renderer->isGLES()) {
+        glGetFloatv(GL_SMOOTH_LINE_WIDTH_RANGE, (GLfloat*)m_smoothLineWidthRange);
+    } else {
+        m_smoothLineWidthRange[0] = m_smoothLineWidthRange[1] = 0.f;
+    }
 
 	// GLSL version
     if (getRenderer()->isGLES()) {
@@ -846,6 +860,11 @@ Context::AntiAliasingMethod Context::setAntiAliasing(AntiAliasingMethod mode)
 {
     AntiAliasingMethod old = m_antiAliasing;
 
+    // not implemented on GLES
+    if (m_renderer->isGLES()) {
+        return old;
+    }
+
     if (old != mode) {
         if (mode == AA_HINT_NICEST) {
             if (old == AA_MULTI_SAMPLE) {
@@ -902,6 +921,11 @@ Context::AntiAliasingMethod Context::forceAntiAliasing(AntiAliasingMethod mode)
 {
     AntiAliasingMethod old = m_antiAliasing;
     m_antiAliasing = mode;
+
+    // not implemented on GLES
+    if (m_renderer->isGLES()) {
+        return old;
+    }
 
     if (mode == AA_HINT_NICEST) {
         glDisable(GL_MULTISAMPLE);

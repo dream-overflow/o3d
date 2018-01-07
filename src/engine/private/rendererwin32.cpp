@@ -176,7 +176,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         }
 
         m_state.enable(STATE_DEFINED);
-    } else if (GL::getImplementation() == GL::IMPL_EGL_15) {
+    } else if (GL::getImplementation() == GL::IMPL_EGL) {
         //
         // EGL implementation
         //

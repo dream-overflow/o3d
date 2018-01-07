@@ -145,11 +145,12 @@ void AppWindow::applySettings(Bool fullScreen)
         break;
     }
 
-    if (GL::getImplementation() == GL::IMPL_EGL_15) {
+    if (GL::getImplementation() == GL::IMPL_EGL) {
     #ifdef O3D_EGL
         EGLint apiType = EGL_OPENGL_BIT;
         if (GL::getType() == GL::API_GLES_3) {
             apiType = EGL_OPENGL_ES2_BIT;  // not 3 defined in Android
+            // apiType = EGL_OPENGL_ES3_BIT;  // not 3 defined in Android
         }
 
         // Get a matching config, double buffer is a default with EGL on Surface
@@ -311,7 +312,7 @@ void AppWindow::destroy()
         processEvent(EVT_DESTROY, event);
 
         // destroy surface
-        if (GL::getImplementation() == GL::IMPL_EGL_15) {
+        if (GL::getImplementation() == GL::IMPL_EGL) {
         #ifdef O3D_EGL
             EGLDisplay eglDisplay = EGL::getDisplay(reinterpret_cast<EGLNativeDisplayType>(Application::getDisplay()));
             EGL::destroySurface(eglDisplay, reinterpret_cast<EGLSurface>(m_HDC));

@@ -414,6 +414,10 @@ void GBuffer::create(UInt32 width, UInt32 height, UInt32 samples)
     m_fbo.isCompleteness();
     m_fbo.unbindBuffer();
 
+if (getScene()->getRenderer()->isError()) {
+    O3D_MESSAGE(getScene()->getRenderer()->getError() + "<<<<1");
+}
+
     m_numSamples = samples;
 }
 
@@ -442,6 +446,10 @@ void GBuffer::reshape(const Vector2i &size)
         return;
     }
 
+if (getScene()->getRenderer()->isError()) {
+    O3D_MESSAGE(getScene()->getRenderer()->getError() + "<<<<21");
+}
+
     // resize texture
     for (UInt32 i = 0; i < NUM_BUFFERS_TYPE; ++i) {
         if (m_buffers[i].actif) {
@@ -463,8 +471,16 @@ void GBuffer::clear()
         O3D_ERROR(E_InvalidOperation("FBO must be bound"));
     }
 
+if (getScene()->getRenderer()->isError()) {
+    O3D_MESSAGE(getScene()->getRenderer()->getError() + "<<<<300-21");
+}
+
     // output color buffer
     m_drawBuffers.reset();
+
+if (getScene()->getRenderer()->isError()) {
+    O3D_MESSAGE(getScene()->getRenderer()->getError() + "<<<<30--1");
+}
 
     // output with context background color
     glClearBufferfv(GL_COLOR, 0, getScene()->getContext()->getBackgroundColor().getData()); // color
@@ -483,11 +499,21 @@ void GBuffer::clear()
         }
     }
 
+if (getScene()->getRenderer()->isError()) {
+    O3D_MESSAGE(getScene()->getRenderer()->getError() + "<<<<31111");
+}
+
     const GLfloat one = 1.f;
     const GLint zero = 0;
 
     glClearBufferfv(GL_DEPTH, 0, &one);
     glClearBufferiv(GL_STENCIL, 0, &zero);
+
+
+if (getScene()->getRenderer()->isError()) {
+    O3D_MESSAGE(getScene()->getRenderer()->getError() + "<<<<31221");
+}
+
 }
 
 void GBuffer::clearDepth()

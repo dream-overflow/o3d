@@ -25,6 +25,9 @@ public:
     static void init();
     static void quit();
 
+    static Int32 majorVersion();
+    static Int32 minorVersion();
+
     static Bool isValid();
 
     //! Returns a GL extension pointer address.
@@ -52,6 +55,7 @@ public:
 private:
 
     static DynamicLibrary *ms_glX;
+    static Int32 ms_version[2];
 };
 
 } // namespace o3d

@@ -47,7 +47,7 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
 
     O3D_MESSAGE("Creating a new OpenGLES context...");
 
-    if (GL::getImplementation() == GL::IMPL_EGL_15) {
+    if (GL::getImplementation() == GL::IMPL_EGL) {
         //
         // EGL implementation
         //
@@ -57,8 +57,12 @@ void Renderer::create(AppWindow *appWindow, Bool debug, Renderer *sharing)
         EGLSurface eglSurface = reinterpret_cast<EGLSurface>(appWindow->getHDC());
         EGLConfig eglConfig = reinterpret_cast<EGLConfig>(appWindow->getPixelFormat());
 
+        // EGL_CONTEXT_OPENGL_DEBUG
         EGLint contextAttributes[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 3,
+            /*EGL_CONTEXT_MAJOR_VERSION_KHR*/EGL_CONTEXT_CLIENT_VERSION, 3,
+            /* EGL_CONTEXT_MINOR_VERSION_KHR, 2,*/
+            debug ? EGL_CONTEXT_FLAGS_KHR : EGL_NONE, debug ? EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR : EGL_NONE,
+            // debug ? EGL_CONTEXT_FLAGS_KHR : EGL_NONE, debug ? EGL_CONTEXT_OPENGL_DEBUG : EGL_NONE,
             EGL_NONE
         };
 

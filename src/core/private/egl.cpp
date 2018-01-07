@@ -44,6 +44,7 @@ EGLSWAPINTERVALPROC EGL::swapInterval = nullptr;
 
 DynamicLibrary* EGL::ms_egl = nullptr;
 GL::GLAPIType EGL::ms_type = GL::API_UNDEFINED;
+Int32 EGL::ms_version[2] = {0, 0};
 
 void EGL::init()
 {
@@ -89,6 +90,9 @@ void EGL::init()
         O3D_ERROR(E_InvalidResult("Invalid EGL version. Need 1.4+"));
     }
 
+    ms_version[0] = (Int32)eglVersionMajor;
+    ms_version[1] = (Int32)eglVersionMinor;
+
     // Selection of the GL API (GL on Desktop, GLES on mobile)
 #if defined(O3D_LINUX) || defined(O3D_WINDOWS) || defined(O3D_MACOSX)
     if (!EGL::bindAPI(EGL_OPENGL_API)) {
@@ -120,6 +124,16 @@ void EGL::quit()
 
     DynamicLibrary::unload(ms_egl);
     ms_egl = nullptr;
+}
+
+Int32 EGL::majorVersion()
+{
+    return ms_version[0];
+}
+
+Int32 EGL::minorVersion()
+{
+    return ms_version[1];
 }
 
 Bool EGL::isValid()

@@ -82,6 +82,6 @@ void main()
     // shine in specular A
     float shine = normalShine.a;
 
-	o_finalColor = lighting(pos, normal, diffuse, specular, shine);
+    o_finalColor = lighting(pos, normal, diffuse, specular, shine);
 }
 

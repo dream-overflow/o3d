@@ -152,7 +152,7 @@ void MemoryManager::reportLeaks()
 		TotalSize += i->second.Size;
 
 		// write block information in file
-        m_logger->log(Logger::INFO, String("-> 0x").arg((UInt64)i->first, 16, 16, '0')
+        m_logger->log(Logger::INFO, String("-> 0x{0}").arg((UInt64)i->first, 16, 16, '0')
                << String(" | {0} bytes").arg((Int32)(i->second.Size), 7, 10, ' ')
                << String(" | {0} ({1})").arg(i->second.File.c_str()).arg(i->second.Line));
 
