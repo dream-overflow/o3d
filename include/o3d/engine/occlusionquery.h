@@ -17,21 +17,18 @@ namespace o3d {
 
 class Context;
 
-//---------------------------------------------------------------------------------------
-//! @class OcclusionQuery
-//-------------------------------------------------------------------------------------
-//! This class is an interface for an occlusion query object.
-//! An Occlusion query allows to know how many pixels passed the Z-Test for a set of
-//! primitives. This is useful for flare/glow rendering and for visibility check.
-//!
-//! Usage:
-//! ------
-//!
-//! Each primitives are rendered between begin() and end() call will be included in the
-//! Occlusion test. After calling end(), you can use getOcclusionType() to know if some
-//! primitives are occluded or visible. Use getVisibleCount() to know how many fragments
-//! have passed the Z-Buffer test.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief  This class is an interface for an occlusion query object.
+ * @details An Occlusion query allows to know how many pixels passed the Z-Test for a set
+ * of primitives. This is useful for flare/glow rendering and for visibility check.
+ *
+ * Usage:
+ *
+ * Each primitives are rendered between begin() and end() call will be included in the
+ * Occlusion test. After calling end(), you can use getOcclusionType() to know if some
+ * primitives are occluded or visible. Use getVisibleCount() to know how many fragments
+ * have passed the Z-Buffer test.
+ */
 class O3D_API OcclusionQuery
 {
 public:
@@ -45,7 +42,7 @@ public:
 	};
 
 	//! Constructor.
-	OcclusionQuery();
+    OcclusionQuery(Context *context);
 	//! Destructor.
 	~OcclusionQuery();
 
@@ -60,31 +57,28 @@ public:
 	{
 		// Check if we have the result
 		// If not, try to get it
-		if (getOcclusionType() != NOT_AVAILABLE)
-		{
+        if (getOcclusionType() != NOT_AVAILABLE) {
 			return m_visibleCount;
-		}
-		else
-		{
+        } else {
 			return 0;
 		}
 	}
 
 	//! Start the occlusion test
-	void begin(Context *glContext);
+    void begin();
 	//! end the occlusion test
-	void end(Context *glContext);
+    void end();
 	//! Force the driver to get the results
 	void forceResults();
 
 protected:
 
-	UInt32 m_id;            //!< Id of this occlusion query object
-	UInt32 m_visibleCount;  //!< Visible fragments
-	Result m_occlusionType;     //!< Determine if primitives are visible or occluded
+    UInt32 m_id;              //!< Id of this occlusion query object
+    UInt32 m_visibleCount;    //!< Visible fragments
+    Result m_occlusionType;   //!< Determine if primitives are visible or occluded
+    Context *m_context;       //!< Related context
 };
 
 } // namespace o3d
 
 #endif // _O3D_OCCLUSIONQUERY_H
-

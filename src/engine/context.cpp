@@ -495,7 +495,7 @@ void Context::deletePixelBuffer(UInt32 id)
 // create a new occlusion query and set it to current
 OcclusionQuery* Context::createOcclusionQuery()
 {
-	OcclusionQuery* occQuery = new OcclusionQuery;
+    OcclusionQuery* occQuery = new OcclusionQuery(this);
 	return occQuery;
 }
 

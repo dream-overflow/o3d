@@ -160,9 +160,6 @@ void LensEffect::createShader()
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  destructor
----------------------------------------------------------------------------------------*/
 LensEffect::~LensEffect()
 {
 	// release the usage for each flare
@@ -173,21 +170,15 @@ LensEffect::~LensEffect()
 	deleteOcclusionQueries();
 }
 
-/*---------------------------------------------------------------------------------------
-  create the occlusion test
----------------------------------------------------------------------------------------*/
 void LensEffect::createOcclusionQueries()
 {
 	// Test si on a pas déjà un test d'occlusion queries en cours
-	if (!m_occlusionQuery)
-	{
+    if (!m_occlusionQuery) {
 		m_occlusionQuery = getScene()->getContext()->createOcclusionQuery();
 	}
 
-	if (!m_simpleOcclusion)
-	{
-		if (!m_drawQuery)
-		{
+    if (!m_simpleOcclusion) {
+        if (!m_drawQuery) {
 			// Cette occlusion n'est pas en cours d'utilisation on peut la libérer
 			m_drawQuery = getScene()->getContext()->createOcclusionQuery();
 		}
@@ -251,16 +242,16 @@ void LensEffect::checkOcclusionQueries()
 	if (!m_simpleOcclusion)
 	{
 		glContext->disableDepthTest();
-		m_drawQuery->begin(getScene()->getContext());
+        m_drawQuery->begin();
 			renderOcclusionTestMesh();
-		m_drawQuery->end(getScene()->getContext());
+        m_drawQuery->end();
 	}
 	
 	// Fais le test d'occlusion avec l'objet rendu normalement
 	glContext->enableDepthTest();
-	m_occlusionQuery->begin(getScene()->getContext());
+    m_occlusionQuery->begin();
 		renderOcclusionTestMesh();
-	m_occlusionQuery->end(getScene()->getContext());
+    m_occlusionQuery->end();
 	
 	// shader
 	glContext->disableVertexAttribArray(m_occlusionShader.a_vertex);
@@ -271,9 +262,6 @@ void LensEffect::checkOcclusionQueries()
 	glContext->enableColorWrite();
 }
 
-/*---------------------------------------------------------------------------------------
-  release occlusions queries used
----------------------------------------------------------------------------------------*/
 void LensEffect::deleteOcclusionQueries()
 {
 	if (m_occlusionQuery)
@@ -295,17 +283,11 @@ void LensEffect::deleteOcclusionQueries()
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  render the test mesh for occlusion
----------------------------------------------------------------------------------------*/
 void LensEffect::renderOcclusionTestMesh()
 {
 	getScene()->drawArrays(P_TRIANGLE_STRIP, 0, 4);
 }
 
-/*---------------------------------------------------------------------------------------
-  compute the visibility ratio of this effect using occlusion queries
----------------------------------------------------------------------------------------*/
 void LensEffect::calculateVisibilityRatio()
 {
 	if (m_simpleOcclusion)
@@ -380,7 +362,7 @@ void LensEffect::calculateVisibilityRatio()
 		}
 		else
 		{
-			// Une occlusion est crée mais pas l'autre... On reset le système
+            // Une occlusion est cree mais pas l'autre... On reset le systeme
 			O3D_MESSAGE("(m_pOcclusionQuery && m_pDrawQuery)==FALSE : Reset the occlusion");
 			deleteOcclusionQueries();
 			m_visibilityRatio = 1.0f;
@@ -388,9 +370,6 @@ void LensEffect::calculateVisibilityRatio()
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  generate glow from flare model
----------------------------------------------------------------------------------------*/
 void LensEffect::generateGlowsObj()
 {
 	LensFlareModel::LensGlowItem *pGlowItem;
@@ -446,9 +425,6 @@ void LensEffect::generateGlowsObj()
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  update the position of all glows
----------------------------------------------------------------------------------------*/
 void LensEffect::updateGlowsPositions()
 {
 	SpecialEffects *pTempEffect;
@@ -466,9 +442,6 @@ void LensEffect::updateGlowsPositions()
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  compute glow attenuation depending on the AttenuationRange
----------------------------------------------------------------------------------------*/
 void LensEffect::calcGlowAttenuationRange(const Vector3 &refScreenPos)
 {
 	SpecialEffects *pTempEffect;
@@ -486,9 +459,6 @@ void LensEffect::calcGlowAttenuationRange(const Vector3 &refScreenPos)
 	}
 }
 
-/*---------------------------------------------------------------------------------------
-  set/get the lens flare model
----------------------------------------------------------------------------------------*/
 void LensEffect::setLensFlareModel(const LensFlareModel &Model)
 {
 	// copy the flare model
@@ -865,4 +835,3 @@ void LensEffect::postImportPass()
 {
 	EffectIntensity::postImportPass();
 }
-
