@@ -172,25 +172,25 @@ LensEffect::~LensEffect()
 
 void LensEffect::createOcclusionQueries()
 {
-	// Test si on a pas déjà un test d'occlusion queries en cours
+    // Test si on a pas deja un test d'occlusion queries en cours
     if (!m_occlusionQuery) {
 		m_occlusionQuery = getScene()->getContext()->createOcclusionQuery();
 	}
 
     if (!m_simpleOcclusion) {
         if (!m_drawQuery) {
-			// Cette occlusion n'est pas en cours d'utilisation on peut la libérer
+            // Cette occlusion n'est pas en cours d'utilisation on peut la liberer
 			m_drawQuery = getScene()->getContext()->createOcclusionQuery();
 		}
 	}
 }
 
-// make the occlusion test (les transformations doivent avoir été définies)
+// make the occlusion test (les transformations doivent avoir ete definies)
 void LensEffect::checkOcclusionQueries()
 {
 	Context *glContext = getScene()->getContext();
 
-	// Définition de modelView
+    // Definition de modelView
 	glContext->modelView().push();
 
 	Vector3 vPosition;
@@ -204,8 +204,8 @@ void LensEffect::checkOcclusionQueries()
 	else
 	{
 		// On utilise vGlowVector comme la position du glow.
-		// Meme si on rend le glow à une distance constante de la camera (GLOW_LOCAL)
-		// Il faut faire le test d'occlusion à la source du glow
+        // Meme si on rend le glow a une distance constante de la camera (GLOW_LOCAL)
+        // Il faut faire le test d'occlusion a la source du glow
 		vPosition = m_lensVector;
 	}
 
@@ -214,7 +214,7 @@ void LensEffect::checkOcclusionQueries()
 
 	glContext->modelView().scale(Vector3(m_halfSizeX, m_halfSizeY, 1.f));
 
-	// Le but est de ne rien rendre à l'ecran et ne pas modifier le Z-Buffer
+    // Le but est de ne rien rendre a l'ecran et ne pas modifier le Z-Buffer
     DrawContext drawContext(getScene()->getContext());
 	drawContext.disableDepthWrite();
 	drawContext.apply();
@@ -224,10 +224,11 @@ void LensEffect::checkOcclusionQueries()
 	// Si on a un lens effect infinie,
 	// On doit placer le mesh de test d'occlusion en l'infini
 	// Pour se faire, on joue sur le DepthRange
-	if (m_infinite)
+    if (m_infinite) {
 		glContext->setInfiniteDepthRange();
-	else
+    } else {
 		glContext->setDefaultDepthRange();
+    }
 
 	// shader
 	m_occlusionShader.instance.bindShader();
@@ -269,7 +270,7 @@ void LensEffect::deleteOcclusionQueries()
 		if (getScene()->getContext()->getCurrentOcclusionQuery() == m_occlusionQuery)
             getScene()->getContext()->setCurrentOcclusionQuery(nullptr);
 
-		// Cette occlusion n'est pas en cours d'utilisation on peut la libérer
+        // Cette occlusion n'est pas en cours d'utilisation on peut la liberer
 		deletePtr(m_occlusionQuery);
 	}
 
@@ -278,7 +279,7 @@ void LensEffect::deleteOcclusionQueries()
 		if (getScene()->getContext()->getCurrentOcclusionQuery() == m_drawQuery)
             getScene()->getContext()->setCurrentOcclusionQuery(nullptr);
 
-		// Cette occlusion n'est pas en cours d'utilisation on peut la libérer
+        // Cette occlusion n'est pas en cours d'utilisation on peut la liberer
 		deletePtr(m_drawQuery);
 	}
 }
@@ -298,27 +299,27 @@ void LensEffect::calculateVisibilityRatio()
 			deleteOcclusionQueries();
 		}
 
-		// Test si il faut créer de nouvelles occlusions
+        // Test si il faut creer de nouvelles occlusions
 		if (!m_occlusionQuery)
 		{
 			// Reset le resultat
 			m_visibilityRatio = 1.0f;
 			createOcclusionQueries();
 
-			// Effectu le test d'occlusions mais ne cherche pas a récupérer
-			// les résultats (on laisse passer au moins une frame)
+            // Effectu le test d'occlusions mais ne cherche pas a recuperer
+            // les resultats (on laisse passer au moins une frame)
 			checkOcclusionQueries();
 		}
 		else
 		{
-			// Nos occlusions existent, on va pouvoir essayer de récupérer les résultats
+            // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
 			// Si ils sont disponibles...
 
 			// Test si le resultat des deux occlusions sont disponibles
-			// Si le résultat n'est pas disponible, on garde l'ancien
+            // Si le resultat n'est pas disponible, on garde l'ancien
 			if (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE)
 			{
-				// On utilise le résultat
+                // On utilise le resultat
 				m_visibilityRatio = (m_occlusionQuery->getVisibleCount() > 0 ? 1.0f : 0.0f);
 
 				// Re-Effectue le test d'occlusions
@@ -328,24 +329,24 @@ void LensEffect::calculateVisibilityRatio()
 	}
 	else
 	{
-		// Test si il faut créer de nouvelles occlusions
+        // Test si il faut creer de nouvelles occlusions
 		if ((!m_occlusionQuery) && (!m_drawQuery))
 		{
 			// Reset le resultat
 			m_visibilityRatio = 1.0f;
 			createOcclusionQueries();
 
-			// Effectu le test d'occlusions mais ne cherche pas a récupérer
-			// les résultats (on laisse passer au moins une frame)
+            // Effectu le test d'occlusions mais ne cherche pas a recuperer
+            // les resultats (on laisse passer au moins une frame)
 			checkOcclusionQueries();
 		}
 		else if ((m_occlusionQuery) && (m_drawQuery))
 		{
-			// Nos occlusions existent, on va pouvoir essayer de récupérer les résultats
+            // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
 			// Si ils sont disponibles...
 
 			// Test si le resultat des deux occlusions sont disponibles
-			// Si le résultat n'est pas disponible, on garde l'ancien
+            // Si le resultat n'est pas disponible, on garde l'ancien
 			
 			// On Windows we have to perform the two check for availability otherwise 
 			// the first occlusion lock the second and we never have results...
@@ -353,7 +354,7 @@ void LensEffect::calculateVisibilityRatio()
 
 			if ((m_drawQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) && (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE))
 			{
-				// On utilise le résultat
+                // On utilise le resultat
 				m_visibilityRatio = (Float)(m_occlusionQuery->getVisibleCount())/Float(m_drawQuery->getVisibleCount());
 
 				// Re-Effectu le test d'occlusions

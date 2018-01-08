@@ -105,7 +105,7 @@ void OcclusionQuery::forceResults()
     if (m_occlusionType == NOT_AVAILABLE) {
         if (m_context->getRenderer()->isGLES()) {
             // true or false
-            //glGetQueryObjectuiv(m_id, GL_QUERY_RESULT_AVAILABLE, (GLuint*)&m_visibleCount);
+            glGetQueryObjectuiv(m_id, GL_QUERY_RESULT_AVAILABLE, (GLuint*)&m_visibleCount);
         } else {
             // The result is available gets the number of visible fragments
             glGetQueryObjectuiv(m_id, GL_QUERY_RESULT, (GLuint*)&m_visibleCount);
