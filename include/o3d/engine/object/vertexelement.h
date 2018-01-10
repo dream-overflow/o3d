@@ -79,13 +79,6 @@ class O3D_API VertexElement : NonCopyable<>
 {
 public:
 
-	//! Lock mode
-	enum LockMode
-	{
-		WRITE_ONLY = 0,  //!< Only for write data.
-		READ_WRITE       //!< Read and write data.
-	};
-
 	//! Default constructor.
 	//! @param type The type of data supported by this array.
 	//! @param numElt Number of elements of element size.
@@ -163,7 +156,6 @@ public:
 	//! @param offset Offset in number of element (this value is multiplied by element size).
 	//! @param numElt Size in number of element (this value is multiplied by element size).
 	//! @note Take care of the stride.
-	// TODO remove, replace, move ?
 	void update(const Float *data, UInt32 offset, UInt32 numElt);
 
 	//-----------------------------------------------------------------------------------
@@ -184,7 +176,8 @@ public:
 	//! @param mode Lock mode.
 	//! @param offset Offset in number of elements.
 	//! @param numElt Number of elements.
-	Float* lockArray(LockMode mode, UInt32 offset = 0,	UInt32 numElt = 0);
+    //! @param flags Map flags.
+    Float* lockArray(BufferObject::LockFlags flags, UInt32 offset = 0, UInt32 numElt = 0);
 
 	//! Unlock the data array
 	void unlockArray();
@@ -212,8 +205,8 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os);
+    virtual Bool readFromFile(InStream &is);
 
 protected:
 
@@ -256,10 +249,7 @@ class O3D_API VertexBlend : NonCopyable<>
 public:
 
 	//! Default constructor
-	VertexBlend(
-            Context *context,
-			VertexElement *vertices,
-			VertexElement *normals);
+    VertexBlend(Context *context, VertexElement *vertices, VertexElement *normals);
 
 	//! Destructor
 	~VertexBlend() {}
@@ -287,4 +277,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_VERTEXELEMENT_H
-

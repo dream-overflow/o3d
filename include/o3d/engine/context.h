@@ -692,6 +692,9 @@ public:
         return m_maxStageTextureImageUnits[stage];
     }
 
+    //! Get the max anisotropy
+    inline Float getMaxAnisotropy() const { return m_maxAnisotropy; }
+
     //-----------------------------------------------------------------------------------
     // Atomic counter
     //-----------------------------------------------------------------------------------
@@ -710,12 +713,34 @@ public:
     /**
      * @brief Delete an atomic counter object.
      * @param id
-     * @note If the current bound object is the same as deleted,	bind 0 before.
+     * @note If the current bound object is the same as deleted, bind 0 before.
      */
     void deleteAtomicCounter(UInt32 id);
 
     //! Get the current bound atomic counter object.
     inline UInt32 getCurrentAtomicCounter() const { return m_currentAtomicCounter; }
+
+    //-----------------------------------------------------------------------------------
+    // Uniform buffer
+    //-----------------------------------------------------------------------------------
+
+    inline Int32 getMaxUniformBufferBindings() const { return m_maxUniformBufferBindings; }
+    inline Int32 getMaxUniformBlockSize() const { return m_maxUniformBlockSize; }
+    inline Int32 getMaxStageUniformBlocks(Stage stage) const { return m_maxStageUniformBlocks[stage]; }
+
+    /**
+     * @brief Uniform buffer object binding.
+     */
+    void bindUniformBuffer(UInt32 id);
+
+    /**
+     * @brief Delete an uniform buffer object.
+     * @note If the current bound object is the same as deleted, bind 0 before.
+     */
+    void deleteUniformBuffer(UInt32 id);
+
+    //! Get the current bound atomic counter object.
+    inline UInt32 getCurrentUniformBuffer() const { return m_currentUniformBufferId; }
 
 	//-----------------------------------------------------------------------------------
 	// Viewport
@@ -757,15 +782,6 @@ public:
 
 	//! Set to default color mask.
 	inline void setDefaultColorMask() { enableColorWrite(); }
-
-
-	//-----------------------------------------------------------------------------------
-	// Anisotropy
-    //-----------------------------------------------------------------------------------
-
-	//! Get the max anisotropy
-	inline Float getMaxAnisotropy() const { return m_maxAnisotropy; }
-
 
 	//-----------------------------------------------------------------------------------
 	// Modelview and projection matrices.
@@ -904,7 +920,8 @@ private:
     Int32 m_maxUniformBlockSize;
     Int32 m_maxStageUniformBlocks[NUM_STAGES];
 
-    Int32 *m_currentUniformBufferId;
+    UInt32 m_currentUniformBufferId;
+    UInt32 *m_currentUniformBufferBindingId;
 };
 
 } // namespace o3d

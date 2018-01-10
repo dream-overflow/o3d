@@ -138,6 +138,9 @@ Context::Context(Renderer *renderer) :
     m_currentTexUnit = 0;
     glActiveTexture(GL_TEXTURE0);
 
+    m_currentTexId = new UInt32[m_maxCombinedTextureImageUnits];
+    m_currentSamplerId = new UInt32[m_maxCombinedTextureImageUnits];
+
     memset(m_currentTexId, 0, m_maxCombinedTextureImageUnits * sizeof(UInt32));
     memset(m_currentSamplerId, 0, m_maxCombinedTextureImageUnits * sizeof(UInt32));
 
@@ -162,16 +165,15 @@ Context::Context(Renderer *renderer) :
 
     _glGetIntegerv(GL_MAX_COMPUTE_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[COMPUTE_SHADER]);
     _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
-    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
-    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
-    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
-    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
+    _glGetIntegerv(GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[TESS_CONTROL_SHADER]);
+    _glGetIntegerv(GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[TESS_EVALUATION_SHADER]);
+    _glGetIntegerv(GL_MAX_GEOMETRY_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[GEOMETRY_SHADER]);
+    _glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[FRAGMENT_SHADER]);
 
-    Int32 m_maxUniformBufferBindings;
-    Int32 m_maxUniformBlockSize;
-    Int32 m_maxStageUniformBlocks[NUM_STAGES];
+    m_currentUniformBufferId = 0;
 
-    Int32 *m_currentUniformBufferId;
+    m_currentUniformBufferBindingId = new UInt32[m_maxUniformBufferBindings];
+    memset(m_currentUniformBufferBindingId, 0, m_maxUniformBufferBindings * sizeof(UInt32));
 
     //
     // Atomic counter
@@ -343,6 +345,8 @@ Context::~Context()
     deleteArray(m_currentTexId);
     deleteArray(m_currentSamplerId);
 
+    deleteArray(m_currentUniformBufferBindingId);
+
 	// matrix observer
 	m_modelview.removeObserver(this);
 	m_projection.removeObserver(this);
@@ -363,7 +367,7 @@ Bool Context::resetTexture(UInt32 id)
 {
     Bool res = True;
 
-    for (UInt32 i = 0; i < m_maxCombinedTextureImageUnits; ++i) {
+    for (UInt32 i = 0; i < (UInt32)m_maxCombinedTextureImageUnits; ++i) {
         if (m_currentTexId[i] == id) {
             m_currentTexId[i] = 0;
             res = False;
@@ -393,7 +397,7 @@ Bool Context::resetSampler(UInt32 id)
 {
     Bool res = True;
 
-    for (UInt32 i = 0; i < m_maxCombinedTextureImageUnits; ++i) {
+    for (UInt32 i = 0; i < (UInt32)m_maxCombinedTextureImageUnits; ++i) {
         if (m_currentSamplerId[i] == id) {
             m_currentSamplerId[i] = 0;
             res = False;
@@ -405,7 +409,7 @@ Bool Context::resetSampler(UInt32 id)
 
 void Context::bindSampler(UInt32 id, UInt32 unit, Bool force)
 {
-    if (unit >= m_maxCombinedTextureImageUnits) {
+    if (unit >= (UInt32)m_maxCombinedTextureImageUnits) {
         O3D_ERROR(E_IndexOutOfRange("Texture sampler unit"));
     }
 
@@ -1508,6 +1512,25 @@ void Context::deleteAtomicCounter(UInt32 id)
     if (id != 0) {
         if (id == m_currentAtomicCounter) {
             m_currentAtomicCounter = 0;
+        }
+
+        glDeleteBuffers(1, (GLuint*)&id);
+    }
+}
+
+void Context::bindUniformBuffer(UInt32 id)
+{
+    if ((id != m_currentUniformBufferId) || (id == 0)) {
+        glBindBuffer(GL_UNIFORM_BUFFER, id);
+        m_currentUniformBufferId = id;
+    }
+}
+
+void Context::deleteUniformBuffer(UInt32 id)
+{
+    if (id != 0) {
+        if (id == m_currentUniformBufferId) {
+            m_currentUniformBufferId = 0;
         }
 
         glDeleteBuffers(1, (GLuint*)&id);

@@ -98,7 +98,7 @@ void VertexBufferBuilder::create(ArrayBufferf &vbo)
         // but also on differents vertex elements, but at this state elements are not created
         // so locking does not perform buffer mapping
         if (glMapBuffer) {
-            Float *vboData = vbo.lock(0, 0, VertexBuffer::WRITE_ONLY);
+            Float *vboData = vbo.lock(0, 0, BufferObject::MAP_WRITE);
 
             for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
                 if (it->vertexElement) {
@@ -310,7 +310,7 @@ const Float* VertexElement::lockArray(UInt32 offset, UInt32 numElt)
 			return m_vbo->lock(
 					(m_offset / sizeof(Float)) + (offset * m_eltSize),
 					numElt * m_eltSize,
-					VertexBuffer::READ_ONLY);
+                    VertexBuffer::MAP_READ);
         } else {
             return nullptr;
         }
@@ -323,38 +323,25 @@ const Float* VertexElement::lockArray(UInt32 offset, UInt32 numElt)
 }
 
 // Lock the data array once it is initialized into VBO
-Float* VertexElement::lockArray(
-	LockMode mode,
-	UInt32 offset,
-	UInt32 numElt)
+Float* VertexElement::lockArray(BufferObject::LockFlags flags, UInt32 offset, UInt32 numElt)
 {
 	// Locking of local data is faster. But we have to be sure that they are consistent.
-	if (m_isValid)
-	{
-		if (m_data.isValid() && !m_isDirty)
-		{
+    if (m_isValid) {
+        if (m_data.isValid() && !m_isDirty) {
 			m_locked = LOCK_DATA;
 			return m_data.getData() + (offset * m_eltSize);
-		}
-		else if (m_vbo && m_vbo->exists())
-		{
+        } else if (m_vbo && m_vbo->exists()) {
 			m_locked = LOCK_VBO;
-
-			VertexBuffer::LockMode lockMode = (mode == WRITE_ONLY) ?
-					VertexBuffer::WRITE_ONLY : VertexBuffer::READ_WRITE;
-
-			return m_vbo->lock((m_offset / sizeof(Float)) + (offset * m_eltSize), numElt * m_eltSize, lockMode);
-		}
-		else
+            return m_vbo->lock((m_offset / sizeof(Float)) + (offset * m_eltSize), numElt * m_eltSize, flags);
+        } else {
             return nullptr;
-	}
-	else if (m_data.isValid())
-	{
+        }
+    } else if (m_data.isValid()) {
 		m_locked = LOCK_DATA;
 		return m_data.getData() + (offset * m_eltSize);
-	}
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Unlock the data array

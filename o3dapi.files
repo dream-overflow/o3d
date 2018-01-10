@@ -26,6 +26,7 @@ include/o3d/core/virtualdir.h
 include/o3d/core/virtualfile.h
 include/o3d/core/wgl.h
 include/o3d/engine/atomiccounter.h
+include/o3d/engine/bufferobject.h
 include/o3d/engine/glextdefines.h
 include/o3d/engine/primitive/cube.h
 include/o3d/engine/primitive/cylinder.h

@@ -10,16 +10,11 @@
 #ifndef _O3D_UNIFORMBUFFER_H
 #define _O3D_UNIFORMBUFFER_H
 
-#include "o3d/core/debug.h"
-#include "o3d/core/memorydbg.h"
-
-#include <vector>
-
+#include "bufferobject.h"
 #include "enginetype.h"
 
 namespace o3d {
 
-class Context;
 class Shadable;
 
 /**
@@ -27,7 +22,7 @@ class Shadable;
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2018-01-01
  */
-class O3D_API UniformBuffer
+class O3D_API UniformBuffer : public BufferObject
 {
 public:
 
@@ -41,20 +36,36 @@ public:
 
     /**
      * @brief Create with the specified size in bytes.
+     * @param data Data pointer to the structure of uniform values.
      * @param size Size in bytes.
      * @param dontUnbint Keep bound is True, else unbind.
      */
-    void create(UInt32 size, Bool dontUnbind = False);
+    void create(UInt8 *data, UInt32 size, Bool dontUnbind = False);
+
+    void bind();
+    void unbind();
 
     /**
      * @brief Destroy the uniform buffer object.
      */
     void release();
 
+    /**
+     * @brief Update the contant of the UBO with data.
+     * @param data Data of the same size and format than at creation.
+     * @note Must be bound, or then it is automatically bound.
+     */
+    void update(UInt8* data);
+
+    //! Return the OpenGL buffer identifier.
+    inline UInt32 getBufferId() const { return m_bufferId; }
+
 private:
 
     Context *m_context;
-    UInt32 m_id;
+    UInt32 m_bufferId;
+
+    UInt32 m_size;
 };
 
 } // namespace o3d

@@ -1752,13 +1752,48 @@ void ShaderInstance::setConstTexture(Int32 Location, Texture* pTexture, Int32 te
     }
 }
 
-Int32 ShaderInstance::getAttributeLocation(const Char * name) const
+#include <o3d/engine/uniformbuffer.h>
+
+UInt32 ShaderInstance::getUniformBlockIndex(const Char *name)
+{
+    if (!isLinked()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : The shader must be linked to be able to get uniform block index")));
+    }
+
+    UInt32 lIndex = glGetUniformBlockIndex(m_pInstance->shaderId, name);
+    return lIndex;
+}
+
+void ShaderInstance::setUniformBlock(const Char *name, UniformBuffer &uniformBuffer, UInt32 bindingPoint)
+{
+    if (!isInUse()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define define an uniform block if the shader is not bound")));
+    }
+
+    UInt32 index = glGetUniformBlockIndex(m_pInstance->shaderId, name);
+    uniformBuffer.bind();
+    glBindBufferBase(GL_UNIFORM_BUFFER, index, uniformBuffer.getBufferId());
+    glUniformBlockBinding(m_pInstance->shaderId, index, bindingPoint);
+}
+
+void ShaderInstance::setUniformBlock(UInt32 index, UniformBuffer &uniformBuffer, UInt32 bindingPoint)
+{
+    if (!isInUse()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define define an uniform block if the shader is not bound")));
+    }
+
+    uniformBuffer.bind();
+    glBindBufferBase(GL_UNIFORM_BUFFER, index, uniformBuffer.getBufferId());
+    glUniformBlockBinding(m_pInstance->shaderId, index, bindingPoint);
+}
+
+Int32 ShaderInstance::getAttributeLocation(const Char *name) const
 {
     if (!isLinked()) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : The shader must be linked to be able to get uniform variable location")));
     }
 
-	Int32 lLocation = glGetAttribLocation(m_pInstance->shaderId,name);
+    Int32 lLocation = glGetAttribLocation(m_pInstance->shaderId, name);
 
     if (lLocation == -1) {
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : There is not attribute called <") << name << "> in the program <" << getProgramName() << ">"));

@@ -130,7 +130,7 @@ void GeometryData::create(Bool keepLocalDataForSkinning)
 			}
 
             newVbo->create(size, VertexBuffer::STATIC, nullptr, True);
-			Float *vboData = newVbo->lock(0, 0, VertexBuffer::WRITE_ONLY);
+            Float *vboData = newVbo->lock(0, 0, BufferObject::MAP_WRITE);
 
 			// interleave data into the dst VBO
             for (UInt32 s = 0; s < numElt; ++s) {
@@ -1233,36 +1233,43 @@ static void computeTangentVector(
 // Compute tangents and bi-tangents
 void GeometryData::computeTangentSpace()
 {
-	if (!m_elements[V_VERTICES_ARRAY])
+    if (!m_elements[V_VERTICES_ARRAY]) {
 		O3D_ERROR(E_InvalidPrecondition("Vertices are required"));
+    }
 
-	if (!m_elements[V_NORMALS_ARRAY])
+    if (!m_elements[V_NORMALS_ARRAY]) {
 		computeNormals();
 		//O3D_ERROR(O3D_E_InvalidPrecondition("Normals are required"));
+    }
 
-    if (!m_elements[V_UV_MAP_ARRAY])
+    if (!m_elements[V_UV_MAP_ARRAY]) {
 		O3D_ERROR(E_InvalidPrecondition("Primary texture coordinates unit are required"));
+    }
 
-	if (m_elements[V_TANGENT_ARRAY])
+    if (m_elements[V_TANGENT_ARRAY]) {
 		deletePtr(m_elements[V_TANGENT_ARRAY]);
+    }
 
-	if (m_elements[V_BITANGENT_ARRAY])
+    if (m_elements[V_BITANGENT_ARRAY]) {
 		deletePtr(m_elements[V_BITANGENT_ARRAY]);
+    }
 
 	const Float *vertices  = m_elements[V_VERTICES_ARRAY]->lockArray(0, 0);
 	const Float *normals   = m_elements[V_NORMALS_ARRAY]->lockArray(0, 0);
     const Float *texCoords = m_elements[V_UV_MAP_ARRAY]->lockArray(0, 0);
 
-	if (!vertices || !normals || !texCoords)
-	{
+    if (!vertices || !normals || !texCoords) {
 		O3D_ERROR(E_InvalidPrecondition("Unable to lock data array"));
 
-		if (vertices)
+        if (vertices) {
 			m_elements[V_VERTICES_ARRAY]->unlockArray();
-		if (normals)
+        }
+        if (normals) {
 			m_elements[V_NORMALS_ARRAY]->unlockArray();
-		if (texCoords)
+        }
+        if (texCoords) {
             m_elements[V_UV_MAP_ARRAY]->unlockArray();
+        }
 	}
 
 	UInt32 numVertices = getNumVertices();
@@ -1275,15 +1282,14 @@ void GeometryData::computeTangentSpace()
 	Vector3 *tan2 = tan1 + numVertices;
 
 	// for each face array
-	for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-	{
-		if (it->second->getNumElements() == 0)
+    for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
+        if (it->second->getNumElements() == 0) {
 			continue;
+        }
 
 		FaceArrayVisitor triangles(it->second);
 
-		for (FaceArrayIterator it = triangles.begin(); it != triangles.end(); ++it)
-		{
+        for (FaceArrayIterator it = triangles.begin(); it != triangles.end(); ++it) {
 			computeTangentVector(it.a, it.b, it.c, tangent, bitangent, vertices, texCoords, normals);
 
 			tan1[it.a] += tangent;
@@ -1318,8 +1324,7 @@ void GeometryData::computeTangentSpace()
 	SmartArrayFloat bitangents(numVertices*3);
 
 	// Normalize et set tangents and binormals
-	for (UInt32 i = 0; i < numVertices; ++i)
-	{
+    for (UInt32 i = 0; i < numVertices; ++i) {
 		i3 = i*3;
 
 		tan1[i].normalize();
@@ -1346,41 +1351,44 @@ void GeometryData::computeTangentSpace()
 // Compute the progressive mesh for each face arrays.
 void GeometryData::computeProgressive()
 {
-	if (!m_elements[V_VERTICES_ARRAY])
+    if (!m_elements[V_VERTICES_ARRAY]) {
 		O3D_ERROR(E_InvalidPrecondition("Vertices are required"));
+    }
 
 	const Float *vertices = m_elements[V_VERTICES_ARRAY]->lockArray(0, 0);
 
-	if (!vertices)
+    if (!vertices) {
 		O3D_ERROR(E_InvalidPrecondition("Unable to lock vertices data array"));
+    }
 
 	UInt32 numVertices = getNumVertices();
 
 	// for each face array
-	for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it)
-	{
+    for (IT_FaceArrays it = m_faceArrays.begin(); it != m_faceArrays.end(); ++it) {
 		FaceArray *faceArray = it->second;
 
 		// No faces to process...
-		if (faceArray->getNumElements() == 0)
+        if (faceArray->getNumElements() == 0) {
 			continue;
+        }
 
 		// Process progressive mesh only on TRIANGLES mesh
-		if (faceArray->getFormat() != P_TRIANGLES)
+        if (faceArray->getFormat() != P_TRIANGLES) {
 			continue;
+        }
 
 		ProgressiveMesh progMesh;
 
-		UInt8 *triangles = faceArray->lockArray(0, 0, VertexBuffer::READ_ONLY);
+        UInt8 *triangles = faceArray->lockArray(0, 0, VertexBuffer::MAP_READ);
 
-		if (!triangles)
+        if (!triangles) {
 			O3D_ERROR(E_InvalidPrecondition("Unable to lock face data array"));
+        }
 
 		UInt32 numTriangles = faceArray->getNumFaces();
 
 		// compute the collapse map
-		if (faceArray->getTypeSize() == sizeof(UInt32))
-		{
+        if (faceArray->getTypeSize() == sizeof(UInt32)) {
 			FaceArrayUInt32 *faceArray32 = reinterpret_cast<FaceArrayUInt32*>(faceArray);
 
 			progMesh.progressiveMesh(
@@ -1390,9 +1398,7 @@ void GeometryData::computeProgressive()
 					numTriangles,
 					faceArray32->getCollapseMap(),
 					faceArray32->getPermutation());
-		}
-		else if (faceArray->getTypeSize() == sizeof(UInt16))
-		{
+        } else if (faceArray->getTypeSize() == sizeof(UInt16)) {
 			FaceArrayUInt16 *faceArray16 = reinterpret_cast<FaceArrayUInt16*>(faceArray);
 
 			progMesh.progressiveMesh(

@@ -10,9 +10,8 @@
 #ifndef _O3D_VERTEXBUFFER_H
 #define _O3D_VERTEXBUFFER_H
 
-#include "o3d/core/debug.h"
+#include "bufferobject.h"
 #include "glextensionmanager.h"
-#include "o3d/core/memorydbg.h"
 
 namespace o3d {
 
@@ -23,11 +22,9 @@ class Context;
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2005-09-25
  */
-class O3D_API VertexBuffer
+class O3D_API VertexBuffer : public BufferObject
 {
 public:
-
-	static const UInt32 BUFFER_SIZE = 0x8764;
 
 	enum Type
 	{
@@ -35,34 +32,11 @@ public:
 		ELEMENT_ARRAY_BUFFER = 0x8893
 	};
 
-	//! Buffer storage type.
-	enum Storage
-	{
-		STATIC = 0x88E4,    //!< If the data changes rarely.
-		DYNAMIC = 0x88E8,   //!< If the data changes up to once per frame.
-		STREAMED = 0x88E0   //!< If the data changes up to once per draw.
-	};
-
-	//! Buffer lock mode.
-	enum LockMode
-	{
-		READ_ONLY = 0x88B8,    //!< Lock in read only.
-		WRITE_ONLY = 0x88B9,   //!< Lock in write only.
-		READ_WRITE = 0x88BA    //!< Lock in read and write.
-	};
-
 	//! Default constructor.
-	VertexBuffer(
-            Context *context,
-			Storage storageType = STATIC);
+    VertexBuffer(Context *context, Storage storageType = STATIC);
 
 	//! Destructor.
 	~VertexBuffer() {}
-
-	//! Get the gl context (read only).
-	inline const Context* getContext() const { return m_context; }
-	//! Get the gl context.
-	inline Context* getContext() { return m_context; }
 
 	//-----------------------------------------------------------------------------------
 	// Parameters
@@ -71,29 +45,19 @@ public:
 	//! Return the number of element in our buffer.
 	inline UInt32 getCount() const { return m_count; }
 
-	//! Return the OpenGL buffer identifier.
-	inline UInt32 getBufferId() const { return m_bufferId; }
-
 	//! Return how/where the buffer is stored.
 	inline Storage getStorageType() const { return m_storageType; }
-
-    //! Return True if the buffer exists.
-    inline Bool exists() const { return (m_bufferId != O3D_UNDEFINED); }
 
 	//! Return TRUE if the buffer is currently locked.
 	inline Bool isLocked() const { return (m_lockCount > 0); }
 
 protected:
 
-	Context *m_context;
+    UInt32 m_count;         //!< Number of element in the buffer.
+    Storage m_storageType;  //!< Where this buffer is stored.
 
-	UInt32 m_bufferId;
-
-	UInt32 m_count;      //!< Number of element in the buffer.
-	Storage m_storageType;   //!< Where this buffer is stored.
-
-	UInt32 m_lockCount;  //!< Count the number of lock time.
-	LockMode m_lockMode;     //!< If locked, the current lock mode.
+    UInt32 m_lockCount;     //!< Count the number of lock time.
+    UInt32 m_lockFlags;     //!< If locked, the current map flags.
 
 	//! Bind the VBO if necessary.
 	void bindArrayBuffer() const;
@@ -130,9 +94,7 @@ class O3D_API_TEMPLATE TemplateVertexBuffer : public VertexBuffer
 public:
 
 	//! Default constructor.
-    TemplateVertexBuffer(
-            Context *context,
-			Storage storageType = STATIC) :
+    TemplateVertexBuffer(Context *context, Storage storageType = STATIC) :
         VertexBuffer(context, storageType),
         m_mapped(nullptr)
 	{
@@ -223,30 +185,32 @@ public:
 	}
 
 	//! Fill the entire buffer data using a Lock/Unlock.
-	//! @note Prefer the usage of Update which can be done faster.
+    //! @note Prefer the usage of update which can be done faster.
 	//! @param data Data to fill.
 	//! @param count Number of element to fill.
 	//! @note Bind the VBO if necessary, then the current VBO is changed.
 	void fill(const T* data, UInt32 count)
 	{
         if (data) {
-			T* bufferPtr = lock(0, 0, WRITE_ONLY);
+            T* bufferPtr = lock(0, count, MAP_WRITE);
 
-			// Check if we have a buffer to write to
+            // Check if we have a buffer to write to
             if (bufferPtr) {
-				memcpy(bufferPtr, data,count*sizeof(T));
+                memcpy(bufferPtr, data, count*sizeof(T));
 			}
 
 			unlock();
 		}
 	}
 
-	//! Copy partially or totally the content of the the VBO to a given
-	//! allocated memory.
-	//! @param data Destination array (must be allocated).
-	//! @param offset Offset in number of elements.
-	//! @param count Number of elements to copy from the VBO.
-	//! @note Bind the VBO if necessary, then the current VBO is changed.
+    /**
+     * @brief Copy partially or totally the content of the the VBO to a given allocated memory.
+     * @param data Destination array (must be allocated).
+     * @param offset Offset in number of elements.
+     * @param count Number of elements to copy from the VBO.
+     * @note Bind the VBO if necessary, then the current VBO is changed.
+     * @note Not compatible with OpenGL ES.
+     */
 	void getData(T *data, UInt32 offset, UInt32 count)
 	{
 		O3D_ASSERT(data);
@@ -274,24 +238,27 @@ public:
 			glBufferSubData(bufferType, offset*sizeof(T), count*sizeof(T), data);
 		}
 	}
-
-	//! Lock this buffer to write in or read from.
-	//! @param offset Offset in number of element.
-	//! @param size Number of element to lock.
-	//! @param flags Locking mode (read, write, rw).
-	//! @return Pointer on locked area.
-	//! @note Bind the VBO if necessary, then the current VBO is changed.
-	inline T *lock(
+    /**
+     * @brief Lock this buffer to write in or read from.
+     * @param offset Offset in number of element.
+     * @param size Number of element to lock. A size of 0 mean until the end.
+     * @param flags Mapping mode (read, write, rw...).
+     * @return Pointer on locked area.
+     * @note Bind the VBO if necessary, then the current VBO is changed.
+     */
+    inline T *lock(
 			UInt32 offset = 0,
 			UInt32 size = 0,
-			LockMode flags = READ_WRITE)
+            LockFlags flags = MAP_READ | MAP_WRITE)
 	{
-        O3D_UNUSED(size)
+        if (size == 0) {
+            size = (m_count - offset) * sizeof(T);
+        }
 
 		// already locked ?
         if (m_lockCount > 0) {
 			// with the same mode ?
-            if (flags == m_lockMode) {
+            if (flags == m_lockFlags) {
 				++m_lockCount;
 				return m_mapped + offset;
             } else {
@@ -299,23 +266,25 @@ public:
             }
         } else {
 			bindBuffer();
-			m_mapped = reinterpret_cast<T*>(glMapBuffer(bufferType, flags));
 
-            // Return null if buffer is really null
+            m_mapped = reinterpret_cast<T*>(glMapBufferRange(bufferType, offset, size, flags));
+
             if (m_mapped) {
-				m_lockMode = flags;
+                m_lockFlags = flags;
 
-				++m_lockCount;
-				return m_mapped + offset;
-            } else {
-                return nullptr;
+                ++m_lockCount;
+                return m_mapped;
             }
-		}
+
+            return nullptr;
+        }
 	}
 
-	//! Unlock the buffer after a previous Lock.
-	//! @note Bind the VBO if necessary, then the current VBO is changed.
-	inline void unlock()
+    /**
+     * @brief Unlock the buffer after a previous Lock.
+     * @note Bind the VBO if necessary, then the current VBO is changed.
+     */
+    inline void unlock()
 	{
         if (m_lockCount > 0) {
 			--m_lockCount;
@@ -327,9 +296,11 @@ public:
 		}
 	}
 
-	//! Check if the vertex buffer object contain data.
-	//! @note Bind the VBO if necessary, then the current VBO is changed.
-	inline Bool checkData()
+    /**
+     * @brief Check if the vertex buffer object contain data.
+     * @note Bind the VBO if necessary, then the current VBO is changed.
+     */
+    inline Bool checkData()
 	{
 		bindBuffer();
 

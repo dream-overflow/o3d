@@ -1333,7 +1333,7 @@ void GLExtensionManager::getGLFunctions()
     glFlushMappedBufferRange = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC) GL::getProcAddress("glFlushMappedBufferRange");
 
     if (!glMapBufferRange || !glFlushMappedBufferRange) {
-        O3D_WARNING("OpenGL frame buffer object map buffer range functions is not available");
+        O3D_ERROR(E_UnsuportedFeature("OpenGL map buffer object range is not available"));
     }
 
 #endif // O3D_GL_ARB_map_buffer_range
@@ -2136,7 +2136,7 @@ void GLExtensionManager::getGLESFunctions()
     glFlushMappedBufferRange = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC) GL::getProcAddress("glFlushMappedBufferRange");
 
     if (!glMapBufferRange || !glFlushMappedBufferRange) {
-        O3D_WARNING("Frame buffer object map buffer range is not available");
+        O3D_ERROR(E_UnsuportedFeature("OpenGL map buffer object range is not available"));
     }
 
 #endif // O3D_GL_ARB_map_buffer_range

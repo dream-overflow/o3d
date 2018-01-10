@@ -140,7 +140,6 @@ Bool FaceArray::readFromFile(InStream &is)
 	return True;
 }
 
-
 //---------------------------------------------------------------------------------------
 // class FaceArrayUInt16
 //---------------------------------------------------------------------------------------
@@ -262,10 +261,9 @@ Bool FaceArrayUInt16::create(
 	m_numElements = numElt;
 
 	// Compute the min/max vertex indices if necessary
-	if ((minIndex < 0) || (maxIndex < 0))
+    if ((minIndex < 0) || (maxIndex < 0)) {
 		computeMinMax(faces, numElt);
-	else
-	{
+    } else {
 		m_minVertex = minIndex;
 		m_maxVertex = maxIndex;
 	}
@@ -275,13 +273,12 @@ Bool FaceArrayUInt16::create(
 	m_vbo.create(numElt, m_storage, faces);
 	m_faces.releaseCheckAndDelete(); // a previous set...
 
-	if (m_vbo.exists())
-	{
+    if (m_vbo.exists()) {
 		m_isDirty = False;
 		return True;
-	}
-	else
+    } else {
 		return False;
+    }
 }
 
 // Directly update a part from a data array.
@@ -314,39 +311,43 @@ void FaceArrayUInt16::update(
 UInt8* FaceArrayUInt16::lockArray(
 		UInt32 offset,
 		UInt32 size,
-		VertexBuffer::LockMode flags)
+        BufferObject::LockFlags flags)
 {
-	if (m_faces.isValid())
+    if (m_faces.isValid()) {
 		return reinterpret_cast<UInt8*>(m_faces.getData() + offset);
-	else if (m_vbo.exists())
+    } else if (m_vbo.exists()) {
 		return reinterpret_cast<UInt8*>(m_vbo.lock(offset, size, flags));
-	else
+    } else {
         return nullptr;
+    }
 }
 
 // Unlock the data array
 void FaceArrayUInt16::unlockArray()
 {
-	if (m_vbo.exists() && m_vbo.isLocked())
+    if (m_vbo.exists() && m_vbo.isLocked()) {
 		m_vbo.unlock();
+    }
 }
 
 // Get memory size
 UInt32 FaceArrayUInt16::getCapacity() const
 {
-	if (m_faces.isValid())
+    if (m_faces.isValid()) {
 		return m_faces.getNumElt() << 1;
-	else if (m_vbo.exists())
+    } else if (m_vbo.exists()) {
 		return m_vbo.getCount() << 1;
-	else
+    } else {
 		return 0;
+    }
 }
 
 // Bind the data array 
 void FaceArrayUInt16::bindArray()
 {
-	if (m_vbo.exists())
+    if (m_vbo.exists()) {
 		return m_vbo.bindBuffer();
+    }
 }
 
 // Draw using the data array
@@ -397,22 +398,17 @@ Bool FaceArrayUInt16::writeToFile(OutStream &os)
 {
     FaceArray::writeToFile(os);
 
-	if (m_faces.isValid())
-	{
+    if (m_faces.isValid()) {
         os << m_faces;
-	}
-	else if (m_vbo.exists())
-	{
-		UInt16 *data = m_vbo.lock(0, 0, VertexBuffer::READ_ONLY);
+    } else if (m_vbo.exists()) {
+        UInt16 *data = m_vbo.lock(0, 0, VertexBuffer::MAP_READ);
 		UInt32 count = m_vbo.getCount();
 
         os << count;
         os.write(data, count);
 
 		m_vbo.unlock();
-	}
-	else
-	{
+    } else {
         os << UInt32(0);
         //O3D_ERROR(E_InvalidPrecondition("The VBO or the data array must be valid"));
 	}
@@ -434,8 +430,7 @@ void FaceArrayUInt16::computeMinMax(const UInt16 *data, UInt32 numElt)
 	m_minVertex = o3d::Limits<UInt32>::max();
 	m_maxVertex = o3d::Limits<UInt32>::min();
 
-	for (UInt32 i = 0; i < numElt; ++i)
-	{
+	for (UInt32 i = 0; i < numElt; ++i)	{
 		m_minVertex = o3d::min<UInt32>(m_minVertex, data[i]);
 		m_maxVertex = o3d::max<UInt32>(m_maxVertex, data[i]);
 	}
@@ -667,7 +662,7 @@ void FaceArrayUInt32::update(
 UInt8* FaceArrayUInt32::lockArray(
 		UInt32 offset,
 		UInt32 size,
-		VertexBuffer::LockMode flags)
+        BufferObject::LockFlags flags)
 {
     if (m_faces.getData()) {
 		return reinterpret_cast<UInt8*>(m_faces.getData() + offset);
@@ -754,22 +749,17 @@ Bool FaceArrayUInt32::writeToFile(OutStream &os)
 {
     FaceArray::writeToFile(os);
 
-	if (m_faces.isValid())
-	{
+    if (m_faces.isValid()) {
         os << m_faces;
-	}
-	else if (m_vbo.exists())
-	{
-		UInt32 *data = m_vbo.lock(0, 0, VertexBuffer::READ_ONLY);
+    } else if (m_vbo.exists()) {
+        UInt32 *data = m_vbo.lock(0, 0, VertexBuffer::MAP_READ);
 		UInt32 count = m_vbo.getCount();
 
         os << count;
         os.write(data, count);
 
 		m_vbo.unlock();
-	}
-	else
-	{
+    } else {
 		O3D_ERROR(E_InvalidPrecondition("The VBO or the data array must be valid"));
 	}
 
@@ -790,8 +780,7 @@ void FaceArrayUInt32::computeMinMax(const UInt32 *data, UInt32 numElt)
 	m_minVertex = o3d::Limits<UInt32>::max();
 	m_maxVertex = o3d::Limits<UInt32>::min();
 
-	for (UInt32 i = 0; i < numElt; ++i)
-	{
+    for (UInt32 i = 0; i < numElt; ++i) {
 		m_minVertex = o3d::min(m_minVertex, data[i]);
 		m_maxVertex = o3d::max(m_maxVertex, data[i]);
 	}

@@ -17,8 +17,7 @@
 using namespace o3d;
 
 AtomicCounter::AtomicCounter(Context *context) :
-    m_context(context),
-    m_id(O3D_UNDEFINED),
+    BufferObject(context),
     m_count(0),
     m_counters(nullptr)
 {
@@ -32,11 +31,11 @@ AtomicCounter::~AtomicCounter()
 
 void AtomicCounter::create(UInt32 count, Bool dontUnbind)
 {
-    if (m_id == O3D_UNDEFINED) {
-        glGenBuffers(1, (GLuint*)&m_id);
+    if (m_bufferId == O3D_UNDEFINED) {
+        glGenBuffers(1, (GLuint*)&m_bufferId);
     }
 
-    m_context->bindAtomicCounter(m_id);
+    m_context->bindAtomicCounter(m_bufferId);
 
     glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint) * count, nullptr, GL_DYNAMIC_DRAW);
 
@@ -45,35 +44,67 @@ void AtomicCounter::create(UInt32 count, Bool dontUnbind)
 
     // unbind the buffer
     if (!dontUnbind) {
-        glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+        m_context->bindAtomicCounter(0);
     }
 }
 
 void AtomicCounter::release()
 {
-    m_context->deleteAtomicCounter(m_id);
-    deleteArray(m_counters);
+    if (m_bufferId != O3D_UNDEFINED) {
+        m_context->deleteAtomicCounter(m_bufferId);
+        deleteArray(m_counters);
 
-    m_id = O3D_UNDEFINED;
-    m_count = 0;
+        m_bufferId = O3D_UNDEFINED;
+        m_count = 0;
+    }
 }
 
 void AtomicCounter::bind()
 {
-    m_context->bindAtomicCounter(m_id);
+    m_context->bindAtomicCounter(m_bufferId);
 }
 
 void AtomicCounter::unbind()
 {
-    if (m_context->getCurrentAtomicCounter() == m_id) {
+    if (m_context->getCurrentAtomicCounter() == m_bufferId) {
         m_context->bindAtomicCounter(0);
     }
 }
 
 void AtomicCounter::reset()
 {
-    O3D_ASSERT(m_context->getCurrentAtomicCounter() == m_id);
+    if (m_context->getCurrentAtomicCounter() != m_bufferId) {
+        bind();
+    }
 
     memset(m_counters, 0, m_count * sizeof(UInt32));
     glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0 , sizeof(GLuint) * m_count, m_counters);
+}
+
+void AtomicCounter::update()
+{
+    if (m_context->getCurrentAtomicCounter() != m_bufferId) {
+        bind();
+    }
+
+    // again we map the buffer to userCounters, but this time for read-only access
+    GLuint *userCounters = (GLuint*)glMapBufferRange(
+                GL_ATOMIC_COUNTER_BUFFER,
+                0,
+                sizeof(GLuint) * m_count,
+                GL_MAP_READ_BIT);
+
+    // copy locally
+    memcpy(m_counters, userCounters, sizeof(GLuint) * m_count);
+
+    glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
+}
+
+UInt32 AtomicCounter::getCounter(UInt32 index) const
+{
+    if (index < m_count) {
+        return m_counters[index];
+    } else {
+        O3D_ERROR(E_IndexOutOfRange("Atomic counter index"));
+    }
 }

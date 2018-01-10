@@ -10,11 +10,7 @@
 #ifndef _O3D_ATOMICCOUNTER_H
 #define _O3D_ATOMICCOUNTER_H
 
-#include "o3d/core/debug.h"
-#include "o3d/core/memorydbg.h"
-
-#include <vector>
-
+#include "bufferobject.h"
 #include "enginetype.h"
 
 namespace o3d {
@@ -26,15 +22,9 @@ class Context;
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2018-01-10
  */
-class O3D_API AtomicCounter
+class O3D_API AtomicCounter : public BufferObject
 {
 public:
-
-    enum Function
-    {
-        ATOMIC_INC = 0,
-        ATOMIC_DEC,
-    };
 
     /**
      * @brief AtomicCounter
@@ -61,14 +51,24 @@ public:
 
     /**
      * @brief Rest the atomics counters.
-     * @note Must be bound.
+     * @note Must be bound or it is bound automatically.
      */
     void reset();
 
-private:
+    /**
+     * @brief Read the values before access to the counters getter.
+     * @note Must be bound or it is bound automatically.
+     */
+    void update();
 
-    Context *m_context;
-    Int32 m_id;
+    /**
+     * @brief Get a specific counter value.
+     * @param index Between 0 and count-1.
+     * @return Value of the last update.
+     */
+    UInt32 getCounter(UInt32 index) const;
+
+private:
 
     UInt32 m_count;
     UInt32 *m_counters;

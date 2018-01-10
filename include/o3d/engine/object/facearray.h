@@ -122,7 +122,7 @@ public:
 	virtual UInt8* lockArray(
 		UInt32 offset = 0,
 		UInt32 size = 0,
-		VertexBuffer::LockMode flags = VertexBuffer::READ_WRITE) = 0;
+        BufferObject::LockFlags flags = BufferObject::MAP_READ | BufferObject::MAP_WRITE) = 0;
 
 	//! Unlock the data array.
 	virtual void unlockArray() = 0;
@@ -275,10 +275,9 @@ public:
 			UInt32 numElt);
 
 	//! Lock the data array once it is initialized into VBO.
-	virtual UInt8* lockArray(
-		UInt32 offset = 0,
-		UInt32 size = 0,
-		VertexBuffer::LockMode flags = VertexBuffer::READ_WRITE);
+    virtual UInt8* lockArray(UInt32 offset = 0,
+        UInt32 size = 0,
+        BufferObject::LockFlags flags = BufferObject::MAP_READ | BufferObject::MAP_WRITE);
 
 	//! Unlock the data array.
 	virtual void unlockArray();
@@ -417,10 +416,10 @@ public:
 			UInt32 numElt);
 
 	//! Lock the data array once it is initialized into VBO.
-	virtual UInt8* lockArray(
-		UInt32 offset = 0,
-		UInt32 size = 0,
-		VertexBuffer::LockMode flags = VertexBuffer::READ_WRITE);
+    virtual UInt8* lockArray(
+        UInt32 offset = 0,
+        UInt32 size = 0,
+        BufferObject::LockFlags flags = BufferObject::MAP_READ | BufferObject::MAP_WRITE);
 
 	//! Unlock the data array.
 	virtual void unlockArray();

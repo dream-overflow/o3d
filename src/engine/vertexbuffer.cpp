@@ -14,17 +14,13 @@
 using namespace o3d;
 
 // Default constructor.
-VertexBuffer::VertexBuffer(
-        Context *context,
-        Storage storageType) :
-    m_context(context),
-	m_bufferId(O3D_UNDEFINED),
+VertexBuffer::VertexBuffer(Context *context, Storage storageType) :
+    BufferObject(context),
 	m_count(0),
 	m_storageType(storageType),
 	m_lockCount(0),
-	m_lockMode(READ_ONLY)
+    m_lockFlags(0)
 {
-    O3D_ASSERT(m_context != nullptr);
 }
 
 // Bind the VBO if necessary.
