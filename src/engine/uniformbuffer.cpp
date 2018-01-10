@@ -87,3 +87,8 @@ void UniformBuffer::update(UInt8 *data)
 
     glUnmapBuffer(GL_UNIFORM_BUFFER);
 }
+
+void UniformBuffer::bindBufferBase(UInt32 index)
+{
+    m_context->bindUniformBufferBase(m_bufferId, index);
+}

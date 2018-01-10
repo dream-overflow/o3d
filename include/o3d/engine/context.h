@@ -228,8 +228,7 @@ public:
 	//! Set current occlusion query object.
 	inline Bool setCurrentOcclusionQuery(OcclusionQuery *occQuery)
 	{
-		if (m_currentOccQuery != occQuery)
-		{
+        if (m_currentOccQuery != occQuery) {
 			m_currentOccQuery = occQuery;
 			return True;
 		}
@@ -238,9 +237,6 @@ public:
 
 	//! Get current occlusion query object.
 	inline OcclusionQuery* getCurrentOcclusionQuery() const { return m_currentOccQuery; }
-
-	//! Create a new occlusion query and set it to current.
-	OcclusionQuery* createOcclusionQuery();
 
 	//-----------------------------------------------------------------------------------
 	// Culling
@@ -739,8 +735,23 @@ public:
      */
     void deleteUniformBuffer(UInt32 id);
 
-    //! Get the current bound atomic counter object.
+    /**
+     * @brief Get the current bound atomic counter object.
+     */
     inline UInt32 getCurrentUniformBuffer() const { return m_currentUniformBufferId; }
+
+    /**
+     * @brief bindUniformBufferBase
+     * @param id Uniform buffer id.
+     * @param index Uniform binding point index.
+     */
+    void bindUniformBufferBase(UInt32 id, UInt32 index);
+
+    /**
+     * @brief Get current uniform buffer id for a binding index.
+     * @param id Uniform buffer id.
+     */
+    UInt32 getCurrentUniformBufferBase(UInt32 index);
 
 	//-----------------------------------------------------------------------------------
 	// Viewport

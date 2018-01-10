@@ -36,6 +36,8 @@ include/o3d/engine/primitive/primitive.h
 include/o3d/engine/primitive/primitivemanager.h
 include/o3d/engine/primitive/sphere.h
 include/o3d/engine/primitive/surface.h
+include/o3d/engine/primitivequery.h
+include/o3d/engine/queryobject.h
 include/o3d/engine/uniformbuffer.h
 src/core/basedir.cpp
 src/core/basefile.cpp
@@ -240,6 +242,7 @@ src/engine/primitive/primitive.cpp
 src/engine/primitive/primitivemanager.cpp
 src/engine/primitive/sphere.cpp
 src/engine/primitive/surface.cpp
+src/engine/primitivequery.cpp
 src/engine/private/rendererandroid.cpp
 src/engine/private/rendererandroid.cpp
 src/engine/private/rendererandroid.cpp

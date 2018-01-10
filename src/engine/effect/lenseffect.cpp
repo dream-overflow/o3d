@@ -48,8 +48,9 @@ LensEffect::LensEffect(BaseObject *parent) :
 	m_simpleOcclusion(False),
 	m_lastFrameTime(0)
 {
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i)
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i) {
 		m_flareTextures[i].setUser(this);
+    }
 
 	createShader();
 }
@@ -74,8 +75,9 @@ LensEffect::LensEffect(BaseObject *parent, const LensFlareModel &model) :
 	m_simpleOcclusion(False),
 	m_lastFrameTime(0)
 {
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i)
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i) {
 		m_flareTextures[i].setUser(this);
+    }
 
 	createShader();
 	setLensFlareModel(model);
@@ -104,8 +106,9 @@ LensEffect::LensEffect(
 		m_simpleOcclusion(False),
 		m_lastFrameTime(0)
 {
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i)
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i) {
 		m_flareTextures[i].setUser(this);
+    }
 
 	createShader();
 	setLensFlareModel(model,infinite);
@@ -113,8 +116,7 @@ LensEffect::LensEffect(
 
 void LensEffect::createShader()
 {
-	if (!m_diffuseMapShader.instance.isDefined())
-	{
+    if (!m_diffuseMapShader.instance.isDefined()) {
 		// diffuse map shader
 		Shader *shader = getScene()->getShaderManager()->addShader("lensEffect");
 		shader->buildInstance(m_diffuseMapShader.instance);
@@ -129,8 +131,7 @@ void LensEffect::createShader()
 		m_diffuseMapShader.a_texCoords = m_diffuseMapShader.instance.getAttributeLocation("a_texCoords");
 	}
 
-	if (!m_occlusionShader.instance.isDefined())
-	{
+    if (!m_occlusionShader.instance.isDefined()) {
 		// occlusion shader
 		Shader *shader = getScene()->getShaderManager()->addShader("lensEffect");
 		shader->buildInstance(m_occlusionShader.instance);
@@ -141,15 +142,13 @@ void LensEffect::createShader()
 		m_occlusionShader.a_vertex = m_occlusionShader.instance.getAttributeLocation("a_vertex");
 	}
 
-	if (!m_texCoords.exists())
-	{
+    if (!m_texCoords.exists()) {
 		// texture coordinates VBO
 		static Float texCoords[8] = { 0,0, 1,0, 0,1, 1,1 };
 		m_texCoords.create(8, VertexBuffer::STATIC, texCoords);
 	}
 
-	if (!m_vertices.exists())
-	{
+    if (!m_vertices.exists()) {
 		// vertices VBO
 		static Float vertices[12] = {
 				-1, -1, 0,
@@ -163,8 +162,9 @@ void LensEffect::createShader()
 LensEffect::~LensEffect()
 {
 	// release the usage for each flare
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i)
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i) {
         m_flareTextures[i] = nullptr;
+    }
 
 	removeAll();
 	deleteOcclusionQueries();
@@ -174,13 +174,12 @@ void LensEffect::createOcclusionQueries()
 {
     // Test si on a pas deja un test d'occlusion queries en cours
     if (!m_occlusionQuery) {
-		m_occlusionQuery = getScene()->getContext()->createOcclusionQuery();
+        m_occlusionQuery = new OcclusionQuery(getScene()->getContext());
 	}
 
     if (!m_simpleOcclusion) {
         if (!m_drawQuery) {
-            // Cette occlusion n'est pas en cours d'utilisation on peut la liberer
-			m_drawQuery = getScene()->getContext()->createOcclusionQuery();
+            m_drawQuery = new OcclusionQuery(getScene()->getContext());
 		}
 	}
 }
@@ -196,13 +195,10 @@ void LensEffect::checkOcclusionQueries()
 	Vector3 vPosition;
 	Camera *pCam = getScene()->getActiveCamera();
 
-	if (m_infinite)
-	{
+    if (m_infinite) {
 		// On utilise vGlowVector comme une direction
 		vPosition = pCam->getAbsoluteMatrix().getTranslation() + m_lensVector * m_distance;
-	}
-	else
-	{
+    } else {
 		// On utilise vGlowVector comme la position du glow.
         // Meme si on rend le glow a une distance constante de la camera (GLOW_LOCAL)
         // Il faut faire le test d'occlusion a la source du glow
@@ -265,19 +261,19 @@ void LensEffect::checkOcclusionQueries()
 
 void LensEffect::deleteOcclusionQueries()
 {
-	if (m_occlusionQuery)
-	{
-		if (getScene()->getContext()->getCurrentOcclusionQuery() == m_occlusionQuery)
+    if (m_occlusionQuery) {
+        if (getScene()->getContext()->getCurrentOcclusionQuery() == m_occlusionQuery) {
             getScene()->getContext()->setCurrentOcclusionQuery(nullptr);
+        }
 
         // Cette occlusion n'est pas en cours d'utilisation on peut la liberer
 		deletePtr(m_occlusionQuery);
 	}
 
-	if (m_drawQuery)
-	{
-		if (getScene()->getContext()->getCurrentOcclusionQuery() == m_drawQuery)
+    if (m_drawQuery) {
+        if (getScene()->getContext()->getCurrentOcclusionQuery() == m_drawQuery) {
             getScene()->getContext()->setCurrentOcclusionQuery(nullptr);
+        }
 
         // Cette occlusion n'est pas en cours d'utilisation on peut la liberer
 		deletePtr(m_drawQuery);
@@ -291,17 +287,14 @@ void LensEffect::renderOcclusionTestMesh()
 
 void LensEffect::calculateVisibilityRatio()
 {
-	if (m_simpleOcclusion)
-	{
+    if (m_simpleOcclusion) {
 		// Test si il faut effacer le test d'occlusions
-		if (m_drawQuery)
-		{
+        if (m_drawQuery) {
 			deleteOcclusionQueries();
 		}
 
         // Test si il faut creer de nouvelles occlusions
-		if (!m_occlusionQuery)
-		{
+        if (!m_occlusionQuery) {
 			// Reset le resultat
 			m_visibilityRatio = 1.0f;
 			createOcclusionQueries();
@@ -309,16 +302,13 @@ void LensEffect::calculateVisibilityRatio()
             // Effectu le test d'occlusions mais ne cherche pas a recuperer
             // les resultats (on laisse passer au moins une frame)
 			checkOcclusionQueries();
-		}
-		else
-		{
+        } else {
             // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
 			// Si ils sont disponibles...
 
 			// Test si le resultat des deux occlusions sont disponibles
             // Si le resultat n'est pas disponible, on garde l'ancien
-			if (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE)
-			{
+            if (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) {
                 // On utilise le resultat
 				m_visibilityRatio = (m_occlusionQuery->getVisibleCount() > 0 ? 1.0f : 0.0f);
 
@@ -326,12 +316,9 @@ void LensEffect::calculateVisibilityRatio()
 				checkOcclusionQueries();
 			}
 		}
-	}
-	else
-	{
+    } else {
         // Test si il faut creer de nouvelles occlusions
-		if ((!m_occlusionQuery) && (!m_drawQuery))
-		{
+        if ((!m_occlusionQuery) && (!m_drawQuery)) {
 			// Reset le resultat
 			m_visibilityRatio = 1.0f;
 			createOcclusionQueries();
@@ -339,9 +326,7 @@ void LensEffect::calculateVisibilityRatio()
             // Effectu le test d'occlusions mais ne cherche pas a recuperer
             // les resultats (on laisse passer au moins une frame)
 			checkOcclusionQueries();
-		}
-		else if ((m_occlusionQuery) && (m_drawQuery))
-		{
+        } else if ((m_occlusionQuery) && (m_drawQuery)) {
             // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
 			// Si ils sont disponibles...
 
@@ -352,17 +337,14 @@ void LensEffect::calculateVisibilityRatio()
 			// the first occlusion lock the second and we never have results...
 			m_occlusionQuery->getOcclusionType();
 
-			if ((m_drawQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) && (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE))
-			{
+            if ((m_drawQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) && (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE)) {
                 // On utilise le resultat
 				m_visibilityRatio = (Float)(m_occlusionQuery->getVisibleCount())/Float(m_drawQuery->getVisibleCount());
 
 				// Re-Effectu le test d'occlusions
 				checkOcclusionQueries();
 			}
-		}
-		else
-		{
+        } else {
             // Une occlusion est cree mais pas l'autre... On reset le systeme
 			O3D_MESSAGE("(m_pOcclusionQuery && m_pDrawQuery)==FALSE : Reset the occlusion");
 			deleteOcclusionQueries();
@@ -384,24 +366,20 @@ void LensEffect::generateGlowsObj()
 	m_effectRadius = o3d::max(m_halfSizeX,m_halfSizeY);
 
 	// Create each glows according to Lens Effect Params
-	for (i = 0; i < LensFlareModel::MAX_NUM_GLOWS; ++i)
-	{
+    for (i = 0; i < LensFlareModel::MAX_NUM_GLOWS; ++i) {
 		pGlowItem = m_lensFlareModel.getGlow(i);
-		if (pGlowItem)
-		{
+        if (pGlowItem) {
 			// the user is added by the shader of the glow effect
 			pNewGlow = new GlowEffect(this, pGlowItem->texture);
 
-			if (m_infinite)
-			{
+            if (m_infinite) {
 				pNewGlow->setGlowType(GlowEffect::GLOW_INFINITE);
-			}
-			else
-			{
-				if (pGlowItem->is3dGlow)
+            } else {
+                if (pGlowItem->is3dGlow) {
 					pNewGlow->setGlowType(GlowEffect::GLOW_LOCAL_WORLD);
-				else
+                } else {
 					pNewGlow->setGlowType(GlowEffect::GLOW_LOCAL);
+                }
 			}
 
 			pNewGlow->setColor(pGlowItem->color);
@@ -414,8 +392,9 @@ void LensEffect::generateGlowsObj()
 			// If the min intensity is greater than 0, this glow must affect
 			// The effect radius. This is needed because without that, the glow
 			// Will disappear suddenly due to frustum clipping
-			if (pGlowItem->minIntensity > 0)
+            if (pGlowItem->minIntensity > 0) {
 				m_effectRadius = o3d::max(m_effectRadius, o3d::max(pGlowItem->halfSizeX,pGlowItem->halfSizeY));
+            }
 
 			// defining the blending parameter
             pNewGlow->getMaterialProfile().setBlendingFunc(pGlowItem->blending);
@@ -430,13 +409,10 @@ void LensEffect::updateGlowsPositions()
 {
 	SpecialEffects *pTempEffect;
 
-	for (IT_SpecialEffectsList it = m_effectlist.begin(); it != m_effectlist.end(); ++it)
-	{
+    for (IT_SpecialEffectsList it = m_effectlist.begin(); it != m_effectlist.end(); ++it) {
 		pTempEffect = (*it).get();
-		if (pTempEffect)
-		{
-			if (pTempEffect->getType() == ENGINE_EFFECT_GLOW)
-			{
+        if (pTempEffect) {
+            if (pTempEffect->getType() == ENGINE_EFFECT_GLOW) {
 				((GlowEffect*)pTempEffect)->setGlowVector(m_lensVector);
 			}
 		}
@@ -447,13 +423,10 @@ void LensEffect::calcGlowAttenuationRange(const Vector3 &refScreenPos)
 {
 	SpecialEffects *pTempEffect;
 
-	for (IT_SpecialEffectsList it = m_effectlist.begin(); it != m_effectlist.end(); ++it)
-	{
+    for (IT_SpecialEffectsList it = m_effectlist.begin(); it != m_effectlist.end(); ++it) {
 		pTempEffect = (*it).get();
-		if (pTempEffect)
-		{
-			if (pTempEffect->getType() == ENGINE_EFFECT_GLOW)
-			{
+        if (pTempEffect) {
+            if (pTempEffect->getType() == ENGINE_EFFECT_GLOW) {
 				((GlowEffect*)pTempEffect)->calcAttenuationRange(refScreenPos);
 			}
 		}
@@ -470,15 +443,15 @@ void LensEffect::setLensFlareModel(const LensFlareModel &Model)
 
 	// relase the usage for each flare
 	// at the lens-flare model destruction the texture are released again
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i)
-	{
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i) {
 		flareItem = m_lensFlareModel.getFlare(i);
 
 		// use the texture
-		if (flareItem && flareItem->texture)
+        if (flareItem && flareItem->texture) {
 			m_flareTextures[i] = flareItem->texture;
-		else
+        } else {
             m_flareTextures[i] = nullptr;
+        }
 	}
 
 	// Generals parameters (these parameters can be overloaded)
@@ -505,15 +478,15 @@ void LensEffect::setLensFlareModel(const LensFlareModel &Model, Bool Infinite)
 
 	// release the usage for each flare
 	// at the lens-flare model destruction the texture are released again
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i)
-	{
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i) {
 		flareItem = m_lensFlareModel.getFlare(i);
 
 		// use the texture
-		if (flareItem && flareItem->texture)
+        if (flareItem && flareItem->texture) {
 			m_flareTextures[i] = flareItem->texture;
-		else
+        } else {
             m_flareTextures[i] = nullptr;
+        }
 	}
 
 	// Generals parameters (these parameters can be overloaded)
@@ -539,30 +512,31 @@ const LensFlareModel& LensEffect::getLensFlareModel()
 	// flares...
 	LensFlareModel::LensFlareItem *flareItem;
 
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i)
-	{
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_FLARES; ++i) {
 		flareItem = m_lensFlareModel.getFlare(i);
 
 		// use the texture
-		if ((flareItem && flareItem->texture) && !m_flareTextures[i])
+        if ((flareItem && flareItem->texture) && !m_flareTextures[i]) {
             flareItem->texture = nullptr;
+        }
 	}
 
 	// glows next...
 	LensFlareModel::LensGlowItem *glowItem;
 	IT_SpecialEffectsList itGlow = getEffectList().begin();
 
-	for (Int32 i = 0; i < LensFlareModel::MAX_NUM_GLOWS; ++i)
-	{
+    for (Int32 i = 0; i < LensFlareModel::MAX_NUM_GLOWS; ++i) {
 		glowItem = m_lensFlareModel.getGlow(i);
 
 		// use the texture
-		if ((glowItem && glowItem->texture) && !((GlowEffect*)(*itGlow).get())->getTexture())
+        if ((glowItem && glowItem->texture) && !((GlowEffect*)(*itGlow).get())->getTexture()) {
             glowItem->texture = nullptr;
+        }
 
 		// next effect
-		if (glowItem)
+        if (glowItem) {
 			++itGlow;
+        }
 	}
 
 	m_lensFlareModel.setInfinite(m_infinite);
@@ -596,7 +570,7 @@ void LensEffect::draw(const DrawInfo &drawInfo)
 		return;
     }
 
-    // TODO see a path to draw it when we have a deferred scene pipeline.
+    // @todo Do a path to draw it when we have a deferred scene pipeline.
     // can draw it after, but need a special PASS for that
     if (drawInfo.pass != DrawInfo::AMBIENT_PASS) {
         return;
@@ -624,10 +598,12 @@ void LensEffect::draw(const DrawInfo &drawInfo)
 	Int32 i;
 
 	// Compute the time elapsed between the last call
-	if (m_lastFrameTime == 0)
+    if (m_lastFrameTime == 0) {
 		elapsedTime = 0.0f;
-	else
+    } else {
 		elapsedTime = Float(System::getTime() - m_lastFrameTime) / System::getTimeFrequency();
+    }
+
 	m_lastFrameTime = System::getTime();
 
 	// Get parameters
@@ -647,12 +623,14 @@ void LensEffect::draw(const DrawInfo &drawInfo)
 		ZDistanceFromGlow = -mModelView.transformOnZ(m_lensVector);
 
 		// The source is too close
-		if (ZDistanceFromGlow < m_minDistance)
+        if (ZDistanceFromGlow < m_minDistance) {
 			return;
+        }
 
 		// The source is too far
-		if (ZDistanceFromGlow > m_maxDistance)
+        if (ZDistanceFromGlow > m_maxDistance) {
 			return;
+        }
 
 		// Calculate the distance attenuation
 		DistanceAttenuation = o3d::clamp(((m_maxDistance - ZDistanceFromGlow) / m_maxFadeRange),0.f,1.f) *

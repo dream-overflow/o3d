@@ -1387,7 +1387,7 @@ void GLExtensionManager::getGLFunctions()
     glDrawTransformFeedbackStreamInstanced = (PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC) GL::getProcAddress("glDrawTransformFeedbackStreamInstanced");
 
     if (!glDrawArraysInstancedBaseInstance || !glDrawElementsInstancedBaseInstance ||
-        !glDrawElementsInstancedBaseVertexBaseInstance || glDrawTransformFeedbackInstanced ||
+        !glDrawElementsInstancedBaseVertexBaseInstance || !glDrawTransformFeedbackInstanced ||
         !glDrawTransformFeedbackStreamInstanced) {
         O3D_WARNING("OpenGL 4.2 draw instanced is not available");
     }

@@ -278,11 +278,13 @@ Context::Context(Renderer *renderer) :
 	m_modelview.addObserver(this);
 	m_projection.addObserver(this);
 
-    // Log
+    //
+    // Report
+    //
+
     O3D_MESSAGE("OpenGL capacities:");
     O3D_MESSAGE(String("- Aliased line width range = {0} to {1}").arg(m_aliasedLineWidthRange[0], 2).arg(m_aliasedLineWidthRange[1], 2));
     O3D_MESSAGE(String("- Smooth line width range = {0} to {1}").arg(m_smoothLineWidthRange[0], 2).arg(m_smoothLineWidthRange[1], 2));
-    O3D_MESSAGE(String("- Texture max size = ") << m_textureMaxSize);
     O3D_MESSAGE(String("- Texture max size = ") << m_textureMaxSize);
     O3D_MESSAGE(String("- Texture 3D max size = ") << m_texture3dMaxSize);
     O3D_MESSAGE(String("- Texture max samples = ") << m_textureMaxSamples);
@@ -355,11 +357,13 @@ Context::~Context()
 // Define the current active texture unit.
 void Context::setActiveTextureUnit(UInt32 unit)
 {
-    if (unit != m_currentTexUnit && unit < (UInt32)m_maxCombinedTextureImageUnits) {
+    if (unit >= (UInt32)m_maxCombinedTextureImageUnits) {
+        O3D_ERROR(E_IndexOutOfRange("Texture active unit"));
+    }
+
+    if (unit != m_currentTexUnit) {
 		glActiveTexture(unit + GL_TEXTURE0);
 		m_currentTexUnit = unit;
-    } else {
-        O3D_ERROR(E_IndexOutOfRange("Texture active unit"));
     }
 }
 
@@ -627,13 +631,6 @@ void Context::deletePixelBuffer(UInt32 id)
 
 		glDeleteBuffers(1, (GLuint*)&id);
 	}
-}
-
-// create a new occlusion query and set it to current
-OcclusionQuery* Context::createOcclusionQuery()
-{
-    OcclusionQuery* occQuery = new OcclusionQuery(this);
-	return occQuery;
 }
 
 // simple draw mode
@@ -1534,6 +1531,27 @@ void Context::deleteUniformBuffer(UInt32 id)
         }
 
         glDeleteBuffers(1, (GLuint*)&id);
+    }
+}
+
+void Context::bindUniformBufferBase(UInt32 id, UInt32 index)
+{
+    if (index >= m_maxUniformBufferBindings) {
+        O3D_ERROR(E_IndexOutOfRange("Uniform buffer binding point index"));
+    }
+
+    if (m_currentUniformBufferBindingId[index] != id) {
+        glBindBufferBase(GL_UNIFORM_BUFFER, index, id);
+        m_currentUniformBufferBindingId[index] = id;
+    }
+}
+
+UInt32 Context::getCurrentUniformBufferBase(UInt32 index)
+{
+   if (index < m_maxUniformBufferBindings) {
+        return m_currentUniformBufferBindingId[index];
+    } else {
+        O3D_ERROR(E_IndexOutOfRange("Uniform buffer binding point index"));
     }
 }
 

@@ -597,12 +597,12 @@ public:
     void setConstTexture(const Char* name, Texture* pTexture, Int32 texUnit);
     void setConstTexture(Int32 Location, Texture* pTexture, Int32 texUnit);
 
-    //! Get a uUniform block index from a name.
+    //! Get a uniform block index from a name.
     UInt32 getUniformBlockIndex(const Char *name);
 
     //! Bind and set an uniform buffer object.
     void setUniformBlock(const Char* name, class UniformBuffer &uniformBuffer, UInt32 bindingPoint);
-    void setUniformBlock(UInt32 index, class UniformBuffer &uniformBuffer, UInt32 bindingPoint);
+    void setUniformBlock(UInt32 blockIndex, class UniformBuffer &uniformBuffer, UInt32 bindingPoint);
 
 	//-----------------------------------------------------------------------------------
 	// VERTEX ATTRIBUTES

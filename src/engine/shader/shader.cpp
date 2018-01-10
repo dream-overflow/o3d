@@ -1540,7 +1540,6 @@ void ShaderInstance::build(Shader::BuildType _type)
 	}
 }
 
-//! Define an uniform int constant
 void ShaderInstance::setConstInt(const Char* name,const Int32 constant)
 {
     if (!isInUse()) {
@@ -1555,7 +1554,6 @@ void ShaderInstance::setConstInt(const Char* name,const Int32 constant)
     }
 }
 
-//! Define an uniform bool constant
 void ShaderInstance::setConstBool(const Char* name,const Bool constant)
 {
     if (!isInUse()) {
@@ -1570,7 +1568,6 @@ void ShaderInstance::setConstBool(const Char* name,const Bool constant)
     }
 }
 
-//! Define an uniform float constant
 void ShaderInstance::setConstFloat(const Char* name,const Float constant)
 {
 	if (!isInUse())
@@ -1583,7 +1580,6 @@ void ShaderInstance::setConstFloat(const Char* name,const Float constant)
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
 }
 
-//! Define an uniform Vector2f constant
 void ShaderInstance::setConstVector2(const Char* name,const Vector2f& constant)
 {
     if (!isInUse()) {
@@ -1598,7 +1594,6 @@ void ShaderInstance::setConstVector2(const Char* name,const Vector2f& constant)
     }
 }
 
-//! Define an uniform Color (4f) constant
 void ShaderInstance::setConstColor(const Char* name,const Color& constant)
 {
     if (!isInUse()) {
@@ -1613,7 +1608,6 @@ void ShaderInstance::setConstColor(const Char* name,const Color& constant)
     }
 }
 
-//! Define an uniform O3DVector3 (3f) constant
 void ShaderInstance::setConstVector3(const Char* name,const Vector3& constant)
 {
     if (!isInUse()) {
@@ -1628,7 +1622,6 @@ void ShaderInstance::setConstVector3(const Char* name,const Vector3& constant)
     }
 }
 
-//! Define an uniform O3DVector3 (4f) with w to 1.0 constant
 void ShaderInstance::setConstVector4(const Char* name,const Vector3& constant)
 {
     if (!isInUse()) {
@@ -1657,7 +1650,6 @@ void ShaderInstance::setConstVector4(const Char* name,const Vector4& constant)
     }
 }
 
-//! Define an uniform O3DMatrix3 (9f) constant
 void ShaderInstance::setConstMatrix3(
 	const Char* name,
 	const Bool transpose,
@@ -1675,7 +1667,6 @@ void ShaderInstance::setConstMatrix3(
     }
 }
 
-//! Define an uniform O3DMatrix4 (16f) constant
 void ShaderInstance::setConstMatrix4(
 	const Char* name,
 	const Bool transpose,
@@ -1693,7 +1684,6 @@ void ShaderInstance::setConstMatrix4(
     }
 }
 
-//! Define n uniforms O3DMatrix4 (16f) constant from an array of O3DObject
 void ShaderInstance::setNConstMatrix4(
 	const Char* name,
 	Int32 num,
@@ -1770,21 +1760,19 @@ void ShaderInstance::setUniformBlock(const Char *name, UniformBuffer &uniformBuf
         O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define define an uniform block if the shader is not bound")));
     }
 
-    UInt32 index = glGetUniformBlockIndex(m_pInstance->shaderId, name);
-    uniformBuffer.bind();
-    glBindBufferBase(GL_UNIFORM_BUFFER, index, uniformBuffer.getBufferId());
-    glUniformBlockBinding(m_pInstance->shaderId, index, bindingPoint);
+    UInt32 blockIndex = glGetUniformBlockIndex(m_pInstance->shaderId, name);
+    uniformBuffer.bindBufferBase(bindingPoint);
+    glUniformBlockBinding(m_pInstance->shaderId, blockIndex, bindingPoint);
 }
 
-void ShaderInstance::setUniformBlock(UInt32 index, UniformBuffer &uniformBuffer, UInt32 bindingPoint)
+void ShaderInstance::setUniformBlock(UInt32 blockIndex, UniformBuffer &uniformBuffer, UInt32 bindingPoint)
 {
     if (!isInUse()) {
         O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define define an uniform block if the shader is not bound")));
     }
 
-    uniformBuffer.bind();
-    glBindBufferBase(GL_UNIFORM_BUFFER, index, uniformBuffer.getBufferId());
-    glUniformBlockBinding(m_pInstance->shaderId, index, bindingPoint);
+    uniformBuffer.bindBufferBase(bindingPoint);
+    glUniformBlockBinding(m_pInstance->shaderId, blockIndex, bindingPoint);
 }
 
 Int32 ShaderInstance::getAttributeLocation(const Char *name) const

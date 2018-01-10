@@ -57,8 +57,11 @@ public:
      */
     void update(UInt8* data);
 
-    //! Return the OpenGL buffer identifier.
-    inline UInt32 getBufferId() const { return m_bufferId; }
+    /**
+     * @brief Bind buffer base to uniform binding index.
+     * @param index Uniform binding point index.
+     */
+    void bindBufferBase(UInt32 index);
 
 private:
 
