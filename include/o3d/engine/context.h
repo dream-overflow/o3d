@@ -33,6 +33,21 @@ class O3D_API Context : public MatrixObserver
 {
 public:
 
+    /**
+     * @brief Shader stage.
+     */
+    enum Stage
+    {
+        COMPUTE_SHADER = 0,
+        VERTEX_SHADER = 1,
+        TESS_CONTROL_SHADER = 2,
+        TESS_EVALUATION_SHADER = 3,
+        GEOMETRY_SHADER = 4,
+        FRAGMENT_SHADER = 5
+    };
+
+    static const Int32 NUM_STAGES = FRAGMENT_SHADER + 1;
+
 	//! Default constructor.
 	//! @param renderer The owner.
 	Context(Renderer *renderer);
@@ -88,11 +103,7 @@ public:
     void deleteSampler(UInt32 id);
 
     //! Get the current bound sampler for a texture unit.
-    inline UInt32 getSampler(UInt32 unit) const
-    {
-        O3D_ASSERT(unit < UInt32(m_maxCombinedTextureImageUnits));
-        return m_currentSamplerId[unit];
-    }
+    UInt32 getSampler(UInt32 unit) const;
 
 	//-----------------------------------------------------------------------------------
 	// Vertex attribute array (see VertexElement)
@@ -647,6 +658,19 @@ public:
 	//! @return 110 for GLSL 1.10, 120 for 1.20...
 	inline UInt32 getGLSLVersion() const { return m_glslVersion; }
 
+    //! Get the max number of draw buffers.
+    inline Int32 getMaxDrawBuffers() const { return m_maxDrawBuffers; }
+
+    //! Get the max number of vertex attributes.
+    inline Int32 getMaxVertexAttribs() const { return m_maxVertexAttribs; }
+
+    //! Get the max number of viewports.
+    inline Int32 getMaxViewPorts() const { return m_maxViewports; }
+
+    //-----------------------------------------------------------------------------------
+    // Texture, image
+    //-----------------------------------------------------------------------------------
+
 	//! Get the maximal texture width/height in pixels.
 	inline Int32 getTextureMaxSize() const { return m_textureMaxSize; }
 
@@ -659,40 +683,23 @@ public:
 	//! Get the maximal texture layers.
 	inline Int32 getTextureMaxLayers() const { return m_textureMaxLayers; }
 
-	//! Get the number of image samplers that the GPU supports in the fragment shader.
-	inline Int32 getMaxTextureImageUnits() const { return m_maxTextureImageUnits; }
-
-	//! Get the number of image samplers that the GPU supports in the vertex shader.
-	inline Int32 getMaxVertexTextureImageUnits() const { return m_maxVertexTextureImageUnits; }
-
-	//! Get the number of image samplers that the GPU supports in the geometry shader.
-	inline Int32 getMaxGeometryTextureImageUnits() const { return m_maxGeometryTextureImageUnits; }
-
     //! Get the number of image samplers that the GPU supports for combined shaders stages.
     inline Int32 getMaxCombinedTextureImageUnits() const { return m_maxCombinedTextureImageUnits; }
 
-	//! Get the number of image samplers that the GPU supports in the tessellation
-	//! evaluation shader.
-	inline Int32 getMaxTessellationEvalTextureImageUnits() const
-	{
-		return m_maxTessEvalTextureImageUnits;
-	}
+    //! Get the number of image samplers that the GPU supports in a specific stage.
+    inline Int32 getMaxStageTextureImageUnits(Stage stage) const
+    {
+        return m_maxStageTextureImageUnits[stage];
+    }
 
-	//! Get the number of image samplers that the GPU supports in the tessellation
-	//! control shader.
-	inline Int32 getMaxTessellationControlTextureImageUnits() const
-	{
-		return m_maxTessControlTextureImageUnits;
-	}
+    //-----------------------------------------------------------------------------------
+    // Atomic counter
+    //-----------------------------------------------------------------------------------
 
-	//! Get the max number of draw buffers.
-	inline Int32 getMaxDrawBuffers() const { return m_maxDrawBuffers; }
-
-	//! Get the max number of vertex attributes.
-	inline Int32 getMaxVertexAttribs() const { return m_maxVertexAttribs; }
-
-	//! Get the max number of viewports.
-	inline Int32 getMaxViewPorts() const { return m_maxViewports; }
+    inline Int32 getMaxCombinedAtomicCounterBuffers() const { return m_maxCombinedAtomicCounterBuffers; }
+    inline Int32 geMaxAtomicCounterBufferBindings() const { return m_maxAtomicCounterBufferBindings; }
+    inline Int32 getMaxStageAtomicCounters(Stage stage) const { return m_maxStageAtomicCounters[stage]; }
+    inline Int32 getMaxStageAtomicCounterBuffers(Stage stage) const { return m_maxStageAtomicCounterBuffers[stage]; }
 
 	//-----------------------------------------------------------------------------------
 	// Viewport
@@ -783,8 +790,6 @@ private:
     Bool resetTexture(UInt32 id);
     Bool resetSampler(UInt32 id);
 
-    static const UInt32 MAX_COMBINED_TEX_UNITS = 96;
-
 	Renderer *m_renderer;           //!< Owner.
 
 	DrawingMode m_drawingMode;      //!< polygon drawing mode (default DrawingFilled)
@@ -812,9 +817,9 @@ private:
 
     OcclusionQuery *m_currentOccQuery;    //!< current active occlusion query
 
-    UInt32 m_currentTexUnit;                           //!< current active texture unit
-    UInt32 m_currentTexId[MAX_COMBINED_TEX_UNITS];     //!< current bound texture id
-    UInt32 m_currentSamplerId[MAX_COMBINED_TEX_UNITS]; //!< current bound sampler id
+    UInt32 m_currentTexUnit;        //!< current active texture unit
+    UInt32 *m_currentTexId;         //!< current bound texture id
+    UInt32 *m_currentSamplerId;     //!< current bound sampler id
 	
 	VertexArrayState m_defaultVaoState;   //!< default VAO state
 	VertexArrayState *m_currentVaoState;  //!< current bound VAO state
@@ -857,19 +862,24 @@ private:
 
 	UInt32 m_glslVersion;             //!< GLShadingLanguage version.
 
+    // texture
 	Int32 m_textureMaxSize;
 	Int32 m_texture3dMaxSize;
     Int32 m_textureMaxSamples;
 	Int32 m_textureMaxLayers;
-	Int32 m_maxTextureImageUnits;
-	Int32 m_maxVertexTextureImageUnits;
+
 	Int32 m_maxDrawBuffers;
 	Int32 m_maxVertexAttribs;
 	Int32 m_maxViewports;
-	Int32 m_maxGeometryTextureImageUnits;
+
     Int32 m_maxCombinedTextureImageUnits;
-	Int32 m_maxTessEvalTextureImageUnits;
-	Int32 m_maxTessControlTextureImageUnits;
+    Int32 m_maxStageTextureImageUnits[NUM_STAGES];
+
+    // Atomic counter
+    Int32 m_maxCombinedAtomicCounterBuffers;
+    Int32 m_maxAtomicCounterBufferBindings;
+    Int32 m_maxStageAtomicCounters[NUM_STAGES];
+    Int32 m_maxStageAtomicCounterBuffers[NUM_STAGES];
 };
 
 } // namespace o3d

@@ -25,6 +25,7 @@ include/o3d/core/touchscreen.h
 include/o3d/core/virtualdir.h
 include/o3d/core/virtualfile.h
 include/o3d/core/wgl.h
+include/o3d/engine/atomiccounter.h
 include/o3d/engine/glextdefines.h
 include/o3d/engine/primitive/cube.h
 include/o3d/engine/primitive/cylinder.h
@@ -126,6 +127,7 @@ src/engine/animation/animationplayer.cpp
 src/engine/animation/animationplayermanager.cpp
 src/engine/animation/animationtrack.cpp
 src/engine/animation/evaluator.cpp
+src/engine/atomiccounter.cpp
 src/engine/blending.cpp
 src/engine/context.cpp
 src/engine/deferred/deferreddrawer.cpp

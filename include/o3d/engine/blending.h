@@ -1,8 +1,8 @@
 /**
  * @file blending.h
- * @brief 
+ * @brief Blending mode controller.
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
- * @date 2001-12-25
+ * @date 2016-02-06
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
  * @details 
  */

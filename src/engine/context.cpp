@@ -52,12 +52,6 @@ Context::Context(Renderer *renderer) :
 
     m_currentOccQuery = nullptr;
 
-	m_currentTexUnit = 0;
-	glActiveTexture(GL_TEXTURE0);
-
-    memset(m_currentTexId, 0, MAX_COMBINED_TEX_UNITS * sizeof(UInt32));
-    memset(m_currentSamplerId, 0, MAX_COMBINED_TEX_UNITS * sizeof(UInt32));
-
 	m_currentFBOId = 0;
 	m_currentPackPBOId = 0;
 	m_currentUnpackPBOId = 0;
@@ -79,24 +73,12 @@ Context::Context(Renderer *renderer) :
 
     _glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, (GLint*)&m_textureMaxLayers);
 
-    m_maxTessEvalTextureImageUnits = 0;
-    m_maxTessControlTextureImageUnits = 0;
     m_maxViewports = 0;
-
-    _glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessEvalTextureImageUnits);
-    _glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTessControlTextureImageUnits);
 
     if (!m_renderer->isGLES()) {
         _glGetIntegerv(GL_MAX_VIEWPORTS, (GLint*)&m_maxViewports);
     } else {
         m_maxViewports = 0;
-    }
-
-	// anisotropy
-    if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
-        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat*)&m_maxAnisotropy);
-    } else {
-        m_maxAnisotropy = 1;
     }
 
     if (glDrawBuffers) {
@@ -108,17 +90,60 @@ Context::Context(Renderer *renderer) :
 
     glDisable(GL_DITHER);
 
-	// texture
+    //
+    // Texture, image
+    //
+
     _glGetIntegerv(GL_MAX_TEXTURE_SIZE, (GLint*)&m_textureMaxSize);
     _glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, (GLint*)&m_texture3dMaxSize);
     _glGetIntegerv(GL_MAX_SAMPLES, (GLint*)&m_textureMaxSamples);
-    _glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxTextureImageUnits);
-    _glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxVertexTextureImageUnits);
-    _glGetIntegerv(GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxGeometryTextureImageUnits);
+
     _glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxCombinedTextureImageUnits);
+
+    _glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[FRAGMENT_SHADER]);
+    _glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[VERTEX_SHADER]);
+    _glGetIntegerv(GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[GEOMETRY_SHADER]);
 
     _glGetIntegerv(GL_MAX_DRAW_BUFFERS, (GLint*)&m_maxDrawBuffers);
     _glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, (GLint*)&m_maxVertexAttribs);
+
+    // tesselation
+    if ((m_renderer->isGLES() && m_renderer->getVersion() >= 310) ||
+        (!m_renderer->isGLES() && m_renderer->getVersion() >= 400)) {
+
+        _glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[TESS_CONTROL_SHADER]);
+        _glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[TESS_EVALUATION_SHADER]);
+    } else {
+        m_maxStageTextureImageUnits[COMPUTE_SHADER] = 0;
+        m_maxStageTextureImageUnits[TESS_CONTROL_SHADER] = 0;
+        m_maxStageTextureImageUnits[TESS_EVALUATION_SHADER] = 0;
+    }
+
+    // compute
+    if ((m_renderer->isGLES() && m_renderer->getVersion() >= 310) ||
+        (!m_renderer->isGLES() && m_renderer->getVersion() >= 430)) {
+
+        _glGetIntegerv(GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[COMPUTE_SHADER]);
+    } else {
+        m_maxStageTextureImageUnits[COMPUTE_SHADER] = 0;
+    }
+
+    // anisotropy
+    if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat*)&m_maxAnisotropy);
+    } else {
+        m_maxAnisotropy = 1.0;
+    }
+
+    m_currentTexUnit = 0;
+    glActiveTexture(GL_TEXTURE0);
+
+    memset(m_currentTexId, 0, m_maxCombinedTextureImageUnits * sizeof(UInt32));
+    memset(m_currentSamplerId, 0, m_maxCombinedTextureImageUnits * sizeof(UInt32));
+
+    //
+    // Line
+    //
 
     glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, (GLfloat*)m_aliasedLineWidthRange);
 
@@ -128,7 +153,48 @@ Context::Context(Renderer *renderer) :
         m_smoothLineWidthRange[0] = m_smoothLineWidthRange[1] = 0.f;
     }
 
-	// GLSL version
+    //
+    // Atomic counter
+    //
+
+    if ((m_renderer->isGLES() && m_renderer->getVersion() >= 310) ||
+        (!m_renderer->isGLES() && m_renderer->getVersion() >= 420)) {
+
+        _glGetIntegerv(GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxCombinedAtomicCounterBuffers);
+        _glGetIntegerv(GL_MAX_ATOMIC_COUNTER_BUFFER_BINDINGS, (GLint*)&m_maxAtomicCounterBufferBindings);
+        _glGetIntegerv(GL_MAX_COMBINED_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxCombinedAtomicCounterBuffers);
+
+        _glGetIntegerv(GL_MAX_COMPUTE_ATOMIC_COUNTERS, (GLint*)&m_maxStageAtomicCounters[COMPUTE_SHADER]);
+        _glGetIntegerv(GL_MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxStageAtomicCounterBuffers[COMPUTE_SHADER]);
+
+        _glGetIntegerv(GL_MAX_VERTEX_ATOMIC_COUNTERS, (GLint*)&m_maxStageAtomicCounters[VERTEX_SHADER]);
+        _glGetIntegerv(GL_MAX_VERTEX_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxStageAtomicCounterBuffers[VERTEX_SHADER]);
+
+        _glGetIntegerv(GL_MAX_TESS_CONTROL_ATOMIC_COUNTERS, (GLint*)&m_maxStageAtomicCounters[TESS_CONTROL_SHADER]);
+        _glGetIntegerv(GL_MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxStageAtomicCounterBuffers[TESS_CONTROL_SHADER]);
+
+        _glGetIntegerv(GL_MAX_TESS_EVALUATION_ATOMIC_COUNTERS, (GLint*)&m_maxStageAtomicCounters[TESS_EVALUATION_SHADER]);
+        _glGetIntegerv(GL_MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxStageAtomicCounterBuffers[TESS_EVALUATION_SHADER]);
+
+        _glGetIntegerv(GL_MAX_GEOMETRY_ATOMIC_COUNTERS, (GLint*)&m_maxStageAtomicCounters[GEOMETRY_SHADER]);
+        _glGetIntegerv(GL_MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxStageAtomicCounterBuffers[GEOMETRY_SHADER]);
+
+        _glGetIntegerv(GL_MAX_FRAGMENT_ATOMIC_COUNTERS, (GLint*)&m_maxStageAtomicCounters[FRAGMENT_SHADER]);
+        _glGetIntegerv(GL_MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS, (GLint*)&m_maxStageAtomicCounterBuffers[FRAGMENT_SHADER]);
+    } else {
+        m_maxCombinedAtomicCounterBuffers = 0;
+        m_maxAtomicCounterBufferBindings = 0;
+
+        for (Int32 i = 0; i < NUM_STAGES; ++i) {
+            m_maxStageAtomicCounters[i] = 0;
+            m_maxStageAtomicCounterBuffers[i] = 0;
+        }
+    }
+
+    //
+    // GLSL
+    //
+
     if (getRenderer()->isGLES()) {
         switch (getRenderer()->getVersion()) {
             case 200:
@@ -197,16 +263,45 @@ Context::Context(Renderer *renderer) :
     O3D_MESSAGE(String("- Texture 3D max size = ") << m_texture3dMaxSize);
     O3D_MESSAGE(String("- Texture max samples = ") << m_textureMaxSamples);
     O3D_MESSAGE(String("- Max texture layers = ") << m_textureMaxLayers);
-    O3D_MESSAGE(String("- Max fragment texture image units = ") << m_maxTextureImageUnits);
-    O3D_MESSAGE(String("- Max vertex texture image units = ") << m_maxVertexTextureImageUnits);
-    O3D_MESSAGE(String("- Max geometry texture image units = ") << m_maxGeometryTextureImageUnits);
-    O3D_MESSAGE(String("- Max tessellation eval texture image units = ") << m_maxTessEvalTextureImageUnits);
-    O3D_MESSAGE(String("- Max tessellation control texture image units = ") << m_maxTessControlTextureImageUnits);
+
+    String maxTextureImageUnits;
+    String maxAtomicCounters;
+    String maxAtomicCounterBuffers;
+    String label;
+
+    for (Int32 i = 0; i < NUM_STAGES; ++i) {
+        label = "?";
+
+        if (i == COMPUTE_SHADER) {
+            label = "Compute";
+        } else if (i == VERTEX_SHADER) {
+            label = "Vertex";
+        } else if (i == GEOMETRY_SHADER) {
+            label = "Geometry";
+        } else if (i == TESS_CONTROL_SHADER) {
+            label = "TessCtrl";
+        } else if (i == TESS_EVALUATION_SHADER) {
+            label = "TessEval";
+        } else if (i == FRAGMENT_SHADER) {
+            label = "Fragment";
+        }
+
+        maxTextureImageUnits += String(" {0}({1})").arg(label).arg(m_maxStageTextureImageUnits[i]);
+        maxAtomicCounters += String(" {0}({1})").arg(label).arg(m_maxStageAtomicCounters[i]);
+        maxAtomicCounterBuffers += String(" {0}({1})").arg(label).arg(m_maxStageAtomicCounterBuffers[i]);
+    }
+
     O3D_MESSAGE(String("- Max combined texture image units = ") << m_maxCombinedTextureImageUnits);
+    O3D_MESSAGE(String("- Max texture image units = ") << maxTextureImageUnits);
+    O3D_MESSAGE(String("- Max combined atomic counter buffers = ") << m_maxCombinedAtomicCounterBuffers);
+    O3D_MESSAGE(String("- Max atomic counter buffer bindings = ") << m_maxAtomicCounterBufferBindings);
+    O3D_MESSAGE(String("- Max atomic counters = ") << maxAtomicCounters);
+    O3D_MESSAGE(String("- Max atomic counter buffers = ") << maxAtomicCounterBuffers);
     O3D_MESSAGE(String("- Max vertex attribs = ") << m_maxVertexAttribs);
     O3D_MESSAGE(String("- Max draw buffers = ") << m_maxDrawBuffers);
     O3D_MESSAGE(String("- Max anisotropy lvl = {0}").arg(m_maxAnisotropy, 2));
     O3D_MESSAGE(String("- Max view-ports = ") << m_maxViewports);
+
     if (getRenderer()->isGLES()) {
         O3D_MESSAGE(String("- GLSL version = ") << m_glslVersion << " ES");
     } else {
@@ -223,6 +318,9 @@ Context::~Context()
 		glDeleteVertexArrays(1, &m_defaultVAOId);
     }
 
+    deleteArray(m_currentTexId);
+    deleteArray(m_currentSamplerId);
+
 	// matrix observer
 	m_modelview.removeObserver(this);
 	m_projection.removeObserver(this);
@@ -231,18 +329,19 @@ Context::~Context()
 // Define the current active texture unit.
 void Context::setActiveTextureUnit(UInt32 unit)
 {
-	O3D_ASSERT(unit < UInt32(m_maxTextureImageUnits));
-    if (unit != m_currentTexUnit) {
+    if (unit != m_currentTexUnit && unit < (UInt32)m_maxCombinedTextureImageUnits) {
 		glActiveTexture(unit + GL_TEXTURE0);
 		m_currentTexUnit = unit;
-	}
+    } else {
+        O3D_ERROR(E_IndexOutOfRange("Texture active unit"));
+    }
 }
 
 Bool Context::resetTexture(UInt32 id)
 {
     Bool res = True;
 
-    for (UInt32 i = 0; i < MAX_COMBINED_TEX_UNITS; ++i) {
+    for (UInt32 i = 0; i < m_maxCombinedTextureImageUnits; ++i) {
         if (m_currentTexId[i] == id) {
             m_currentTexId[i] = 0;
             res = False;
@@ -272,7 +371,7 @@ Bool Context::resetSampler(UInt32 id)
 {
     Bool res = True;
 
-    for (UInt32 i = 0; i < MAX_COMBINED_TEX_UNITS; ++i) {
+    for (UInt32 i = 0; i < m_maxCombinedTextureImageUnits; ++i) {
         if (m_currentSamplerId[i] == id) {
             m_currentSamplerId[i] = 0;
             res = False;
@@ -284,7 +383,10 @@ Bool Context::resetSampler(UInt32 id)
 
 void Context::bindSampler(UInt32 id, UInt32 unit, Bool force)
 {
-    O3D_ASSERT(unit < (UInt32)m_maxCombinedTextureImageUnits);
+    if (unit >= m_maxCombinedTextureImageUnits) {
+        O3D_ERROR(E_IndexOutOfRange("Texture sampler unit"));
+    }
+
     if ((id != m_currentSamplerId[unit]) || force) {
         glBindSampler(unit, id);
         m_currentSamplerId[unit] = id;
@@ -296,6 +398,15 @@ void Context::deleteSampler(UInt32 id)
     if (id != 0) {
         //O3D_ASSERT(resetSampler(id));
         glDeleteSamplers(1, (GLuint*)&id);
+    }
+}
+
+UInt32 Context::getSampler(UInt32 unit) const
+{
+    if (unit < (UInt32)m_maxCombinedTextureImageUnits) {
+        return m_currentSamplerId[unit];
+    } else {
+        O3D_ERROR(E_IndexOutOfRange("Texture image unit"));
     }
 }
 

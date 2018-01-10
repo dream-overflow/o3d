@@ -7,7 +7,7 @@ Here the informations to build the API and somees dependencies :
 
 # GNU/Linux systems #
 
-See the CMake toolchain. Builds using GCC 5+ and make.
+See the CMake toolchain. Builds using GCC 5+ or LLVM 5+ CLANG and make
 
 If you wish to install the library into your /usr/local type make install,
 or changes the install prefix to set another destination.
