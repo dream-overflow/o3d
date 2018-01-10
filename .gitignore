@@ -21,6 +21,8 @@ ui_*.h
 *.moc
 glsl*.zip
 .qmake.stash
+doc/html
+doc/latex
 
 # Qt unit tests
 target_wrapper.*
