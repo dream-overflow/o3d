@@ -701,6 +701,22 @@ public:
     inline Int32 getMaxStageAtomicCounters(Stage stage) const { return m_maxStageAtomicCounters[stage]; }
     inline Int32 getMaxStageAtomicCounterBuffers(Stage stage) const { return m_maxStageAtomicCounterBuffers[stage]; }
 
+    /**
+     * @brief Atomic counter object binding.
+     * @param id
+     */
+    void bindAtomicCounter(UInt32 id);
+
+    /**
+     * @brief Delete an atomic counter object.
+     * @param id
+     * @note If the current bound object is the same as deleted,	bind 0 before.
+     */
+    void deleteAtomicCounter(UInt32 id);
+
+    //! Get the current bound atomic counter object.
+    inline UInt32 getCurrentAtomicCounter() const { return m_currentAtomicCounter; }
+
 	//-----------------------------------------------------------------------------------
 	// Viewport
     //-----------------------------------------------------------------------------------
@@ -817,10 +833,6 @@ private:
 
     OcclusionQuery *m_currentOccQuery;    //!< current active occlusion query
 
-    UInt32 m_currentTexUnit;        //!< current active texture unit
-    UInt32 *m_currentTexId;         //!< current bound texture id
-    UInt32 *m_currentSamplerId;     //!< current bound sampler id
-	
 	VertexArrayState m_defaultVaoState;   //!< default VAO state
 	VertexArrayState *m_currentVaoState;  //!< current bound VAO state
 	
@@ -875,11 +887,24 @@ private:
     Int32 m_maxCombinedTextureImageUnits;
     Int32 m_maxStageTextureImageUnits[NUM_STAGES];
 
+    UInt32 m_currentTexUnit;        //!< current active texture unit
+    UInt32 *m_currentTexId;         //!< current bound texture id
+    UInt32 *m_currentSamplerId;     //!< current bound sampler id
+
     // Atomic counter
     Int32 m_maxCombinedAtomicCounterBuffers;
     Int32 m_maxAtomicCounterBufferBindings;
     Int32 m_maxStageAtomicCounters[NUM_STAGES];
     Int32 m_maxStageAtomicCounterBuffers[NUM_STAGES];
+
+    UInt32 m_currentAtomicCounter;
+
+    // Uniform buffer
+    Int32 m_maxUniformBufferBindings;
+    Int32 m_maxUniformBlockSize;
+    Int32 m_maxStageUniformBlocks[NUM_STAGES];
+
+    Int32 *m_currentUniformBufferId;
 };
 
 } // namespace o3d

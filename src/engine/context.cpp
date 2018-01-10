@@ -154,6 +154,26 @@ Context::Context(Renderer *renderer) :
     }
 
     //
+    // Uniform buffer
+    //
+
+    _glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, (GLint*)&m_maxUniformBufferBindings);
+    _glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, (GLint*)&m_maxUniformBlockSize);
+
+    _glGetIntegerv(GL_MAX_COMPUTE_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[COMPUTE_SHADER]);
+    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
+    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
+    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
+    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
+    _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
+
+    Int32 m_maxUniformBufferBindings;
+    Int32 m_maxUniformBlockSize;
+    Int32 m_maxStageUniformBlocks[NUM_STAGES];
+
+    Int32 *m_currentUniformBufferId;
+
+    //
     // Atomic counter
     //
 
@@ -190,6 +210,8 @@ Context::Context(Renderer *renderer) :
             m_maxStageAtomicCounterBuffers[i] = 0;
         }
     }
+
+    m_currentAtomicCounter = 0;
 
     //
     // GLSL
@@ -1470,7 +1492,26 @@ void Context::enable(UInt32 mode)
 // Disable an OpenGL state.
 void Context::disable(UInt32 mode)
 {
-	glDisable(mode);
+    glDisable(mode);
+}
+
+void Context::bindAtomicCounter(UInt32 id)
+{
+    if ((id != m_currentAtomicCounter) || (id == 0)) {
+        glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, id);
+        m_currentAtomicCounter = id;
+    }
+}
+
+void Context::deleteAtomicCounter(UInt32 id)
+{
+    if (id != 0) {
+        if (id == m_currentAtomicCounter) {
+            m_currentAtomicCounter = 0;
+        }
+
+        glDeleteBuffers(1, (GLuint*)&id);
+    }
 }
 
 // Define the viewport.

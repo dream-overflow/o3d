@@ -779,6 +779,41 @@ O3D_GLAPI PFNGLGETSTRINGIPROC glGetStringi;
 #endif // O3D_GL_VERSION_3_0
 
 //
+// GL_VERSION_3_0
+//
+
+#ifndef O3D_GL_VERSION_3_1
+#define O3D_GL_VERSION_3_1 1
+
+typedef void (APIENTRYP PFNGLDRAWARRAYSINSTANCEDPROC) (GLenum mode, GLint first, GLsizei count, GLsizei instancecount);
+typedef void (APIENTRYP PFNGLDRAWELEMENTSINSTANCEDPROC) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount);
+typedef void (APIENTRYP PFNGLTEXBUFFERPROC) (GLenum target, GLenum internalformat, GLuint buffer);
+typedef void (APIENTRYP PFNGLPRIMITIVERESTARTINDEXPROC) (GLuint index);
+typedef void (APIENTRYP PFNGLCOPYBUFFERSUBDATAPROC) (GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+typedef void (APIENTRYP PFNGLGETUNIFORMINDICESPROC) (GLuint program, GLsizei uniformCount, const GLchar *const*uniformNames, GLuint *uniformIndices);
+typedef void (APIENTRYP PFNGLGETACTIVEUNIFORMSIVPROC) (GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params);
+typedef void (APIENTRYP PFNGLGETACTIVEUNIFORMNAMEPROC) (GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName);
+typedef GLuint (APIENTRYP PFNGLGETUNIFORMBLOCKINDEXPROC) (GLuint program, const GLchar *uniformBlockName);
+typedef void (APIENTRYP PFNGLGETACTIVEUNIFORMBLOCKIVPROC) (GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
+typedef void (APIENTRYP PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC) (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
+typedef void (APIENTRYP PFNGLUNIFORMBLOCKBINDINGPROC) (GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+
+O3D_GLAPI PFNGLDRAWARRAYSINSTANCEDPROC glDrawArraysInstanced;
+O3D_GLAPI PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced;
+O3D_GLAPI PFNGLTEXBUFFERPROC glTexBuffer;
+O3D_GLAPI PFNGLPRIMITIVERESTARTINDEXPROC glPrimitiveRestartIndex;
+O3D_GLAPI PFNGLCOPYBUFFERSUBDATAPROC glCopyBufferSubData;
+O3D_GLAPI PFNGLGETUNIFORMINDICESPROC glGetUniformIndices;
+O3D_GLAPI PFNGLGETACTIVEUNIFORMSIVPROC glGetActiveUniformsiv;
+O3D_GLAPI PFNGLGETACTIVEUNIFORMNAMEPROC glGetActiveUniformName;
+O3D_GLAPI PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex;
+O3D_GLAPI PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv;
+O3D_GLAPI PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC glGetActiveUniformBlockName;
+O3D_GLAPI PFNGLUNIFORMBLOCKBINDINGPROC glUniformBlockBinding;
+
+#endif // O3D_GL_VERSION_3_1
+
+//
 // GL_VERSION_3_2
 //
 
@@ -980,18 +1015,19 @@ typedef void (APIENTRYP PFNGLTEXSTORAGE3DPROC) (GLenum target, GLsizei levels, G
 typedef void (APIENTRYP PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC) (GLenum mode, GLuint id, GLsizei instancecount);
 typedef void (APIENTRYP PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC) (GLenum mode, GLuint id, GLuint stream, GLsizei instancecount);
 
-//O3D_GLAPI void APIENTRY glDrawArraysInstancedBaseInstance;
-//O3D_GLAPI void APIENTRY glDrawElementsInstancedBaseInstance;
-//O3D_GLAPI void APIENTRY glDrawElementsInstancedBaseVertexBaseInstance;
-//O3D_GLAPI void APIENTRY glGetInternalformativ;
-//O3D_GLAPI void APIENTRY glGetActiveAtomicCounterBufferiv;
-//O3D_GLAPI void APIENTRY glBindImageTexture;
-//O3D_GLAPI void APIENTRY glMemoryBarrier;
-//O3D_GLAPI void APIENTRY glTexStorage1D;
-//O3D_GLAPI void APIENTRY glTexStorage2D;
-//O3D_GLAPI void APIENTRY glTexStorage3D;
-//O3D_GLAPI void APIENTRY glDrawTransformFeedbackInstanced;
-//O3D_GLAPI void APIENTRY glDrawTransformFeedbackStreamInstanced;
+O3D_GLAPI PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEPROC glDrawArraysInstancedBaseInstance;
+O3D_GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC glDrawElementsInstancedBaseInstance;
+O3D_GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC glDrawElementsInstancedBaseVertexBaseInstance;
+O3D_GLAPI PFNGLGETINTERNALFORMATIVPROC glGetInternalformativ;
+O3D_GLAPI PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC glGetActiveAtomicCounterBufferiv;
+O3D_GLAPI PFNGLBINDIMAGETEXTUREPROC glBindImageTexture;
+O3D_GLAPI PFNGLMEMORYBARRIERPROC glMemoryBarrier;
+O3D_GLAPI PFNGLTEXSTORAGE1DPROC glTexStorage1D;
+O3D_GLAPI PFNGLTEXSTORAGE2DPROC glTexStorage2D;
+O3D_GLAPI PFNGLTEXSTORAGE3DPROC glTexStorage3D;
+O3D_GLAPI PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC glDrawTransformFeedbackInstanced;
+O3D_GLAPI PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC glDrawTransformFeedbackStreamInstanced;
+
 #endif // GL_VERSION_4_2
 
 //

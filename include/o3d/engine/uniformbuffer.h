@@ -31,7 +31,30 @@ class O3D_API UniformBuffer
 {
 public:
 
-    // @todo
+    /**
+     * @brief Uniform buffer object.
+     * @param context
+     */
+    UniformBuffer(Context *context);
+
+    ~UniformBuffer();
+
+    /**
+     * @brief Create with the specified size in bytes.
+     * @param size Size in bytes.
+     * @param dontUnbint Keep bound is True, else unbind.
+     */
+    void create(UInt32 size, Bool dontUnbind = False);
+
+    /**
+     * @brief Destroy the uniform buffer object.
+     */
+    void release();
+
+private:
+
+    Context *m_context;
+    UInt32 m_id;
 };
 
 } // namespace o3d

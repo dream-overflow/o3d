@@ -36,7 +36,42 @@ public:
         ATOMIC_DEC,
     };
 
-    // @todo
+    /**
+     * @brief AtomicCounter
+     * @param context
+     */
+    AtomicCounter(Context *context);
+
+    ~AtomicCounter();
+
+    /**
+     * @brief create
+     * @param Number of counter (32 bits integers).
+     * @param dontUnbint Keep bound is True, else unbind.
+     */
+    void create(UInt32 count, Bool dontUnbind = False);
+
+    /**
+     * @brief Destroy the atomic counter object.
+     */
+    void release();
+
+    void bind();
+    void unbind();
+
+    /**
+     * @brief Rest the atomics counters.
+     * @note Must be bound.
+     */
+    void reset();
+
+private:
+
+    Context *m_context;
+    Int32 m_id;
+
+    UInt32 m_count;
+    UInt32 *m_counters;
 };
 
 } // namespace o3d

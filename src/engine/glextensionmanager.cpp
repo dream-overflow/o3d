@@ -312,6 +312,21 @@ PFNGLCLEARBUFFERFIPROC glClearBufferfi = nullptr;
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 #endif // O3D_GL_VERSION_3_0
 
+#ifdef O3D_GL_VERSION_3_1
+PFNGLDRAWARRAYSINSTANCEDPROC glDrawArraysInstanced = nullptr;
+PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced = nullptr;
+PFNGLTEXBUFFERPROC glTexBuffer = nullptr;
+PFNGLPRIMITIVERESTARTINDEXPROC glPrimitiveRestartIndex = nullptr;
+PFNGLCOPYBUFFERSUBDATAPROC glCopyBufferSubData = nullptr;
+PFNGLGETUNIFORMINDICESPROC glGetUniformIndices = nullptr;
+PFNGLGETACTIVEUNIFORMSIVPROC glGetActiveUniformsiv = nullptr;
+PFNGLGETACTIVEUNIFORMNAMEPROC glGetActiveUniformName = nullptr;
+PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex = nullptr;
+PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv = nullptr;
+PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC glGetActiveUniformBlockName = nullptr;
+PFNGLUNIFORMBLOCKBINDINGPROC glUniformBlockBinding = nullptr;
+#endif O3D_GL_VERSION_3_1
+
 #ifdef O3D_GL_VERSION_3_2
 //PFNGLGETINTEGER64I_VPROC glGetInteger64i_v = nullptr;
 //PFNGLGETBUFFERPARAMETERI64VPROC glGetBufferParameteri64v = nullptr;
@@ -350,6 +365,20 @@ PFNGLCLEARDEPTHFPROC glClearDepthf = nullptr;
 #endif // O3D_GL_VERSION_4_1
 
 #ifdef O3D_GL_VERSION_4_2
+
+PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEPROC glDrawArraysInstancedBaseInstance = nullptr;
+PFNGLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC glDrawElementsInstancedBaseInstance = nullptr;
+PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC glDrawElementsInstancedBaseVertexBaseInstance = nullptr;
+PFNGLGETINTERNALFORMATIVPROC glGetInternalformativ = nullptr;
+PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC glGetActiveAtomicCounterBufferiv = nullptr;
+PFNGLBINDIMAGETEXTUREPROC glBindImageTexture = nullptr;
+PFNGLMEMORYBARRIERPROC glMemoryBarrier = nullptr;
+PFNGLTEXSTORAGE1DPROC glTexStorage1D = nullptr;
+PFNGLTEXSTORAGE2DPROC glTexStorage2D = nullptr;
+PFNGLTEXSTORAGE3DPROC glTexStorage3D = nullptr;
+PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC glDrawTransformFeedbackInstanced = nullptr;
+PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC glDrawTransformFeedbackStreamInstanced = nullptr;
+
 #endif // O3D_GL_VERSION_4_2
 
 #ifdef O3D_GL_VERSION_4_3
@@ -452,7 +481,7 @@ Bool GLExtensionManager::ms_valid = False;
 DynamicLibrary* GLExtensionManager::ms_openGL = nullptr;
 
 //
-// GL 3+
+// Profile GL 3.0+
 //
 
 // Get extensions pointers
@@ -1185,6 +1214,45 @@ void GLExtensionManager::getGLFunctions()
 
 #endif // O3D_GL_VERSION_3_0
 
+#ifdef O3D_GL_VERSION_3_1
+
+    glDrawArraysInstanced = (PFNGLDRAWARRAYSINSTANCEDPROC) GL::getProcAddress("glDrawArraysInstanced");
+    glDrawElementsInstanced = (PFNGLDRAWELEMENTSINSTANCEDPROC) GL::getProcAddress("");
+    glTexBuffer = (PFNGLTEXBUFFERPROC) GL::getProcAddress("glTexBuffer");
+    glPrimitiveRestartIndex = (PFNGLPRIMITIVERESTARTINDEXPROC) GL::getProcAddress("glPrimitiveRestartIndex");
+    glCopyBufferSubData = (PFNGLCOPYBUFFERSUBDATAPROC) GL::getProcAddress("glCopyBufferSubData");
+    glGetUniformIndices = (PFNGLGETUNIFORMINDICESPROC) GL::getProcAddress("glGetUniformIndices");
+    glGetActiveUniformsiv = (PFNGLGETACTIVEUNIFORMSIVPROC) GL::getProcAddress("glGetActiveUniformsiv");
+    glGetActiveUniformName = (PFNGLGETACTIVEUNIFORMNAMEPROC) GL::getProcAddress("glGetActiveUniformName");
+    glGetUniformBlockIndex = (PFNGLGETUNIFORMBLOCKINDEXPROC) GL::getProcAddress("glGetUniformBlockIndex");
+    glGetActiveUniformBlockiv = (PFNGLGETACTIVEUNIFORMBLOCKIVPROC) GL::getProcAddress("glGetActiveUniformBlockiv");
+    glGetActiveUniformBlockName = (PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC) GL::getProcAddress("glGetActiveUniformBlockName");
+    glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC) GL::getProcAddress("glUniformBlockBinding");
+
+    if (!glDrawArraysInstanced || !glDrawElementsInstanced) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Draw instanced"));
+    }
+
+    if (!glTexBuffer) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Tex buffer"));
+    }
+
+    if (!glPrimitiveRestartIndex) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Primitive restart index"));
+    }
+
+    if (!glCopyBufferSubData) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Copy buffer sub-data"));
+    }
+
+    if (!glGetUniformIndices || !glGetActiveUniformsiv || !glGetActiveUniformName ||
+        !glGetUniformBlockIndex || !glGetActiveUniformBlockiv || !glGetActiveUniformBlockName ||
+        !glUniformBlockBinding) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Uniform Buffer Object"));
+    }
+
+#endif // O3D_GL_VERSION_3_1
+
 #ifdef O3D_GL_VERSION_3_2
 
 	//
@@ -1304,6 +1372,46 @@ void GLExtensionManager::getGLFunctions()
 #endif // O3D_GL_VERSION_4_1
 
 #ifdef O3D_GL_VERSION_4_2
+
+    glDrawArraysInstancedBaseInstance = (PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEPROC) GL::getProcAddress("glDrawArraysInstancedBaseInstance");
+    glDrawElementsInstancedBaseInstance = (PFNGLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC) GL::getProcAddress("glDrawElementsInstancedBaseInstance");
+    glDrawElementsInstancedBaseVertexBaseInstance = (PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC) GL::getProcAddress("glDrawElementsInstancedBaseVertexBaseInstance");
+    glGetInternalformativ = (PFNGLGETINTERNALFORMATIVPROC) GL::getProcAddress("glGetInternalformativ");
+    glGetActiveAtomicCounterBufferiv = (PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC) GL::getProcAddress("glGetActiveAtomicCounterBufferiv");
+    glBindImageTexture = (PFNGLBINDIMAGETEXTUREPROC) GL::getProcAddress("glBindImageTexture");
+    glMemoryBarrier = (PFNGLMEMORYBARRIERPROC) GL::getProcAddress("glMemoryBarrier");
+    glTexStorage1D = (PFNGLTEXSTORAGE1DPROC) GL::getProcAddress("glTexStorage1D");
+    glTexStorage2D = (PFNGLTEXSTORAGE2DPROC) GL::getProcAddress("glTexStorage2D");
+    glTexStorage3D = (PFNGLTEXSTORAGE3DPROC) GL::getProcAddress("glTexStorage3D");
+    glDrawTransformFeedbackInstanced = (PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC) GL::getProcAddress("glDrawTransformFeedbackInstanced");
+    glDrawTransformFeedbackStreamInstanced = (PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC) GL::getProcAddress("glDrawTransformFeedbackStreamInstanced");
+
+    if (!glDrawArraysInstancedBaseInstance || !glDrawElementsInstancedBaseInstance ||
+        !glDrawElementsInstancedBaseVertexBaseInstance || glDrawTransformFeedbackInstanced ||
+        !glDrawTransformFeedbackStreamInstanced) {
+        O3D_WARNING("OpenGL 4.2 draw instanced is not available");
+    }
+
+    if (!glGetInternalformativ) {
+        O3D_WARNING("OpenGL GetInternalformativ is not available");
+    }
+
+    if (!glGetActiveAtomicCounterBufferiv) {
+        O3D_WARNING("OpenGL GetActiveAtomicCounterBufferiv is not available");
+    }
+
+    if (!glBindImageTexture) {
+        O3D_WARNING("OpenGL BindImageTexture is not available");
+    }
+
+    if (!glMemoryBarrier) {
+        O3D_WARNING("OpenGL Memory Barrier is not available");
+    }
+
+    if (!glTexStorage1D || !glTexStorage2D || !glTexStorage3D) {
+        O3D_WARNING("OpenGL TexStorage<N>D is not available");
+    }
+
 #endif // O3D_GL_VERSION_4_2
 
 #ifdef O3D_GL_VERSION_4_3
@@ -1357,7 +1465,7 @@ void GLExtensionManager::getGLFunctions()
 }
 
 //
-// GLES 3+
+// Profile GLES 3.0+
 //
 
 void GLExtensionManager::getGLESFunctions()
@@ -1915,6 +2023,37 @@ void GLExtensionManager::getGLESFunctions()
 
 #endif // O3D_GL_VERSION_3_0
 
+#ifdef O3D_GL_VERSION_3_1
+
+    glDrawArraysInstanced = (PFNGLDRAWARRAYSINSTANCEDPROC) GL::getProcAddress("glDrawArraysInstanced");
+    glDrawElementsInstanced = (PFNGLDRAWELEMENTSINSTANCEDPROC) GL::getProcAddress("");
+    // glTexBuffer = (PFNGLTEXBUFFERPROC) GL::getProcAddress("glTexBuffer");
+    // glPrimitiveRestartIndex = (PFNGLPRIMITIVERESTARTINDEXPROC) GL::getProcAddress("glPrimitiveRestartIndex");
+    glCopyBufferSubData = (PFNGLCOPYBUFFERSUBDATAPROC) GL::getProcAddress("glCopyBufferSubData");
+    glGetUniformIndices = (PFNGLGETUNIFORMINDICESPROC) GL::getProcAddress("glGetUniformIndices");
+    glGetActiveUniformsiv = (PFNGLGETACTIVEUNIFORMSIVPROC) GL::getProcAddress("glGetActiveUniformsiv");
+    glGetActiveUniformName = (PFNGLGETACTIVEUNIFORMNAMEPROC) GL::getProcAddress("glGetActiveUniformName");
+    glGetUniformBlockIndex = (PFNGLGETUNIFORMBLOCKINDEXPROC) GL::getProcAddress("glGetUniformBlockIndex");
+    glGetActiveUniformBlockiv = (PFNGLGETACTIVEUNIFORMBLOCKIVPROC) GL::getProcAddress("glGetActiveUniformBlockiv");
+    glGetActiveUniformBlockName = (PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC) GL::getProcAddress("glGetActiveUniformBlockName");
+    glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC) GL::getProcAddress("glUniformBlockBinding");
+
+    if (!glDrawArraysInstanced || !glDrawElementsInstanced) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Draw instanced"));
+    }
+
+    if (!glCopyBufferSubData) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Copy buffer sub-data"));
+    }
+
+    if (!glGetUniformIndices || !glGetActiveUniformsiv || !glGetActiveUniformName ||
+        !glGetUniformBlockIndex || !glGetActiveUniformBlockiv || !glGetActiveUniformBlockName ||
+        !glUniformBlockBinding) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL Uniform Buffer Object"));
+    }
+
+#endif // O3D_GL_VERSION_3_1
+
 #ifdef O3D_GL_VERSION_3_2
 
     //
@@ -1945,7 +2084,7 @@ void GLExtensionManager::getGLESFunctions()
     glIsVertexArray = (PFNGLISVERTEXARRAYPROC) GL::getProcAddress("glIsVertexArray");
 
     if (!glBindVertexArray || !glDeleteVertexArrays || !glGenVertexArrays || !glIsVertexArray) {
-        O3D_WARNING("OpenGL VAO is not available");
+        O3D_ERROR(E_UnsuportedFeature("OpenGL VAO"));
     }
 
 #endif // O3D_GL_VERSION_3_2
@@ -2036,6 +2175,36 @@ void GLExtensionManager::getGLESFunctions()
 #endif // O3D_GL_VERSION_4_1
 
 #ifdef O3D_GL_VERSION_4_2
+
+//    glDrawArraysInstancedBaseInstance = (PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEPROC) GL::getProcAddress("glDrawArraysInstancedBaseInstance");
+//    glDrawElementsInstancedBaseInstance = (PFNGLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC) GL::getProcAddress("glDrawElementsInstancedBaseInstance");
+//    glDrawElementsInstancedBaseVertexBaseInstance = (PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC) GL::getProcAddress("glDrawElementsInstancedBaseVertexBaseInstance");
+    glGetInternalformativ = (PFNGLGETINTERNALFORMATIVPROC) GL::getProcAddress("glGetInternalformativ");
+//    glGetActiveAtomicCounterBufferiv = (PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC) GL::getProcAddress("glGetActiveAtomicCounterBufferiv");
+    glBindImageTexture = (PFNGLBINDIMAGETEXTUREPROC) GL::getProcAddress("glBindImageTexture");
+    glMemoryBarrier = (PFNGLMEMORYBARRIERPROC) GL::getProcAddress("glMemoryBarrier");
+//    glTexStorage1D = (PFNGLTEXSTORAGE1DPROC) GL::getProcAddress("glTexStorage1D");
+    glTexStorage2D = (PFNGLTEXSTORAGE2DPROC) GL::getProcAddress("glTexStorage2D");
+    glTexStorage3D = (PFNGLTEXSTORAGE3DPROC) GL::getProcAddress("glTexStorage3D");
+//    glDrawTransformFeedbackInstanced = (PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC) GL::getProcAddress("glDrawTransformFeedbackInstanced");
+//    glDrawTransformFeedbackStreamInstanced = (PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC) GL::getProcAddress("glDrawTransformFeedbackStreamInstanced");
+
+    if (!glGetInternalformativ) {
+        O3D_WARNING("OpenGL GetInternalformativ is not available");
+    }
+
+    if (!glBindImageTexture) {
+        O3D_WARNING("OpenGL BindImageTexture is not available");
+    }
+
+    if (!glMemoryBarrier) {
+        O3D_WARNING("OpenGL Memory Barrier is not available");
+    }
+
+    if (!glTexStorage2D || !glTexStorage3D) {
+        O3D_WARNING("OpenGL TexStorage<N>D is not available");
+    }
+
 #endif // O3D_GL_VERSION_4_2
 
 #ifdef O3D_GL_VERSION_4_3
@@ -2050,16 +2219,20 @@ void GLExtensionManager::getGLESFunctions()
 #ifdef O3D_GL_VERSION_4_6
 #endif // O3D_GL_VERSION_4_6
 
-    if (!isExtensionSupported("OES_framebuffer_object")) {
+    //
+    // Enumerated extensions (can depends of GL ES version)
+    //
 
+    if (!isExtensionSupported("OES_framebuffer_object")) {
+        O3D_ERROR(E_UnsuportedFeature("OpenGL OES_framebuffer_object"));
     }
 
     if (!isExtensionSupported("GL_OES_texture_3D")) {
-
+        O3D_WARNING("Unavailable OpenGL GL_OES_texture_3D");
     }
 
     if (!isExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
-
+        O3D_WARNING("Unavailable OpenGL GL_EXT_texture_filter_anisotropic");
     }
 
     if (!isExtensionSupported("GL_OES_packed_depth_stencil")) {
@@ -2067,19 +2240,19 @@ void GLExtensionManager::getGLESFunctions()
     }
 
     if (!isExtensionSupported("GL_OES_depth_texture")) {
-
+        O3D_ERROR(E_UnsuportedFeature("OpenGL GL_OES_depth_texture"));
     }
 
     if (!isExtensionSupported("GL_OES_depth24")) {
-
+        O3D_ERROR(E_UnsuportedFeature("OpenGL GL_OES_depth24"));
     }
 
     if (!isExtensionSupported("GL_OES_depth32")) {
-
+        O3D_ERROR(E_UnsuportedFeature("OpenGL GL_OES_depth32"));
     }
 
     if (!isExtensionSupported("GL_OES_texture_float")) {
-
+        O3D_ERROR(E_UnsuportedFeature("OpenGL GL_OES_texture_float"));
     }
 
     if (!isExtensionSupported("GL_OES_depth_texture_cube_map")) {
@@ -2098,7 +2271,7 @@ void GLExtensionManager::getGLESFunctions()
 
     }
 
-    if (!isExtensionSupported("GL_EXT_geomtry_shader")) {
+    if (!isExtensionSupported("GL_EXT_geometry_shader")) {
 
     }
 
@@ -2115,7 +2288,7 @@ void GLExtensionManager::getGLESFunctions()
     }
 
     if (!isExtensionSupported("GL_OES_vertex_array_object")) {
-
+        O3D_ERROR(E_UnsuportedFeature("OpenGL GL_OES_vertex_array_object"));
     }
 }
 
