@@ -1389,7 +1389,7 @@ void GLExtensionManager::getGLFunctions()
     if (!glDrawArraysInstancedBaseInstance || !glDrawElementsInstancedBaseInstance ||
         !glDrawElementsInstancedBaseVertexBaseInstance || !glDrawTransformFeedbackInstanced ||
         !glDrawTransformFeedbackStreamInstanced) {
-        O3D_WARNING("OpenGL 4.2 draw instanced is not available");
+        O3D_WARNING("Unavailable OpenGL Draw array/element instanced");
     }
 
     if (!glGetInternalformativ) {
@@ -2039,7 +2039,7 @@ void GLExtensionManager::getGLESFunctions()
     glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC) GL::getProcAddress("glUniformBlockBinding");
 
     if (!glDrawArraysInstanced || !glDrawElementsInstanced) {
-        O3D_ERROR(E_UnsuportedFeature("OpenGL Draw instanced"));
+        O3D_WARNING("Unavailable OpenGL Draw array/element instanced");
     }
 
     if (!glCopyBufferSubData) {
@@ -2049,7 +2049,8 @@ void GLExtensionManager::getGLESFunctions()
     if (!glGetUniformIndices || !glGetActiveUniformsiv || !glGetActiveUniformName ||
         !glGetUniformBlockIndex || !glGetActiveUniformBlockiv || !glGetActiveUniformBlockName ||
         !glUniformBlockBinding) {
-        O3D_ERROR(E_UnsuportedFeature("OpenGL Uniform Buffer Object"));
+        // O3D_ERROR(E_UnsuportedFeature("OpenGL Uniform Buffer Object"));
+        O3D_WARNING("Unavailable OpenGL Uniform buffer object");
     }
 
 #endif // O3D_GL_VERSION_3_1
@@ -2223,7 +2224,7 @@ void GLExtensionManager::getGLESFunctions()
     // Enumerated extensions (can depends of GL ES version)
     //
 
-    if (!isExtensionSupported("OES_framebuffer_object")) {
+    if (!isExtensionSupported("GL_OES_framebuffer_object")) {
         O3D_ERROR(E_UnsuportedFeature("OpenGL OES_framebuffer_object"));
     }
 
@@ -2248,7 +2249,7 @@ void GLExtensionManager::getGLESFunctions()
     }
 
     if (!isExtensionSupported("GL_OES_depth32")) {
-        O3D_ERROR(E_UnsuportedFeature("OpenGL GL_OES_depth32"));
+        // O3D_ERROR(E_UnsuportedFeature("OpenGL GL_OES_depth32"));
     }
 
     if (!isExtensionSupported("GL_OES_texture_float")) {
