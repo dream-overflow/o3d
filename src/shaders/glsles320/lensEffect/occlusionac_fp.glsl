@@ -1,6 +1,5 @@
 // Minimalistic fragment progam that wrote nothing in color.
 #version 320 es
-#extension GL_ANDROID_extension_pack_es31a : require
 
 precision highp float;
 
@@ -12,4 +11,5 @@ layout(binding = 0, offset = 0) uniform atomic_uint visibles;
 
 void main()
 {
+    atomicCounterIncrement(visibles);
 }
