@@ -16,7 +16,6 @@
 
 namespace o3d {
 
-class Renderer;
 class Context;
 
 /**
@@ -78,17 +77,17 @@ public:
 	static DataType getGLType(PixelFormat pixelFormat);
 
 	//! Pixel format to OpenGL data format.
-	static TextureFormat getGLFormat(const Renderer *renderer, PixelFormat pixelFormat);
+    static TextureFormat getGLFormat(const Context *context, PixelFormat pixelFormat);
 
 	//! Pixel format to OpenGL data internal format.
-	static TextureIntFormat getGLInternalFormat(const Renderer *renderer, PixelFormat pixelFormat);
+    static TextureIntFormat getGLInternalFormat(const Context *context, PixelFormat pixelFormat);
 
 	//! Get the pixel size of the pixel format, in bits per pixel related to getGLType.
 	//! Used for the buffer data IO.
 	static UInt32 getPixelSize(PixelFormat pixelFormat);
 
 	//! Get the internal pixel size, in bits per pixel. Usefull to compute the GPU memory occupation.
-	static UInt32 getInternalPixelSize(const Renderer *renderer, PixelFormat pixelFormat);
+    static UInt32 getInternalPixelSize(const Context *context, PixelFormat pixelFormat);
 };
 
 } // namespace o3d

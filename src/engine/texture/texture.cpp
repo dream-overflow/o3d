@@ -172,7 +172,7 @@ void Texture::unbind()
 // Get the OpenGL internal format.
 TextureIntFormat Texture::getGLInternalFormat() const
 {
-	return GLTexture::getGLInternalFormat(getScene()->getRenderer(), m_pixelFormat);
+    return GLTexture::getGLInternalFormat(getScene()->getContext(), m_pixelFormat);
 }
 
 // set the texture parameter, such as enable extra coord for cubemap...

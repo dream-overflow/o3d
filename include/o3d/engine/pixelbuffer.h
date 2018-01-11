@@ -11,24 +11,19 @@
 #define _O3D_PIXELBUFFER_H
 
 #include "scene/sceneentity.h"
-#include "o3d/core/debug.h"
-#include "glextensionmanager.h"
-#include "o3d/core/memorydbg.h"
+#include "bufferobject.h"
 
 namespace o3d {
 
-class Context;
+class Texture2D;
 
-//---------------------------------------------------------------------------------------
-//! @class PixelBuffer
-//-------------------------------------------------------------------------------------
-//! Pixel buffer object base class. The data type is FLOAT.
-//---------------------------------------------------------------------------------------
-class O3D_API PixelBuffer
+/**
+ * @brief Pixel buffer object base class. The data type is FLOAT.
+ * @todo Texture to PBO transfert
+ */
+class O3D_API PixelBuffer : public BufferObject
 {
 public:
-
-	static const UInt32 BUFFER_SIZE = 0x8764;
 
 	enum Type
 	{
@@ -36,53 +31,14 @@ public:
 		PIXEL_UNPACK_BUFFER = 0x88EC
 	};
 
-	//! Buffer storage type.
-	enum Storage
-	{
-		STATIC_DRAW = 0x88E4,    //!< If the data changes rarely.
-		STATIC_READ = 0x88E5,    //!< If the data changes rarely.
-		STATIC_COPY = 0x88E6,    //!< If the data changes rarely.
-		DYNAMIC_DRAW = 0x88E8,   //!< If the data changes up to once per frame.
-		DYNAMIC_READ = 0x88E9,   //!< If the data changes up to once per frame.
-		DYNAMIC_COPY = 0x88EA,   //!< If the data changes up to once per frame.
-		STREAM_DRAW = 0x88E0,    //!< If the data changes up to once per draw.
-		STREAM_READ = 0x88E1,    //!< If the data changes up to once per draw.
-		STREAM_COPY = 0x88E2     //!< If the data changes up to once per draw.
-	};
-
-	//! Buffer lock mode.
-	enum LockMode
-	{
-		READ_ONLY = 0x88B8,    //!< Lock in read only.
-		WRITE_ONLY = 0x88B9,   //!< Lock in write only.
-		READ_WRITE = 0x88BA    //!< Lock in read and write.
-	};
-/*
 	//! Constructor.
-	PixelBuffer(
-			BaseObject *parent,
-			Storage storageType = STATIC_COPY);
+    PixelBuffer(Context *context, Storage storageType = STATIC_COPY);
 
 	//! Destructor. Release the PBO.
 	~PixelBuffer();
 
 	//! Release the PBO content and identifier.
 	void release();
-
-	//! Get the parent object (read only).
-	inline const BaseObject* getParent() const { return m_parent; }
-	//! Get the parent object.
-	inline BaseObject* getParent() { return m_parent; }
-
-	//! Get the scene parent.
-	Scene* getScene();
-	//! Get the scene parent (read only).
-	const Scene* getScene() const;
-
-	//! Get the gl context (read only).
-	inline const Context* getContext() const { return m_context; }
-	//! Get the gl context.
-	inline Context* getContext() { return m_context; }
 
 	//-----------------------------------------------------------------------------------
 	// Parameters
@@ -91,14 +47,8 @@ public:
 	//! Return the number of element in our buffer.
 	inline UInt32 getCount() const { return m_count; }
 
-	//! Return the OpenGL buffer identifier.
-	inline UInt32 getBufferId() const { return m_bufferId; }
-
 	//! Return how/where the buffer is stored.
 	inline Storage getStorageType() const { return m_storageType; }
-
-	//! Return TRUE if the buffer exist.
-    inline Bool exists() const { return (m_bufferId != O3D_UNDEFINED); }
 
 	//! Return TRUE if the buffer is currently locked.
 	inline Bool isLocked() const { return (m_lockCount > 0); }
@@ -158,9 +108,7 @@ public:
 	//! Bind the PBO if necessary and copy its content to the texture.
     //! @param data Data to store or nullptr to only allocate.
 	//! @param dontUnbind Don't process to the unbound if TRUE.
-	void copyToTexture(Texture *texture, Bool dontUnbind = False);
-
-	// TODO texture to PBO function
+    void copyToTexture(Texture2D *texture, Bool dontUnbind = False);
 
 	//! Fill the entire buffer data using a Lock/Unlock.
 	//! @note Prefer the usage of Update which can be done faster.
@@ -169,13 +117,11 @@ public:
 	//! @note Bind the VBO if necessary, then the current VBO is changed.
 	void fill(const Float* data, UInt32 count)
 	{
-		if (data)
-		{
-			Float* bufferPtr = lock(0, 0, WRITE_ONLY);
+        if (data) {
+            Float* bufferPtr = lock(0, 0, MAP_WRITE);
 
 			// Check if we have a buffer to write to
-			if (bufferPtr)
-			{
+            if (bufferPtr) {
 				memcpy(bufferPtr, data,count*sizeof(Float));
 			}
 
@@ -205,10 +151,7 @@ public:
 	//! @param flags Locking mode (read, write, rw).
 	//! @return Pointer on locked area.
 	//! @note Bind the PBO if necessary, then the current PBO is changed.
-	Float* lock(
-			UInt32 offset = 0,
-			UInt32 size = 0,
-			LockMode flags = READ_WRITE);
+    Float* lock(UInt32 offset = 0, UInt32 size = 0, LockFlags flags = MAP_READ | MAP_WRITE);
 
 	//! Unlock the buffer after a previous Lock.
 	//! @note Bind the PBO if necessary, then the current PBO is changed.
@@ -220,21 +163,15 @@ public:
 
 private:
 
-	BaseObject *m_parent;
-	Context *m_context;
+    UInt32 m_count;         //!< Number of element in the buffer.
+    Storage m_storageType;  //!< Where this buffer is stored.
 
-	UInt32 m_bufferId;
+    UInt32 m_lockCount;     //!< Count the number of lock time.
+    UInt32 m_lockFlags;     //!< If locked, the current lock mode.
 
-	UInt32 m_count;      //!< Number of element in the buffer.
-	Storage m_storageType;   //!< Where this buffer is stored.
-
-	UInt32 m_lockCount;  //!< Count the number of lock time.
-	LockMode m_lockMode;     //!< If locked, the current lock mode.
-
-	Float *m_mapped;     //!< Current locked pointer address.**/
+    Float *m_mapped;        //!< Current locked pointer address.**/
 };
 
 } // namespace o3d
 
 #endif // _O3D_PIXELBUFFER_H
-

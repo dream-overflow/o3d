@@ -58,8 +58,9 @@ void FrameBuffer::create(
 	PixelFormat colorFormat,
 	Bool dontUnbind)
 {
-	if (m_bufferId != O3D_UNDEFINED)
+    if (m_bufferId != O3D_UNDEFINED) {
 		release();
+    }
 
 	// Generate the buffer identifier (not really created at this time, it need a call to bind)
 	glGenFramebuffers(1, (GLuint*)&m_bufferId);
@@ -67,19 +68,21 @@ void FrameBuffer::create(
 	m_dimension.set(width, height);
 	
 	m_colorFormat = colorFormat;
-    m_internalFormat = GLTexture::getGLInternalFormat(m_context->getRenderer(), m_colorFormat);
+    m_internalFormat = GLTexture::getGLInternalFormat(m_context, m_colorFormat);
 
     m_context->bindFrameBuffer(m_bufferId);
 
-	if (!dontUnbind)
+    if (!dontUnbind) {
         m_context->bindFrameBuffer(0);
+    }
 }
 
 // Create the FBO. Need a call to Bind() to really create it after this method.
 void FrameBuffer::create(UInt32 width, UInt32 height, Bool dontUnbind)
 {
-	if (m_bufferId != O3D_UNDEFINED)
+    if (m_bufferId != O3D_UNDEFINED) {
 		release();
+    }
 
 	// Generate the buffer identifier (not really created at this time, it need a call to bind)
 	glGenFramebuffers(1, (GLuint*)&m_bufferId);
@@ -419,7 +422,7 @@ void FrameBuffer::attachColorRender(Attachment where)
 	attachment->pixelFormat = m_colorFormat;
 	attachment->where = where;
 	attachment->dataSize = ((m_dimension.x() * m_dimension.y()) *
-        GLTexture::getInternalPixelSize(m_context->getRenderer(), m_colorFormat)) >> 3;
+        GLTexture::getInternalPixelSize(m_context, m_colorFormat)) >> 3;
 
 	// create a new render buffer
 	glGenRenderbuffers(1, &attachment->renderId);
@@ -449,9 +452,7 @@ void FrameBuffer::attachDepthStencilRender(Format format)
 	O3D_ASSERT(isValid());
     O3D_ASSERT(m_context->getCurrentFrameBuffer() == m_bufferId);
 
-    Renderer *renderer = m_context->getRenderer();
-
-	Attachment where = DEPTH_ATTACHMENT;
+    Attachment where = DEPTH_ATTACHMENT;
 
 	switch (format)	{
         case DEPTH_U16:
@@ -513,7 +514,7 @@ void FrameBuffer::attachDepthStencilRender(Format format)
 	}
 
 	attachment->dataSize = ((m_dimension.x() * m_dimension.y()) *
-		GLTexture::getInternalPixelSize(renderer, attachment->pixelFormat)) >> 3;
+        GLTexture::getInternalPixelSize(m_context, attachment->pixelFormat)) >> 3;
 
 	// create a new render buffer
 	glGenRenderbuffers(1, &attachment->renderId);
@@ -521,7 +522,7 @@ void FrameBuffer::attachDepthStencilRender(Format format)
 
 	glRenderbufferStorage(
 		GL_RENDERBUFFER,
-		GLTexture::getGLInternalFormat(renderer, attachment->pixelFormat),
+        GLTexture::getGLInternalFormat(m_context, attachment->pixelFormat),
 		m_dimension.x(),
 		m_dimension.y());
 

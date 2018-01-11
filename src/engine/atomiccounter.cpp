@@ -92,7 +92,7 @@ void AtomicCounter::update()
                 GL_ATOMIC_COUNTER_BUFFER,
                 0,
                 sizeof(GLuint) * m_count,
-                GL_MAP_READ_BIT);
+                MAP_READ);
 
     // copy locally
     memcpy(m_counters, userCounters, sizeof(GLuint) * m_count);

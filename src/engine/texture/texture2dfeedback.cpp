@@ -8,6 +8,7 @@
  */
 
 #include "o3d/engine/precompiled.h"
+#include "o3d/engine/glextensionmanager.h"
 #include "o3d/engine/glextdefines.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/texture/texture2d.h"
@@ -68,7 +69,7 @@ void Texture2DFeedback::create(UInt32 readBuffer, PixelFormat pf)
 	m_readBuffer = readBuffer;
 
 	// create PBO
-	glGenBuffers(2,(GLuint*)m_buffersId);
+    glGenBuffers(2, (GLuint*)m_buffersId);
 
 	O3D_GALLOC(MemoryManager::GPU_PBO, m_buffersId[0], 0);
 	m_context->bindPixelPackBuffer(m_buffersId[0]);
@@ -79,7 +80,7 @@ void Texture2DFeedback::create(UInt32 readBuffer, PixelFormat pf)
 
     m_mapped = nullptr;
 
-    m_format = GLTexture::getGLFormat(getScene()->getRenderer(), pf);
+    m_format = GLTexture::getGLFormat(m_context, pf);
     m_type = GLTexture::getGLType(pf);
 	m_pixelFormat = pf;
 
@@ -124,7 +125,7 @@ void Texture2DFeedback::setBox(const Box2i &box)
 
 	UInt32 size = (m_box.width() * m_box.height() * GLTexture::getPixelSize(m_pixelFormat)) >> 3;
 	UInt32 dbgSize = (m_box.width() * m_box.height() * GLTexture::getInternalPixelSize(
-								   getScene()->getRenderer(), m_pixelFormat)) >> 3;
+                                   getScene()->getContext(), m_pixelFormat)) >> 3;
 
 	// allocate PBO if necessary
     if (size != m_size) {
@@ -160,7 +161,7 @@ void Texture2DFeedback::update()
 
 	glReadBuffer(m_readBuffer);
 
-    // many solutions : glGetTexImage the less efficien and works only with the full surface
+    // many solutions : glGetTexImage the less efficient and works only with the full surface
     // and not availables on GLES.
     // @todo uses glGetTextureSubImage if GL 4.5+ the most efficient
     // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetTextureSubImage.xhtml
@@ -211,7 +212,8 @@ const UInt8* Texture2DFeedback::lock(UInt32 size, UInt32 offset)
 
 	m_context->bindPixelPackBuffer(pbo);
 
-    m_mapped = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY)) + offset;
+    // m_mapped = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY)) + offset;
+    m_mapped = reinterpret_cast<UInt8*>(glMapBufferRange(GL_PIXEL_PACK_BUFFER, offset, size, PixelBuffer::MAP_READ));
 
 	return m_mapped;
 }
@@ -235,7 +237,8 @@ const UInt8* Texture2DFeedback::lock(UInt32 size)
 
 	m_context->bindPixelPackBuffer(pbo);
 
-    m_mapped = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY));
+    // m_mapped = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, PixelBuffer::READ_ONLY));
+    m_mapped = reinterpret_cast<UInt8*>(glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0, size, PixelBuffer::MAP_READ));
 
 	return m_mapped;
 }

@@ -142,7 +142,7 @@ void Texture2DStreaming::setTexture(Texture2D *texture, UInt32 level)
 
 		if (m_texture.isValid())
 		{
-			m_format = GLTexture::getGLFormat(getScene()->getRenderer(), m_texture->getPixelFormat());
+            m_format = GLTexture::getGLFormat(m_context, m_texture->getPixelFormat());
 			m_type = GLTexture::getGLType(m_texture->getPixelFormat());
 
 			m_level = o3d::clamp(level, m_texture->getMinLevel(), m_texture->getMaxLevel());
@@ -154,20 +154,19 @@ void Texture2DStreaming::update(UInt8 *data, UInt32 size)
 {
 	UInt32 pboA, pboB;
 
-	if (!m_state)
+    if (!m_state) {
 		O3D_ERROR(E_InvalidParameter("Object must be created before"));
+    }
 
-	if (size != m_size)
+    if (size != m_size) {
 		O3D_ERROR(E_InvalidParameter("Size must be equal to m_size"));
+    }
 
-	if (m_currPBO)
-	{
+    if (m_currPBO) {
 		pboA = m_buffersId[1];
 		pboB = m_buffersId[0];
 		m_currPBO = False;
-	}
-	else
-	{
+    } else {
 		pboA = m_buffersId[0];
 		pboB = m_buffersId[1];
 		m_currPBO = True;
@@ -190,8 +189,8 @@ void Texture2DStreaming::update(UInt8 *data, UInt32 size)
 
 	m_context->bindPixelUnpackBuffer(pboB);
 
-	UInt8 *src = reinterpret_cast<UInt8*>(
-		glMapBuffer(GL_PIXEL_UNPACK_BUFFER, PixelBuffer::WRITE_ONLY));
+    // UInt8 *src = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_UNPACK_BUFFER, PixelBuffer::WRITE_ONLY));
+    UInt8 *src = reinterpret_cast<UInt8*>(glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0, size, PixelBuffer::MAP_WRITE));
 
 	// update the content of the other PBO
 	memcpy(src, data, size);
@@ -207,20 +206,19 @@ void Texture2DStreaming::update(UInt8 *data, UInt32 size, UInt32 offset)
 {
 	UInt32 pboA, pboB;
 
-	if (!m_state)
+    if (!m_state) {
 		O3D_ERROR(E_InvalidParameter("Object must be created before"));
+    }
 
-	if (size+offset > m_size)
+    if (size+offset > m_size) {
 		O3D_ERROR(E_InvalidParameter("Size+offset must be less or equal to m_size"));
+    }
 
-	if (m_currPBO)
-	{
+    if (m_currPBO) {
 		pboA = m_buffersId[1];
 		pboB = m_buffersId[0];
 		m_currPBO = False;
-	}
-	else
-	{
+    } else {
 		pboA = m_buffersId[0];
 		pboB = m_buffersId[1];
 		m_currPBO = True;
@@ -243,8 +241,8 @@ void Texture2DStreaming::update(UInt8 *data, UInt32 size, UInt32 offset)
 
 	m_context->bindPixelUnpackBuffer(pboB);
 
-	UInt8 *src = reinterpret_cast<UInt8*>(
-		glMapBuffer(GL_PIXEL_UNPACK_BUFFER, PixelBuffer::WRITE_ONLY)) + offset;
+    // UInt8 *src = reinterpret_cast<UInt8*>(glMapBuffer(GL_PIXEL_UNPACK_BUFFER, PixelBuffer::WRITE_ONLY)) + offset;
+    UInt8 *src = reinterpret_cast<UInt8*>(glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, offset, size, PixelBuffer::MAP_WRITE));
 
 	// update the content of the other PBO
 	memcpy(src, data, size);
@@ -255,4 +253,3 @@ void Texture2DStreaming::update(UInt8 *data, UInt32 size, UInt32 offset)
 	m_context->bindPixelUnpackBuffer(0);
 	m_texture->unbind();
 }
-

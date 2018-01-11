@@ -30,13 +30,22 @@ public:
      */
     enum Storage
     {
-        STATIC = 0x88E4,    //!< If the data changes rarely.
-        DYNAMIC = 0x88E8,   //!< If the data changes up to once per frame.
-        STREAMED = 0x88E0   //!< If the data changes up to once per draw.
+        STATIC_DRAW = 0x88E4,    //!< If the data changes rarely.
+        STATIC_READ = 0x88E5,    //!< If the data changes rarely.
+        STATIC_COPY = 0x88E6,    //!< If the data changes rarely.
+        DYNAMIC_DRAW = 0x88E8,   //!< If the data changes up to once per frame.
+        DYNAMIC_READ = 0x88E9,   //!< If the data changes up to once per frame.
+        DYNAMIC_COPY = 0x88EA,   //!< If the data changes up to once per frame.
+        STREAM_DRAW = 0x88E0,    //!< If the data changes up to once per draw.
+        STREAM_READ = 0x88E1,    //!< If the data changes up to once per draw.
+        STREAM_COPY = 0x88E2,    //!< If the data changes up to once per draw.
+        STATIC = STATIC_DRAW,    //!< Synonym for STATIC_DRAW.
+        DYNAMIC = DYNAMIC_DRAW,  //!< Synonym for DYNAMIC_DRAW.
+        STREAMED = STREAM_DRAW   //!< Synonym for STREAMED_DRAW.
     };
 
     /**
-     * @brief Lock/map flags.
+     * @brief Prefered lock/map flags (based on glMapBufferRange).
      */
     enum LockFlags
     {
@@ -48,6 +57,16 @@ public:
         MAP_UNSYNCHRONIZED = 0x0020,
         MAP_PERSISTENT = 0x0040,
         MAP_COHERENT = 0x0080
+    };
+
+    /**
+     * @brief Deprecated lock/map modes (based on glMapBuffer).
+     */
+    enum LockMode
+    {
+        READ_ONLY = 0x88B8,    //!< Lock in read only.
+        WRITE_ONLY = 0x88B9,   //!< Lock in write only.
+        READ_WRITE = 0x88BA    //!< Lock in read and write.
     };
 
     friend constexpr LockFlags operator|(LockFlags a, LockFlags b)

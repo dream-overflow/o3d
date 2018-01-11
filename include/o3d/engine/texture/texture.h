@@ -130,7 +130,6 @@ public:
 	//! Virtual destructor.
 	virtual ~Texture();
 
-
 	//-----------------------------------------------------------------------------------
 	// Texture generation
 	//-----------------------------------------------------------------------------------
@@ -179,7 +178,6 @@ public:
 	//! log2(max(width,height)) it will stop to this limit without warning.
     virtual Bool addMipsLevels(UInt32 minLevel, UInt32 maxLevel);
 
-
 	//-----------------------------------------------------------------------------------
 	// General settings
 	//-----------------------------------------------------------------------------------
@@ -189,8 +187,7 @@ public:
 	//! Set the filtering mode.
 	inline void setFiltering(FilteringMode filtering)
 	{
-		if (filtering != m_filtering)
-		{
+        if (filtering != m_filtering) {
 			m_filtering = filtering;
 			m_updateFlags |= UPDATE_FILTERING;
 		}
@@ -201,8 +198,7 @@ public:
 	//! Get the warp mode.
     inline void setWrap(WrapMode warp)
 	{
-        if (warp != m_wrap)
-		{
+        if (warp != m_wrap) {
             m_wrap = warp;
             m_updateFlags |= UPDATE_WRAPMODE;
 		}
@@ -213,8 +209,7 @@ public:
 	//! Set the anisotropic factor.
 	inline void setAnisotropy(Float value)
 	{
-		if (value != m_anisotropy)
-		{
+        if (value != m_anisotropy) {
 			m_anisotropy = value;
 			m_updateFlags |= UPDATE_ANISOTROPY;
 		}
@@ -241,10 +236,11 @@ public:
 	//! Check if mipmaps level are generated for this texture.
 	inline Bool isMipMaps() const
 	{
-		if ((m_width > 1) || (m_height > 1))
+        if ((m_width > 1) || (m_height > 1)) {
 			return (m_maxLevel > m_minLevel);
-		else
+        } else {
 			return True;
+        }
 	}
 
 	//! get the texture width
@@ -280,8 +276,8 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

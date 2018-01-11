@@ -15,7 +15,6 @@
 #include "o3d/core/architecture.h"
 #include "o3d/engine/glextensionmanager.h"
 #include "o3d/engine/context.h"
-#include "o3d/engine/renderer.h"
 
 using namespace o3d;
 
@@ -107,10 +106,10 @@ UInt32 GLTexture::loadTexture1D(
 	// main texture
 	pic.bindMipMapLvl(0);
 
-	UInt32 pixelSizeBpp = getInternalPixelSize(glContext->getRenderer(), pic.getPixelFormat());
+    UInt32 pixelSizeBpp = getInternalPixelSize(glContext, pic.getPixelFormat());
 
-	UInt32 format = getGLFormat(glContext->getRenderer(), pic.getPixelFormat());
-	Int32 internalFormat = getGLInternalFormat(glContext->getRenderer(), pic.getPixelFormat());
+    UInt32 format = getGLFormat(glContext, pic.getPixelFormat());
+    Int32 internalFormat = getGLInternalFormat(glContext, pic.getPixelFormat());
 	DataType type = getGLType(pic.getPixelFormat());
 
 	// not compressed picture
@@ -228,10 +227,10 @@ UInt32 GLTexture::loadTexture2D(
 	// main texture
 	pic.bindMipMapLvl(0);
 
-	UInt32 pixelSizeBpp = getInternalPixelSize(glContext->getRenderer(), pic.getPixelFormat());
+    UInt32 pixelSizeBpp = getInternalPixelSize(glContext, pic.getPixelFormat());
 
-	UInt32 format = getGLFormat(glContext->getRenderer(), pic.getPixelFormat());
-	Int32 internalFormat = getGLInternalFormat(glContext->getRenderer(), pic.getPixelFormat());
+    UInt32 format = getGLFormat(glContext, pic.getPixelFormat());
+    Int32 internalFormat = getGLInternalFormat(glContext, pic.getPixelFormat());
 	DataType type = getGLType(pic.getPixelFormat());
 
 	// not compressed picture
@@ -374,10 +373,10 @@ void GLTexture::loadTexCubeMapSide(
 	// main texture
 	pic.bindMipMapLvl(0);
 
-	UInt32 pixelSizeBpp = getInternalPixelSize(glContext->getRenderer(), pic.getPixelFormat());
+    UInt32 pixelSizeBpp = getInternalPixelSize(glContext, pic.getPixelFormat());
 
-	UInt32 format = getGLFormat(glContext->getRenderer(), pic.getPixelFormat());
-	Int32 internalFormat = getGLInternalFormat(glContext->getRenderer(), pic.getPixelFormat());
+    UInt32 format = getGLFormat(glContext, pic.getPixelFormat());
+    Int32 internalFormat = getGLInternalFormat(glContext, pic.getPixelFormat());
 	DataType type = getGLType(pic.getPixelFormat());
 
 	// not compressed picture
@@ -558,12 +557,12 @@ UInt32 GLTexture::loadTextureCubeMap(
 	return sizeCount;
 }
 
-TextureFormat GLTexture::getGLFormat(const Renderer *renderer, PixelFormat pixelFormat)
+TextureFormat GLTexture::getGLFormat(const Context */*context*/, PixelFormat pixelFormat)
 {
     return formatsMap[pixelFormat].format;
 }
 
-TextureIntFormat GLTexture::getGLInternalFormat(const Renderer *renderer, PixelFormat pixelFormat)
+TextureIntFormat GLTexture::getGLInternalFormat(const Context */*context*/, PixelFormat pixelFormat)
 {
     return formatsMap[pixelFormat].intFormat;
 }
@@ -578,7 +577,7 @@ UInt32 GLTexture::getPixelSize(PixelFormat pixelFormat)
 	return formatsMap[pixelFormat].dataBitsPerPixel;
 }
 
-UInt32 GLTexture::getInternalPixelSize(const Renderer *renderer, PixelFormat pixelFormat)
+UInt32 GLTexture::getInternalPixelSize(const Context */*context*/, PixelFormat pixelFormat)
 {
     return formatsMap[pixelFormat].intBitsPerPixel;
 }

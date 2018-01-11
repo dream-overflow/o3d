@@ -11,29 +11,23 @@
 #include "o3d/engine/pixelbuffer.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
+#include "o3d/engine/texture/texture2d.h"
 #include "o3d/engine/glextdefines.h"
+#include "o3d/engine/glextensionmanager.h"
 
 using namespace o3d;
-/*
+
 PixelBuffer::PixelBuffer(
-		BaseObject *parent,
-		Storage storageType):
-		m_parent(parent),
-        m_context(nullptr),
-		m_bufferId(O3D_UNDEFINED),
-		m_count(0),
-		m_storageType(storageType),
-		m_lockCount(0),
-		m_lockMode(READ_ONLY),
-        m_mapped(nullptr)
+        Context *context,
+        Storage storageType) :
+    BufferObject(context),
+    m_count(0),
+    m_storageType(storageType),
+    m_lockCount(0),
+    m_lockFlags(0),
+    m_mapped(nullptr)
 {
-	if (!m_parent)
-		O3D_ERROR(E_NullPointer("Parent must be a valid pointer"));
 
-	if (!o3d::typeOf<Scene>(m_parent->getTopLevelParent()))
-		O3D_ERROR(E_InvalidParameter("Top level parent must be the scene"));
-
-	m_context = reinterpret_cast<Scene*>(m_parent->getTopLevelParent())->getContext();
 }
 
 PixelBuffer::~PixelBuffer()
@@ -43,8 +37,7 @@ PixelBuffer::~PixelBuffer()
 
 void PixelBuffer::release()
 {
-	if (m_bufferId != O3D_UNDEFINED)
-	{
+    if (m_bufferId != O3D_UNDEFINED) {
 		O3D_ASSERT(m_lockCount == 0);
 
 		O3D_GFREE(MemoryManager::GPU_PBO, m_bufferId);
@@ -56,37 +49,21 @@ void PixelBuffer::release()
 	}
 }
 
-// Get the scene parent.
-Scene* PixelBuffer::getScene()
-{
-	return reinterpret_cast<Scene*>(m_parent->getTopLevelParent());
-}
-
-// Get the scene parent (read only).
-const Scene* PixelBuffer::getScene() const
-{
-	return reinterpret_cast<Scene*>(m_parent->getTopLevelParent());
-}
-
-// Bind the PBO if necessary.
 void PixelBuffer::bindPackBuffer() const
 {
 	m_context->bindPixelPackBuffer(m_bufferId);
 }
 
-// Bind the PBO if necessary.
 void PixelBuffer::bindUnpackBuffer() const
 {
 	m_context->bindPixelUnpackBuffer(m_bufferId);
 }
 
-// Unbind the PBO (bind the PBO 0).
 void PixelBuffer::unbindPackBuffer() const
 {
 	m_context->bindPixelPackBuffer(0);
 }
 
-// Unbind the PBO (bind the PBO 0).
 void PixelBuffer::unbindUnpackBuffer() const
 {
 	m_context->bindPixelUnpackBuffer(0);
@@ -101,48 +78,47 @@ void PixelBuffer::create(
 #ifdef O3D_GPU_MEMORY_MANAGER
 	Bool realloc = False;
 
-	if (m_bufferId != O3D_UNDEFINED)
+    if (m_bufferId != O3D_UNDEFINED) {
 		realloc = True;
+    }
 #endif
 
 	// Generate the buffer if necessary
-	if (m_bufferId == O3D_UNDEFINED)
-		glGenBuffers(1,(GLuint*)&m_bufferId);
+    if (m_bufferId == O3D_UNDEFINED) {
+        glGenBuffers(1, (GLuint*)&m_bufferId);
+    }
 
 	bindPackBuffer();
 
-	// simply perform an update
-	if ((count == m_count) && (storageType == m_storageType))
-	{
+    // simply perform an update or create
+    if ((count == m_count) && (storageType == m_storageType)) {
 		glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, m_count*sizeof(Float), data);
-	}
-	// or a create
-	else
-	{
+    } else {
 		// Define global parameters
 		m_count = count;
 		m_storageType = storageType;
 
 	#ifdef O3D_GPU_MEMORY_MANAGER
-		if (realloc)
+        if (realloc) {
 			O3D_GREALLOC(MemoryManager::GPU_PBO, m_bufferId, getDataSize());
-		else
+        } else {
 			O3D_GALLOC(MemoryManager::GPU_PBO, m_bufferId, getDataSize());
+        }
 	#endif
 
 		glBufferData(GL_PIXEL_UNPACK_BUFFER, getDataSize(), data, storageType);
 	}
 
-	if (!dontUnbind)
+    if (!dontUnbind) {
 		unbindPackBuffer();
+    }
 }
 
 void PixelBuffer::getData(Float *data, UInt32 offset, UInt32 count)
 {
 	O3D_ASSERT(data);
 
-	if (data)
-	{
+    if (data) {
 		bindUnpackBuffer();
 		glGetBufferSubData(GL_PIXEL_UNPACK_BUFFER, offset*sizeof(Float), count*sizeof(Float), data);
 	}
@@ -150,85 +126,87 @@ void PixelBuffer::getData(Float *data, UInt32 offset, UInt32 count)
 
 void PixelBuffer::update(const Float* data, UInt32 offset, UInt32 count)
 {
-	if (m_lockCount > 0)
+    if (m_lockCount > 0) {
 		O3D_ERROR(E_InvalidOperation("Cannot update the content of a locked PBO"));
+    }
 
-	if (data)
-	{
+    if (data) {
 		bindPackBuffer();
 		glBufferSubData(GL_PIXEL_PACK_BUFFER, offset*sizeof(Float), count*sizeof(Float), data);
 	}
 }
 
-Float* PixelBuffer::lock(
-		UInt32 offset,
-		UInt32 size,
-		LockMode flags)
+Float* PixelBuffer::lock(UInt32 offset, UInt32 size, LockFlags flags)
 {
-	// already locked ?
-	if (m_lockCount > 0)
-	{
-		// with the same mode ?
-		if (flags == m_lockMode)
-		{
-			++m_lockCount;
-			return m_mapped + offset;
-		}
-		else
-			O3D_ERROR(E_InvalidOperation("Cannot lock twice time the same PBO with different policy"));
-	}
-	else
-	{
-		m_context->bindPixelUnpackBuffer(m_bufferId);
-		m_mapped = reinterpret_cast<Float*>(glMapBuffer(GL_PIXEL_UNPACK_BUFFER, flags));
+    if (size == 0) {
+        size = (m_count - offset) * sizeof(Float);
+    }
 
-        // Return null if buffer is really null
-		if (m_mapped)
-		{
-			m_lockMode = flags;
+    // already locked ?
+    if (m_lockCount > 0) {
+        // with the same mode ?
+        if (flags == m_lockFlags) {
+        ++m_lockCount;
+        return m_mapped + offset;
+        } else {
+        O3D_ERROR(E_InvalidOperation("Cannot lock twice time the same PBO with different policy"));
+        }
+    } else {
+        bindPackBuffer();
 
-			++m_lockCount;
-			return m_mapped + offset;
-		}
-		else
-            return nullptr;
-	}
+        // prefer map buffer range (support offet + size and GL ES compatible)
+        m_mapped = reinterpret_cast<Float*>(glMapBufferRange(GL_PIXEL_PACK_BUFFER, offset, size, flags));
+
+        if (m_mapped) {
+            m_lockFlags = flags;
+
+            ++m_lockCount;
+            return m_mapped;
+        }
+
+        return nullptr;
+    }
 }
 
 void PixelBuffer::unlock()
 {
-	if (m_lockCount > 0)
-	{
+    if (m_lockCount > 0) {
 		--m_lockCount;
 
-		if (m_lockCount == 0)
-		{
+        if (m_lockCount == 0) {
 			m_context->bindPixelUnpackBuffer(m_bufferId);
 			glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
 		}
 	}
 }
 
-void PixelBuffer::copyToTexture(Texture *texture, Bool dontUnbind)
+void PixelBuffer::copyToTexture(Texture2D *texture, Bool dontUnbind)
 {
-	if (m_bufferId == 0)
+    if (m_bufferId == 0) {
 		O3D_ERROR(E_InvalidPrecondition("PixelBuffer must be valid"));
+    }
 
-    if (texture == nullptr)
+    if (texture == nullptr) {
 		O3D_ERROR(E_InvalidPrecondition("Texture must be valid"));
+    }
 
 	// bind the texture and PBO
 	texture->bind();
 	m_context->bindPixelUnpackBuffer(m_bufferId);
 
+    UInt32 format = GLTexture::getGLFormat(m_context, texture->getPixelFormat());
+    // Int32 internalFormat = GLTexture::getGLInternalFormat(m_context, texture->getPixelFormat());
+    DataType type = GLTexture::getGLType(texture->getPixelFormat());
+
 	// copy pixels from PBO to texture object. uses offset instead of pointer
 	glTexSubImage2D((GLenum)texture->getTextureType(), 0, 0, 0,
 		texture->getWidth(), texture->getHeight(),
-	    texture->getGLFormat(), texture->getGLType(),
+        format, type,
 	    0);
 
-	if (!dontUnbind)
+    if (!dontUnbind) {
 		m_context->bindPixelUnpackBuffer(0);
+    }
 }
 
 Bool PixelBuffer::checkData()
@@ -238,5 +216,4 @@ Bool PixelBuffer::checkData()
 	Int32 bufferSize = 0;
 	glGetBufferParameteriv(GL_PIXEL_UNPACK_BUFFER, BUFFER_SIZE, (GLint*)&bufferSize);
 	return (bufferSize > 0);
-}*/
-
+}

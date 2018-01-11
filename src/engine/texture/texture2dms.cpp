@@ -172,8 +172,8 @@ Bool Texture2DMS::create(
     if ((Int32)samples > getScene()->getContext()->getTextureMaxSamples())
         O3D_ERROR(E_IndexOutOfRange("Number of samples"));
 
-    GLint internalFormat = GLTexture::getGLInternalFormat(getScene()->getRenderer(), textureFormat);
-    UInt32 internalPixelSize = GLTexture::getInternalPixelSize(getScene()->getRenderer(), textureFormat);
+    GLint internalFormat = GLTexture::getGLInternalFormat(getScene()->getContext(), textureFormat);
+    UInt32 internalPixelSize = GLTexture::getInternalPixelSize(getScene()->getContext(), textureFormat);
 
     // Create the texture given its parameters
     Bool create = generateId(textureFormat, width, height, 1, 0, 0);
@@ -215,7 +215,7 @@ void Texture2DMS::resize(UInt32 width, UInt32 height, Bool dontUnbind)
     if ((width == m_width) && (height == m_height))
         return;
 
-    GLenum intFormat = GLTexture::getGLInternalFormat(getScene()->getRenderer(), m_pixelFormat);
+    GLenum intFormat = GLTexture::getGLInternalFormat(getScene()->getContext(), m_pixelFormat);
 
     getScene()->getContext()->bindTexture(TEXTURE_2D_MULTISAMPLE, m_textureId, True);
 
@@ -225,7 +225,7 @@ void Texture2DMS::resize(UInt32 width, UInt32 height, Bool dontUnbind)
     m_height = height;
 
     UInt32 internalPixelSize = GLTexture::getInternalPixelSize(
-                getScene()->getRenderer(), m_pixelFormat);
+                getScene()->getContext(), m_pixelFormat);
 
     UInt32 dbgSize = (m_width * m_height * internalPixelSize) >> 3;
     O3D_GREALLOC(MemoryManager::GPU_TEXTURE_2D_MULTISAMPLE, m_textureId, dbgSize);

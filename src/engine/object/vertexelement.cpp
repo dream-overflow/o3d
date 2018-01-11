@@ -94,10 +94,8 @@ void VertexBufferBuilder::create(ArrayBufferf &vbo)
         UInt32 numElt = m_datas.begin()->numElt;
         UInt32 dstOfs = 0;
 
-        // depending if map buffer is available or not it is used for interleaved generation
-        // but also on differents vertex elements, but at this state elements are not created
-        // so locking does not perform buffer mapping
-        if (glMapBuffer) {
+        // map or update (default to map)
+        if (1) {
             Float *vboData = vbo.lock(0, 0, BufferObject::MAP_WRITE);
 
             for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
@@ -109,10 +107,9 @@ void VertexBufferBuilder::create(ArrayBufferf &vbo)
             // interleave data into the dst VBO
             for (UInt32 s = 0; s < numElt; ++s) {
                 for (std::vector<Element>::iterator it = m_datas.begin(); it != m_datas.end(); ++it) {
-                    memcpy(
-                                vboData + dstOfs,
-                                it->lockedData + it->eltSize * s,
-                                it->eltSize * sizeof(Float));
+                    memcpy(vboData + dstOfs,
+                           it->lockedData + it->eltSize * s,
+                           it->eltSize * sizeof(Float));
 
                     dstOfs += it->eltSize;
                 }

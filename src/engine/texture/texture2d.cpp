@@ -202,10 +202,10 @@ Bool Texture2D::create(
 	if (mipmaps)
 		maxLevel = o3d::log2(o3d::max(width,height));
 
-	GLint internalFormat = GLTexture::getGLInternalFormat(getScene()->getRenderer(), textureFormat);
-	GLenum format = GLTexture::getGLFormat(getScene()->getRenderer(), bufferFormat);
+    GLint internalFormat = GLTexture::getGLInternalFormat(getScene()->getContext(), textureFormat);
+    GLenum format = GLTexture::getGLFormat(getScene()->getContext(), bufferFormat);
 	GLenum type = GLTexture::getGLType(bufferFormat);
-	UInt32 internalPixelSize = GLTexture::getInternalPixelSize(getScene()->getRenderer(), textureFormat);
+    UInt32 internalPixelSize = GLTexture::getInternalPixelSize(getScene()->getContext(), textureFormat);
 	UInt32 bufferPixelSize = GLTexture::getPixelSize(bufferFormat);
 
 	Bool compressed = False;
@@ -319,7 +319,7 @@ Bool Texture2D::update(const void *buffer, PixelFormat bufferFormat, Bool dontUn
 	setFilteringMode();
     setWrapMode();
 
-	GLenum format = GLTexture::getGLFormat(getScene()->getRenderer(), bufferFormat);
+    GLenum format = GLTexture::getGLFormat(getScene()->getContext(), bufferFormat);
 	GLenum type = GLTexture::getGLType(bufferFormat);
 	UInt32 bufferPixelSize = GLTexture::getPixelSize(bufferFormat);
 
@@ -359,8 +359,8 @@ void Texture2D::resize(UInt32 width, UInt32 height, Bool dontUnbind)
 	if ((width == m_width) && (height == m_height))
 		return;
 
-	GLenum intFormat = GLTexture::getGLInternalFormat(getScene()->getRenderer(), m_pixelFormat);
-	UInt32 format = GLTexture::getGLFormat(getScene()->getRenderer(), m_pixelFormat);
+    GLenum intFormat = GLTexture::getGLInternalFormat(getScene()->getContext(), m_pixelFormat);
+    UInt32 format = GLTexture::getGLFormat(getScene()->getContext(), m_pixelFormat);
 	GLenum type = GLTexture::getGLType(m_pixelFormat);
 
 	getScene()->getContext()->bindTexture(TEXTURE_2D, m_textureId, True);
@@ -380,7 +380,7 @@ void Texture2D::resize(UInt32 width, UInt32 height, Bool dontUnbind)
 	m_height = height;
 
 	UInt32 internalPixelSize = GLTexture::getInternalPixelSize(
-				getScene()->getRenderer(), m_pixelFormat);
+                getScene()->getContext(), m_pixelFormat);
 
 	UInt32 dbgSize = (m_width * m_height * internalPixelSize) >> 3;
 	O3D_GREALLOC(MemoryManager::GPU_TEXTURE_2D, m_textureId, dbgSize);
@@ -519,4 +519,3 @@ Bool Texture2DTask::finalize()
 	else
 		return False;
 }
-

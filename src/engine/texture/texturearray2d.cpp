@@ -197,10 +197,10 @@ Bool TextureArray2D::create(
 	if (mipmaps)
 		maxLevel = o3d::log2(o3d::max(width,height));
 
-	GLint internalFormat = GLTexture::getGLInternalFormat(getScene()->getRenderer(), textureFormat);
-	GLenum format = GLTexture::getGLFormat(getScene()->getRenderer(), bufferFormat);
+    GLint internalFormat = GLTexture::getGLInternalFormat(getScene()->getContext(), textureFormat);
+    GLenum format = GLTexture::getGLFormat(getScene()->getContext(), bufferFormat);
 	GLenum type = GLTexture::getGLType(bufferFormat);
-	UInt32 internalPixelSize = GLTexture::getInternalPixelSize(getScene()->getRenderer(), textureFormat);
+    UInt32 internalPixelSize = GLTexture::getInternalPixelSize(getScene()->getContext(), textureFormat);
 	UInt32 bufferPixelSize = GLTexture::getPixelSize(bufferFormat);
 
 	Bool compressed = False;
@@ -266,7 +266,7 @@ Bool TextureArray2D::update(const void *buffer, PixelFormat bufferFormat, Bool d
 	setFilteringMode();
 	setWrapMode();
 
-	GLenum format = GLTexture::getGLFormat(getScene()->getRenderer(), bufferFormat);
+    GLenum format = GLTexture::getGLFormat(getScene()->getContext(), bufferFormat);
 	GLenum type = GLTexture::getGLType(bufferFormat);
 	UInt32 bufferPixelSize = GLTexture::getPixelSize(bufferFormat);
 
