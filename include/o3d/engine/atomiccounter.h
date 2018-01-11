@@ -50,6 +50,18 @@ public:
     void unbind();
 
     /**
+     * @brief Bind the atomics counters at binding point.
+     * @param bindingPoint Valid binding point index.
+     */
+    void enable(UInt32 bindingPoint);
+
+    /**
+     * @brief Unbind the atomics counters from binding point.
+     * @param bindingPoint Valid binding point index.
+     */
+    void disable(UInt32 bindingPoint);
+
+    /**
      * @brief Rest the atomics counters.
      * @note Must be bound or it is bound automatically.
      */

@@ -71,14 +71,39 @@ void AtomicCounter::unbind()
     }
 }
 
+void AtomicCounter::enable(UInt32 bindingPoint)
+{
+    if (m_bufferId != O3D_UNDEFINED) {
+        glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, bindingPoint, m_bufferId);
+    }
+}
+
+void AtomicCounter::disable(UInt32 bindingPoint)
+{
+    if (m_bufferId != O3D_UNDEFINED) {
+        glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, bindingPoint, 0);
+    }
+}
+
 void AtomicCounter::reset()
 {
     if (m_context->getCurrentAtomicCounter() != m_bufferId) {
         bind();
     }
 
-    memset(m_counters, 0, m_count * sizeof(UInt32));
-    glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0 , sizeof(GLuint) * m_count, m_counters);
+   // memset(m_counters, 0, m_count * sizeof(UInt32));
+    // glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0 , sizeof(GLuint) * m_count, m_counters);
+
+    // again we map the buffer to userCounters, but this time for read-only access
+    GLuint *userCounters = (GLuint*)glMapBufferRange(
+                GL_ATOMIC_COUNTER_BUFFER,
+                0,
+                sizeof(GLuint) * m_count,
+                MAP_WRITE | MAP_INVALIDATE_BUFFER | MAP_UNSYNCHRONIZED);
+
+    memset(userCounters, 0, m_count * sizeof(GLuint));
+
+    glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
 }
 
 void AtomicCounter::update()

@@ -20,15 +20,15 @@
 namespace o3d {
 
 class OcclusionQuery;
+class AtomicCounter;
 
-//---------------------------------------------------------------------------------------
-//! @class LensEffect
-//-------------------------------------------------------------------------------------
-//! Lens effect. Can be of two kind:
-//!   - linked to a scene graph object (on a light for example with a world position)
-//!   - infinite lens effect (like the sun for example).
-//! A lens effect is compound of a glow effect, a ray effect, and of lens.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Lens effect.
+ * @details Can be of two types:
+ *  - linked to a scene graph object (on a light for example with a world position)
+ *  - infinite lens effect (like the sun for example).
+ * A lens effect is compound of a glow effect, a ray effect, and of lens.
+ */
 class O3D_API LensEffect : public EffectIntensity, public MultiEffect
 {
 public:
@@ -58,8 +58,7 @@ public:
 	//! set/get the lens source position (local)
 	inline void setPosition(const Vector3 &refPos)
 	{
-		if (!m_infinite)
-		{
+        if (!m_infinite) {
 			m_lensVector = refPos;
 			// Update the position of all glows
 			updateGlowsPositions();
@@ -70,8 +69,7 @@ public:
 	//! set/get the lens source direction (infinite)
 	inline void setDirection(const Vector3 &refDir)
 	{
-		if (m_infinite)
-		{
+        if (m_infinite) {
 			m_lensVector = refDir;
 			m_lensVector.normalize();
 
@@ -197,6 +195,9 @@ protected:
 	OcclusionQuery *m_occlusionQuery;  //!< for know what is visible
 	OcclusionQuery *m_drawQuery;  //!< for get the pixel number if all the object was visible
 
+    AtomicCounter *m_occlusionCount;
+    AtomicCounter *m_drawCount;
+
 	Float m_distance;             //!< distance between the lens effect and the camera
 
 	Bool m_infinite;              //!< is this lens effect is infinite
@@ -219,6 +220,7 @@ protected:
 
 	void createOcclusionQueries();    //!< create the occlusion test
 	void checkOcclusionQueries();     //!< make the occlusion test (transform must be defined)
+    void countVisiblesFragments();    //!< make the occlusion test with atomic counter (transform must be defined)
 	void deleteOcclusionQueries();    //!< release occlusions queries used
 	void renderOcclusionTestMesh();   //!< render the test mesh for occlusion
 	void calculateVisibilityRatio();  //!< compute the visibility ratio of this effect using occlusion queries

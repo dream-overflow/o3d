@@ -318,11 +318,11 @@ Context::Context(Renderer *renderer) :
     }
 
     O3D_MESSAGE(String("- Max combined texture image units = ") << m_maxCombinedTextureImageUnits);
-    O3D_MESSAGE(String("- Max texture image units = ") << maxTextureImageUnits);
+    O3D_MESSAGE(String("- Max texture image units =") << maxTextureImageUnits);
     O3D_MESSAGE(String("- Max combined atomic counter buffers = ") << m_maxCombinedAtomicCounterBuffers);
     O3D_MESSAGE(String("- Max atomic counter buffer bindings = ") << m_maxAtomicCounterBufferBindings);
-    O3D_MESSAGE(String("- Max atomic counters = ") << maxAtomicCounters);
-    O3D_MESSAGE(String("- Max atomic counter buffers = ") << maxAtomicCounterBuffers);
+    O3D_MESSAGE(String("- Max atomic counters =") << maxAtomicCounters);
+    O3D_MESSAGE(String("- Max atomic counter buffers =") << maxAtomicCounterBuffers);
     O3D_MESSAGE(String("- Max vertex attribs = ") << m_maxVertexAttribs);
     O3D_MESSAGE(String("- Max draw buffers = ") << m_maxDrawBuffers);
     O3D_MESSAGE(String("- Max anisotropy lvl = {0}").arg(m_maxAnisotropy, 2));

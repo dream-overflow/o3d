@@ -14,6 +14,7 @@
 #include "o3d/core/debug.h"
 #include "o3d/core/memorydbg.h"
 #include "o3d/engine/occlusionquery.h"
+#include "o3d/engine/atomiccounter.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"
@@ -34,6 +35,8 @@ LensEffect::LensEffect(BaseObject *parent) :
     m_texCoords(getScene()->getContext()),
     m_occlusionQuery(nullptr),
     m_drawQuery(nullptr),
+    m_occlusionCount(nullptr),
+    m_drawCount(nullptr),
 	m_distance(100.0f),
 	m_infinite(True),
 	m_halfSizeX(30.0f/2.0f),
@@ -61,6 +64,8 @@ LensEffect::LensEffect(BaseObject *parent, const LensFlareModel &model) :
     m_texCoords(getScene()->getContext()),
     m_occlusionQuery(nullptr),
     m_drawQuery(nullptr),
+    m_occlusionCount(nullptr),
+    m_drawCount(nullptr),
 	m_distance(100.0f),
 	m_infinite(True),
 	m_halfSizeX(30.0f/2.0f),
@@ -92,6 +97,8 @@ LensEffect::LensEffect(
         m_texCoords(getScene()->getContext()),
         m_occlusionQuery(nullptr),
         m_drawQuery(nullptr),
+        m_occlusionCount(nullptr),
+        m_drawCount(nullptr),
 		m_distance(100.0f),
 		m_infinite(True),
 		m_halfSizeX(30.0f/2.0f),
@@ -132,11 +139,25 @@ void LensEffect::createShader()
 	}
 
     if (!m_occlusionShader.instance.isDefined()) {
-		// occlusion shader
+        // occlusion shader (default implementation uses atomic counter if avaliable else fallback to occlusion query)
 		Shader *shader = getScene()->getShaderManager()->addShader("lensEffect");
 		shader->buildInstance(m_occlusionShader.instance);
 
-        m_occlusionShader.instance.assign("occlusion", "occlusion", "", Shader::BUILD_COMPILE_AND_LINK);
+// @todo a capacity helper better then checking version, extensions etc...
+//        if (getScene()->getContext()->hasCapacity(Capacity::OCCLUSION_QUERY_SAMPLES_PASS)) {
+
+//        }
+        if (0) {
+            m_occlusionShader.instance.assign("occlusion", "occlusion", "", Shader::BUILD_COMPILE_AND_LINK);
+        } else {
+            m_occlusionShader.instance.assign("occlusion", "occlusionac", "", Shader::BUILD_COMPILE_AND_LINK);
+
+            m_drawCount = new AtomicCounter(getScene()->getContext());
+            m_drawCount->create(1);
+
+            m_occlusionCount = new AtomicCounter(getScene()->getContext());
+            m_occlusionCount->create(1);
+        }
 
 		m_occlusionShader.u_modelViewProjectionMatrix = m_occlusionShader.instance.getUniformLocation("u_modelViewProjectionMatrix");
 		m_occlusionShader.a_vertex = m_occlusionShader.instance.getAttributeLocation("a_vertex");
@@ -168,6 +189,86 @@ LensEffect::~LensEffect()
 
 	removeAll();
 	deleteOcclusionQueries();
+
+    deletePtr(m_drawCount);
+    deletePtr(m_occlusionCount);
+}
+
+void LensEffect::countVisiblesFragments()
+{
+    // very similar to the pipeline using occlusion query
+    Context *glContext = getScene()->getContext();
+
+    glContext->modelView().push();
+
+    Vector3 vPosition;
+    Camera *pCam = getScene()->getActiveCamera();
+
+    if (m_infinite) {
+        vPosition = pCam->getAbsoluteMatrix().getTranslation() + m_lensVector * m_distance;
+    } else {
+        vPosition = m_lensVector;
+    }
+
+    glContext->modelView().translate(vPosition);
+    glContext->modelView().unRotate();
+
+    glContext->modelView().scale(Vector3(m_halfSizeX, m_halfSizeY, 1.f));
+
+    // Le but est de ne rien rendre a l'ecran et ne pas modifier le Z-Buffer
+    DrawContext drawContext(getScene()->getContext());
+    drawContext.disableDepthWrite();
+    drawContext.apply();
+
+    glContext->disableColorWrite();
+
+    // Si on a un lens effect infinie,
+    // On doit placer le mesh de test d'occlusion en l'infini
+    // Pour se faire, on joue sur le DepthRange
+    if (m_infinite) {
+        glContext->setInfiniteDepthRange();
+    } else {
+        glContext->setDefaultDepthRange();
+    }
+
+    // shader
+    m_occlusionShader.instance.bindShader();
+    m_occlusionShader.instance.setConstMatrix4(
+            m_occlusionShader.u_modelViewProjectionMatrix,
+            False,
+            glContext->modelViewProjection());
+
+    m_vertices.attribute(m_occlusionShader.a_vertex, 3, 0, 0);
+
+    // Count if totally visible
+    if (!m_simpleOcclusion) {
+        glContext->disableDepthTest();
+        m_drawCount->reset();
+        m_drawCount->unbind();
+        m_drawCount->enable(0);
+            renderOcclusionTestMesh();
+        m_drawCount->disable(0);
+        m_drawCount->update();
+        m_drawCount->unbind();
+    }
+
+    // Count as it will be visible
+    glContext->enableDepthTest();
+    m_occlusionCount->reset();
+    m_occlusionCount->unbind();
+    m_occlusionCount->enable(0);
+        renderOcclusionTestMesh();
+    m_occlusionCount->disable(0);
+    m_occlusionCount->update();
+    m_occlusionCount->unbind();
+
+    // shader
+    glContext->disableVertexAttribArray(m_occlusionShader.a_vertex);
+    m_occlusionShader.instance.unbindShader();
+
+    glContext->modelView().pop();
+
+    glContext->enableColorWrite();
 }
 
 void LensEffect::createOcclusionQueries()
@@ -236,8 +337,7 @@ void LensEffect::checkOcclusionQueries()
 	m_vertices.attribute(m_occlusionShader.a_vertex, 3, 0, 0);
 
 	// Fais le test d'occlusion avec un objet totalement visible
-	if (!m_simpleOcclusion)
-	{
+    if (!m_simpleOcclusion) {
 		glContext->disableDepthTest();
         m_drawQuery->begin();
 			renderOcclusionTestMesh();
@@ -288,68 +388,88 @@ void LensEffect::renderOcclusionTestMesh()
 void LensEffect::calculateVisibilityRatio()
 {
     if (m_simpleOcclusion) {
-		// Test si il faut effacer le test d'occlusions
-        if (m_drawQuery) {
-			deleteOcclusionQueries();
-		}
+        if (m_drawCount) {
+            // check result
+            m_visibilityRatio = (m_occlusionCount->getCounter(0) > 0 ? 1.0f : 0.0f);
 
-        // Test si il faut creer de nouvelles occlusions
-        if (!m_occlusionQuery) {
-			// Reset le resultat
-			m_visibilityRatio = 1.0f;
-			createOcclusionQueries();
-
-            // Effectu le test d'occlusions mais ne cherche pas a recuperer
-            // les resultats (on laisse passer au moins une frame)
-			checkOcclusionQueries();
+            // perform again
+            countVisiblesFragments();
         } else {
-            // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
-			// Si ils sont disponibles...
+            // Test si il faut effacer le test d'occlusions
+            if (m_drawQuery) {
+                deleteOcclusionQueries();
+            }
 
-			// Test si le resultat des deux occlusions sont disponibles
-            // Si le resultat n'est pas disponible, on garde l'ancien
-            if (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) {
-                // On utilise le resultat
-				m_visibilityRatio = (m_occlusionQuery->getVisibleCount() > 0 ? 1.0f : 0.0f);
+            // Test si il faut creer de nouvelles occlusions
+            if (!m_occlusionQuery) {
+                // Reset le resultat
+                m_visibilityRatio = 1.0f;
+                createOcclusionQueries();
 
-				// Re-Effectue le test d'occlusions
-				checkOcclusionQueries();
-			}
-		}
+                // Effectu le test d'occlusions mais ne cherche pas a recuperer
+                // les resultats (on laisse passer au moins une frame)
+                checkOcclusionQueries();
+            } else {
+                // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
+                // Si ils sont disponibles...
+
+                // Test si le resultat des deux occlusions sont disponibles
+                // Si le resultat n'est pas disponible, on garde l'ancien
+                if (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) {
+                    // On utilise le resultat
+                    m_visibilityRatio = (m_occlusionQuery->getVisibleCount() > 0 ? 1.0f : 0.0f);
+
+                    // Re-Effectue le test d'occlusions
+                    checkOcclusionQueries();
+                }
+            }
+        }
     } else {
-        // Test si il faut creer de nouvelles occlusions
-        if ((!m_occlusionQuery) && (!m_drawQuery)) {
-			// Reset le resultat
-			m_visibilityRatio = 1.0f;
-			createOcclusionQueries();
+        if (m_drawCount) {
+            // check result
+            if (m_drawCount->getCounter(0) > 0) {
+                m_visibilityRatio = (Float)(m_occlusionCount->getCounter(0)) / Float(m_drawCount->getCounter(0));
+            } else {
+                m_visibilityRatio = 1.0f;
+            }
 
-            // Effectu le test d'occlusions mais ne cherche pas a recuperer
-            // les resultats (on laisse passer au moins une frame)
-			checkOcclusionQueries();
-        } else if ((m_occlusionQuery) && (m_drawQuery)) {
-            // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
-			// Si ils sont disponibles...
-
-			// Test si le resultat des deux occlusions sont disponibles
-            // Si le resultat n'est pas disponible, on garde l'ancien
-			
-			// On Windows we have to perform the two check for availability otherwise 
-			// the first occlusion lock the second and we never have results...
-			m_occlusionQuery->getOcclusionType();
-
-            if ((m_drawQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) && (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE)) {
-                // On utilise le resultat
-				m_visibilityRatio = (Float)(m_occlusionQuery->getVisibleCount())/Float(m_drawQuery->getVisibleCount());
-
-				// Re-Effectu le test d'occlusions
-				checkOcclusionQueries();
-			}
+            // perform again
+            countVisiblesFragments();
         } else {
-            // Une occlusion est cree mais pas l'autre... On reset le systeme
-			O3D_MESSAGE("(m_pOcclusionQuery && m_pDrawQuery)==FALSE : Reset the occlusion");
-			deleteOcclusionQueries();
-			m_visibilityRatio = 1.0f;
-		}
+            // Test si il faut creer de nouvelles occlusions
+            if (!m_occlusionQuery && !m_drawQuery) {
+                // Reset le resultat
+                m_visibilityRatio = 1.0f;
+                createOcclusionQueries();
+
+                // Effectu le test d'occlusions mais ne cherche pas a recuperer
+                // les resultats (on laisse passer au moins une frame)
+                checkOcclusionQueries();
+            } else if (m_occlusionQuery && m_drawQuery) {
+                // Nos occlusions existent, on va pouvoir essayer de recuperer les resultats
+                // Si ils sont disponibles...
+
+                // Test si le resultat des deux occlusions sont disponibles
+                // Si le resultat n'est pas disponible, on garde l'ancien
+
+                // On Windows we have to perform the two check for availability otherwise
+                // the first occlusion lock the second and we never have results...
+                m_occlusionQuery->getOcclusionType();
+
+                if ((m_drawQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE) && (m_occlusionQuery->getOcclusionType() != OcclusionQuery::NOT_AVAILABLE)) {
+                    // On utilise le resultat
+                    m_visibilityRatio = (Float)(m_occlusionQuery->getVisibleCount())/Float(m_drawQuery->getVisibleCount());
+
+                    // Re-Effectu le test d'occlusions
+                    checkOcclusionQueries();
+                }
+            } else {
+                // Une occlusion est cree mais pas l'autre... On reset le systeme
+                O3D_WARNING("Missing one occlusion, do a reset");
+                deleteOcclusionQueries();
+                m_visibilityRatio = 1.0f;
+            }
+        }
 	}
 }
 

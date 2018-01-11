@@ -480,6 +480,7 @@ src/shaders/glsl450/lensEffect/diffuseMap_fp.glsl
 src/shaders/glsl450/lensEffect/diffuseMap_vp.glsl
 src/shaders/glsl450/lensEffect/occlusion_fp.glsl
 src/shaders/glsl450/lensEffect/occlusion_vp.glsl
+src/shaders/glsl450/lensEffect/occlusionac_fp.glsl
 src/shaders/glsl450/manifest
 src/shaders/glsl450/map2d/colorMask/default_fp.glsl
 src/shaders/glsl450/map2d/colorMask/default_vp.glsl
@@ -567,6 +568,7 @@ src/shaders/glsles320/lensEffect/diffuseMap_fp.glsl
 src/shaders/glsles320/lensEffect/diffuseMap_vp.glsl
 src/shaders/glsles320/lensEffect/occlusion_fp.glsl
 src/shaders/glsles320/lensEffect/occlusion_vp.glsl
+src/shaders/glsles320/lensEffect/occlusionac_fp.glsl
 src/shaders/glsles320/manifest
 src/shaders/glsles320/map2d/colorMask/default_fp.glsl
 src/shaders/glsles320/map2d/colorMask/default_vp.glsl
