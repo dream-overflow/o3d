@@ -10,7 +10,6 @@
 #ifndef _O3D_TEXTURE2DSTREAMING_H
 #define _O3D_TEXTURE2DSTREAMING_H
 
-#include "o3d/image/imagetype.h"
 #include "../pixelbuffer.h"
 #include "../scene/sceneentity.h"
 #include "o3d/core/box.h"
