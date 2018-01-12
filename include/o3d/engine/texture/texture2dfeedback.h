@@ -107,7 +107,6 @@ public:
 
 private:
 
-	BaseObject *m_parent;
 	Context *m_context;
 
 	Bool m_state;
