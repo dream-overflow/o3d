@@ -10,6 +10,7 @@
 #ifndef _O3D_TEXTURE2DSTREAMING_H
 #define _O3D_TEXTURE2DSTREAMING_H
 
+#include "o3d/image/imagetype.h"
 #include "../pixelbuffer.h"
 #include "../scene/sceneentity.h"
 #include "o3d/core/box.h"
@@ -21,32 +22,20 @@ namespace o3d {
 class Context;
 class Texture2D;
 
-//---------------------------------------------------------------------------------------
-//! @class Texture2DStreaming
-//-------------------------------------------------------------------------------------
-//! 2D texture streaming with two PBO.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief 2D texture streaming using double buffered PBOs.
+ */
 class O3D_API Texture2DStreaming
 {
 public:
 
 	//! Constructor.
-	Texture2DStreaming(BaseObject *parent);
+    Texture2DStreaming(Context *context);
 
-	//! Get the parent object (read only).
-	inline const BaseObject* getParent() const { return m_parent; }
-	//! Get the parent object.
-	inline BaseObject* getParent() { return m_parent; }
-
-	//! Get the scene parent.
-	Scene* getScene();
-	//! Get the scene parent (read only).
-	const Scene* getScene() const;
-
-	//! Get the gl context (read only).
-	inline const Context* getContext() const { return m_context; }
-	//! Get the gl context.
-	inline Context* getContext() { return m_context; }
+    //! Get the gl context (read only).
+    inline const Context* getContext() const { return m_context; }
+    //! Get the gl context.
+    inline Context* getContext() { return m_context; }
 
 	//! Create the PBO.
 	//! @param box Portion of the texture to update. Default is full area.
@@ -79,31 +68,34 @@ public:
 	//! Get the size of the PBO/(sub)texture in byte.
 	inline UInt32 getSize() const { return m_size; }
 
-	//! Get the GL pixel format. Valid once created.
-	inline TextureFormat getGLFormat() const { return m_format; }
+    //! Get the GL texture pixel format. Valid once created.
+    inline TextureFormat getTextureFormat() const { return m_format; }
 
 	//! Get the GL data type of the pixel format. Valid once created.
-	inline DataType getGLType() const { return m_type; }
+    inline DataType getDataType() const { return m_type; }
 
 	//! Get the PBO 0 GL identifier.
 	inline UInt32 getPBO0Id() const { return m_buffersId[0]; }
 	//! Get the PBO 1 GL identifier.
 	inline UInt32 getPBO1Id() const { return m_buffersId[1]; }
 
-	//! Update the content of the texture in streaming.
-	//! @param data Valid pointer with data to update to the PBO.
-	//! @param size Size of the data to update in bytes.
-	void update(UInt8 *data, UInt32 size);
+    /**
+     * @brief Update the content of the texture in streaming.
+     * @param data Valid pointer with data to update to the PBO.
+     * @param size Size of the data to update in bytes.
+     */
+    void update(UInt8 *data, UInt32 size);
 
-	//! Update a part of the content of the texture in streaming.
-	//! @param data Valid pointer with data to update to the PBO.
-	//! @param size Size of the data to update in bytes.
-	//! @param offset Offset of the data to update in bytes.
-	void update(UInt8 *data, UInt32 size, UInt32 offset);
+    /**
+     * @brief Update a part of the content of the texture in streaming.
+     * @param data Valid pointer with data to update to the PBO.
+     * @param size Size of the data to update in bytes.
+     * @param offset Offset of the data to update in bytes.
+     */
+    void update(UInt8 *data, UInt32 size, UInt32 offset);
 
 private:
 
-	BaseObject *m_parent;
 	Context *m_context;
 
 	Bool m_state;
@@ -111,7 +103,7 @@ private:
 
 	UInt32 m_level; //!< Mipmap level of the texture to update.
 
-	Box2i m_box;        //!< Portion of the texture to update.
+    Box2i m_box;    //!< Portion of the texture to update.
 	UInt32 m_size;  //!< Size of the PBO in bytes.
 
 	SmartObject<Texture2D> m_texture;
@@ -125,4 +117,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_TEXTURE2DSTREAMING_H
-

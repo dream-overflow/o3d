@@ -19,9 +19,8 @@
 
 using namespace o3d;
 
-Texture2DStreaming::Texture2DStreaming(BaseObject *parent) :
-	m_parent(parent),
-    m_context(nullptr),
+Texture2DStreaming::Texture2DStreaming(Context *context) :
+    m_context(context),
 	m_state(False),
 	m_level(0),
 	m_size(0),
@@ -29,44 +28,23 @@ Texture2DStreaming::Texture2DStreaming(BaseObject *parent) :
 	m_format(TF_RGBA),
 	m_type(DATA_UNSIGNED_BYTE)
 {
-	if (!m_parent)
-		O3D_ERROR(E_NullPointer("Parent must be a valid pointer"));
-
-	if (!o3d::typeOf<Scene>(m_parent->getTopLevelParent()))
-		O3D_ERROR(E_InvalidParameter("Top level parent must be the scene"));
-
-	m_context = reinterpret_cast<Scene*>(m_parent->getTopLevelParent())->getContext();
-
 	m_buffersId[0] = 0;
 	m_buffersId[1] = 0;
 }
 
-// Get the scene parent.
-Scene* Texture2DStreaming::getScene()
-{
-	return reinterpret_cast<Scene*>(m_parent->getTopLevelParent());
-}
-
-// Get the scene parent (read only).
-const Scene* Texture2DStreaming::getScene() const
-{
-	return reinterpret_cast<Scene*>(m_parent->getTopLevelParent());
-}
-
 void Texture2DStreaming::create(const Box2i &box)
 {
-	if (m_state)
+    if (m_state) {
 		release();
+    }
 
-	if (!m_texture.isValid())
+    if (!m_texture.isValid()) {
 		O3D_ERROR(E_InvalidPrecondition("Texture must be valid"));
+    }
 
-	if ((box.width() == -1) || (box.height() == -1))
-	{
+    if ((box.width() == -1) || (box.height() == -1)) {
 		m_box.set(0, 0, m_texture->getWidth(), m_texture->getHeight());
-	}
-	else
-	{
+    } else {
 		// clamp to the texture limits
 		m_box.x() = box.x() < (Int32)m_texture->getWidth() ? box.x() : 0;
 		m_box.y() = box.y() < (Int32)m_texture->getHeight() ? box.y() : 0;
@@ -75,8 +53,7 @@ void Texture2DStreaming::create(const Box2i &box)
 		m_box.height() = box.y() + box.height() <=(Int32) m_texture->getHeight() ? box.y() + box.height() : (Int32)m_texture->getHeight();
 	}
 
-	m_size = (m_box.width() * m_box.height() * GLTexture::getPixelSize(
-                 /* getScene()->getRenderer(),*/ m_texture->getPixelFormat())) >> 3;
+    m_size = (m_box.width() * m_box.height() * GLTexture::getPixelSize(m_texture->getPixelFormat())) >> 3;
 
 	glGenBuffers(2,(GLuint*)m_buffersId);
 	m_context->bindPixelUnpackBuffer(m_buffersId[0]);
@@ -99,16 +76,14 @@ void Texture2DStreaming::create(const Box2i &box)
 
 void Texture2DStreaming::release()
 {
-	if (m_buffersId[0] != 0)
-	{
+    if (m_buffersId[0] != 0) {
 		O3D_GFREE(MemoryManager::GPU_PBO, m_buffersId[0]);
 
 		m_context->deletePixelBuffer(m_buffersId[0]);
 		m_buffersId[0] = 0;
 	}
 
-	if (m_buffersId[1] != 0)
-	{
+    if (m_buffersId[1] != 0) {
 		O3D_GFREE(MemoryManager::GPU_PBO, m_buffersId[1]);
 
 		m_context->deletePixelBuffer(m_buffersId[1]);
@@ -122,10 +97,8 @@ void Texture2DStreaming::release()
 
 void Texture2DStreaming::setTexture(Texture2D *texture, UInt32 level)
 {
-	if (m_state)
-	{
-        if (texture != nullptr)
-		{
+    if (m_state) {
+        if (texture != nullptr) {
 			if ((m_texture->getPixelFormat() != texture->getPixelFormat()) ||
 				(m_texture->getWidth() != texture->getWidth()) ||
 				(m_texture->getHeight() != texture->getHeight()))
@@ -134,16 +107,14 @@ void Texture2DStreaming::setTexture(Texture2D *texture, UInt32 level)
 
 		m_texture = texture;
 		m_level = o3d::clamp(level, m_texture->getMinLevel(), m_texture->getMaxLevel());
-	}
-	else
-	{
+    } else {
 		m_texture = texture;
 		m_level = level;
 
-		if (m_texture.isValid())
-		{
+        if (m_texture.isValid()) {
+            // cache format and type
             m_format = GLTexture::getGLFormat(m_context, m_texture->getPixelFormat());
-			m_type = GLTexture::getGLType(m_texture->getPixelFormat());
+            m_type = GLTexture::getGLType(m_texture->getPixelFormat());
 
 			m_level = o3d::clamp(level, m_texture->getMinLevel(), m_texture->getMaxLevel());
 		}

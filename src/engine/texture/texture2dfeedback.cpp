@@ -17,9 +17,8 @@
 
 using namespace o3d;
 
-Texture2DFeedback::Texture2DFeedback(BaseObject *parent) :
-	m_parent(parent),
-    m_context(nullptr),
+Texture2DFeedback::Texture2DFeedback(Context *context) :
+    m_context(context),
 	m_state(False),
 	m_readBuffer(0),
 	m_size(0),
@@ -29,16 +28,6 @@ Texture2DFeedback::Texture2DFeedback(BaseObject *parent) :
 	m_type(DATA_UNSIGNED_BYTE),
     m_mapped(nullptr)
 {
-    if (!m_parent) {
-		O3D_ERROR(E_NullPointer("Parent must be a valid pointer"));
-    }
-
-    if (!o3d::typeOf<Scene>(m_parent->getTopLevelParent())) {
-		O3D_ERROR(E_InvalidParameter("Top level parent must be the scene"));
-    }
-
-	m_context = reinterpret_cast<Scene*>(m_parent->getTopLevelParent())->getContext();
-
 	m_buffersId[0] = 0;
 	m_buffersId[1] = 0;
 }
@@ -46,18 +35,6 @@ Texture2DFeedback::Texture2DFeedback(BaseObject *parent) :
 Texture2DFeedback::~Texture2DFeedback()
 {
 	release();
-}
-
-// Get the scene parent.
-Scene* Texture2DFeedback::getScene()
-{
-	return reinterpret_cast<Scene*>(m_parent->getTopLevelParent());
-}
-
-// Get the scene parent (read only).
-const Scene* Texture2DFeedback::getScene() const
-{
-	return reinterpret_cast<Scene*>(m_parent->getTopLevelParent());
 }
 
 void Texture2DFeedback::create(UInt32 readBuffer, PixelFormat pf)
@@ -124,8 +101,7 @@ void Texture2DFeedback::setBox(const Box2i &box)
 	m_box = box;
 
 	UInt32 size = (m_box.width() * m_box.height() * GLTexture::getPixelSize(m_pixelFormat)) >> 3;
-	UInt32 dbgSize = (m_box.width() * m_box.height() * GLTexture::getInternalPixelSize(
-                                   getScene()->getContext(), m_pixelFormat)) >> 3;
+	UInt32 dbgSize = (m_box.width() * m_box.height() * GLTexture::getInternalPixelSize(m_context, m_pixelFormat)) >> 3;
 
 	// allocate PBO if necessary
     if (size != m_size) {

@@ -23,28 +23,18 @@ class Context;
 class Texture2D;
 
 /**
- * @brief 2D texture feedback (read-back) with two PBO. Feedback allow to get back in
- * CPU memory or into a texture the content of a draw buffer.
+ * @brief 2D texture feedback (read-back) with double buffred PBO.
+ * Feedback allow to get back in CPU memory or into a texture the content of a draw buffer.
  */
 class O3D_API Texture2DFeedback
 {
 public:
 
 	//! Constructor.
-	Texture2DFeedback(BaseObject *parent);
+    Texture2DFeedback(Context *context);
 
 	//! Destructor. Release.
 	~Texture2DFeedback();
-
-	//! Get the parent object (read only).
-	inline const BaseObject* getParent() const { return m_parent; }
-	//! Get the parent object.
-	inline BaseObject* getParent() { return m_parent; }
-
-	//! Get the scene parent.
-	Scene* getScene();
-	//! Get the scene parent (read only).
-	const Scene* getScene() const;
 
 	//! Get the gl context (read only).
 	inline const Context* getContext() const { return m_context; }
@@ -76,10 +66,10 @@ public:
 	inline PixelFormat getPixelFormat() const { return m_pixelFormat; }
 
 	//! Get the GL pixel format. Valid once created.
-	inline TextureFormat getGLFormat() const { return m_format; }
+    inline TextureFormat getTextureFormat() const { return m_format; }
 
-	//! Get the GL data type of the pixel format. Valid once created.
-	inline DataType getGLType() const { return m_type; }
+    //! Get the data type of the pixel format. Valid once created.
+    inline DataType getDataType() const { return m_type; }
 
 	//! Get the read buffer.
 	inline UInt32 getReadBuffer() const { return m_readBuffer; }
@@ -123,10 +113,10 @@ private:
 	Bool m_state;
 	UInt32 m_buffersId[2];
 
-	UInt32 m_readBuffer; //!< Read buffer.
+    UInt32 m_readBuffer;  //!< Read buffer.
 
-	Box2i m_box;        //!< Portion of the texture to update.
-	UInt32 m_size;  //!< Size of the PBO in bytes.
+    Box2i m_box;    //!< Portion of the texture to update.
+    UInt32 m_size;  //!< Size of the PBO in bytes.
 
 	UInt32 m_next;
 

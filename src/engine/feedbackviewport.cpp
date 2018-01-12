@@ -31,7 +31,7 @@ FeedbackViewPort::FeedbackViewPort(BaseObject *parent,
 								   SceneDrawer *drawer,
 								   Texture2D* texture) :
 		ViewPort(parent, camera, drawer),
-		m_feedback(this),
+        m_feedback(getScene()->getContext()),
 		m_texture(this, texture)
 {
 	// capture the back buffer
