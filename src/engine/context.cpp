@@ -352,6 +352,44 @@ Context::Context(Renderer *renderer) :
     } else {
         O3D_MESSAGE(String("- GLSL version = ") << m_glslVersion);
     }
+
+    // Report capacities
+    #define REPORT_CAPACITY(CAP) if (m_capacities[CAP]) {  \
+        O3D_MESSAGE(String("- ") + #CAP + " = True"); }     \
+        else { O3D_MESSAGE(String("- ") + #CAP + " = False"); }
+
+    REPORT_CAPACITY(OCCLUSION_QUERY)
+    REPORT_CAPACITY(PRIMITIVE_QUERY)
+    REPORT_CAPACITY(VERTEX_ARRAY_BUFFER)
+    REPORT_CAPACITY(UNIFORM_BUFFER_OBJECT)
+    REPORT_CAPACITY(BUFFER_OBJECT_MAP_LEGACY)
+    REPORT_CAPACITY(BUFFER_OBJECT_MAP_RANGE)
+    REPORT_CAPACITY(GEOMETRY_SHADER_SUPPORT)
+    REPORT_CAPACITY(TESSELATION_SHADER_SUPPORT)
+    REPORT_CAPACITY(COMPUTE_SHADER_SUPPORT)
+    REPORT_CAPACITY(TEXTURE_1D)
+    REPORT_CAPACITY(TEXTURE_3D)
+    REPORT_CAPACITY(TEXTURE_DEPTH)
+    REPORT_CAPACITY(TEXTURE_DEPTH_STENCIL)
+    REPORT_CAPACITY(TEXTURE_STENCIL)
+    REPORT_CAPACITY(TEXTURE_ANISOTROPY)
+    REPORT_CAPACITY(TEXTURE_MULTISAMPLE)
+    REPORT_CAPACITY(COLOR_BUFFER_FLOAT)
+    REPORT_CAPACITY(COLOR_BUFFER_HALF_FLOAT)
+    REPORT_CAPACITY(INTERAL_FORMAT_QUERY)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_ATC)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_ASTC_LDR)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_ASTC_HDR)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_BPTC)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_ETC1)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_ETC2)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_PVRTC)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_RGTC)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_DXT1)
+    REPORT_CAPACITY(TEXTURE_COMPRESSION_DXT135)
+    REPORT_CAPACITY(TEXTURE_BUFFER)
+    REPORT_CAPACITY(ATOMIC_COUNTER)
+    REPORT_CAPACITY(ATOMIC_SHADER_IMAGE)
 }
 
 // Destructor
@@ -1768,7 +1806,7 @@ void Context::setupCapacities()
             m_capacities[COLOR_BUFFER_HALF_FLOAT] = True;
         }
 
-        if (vers >= 430 || GLExtensionManager::isExtensionSupported("GL_ARB_internalformat_query2")) {
+        if (vers >= 300) {
             m_capacities[INTERAL_FORMAT_QUERY] = True;
         }
 
@@ -1786,16 +1824,20 @@ void Context::setupCapacities()
             m_capacities[TEXTURE_COMPRESSION_RGTC] = True;
         }
 
-        // GL_EXT_texture_compression_dxt1
-        if (GLExtensionManager::isExtensionSupported("GL_OES_texture_compression_S3TC")) {
-            m_capacities[TEXTURE_COMPRESSION_S3TC] = True;
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_compression_dxt1")) {
+            m_capacities[TEXTURE_COMPRESSION_DXT1] = True;
         }
 
-        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_ldr")) {
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_compression_s3tc")) {
+            m_capacities[TEXTURE_COMPRESSION_DXT1] = True;
+            m_capacities[TEXTURE_COMPRESSION_DXT135] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_KHR_texture_compression_astc_ldr")) {
             m_capacities[TEXTURE_COMPRESSION_ASTC_LDR] = True;
         }
 
-        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_hdr")) {
+        if (GLExtensionManager::isExtensionSupported("GL_KHR_texture_compression_astc_hdr")) {
             m_capacities[TEXTURE_COMPRESSION_ASTC_HDR] = True;
         }
 
@@ -1907,15 +1949,20 @@ void Context::setupCapacities()
             m_capacities[TEXTURE_COMPRESSION_RGTC] = True;
         }
 
-        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_compression_s3tc")) {
-            m_capacities[TEXTURE_COMPRESSION_S3TC] = True;
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_compression_dxt1")) {
+            m_capacities[TEXTURE_COMPRESSION_DXT1] = True;
         }
 
-        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_ldr")) {
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_compression_s3tc")) {
+            m_capacities[TEXTURE_COMPRESSION_DXT1] = True;
+            m_capacities[TEXTURE_COMPRESSION_DXT135] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_KHR_texture_compression_astc_ldr")) {
             m_capacities[TEXTURE_COMPRESSION_ASTC_LDR] = True;
         }
 
-        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_hdr")) {
+        if (GLExtensionManager::isExtensionSupported("GL_KHR_texture_compression_astc_hdr")) {
             m_capacities[TEXTURE_COMPRESSION_ASTC_HDR] = True;
         }
 
