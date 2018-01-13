@@ -839,14 +839,63 @@ public:
 	//! using the current modelview and projection matrices and viewport.
 	Vector3 unprojectPoint(const Vector3 &v);
 
+    //-----------------------------------------------------------------------------------
+    // Capacity helpers
+    //-----------------------------------------------------------------------------------
+
+    /**
+     * @brief The Capacity enumeration to check with hasCapacity method.
+     */
+    enum Capacity
+    {
+        OCCLUSION_QUERY,
+        PRIMITIVE_QUERY,
+        VERTEX_ARRAY_BUFFER,
+        UNIFORM_BUFFER_OBJECT,
+        BUFFER_OBJECT_MAP_LEGACY,
+        BUFFER_OBJECT_MAP_RANGE,
+        GEOMETRY_SHADER_SUPPORT,
+        TESSELATION_SHADER_SUPPORT,
+        COMPUTE_SHADER_SUPPORT,
+        TEXTURE_1D,
+        TEXTURE_3D,
+        TEXTURE_DEPTH,          //!< Texture depth only
+        TEXTURE_DEPTH_STENCIL,  //!< Texture combined depth stencil
+        TEXTURE_STENCIL,        //!< Texture stencil only
+        TEXTURE_ANISOTROPY,
+        TEXTURE_MULTISAMPLE,
+        COLOR_BUFFER_FLOAT,
+        COLOR_BUFFER_HALF_FLOAT,
+        INTERAL_FORMAT_QUERY,
+        TEXTURE_COMPRESSION_ATC,
+        TEXTURE_COMPRESSION_ASTC_LDR,
+        TEXTURE_COMPRESSION_ASTC_HDR,
+        TEXTURE_COMPRESSION_BPTC,
+        TEXTURE_COMPRESSION_ETC1,
+        TEXTURE_COMPRESSION_ETC2,
+        TEXTURE_COMPRESSION_PVRTC,
+        TEXTURE_COMPRESSION_RGTC,
+        TEXTURE_COMPRESSION_S3TC,   //!< DXT
+        TEXTURE_BUFFER,
+        ATOMIC_COUNTER,
+        ATOMIC_SHADER_IMAGE
+    };
+
+    static const Int32 NUM_CAPACITIES = ATOMIC_SHADER_IMAGE + 1;
+
+    //! Has a specific capacity.
+    inline Bool hasCapacity(Capacity capacity) { return m_capacities[capacity]; }
+
 private:
 
+    void setupCapacities();
 	virtual void updateMatrix(const Matrix *matrix);
 
     Bool resetTexture(UInt32 id);
     Bool resetSampler(UInt32 id);
 
 	Renderer *m_renderer;           //!< Owner.
+    Bool *m_capacities;             //!< Capacities.
 
 	DrawingMode m_drawingMode;      //!< polygon drawing mode (default DrawingFilled)
 	CullingMode m_cullingMode;      //!< culling face mode (default CullingBackFace)

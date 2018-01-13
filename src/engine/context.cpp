@@ -24,9 +24,16 @@ using namespace o3d;
 // Default constructor
 Context::Context(Renderer *renderer) :
 	m_renderer(renderer),
+    m_capacities(nullptr),
+    m_currentOccQuery(nullptr),
+    m_currentVaoState(nullptr),
 	m_useSimpleDrawMode(False),
 	m_recomputeModelViewProjection(True),
-	m_recomputeNormalMatrix(True)
+    m_recomputeNormalMatrix(True),
+    m_currentTexId(nullptr),
+    m_currentSamplerId(nullptr),
+    m_currentAtomicCounterBufferBindingId(nullptr),
+    m_currentUniformBufferBindingId(nullptr)
 {
 	O3D_ASSERT(m_renderer);
 
@@ -288,6 +295,8 @@ Context::Context(Renderer *renderer) :
 	m_modelview.addObserver(this);
 	m_projection.addObserver(this);
 
+    setupCapacities();
+
     //
     // Report
     //
@@ -363,6 +372,8 @@ Context::~Context()
 	// matrix observer
 	m_modelview.removeObserver(this);
 	m_projection.removeObserver(this);
+
+    deleteArray(m_capacities);
 }
 
 // Define the current active texture unit.
@@ -1667,7 +1678,266 @@ Vector3 Context::projectPoint(const Vector3 &v)
 // unproject a point from window space to world space.
 Vector3 Context::unprojectPoint(const Vector3 &v)
 {
-	return Matrix::unprojectPoint(projection().get(), modelView().get(), m_viewPort, v);
+    return Matrix::unprojectPoint(projection().get(), modelView().get(), m_viewPort, v);
+}
+
+void Context::setupCapacities()
+{
+    const Int32 vers = m_renderer->getVersion();
+
+    m_capacities = new Bool[NUM_CAPACITIES];
+    memset(m_capacities, 0, sizeof(Bool) * NUM_CAPACITIES);
+
+    if (m_renderer->isGLES()) {
+        // GL_EXT_texture_border_clamp or vers >= 300
+        // GL_EXT_draw_elements_base_vertex or vers >= 300
+        // GL_ARB_explicit_uniform_location or vers >= 310
+        // GL_ARB_texture_multisample or vers >= 310
+        // GL_EXT_shader_integer_mix or vers >= 310
+        // GL_OES_texture_view or vers >= 310
+        // GL_OES_draw_buffers_indexed or vers >= 320
+        // GL_OES_draw_elements_base_vertex or vers >= 320
+        // GL_OES_texture_border_clamp or vers >= 320
+        // GL_OES_texture_cube_map_array or vers >= 320
+        // GL_OES_primitive_bounding or vers >= 320
+        // GL_KHR_texture_compression_astc_sliced_3d or vers >= 320
+        // GL_OES_viewport_array or vers >= 320
+        // GL_OES_copy_image or vers >= 320
+        m_capacities[OCCLUSION_QUERY] = False;
+        m_capacities[PRIMITIVE_QUERY] = False;
+
+        if (GLExtensionManager::isExtensionSupported("GL_OES_vertex_array_object")) {
+            m_capacities[VERTEX_ARRAY_BUFFER] = True;
+        }
+
+        // if (glUniformBlockBinding) {
+        if (vers >= 310 || GLExtensionManager::isExtensionSupported("GL_EXT_shader_io_blocks") ||
+            GLExtensionManager::isExtensionSupported("GL_OES_shader_io_blocks")) {
+            m_capacities[UNIFORM_BUFFER_OBJECT] = True;
+        }
+
+        m_capacities[BUFFER_OBJECT_MAP_LEGACY] = False;
+
+        if (vers >= 300) {
+            m_capacities[BUFFER_OBJECT_MAP_RANGE] = True;
+        }
+
+        if (vers >= 300 || GLExtensionManager::isExtensionSupported("GL_EXT_geometry_shader")) {
+            m_capacities[GEOMETRY_SHADER_SUPPORT] = True;
+        }
+
+        if (vers >= 310 || GLExtensionManager::isExtensionSupported("GL_EXT_tesselation_shader")) {
+            m_capacities[TESSELATION_SHADER_SUPPORT] = True;
+        }
+
+        if (vers >= 310 || GLExtensionManager::isExtensionSupported("GL_EXT_compute_shader")) {
+            m_capacities[COMPUTE_SHADER_SUPPORT] = True;
+        }
+
+        m_capacities[TEXTURE_1D] = False;
+
+        if (vers >= 300) {
+            m_capacities[TEXTURE_3D] = True;
+        }
+
+        if (vers >= 300 || GLExtensionManager::isExtensionSupported("GL_OES_depth_texture")) {
+            m_capacities[TEXTURE_DEPTH] = True;
+        }
+
+        if (vers >= 430 || GLExtensionManager::isExtensionSupported("GL_ARB_stencil_texturing")) {
+            m_capacities[TEXTURE_DEPTH_STENCIL] = True;
+        }
+
+        if (vers >= 440 || GLExtensionManager::isExtensionSupported("GL_ARB_texture_stencil8")) {
+            m_capacities[TEXTURE_STENCIL] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+            m_capacities[TEXTURE_ANISOTROPY] = True;
+        }
+
+        if (vers >= 310 || GLExtensionManager::isExtensionSupported("GL_ARB_texture_multisample")) {
+            m_capacities[TEXTURE_MULTISAMPLE] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_color_buffer_float")) {
+            m_capacities[COLOR_BUFFER_FLOAT] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_color_buffer_half_float")) {
+            m_capacities[COLOR_BUFFER_HALF_FLOAT] = True;
+        }
+
+        if (vers >= 430 || GLExtensionManager::isExtensionSupported("GL_ARB_internalformat_query2")) {
+            m_capacities[INTERAL_FORMAT_QUERY] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_IMG_texture_compression_pvrtc")) {
+            m_capacities[TEXTURE_COMPRESSION_PVRTC] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_AMD_compressed_ATC_texture") ||
+            GLExtensionManager::isExtensionSupported("GL_ATI_texture_compression_atitc")) {
+            m_capacities[TEXTURE_COMPRESSION_ATC] = True;
+        }
+
+        // GL_EXT_texture_rg
+        if (GLExtensionManager::isExtensionSupported("GL_ARB_texture_compression_rgtc")) {
+            m_capacities[TEXTURE_COMPRESSION_RGTC] = True;
+        }
+
+        // GL_EXT_texture_compression_dxt1
+        if (GLExtensionManager::isExtensionSupported("GL_OES_texture_compression_S3TC")) {
+            m_capacities[TEXTURE_COMPRESSION_S3TC] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_ldr")) {
+            m_capacities[TEXTURE_COMPRESSION_ASTC_LDR] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_hdr")) {
+            m_capacities[TEXTURE_COMPRESSION_ASTC_HDR] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_ARB_texture_compression_bptc")) {
+            m_capacities[TEXTURE_COMPRESSION_BPTC] = True;
+        }
+
+        // GL_EXT_compressed_ETC1_RGB8_sub_texture
+        if (vers >= 300 || GLExtensionManager::isExtensionSupported("GL_OES_compressed_ETC1_RGB8_texture")) {
+            m_capacities[TEXTURE_COMPRESSION_ETC1] = True;
+        }
+
+        if (vers >= 300 || GLExtensionManager::isExtensionSupported("GL_OES_compressed_ETC2_RGB8_texture")) {
+            m_capacities[TEXTURE_COMPRESSION_ETC2] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_buffer")) {
+            m_capacities[TEXTURE_BUFFER] = True;
+        }
+
+        if (vers >= 310) {
+            m_capacities[ATOMIC_COUNTER] = True;
+        }
+
+        if (vers >= 420 || GLExtensionManager::isExtensionSupported("GL_OES_shader_image_atomic")) {
+            m_capacities[ATOMIC_SHADER_IMAGE] = True;
+        }
+    } else {
+        m_capacities[OCCLUSION_QUERY] = True;
+        m_capacities[PRIMITIVE_QUERY] = True;
+
+        if (vers >= 300 || GLExtensionManager::isExtensionSupported("GL_ARB_vertex_array_object")) {
+            m_capacities[VERTEX_ARRAY_BUFFER] = True;
+        }
+
+        // if (glUniformBlockBinding) {
+        if (vers >= 310 || GLExtensionManager::isExtensionSupported("GL_ARB_uniform_buffer_object") ||
+            GLExtensionManager::isExtensionSupported("GL_ARB_shader_storage_buffer_object")) {
+            m_capacities[UNIFORM_BUFFER_OBJECT] = True;
+        }
+
+        m_capacities[BUFFER_OBJECT_MAP_LEGACY] = True;
+
+        if (vers >= 300) {
+            m_capacities[BUFFER_OBJECT_MAP_RANGE] = True;
+        }
+
+        if (vers >= 320 || GLExtensionManager::isExtensionSupported("GL_EXT_geometry_shader")) {
+            m_capacities[GEOMETRY_SHADER_SUPPORT] = True;
+        }
+
+        if (vers >= 400 || GLExtensionManager::isExtensionSupported("GL_EXT_tesselation_shader")) {
+            m_capacities[TESSELATION_SHADER_SUPPORT] = True;
+        }
+
+        if (vers >= 430 || GLExtensionManager::isExtensionSupported("GL_EXT_compute_shader")) {
+            m_capacities[COMPUTE_SHADER_SUPPORT] = True;
+        }
+
+        m_capacities[TEXTURE_1D] = True;
+        m_capacities[TEXTURE_3D] = True;
+
+        if (vers >= 300) {
+            m_capacities[TEXTURE_DEPTH] = True;
+        }
+
+        if (vers >= 430 || GLExtensionManager::isExtensionSupported("GL_ARB_stencil_texturing")) {
+            m_capacities[TEXTURE_DEPTH_STENCIL] = True;
+        }
+
+        if (vers >= 440 || GLExtensionManager::isExtensionSupported("GL_ARB_texture_stencil8")) {
+            m_capacities[TEXTURE_STENCIL] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+            m_capacities[TEXTURE_ANISOTROPY] = True;
+        }
+
+        if (vers >= 300 || GLExtensionManager::isExtensionSupported("GL_ARB_texture_multisample")) {
+            m_capacities[TEXTURE_MULTISAMPLE] = True;
+        }
+
+        if (vers >= 300) {
+            m_capacities[COLOR_BUFFER_FLOAT] = True;
+        }
+
+        if (vers >= 300) {
+            m_capacities[COLOR_BUFFER_HALF_FLOAT] = True;
+        }
+
+        if (vers >= 430 || GLExtensionManager::isExtensionSupported("GL_ARB_internalformat_query2")) {
+            m_capacities[INTERAL_FORMAT_QUERY] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_IMG_texture_compression_pvrtc")) {
+            m_capacities[TEXTURE_COMPRESSION_PVRTC] = True;
+        }
+
+        if (vers >= 420 || GLExtensionManager::isExtensionSupported("GL_ARB_texture_compression_bptc")) {
+            m_capacities[TEXTURE_COMPRESSION_BPTC] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_AMD_compressed_ATC_texture") ||
+            GLExtensionManager::isExtensionSupported("GL_ATI_texture_compression_atitc")) {
+            m_capacities[TEXTURE_COMPRESSION_ATC] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_ARB_texture_compression_rgtc")) {
+            m_capacities[TEXTURE_COMPRESSION_RGTC] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("GL_EXT_texture_compression_s3tc")) {
+            m_capacities[TEXTURE_COMPRESSION_S3TC] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_ldr")) {
+            m_capacities[TEXTURE_COMPRESSION_ASTC_LDR] = True;
+        }
+
+        if (GLExtensionManager::isExtensionSupported("KHR_texture_compression_astc_hdr")) {
+            m_capacities[TEXTURE_COMPRESSION_ASTC_HDR] = True;
+        }
+
+        if (m_renderer->getVersion() >= 430) {
+            m_capacities[TEXTURE_COMPRESSION_ETC1] = True;
+            m_capacities[TEXTURE_COMPRESSION_ETC2] = True;
+        }
+
+        if (vers >= 310 || GLExtensionManager::isExtensionSupported("GL_EXT_texture_buffer") ||
+            GLExtensionManager::isExtensionSupported("GL_ARB_texture_buffer_object")) {
+            m_capacities[TEXTURE_BUFFER] = True;
+        }
+
+        if (vers >= 420 || GLExtensionManager::isExtensionSupported("GL_ARB_shader_atomic_counters")) {
+            m_capacities[ATOMIC_COUNTER] = True;
+        }
+
+        if (vers >= 420 || GLExtensionManager::isExtensionSupported("GL_ARB_shader_image_load_store") ||
+            GLExtensionManager::isExtensionSupported("GL_EXT_shader_image_load_store")) {
+            m_capacities[ATOMIC_SHADER_IMAGE] = True;
+        }
+    }
 }
 
 void Context::updateMatrix(const Matrix */*matrix*/)

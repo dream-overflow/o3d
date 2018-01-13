@@ -259,4 +259,3 @@ Matrix4 ProjectionMatrix::pickMatrix(
   More details are available on the following site:
   http://www1.cs.columbia.edu/~cs4160/slides/transformations.pdf
 ---------------------------------------------------------------------------------------*/
-

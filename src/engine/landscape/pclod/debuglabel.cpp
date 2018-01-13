@@ -23,8 +23,6 @@
 
 using namespace o3d;
 
-static const Int32 A_VERTEX = 0;
-static const Int32 A_TEXCOORDS1 = 1;
 static const Int32 U_MODELVIEWPROJECT_MATRIX = 0;
 static const Int32 U_AMBIENT = 1;
 static const Int32 U_AMBIENT_MAP = 2;

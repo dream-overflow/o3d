@@ -22,11 +22,9 @@ namespace o3d {
 class Matrix;
 class BSphere;
 
-//---------------------------------------------------------------------------------------
-//! @class MatrixObserver
-//-------------------------------------------------------------------------------------
-//! Matrix common observer.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Matrix common observer.
+ */
 class O3D_API MatrixObserver
 {
 public:
@@ -35,11 +33,9 @@ public:
 	virtual void updateMatrix(const Matrix *matrix) = 0;
 };
 
-//---------------------------------------------------------------------------------------
-//! @class Matrix
-//-------------------------------------------------------------------------------------
-//! Matrix common class and tools.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Matrix common class and tools.
+ */
 class O3D_API Matrix
 {
 public:
@@ -125,12 +121,11 @@ protected:
 	MatrixObserver *m_observer;
 };
 
-//---------------------------------------------------------------------------------------
-//! @class ModelViewMatrix
-//-------------------------------------------------------------------------------------
-//! Modelview matrix wrapper and manager. An instance is provided by the context.
-//! The modelview matrix mode is always the default.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Modelview matrix wrapper and manager.
+ * @details An instance is provided by the context.
+ * The modelview matrix mode is always the default.
+ */
 class O3D_API ModelViewMatrix : public Matrix
 {
 
@@ -240,14 +235,12 @@ private:
 	std::stack<Matrix4> m_matrixStack;  //!< Extra list of pushed matrix.
 };
 
-//---------------------------------------------------------------------------------------
-//! @class ProjectionMatrix
-//-------------------------------------------------------------------------------------
-//! Projection matrix wrapper and manager.
-//! An instance is provided by the context.
-//! The projection matrix operation let the modelview matrix of the context as default
-//! matrix mode.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Projection matrix wrapper and manager.
+ * @details An instance is provided by the context.
+ * The projection matrix operation let the modelview matrix of the context as default
+ * matrix mode.
+ */
 class O3D_API ProjectionMatrix : public Matrix
 {
 public:
@@ -287,4 +280,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MATRIX_H
-
