@@ -31,13 +31,10 @@ void CollisionManager::addCollision(
 {
     Collision* pCollision = nullptr;
 
-    if (m_garbageCollector.empty())
-	{
+    if (m_garbageCollector.empty()) {
 		// create a new collision
 		pCollision = new Collision;
-	}
-	else
-	{
+    } else {
 		// get it from the garbage collector
         pCollision = m_garbageCollector.front();
         m_garbageCollector.pop_front();
@@ -56,21 +53,18 @@ void CollisionManager::addCollision(
 // get a collider beetween two entity
 ABCCollider* CollisionManager::getCollider(PhysicEntity& entity0, PhysicEntity& Entity1)
 {
-    for (IT_ColliderList it = m_colliderList.begin() ; it != m_colliderList.end() ; ++it)
-	{
+    for (IT_ColliderList it = m_colliderList.begin() ; it != m_colliderList.end() ; ++it) {
 		ABCCollider* pCollider = *it;
 
-        if ((&pCollider->getCollideE0() == &entity0 &&  &pCollider->getCollideE1() == &Entity1) ||
-            (&pCollider->getCollideE0() == &Entity1 &&  &pCollider->getCollideE1() == &entity0))
+        if ((&pCollider->getCollideE0() == &entity0 && &pCollider->getCollideE1() == &Entity1) ||
+            (&pCollider->getCollideE0() == &Entity1 && &pCollider->getCollideE1() == &entity0)) {
 			return pCollider;
+        }
 	}
 
     return nullptr;
 }
 
-//---------------------------------------------------------------------------------------
-// add a physic entity to the collision manager
-//---------------------------------------------------------------------------------------
 void CollisionManager::addPhysicEntity(PhysicEntity& entityA)
 {
 	IT_PhysicEntityList it;
@@ -78,33 +72,33 @@ void CollisionManager::addPhysicEntity(PhysicEntity& entityA)
     switch (entityA.getPhysicType())
     {
     //case PhysicEntity::PHYSIC_PARTICULE_MANAGER:
-    //	for (it = m_entityList.begin() ; it != m_entityList.end() ; ++it)
-	//	{
+    //	for (it = m_entityList.begin() ; it != m_entityList.end() ; ++it) {
     //		PhysicEntity* entityB = *it;
-    //		if (entityB->getPhysicType() == PhysicEntity::PHYSIC_DEFLECTOR)
+    //		if (entityB->getPhysicType() == PhysicEntity::PHYSIC_DEFLECTOR) {
     //			m_ColliderList.push_back(new DeflectorCollider((ParticuleManager&)entityA,
     //															  (ABCDeflector&)*entityB));
+    //      }
 	//	}
 	//	break;
 
     case PhysicEntity::PHYSIC_RIGID_BODY:
-        for (it = m_entityList.begin() ; it != m_entityList.end() ; ++it)
-		{
+        for (it = m_entityList.begin() ; it != m_entityList.end() ; ++it) {
             PhysicEntity* entityB = *it;
-            if (entityB->getPhysicType() == PhysicEntity::PHYSIC_RIGID_BODY)
+            if (entityB->getPhysicType() == PhysicEntity::PHYSIC_RIGID_BODY) {
                 m_colliderList.push_back(new RigidBodyCollider(
                                              (RigidBody&)entityA,
                                              (RigidBody&)*entityB));
+            }
 		}
         break;
 
     //case PhysicEntity::PHYSIC_DEFLECTOR:
-    //	for (it = m_entityList.begin() ; it != m_entityList.end() ; ++it)
-	//	{
+    //	for (it = m_entityList.begin() ; it != m_entityList.end() ; ++it) {
     //		PhysicEntity* entityB = *it;
-    //		if (entityB->getPhysicType() == PhysicEntity::PHYSIC_PARTICULE_MANAGER)
+    //		if (entityB->getPhysicType() == PhysicEntity::PHYSIC_PARTICULE_MANAGER) {
     //			m_ColliderList.push_back(new DeflectorCollider((ParticuleManager&)*entityA,
     //															  (ABCDeflectorABC&)entityB));
+    //      }
 	//	}
 	//	break;
 
@@ -116,20 +110,15 @@ void CollisionManager::addPhysicEntity(PhysicEntity& entityA)
     m_entityList.push_back(&entityA);
 }
 
-//---------------------------------------------------------------------------------------
-// resolve all collisions
-//---------------------------------------------------------------------------------------
 void CollisionManager::resolveCollisions()
 {
 	// detect collision on each pair of objects involved
-    for (IT_ColliderList itCollider = m_colliderList.begin() ; itCollider != m_colliderList.end() ; ++itCollider)
-    {
+    for (IT_ColliderList itCollider = m_colliderList.begin() ; itCollider != m_colliderList.end() ; ++itCollider) {
 		(*itCollider)->performCollisionDetection(*this);
     }
 
 	// resolve each collision
-    for (IT_CollisionList itCollision = m_collisionList.begin() ; itCollision != m_collisionList.end() ; ++itCollision)
-	{
+    for (IT_CollisionList itCollision = m_collisionList.begin() ; itCollision != m_collisionList.end() ; ++itCollision) {
 		Collision* pCollision = *itCollision;
 		pCollision->resolve();
 
@@ -139,4 +128,3 @@ void CollisionManager::resolveCollisions()
 
     m_collisionList.clear();
 }
-

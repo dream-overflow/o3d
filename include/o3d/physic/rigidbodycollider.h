@@ -42,6 +42,15 @@ public:
     inline RigidBody& getRigidBody0() { return *m_body0; }
     inline RigidBody& getRigidBody1() { return *m_body1; }
 
+    // @todo integration of OPCODE
+//    AABBTreeCollider& getTreeCollider();
+//    BVTCache& getCollisionCache();
+
+//    Bool getLastCollisionStatus();
+//    UInt32 getNumCollidingPairs();
+
+//    static void collisionCallback(udword triangleindex, VertexPointers& triangle, udword userdata);
+
 protected:
 
     RigidBody* m_body0;   //!< first rigid body
@@ -54,4 +63,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_RIGIDBODYCOLLIDER_H
-

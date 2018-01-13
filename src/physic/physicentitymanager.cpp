@@ -46,19 +46,89 @@ void PhysicEntityManager::setMaxSubSteps(UInt32 maxSubSteps)
     m_maxSubSteps = maxSubSteps;
 }
 
+void PhysicEntityManager::resetAccumulators()
+{
+    for (IT_TemplateManager it = begin() ; it != end() ; ++it) {
+        (*it).second->resetAccumulators();
+    }
+}
+
+void PhysicEntityManager::updatePhysicVerlet()
+{
+    IT_TemplateManager it;
+
+    // force computations
+    for (it = begin(); it != end(); ++it) {
+        (*it).second->processForce(m_forceManager);
+    }
+
+    // @todo constraint manager
+
+    // resolve deflexions and collisions
+    m_collisionManager.resolveCollisions();
+
+    // resolve physic
+    for (it = begin(); it != end(); ++it) {
+        (*it).second->updatePhysicVerlet(m_time, m_timeStep);
+    }
+}
+
+void PhysicEntityManager::updatePhysicEuler()
+{
+    IT_TemplateManager it;
+
+    // force computations
+    for (it = begin(); it != end(); ++it) {
+        (*it).second->processForce(m_forceManager);
+    }
+
+    // @todo constraint manager
+
+    // resolve deflexions and collisions
+    m_collisionManager.resolveCollisions();
+
+    // resolve physic
+    for (it = begin(); it != end(); ++it) {
+        (*it).second->updatePhysicEuler(m_time, m_timeStep);
+    }
+}
+
+void PhysicEntityManager::updatePhysicRK4()
+{
+    IT_TemplateManager it;
+
+    for (UInt32 nStepRK4 = 1; nStepRK4 < 5; ++nStepRK4) {
+        // force computations
+        for (it = begin(); it != end(); ++it) {
+            (*it).second->processForce(m_forceManager);
+        }
+
+        // @todo constraint manager
+
+        // resolve deflexions and collisions only for the last step
+        if (nStepRK4 == 4) {
+            m_collisionManager.resolveCollisions();
+        }
+
+        // resolve physic
+        for (it = begin(); it != end(); ++it) {
+            (*it).second->updatePhysicRK4(m_time, m_timeStep, nStepRK4);
+        }
+    }
+}
+
 // add a physic entity and specify the collision test
 Int32 PhysicEntityManager::addElement(PhysicEntity* pElt, Bool checkCollision)
 {
-	if (!pElt) return -1;
+    if (!pElt) {
+        return -1;
+    }
 
-    if (checkCollision)
-	{
+    if (checkCollision) {
 		pElt->setCollision(True);
 		// add the object to the collision manager
         m_collisionManager.addPhysicEntity(*pElt);
-	}
-	else
-	{
+    } else {
 		pElt->setCollision(False);
 	}
 
@@ -74,8 +144,7 @@ void PhysicEntityManager::update()
 	// time to compute
     Int64 curTime = System::getTime();
 
-    if (m_lastUpdate < 0)
-	{
+    if (m_lastUpdate < 0) {
 		// first update
 		resetAccumulators();
         m_lastUpdate = curTime;
@@ -92,8 +161,7 @@ void PhysicEntityManager::update()
     m_timeStepRest = deltaT - nbrUpdate * m_timeStep;
 
     // avoid spiral of death
-    if (nbrUpdate > m_maxSubSteps)
-    {
+    if (nbrUpdate > m_maxSubSteps) {
         nbrUpdate = m_maxSubSteps;
         O3D_WARNING("Physical integration update time step overflow");
     }
@@ -101,20 +169,20 @@ void PhysicEntityManager::update()
     m_lastUpdate = curTime;
 
 	// physics computation
-    for (UInt32 numUpdate = 0; numUpdate < nbrUpdate; ++numUpdate)
-	{
-        if (m_solverType == PHYSIC_SOLVER_VERLET)
+    for (UInt32 numUpdate = 0; numUpdate < nbrUpdate; ++numUpdate) {
+        if (m_solverType == PHYSIC_SOLVER_VERLET) {
             updatePhysicVerlet();
-        else if (m_solverType == PHYSIC_SOLVER_EULER)
+        } else if (m_solverType == PHYSIC_SOLVER_EULER) {
 			updatePhysicEuler();
-        else if (m_solverType == PHYSIC_SOLVER_RK4)
+        } else if (m_solverType == PHYSIC_SOLVER_RK4) {
             updatePhysicRK4();
+        }
 
         // total time spent during integration
         m_time += m_timeStep;
     }
 
-    // TODO is it interesting to interpolate with the remaining time ?
+    // @todo is it interesting to interpolate with the remaining time ?
     // uses of slerp for quaterion and linear interpolation for vectors
     //interpolatePhysicXxx(m_timeStepRest / m_timeStep);
 
@@ -159,4 +227,3 @@ Bool PhysicEntityManager::readFromFile(InStream &is)
 
 	return True;
 }
-

@@ -716,6 +716,19 @@ public:
     //! Get the current bound atomic counter object.
     inline UInt32 getCurrentAtomicCounter() const { return m_currentAtomicCounter; }
 
+    /**
+     * @brief bindAtomicCounterBufferBase
+     * @param id Atomic counter buffer id.
+     * @param index Atomic counter binding point index.
+     */
+    void bindAtomicCounterBase(UInt32 id, UInt32 index);
+
+    /**
+     * @brief Get current atomic counter id for a binding index.
+     * @param id Atomic counter buffer id.
+     */
+    UInt32 getCurrentAtomicCounterBase(UInt32 index);
+
     //-----------------------------------------------------------------------------------
     // Uniform buffer
     //-----------------------------------------------------------------------------------
@@ -845,7 +858,6 @@ private:
 
     Blending m_blending;            //!< blending function and equation manager
 
-    Bool m_isTexture2D;                //!< texture 2D
     Bool m_isDepthTest;                //!< depth buffer
     AntiAliasingMethod m_antiAliasing; //!< anti-aliasing mode
 
@@ -925,6 +937,7 @@ private:
     Int32 m_maxStageAtomicCounterBuffers[NUM_STAGES];
 
     UInt32 m_currentAtomicCounter;
+    UInt32 *m_currentAtomicCounterBufferBindingId;
 
     // Uniform buffer
     Int32 m_maxUniformBufferBindings;

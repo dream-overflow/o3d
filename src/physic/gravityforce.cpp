@@ -16,38 +16,30 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(GravityForce, PHYSIC_FORCE_GRAVITY, ABCForce)
 
-/*---------------------------------------------------------------------------------------
-  process the force on the object
----------------------------------------------------------------------------------------*/
 void GravityForce::processObject(class RigidBody& rigidBody)
 {
     Float mass = rigidBody.getMass();
-    rigidBody.addForce(m_Gravity * mass);
+    rigidBody.addForce(m_gravity * mass);
 }
 
-/*---------------------------------------------------------------------------------------
-  process the force on the particule
----------------------------------------------------------------------------------------*/
-//void GravityForce::processParticule(class Particule& Particule)
+//void GravityForce::processParticule(class Particule& particule)
 //{
-//	Float InvMass = Particule.getInvMass();
-//	if (InvMass > 0.f) Particule.addForce(m_Gravity / InvMass);
+//	Float invMass = particule.getInvMass();
+//	if (invMass > 0.f) {
+//      particule.addForce(m_gravity / invMass);
+//  }
 //}
 
-/*---------------------------------------------------------------------------------------
-  serialisation
----------------------------------------------------------------------------------------*/
 Bool GravityForce::writeToFile(OutStream &os)
 {
     ABCForce::writeToFile(os);
-    os << m_Gravity;
+    os << m_gravity;
 	return True;
 }
 
 Bool GravityForce::readFromFile(InStream &is)
 {
     ABCForce::readFromFile(is);
-    is >> m_Gravity;
+    is >> m_gravity;
 	return True;
 }
-

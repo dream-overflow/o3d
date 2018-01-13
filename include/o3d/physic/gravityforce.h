@@ -17,11 +17,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class GravityForce
-//-------------------------------------------------------------------------------------
-//! The gravity can be applied to an object or a particule
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The gravity can be applied to an object or a particule
+ */
 class O3D_API GravityForce : public ABCForce
 {
 public:
@@ -31,36 +29,36 @@ public:
 	//! Constructor
 	GravityForce(
 		BaseObject *pParent,
-        const Vector3& gravity = Vector3(0.f ,-9.81f, 0.f)) :
+        const Vector3& gravity = Vector3(0.f, -9.81f, 0.f)) :
 			ABCForce(pParent),
-			m_Gravity(gravity)
-	{}
+			m_gravity(gravity)
+    {
+    }
 
 	//! Set/Get the gravity
-	inline void setGravity(const Vector3 &force)	{ m_Gravity = force; }
-	inline const Vector3& getGravity()const { return m_Gravity; }
-	inline       Vector3& getGravity()      { return m_Gravity; }
+    inline void setGravity(const Vector3 &force) { m_gravity = force; }
+	inline const Vector3& getGravity()const { return m_gravity; }
+    inline Vector3& getGravity() { return m_gravity; }
 
 	//! Add/Sub force to the gravity
-	inline Vector3& addGravity(const Vector3 &force) { return m_Gravity += force; }
-	inline Vector3& subGravity(const Vector3 &force) { return m_Gravity -= force; }
+	inline Vector3& addGravity(const Vector3 &force) { return m_gravity += force; }
+	inline Vector3& subGravity(const Vector3 &force) { return m_gravity -= force; }
 
 	//! process the force on the object
-	virtual void processObject(class RigidBody& RigidBody);
+    virtual void processObject(class RigidBody& RigidBody) override;
 
 	//! process the force on the particule
-	//virtual void processParticule(class Particule& Particule);
+    //virtual void processParticule(class Particule& Particule) override;
 
 	//! serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
-	Vector3 m_Gravity;    //!< gravity vector (F=m*g)
+	Vector3 m_gravity;    //!< gravity vector (F=m*g)
 };
 
 } // namespace o3d
 
 #endif // _O3D_GRAVITYFORCE_H
-

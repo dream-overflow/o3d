@@ -13,7 +13,7 @@
 #include "o3d/core/memorydbg.h"
 #include "o3d/core/baseobject.h"
 
-//#include "o3d/engine/object/Mesh.h"
+//#include "o3d/engine/object/mesh.h"
 
 #include <list>
 #include <vector>
@@ -33,11 +33,9 @@ typedef T_BSphereVector::iterator IT_BSphereVector;
 typedef std::vector<Plane> T_PlaneVector;
 typedef T_PlaneVector::iterator IT_PlaneVector;
 
-//---------------------------------------------------------------------------------------
-//! @class PhysicModel
-//-------------------------------------------------------------------------------------
-//! A physic model is used for collision detection
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A physic model is used for collision detection
+ */
 class O3D_API PhysicModel : public SceneEntity
 {
 public:
@@ -83,7 +81,7 @@ protected:
 
 //	SmartObject<Mesh> m_pMesh;    //!< the mesh collider model
 
-	Bool m_isApprox;          //!< is the model use of bounding volume and not polygon detection
+    Bool m_isApprox;  //!< is the model use of bounding volume and not polygon detection
 
 	T_AABBoxVector    m_AABBox;   //!< vector that contain all bounding box of the physic model for collision
 	T_BSphereVector   m_BSphere;  //!< vector that contain all bounding sphere of the physic model for collision
@@ -97,4 +95,3 @@ typedef T_PhysicModelList::const_iterator CIT_PhysicModelList;
 } // namespace o3d
 
 #endif // _O3D_PHYSICMODEL_H
-

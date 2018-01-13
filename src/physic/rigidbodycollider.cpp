@@ -13,10 +13,11 @@
 using namespace o3d;
 
 RigidBodyCollider::RigidBodyCollider(RigidBody& body0, RigidBody& body1) :
+    ABCCollider(),
     m_body0(&body0),
     m_body1(&body1)
 {
-    // TODO
+    // @todo
 }
 
 RigidBodyCollider::~RigidBodyCollider()
@@ -26,16 +27,15 @@ RigidBodyCollider::~RigidBodyCollider()
 
 void RigidBodyCollider::performCollisionDetection(CollisionManager& collisionManager)
 {
-	// TODO
+    // @todo
 }
 
 PhysicEntity& RigidBodyCollider::getCollideE0()
 {
-    return *m_collideE0; // TODO
+    return *m_collideE0;
 }
 
 PhysicEntity& RigidBodyCollider::getCollideE1()
 {
-    return *m_collideE1; // TODO
+    return *m_collideE1;
 }
-

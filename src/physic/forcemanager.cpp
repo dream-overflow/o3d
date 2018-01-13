@@ -20,16 +20,12 @@ using namespace o3d;
 O3D_IMPLEMENT_ABSTRACT_CLASS1(ABCForce, PHYSIC_FORCE, SceneObject)
 O3D_IMPLEMENT_DYNAMIC_CLASS1(ForceManager, PHYSIC_FORCE_MANAGER, SceneTemplateManager<ABCForce>)
 
-/*---------------------------------------------------------------------------------------
-  serialisation
----------------------------------------------------------------------------------------*/
 Bool ForceManager::writeToFile(OutStream &os)
 {
     os << PHYSIC_FORCE_MANAGER;
     os << getNumElt();
 
-	for (IT_TemplateManager it = m_MyMap.begin() ; it != m_MyMap.end() ; ++it)
-	{
+    for (IT_TemplateManager it = m_MyMap.begin() ; it != m_MyMap.end() ; ++it) {
         ClassFactory::writeToFile(os,*(*it).second);
 	}
 
@@ -47,16 +43,15 @@ Bool ForceManager::readFromFile(InStream &is)
 	Int32 size;
     is >> size;
 
-	for (Int32 i = 0; i < size ; ++i)
-	{
+    for (Int32 i = 0; i < size ; ++i) {
         ABCForce* pForce = (ABCForce*)ClassFactory::readFromFile(is, this);
 
-		if (!pForce)
+        if (!pForce) {
 			return False;
+        }
 
 		addElement(pForce);
 	}
 
 	return True;
 }
-

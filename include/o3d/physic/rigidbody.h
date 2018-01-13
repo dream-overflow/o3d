@@ -74,10 +74,11 @@ public:
 	//! get the inverse of the mass
 	inline Float getInvMass()
 	{
-        if (m_mass < o3d::Limits<Float>::epsilon())
+        if (m_mass < o3d::Limits<Float>::epsilon()) {
 			return 1.f / o3d::Limits<Float>::epsilon();
-		else
+        } else {
             return 1 / m_mass;
+        }
 	}
 
 	//! set the mass
@@ -85,8 +86,9 @@ public:
 	{
         m_mass = mass;
 		// re-compute parameters depending on the mass
-        if (m_mass > o3d::Limits<Float>::epsilon())
+        if (m_mass > o3d::Limits<Float>::epsilon()) {
             m_speed = m_P / m_mass;
+        }
 	}
 
 	//! get the inertia body matrix
@@ -205,9 +207,9 @@ public:
     //! set the local force manager of this object
     inline void setForceManager(ForceManager* pForceManager) { m_forceManager = pForceManager; }
 
-    virtual void updatePhysicVerlet(Double t, Double dt);
-    virtual void updatePhysicEuler(Double t, Double dt);
-    virtual void updatePhysicRK4(Double t, Double dt, UInt32 numStepRK4);
+    virtual void updatePhysicVerlet(Double t, Double dt) override;
+    virtual void updatePhysicEuler(Double t, Double dt) override;
+    virtual void updatePhysicRK4(Double t, Double dt, UInt32 numStepRK4) override;
 
 	//! process a manager of force
 	virtual void processForce(ForceManager& ForceManager);
@@ -244,7 +246,7 @@ public:
     inline const Vector3& getTorqueImpulseAccumulator() const { return m_torqueImpulseAccumulator; }
 
 	//! Reset force and impulse accumulators
-	virtual void resetAccumulators();
+    virtual void resetAccumulators() override;
 
 	//-----------------------------------------------------------------------------------
 	// mass management
@@ -297,8 +299,8 @@ public:
 
     // serialisation
 
-    virtual Bool writeToFile(OutStream &os);
-    virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -357,4 +359,3 @@ typedef T_RigidBodyVector::const_iterator CIT_RigidBodyVector;
 } // namespace o3d
 
 #endif // _O3D_RIGIDBODY_H
-

@@ -100,62 +100,54 @@ void GBuffer::setFormat(GBuffer::BufferType buffer, GBuffer::BufferFormat format
         O3D_ERROR(E_InvalidOperation("GBuffer exists. This operation can only be done before its creation."));
     }
 
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
-        if (buffer == DEPTH_BUFFER) {
-            switch(format) {
-                case FORMAT_8:
-                case FORMAT_8I:
-                case FORMAT_8UI:
-                case FORMAT_16I:
-                case FORMAT_16UI:
-                case FORMAT_32I:
-                case FORMAT_32UI:
-                    O3D_ERROR(E_InvalidOperation("This format is not allowed on depth buffer."));
-                    break;
+    if (buffer == DEPTH_BUFFER) {
+        switch(format) {
+            case FORMAT_8:
+            case FORMAT_8I:
+            case FORMAT_8UI:
+            case FORMAT_16I:
+            case FORMAT_16UI:
+            case FORMAT_32I:
+            case FORMAT_32UI:
+                O3D_ERROR(E_InvalidOperation("This format is not allowed on depth buffer."));
+                break;
 
-                case FORMAT_16F:
-                case FORMAT_24:
-                case FORMAT_32F:
-                case FORMAT_24_8:
-                case FORMAT_32F_8:
-                    break;
-            }
-        } else {
-            switch(format) {
-                case FORMAT_8:
-                case FORMAT_8I:
-                case FORMAT_8UI:
-                case FORMAT_16I:
-                case FORMAT_16UI:
-                case FORMAT_32I:
-                case FORMAT_32UI:
-                    O3D_ERROR(E_InvalidOperation("This format is not allowed on depth buffer."));
-                    break;
-
-                case FORMAT_16F:
-                case FORMAT_24:
-                case FORMAT_32F:
-                case FORMAT_24_8:
-                case FORMAT_32F_8:
-                    O3D_ERROR(E_InvalidOperation("This format is not allowed on color buffer."));
-                    break;
-            }
+            case FORMAT_16F:
+            case FORMAT_24:
+            case FORMAT_32F:
+            case FORMAT_24_8:
+            case FORMAT_32F_8:
+                break;
         }
-
-        // @todo MSAA format
-        m_buffers[buffer].format = format;
     } else {
-        O3D_ERROR(E_IndexOutOfRange("Buffer format"));
+        switch(format) {
+            case FORMAT_8:
+            case FORMAT_8I:
+            case FORMAT_8UI:
+            case FORMAT_16I:
+            case FORMAT_16UI:
+            case FORMAT_32I:
+            case FORMAT_32UI:
+                O3D_ERROR(E_InvalidOperation("This format is not allowed on depth buffer."));
+                break;
+
+            case FORMAT_16F:
+            case FORMAT_24:
+            case FORMAT_32F:
+            case FORMAT_24_8:
+            case FORMAT_32F_8:
+                O3D_ERROR(E_InvalidOperation("This format is not allowed on color buffer."));
+                break;
+        }
     }
+
+    // @todo MSAA format
+    m_buffers[buffer].format = format;
 }
 
 GBuffer::BufferFormat GBuffer::getFormat(GBuffer::BufferType buffer) const
 {
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
-        return m_buffers[buffer].format;
-    } else {
-        O3D_ERROR(E_IndexOutOfRange("Buffer format"));
-    }
+    return m_buffers[buffer].format;
 }
 
 void GBuffer::setProfile(GBuffer::Profiles profile)
@@ -325,31 +317,23 @@ void GBuffer::setBufferUsage(GBuffer::BufferType buffer, Bool state)
         O3D_ERROR(E_InvalidOperation("GBuffer exists. This operation can only be done before its creation."));
     }
 
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
-        switch (buffer) {
-            case COLOR_BUFFER:
-            case AMBIENT_BUFFER:
-            case DEPTH_BUFFER:
-            case NORMAL_BUFFER:
-            case POSITION_BUFFER:
-                O3D_ERROR(E_InvalidOperation("It is not allowed to disable this buffer."));
-            default:
-                break;
-        }
-
-        m_buffers[buffer].actif = state;
-    } else {
-        O3D_ERROR(E_IndexOutOfRange("Buffer format"));
+    switch (buffer) {
+        case COLOR_BUFFER:
+        case AMBIENT_BUFFER:
+        case DEPTH_BUFFER:
+        case NORMAL_BUFFER:
+        case POSITION_BUFFER:
+            O3D_ERROR(E_InvalidOperation("It is not allowed to disable this buffer."));
+        default:
+            break;
     }
+
+    m_buffers[buffer].actif = state;
 }
 
 Bool GBuffer::getBufferUsage(GBuffer::BufferType buffer) const
 {
-    if (buffer >= 0 && buffer < NUM_BUFFERS_TYPE) {
-        return m_buffers[buffer].actif;
-    } else {
-        O3D_ERROR(E_IndexOutOfRange("Buffer format"));
-    }
+    return m_buffers[buffer].actif;
 }
 
 void GBuffer::create(UInt32 width, UInt32 height, UInt32 samples)

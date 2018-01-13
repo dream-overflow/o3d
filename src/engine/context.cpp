@@ -172,8 +172,12 @@ Context::Context(Renderer *renderer) :
 
     m_currentUniformBufferId = 0;
 
-    m_currentUniformBufferBindingId = new UInt32[m_maxUniformBufferBindings];
-    memset(m_currentUniformBufferBindingId, 0, m_maxUniformBufferBindings * sizeof(UInt32));
+    if (m_maxUniformBufferBindings > 0) {
+        m_currentUniformBufferBindingId = new UInt32[m_maxUniformBufferBindings];
+        memset(m_currentUniformBufferBindingId, 0, m_maxUniformBufferBindings * sizeof(UInt32));
+    } else {
+        m_currentUniformBufferBindingId = nullptr;
+    }
 
     //
     // Atomic counter
@@ -214,6 +218,12 @@ Context::Context(Renderer *renderer) :
     }
 
     m_currentAtomicCounter = 0;
+
+    if (m_maxAtomicCounterBufferBindings > 0) {
+        m_currentAtomicCounterBufferBindingId = new UInt32[m_maxAtomicCounterBufferBindings];
+    } else {
+        m_currentAtomicCounterBufferBindingId = nullptr;
+    }
 
     //
     // GLSL
@@ -348,6 +358,7 @@ Context::~Context()
     deleteArray(m_currentSamplerId);
 
     deleteArray(m_currentUniformBufferBindingId);
+    deleteArray(m_currentAtomicCounterBufferBindingId);
 
 	// matrix observer
 	m_modelview.removeObserver(this);
@@ -492,7 +503,8 @@ void Context::vertexAttribArray(
 			GL_FLOAT,
 			GL_FALSE,
 			stride,
-			(const GLvoid*) ((GLubyte*) 0 + offset));
+            // (const GLvoid*) ((GLubyte*) 0 + offset));
+            reinterpret_cast<const GLvoid*>(offset));
 }
 
 // Vertex buffer binding
@@ -1515,6 +1527,27 @@ void Context::deleteAtomicCounter(UInt32 id)
     }
 }
 
+void Context::bindAtomicCounterBase(UInt32 id, UInt32 index)
+{
+    if (index >= (UInt32)m_maxAtomicCounterBufferBindings) {
+        O3D_ERROR(E_IndexOutOfRange("Atomic counter buffer binding point index"));
+    }
+
+    if ((m_currentAtomicCounterBufferBindingId[index] != id) || (id == 0)) {
+        glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, index, id);
+        m_currentAtomicCounterBufferBindingId[index] = id;
+    }
+}
+
+UInt32 Context::getCurrentAtomicCounterBase(UInt32 index)
+{
+   if (index < (UInt32)m_maxAtomicCounterBufferBindings) {
+        return m_currentAtomicCounterBufferBindingId[index];
+    } else {
+        O3D_ERROR(E_IndexOutOfRange("Atomic counter buffer binding point index"));
+    }
+}
+
 void Context::bindUniformBuffer(UInt32 id)
 {
     if ((id != m_currentUniformBufferId) || (id == 0)) {
@@ -1536,11 +1569,11 @@ void Context::deleteUniformBuffer(UInt32 id)
 
 void Context::bindUniformBufferBase(UInt32 id, UInt32 index)
 {
-    if (index >= m_maxUniformBufferBindings) {
+    if (index >= (UInt32)m_maxUniformBufferBindings) {
         O3D_ERROR(E_IndexOutOfRange("Uniform buffer binding point index"));
     }
 
-    if (m_currentUniformBufferBindingId[index] != id) {
+    if ((m_currentUniformBufferBindingId[index] != id) || (id == 0)) {
         glBindBufferBase(GL_UNIFORM_BUFFER, index, id);
         m_currentUniformBufferBindingId[index] = id;
     }
@@ -1548,7 +1581,7 @@ void Context::bindUniformBufferBase(UInt32 id, UInt32 index)
 
 UInt32 Context::getCurrentUniformBufferBase(UInt32 index)
 {
-   if (index < m_maxUniformBufferBindings) {
+   if (index < (UInt32)m_maxUniformBufferBindings) {
         return m_currentUniformBufferBindingId[index];
     } else {
         O3D_ERROR(E_IndexOutOfRange("Uniform buffer binding point index"));
@@ -1637,7 +1670,7 @@ Vector3 Context::unprojectPoint(const Vector3 &v)
 	return Matrix::unprojectPoint(projection().get(), modelView().get(), m_viewPort, v);
 }
 
-void Context::updateMatrix(const Matrix *matrix)
+void Context::updateMatrix(const Matrix */*matrix*/)
 {
 	m_recomputeModelViewProjection = True;
 	m_recomputeNormalMatrix = True;

@@ -29,36 +29,37 @@ public:
 	O3D_DECLARE_CLASS(ForceManager)
 
 	ForceManager(BaseObject *pParent) :
-		SceneTemplateManager<ABCForce>(pParent) {}
+        SceneTemplateManager<ABCForce>(pParent)
+    {
+    }
 
 	//! process the force manager to a particule
 	//void processParticule(Particule& particule)
 	//{
-	//	for (IT_TemplateManager(ABCForce) it = begin(); it != end() ; ++it)
-	//	{
+    //	for (IT_TemplateManager(ABCForce) it = begin(); it != end() ; ++it) {
 	//		ABCForce *pForce = (*it).second;
-	//		if (pForce->isActive())
+    //		if (pForce->isActive()) {
 	//			pForce->processParticule(particule);
+    //      }
 	//	}
 	//}
 
 	//! process the force manager to a rigid body
 	void processObject(RigidBody& object)
 	{
-		for (IT_TemplateManager it = begin(); it != end() ; ++it)
-		{
+        for (IT_TemplateManager it = begin(); it != end() ; ++it) {
 			ABCForce *pForce = (*it).second;
-			if (pForce->getActivity())
+            if (pForce->getActivity()) {
 				pForce->processObject(object);
+            }
 		}
 	}
 
 	//! serialisation
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 };
 
 } // namespace o3d
 
 #endif // _O3D_FORCEMANAGER_H
-

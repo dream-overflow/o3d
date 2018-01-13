@@ -80,4 +80,3 @@ typedef T_PhysicEntityList::const_iterator CIT_PhysicEntityList;
 } // namespace o3d
 
 #endif // _O3D_PHYSICENTITY_H
-

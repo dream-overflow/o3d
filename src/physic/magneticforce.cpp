@@ -16,36 +16,26 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(MagneticForce, PHYSIC_FORCE_MAGNETIC, ABCForce)
 
-/*---------------------------------------------------------------------------------------
-  process the force on the object
----------------------------------------------------------------------------------------*/
 void MagneticForce::processObject(class RigidBody& rigidBody)
 {
-	rigidBody.addForce(rigidBody.getSpeed() ^ m_MagneticField);
+    rigidBody.addForce(rigidBody.getSpeed() ^ m_magneticField);
 }
 
-/*---------------------------------------------------------------------------------------
-  process the force on the particule
----------------------------------------------------------------------------------------*/
 //void MagneticForce::processParticule(class Particule& particule)
 //{
 //	particule.addForce(RigidBody.getSpeed() ^ m_MagneticField);
 //}
 
-/*---------------------------------------------------------------------------------------
-  serialisation
----------------------------------------------------------------------------------------*/
 Bool MagneticForce::writeToFile(OutStream &os)
 {
     ABCForce::writeToFile(os);
-    os << m_MagneticField;
+    os << m_magneticField;
 	return True;
 }
 
 Bool MagneticForce::readFromFile(InStream &is)
 {
     ABCForce::readFromFile(is);
-    is >> m_MagneticField;
+    is >> m_magneticField;
 	return True;
 }
-

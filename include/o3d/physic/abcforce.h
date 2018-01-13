@@ -32,7 +32,10 @@ public:
 
 	//! Default constructor
 	ABCForce(BaseObject *pParent) :
-        SceneEntity(pParent) {}
+        SceneEntity(pParent),
+        m_activity(True)
+    {
+    }
 
     //-----------------------------------------------------------------------------------
     // Force activity

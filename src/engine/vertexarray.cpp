@@ -62,7 +62,8 @@ void VertexArray::create(const T_ElementsList &attributes)
                 attributes[i].type,
 				GL_FALSE,
                 attributes[i].stride,
-                (const GLvoid*) ((GLubyte*) 0 + attributes[i].offset));
+                // (const GLvoid*) ((GLubyte*) 0 + attributes[i].offset));
+                reinterpret_cast<const GLvoid*>(attributes[i].offset));
 	}
 
     m_context->bindDefaultVertexArray();
@@ -107,7 +108,8 @@ void VertexArray::create(const T_VertexAttributeList &attributes, Shadable &shad
 					element->getDataType(),
 					GL_FALSE,
 					element->getStride() * sizeof(Float),
-					(const GLvoid*) ((GLubyte*) 0 + element->getOffset() * sizeof(Float)));            
+                    // (const GLvoid*) ((GLubyte*) 0 + element->getOffset() * sizeof(Float)));
+                    reinterpret_cast<const GLvoid*>(element->getOffset() * sizeof(Float)));
         }
 	}
 

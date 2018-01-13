@@ -19,11 +19,9 @@ namespace o3d {
 
 class Scene;
 
-//---------------------------------------------------------------------------------------
-//! @class SceneTemplateManager
-//-------------------------------------------------------------------------------------
-//! Base class for any scene related object that must inherit from TemplateManager.
-//---------------------------------------------------------------------------------------
+/**
+ * @class Base class for any scene related object that must inherit from TemplateManager.
+ */
 template<class T>
 class O3D_API_TEMPLATE SceneTemplateManager : public TemplateManager<T>
 {
@@ -43,14 +41,14 @@ public:
 	//! The top level parent must be a scene.
 	virtual Bool hasTopLevelParentTypeOf() const
 	{
-		if (BaseObject::m_topLevelParent)
+        if (BaseObject::m_topLevelParent) {
 			return (BaseObject::m_topLevelParent->getType() == ENGINE_SCENE);
-		else
+        } else {
 			return False;
+        }
 	}
 };
 
 } // namespace o3d
 
 #endif // _O3D_SCENETEMPLATEMANAGER_H
-

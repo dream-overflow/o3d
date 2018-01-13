@@ -17,15 +17,11 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class MagneticForce
-//-------------------------------------------------------------------------------------
-//! A magntic force compute by Lorentz law with q=1 :
-//!
-//!   F = v^B
-//!
-//! Where B is the magnetic field.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A magnetic force compute by Lorentz law with q=1 :
+ *  F = v^B
+ * Where B is the magnetic field.
+ */
 class O3D_API MagneticForce : public ABCForce
 {
 public:
@@ -37,34 +33,37 @@ public:
 		BaseObject *pParent,
 		const Vector3& MagneticField = Vector3(0.f,0.f,0.f)) :
 			ABCForce(pParent),
-			m_MagneticField(MagneticField)
-	{}
+            m_magneticField(MagneticField)
+    {
+    }
 
-	//! Set/Get the magnetic field
-	inline void setMagneticField(const Vector3 &force) { m_MagneticField = force; }
-	inline const Vector3& getMagneticField()const { return m_MagneticField;	}
-	inline       Vector3& getMagneticField()      { return m_MagneticField;	}
+    //! Set the magnetic field
+    inline void setMagneticField(const Vector3 &force) { m_magneticField = force; }
+    //! Get the magnetic field
+    inline const Vector3& getMagneticField() const { return m_magneticField; }
+    //! Get the magnetic field
+    inline Vector3& getMagneticField() { return m_magneticField; }
 
-	//! Add/Sub force to the magnetic field
-	inline Vector3& addForce(const Vector3 &force) { return m_MagneticField += force; }
-	inline Vector3& subForce(const Vector3 &force) { return m_MagneticField -= force; }
+    //! Add force to the magnetic field
+    inline Vector3& addForce(const Vector3 &force) { return m_magneticField += force; }
+    //! Sub force to the magnetic field
+    inline Vector3& subForce(const Vector3 &force) { return m_magneticField -= force; }
 
 	//! process the force on the object
 	virtual void processObject(class RigidBody& RigidBody);
 
-	//! process the force on the particule
+    //! process the force on the particule
 	//virtual void processParticule(class Particule& Particule);
 
 	//! serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
-	Vector3 m_MagneticField;   //!< the magnetic field
+    Vector3 m_magneticField;   //!< the magnetic field
 };
 
 } // namespace o3d
 
 #endif // _O3D_MAGNETICFORCE_H
-

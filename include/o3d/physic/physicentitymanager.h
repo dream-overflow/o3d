@@ -47,7 +47,7 @@ public:
     Int32 addElement(PhysicEntity* pElt, Bool checkCollision = True);
 
 	//! make an update
-    virtual void update();
+    virtual void update() override;
 
     //! get the effective latency of the physic integration and current time
     Double getLatency() const;
@@ -70,89 +70,33 @@ public:
 
 	//! get the force manager
     inline const ForceManager& getForceManager()const { return m_forceManager; }
-    inline       ForceManager& getForceManager()      { return m_forceManager; }
+    inline ForceManager& getForceManager() { return m_forceManager; }
 
 	//! get the collision manager
     inline const CollisionManager& getCollisionManager()const { return m_collisionManager; }
-    inline       CollisionManager& getCollisionManager()      { return m_collisionManager; }
+    inline CollisionManager& getCollisionManager() { return m_collisionManager; }
 
 	//! get a collision beetween two physic entity
-	inline ABCCollider* getCollider(PhysicEntity& Entity1,PhysicEntity& Entity2)
+    inline ABCCollider* getCollider(PhysicEntity& Entity1, PhysicEntity& Entity2)
 	{
         return m_collisionManager.getCollider(Entity1,Entity2);
 	}
 
 	//! reset all entity accumulators
-	void resetAccumulators()
-	{
-		for (IT_TemplateManager it = begin() ; it != end() ; ++it)
-			(*it).second->resetAccumulators();
-	}
+    void resetAccumulators();
 
 	//! update all entity with Verlet solver
-	void updatePhysicVerlet()
-	{
-		IT_TemplateManager it;
-
-		// force computations
-        for (it = begin(); it != end(); ++it)
-            (*it).second->processForce(m_forceManager);
-
-        // TODO constraint manager
-
-		// resolve deflexions and collisions
-        m_collisionManager.resolveCollisions();
-
-		// resolve physic
-        for (it = begin(); it != end(); ++it)
-            (*it).second->updatePhysicVerlet(m_time, m_timeStep);
-	}
+    void updatePhysicVerlet();
 
 	//! update all entity with Euler solver
-	void updatePhysicEuler()
-	{
-		IT_TemplateManager it;
-
-		// force computations
-        for (it = begin(); it != end(); ++it)
-            (*it).second->processForce(m_forceManager);
-
-        // TODO constraint manager
-
-		// resolve deflexions and collisions
-        m_collisionManager.resolveCollisions();
-
-		// resolve physic
-        for (it = begin(); it != end(); ++it)
-            (*it).second->updatePhysicEuler(m_time, m_timeStep);
-	}
+    void updatePhysicEuler();
 
     //! update all entity with runge-kutta 4 solver
-    void updatePhysicRK4()
-    {
-        IT_TemplateManager it;
-
-        for (UInt32 nStepRK4 = 1; nStepRK4 < 5; ++nStepRK4)
-        {
-            // force computations
-            for (it = begin(); it != end(); ++it)
-                (*it).second->processForce(m_forceManager);
-
-            // TODO constraint manager
-
-            // resolve deflexions and collisions only for the last step
-            if (nStepRK4 == 4)
-                m_collisionManager.resolveCollisions();
-
-            // resolve physic
-            for (it = begin(); it != end(); ++it)
-                (*it).second->updatePhysicRK4(m_time, m_timeStep, nStepRK4);
-        }
-    }
+    void updatePhysicRK4();
 
 	//! serialisation
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -174,4 +118,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_PHYSICENTITYMANAGER_H
-

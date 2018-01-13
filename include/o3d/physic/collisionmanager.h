@@ -24,7 +24,7 @@ namespace o3d {
  * @date 2006-06-01
  * Manage all collision between the rigid bodies of an PhysicentityManager.
  * The collision are stored in a linked list. It also use a garbage collector
- * to avoid allocating/desallocating too much memory.
+ * to avoid allocating/de-allocating too much memory.
  */
 class O3D_API CollisionManager
 {
@@ -63,4 +63,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_COLLISIONMANAGER_H
-

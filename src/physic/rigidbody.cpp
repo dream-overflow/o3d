@@ -18,9 +18,6 @@ using namespace o3d;
 
 O3D_IMPLEMENT_ABSTRACT_CLASS1(RigidBody, PHYSIC_RIGID_BODY, PhysicEntity)
 
-/*---------------------------------------------------------------------------------------
-  constructor
----------------------------------------------------------------------------------------*/
 RigidBody::RigidBody(SceneObject *object, Bool assignToObject) :
 	PhysicEntity(object),
     m_isPhysic(True),
@@ -40,9 +37,6 @@ RigidBody::RigidBody(SceneObject *object, Bool assignToObject) :
 	synchronizeWithObject();
 }
 
-/*---------------------------------------------------------------------------------------
-  destructor
----------------------------------------------------------------------------------------*/
 RigidBody::~RigidBody()
 {
     deletePtr(m_forceManager);
@@ -53,8 +47,9 @@ RigidBody::~RigidBody()
 ---------------------------------------------------------------------------------------*/
 void RigidBody::updatePhysicEuler(Double t, Double dt)
 {
-    if (!m_isPhysic)
+    if (!m_isPhysic) {
 		return;
+    }
 
 	/*
 	 *	d m_Pos(t)
@@ -97,59 +92,51 @@ void RigidBody::updatePhysicEuler(Double t, Double dt)
 
 void RigidBody::updatePhysicRK4(Double t, Double dt, UInt32 numStepRK4)
 {
-    if (!m_isPhysic)
+    if (!m_isPhysic) {
         return;
+    }
 
-    // TODO
+    // @todo
 
     // finally clear the accumulators
     resetAccumulators();
 }
 
-/*---------------------------------------------------------------------------------------
-  update physic with verlet method
----------------------------------------------------------------------------------------*/
 void RigidBody::updatePhysicVerlet(Double t, Double dt)
 {
-    if (!m_isPhysic)
+    if (!m_isPhysic) {
 		return;
+    }
 
-    // TODO Luhtor eheh
+    // @todo
 
     // finally clear the accumulators
 	resetAccumulators();
 }
 
-/*---------------------------------------------------------------------------------------
-  process a force manager of the object
----------------------------------------------------------------------------------------*/
 void RigidBody::processForce(ForceManager& forceManager)
 {
     forceManager.processObject(*this);
 
-    if (m_forceManager)
+    if (m_forceManager) {
         m_forceManager->processObject(*this);
+    }
 }
 
-/*---------------------------------------------------------------------------------------
-  Compute the world to body matrix transformation whose be used by the SceneObject
----------------------------------------------------------------------------------------*/
 void RigidBody::computeWorldToBody()
 {
     m_worldToBody.setRotation(m_rotMatrix);
-    m_worldToBody.setTranslation(m_pos/* - m_RotMatrix * m_GravityCenter*/);
+    m_worldToBody.setTranslation(m_pos);
+    // m_worldToBody.setTranslation(m_pos - m_rotMatrix * m_gravityCenter);
 }
 
-/*---------------------------------------------------------------------------------------
-  Compute some variables
----------------------------------------------------------------------------------------*/
 void RigidBody::computeVariables()
 {
 	// compute m_RotMatrix
     m_rotMatrix = m_rot.toMatrix3();
 
 	// compute m_IWorld
-    m_IWorld    = m_rotMatrix * m_IBody * m_rotMatrix.transposeTo();
+    m_IWorld = m_rotMatrix * m_IBody * m_rotMatrix.transposeTo();
 	m_IWorldInv = m_IWorld.invert();
 
 	// compute speed
@@ -159,9 +146,6 @@ void RigidBody::computeVariables()
     m_omega = m_IWorld * m_L;
 }
 
-/*---------------------------------------------------------------------------------------
-  Reset force and impulse accumulators
----------------------------------------------------------------------------------------*/
 void RigidBody::resetAccumulators()
 {
     m_forceAccumulator.set(0.f, 0.f, 0.f);
@@ -170,22 +154,17 @@ void RigidBody::resetAccumulators()
     m_torqueImpulseAccumulator.set(0.f, 0.f, 0.f);
 }
 
-/*---------------------------------------------------------------------------------------
-  Set the position and rotation of the rigid body to by in sync with those of the object
----------------------------------------------------------------------------------------*/
 void RigidBody::synchronizeWithObject()
 {
-    if (!m_object)
+    if (!m_object) {
 		return;
+    }
 
 	// set position and rotation
     setPosition(m_object->getAbsoluteMatrix().getTranslation());
     m_rot.fromMatrix3(m_object->getAbsoluteMatrix().getRotation());
 }
 
-/*---------------------------------------------------------------------------------------
-  Set up mass and inertia to represent a sphere
----------------------------------------------------------------------------------------*/
 void RigidBody::setUpMassSphere(Float density, Float radius)
 {
     m_IBody.identity();
@@ -200,9 +179,6 @@ void RigidBody::setUpMassSphere(Float density, Float radius)
 	computeVariables();
 }
 
-/*---------------------------------------------------------------------------------------
-  Set up mass and inertia to represent a box
----------------------------------------------------------------------------------------*/
 void RigidBody::setUpMassBox(Float density, Vector3 dim)
 {
     m_IBody.identity();
@@ -216,17 +192,11 @@ void RigidBody::setUpMassBox(Float density, Vector3 dim)
 	computeVariables();
 }
 
-/*---------------------------------------------------------------------------------------
-  Set up mass and inertia to represent a box
----------------------------------------------------------------------------------------*/
 void RigidBody::setUpMassBox(Float density, Float dimX, Float dimY, Float dimZ)
 {
     setUpMassBox(density,Vector3(dimX, dimY, dimZ));
 }
 
-/*---------------------------------------------------------------------------------------
-  Set up mass and inertia to represent a cylinder aligned on the Z axis
----------------------------------------------------------------------------------------*/
 void RigidBody::setUpMassCylinder(
     Float density,
     Float height,
@@ -242,29 +212,28 @@ void RigidBody::setUpMassCylinder(
     Float Ia = M1 * (0.25f*radius*radius + (1.0f/12.0f)*height*height) + M2*(0.4f*radius*radius + 0.5f*height*height);
     Float Ib = (M1*0.5f + M2*0.4f) * radius*radius;
 
-	switch (axis)
-	{
-	case X:
-		m_IBody(0,0) = Ib;
-		m_IBody(1,1) = Ia;
-		m_IBody(2,2) = Ia;
-		break;
-	case Y:
-		m_IBody(0,0) = Ia;
-		m_IBody(1,1) = Ib;
-		m_IBody(2,2) = Ia;
-		break;
-	case Z:
-		m_IBody(0,0) = Ia;
-		m_IBody(1,1) = Ia;
-		m_IBody(2,2) = Ib;
-		break;
-	default:
-		m_IBody(0,0) = Ia;
-		m_IBody(1,1) = Ia;
-		m_IBody(2,2) = Ib;
-		break;
-	}
+    switch (axis) {
+        case X:
+            m_IBody(0,0) = Ib;
+            m_IBody(1,1) = Ia;
+            m_IBody(2,2) = Ia;
+            break;
+        case Y:
+            m_IBody(0,0) = Ia;
+            m_IBody(1,1) = Ib;
+            m_IBody(2,2) = Ia;
+            break;
+        case Z:
+            m_IBody(0,0) = Ia;
+            m_IBody(1,1) = Ia;
+            m_IBody(2,2) = Ib;
+            break;
+        default:
+            m_IBody(0,0) = Ia;
+            m_IBody(1,1) = Ia;
+            m_IBody(2,2) = Ib;
+            break;
+    }
 
 	computeVariables();
 }
@@ -364,13 +333,10 @@ Bool RigidBody::writeToFile(OutStream &os)
 
     os << *m_physicModel;
 
-    if (m_forceManager)
-	{
+    if (m_forceManager) {
         os << True
            << *m_forceManager;
-	}
-	else
-	{
+    } else {
         os << False;
 	}
 
@@ -382,8 +348,9 @@ Bool RigidBody::readFromFile(InStream &is)
 	UInt32 tmp;
     is >> tmp;
 
-	if (tmp != PHYSIC_RIGID_BODY)
+    if (tmp != PHYSIC_RIGID_BODY) {
         O3D_ERROR(E_InvalidFormat("Invalid rigid body token"));
+    }
 
     is   >> m_isPhysic
          >> m_speed
@@ -401,14 +368,14 @@ Bool RigidBody::readFromFile(InStream &is)
 
 	Bool bOOL = False;
     is >> bOOL;
-	if (bOOL)
-	{
+    if (bOOL) {
         m_forceManager = new ForceManager((BaseObject*)this);
         is >> *m_forceManager;
 	}
 
-    if (m_object)
+    if (m_object) {
 		synchronizeWithObject();
+    }
 
 	resetAccumulators();
 
@@ -420,4 +387,3 @@ Bool RigidBody::readFromFile(InStream &is)
 
 	return True;
 }
-

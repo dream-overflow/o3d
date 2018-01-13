@@ -21,11 +21,9 @@ namespace o3d {
 
 class CollisionManager;
 
-//---------------------------------------------------------------------------------------
-//! @class ABCCollider
-//-------------------------------------------------------------------------------------
-//! A collider track collision between a pair of object
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A collider track collision between a pair of object
+ */
 class O3D_API ABCCollider
 {
 public:
@@ -36,21 +34,22 @@ public:
 	//! destructor
 	virtual ~ABCCollider();
 
-	//! performe a collision detection
+    //! perform a collision detection
 	virtual void performCollisionDetection(CollisionManager& CollisionManager) = 0;
+
 	virtual PhysicEntity& getCollideE0() = 0;
 	virtual PhysicEntity& getCollideE1() = 0;
 
 	//! Get collision perform activity
-	inline Bool isActive() const { return m_IsActive; }
+    inline Bool isActive() const { return m_isActive; }
 	//! Enable collision perform activity
-	inline void enable()  { m_IsActive = True;  }
+    inline void enable()  { m_isActive = True;  }
 	//! Disable collision perform activity
-	inline void disable() { m_IsActive = False; }
+    inline void disable() { m_isActive = False; }
 
 protected:
 
-	Bool m_IsActive;  //!< is check collision for this pair
+    Bool m_isActive;  //!< is check collision for this pair
 };
 
 typedef std::list<ABCCollider*> T_ColliderList;
@@ -60,4 +59,3 @@ typedef T_ColliderList::const_iterator CIT_ColliderList;
 } // namespace o3d
 
 #endif // _O3D_ABCCOLLIDER_H
-
