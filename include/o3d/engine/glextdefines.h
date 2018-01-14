@@ -1,6 +1,6 @@
 /**
  * @file glextdefines.h
- * @brief  OpenGL defines constants
+ * @brief OpenGL defines constants
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
  * @date 2001-12-25
  * @copyright Copyright (c) 2001-2017 Dream Overflow. All rights reserved.
@@ -10,7 +10,12 @@
 #ifndef _O3D_GLEXTDEFINES_H
 #define _O3D_GLEXTDEFINES_H
 
+#ifndef GL_VERSION_1_0
+#define GL_VERSION_1_0 1
+#endif
+
 #ifndef GL_VERSION_1_1
+#define GL_VERSION_1_1 1
 /* AttribMask */
 #define GL_DEPTH_BUFFER_BIT               0x00000100
 #define GL_STENCIL_BUFFER_BIT             0x00000400
@@ -239,6 +244,7 @@
 #endif
 
 #ifndef GL_VERSION_1_2
+#define GL_VERSION_1_2 1
 #define GL_UNSIGNED_BYTE_3_3_2            0x8032
 #define GL_UNSIGNED_SHORT_4_4_4_4         0x8033
 #define GL_UNSIGNED_SHORT_5_5_5_1         0x8034
@@ -278,6 +284,7 @@
 #endif
 /*
 #ifndef GL_ARB_imaging
+#define GL_ARB_imaging 1
 #define GL_CONSTANT_COLOR                 0x8001
 #define GL_ONE_MINUS_CONSTANT_COLOR       0x8002
 #define GL_CONSTANT_ALPHA                 0x8003
@@ -292,6 +299,7 @@
 #endif
 */
 #ifndef GL_VERSION_1_3
+#define GL_VERSION_1_3 1
 #define GL_TEXTURE0                       0x84C0
 #define GL_TEXTURE1                       0x84C1
 #define GL_TEXTURE2                       0x84C2
@@ -354,6 +362,7 @@
 #endif
 
 #ifndef GL_VERSION_1_4
+#define GL_VERSION_1_4 1
 #define GL_BLEND_DST_RGB                  0x80C8
 #define GL_BLEND_SRC_RGB                  0x80C9
 #define GL_BLEND_DST_ALPHA                0x80CA
@@ -373,6 +382,7 @@
 #endif
 
 #ifndef GL_VERSION_1_5
+#define GL_VERSION_1_5 1
 #define GL_BUFFER_SIZE                    0x8764
 #define GL_BUFFER_USAGE                   0x8765
 #define GL_QUERY_COUNTER_BITS             0x8864
@@ -404,6 +414,7 @@
 #endif
 
 #ifndef GL_VERSION_2_0
+#define GL_VERSION_2_0 1
 #define GL_BLEND_EQUATION_RGB             0x8009
 #define GL_VERTEX_ATTRIB_ARRAY_ENABLED    0x8622
 #define GL_VERTEX_ATTRIB_ARRAY_SIZE       0x8623
@@ -487,6 +498,7 @@
 #endif
 
 #ifndef GL_VERSION_2_1
+#define GL_VERSION_2_1 1
 #define GL_PIXEL_PACK_BUFFER              0x88EB
 #define GL_PIXEL_UNPACK_BUFFER            0x88EC
 #define GL_PIXEL_PACK_BUFFER_BINDING      0x88ED
@@ -506,6 +518,7 @@
 #endif
 
 #ifndef GL_VERSION_3_0
+#define GL_VERSION_3_0 1
 #define GL_COMPARE_REF_TO_TEXTURE         0x884E
 #define GL_CLIP_DISTANCE0                 0x3000
 #define GL_CLIP_DISTANCE1                 0x3001
@@ -735,6 +748,7 @@
 #endif
 
 #ifndef GL_VERSION_3_1
+#define GL_VERSION_3_1 1
 #define GL_SAMPLER_2D_RECT                0x8B63
 #define GL_SAMPLER_2D_RECT_SHADOW         0x8B64
 #define GL_SAMPLER_BUFFER                 0x8DC2
@@ -799,6 +813,7 @@
 #endif
 
 #ifndef GL_VERSION_3_2
+#define GL_VERSION_3_2 1
 #define GL_CONTEXT_CORE_PROFILE_BIT       0x00000001
 #define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
 #define GL_LINES_ADJACENCY                0x000A
@@ -877,6 +892,7 @@
 #endif
 
 #ifndef GL_VERSION_3_2
+#define GL_VERSION_3_2 1
 /* OpenGL 3.2 also reuses entry points from these extensions: */
 /* ARB_draw_elements_base_vertex */
 /* ARB_provoking_vertex */
@@ -885,6 +901,7 @@
 #endif
 
 #ifndef GL_VERSION_3_3
+#define GL_VERSION_3_3 1
 /* OpenGL 3.3 also reuses entry points from these extensions: */
 /* ARB_blend_func_extended */
 /* ARB_sampler_objects */
@@ -914,6 +931,7 @@
 #endif
 
 #ifndef GL_VERSION_4_0
+#define GL_VERSION_4_0 1
 /* OpenGL 4.0 also reuses entry points from these extensions: */
 /* ARB_texture_query_lod (no entry points) */
 /* ARB_draw_indirect */
@@ -1006,6 +1024,7 @@
 #endif
 
 #ifndef GL_VERSION_4_1
+#define GL_VERSION_4_1 1
 /* OpenGL 4.1 also reuses entry points from these extensions: */
 /* ARB_ES2_compatibility */
 /* ARB_get_program_binary */
@@ -1051,6 +1070,7 @@
 #endif
 
 #ifndef GL_VERSION_4_2
+#define GL_VERSION_4_2 1
 #define GL_COPY_READ_BUFFER_BINDING       0x8F36
 #define GL_COPY_WRITE_BUFFER_BINDING      0x8F37
 #define GL_TRANSFORM_FEEDBACK_ACTIVE      0x8E24
@@ -1166,6 +1186,7 @@
 #endif
 
 #ifndef GL_VERSION_4_3
+#define GL_VERSION_4_3 1
 #define GL_NUM_SHADING_LANGUAGE_VERSIONS  0x82E9
 #define GL_VERTEX_ATTRIB_ARRAY_LONG       0x874E
 #define GL_COMPRESSED_RGB8_ETC2           0x9274
@@ -1427,6 +1448,7 @@
 #endif
 
 #ifndef GL_VERSION_4_4
+#define GL_VERSION_4_4 1
 #define GL_MAX_VERTEX_ATTRIB_STRIDE       0x82E5
 #define GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED 0x8221
 #define GL_TEXTURE_BUFFER_BINDING         0x8C2A
@@ -1449,6 +1471,7 @@
 #endif
 
 #ifndef GL_VERSION_4_5
+#define GL_VERSION_4_5 1
 #define GL_CONTEXT_LOST                   0x0507
 #define GL_NEGATIVE_ONE_TO_ONE            0x935E
 #define GL_ZERO_TO_ONE                    0x935F
@@ -1474,6 +1497,7 @@
 #endif
 
 #ifndef GL_VERSION_4_6
+#define GL_VERSION_4_6 1
 #define GL_SHADER_BINARY_FORMAT_SPIR_V    0x9551
 #define GL_SPIR_V_BINARY                  0x9552
 #define GL_PARAMETER_BUFFER               0x80EE
@@ -1498,8 +1522,16 @@
 #define GL_TRANSFORM_FEEDBACK_STREAM_OVERFLOW 0x82ED
 #endif
 
+#ifndef GL_ARB_ES3_2_compatibility
+#define GL_ARB_ES3_2_compatibility 1
+#define GL_PRIMITIVE_BOUNDING_BOX_ARB     0x92BE
+#define GL_MULTISAMPLE_LINE_WIDTH_RANGE_ARB 0x9381
+#define GL_MULTISAMPLE_LINE_WIDTH_GRANULARITY_ARB 0x9382
+#endif
+
 /*
 #ifndef GL_ARB_texture_compression
+#define GL_ARB_texture_compression 1
 #define GL_COMPRESSED_ALPHA_ARB           0x84E9
 #define GL_COMPRESSED_LUMINANCE_ARB       0x84EA
 #define GL_COMPRESSED_LUMINANCE_ALPHA_ARB 0x84EB
@@ -1514,6 +1546,7 @@
 #endif
 
 #ifndef GL_ARB_point_parameters
+#define GL_ARB_point_parameters 1
 #define GL_POINT_SIZE_MIN_ARB             0x8126
 #define GL_POINT_SIZE_MAX_ARB             0x8127
 #define GL_POINT_FADE_THRESHOLD_SIZE_ARB  0x8128
@@ -1521,11 +1554,13 @@
 #endif
 
 #ifndef GL_ARB_point_sprite
+#define GL_ARB_point_sprite 1
 #define GL_POINT_SPRITE_ARB               0x8861
 #define GL_COORD_REPLACE_ARB              0x8862
 #endif
 
 #ifndef GL_ARB_color_buffer_float
+#define GL_ARB_color_buffer_float 1
 #define GL_RGBA_FLOAT_MODE_ARB            0x8820
 #define GL_CLAMP_VERTEX_COLOR_ARB         0x891A
 #define GL_CLAMP_FRAGMENT_COLOR_ARB       0x891B
@@ -1535,12 +1570,14 @@
 */
 
 #ifndef GL_ARB_depth_buffer_float
+#define GL_ARB_depth_buffer_float 1
 #define GL_DEPTH_COMPONENT32F             0x8CAC
 #define GL_DEPTH32F_STENCIL8              0x8CAD
 #define GL_FLOAT_32_UNSIGNED_INT_24_8_REV 0x8DAD
 #endif
 
 #ifndef GL_ARB_framebuffer_object
+#define GL_ARB_framebuffer_object 1
 #define GL_INVALID_FRAMEBUFFER_OPERATION  0x0506
 #define GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING 0x8210
 #define GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE 0x8211
@@ -1616,14 +1653,17 @@
 #endif
 
 #ifndef GL_ARB_framebuffer_sRGB
+#define GL_ARB_framebuffer_sRGB 1
 #define GL_FRAMEBUFFER_SRGB               0x8DB9
 #endif
 
 #ifndef GL_ARB_half_float_vertex
+#define GL_ARB_half_float_vertex 1
 #define GL_HALF_FLOAT                     0x140B
 #endif
 
 #ifndef GL_ARB_map_buffer_range
+#define GL_ARB_map_buffer_range 1
 #define GL_MAP_READ_BIT                   0x0001
 #define GL_MAP_WRITE_BIT                  0x0002
 #define GL_MAP_INVALIDATE_RANGE_BIT       0x0004
@@ -1633,6 +1673,7 @@
 #endif
 
 #ifndef GL_ARB_texture_compression_rgtc
+#define GL_ARB_texture_compression_rgtc 1
 #define GL_COMPRESSED_RED_RGTC1           0x8DBB
 #define GL_COMPRESSED_SIGNED_RED_RGTC1    0x8DBC
 #define GL_COMPRESSED_RG_RGTC2            0x8DBD
@@ -1640,6 +1681,7 @@
 #endif
 
 #ifndef GL_ARB_texture_rg
+#define GL_ARB_texture_rg 1
 #define GL_RG                             0x8227
 #define GL_RG_INTEGER                     0x8228
 #define GL_R8                             0x8229
@@ -1665,25 +1707,30 @@
 #endif
 
 #ifndef GL_ARB_vertex_array_object
+#define GL_ARB_vertex_array_object 1
 #define GL_VERTEX_ARRAY_BINDING           0x85B5
 #endif
 /*
 #ifndef GL_EXT_abgr
+#define GL_EXT_abgr 1
 #define GL_ABGR_EXT                       0x8000
 #endif
 
 #ifndef GL_EXT_polygon_offset
+#define GL_EXT_polygon_offset 1
 #define GL_POLYGON_OFFSET_EXT             0x8037
 #define GL_POLYGON_OFFSET_FACTOR_EXT      0x8038
 #define GL_POLYGON_OFFSET_BIAS_EXT        0x8039
 #endif
 
 #ifndef GL_SGIS_texture_filter4
+#define GL_SGIS_texture_filter4 1
 #define GL_FILTER4_SGIS                   0x8146
 #define GL_TEXTURE_FILTER4_SIZE_SGIS      0x8147
 #endif
 
 #ifndef GL_EXT_histogram
+#define GL_EXT_histogram 1
 #define GL_HISTOGRAM_EXT                  0x8024
 #define GL_PROXY_HISTOGRAM_EXT            0x8025
 #define GL_HISTOGRAM_WIDTH_EXT            0x8026
@@ -1701,6 +1748,7 @@
 #endif
 
 #ifndef GL_EXT_convolution
+#define GL_EXT_convolution 1
 #define GL_CONVOLUTION_1D_EXT             0x8010
 #define GL_CONVOLUTION_2D_EXT             0x8011
 #define GL_SEPARABLE_2D_EXT               0x8012
@@ -1724,6 +1772,7 @@
 #endif
 
 #ifndef GL_SGIS_texture4D
+#define GL_SGIS_texture4D 1
 #define GL_PACK_SKIP_VOLUMES_SGIS         0x8130
 #define GL_PACK_IMAGE_DEPTH_SGIS          0x8131
 #define GL_UNPACK_SKIP_VOLUMES_SGIS       0x8132
@@ -1737,6 +1786,7 @@
 #endif
 
 #ifndef GL_EXT_cmyka
+#define GL_EXT_cmyka 1
 #define GL_CMYK_EXT                       0x800C
 #define GL_CMYKA_EXT                      0x800D
 #define GL_PACK_CMYK_HINT_EXT             0x800E
@@ -1744,6 +1794,7 @@
 #endif
 
 #ifndef GL_EXT_texture_object
+#define GL_EXT_texture_object 1
 #define GL_TEXTURE_PRIORITY_EXT           0x8066
 #define GL_TEXTURE_RESIDENT_EXT           0x8067
 #define GL_TEXTURE_1D_BINDING_EXT         0x8068
@@ -1752,6 +1803,7 @@
 #endif
 
 #ifndef GL_SGIS_detail_texture
+#define GL_SGIS_detail_texture 1
 #define GL_DETAIL_TEXTURE_2D_SGIS         0x8095
 #define GL_DETAIL_TEXTURE_2D_BINDING_SGIS 0x8096
 #define GL_LINEAR_DETAIL_SGIS             0x8097
@@ -1763,6 +1815,7 @@
 #endif
 
 #ifndef GL_SGIS_sharpen_texture
+#define GL_SGIS_sharpen_texture 1
 #define GL_LINEAR_SHARPEN_SGIS            0x80AD
 #define GL_LINEAR_SHARPEN_ALPHA_SGIS      0x80AE
 #define GL_LINEAR_SHARPEN_COLOR_SGIS      0x80AF
@@ -1770,10 +1823,12 @@
 #endif
 
 #ifndef GL_EXT_rescale_normal
+#define GL_EXT_rescale_normal 1
 #define GL_RESCALE_NORMAL_EXT             0x803A
 #endif
 
 #ifndef GL_SGIS_generate_mipmap
+#define GL_SGIS_generate_mipmap 1
 #define GL_GENERATE_MIPMAP_SGIS           0x8191
 #define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
 #endif
@@ -1783,12 +1838,14 @@
 #endif
 
 #ifndef GL_EXT_cull_vertex
+#define GL_EXT_cull_vertex 1
 #define GL_CULL_VERTEX_EXT                0x81AA
 #define GL_CULL_VERTEX_EYE_POSITION_EXT   0x81AB
 #define GL_CULL_VERTEX_OBJECT_POSITION_EXT 0x81AC
 #endif
 
 #ifndef GL_EXT_pixel_transform
+#define GL_EXT_pixel_transform 1
 #define GL_PIXEL_TRANSFORM_2D_EXT         0x8330
 #define GL_PIXEL_MAG_FILTER_EXT           0x8331
 #define GL_PIXEL_MIN_FILTER_EXT           0x8332
@@ -1801,17 +1858,20 @@
 #endif
 */
 #ifndef GL_EXT_texture_lod_bias
+#define GL_EXT_texture_lod_bias 1
 #define GL_MAX_TEXTURE_LOD_BIAS_EXT       0x84FD
 #define GL_TEXTURE_FILTER_CONTROL_EXT     0x8500
 #define GL_TEXTURE_LOD_BIAS_EXT           0x8501
 #endif
 
 #ifndef GL_EXT_texture_filter_anisotropic
+#define GL_EXT_texture_filter_anisotropic 1
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 #endif
 
 #ifndef GL_EXT_texture_compression_s3tc
+#define GL_EXT_texture_compression_s3tc 1
 #define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
 #define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT  0x83F1
 #define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
@@ -1827,6 +1887,7 @@
 #endif
 */
 #ifndef GL_EXT_stencil_two_side
+#define GL_EXT_stencil_two_side 1
 #define GL_STENCIL_TEST_TWO_SIDE_EXT      0x8910
 #define GL_ACTIVE_STENCIL_FACE_EXT        0x8911
 #endif
@@ -1901,6 +1962,7 @@
 */
 
 #ifndef GL_EXT_texture_compression_latc
+#define GL_EXT_texture_compression_latc 1
 #define GL_COMPRESSED_LUMINANCE_LATC1_EXT 0x8C70
 #define GL_COMPRESSED_SIGNED_LUMINANCE_LATC1_EXT 0x8C71
 #define GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT 0x8C72
@@ -1909,6 +1971,7 @@
 
 /*
 #ifndef GL_NV_depth_buffer_float
+#define GL_NV_depth_buffer_float 1
 #define GL_DEPTH_COMPONENT32F_NV          0x8DAB
 #define GL_DEPTH32F_STENCIL8_NV           0x8DAC
 #define GL_FLOAT_32_UNSIGNED_INT_24_8_REV_NV 0x8DAD
@@ -1918,6 +1981,7 @@
 */
 /*
 #ifndef GL_NV_parameter_buffer_object
+#define GL_NV_parameter_buffer_object 1
 #define GL_MAX_PROGRAM_PARAMETER_BUFFER_BINDINGS_NV 0x8DA0
 #define GL_MAX_PROGRAM_PARAMETER_BUFFER_SIZE_NV 0x8DA1
 #define GL_VERTEX_PROGRAM_PARAMETER_BUFFER_NV 0x8DA2
@@ -1936,14 +2000,17 @@
 */
 
 #ifndef GL_ARB_tessellation_shader
+#define GL_ARB_tessellation_shader 1
 /* comes from 4.0 */
 #endif /* GL_ARB_tessellation_shader */
 
 #ifndef GL_ARB_viewport_array
+#define GL_ARB_viewport_array 1
 /* comes from 4.1 */
 #endif
 
 #ifndef GL_ARB_debug_output
+#define GL_ARB_debug_output 1
 #define GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB   0x8242
 #define GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ARB 0x8243
 #define GL_DEBUG_CALLBACK_FUNCTION_ARB    0x8244

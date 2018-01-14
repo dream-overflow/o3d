@@ -1741,6 +1741,14 @@ void Context::setupCapacities()
         // GL_KHR_texture_compression_astc_sliced_3d or vers >= 320
         // GL_OES_viewport_array or vers >= 320
         // GL_OES_copy_image or vers >= 320
+        // others...
+        // GL_OES_texture_float
+        // GL_OES_depth24
+        // GL_OES_depth32
+        // GL_EXT_draw_buffer_indexed
+        // GL_EXT_multisampled_render_to_texture
+        // GL_OES_depth_texture_cube_map
+
         m_capacities[OCCLUSION_QUERY] = False;
         m_capacities[PRIMITIVE_QUERY] = False;
 
@@ -1774,7 +1782,7 @@ void Context::setupCapacities()
 
         m_capacities[TEXTURE_1D] = False;
 
-        if (vers >= 300) {
+        if (vers >= 300 || GLExtensionManager::isExtensionSupported("GL_OES_texture_3D")) {
             m_capacities[TEXTURE_3D] = True;
         }
 
