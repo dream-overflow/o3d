@@ -588,7 +588,6 @@ void GLExtensionManager::getGLCommonFunctions()
     if (!glActiveTexture && isExtensionSupported("GL_ARB_multitexture")) {
         glActiveTexture = (PFNGLACTIVETEXTUREPROC) GL::getProcAddress("glActiveTextureARB");
     }
-
     if (!glActiveTexture) {
         O3D_ERROR(E_UnsuportedFeature("OpenGL active texture"));
     }
@@ -656,18 +655,17 @@ void GLExtensionManager::getGLCommonFunctions()
         O3D_ERROR(E_UnsuportedFeature("OpenGL Buffer Object"));
     }
 
-    // OcclusionQuery
+    // OcclusionQuery (optional)
     glGenQueries = (PFNGLGENQUERIESPROC)GL::getProcAddress("glGenQueries");
     glIsQuery = (PFNGLISQUERYPROC)GL::getProcAddress("glIsQuery");
     glBeginQuery = (PFNGLBEGINQUERYPROC)GL::getProcAddress("glBeginQuery");
     glEndQuery = (PFNGLENDQUERYPROC)GL::getProcAddress("glEndQuery");
     glGetQueryiv = (PFNGLGETQUERYIVPROC)GL::getProcAddress("glGetQueryiv");
-    glGetQueryObjectiv = (PFNGLGETQUERYOBJECTIVPROC)GL::getProcAddress("glGetQueryObjectiv");
     glGetQueryObjectuiv = (PFNGLGETQUERYOBJECTUIVPROC)GL::getProcAddress("glGetQueryObjectuiv");
     glDeleteQueries = (PFNGLDELETEQUERIESPROC)GL::getProcAddress("glDeleteQueries");
 
     if ((!glGenQueries || !glIsQuery || !glBeginQuery || !glEndQuery || !glGetQueryiv ||
-         !glGetQueryObjectiv || !glGetQueryObjectuiv || !glDeleteQueries) &&
+         !glGetQueryObjectuiv || !glDeleteQueries) &&
          isExtensionSupported("GL_ARB_occlusion_query")) {
 
         glGenQueries = (PFNGLGENQUERIESPROC)GL::getProcAddress("glGenQueriesARB");
@@ -681,8 +679,8 @@ void GLExtensionManager::getGLCommonFunctions()
     }
 
     if (!glGenQueries || !glIsQuery || !glBeginQuery || !glEndQuery || !glGetQueryiv ||
-        !glGetQueryObjectiv || !glGetQueryObjectuiv || !glDeleteQueries) {
-        O3D_ERROR(E_UnsuportedFeature("OpenGL occlusion query"));
+        !glGetQueryObjectuiv || !glDeleteQueries) {
+        O3D_WARNING("OpenGL occlusion query is not available");
     }
 #endif // O3D_GL_VERSION_1_5
 
@@ -1297,17 +1295,14 @@ void GLExtensionManager::getGLFunctions()
         O3D_WARNING("OpenGL glMapBuffer is not available");
     }
 
-    // OcclusionQuery
+    // OcclusionQuery (optional)
     glGetQueryObjectiv = (PFNGLGETQUERYOBJECTIVPROC)GL::getProcAddress("glGetQueryObjectiv");
 
-    if ((!glGetQueryObjectiv) &&
-        isExtensionSupported("GL_ARB_occlusion_query")) {
-
+    if ((!glGetQueryObjectiv) && isExtensionSupported("GL_ARB_occlusion_query")) {
         glGetQueryObjectiv = (PFNGLGETQUERYOBJECTIVPROC)GL::getProcAddress("glGetQueryObjectivARB");
     }
-
     if (!glGetQueryObjectiv) {
-        O3D_ERROR(E_UnsuportedFeature("OpenGL occlusion query"));
+        O3D_WARNING("OpenGL occlusion query is not available");
     }
 #endif // O3D_GL_VERSION_1_5
 

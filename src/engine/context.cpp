@@ -810,7 +810,9 @@ Float Context::setPointSize(Float val)
 	Float old = m_pointSize;
 	m_pointSize = val;
 	
-	glPointSize(m_pointSize);
+    if (glPointSize) {
+        glPointSize(m_pointSize);
+    }
 
 	return old;
 }
@@ -821,7 +823,9 @@ Float Context::forcePointSize(Float val)
 	Float old = m_pointSize;
 	m_pointSize = val;
 
-	glPointSize(m_pointSize);
+    if (glPointSize) {
+        glPointSize(m_pointSize);
+    }
 
 	return old;
 }
@@ -832,7 +836,9 @@ Float Context::modifyPointSize(Float val)
 	Float old = m_pointSize;
 	m_pointSize += val;
 
-	glPointSize(m_pointSize);
+    if (glPointSize) {
+        glPointSize(m_pointSize);
+    }
 
 	return old;
 }
