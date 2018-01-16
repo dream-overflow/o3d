@@ -18,11 +18,9 @@ namespace o3d {
 class InStream;
 class OutStream;
 
-//---------------------------------------------------------------------------------------
-//! @class SmartArray
-//-------------------------------------------------------------------------------------
-//! Static array manager with reference counter and auto-destruction.
-//---------------------------------------------------------------------------------------
+/**
+ * @class SmartArray Fixed size array with reference counter and auto-destruction.
+ */
 template<class T>
 class O3D_API_TEMPLATE SmartArray
 {
@@ -267,6 +265,12 @@ template<> O3D_API Bool SmartArray<Int32>::readFromFile(InStream &is);
 template<> O3D_API Bool SmartArray<UInt32>::writeToFile(OutStream &os) const;
 template<> O3D_API Bool SmartArray<UInt32>::readFromFile(InStream &is);
 
+template<> O3D_API Bool SmartArray<Int64>::writeToFile(OutStream &os) const;
+template<> O3D_API Bool SmartArray<Int64>::readFromFile(InStream &is);
+
+template<> O3D_API Bool SmartArray<UInt64>::writeToFile(OutStream &os) const;
+template<> O3D_API Bool SmartArray<UInt64>::readFromFile(InStream &is);
+
 template<> O3D_API Bool SmartArray<Float>::writeToFile(OutStream &os) const;
 template<> O3D_API Bool SmartArray<Float>::readFromFile(InStream &is);
 
@@ -280,6 +284,8 @@ typedef SmartArray<Int16>	SmartArrayInt16;
 typedef SmartArray<UInt16>	SmartArrayUInt16;
 typedef SmartArray<Int32>	SmartArrayInt32;
 typedef SmartArray<UInt32>	SmartArrayUInt32;
+typedef SmartArray<Int64>	SmartArrayInt64;
+typedef SmartArray<UInt64>	SmartArrayUInt64;
 typedef SmartArray<Float>	SmartArrayFloat;
 typedef SmartArray<Double>	SmartArrayDouble;
 

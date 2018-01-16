@@ -19,8 +19,9 @@ template<> Bool SmartArray<Char>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -32,8 +33,7 @@ template<> Bool SmartArray<Char>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
         is.read(m_data, size);
     }
@@ -45,8 +45,9 @@ template<> Bool SmartArray<UInt8>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -58,8 +59,7 @@ template<> Bool SmartArray<UInt8>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
         is.read(m_data, size);
     }
@@ -71,8 +71,9 @@ template<> Bool SmartArray<Int16>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -84,8 +85,7 @@ template<> Bool SmartArray<Int16>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
         is.read(m_data, size);
     }
@@ -97,8 +97,9 @@ template<> Bool SmartArray<UInt16>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -110,8 +111,7 @@ template<> Bool SmartArray<UInt16>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
         is.read(m_data, size);
     }
@@ -123,8 +123,9 @@ template<> Bool SmartArray<Int32>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -136,8 +137,7 @@ template<> Bool SmartArray<Int32>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
         is.read(m_data, size);
     }
@@ -149,8 +149,9 @@ template<> Bool SmartArray<UInt32>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -162,9 +163,60 @@ template<> Bool SmartArray<UInt32>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
+        is.read(m_data, size);
+    }
+
+    return True;
+}
+
+template<> Bool SmartArray<Int64>::writeToFile(OutStream &os) const
+{
+    os << m_size;
+
+    if (m_size && m_data) {
+        os.write(m_data, m_size);
+    }
+
+    return True;
+}
+
+template<> Bool SmartArray<Int64>::readFromFile(InStream &is)
+{
+    releaseCheckAndDelete();
+
+    UInt32 size;
+    is >> size;
+
+    if (size > 0) {
+        allocate(size);
+        is.read(m_data, size);
+    }
+
+    return True;
+}
+
+template<> Bool SmartArray<UInt64>::writeToFile(OutStream &os) const
+{
+    os << m_size;
+
+    if (m_size && m_data) {
+        os.write(m_data, m_size);
+    }
+
+    return True;
+}
+
+template<> Bool SmartArray<UInt64>::readFromFile(InStream &is)
+{
+    releaseCheckAndDelete();
+
+    UInt32 size;
+    is >> size;
+
+    if (size > 0) {
+        allocate(size);
         is.read(m_data, size);
     }
 
@@ -175,8 +227,9 @@ template<> Bool SmartArray<Float>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -188,8 +241,7 @@ template<> Bool SmartArray<Float>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
         is.read(m_data, size);
     }
@@ -201,8 +253,9 @@ template<> Bool SmartArray<Double>::writeToFile(OutStream &os) const
 {
     os << m_size;
 
-    if (m_size && m_data)
+    if (m_size && m_data) {
         os.write(m_data, m_size);
+    }
 
     return True;
 }
@@ -214,8 +267,7 @@ template<> Bool SmartArray<Double>::readFromFile(InStream &is)
     UInt32 size;
     is >> size;
 
-	if (size > 0)
-    {
+    if (size > 0) {
 		allocate(size);
         is.read(m_data, size);
     }
