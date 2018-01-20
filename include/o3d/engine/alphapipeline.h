@@ -21,12 +21,11 @@ namespace o3d {
 
 class MaterialTechnique;
 
-//---------------------------------------------------------------------------------------
-//! @class AlphaPipelineToken
-//-------------------------------------------------------------------------------------
-//! Alpha pipeline token. It contain three vertex index that define a face, a shadable
-//! object with a shader object for rendering. Define an O3DGLTriangles format.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Alpha pipeline token.
+ * It contain three vertex index that define a face, a shadable object with a shader
+ * object for rendering. Define an O3DGLTriangles format.
+ */
 class O3D_API AlphaPipelineToken
 {
 public:
@@ -90,11 +89,10 @@ private:
 
 class DrawInfo;
 
-//---------------------------------------------------------------------------------------
-//! @class AlphaPipeline
-//-------------------------------------------------------------------------------------
-//! Alpha blended face sorting manager.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The AlphaPipeline class
+ * @details Alpha blended face sorting manager.
+ */
 class O3D_API AlphaPipeline : public SceneEntity
 {
 public:
@@ -200,4 +198,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_ALPHAPIPELINE_H
-

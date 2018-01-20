@@ -270,4 +270,3 @@ void AlphaPipeline::draw(const DrawInfo &drawInfo)
 		drawSet.shadable->useInternalFaceArray();
 	}
 }
-

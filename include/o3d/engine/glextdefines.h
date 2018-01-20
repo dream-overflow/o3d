@@ -1710,153 +1710,7 @@
 #define GL_ARB_vertex_array_object 1
 #define GL_VERTEX_ARRAY_BINDING           0x85B5
 #endif
-/*
-#ifndef GL_EXT_abgr
-#define GL_EXT_abgr 1
-#define GL_ABGR_EXT                       0x8000
-#endif
 
-#ifndef GL_EXT_polygon_offset
-#define GL_EXT_polygon_offset 1
-#define GL_POLYGON_OFFSET_EXT             0x8037
-#define GL_POLYGON_OFFSET_FACTOR_EXT      0x8038
-#define GL_POLYGON_OFFSET_BIAS_EXT        0x8039
-#endif
-
-#ifndef GL_SGIS_texture_filter4
-#define GL_SGIS_texture_filter4 1
-#define GL_FILTER4_SGIS                   0x8146
-#define GL_TEXTURE_FILTER4_SIZE_SGIS      0x8147
-#endif
-
-#ifndef GL_EXT_histogram
-#define GL_EXT_histogram 1
-#define GL_HISTOGRAM_EXT                  0x8024
-#define GL_PROXY_HISTOGRAM_EXT            0x8025
-#define GL_HISTOGRAM_WIDTH_EXT            0x8026
-#define GL_HISTOGRAM_FORMAT_EXT           0x8027
-#define GL_HISTOGRAM_RED_SIZE_EXT         0x8028
-#define GL_HISTOGRAM_GREEN_SIZE_EXT       0x8029
-#define GL_HISTOGRAM_BLUE_SIZE_EXT        0x802A
-#define GL_HISTOGRAM_ALPHA_SIZE_EXT       0x802B
-#define GL_HISTOGRAM_LUMINANCE_SIZE_EXT   0x802C
-#define GL_HISTOGRAM_SINK_EXT             0x802D
-#define GL_MINMAX_EXT                     0x802E
-#define GL_MINMAX_FORMAT_EXT              0x802F
-#define GL_MINMAX_SINK_EXT                0x8030
-#define GL_TABLE_TOO_LARGE_EXT            0x8031
-#endif
-
-#ifndef GL_EXT_convolution
-#define GL_EXT_convolution 1
-#define GL_CONVOLUTION_1D_EXT             0x8010
-#define GL_CONVOLUTION_2D_EXT             0x8011
-#define GL_SEPARABLE_2D_EXT               0x8012
-#define GL_CONVOLUTION_BORDER_MODE_EXT    0x8013
-#define GL_CONVOLUTION_FILTER_SCALE_EXT   0x8014
-#define GL_CONVOLUTION_FILTER_BIAS_EXT    0x8015
-#define GL_REDUCE_EXT                     0x8016
-#define GL_CONVOLUTION_FORMAT_EXT         0x8017
-#define GL_CONVOLUTION_WIDTH_EXT          0x8018
-#define GL_CONVOLUTION_HEIGHT_EXT         0x8019
-#define GL_MAX_CONVOLUTION_WIDTH_EXT      0x801A
-#define GL_MAX_CONVOLUTION_HEIGHT_EXT     0x801B
-#define GL_POST_CONVOLUTION_RED_SCALE_EXT 0x801C
-#define GL_POST_CONVOLUTION_GREEN_SCALE_EXT 0x801D
-#define GL_POST_CONVOLUTION_BLUE_SCALE_EXT 0x801E
-#define GL_POST_CONVOLUTION_ALPHA_SCALE_EXT 0x801F
-#define GL_POST_CONVOLUTION_RED_BIAS_EXT  0x8020
-#define GL_POST_CONVOLUTION_GREEN_BIAS_EXT 0x8021
-#define GL_POST_CONVOLUTION_BLUE_BIAS_EXT 0x8022
-#define GL_POST_CONVOLUTION_ALPHA_BIAS_EXT 0x8023
-#endif
-
-#ifndef GL_SGIS_texture4D
-#define GL_SGIS_texture4D 1
-#define GL_PACK_SKIP_VOLUMES_SGIS         0x8130
-#define GL_PACK_IMAGE_DEPTH_SGIS          0x8131
-#define GL_UNPACK_SKIP_VOLUMES_SGIS       0x8132
-#define GL_UNPACK_IMAGE_DEPTH_SGIS        0x8133
-#define GL_TEXTURE_4D_SGIS                0x8134
-#define GL_PROXY_TEXTURE_4D_SGIS          0x8135
-#define GL_TEXTURE_4DSIZE_SGIS            0x8136
-#define GL_TEXTURE_WRAP_Q_SGIS            0x8137
-#define GL_MAX_4D_TEXTURE_SIZE_SGIS       0x8138
-#define GL_TEXTURE_4D_BINDING_SGIS        0x814F
-#endif
-
-#ifndef GL_EXT_cmyka
-#define GL_EXT_cmyka 1
-#define GL_CMYK_EXT                       0x800C
-#define GL_CMYKA_EXT                      0x800D
-#define GL_PACK_CMYK_HINT_EXT             0x800E
-#define GL_UNPACK_CMYK_HINT_EXT           0x800F
-#endif
-
-#ifndef GL_EXT_texture_object
-#define GL_EXT_texture_object 1
-#define GL_TEXTURE_PRIORITY_EXT           0x8066
-#define GL_TEXTURE_RESIDENT_EXT           0x8067
-#define GL_TEXTURE_1D_BINDING_EXT         0x8068
-#define GL_TEXTURE_2D_BINDING_EXT         0x8069
-#define GL_TEXTURE_3D_BINDING_EXT         0x806A
-#endif
-
-#ifndef GL_SGIS_detail_texture
-#define GL_SGIS_detail_texture 1
-#define GL_DETAIL_TEXTURE_2D_SGIS         0x8095
-#define GL_DETAIL_TEXTURE_2D_BINDING_SGIS 0x8096
-#define GL_LINEAR_DETAIL_SGIS             0x8097
-#define GL_LINEAR_DETAIL_ALPHA_SGIS       0x8098
-#define GL_LINEAR_DETAIL_COLOR_SGIS       0x8099
-#define GL_DETAIL_TEXTURE_LEVEL_SGIS      0x809A
-#define GL_DETAIL_TEXTURE_MODE_SGIS       0x809B
-#define GL_DETAIL_TEXTURE_FUNC_POINTS_SGIS 0x809C
-#endif
-
-#ifndef GL_SGIS_sharpen_texture
-#define GL_SGIS_sharpen_texture 1
-#define GL_LINEAR_SHARPEN_SGIS            0x80AD
-#define GL_LINEAR_SHARPEN_ALPHA_SGIS      0x80AE
-#define GL_LINEAR_SHARPEN_COLOR_SGIS      0x80AF
-#define GL_SHARPEN_TEXTURE_FUNC_POINTS_SGIS 0x80B0
-#endif
-
-#ifndef GL_EXT_rescale_normal
-#define GL_EXT_rescale_normal 1
-#define GL_RESCALE_NORMAL_EXT             0x803A
-#endif
-
-#ifndef GL_SGIS_generate_mipmap
-#define GL_SGIS_generate_mipmap 1
-#define GL_GENERATE_MIPMAP_SGIS           0x8191
-#define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
-#endif
-
-#ifndef GL_EXT_clip_volume_hint
-#define GL_CLIP_VOLUME_CLIPPING_HINT_EXT  0x80F0
-#endif
-
-#ifndef GL_EXT_cull_vertex
-#define GL_EXT_cull_vertex 1
-#define GL_CULL_VERTEX_EXT                0x81AA
-#define GL_CULL_VERTEX_EYE_POSITION_EXT   0x81AB
-#define GL_CULL_VERTEX_OBJECT_POSITION_EXT 0x81AC
-#endif
-
-#ifndef GL_EXT_pixel_transform
-#define GL_EXT_pixel_transform 1
-#define GL_PIXEL_TRANSFORM_2D_EXT         0x8330
-#define GL_PIXEL_MAG_FILTER_EXT           0x8331
-#define GL_PIXEL_MIN_FILTER_EXT           0x8332
-#define GL_PIXEL_CUBIC_WEIGHT_EXT         0x8333
-#define GL_CUBIC_EXT                      0x8334
-#define GL_AVERAGE_EXT                    0x8335
-#define GL_PIXEL_TRANSFORM_2D_STACK_DEPTH_EXT 0x8336
-#define GL_MAX_PIXEL_TRANSFORM_2D_STACK_DEPTH_EXT 0x8337
-#define GL_PIXEL_TRANSFORM_2D_MATRIX_EXT  0x8338
-#endif
-*/
 #ifndef GL_EXT_texture_lod_bias
 #define GL_EXT_texture_lod_bias 1
 #define GL_MAX_TEXTURE_LOD_BIAS_EXT       0x84FD
@@ -1877,15 +1731,7 @@
 #define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
 #define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
 #endif
-/*
-#ifndef GL_NV_multisample_filter_hint
-#define GL_MULTISAMPLE_FILTER_HINT_NV     0x8534
-#endif
 
-#ifndef GL_NV_depth_clamp
-#define GL_DEPTH_CLAMP_NV                 0x864F
-#endif
-*/
 #ifndef GL_EXT_stencil_two_side
 #define GL_EXT_stencil_two_side 1
 #define GL_STENCIL_TEST_TWO_SIDE_EXT      0x8910
@@ -1978,8 +1824,6 @@
 #define GL_DEPTH_BUFFER_FLOAT_MODE_NV     0x8DAF
 #endif
 
-*/
-/*
 #ifndef GL_NV_parameter_buffer_object
 #define GL_NV_parameter_buffer_object 1
 #define GL_MAX_PROGRAM_PARAMETER_BUFFER_BINDINGS_NV 0x8DA0
