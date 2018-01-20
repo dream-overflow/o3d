@@ -40,7 +40,7 @@ GL::GetProcAddressCallbackMethod* GL::ms_callback = nullptr;
 GL::Impl GL::ms_usedImpl = GL::IMPL_NONE;
 GL::Impl GL::ms_nativeImpl = GL::IMPL_NONE;
 
-void GL::init(const Char *library)
+void GL::init(const Char */*library*/)
 {
     ms_usedImpl = IMPL_NONE;
 

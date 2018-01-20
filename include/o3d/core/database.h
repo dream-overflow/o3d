@@ -102,7 +102,7 @@ public:
 protected:
 
 	//! Instanciate a new DbQuery object
-    virtual DbQuery* newDbQuery(const String &name, const CString &query) { return nullptr; }
+    virtual DbQuery* newDbQuery(const String &/*name*/, const CString &/*query*/) { return nullptr; }
 
     Bool m_IsConnected;
 

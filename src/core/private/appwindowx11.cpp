@@ -1247,7 +1247,7 @@ String AppWindow::copyFromClipboard(Bool primary)
 }
 
 // Set to full screen
-void AppWindow::setFullScreen(Bool fullScreen, UInt32 freq)
+void AppWindow::setFullScreen(Bool fullScreen, UInt32 /*freq*/)
 {
     if (!m_hWnd) {
 		O3D_ERROR(E_InvalidOperation("The window must be valid"));
@@ -1747,7 +1747,8 @@ void AppWindow::processEvent(EventType eventType, EventData &eventData)
 
 void AppWindow::processMotionEvent(EventType eventType, MotionEventData &eventData)
 {
-
+    O3D_UNUSED(eventType)
+    O3D_UNUSED(eventData)
 }
 
 #endif // O3D_X11

@@ -40,7 +40,7 @@ static Atom XKLAVIER_STATE = 0;
 static Atom WM_PROTOCOLS = 0;
 
 // X11 IO error handler
-static int o3dXIOErrorHandler(::Display *display)
+static int o3dXIOErrorHandler(::Display */*display*/)
 {
     // throwing an exception here will cause impredictible results
     O3D_WARNING("Fatal X11 IO error");
@@ -51,7 +51,7 @@ static int o3dXIOErrorHandler(::Display *display)
     return 0;
 }
 
-static int o3dXErrorHandler(::Display* display, XErrorEvent* error_event)
+static int o3dXErrorHandler(::Display* /*display*/, XErrorEvent* error_event)
 {
     String what = String::print(
                       "serial:%u error_code:%u request_code:%u minor_code:%u",

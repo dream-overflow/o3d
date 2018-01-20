@@ -13,16 +13,15 @@
 #include "o3d/core/base.h"
 #include <map>
 
-
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class GarbageManager
-//-------------------------------------------------------------------------------------
-//! Class in charge of deleting unused objects. This class avoid useless disk access.
-//! You have to take CARE ABOUT ONE THING: OBJ MUST be a pointer. This class has all access
-//! on the object, so they must not be shared with others managers.
-//---------------------------------------------------------------------------------------
+/**
+ * @class GarbageManager
+ * @brief Class in charge of deleting unused objects.
+ * @details This class avoid useless disk access.
+ * You have to take CARE ABOUT ONE THING: OBJ MUST be a pointer.
+ * This class has all access on the object, so they must not be shared with others managers.
+ */
 template <class KEY, class OBJ>
 class O3D_API_TEMPLATE GarbageManager
 {
@@ -46,7 +45,8 @@ public:
 		m_lifetime(GARBAGE_DEFAULT_LIFETIME),
 		m_maxsize(GARBAGE_DEFAULT_MAXSIZE),
 		m_container()
-	{}
+    {
+    }
 
 	//! Virtual destructor.
 	virtual ~GarbageManager() { destroy(); }
@@ -54,28 +54,29 @@ public:
 	//! Refresh function.
 	void update()
 	{
-		if (m_lifetime == 0)
+        if (m_lifetime == 0) {
 			return;
+        }
 
         Int64 current_time = this->getCurrentTime();
 		IT_GarbageManager it = m_container.begin();
 
-		while (it != m_container.end())
-			if (current_time - it->second.lifetime > m_lifetime)
-			{
+        while (it != m_container.end()) {
+            if (current_time - it->second.lifetime > m_lifetime) {
 				deletePtr(it->second.object);
 
 				IT_GarbageManager it2 = it++;
 				m_container.erase(it2);
-			}
-			else it++;
+            } else {
+                it++;
+            }
+        }
 	}
 
 	//! The following function destroy all element of the garbage.
 	void destroy()
 	{
-		for (IT_GarbageManager it = m_container.begin(); it != m_container.end(); it++)
-		{
+        for (IT_GarbageManager it = m_container.begin(); it != m_container.end(); it++) {
 			deletePtr(it->second.object);
 		}
 
@@ -86,7 +87,6 @@ public:
     inline Bool exists(const KEY & _which)
 	{
 		IT_GarbageManager it = m_container.find(_which);
-
 		return (it != m_container.end());
 	}
 
@@ -95,13 +95,13 @@ public:
 	{
 		IT_GarbageManager it = m_container.find(_which);
 
-		if (it != m_container.end())
-		{
+        if (it != m_container.end()) {
 			_obj = it->second.object;
 			it->second.lifetime = this->getCurrentTime();
 			return True;
-		}
-		else return False;
+        } else {
+            return False;
+        }
 	}
 
 	//! Remove and delete an object
@@ -109,13 +109,13 @@ public:
 	{
 		IT_GarbageManager it = m_container.find(_which);
 
-		if (it != m_container.end())
-		{
+        if (it != m_container.end()) {
 			deletePtr(it->second.object);
 			m_container.erase(it);
 			return True;
-		}
-		else return False;
+        } else {
+            return False;
+        }
 	}
 
 	//! Same function but return the object instead of destroying it
@@ -123,33 +123,34 @@ public:
 	{
 		IT_GarbageManager it = m_container.find(_which);
 
-		if (it != m_container.end())
-		{
+        if (it != m_container.end()) {
 			_obj = it->second.object;
 			m_container.erase(it);
 			return True;
-		}
-		else return False;
+        } else {
+            return False;
+        }
 	}
 
 	//! Add an object to the garbage manager
 	Bool add(const KEY & _which, const OBJ & _object)
 	{
-        if (exists(_which))
+        if (exists(_which)) {
 			return False;
+        }
 
-		if ((m_container.size() == m_maxsize) && (m_maxsize > 0))
-		{
+        if ((m_container.size() == m_maxsize) && (m_maxsize > 0)) {
 			IT_GarbageManager it;
 			Bool ret = getOldestObject(it);
-			O3D_ASSERT(ret);
+            O3D_ASSERT(ret);
 
-			deletePtr(it->second.object);
-			m_container.erase(it);
+            if (ret) {
+                deletePtr(it->second.object);
+                m_container.erase(it);
+            }
 		}
 
 		GarbageObject garbage = { _object, this->getCurrentTime() };
-
 		m_container.insert(std::make_pair(_which, garbage));
 
 		return True;
@@ -177,15 +178,19 @@ private:
 	inline UInt32 getCurrentTime() const { return System::getMsTime(); }
 
 	//! Get oldest object
-	inline Bool getOldestObject(IT_GarbageManager & it_min)
+    inline Bool getOldestObject(IT_GarbageManager & it_min)
 	{
-		if (m_container.size() == 0) return False;
+        if (m_container.size() == 0) {
+            return False;
+        }
 
 		it_min = m_container.begin();
 
-		for (IT_GarbageManager it = m_container.begin() ; it  != m_container.end() ; it++)
-			if (it->second.lifetime < it_min->second.lifetime)
+        for (IT_GarbageManager it = m_container.begin() ; it  != m_container.end() ; it++) {
+            if (it->second.lifetime < it_min->second.lifetime) {
 				it_min = it;
+            }
+        }
 
 		return True;
 	}
@@ -194,4 +199,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_GARBAGEMANAGER_H
-

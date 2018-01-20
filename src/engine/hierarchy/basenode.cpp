@@ -58,12 +58,12 @@ Bool BaseNode::isNodeObject() const
 	return True;
 }
 
-void BaseNode::addTransform(o3d::Transform *transform)
+void BaseNode::addTransform(o3d::Transform */*transform*/)
 {
 	O3D_ERROR(E_InvalidOperation("Not supported"));
 }
 
-void BaseNode::deleteTransform(Transform *transform)
+void BaseNode::deleteTransform(Transform */*transform*/)
 {
 	O3D_ERROR(E_InvalidOperation("Not supported"));
 }
@@ -72,17 +72,17 @@ void BaseNode::deleteAllTransforms()
 {
 }
 
-Bool BaseNode::findTransform(Transform *transform) const
+Bool BaseNode::findTransform(Transform */*transform*/) const
 {
 	return False;
 }
 
-const Transform *BaseNode::findTransform(const String &name) const
+const Transform *BaseNode::findTransform(const String &/*name*/) const
 {
 	return nullptr;
 }
 
-Transform *BaseNode::findTransform(const String &name)
+Transform *BaseNode::findTransform(const String &/*name*/)
 {
 	return nullptr;
 }
@@ -108,7 +108,7 @@ Transform *BaseNode::getTransform()
 }
 
 // Draw the branch
-void BaseNode::draw(const DrawInfo &drawInfo)
+void BaseNode::draw(const DrawInfo &/*drawInfo*/)
 {
     if (!getActivity() || !getVisibility()) {
 		return;

@@ -201,7 +201,7 @@ void Thread::kill()
 }
 
 // set the thread priority (not supported by POSIX)
-void Thread::setPriority(ThreadPriority _priority)
+void Thread::setPriority(ThreadPriority /*_priority*/)
 {
 	//m_priority = PRIORITY_NORMAL;
 	// not supported
@@ -234,7 +234,7 @@ void Thread::setCPUAffinity(const std::list<UInt32> &cpuIds)
 //---------------------------------------------------------------------------------------
 
 // constructor
-Semaphore::Semaphore(UInt32 initialValue, UInt32 maxValue) :
+Semaphore::Semaphore(UInt32 initialValue, UInt32 /*maxValue*/) :
     m_handle(nullptr)
 {
 #ifdef __APPLE__
@@ -245,8 +245,7 @@ Semaphore::Semaphore(UInt32 initialValue, UInt32 maxValue) :
 #else
 	m_handle = malloc(sizeof(sem_t));
 
-	if (sem_init((sem_t*)m_handle,0,initialValue) != 0)
-	{
+    if (sem_init((sem_t*)m_handle,0,initialValue) != 0) {
 		free(m_handle);
         m_handle = nullptr;
 
@@ -258,8 +257,7 @@ Semaphore::Semaphore(UInt32 initialValue, UInt32 maxValue) :
 // destroy the semaphore
 Semaphore::~Semaphore()
 {
-	if (m_handle)
-	{
+    if (m_handle) {
 #ifdef __APPLE__
 		sem_close((sem_t*)m_handle);
 #else
@@ -275,16 +273,11 @@ Bool Semaphore::waitSignal(UInt32 timeout)
 #ifdef __MACOSX__
 	return (sem_wait((sem_t*)m_handle) == 0);
 #else
-	if (timeout == 0)
-	{
+    if (timeout == 0) {
 		return (sem_trywait((sem_t*)m_handle) == 0);
-	}
-	else if (timeout == O3D_INFINITE)
-	{
+    } else if (timeout == O3D_INFINITE) {
 		return (sem_wait((sem_t*)m_handle) == 0);
-	}
-	else
-	{
+    } else {
 		struct timeval curTime;
         gettimeofday(&curTime, nullptr);
 
@@ -297,8 +290,7 @@ Bool Semaphore::waitSignal(UInt32 timeout)
 
 		tryagain:
 		result = sem_timedwait((sem_t*)m_handle,&absTime);
-		switch (result)
-		{
+        switch (result) {
 			case EINTR:
 				goto tryagain;
 				break;
@@ -328,8 +320,9 @@ Bool Semaphore::tryWaitSignal()
 // unlock the semaphore
 Bool Semaphore::postSignal()
 {
-	if (sem_post((sem_t*)m_handle) != 0)
+    if (sem_post((sem_t*)m_handle) != 0) {
 		return False;
+    }
 
 	return True;
 }
@@ -343,7 +336,6 @@ UInt32 Semaphore::getValue() const
 	return (value < 0 ? (UInt32)0 : (UInt32)value);
 }
 
-
 //---------------------------------------------------------------------------------------
 // WaitCondition
 //---------------------------------------------------------------------------------------
@@ -351,8 +343,7 @@ UInt32 Semaphore::getValue() const
 // default constructor
 WaitCondition::WaitCondition()
 {
-    if (pthread_cond_init(&m_handle, nullptr) != 0)
-	{
+    if (pthread_cond_init(&m_handle, nullptr) != 0) {
 		O3D_ERROR(E_InvalidAllocation("Unable to init the wait condition"));
 	}
 }
@@ -378,8 +369,7 @@ Bool WaitCondition::wait(FastMutex &mutex, UInt32 timeout)
 
 	tryagain:
 	result = pthread_cond_timedwait(&m_handle, &mutex.m_handle, &absTime);
-	switch (result)
-	{
+    switch (result) {
 		case EINTR:
 			goto tryagain;
 			break;

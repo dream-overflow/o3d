@@ -78,4 +78,3 @@ struct CompileCheckTime<false> {};
 #endif
 
 #endif // _O3D_ASSERT_H
-

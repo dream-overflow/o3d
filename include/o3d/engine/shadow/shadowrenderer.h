@@ -15,12 +15,11 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class ShadowRenderer
-//-------------------------------------------------------------------------------------
-//! Shadow renderer interface. Process the light in way to render the visibility
-//! manager of the related scene with shadow and lighting.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Shadow renderer interface.
+ * @details Process the light in way to render the visibility manager of the related
+ * scene with shadow and lighting.
+ */
 class O3D_API ShadowRenderer
 {
 public:
@@ -47,4 +46,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_SHADOWRENDERER_H
-

@@ -90,7 +90,7 @@ public:
 	SceneObject& operator=(const SceneObject &dup);
 
 	//! Set parent.
-	virtual void setParent(BaseObject *parent);
+    virtual void setParent(BaseObject *parent) override;
 
 	//-----------------------------------------------------------------------------------
 	// Scene object capacities
@@ -141,13 +141,13 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Is the object visible.
-	virtual Bool getVisibility() const;
+    virtual Bool getVisibility() const override;
 
 	//! Enable the visibility state.
-	virtual void enableVisibility();
+    virtual void enableVisibility() override;
 
 	//! Disable the visibility state.
-	virtual void disableVisibility();
+    virtual void disableVisibility() override;
 
 	//! Toggle the visibility state.
 	inline Bool toggleVisibility()
@@ -180,29 +180,29 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Is the object is static (unmovable false) or dynamic (movable true).
-	virtual Bool isMovable() const;
+    virtual Bool isMovable() const override;
 
     //-----------------------------------------------------------------------------------
 	// Drawable
 	//-----------------------------------------------------------------------------------
 
 	//! Nothing to draw.
-    virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	//! Check only with its parent node position.
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 
 	//! Check only with its parent node position.
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 
 	//! Always returns inside.
-	virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const;
+    virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const override;
 
 	//! Return O3D_UNDEFINED draw type.
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
     //! Is need a draw.
-    virtual Bool isNeedDraw() const;
+    virtual Bool isNeedDraw() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Scene object activity
@@ -247,13 +247,13 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Enable the picking processing of the object.
-	virtual void enablePicking();
+    virtual void enablePicking() override;
 
 	//! Disable the picking processing of the object.
-	virtual void disablePicking();
+    virtual void disablePicking() override;
 
 	//! Is the picking processing is enabled.
-	virtual Bool isPicking() const;
+    virtual Bool isPicking() const override;
 
 	//! Define the picking processing state of the object.
 	inline void setPicking(Bool state)
@@ -278,17 +278,17 @@ public:
 	}
 
 	//! Get the pickable color.
-	virtual Color getPickableColor();
+    virtual Color getPickableColor() override;
 
 	//-----------------------------------------------------------------------------------
 	// Animatable specific
 	//-----------------------------------------------------------------------------------
 
 	//! Get the object ID for player serialization.
-	virtual Int32 getAnimatableId(AnimatableManager &type);
+    virtual Int32 getAnimatableId(AnimatableManager &type) override;
 
 	//! Get animation key-frame it map ref.
-	virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* track);
+    virtual AnimatableTrack* getAnimationStatus(const AnimationTrack* track) override;
 
 	//! Nothing to animate.
 	virtual void animate(
@@ -298,82 +298,82 @@ public:
 		AnimationTrack::Target target,
 		UInt32 subTarget,
 		Animation::BlendMode blendMode,
-        Float weight);
+        Float weight) override;
 
 	//! Nothing to reset.
-    virtual void resetAnim();
+    virtual void resetAnim() override;
 
     //! Return null.
-    virtual Animatable* getFirstSon();
+    virtual Animatable* getFirstSon() override;
 
     //! Return null.
-    virtual Animatable* getNextSon();
+    virtual Animatable* getNextSon() override;
 
 	//! Return FALSE.
-    virtual Bool hasMoreSons();
+    virtual Bool hasMoreSons() override;
 
 	//! Return identity matrix.
-    virtual const Matrix4& getPrevAnimationMatrix() const;
+    virtual const Matrix4& getPrevAnimationMatrix() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Shadable specific
 	//-----------------------------------------------------------------------------------
 
 	//! Return the absolute matrix of the node or identity.
-	virtual const Matrix4& getObjectWorldMatrix() const;
+    virtual const Matrix4& getObjectWorldMatrix() const override;
 
 	//! Set the modelview matrix according to its parent node and the current active camera.
-	virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
 	//! Return Shadable::VP_MESH.
-	virtual VertexProgramType getVertexProgramType() const;
+    virtual VertexProgramType getVertexProgramType() const override;
 
 	//! No external face array is set.
 	virtual void useExternalFaceArray(
 		FaceArray *faceArray,
 		UInt32 numFaces,
 		UInt32 firstFace,
-		UInt32 lastFace);
+        UInt32 lastFace) override;
 
 	//! Nothing to process.
-	virtual void processAllFaces(ProcessingPass pass);
+    virtual void processAllFaces(ProcessingPass pass) override;
 
     //! Return null.
-	virtual VertexElement* getVertexElement(VertexAttributeArray type) const;
+    virtual VertexElement* getVertexElement(VertexAttributeArray type) const override;
 
     //! Return null.
-	virtual FaceArray* getFaceArray() const;
+    virtual FaceArray* getFaceArray() const override;
 
 	//! Nothing to attribute.
-	virtual void attribute(VertexAttributeArray mode, UInt32 location);
+    virtual void attribute(VertexAttributeArray mode, UInt32 location) override;
 
 	//! Nothing to process.
-	virtual void operation(Operations what);
+    virtual void operation(Operations what) override;
 
 	//! Always return FALSE.
-	virtual Bool isOperation(Operations what) const;
+    virtual Bool isOperation(Operations what) const override;
 
     //! Return null.
-	virtual const Float* getMatrixArray() const;
+    virtual const Float* getMatrixArray() const override;
 
 	//! Return FALSE.
-	virtual Bool isExternalFaceArray() const;
+    virtual Bool isExternalFaceArray() const override;
 
     //! Return null.
-	virtual FaceArray* getFaceArrayToProcess(UInt32 &first, UInt32 &last);
+    virtual FaceArray* getFaceArrayToProcess(UInt32 &first, UInt32 &last) override;
 
 	//! Returns 0.0f.
-	virtual Float getDistanceFrom(const Vector3 &point) const;
+    virtual Float getDistanceFrom(const Vector3 &point) const override;
 
 	//-----------------------------------------------------------------------------------
 	// Updatable specific
 	//-----------------------------------------------------------------------------------
 
     //! Nothing to update. Only clear the updated flag.
-    virtual void update();
+    virtual void update() override;
 
     //! Check if it has been modified at its last update. Returns the updated flag.
-    virtual Bool hasUpdated() const;
+    virtual Bool hasUpdated() const override;
 
 	//! Force to process an update the next time.
 	inline void queryUpdate() { setUpdated(); }
@@ -383,24 +383,24 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Enable the cast of shadow.
-	virtual void enableShadowCast();
+    virtual void enableShadowCast() override;
 
 	//! Disable the cast of shadow.
-	virtual void disableShadowCast();
+    virtual void disableShadowCast() override;
 
 	//! Get the shadow cast states.
-	virtual Bool getShadowCast() const;
+    virtual Bool getShadowCast() const override;
 
 	//! Project the silhouette according to a specified light.
 	//! Do nothing by default.
-	virtual void projectSilhouette(const DrawInfo &drawInfo);
+    virtual void projectSilhouette(const DrawInfo &drawInfo) override;
 
 	//-----------------------------------------------------------------------------------
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! Post importation call. All object can implement a post importation processing,
 	//! when all object are imported.

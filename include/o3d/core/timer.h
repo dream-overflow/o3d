@@ -255,7 +255,7 @@ private:
     TimerCounter m_counter;
 
     //! Runnable
-    Int32 run(void*);
+    virtual Int32 run(void*) override;
 };
 
 /**
