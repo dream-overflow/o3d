@@ -37,7 +37,7 @@ if (UNIX OR MINGW)
 
     # shaders
     file(GLOB OBJECTIVE3D_SHADERS_ZIP "$ENV{PREFIX}/share/o3d/glsl*.zip")
-    message(${OBJECTIVE3D_SHADERS_ZIP})
+    # message(${OBJECTIVE3D_SHADERS_ZIP})
     # find_file(OBJECTIVE3D_SHADERS_ZIP *.zip HINTS ENV PREFIX PATH_SUFFIXES share/o3d)
 
 	mark_as_advanced(OBJECTIVE3D_INCLUDE_DIR OBJECTIVE3D_LIBRARY)
