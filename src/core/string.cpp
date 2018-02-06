@@ -1217,9 +1217,9 @@ String String::slice(Int32 start, Int32 end) const
 
     Int32 n = 0;
     if (end >= (Int32)m_size || end < 0) {
-        n = m_size - start - 1;
+        n = m_size - start + 1;
     } else {
-        n = start - end - 1;
+        n = end - start + 1;
     }
 
     result.setCapacity(n);
