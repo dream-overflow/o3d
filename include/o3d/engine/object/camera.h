@@ -34,8 +34,7 @@ public:
 	Camera& operator= (const Camera &dup);
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
-
+    virtual UInt32 getDrawType() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Projection
@@ -109,7 +108,6 @@ public:
 	//! Get the projection matrix.
 	const Matrix4& getProjectionMatrix() const { return m_projectionMatrix; }
 
-
 	//-----------------------------------------------------------------------------------
 	// Processing
 	//-----------------------------------------------------------------------------------
@@ -124,11 +122,11 @@ public:
 	inline const Matrix4& getModelviewMatrix() const { return m_modelviewMatrix; }
 
 	//! Update transforms
-	virtual void update();
+    virtual void update() override;
 
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
-	virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
     //! Returns true if the camera changed at a previous update.
     Bool isCameraChanged() const { return m_capacities.getBit(STATE_CAMERA_CHANGED); }
@@ -139,8 +137,8 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

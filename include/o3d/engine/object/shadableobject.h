@@ -41,7 +41,7 @@ public:
 	ShadableObject& operator= (const ShadableObject &dup);
 
 	//! get the shadable shader program to use
-	virtual VertexProgramType getVertexProgramType() const;
+    virtual VertexProgramType getVertexProgramType() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Processing

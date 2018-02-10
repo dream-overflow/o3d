@@ -92,12 +92,12 @@ public:
 	void resize(UInt32 width, UInt32 height, Bool dontUnbind = False);
 
 	//! Destroy the OpenGL texture, and the picture if it exists.
-	virtual void destroy();
+    virtual void destroy() override;
 
 	//! Unload the image if it is valid.
 	void unloadImage();
 
-	virtual Bool addMipsLevels(UInt32 minLevel, UInt32 maxLevel);
+    virtual Bool addMipsLevels(UInt32 minLevel, UInt32 maxLevel) override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -105,13 +105,13 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Set the texture parameter, such as enable extra coord for cubemap...
-	virtual void set();
+    virtual void set() override;
 	//! Bind an opengl texture
-	virtual Bool bind();
+    virtual Bool bind() override;
 	//! unbind the texture
-	virtual void unbind();
+    virtual void unbind() override;
 	//! Unset the texture parameter
-	virtual void unSet();
+    virtual void unSet() override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -133,19 +133,19 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
 	Image m_picture;				//!< The picture if created from a picture.
 
     //! Set the filtering mode to theL texture object.
-	virtual void setFilteringMode();
+    virtual void setFilteringMode() override;
     //! Set the wrap mode to the texture object.
-    virtual void setWrapMode();
+    virtual void setWrapMode() override;
     //! Set the anisotropy level to the texture object.
-	virtual void setAnisotropyLevel();
+    virtual void setAnisotropyLevel() override;
 };
 
 /**
@@ -166,9 +166,9 @@ public:
 			const String &filename,
 			Bool mipmaps);
 
-	virtual Bool execute();
+    virtual Bool execute() override;
 
-	virtual Bool finalize();
+    virtual Bool finalize() override;
 
 private:
 

@@ -71,32 +71,32 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Add a new transform
-	virtual void addTransform(Transform *transform);
+    virtual void addTransform(Transform *transform) override;
 
 	//! Remove and delete a transform
-	virtual void deleteTransform(Transform *transform);
+    virtual void deleteTransform(Transform *transform) override;
 
 	//! Remove and delete all transforms
-	virtual void deleteAllTransforms();
+    virtual void deleteAllTransforms() override;
 
 	//! Find a transform
-	virtual Bool findTransform(Transform *transform) const;
+    virtual Bool findTransform(Transform *transform) const override;
 
 	//! Find a transform given its name (read only)
-	virtual const Transform* findTransform(const String &name) const;
+    virtual const Transform* findTransform(const String &name) const override;
 	//! Find a transform given its name
-	virtual Transform* findTransform(const String &name);
+    virtual Transform* findTransform(const String &name) override;
 
 	//! Get the transforms list (read only)
-	virtual const T_TransformList& getTransforms() const;
+    virtual const T_TransformList& getTransforms() const override;
 	//! Get the transforms list
-	virtual       T_TransformList& getTransforms();
+    virtual       T_TransformList& getTransforms() override;
 
 	//! Get the front transform or null if none (read only)
-	virtual const Transform* getTransform() const;
+    virtual const Transform* getTransform() const override;
 
 	//! Get the front transform or null if none
-	virtual Transform* getTransform();
+    virtual Transform* getTransform() override;
 
 	//-----------------------------------------------------------------------------------
 	// Drawable

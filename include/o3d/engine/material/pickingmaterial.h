@@ -32,7 +32,7 @@ public:
 	virtual ~PickingMaterial();
 
 	//! Check if the material is supported by the hardware.
-	virtual Bool isMaterialSupported() const;
+    virtual Bool isMaterialSupported() const override;
 
 	//! Initialize material shader according to a specific MaterialPass setting,
 	//! and shadable vertex mode.
@@ -40,10 +40,10 @@ public:
 	virtual void initialize(
 			InitMode initMode,
 			MaterialPass &materialPass,
-			Shadable &shadable);
+            Shadable &shadable) override;
 
 	//! Release initialized data.
-	virtual void release();
+    virtual void release() override;
 
 	//-----------------------------------------------------------------------------------
 	// Processing
@@ -54,7 +54,7 @@ public:
 	virtual void processAmbient(
 			Shadable &object,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 	//! Shadable object rendering for picking.
 	//! @param object Shadable object to render.
@@ -65,7 +65,7 @@ public:
 			Shadable &object,
 			Pickable &pickable,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 	//! Shadable object rendering for lighting and shadow pass.
 	//! @warning Not supported for this mode.
@@ -73,14 +73,14 @@ public:
 			Shadable &object,
 			Shadowable &shadowable,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 	//! Shadable object rendering for deferred diffuse pass.
 	//! @warning Not supported for this mode.
 	virtual void processDeferred(
 			Shadable &object,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 protected:
 

@@ -39,7 +39,6 @@ public:
 	//! Virtual destructor
 	virtual ~Transform() {}
 
-
 	//-----------------------------------------------------------------------------------
 	// Transform
 	//-----------------------------------------------------------------------------------
@@ -117,13 +116,13 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os)
+    virtual Bool writeToFile(OutStream &os) override
 	{
         os << m_name;
 		return True;
 	}
 
-	virtual Bool readFromFile(InStream &is)
+    virtual Bool readFromFile(InStream &is) override
 	{
 		setDirty();
         is >> m_name;
@@ -146,4 +145,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TRANSFORM_H
-
