@@ -353,8 +353,8 @@ protected:
 	Float V[3];		//!< vector data
 };
 
-typedef Vector3    Point3f;
-typedef Vector3    Vector3f;
+typedef Vector3 Point3f;
+typedef Vector3 Vector3f;
 
 } // namespace o3d
 

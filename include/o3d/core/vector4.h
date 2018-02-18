@@ -301,6 +301,9 @@ protected:
 	Float V[4];		//!< Vector components
 };
 
+typedef Vector4 Point4f;
+typedef Vector4 Vector4f;
+
 } // namespace o3d
 
 #endif // _O3D_VECTOR4
