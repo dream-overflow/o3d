@@ -35,17 +35,16 @@ public:
 	virtual ~BezierSurface() {}
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
-	virtual void update() {}
-	virtual void draw(const DrawInfo &drawInfo) {}
+    virtual void update() override {}
+    virtual void draw(const DrawInfo &drawInfo) override {}
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 };
 
 } // namespace o3d
 
 #endif // _O3D_BEZIERSURFACE_H
-

@@ -39,7 +39,7 @@ public:
 	virtual ~BumpMaterial();
 
 	//! Check if the material is supported by the hardware.
-	virtual Bool isMaterialSupported() const;
+    virtual Bool isMaterialSupported() const override;
 
 	//! Initialize material shader according to a specific MaterialPass setting,
 	//! and shadable vertex mode.
@@ -47,7 +47,7 @@ public:
 	virtual void initialize(
 			InitMode initMode,
 			MaterialPass &materialPass,
-			Shadable &shadable);
+            Shadable &shadable) override;
 
 	//-----------------------------------------------------------------------------------
 	// Processing
@@ -58,7 +58,7 @@ public:
 	virtual void processAmbient(
 			Shadable &object,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 	//! Shadable object rendering for picking.
 	//! @warning Not supported for this mode.
@@ -66,7 +66,7 @@ public:
 			Shadable &object,
 			Pickable &pickable,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 	//! Shadable object rendering for lighting and shadow pass.
 	//! @param object Shadable object to render.
@@ -76,7 +76,7 @@ public:
 			Shadable &object,
 			Shadowable &shadowable,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 	//! Shadable object rendering for deferred diffuse pass.
 	//! @param object Shadable object to render.
@@ -85,7 +85,7 @@ public:
 	virtual void processDeferred(
 			Shadable &object,
 			const DrawInfo &drawInfo,
-			const MaterialPass &materialPass);
+            const MaterialPass &materialPass) override;
 
 protected:
 
@@ -94,10 +94,9 @@ protected:
 
 	Int32 u_bumpMap[3];
 
-	virtual void getCommonLoc(ShaderInstance &shaderInstance, Int32 dest);
+    virtual void getCommonLoc(ShaderInstance &shaderInstance, Int32 dest) override;
 };
 
 } // namespace o3d
 
 #endif // _O3D_BUMPMATERIAL_H
-

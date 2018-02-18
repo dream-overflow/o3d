@@ -71,18 +71,18 @@ public:
 	// Updatable
 	//-----------------------------------------------------------------------------------
 
-	virtual void update();
+    virtual void update() override;
 
 
 	//-----------------------------------------------------------------------------------
 	// Serialisation
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! Post import pass to retrieve the target
-	virtual void postImportPass();
+    virtual void postImportPass() override;
 
 protected:
 
@@ -100,4 +100,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TARGETNODE_H
-

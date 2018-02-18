@@ -184,7 +184,7 @@ void ColorMaterial::release()
 // Shadable object rendering for ambient pass.
 void ColorMaterial::processAmbient(
         Shadable &shadable,
-        const DrawInfo &drawInfo,
+        const DrawInfo &/*drawInfo*/,
         const MaterialPass &materialPass)
 {
     ShaderInstance &shader = m_shaderInstance;
@@ -198,7 +198,7 @@ void ColorMaterial::processAmbient(
 
         // if no VAO then setup the vertex attrib arrays
         if (glContext->isDefaultVertexArray()) {
-            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+            for (UInt32 i = 0; i < m_arrays.size(); ++i) {
                 shadable.attribute(m_arrays[i], m_arrays[i]);
             }
         }
@@ -234,7 +234,7 @@ void ColorMaterial::processAmbient(
         if (glContext->isDefaultVertexArray()) {
             // @todo we should agree with letting active by default at least
             // the two first units. or something else like this.
-            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+            for (UInt32 i = 0; i < m_arrays.size(); ++i) {
                 glContext->disableVertexAttribArray(m_arrays[i]);
             }
         } else {
@@ -253,20 +253,20 @@ void ColorMaterial::processAmbient(
 
 // Shadable object rendering for picking.
 void ColorMaterial::processPicking(
-        Shadable &object,
-        Pickable &pickable,
-        const DrawInfo &drawInfo,
-        const MaterialPass &materialPass)
+        Shadable &/*object*/,
+        Pickable &/*pickable*/,
+        const DrawInfo &/*drawInfo*/,
+        const MaterialPass &/*materialPass*/)
 {
     O3D_ERROR(E_InvalidOperation("Not permit"));
 }
 
 // Shadable object rendering for lighting and shadow pass.
 void ColorMaterial::processLighting(
-        Shadable &object,
-        Shadowable &shadowable,
-        const DrawInfo &drawInfo,
-        const MaterialPass &materialPass)
+        Shadable &/*object*/,
+        Shadowable &/*shadowable*/,
+        const DrawInfo &/*drawInfo*/,
+        const MaterialPass &/*materialPass*/)
 {
     O3D_ERROR(E_InvalidOperation("Not permit"));
 }
@@ -274,7 +274,7 @@ void ColorMaterial::processLighting(
 // Shadable object rendering for deferred diffuse pass.
 void ColorMaterial::processDeferred(
         Shadable &shadable,
-        const DrawInfo &drawInfo,
+        const DrawInfo &/*drawInfo*/,
         const MaterialPass &materialPass)
 {
     ShaderInstance &shader = m_shaderInstance;
@@ -287,7 +287,7 @@ void ColorMaterial::processDeferred(
 
         // if no VAO then setup the vertex attrib arrays
         if (glContext->isDefaultVertexArray()) {
-            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+            for (UInt32 i = 0; i < m_arrays.size(); ++i) {
                 shadable.attribute(m_arrays[i], m_arrays[i]);
             }
         }
@@ -342,7 +342,7 @@ void ColorMaterial::processDeferred(
         if (glContext->isDefaultVertexArray()) {
             // @todo we should agree with letting active by default at least
             // the two first units. or something else like this.
-            for (Int32 i = 0; i < m_arrays.size(); ++i) {
+            for (UInt32 i = 0; i < m_arrays.size(); ++i) {
                 glContext->disableVertexAttribArray(m_arrays[i]);
             }
         } else {

@@ -33,21 +33,20 @@ public:
 	PointGizmo(BaseObject *pParent);
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 
 	// test if a point is inside the gizmo
-	virtual Bool isInside(Vector3 pos);
+    virtual Bool isInside(Vector3 pos) override;
 	// test if the gizmo is inside the frustrum view
-	virtual Bool frustrumClip();
+    virtual Bool frustrumClip() override;
 
-	virtual void update() {}
+    virtual void update() override {}
 
 	// draw the gizmo
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 };
 
 } // namespace o3d
 
 #endif // _O3D_POINTGIZMO_H
-

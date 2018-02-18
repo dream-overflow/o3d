@@ -37,7 +37,7 @@ public:
 	//! Virtual destructor.
 	virtual ~TextureManager();
 
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Insert an existing texture in the manager.
 	//! @note Once the texture is inserted into the manager, it become its parent.

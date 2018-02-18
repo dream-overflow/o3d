@@ -79,9 +79,9 @@ public:
     inline CharSet getCharSet() const { return m_CharSet; }
 
     //! set the text font height in pixels.
-    virtual void setTextHeight(Int32 y);
+    virtual void setTextHeight(Int32 y) override;
     //! get the text font height in pixels.
-    virtual Int32 getTextHeight() const;
+    virtual Int32 getTextHeight() const override;
 
 	//! set the text area size (in number of char per row/column)
 	void setNumCharHeight(Int32 y);
@@ -89,20 +89,20 @@ public:
 	Int32 getNumCharHeight() const;
 
     //! set the text color.
-    virtual void setColor(const Color& col);
+    virtual void setColor(const Color& col) override;
     //! get the text color.
-    virtual const Color& getColor() const;
+    virtual const Color& getColor() const override;
 
 	/**
 	 * @brief Set the drawing blend mode
      * @param mode (default is Blending::ONE__ONE_MINUS_SRC_A___SRC_A__ONE).
 	 */
-    virtual void setBlendFunc(Blending::FuncProfile func);
+    virtual void setBlendFunc(Blending::FuncProfile func) override;
 	//! get the drawing blend mode
-    virtual Blending::FuncProfile getBlendFunc() const;
+    virtual Blending::FuncProfile getBlendFunc() const override;
 
 	//! Write a string at the n° row and a cursor at curpos position (-1 mean no cursor)
-	virtual Int32 writeAtRow(Int32 row, Int32 x, const String& text, Int32 curspos = -1);
+    virtual Int32 writeAtRow(Int32 row, Int32 x, const String& text, Int32 curspos = -1) override;
 
 	//! how many char in this font
 	inline UInt32 getNumChars() const { return m_nChar; }

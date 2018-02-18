@@ -53,16 +53,16 @@ public:
 	void setLayout(Layout *layout);
 
 	//! get the parent layout. By default a vertical BoxLayout is setup. (const version)
-	virtual const Layout* getLayout() const;
+    virtual const Layout* getLayout() const override;
 	//! get the parent layout. By default a vertical BoxLayout is setup.
-	virtual Layout* getLayout();
+    virtual Layout* getLayout() override;
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! get the widget client size. the client area is the area which may be drawn on by
 	//! the programmer (excluding title bar, border, scrollbars, etc)
-	virtual Vector2i getClientSize() const;
+    virtual Vector2i getClientSize() const override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -86,27 +86,27 @@ public:
 	// Widget
 	//-----------------------------------------------------------------------------------
 
-	virtual Vector2i getOrigin() const;
+    virtual Vector2i getOrigin() const override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	//! Mouse Events
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-	virtual void focused();
-	virtual void lostFocus();
+    virtual void focused() override;
+    virtual void lostFocus() override;
 
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
     //! Get the widget corresponding to next tab index or nullptr if none.
-    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction);
+    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction) override;
 
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 private:
 
@@ -128,4 +128,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_PANE_H
-

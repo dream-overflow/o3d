@@ -116,31 +116,31 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! get the recommended widget default size.
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	//! Mouse Events
-	virtual Bool mouseLeftPressed(Int32 x,Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x,Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
-	virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z);
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual Bool mouseLeftPressed(Int32 x,Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x,Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
+    virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z) override;
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-	virtual void focused();
-	virtual void lostFocus();
+    virtual void focused() override;
+    virtual void lostFocus() override;
 
 	//! Events Management
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 	//! Update for repeated action.
-	virtual void update();
+    virtual void update() override;
 
 public:
 
@@ -263,4 +263,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_SCROLLBAR_H
-

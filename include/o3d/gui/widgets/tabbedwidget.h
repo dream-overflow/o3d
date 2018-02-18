@@ -138,7 +138,7 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! get the current active tab id or -1 if none.
 	Int32 getActiveTab() const;
@@ -163,23 +163,23 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	//! Mouse Events
-	virtual Bool mouseLeftPressed(Int32 x,Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x,Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual Bool mouseLeftPressed(Int32 x,Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x,Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-	virtual void focused();
-	virtual void lostFocus();
+    virtual void focused() override;
+    virtual void lostFocus() override;
 
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 public:
 
@@ -233,4 +233,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TABBEDWIDGET_H
-

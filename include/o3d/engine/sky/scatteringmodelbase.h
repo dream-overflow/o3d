@@ -124,7 +124,7 @@ public:
 protected:
 
 	//! @brief Thread method
-	Int32 run(void*);
+    virtual Int32 run(void*) override;
 
 	//! @brief Entry function of the model
 	virtual TaskResult entry(TaskData &) = 0;
@@ -144,4 +144,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SCATTERINGMODELBASE_H
-

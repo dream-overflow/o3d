@@ -74,8 +74,8 @@ public:
 	inline const Plane& getPlane(UInt32 id)const { return m_Plane[id]; }
 
 	//! serialisation
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

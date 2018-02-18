@@ -37,7 +37,7 @@ public:
 	virtual ~SkyObjectBase();
 
 	//! @brief Return Scene::DrawSkyObject
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 	//! @brief Returns the position at a specified time using spherical coordinates
 	//! It consists in a three dimensional vector containing the two angle in radian and the
@@ -63,10 +63,10 @@ public:
 	virtual void getWaveLength(Double _time, Vector3 & _wavelength) = 0;
 
 	//! Call when the sky object must be drawn
-	virtual void draw(const DrawInfo &drawInfo) = 0;
+    virtual void draw(const DrawInfo &drawInfo) override = 0;
 
 	//! Call when the object must be updated
-	virtual void update();
+    virtual void update() override;
 
 	//! @Brief Returns the brightness (similar to the contrast) of the object
 	//! You must take care not to call this function outside the drawing function, since it could
@@ -105,4 +105,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SKYOBJECTBASE_H
-

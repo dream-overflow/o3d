@@ -17,11 +17,6 @@ using namespace o3d;
 O3D_IMPLEMENT_ABSTRACT_CLASS1(Transform, ENGINE_TRANSFORM, BaseObject)
 O3D_IMPLEMENT_DYNAMIC_CLASS1(MTransform, ENGINE_MTRANSFORM, Transform)
 
-UInt32 MTransform::getType() const
-{
-    return ENGINE_MTRANSFORM;
-}
-
 // Set to identity the relative matrix
 void MTransform::identity()
 {
@@ -187,4 +182,3 @@ Bool MTransform::readFromFile(InStream &is)
 	update();
 	return True;
 }
-

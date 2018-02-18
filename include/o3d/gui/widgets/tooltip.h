@@ -39,7 +39,7 @@ public:
     virtual ~ToolTip();
 
     //! get the recommended widget default size
-    virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
     //-----------------------------------------------------------------------------------
     // Layout
@@ -49,28 +49,28 @@ public:
     void setLayout(Layout *layout);
 
     //! get the parent layout. By default a vertical BoxLayout is setup. (const version)
-    virtual const Layout* getLayout() const;
+    virtual const Layout* getLayout() const override;
     //! get the parent layout. By default a vertical BoxLayout is setup.
-    virtual Layout* getLayout();
+    virtual Layout* getLayout() override;
 
     //------------------------------------------------------------------------------------
     // Widget
     //-----------------------------------------------------------------------------------
 
-    virtual Vector2i getOrigin() const;
+    virtual Vector2i getOrigin() const override;
 
     //! get the widget client size. the client area is the area which may be drawn on by
     //! the programmer (excluding title bar, border, scrollbars, etc)
-    virtual Vector2i getClientSize() const;
+    virtual Vector2i getClientSize() const override;
 
-    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&pWidget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&pWidget) override;
 
     //! Events Management
-    virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
     // Draw
-    virtual void draw();
-    virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 protected:
 
@@ -85,4 +85,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TOOLTIP_H
-

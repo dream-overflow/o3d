@@ -143,30 +143,30 @@ public:
 
 //! Shadable no data access methods
 #define O3D_SHADABLE_NO_DATA_ACCESS \
-    virtual VertexElement* getVertexElement(VertexAttributeArray) const { return nullptr; }\
-    virtual FaceArray* getFaceArray() const { return nullptr; }\
-    virtual void operation(Operations) {}\
-    virtual Bool isOperation(Operations) const { return False; }
+    virtual VertexElement* getVertexElement(VertexAttributeArray) const override { return nullptr; }\
+    virtual FaceArray* getFaceArray() const override { return nullptr; }\
+    virtual void operation(Operations) override {}\
+    virtual Bool isOperation(Operations) const override { return False; }
 
 //! Shadable always null material/shader
 #define O3D_SHADABLE_VP_MESH \
-	virtual ShaderProgram getVertexProgramType() const { return VP_MESH; }
+    virtual ShaderProgram getVertexProgramType() const override { return VP_MESH; }
 
 //! Shadable no external face array support
 #define O3D_SHADABLE_NO_EXT_ARRAY \
-    virtual void useExternalFaceArray(FaceArray*, UInt32, UInt32, UInt32) {}\
-    virtual Bool isExternalFaceArray() const { return False; }\
-    virtual FaceArray* getFaceArrayToProcess(UInt32&, UInt32&) { return nullptr; }
+    virtual void useExternalFaceArray(FaceArray*, UInt32, UInt32, UInt32) override {}\
+    virtual Bool isExternalFaceArray() const override { return False; }\
+    virtual FaceArray* getFaceArrayToProcess(UInt32&, UInt32&) override { return nullptr; }
 
 //! Shadable no matrix array, no boundingBox, no modelview
 #define O3D_SHADABLE_NO_MISC1 \
-    virtual void setUpModelView() {}\
-    virtual const Matrix4& getObjectWorldMatrix() const { return Matrix4::getIdentity(); }\
-    virtual const Float* getMatrixArray() const { return nullptr; }\
-    virtual Float getDistanceFrom(const Vector3 &) const { return 0.0f; }
+    virtual void setUpModelView() override {}\
+    virtual const Matrix4& getObjectWorldMatrix() const override { return Matrix4::getIdentity(); }\
+    virtual const Float* getMatrixArray() const override { return nullptr; }\
+    virtual Float getDistanceFrom(const Vector3 &) const override { return 0.0f; }
 
 //! Shadable no matrix array, no boundingBox
 #define O3D_SHADABLE_NO_MISC2 \
-    virtual const Float* getMatrixArray() const { return nullptr; }
+    virtual const Float* getMatrixArray() const override { return nullptr; }
 
 #endif // _O3D_SHADABLE_H

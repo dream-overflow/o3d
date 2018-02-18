@@ -50,13 +50,17 @@ void DQTransform::setMatrix(const Matrix4& M)
 	m_hasUpdated = True;
 }
 
+void DQTransform::translate(const Vector3 &v)
+{
+    setDirty();
+}
+
 // rotate the quaternion
 void DQTransform::rotate(UInt32 axis, Float alpha)
 {
 	Quaternion q;
 
-	switch (axis)
-	{
+    switch (axis) {
 		case X:
 			q.fromAxisAngle3(Vector3(1.f,0.f,0.f),alpha);
 			m_PositionRotation *= q;
@@ -80,17 +84,55 @@ void DQTransform::rotate(UInt32 axis, Float alpha)
 	setDirty();
 }
 
+// rotate about an arbitrary axis
+void DQTransform::rotate(const Quaternion &q)
+{
+    m_PositionRotation *= q; /*m_PositionRotation.normalize();*/
+    setDirty();
+}
+
+// define the position
+void DQTransform::setPosition(const Vector3 &v)
+{
+    setDirty();
+}
+
+// define the scale
+void DQTransform::setScale(const Vector3 &v)
+{
+    m_Scale = v;
+    setDirty();
+}
+
+// scale
+void DQTransform::scale(const Vector3 &v)
+{
+    m_Scale += v;
+    setDirty();
+}
+
 // define the rotation
 void DQTransform::setRotation(const Quaternion &Quat)
 {
 	setDirty();
 }
 
+// Define the rotation
+void DQTransform::setRotation(const Vector3 &v)
+{
+    O3D_ASSERT(0);
+}
+
+// Set direction on Z axis
+void DQTransform::setDirectionZ(const Vector3 &v)
+{
+    O3D_ASSERT(0);
+}
+
 // update the matrix value
 Bool DQTransform::update()
 {
-	if (isDirty())
-	{
+    if (isDirty()) {
 		m_PositionRotation.normalize();
 
 		m_PositionRotation.toMatrix4(m_matrix4);
@@ -100,9 +142,7 @@ Bool DQTransform::update()
 
 		m_hasUpdated = True;
 		return True;
-	}
-	else
-	{
+    } else {
 		return False;
 	}
 }
@@ -128,4 +168,3 @@ Bool DQTransform::readFromFile(InStream &is)
 	update();
 	return True;
 }
-

@@ -33,8 +33,8 @@ public:
 	Map2d* getMap2d() { return m_map2d.get(); }
 	const Map2d* getMap2d() const { return m_map2d.get(); }
 
-    virtual void draw(ViewPort *viewPort);
-    virtual void drawPicking(ViewPort *viewPort);
+    virtual void draw(ViewPort *viewPort) override;
+    virtual void drawPicking(ViewPort *viewPort) override;
 
 private:
 
@@ -44,4 +44,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MAP2DDRAWER_H
-

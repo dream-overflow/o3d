@@ -16,11 +16,6 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(ATransform, ENGINE_ATRANSFORM, Transform)
 
-UInt32 ATransform::getType() const
-{
-    return ENGINE_ATRANSFORM;
-}
-
 // Set to identity the relative matrix
 void ATransform::identity()
 {
@@ -134,8 +129,7 @@ void ATransform::setDirectionZ(const Vector3 &v)
 // update the matrix value
 Bool ATransform::update()
 {
-    if (isDirty())
-    {
+    if (isDirty()) {
         Quaternion q;
         q.fromEuler(m_rot);
 
@@ -150,9 +144,7 @@ Bool ATransform::update()
 
         m_hasUpdated = True;
         return True;
-    }
-    else
-    {
+    } else {
         return False;
     }
 }
@@ -182,4 +174,3 @@ Bool ATransform::readFromFile(InStream &is)
     update();
     return True;
 }
-

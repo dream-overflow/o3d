@@ -50,10 +50,10 @@ public:
     inline Vector3& subForce(const Vector3 &force) { return m_magneticField -= force; }
 
 	//! process the force on the object
-	virtual void processObject(class RigidBody& RigidBody);
+    virtual void processObject(class RigidBody& RigidBody) override;
 
     //! process the force on the particule
-	//virtual void processParticule(class Particule& Particule);
+    //virtual void processParticule(class Particule& Particule) override;
 
 	//! serialization
     virtual Bool writeToFile(OutStream &os) override;

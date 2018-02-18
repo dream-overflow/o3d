@@ -45,27 +45,27 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! Enable/disable the widget.
-	virtual void enable(Bool active = True);
+    virtual void enable(Bool active = True) override;
 
 	//! check if the widget is targeted and return true and non null widget if a target is found
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	// Mouse events. coordinates are relative to parent origin
-	virtual Bool mouseLeftPressed(Int32 x, Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x, Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual Bool mouseLeftPressed(Int32 x, Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x, Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-	virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event);
+    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event) override;
 
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 	//! Signal on menu selected.
     Signal<> onSelectMenu{this};
@@ -175,41 +175,41 @@ public:
 
 	//! get the widget client size. the client area is the area which may be drawn on by
 	//! the programmer (excluding title bar, border, scrollbars, etc)
-	virtual Vector2i getClientSize() const;
+    virtual Vector2i getClientSize() const override;
 
 	//! Get the offset of the scrolling.
-	virtual Vector2i getScrollPos() const;
+    virtual Vector2i getScrollPos() const override;
 
-	virtual Vector2i getOrigin() const;
+    virtual Vector2i getOrigin() const override;
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	//! Mouse Events
-	virtual Bool mouseLeftPressed(Int32 x,Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x,Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual Bool mouseLeftPressed(Int32 x,Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x,Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-	virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z);
+    virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z) override;
 
 	//! Key event.
-	virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event);
+    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event) override;
 	//! Character event.
-	virtual Bool character(Keyboard *keyboard, CharacterEvent event);
+    virtual Bool character(Keyboard *keyboard, CharacterEvent event) override;
 
-	virtual void focused();
-	virtual void lostFocus();
+    virtual void focused() override;
+    virtual void lostFocus() override;
 
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 	//-----------------------------------------------------------------------------------
 	// Signals
@@ -241,4 +241,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_MENUWIDGET_H
-

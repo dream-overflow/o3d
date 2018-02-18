@@ -16,11 +16,6 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(FTransform, ENGINE_FTRANSFORM, Transform)
 
-UInt32 FTransform::getType() const
-{
-    return ENGINE_FTRANSFORM;
-}
-
 // Set to identity the relative matrix
 void FTransform::identity()
 {
@@ -80,8 +75,7 @@ void FTransform::rotate(UInt32 axis, Float alpha)
 {
 	m_rotation[axis] += alpha;
 
-    switch (axis)
-	{
+    switch (axis) {
 		case X: // Pitch
 			if (m_rotation[X] > o3d::HALF_PI)
 				m_rotation[X] = o3d::HALF_PI;
@@ -217,8 +211,7 @@ void FTransform::setDirectionZ(const Vector3 &v)
 // update the matrix value
 Bool FTransform::update()
 {
-	if (isDirty())
-	{
+    if (isDirty()) {
 		Quaternion q;
 		q.fromEuler(m_rotation);
 		q.normalize();
@@ -232,9 +225,7 @@ Bool FTransform::update()
 
 		m_hasUpdated = True;
 		return True;
-	}
-	else
-	{
+    } else {
 		return False;
 	}
 }
@@ -262,4 +253,3 @@ Bool FTransform::readFromFile(InStream &is)
 	update();
 	return True;
 }
-

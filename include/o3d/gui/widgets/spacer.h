@@ -33,16 +33,16 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//------------------------------------------------------------------------------------
 	// Widget
 	//-----------------------------------------------------------------------------------
 
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
-	virtual void draw() {}
-	virtual void updateCache() {}
+    virtual void draw() override {}
+    virtual void updateCache() override {}
 
 protected:
 
@@ -53,4 +53,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SPACER_H
-

@@ -41,7 +41,7 @@ public:
 	//! Virtual destructor.
 	virtual ~MeshDataManager();
 
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//---------------------------------------------------------------------------------------
 	// Factory

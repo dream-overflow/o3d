@@ -61,21 +61,21 @@ public:
 	// Drawable
 	//
 
-	virtual void draw(const DrawInfo &drawInfo);
-	virtual UInt32 getDrawType() const;
+    virtual void draw(const DrawInfo &drawInfo) override;
+    virtual UInt32 getDrawType() const override;
 
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const;
+    virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const override;
 
 	//
 	// Updatable
 	//
 
-	virtual void update();
+    virtual void update() override;
 
 	//
 	// Object
@@ -174,4 +174,3 @@ typedef T_Map2dObjectList::const_iterator CIT_Map2dObjectList;
 } // namespace o3d
 
 #endif // _O3D_MAP2DOBJECT_H
-

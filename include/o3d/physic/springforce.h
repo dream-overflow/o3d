@@ -64,14 +64,14 @@ public:
 
 
 	//! process the force on the object
-	virtual void processObject(class RigidBody& rigidBody);
+    virtual void processObject(class RigidBody& rigidBody) override;
 
 	//! process the force on the particule
-	//virtual void processParticule(class Particule& particule);
+    //virtual void processParticule(class Particule& particule) override;
 
 	//! serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

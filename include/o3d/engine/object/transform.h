@@ -19,11 +19,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class Transform
-//-------------------------------------------------------------------------------------
-//! Transform object. Mainly used in node to transform the basis.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Transform object. Mainly used in node to transform the basis.
+ */
 class O3D_API Transform : public BaseObject
 {
 	O3D_DECLARE_ABSTRACT_CLASS_NO_COPY(Transform)

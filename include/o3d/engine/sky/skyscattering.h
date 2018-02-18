@@ -47,10 +47,10 @@ public:
 	Bool isInit() const;
 
 	//! Call when the sky must be drawn
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	//! Update of the sky
-	virtual void update();
+    virtual void update() override;
 
 	//! Add an object
 	void addObject(SkyObjectBase*);
@@ -67,11 +67,11 @@ public:
 	Bool findCloudLayer(CloudLayerBase*) const;
 
 	//! Warns the renderer that the time must change
-	virtual void setTime(Double);
+    virtual void setTime(Double) override;
 	//! @brief Returns the current time of the virtual world
 	//! This function returns the current time used to draw the sky. It's not
 	//! necessarily the time you requested.
-	virtual Double getTime();
+    virtual Double getTime() override;
 
 	//-----------------------------------------------------------------------------------
 	// Model options
@@ -235,8 +235,8 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-    virtual Bool writeToFile(OutStream & os);
-    virtual Bool readFromFile(InStream & is);
+    virtual Bool writeToFile(OutStream & os) override;
+    virtual Bool readFromFile(InStream & is) override;
 
 	//-----------------------------------------------------------------------------------
 	// Debugging

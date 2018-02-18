@@ -92,20 +92,20 @@ public:
 	void setLayout(Layout *layout);
 
 	//! get the parent layout. By default an O3DHLayout is setup. (const version)
-	virtual const Layout* getLayout() const;
+    virtual const Layout* getLayout() const override;
 	//! get the parent layout. By default an O3DHLayout is setup.
-	virtual Layout* getLayout();
+    virtual Layout* getLayout() override;
 
 	//! Initially fit to content. this property affect the next Layout call only
 	inline void setFitToContent(Bool fit) { m_capacities.setBit(CAPS_FIT_TO_CONTENT, fit); }
 	inline Bool isFitToContent() const { return m_capacities.getBit(CAPS_FIT_TO_CONTENT); }
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! get the widget client size. the client area is the area which may be drawn on by
 	//! the programmer (excluding title bar, border, scrollbars, etc)
-	virtual Vector2i getClientSize() const;
+    virtual Vector2i getClientSize() const override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -118,29 +118,29 @@ public:
     inline const String& title() const { return m_title.text(); }
 
 	//! set the widget always on top
-	virtual void setAlwaysOnTop(Bool onTop = True);
+    virtual void setAlwaysOnTop(Bool onTop = True) override;
 	//! is the widget always on top
-	virtual Bool isAlwaysOnTop() const;
+    virtual Bool isAlwaysOnTop() const override;
 
 	//! set the widget as modal
-	virtual void setModal(Bool modal = True);
+    virtual void setModal(Bool modal = True) override;
 	//! is the widget is modal
-	virtual Bool isModal() const;
+    virtual Bool isModal() const override;
 
 	//! Get the current cursor type name for this widget if targeted.
-	virtual String getCursorTypeName() const;
+    virtual String getCursorTypeName() const override;
 
-	virtual void show(Bool show);
+    virtual void show(Bool show) override;
 
 	//-----------------------------------------------------------------------------------
 	// Widget
 	//-----------------------------------------------------------------------------------
 
-	virtual Vector2i getOrigin() const;
+    virtual Vector2i getOrigin() const override;
 
 	//! get the border size of the window depending of its defined theme
 	//! the border size is the theme borders size and the title bar height
-	virtual Vector2i getWindowBorderSize() const;
+    virtual Vector2i getWindowBorderSize() const override;
 
 	//! center the widget
 	//! @note O3DWinManager::Reshape or Scene::getViewPortManager()->Reshape must be defined with
@@ -148,12 +148,12 @@ public:
 	void center(CenterType center = CENTER_BOTH);
 
     //! Get the widget corresponding to next tab index or nullptr if none.
-    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction);
+    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction) override;
 
     //! Get the previously focused widget.
-    virtual Widget* getPreviouslyFocusedWidget();
+    virtual Widget* getPreviouslyFocusedWidget() override;
     //! Set the previously focused widget.
-    virtual void setPreviouslyFocusedWidget(Widget *widget);
+    virtual void setPreviouslyFocusedWidget(Widget *widget) override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -161,25 +161,25 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x,Int32 y,Widget *&widget);
+    virtual Bool isTargeted(Int32 x,Int32 y,Widget *&widget) override;
 
 	//! for move or resize
-	virtual Bool mouseLeftPressed(Int32 x,Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x,Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
+    virtual Bool mouseLeftPressed(Int32 x,Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x,Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
 
-	virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event);
+    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event) override;
 
 	//! Others Event
-	virtual void focused();
-	virtual void lostFocus();
-	virtual void sizeChanged();
-	virtual void positionChanged();
+    virtual void focused() override;
+    virtual void lostFocus() override;
+    virtual void sizeChanged() override;
+    virtual void positionChanged() override;
 
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 public:
 
@@ -268,7 +268,7 @@ protected:
 	void maximizePressed();
 	void closePressed();
 
-    virtual void updateTabIndex(Widget *widget);
+    virtual void updateTabIndex(Widget *widget) override;
 
     void onDeleteWidget(BaseObject *object);
 };
@@ -282,4 +282,3 @@ typedef T_WindowList::const_reverse_iterator CRIT_WindowList;
 } // namespace o3d
 
 #endif // _O3D_WINDOW_H
-

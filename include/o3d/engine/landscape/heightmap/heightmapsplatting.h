@@ -115,12 +115,12 @@ public:
 	//---------------------------------------------------------------------------------------
 
 	//! Add a light
-	virtual void addLight(const LightInfos &);
-	virtual void removeLight(Light *);
-    virtual void updateLight(Light * = nullptr);
+    virtual void addLight(const LightInfos &) override;
+    virtual void removeLight(Light *) override;
+    virtual void updateLight(Light * = nullptr) override;
 
-	virtual void draw();
-	virtual void update();
+    virtual void draw() override;
+    virtual void update() override;
 
 protected:
 

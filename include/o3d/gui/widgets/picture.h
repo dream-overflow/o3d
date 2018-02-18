@@ -40,10 +40,10 @@ public:
     virtual ~Picture();
 
     // draw
-    virtual void draw();
-    virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
-    virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 protected:
 
@@ -54,4 +54,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_PICTURE_H
-

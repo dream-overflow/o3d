@@ -14,11 +14,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class SndBufferManager
-//-------------------------------------------------------------------------------------
-//! Sound buffer manager.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Sound buffer manager.
+ */
 class O3D_API SndBufferManager : public SceneResourceManager
 {
 public:
@@ -31,7 +29,7 @@ public:
 	//! Virtual destructor.
 	virtual ~SndBufferManager();
 
-	Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Insert an existing sound buffer object into the manager.
 	void addSndBuffer(SndBuffer *sndBuffer);
@@ -45,7 +43,6 @@ public:
 
 	//! Purge immediately the garbage manager of its content.
 	void purgeGarbage();
-
 
 	//-----------------------------------------------------------------------------------
 	// Factory
@@ -66,7 +63,6 @@ public:
 
 	//! Create/Return a sound buffer according to the informations read into the file.
     SndBuffer* readSndBuffer(InStream &is);
-
 
 	//-----------------------------------------------------------------------------------
 	// Sound query
@@ -167,4 +163,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SNDBUFFERMANAGER_H
-

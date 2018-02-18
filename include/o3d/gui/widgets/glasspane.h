@@ -48,16 +48,16 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	// Mouse events. coordinates are relative to parent origin
-	virtual Bool mouseLeftPressed(Int32 x, Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x, Int32 y);
-	virtual Bool mouseRightPressed(Int32 x, Int32 y);
-	virtual Bool mouseRightReleased(Int32 x, Int32 y);
-	virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z);
-	virtual Bool mouseMove(Int32 x, Int32 y);
-	//virtual void mouseMoveIn();
-	//virtual void mouseMoveOut();
-	//virtual Bool mouseDrag(Float x, Float y, Widget *&draged);
-	//virtual Bool mouseDrop(Float x, Float y, Widget *droped);
+    virtual Bool mouseLeftPressed(Int32 x, Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x, Int32 y) override;
+    virtual Bool mouseRightPressed(Int32 x, Int32 y) override;
+    virtual Bool mouseRightReleased(Int32 x, Int32 y) override;
+    virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z) override;
+    virtual Bool mouseMove(Int32 x, Int32 y) override;
+    //virtual void mouseMoveIn() override;
+    //virtual void mouseMoveOut() override;
+    //virtual Bool mouseDrag(Float x, Float y, Widget *&draged) override;
+    //virtual Bool mouseDrop(Float x, Float y, Widget *droped) override;
 
 	/**
 	 * @brief keyboardToggled Key event
@@ -65,16 +65,16 @@ public:
 	 * @param event keyboard event
 	 * @return true if the widget consume the key, false to give it to its parent.
 	 */
-	virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event);
+    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event) override;
 	//! Character event.
-	virtual Bool character(Keyboard *keyboard, CharacterEvent event);
+    virtual Bool character(Keyboard *keyboard, CharacterEvent event) override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 	//! Ask to delete the pane asynchronously
     Signal<> onDeleteGlassPane{this};
@@ -91,4 +91,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_GLASSPANE_H
-

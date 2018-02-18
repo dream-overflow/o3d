@@ -163,22 +163,22 @@ public:
 	Texture2D* getTexture() const;
 
 	//! Draw all faces.
-	virtual void processAllFaces(Shadable::ProcessingPass pass);
+    virtual void processAllFaces(Shadable::ProcessingPass pass) override;
 
 	//! Get the current material profile (read only).
 	inline const MaterialProfile& getMaterialProfile() const { return m_material; }
 	//! Get the current material profile.
 	inline MaterialProfile& getMaterialProfile() { return m_material; }
 
-	virtual void attribute(VertexAttributeArray mode, UInt32 location);
-	virtual void setUpModelView();
+    virtual void attribute(VertexAttributeArray mode, UInt32 location) override;
+    virtual void setUpModelView() override;
 
 	//! Draw the effect.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	// Serialization.
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -198,4 +198,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_GLOWEFFECT_H
-

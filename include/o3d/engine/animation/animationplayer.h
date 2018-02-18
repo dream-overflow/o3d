@@ -200,8 +200,8 @@ public:
 	void drawTrajectory(Node *curNode);
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 public:
 
@@ -265,4 +265,3 @@ typedef T_AnimationPlayerList::const_iterator CIT_AnimationPlayerList;
 } // namespace o3d
 
 #endif // _O3D_ANIMATIONPLAYER_H
-

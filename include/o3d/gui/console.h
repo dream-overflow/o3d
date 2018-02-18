@@ -132,7 +132,7 @@ public:
 	virtual ~Console();
 
     //! get the recommended widget default size
-    virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! get the text getter
     inline       GetText& getTextGetter()       { return m_getText; }
@@ -154,9 +154,9 @@ public:
 	inline Int32 getFontSize() const { return m_fontSize; }
 
 	//! Key event.
-    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event);
+    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event) override;
 	//! Character event.
-    virtual Bool character(Keyboard *keyboard, CharacterEvent event);
+    virtual Bool character(Keyboard *keyboard, CharacterEvent event) override;
 
 	//! add a command to the list
 	void addCommand(Command* command);
@@ -194,22 +194,22 @@ public:
     //! Cut the current selection and send it to the system clipboard.
     //! @param primary To the primary clipboard if True and available.
     //! @return True if the cut success (has content, content sent).
-    virtual Bool cut(Bool primary=False);
+    virtual Bool cut(Bool primary=False) override;
     //! Copy the current selection and send it to the system clipboard.
     //! @param primary To the primary clipboard if True and available.
     //! @return True if the paste success (has content, content sent).
-    virtual Bool copy(Bool primary=False);
+    virtual Bool copy(Bool primary=False) override;
     //! Replace the current selection by the content of the system clipboard.
     //! @param primary Use the primary clipboard if True and available.
     //! @return True if the copy success (has content, compatible content type).
-    virtual Bool paste(Bool primary=False);
+    virtual Bool paste(Bool primary=False) override;
 
 	//! put a line into the console (or a multi line with \n)
 	void putText(const String& text);
 
 	//! draw all visible command with the defined font
-    virtual void draw();
-    virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 protected:
 
@@ -246,4 +246,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_CONSOLE_H
-

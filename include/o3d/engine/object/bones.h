@@ -42,19 +42,19 @@ public:
 	Bones& operator=(const Bones& dup);
 
     //! Delete child
-    virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
     //! Add a son before (only a Bones).
-    virtual void addSonFirst(SceneObject *object);
+    virtual void addSonFirst(SceneObject *object) override;
 
     //! Add a son after (only a Bones).
-    virtual void addSonLast(SceneObject *object);
+    virtual void addSonLast(SceneObject *object) override;
 
     //! Remove a specified son (only a Bones).
-    virtual void removeSon(SceneObject *object);
+    virtual void removeSon(SceneObject *object) override;
 
     //! Set the owner Skeleton (can be null).
     void setSkeleton(Skeleton *skeleton) { m_skeleton = skeleton; }
@@ -86,20 +86,20 @@ public:
 	//-----------------------------------------------------------------------------------
 
     //! This update does not add the Bones to the visibility manager.
-    virtual void update();
+    virtual void update() override;
 
     //! Setup modelview according to the skeleton.
-    virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
     //! Draw the bones symbolic recursively.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! post import pass, called after all objects are imported
-	virtual void postImportPass();
+    virtual void postImportPass() override;
 
 protected:
 
@@ -114,4 +114,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_BONES_H
-

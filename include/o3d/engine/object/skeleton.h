@@ -35,7 +35,7 @@ public:
     //! Duplicate a skeleton. Bones hierarchy is duplicate.
     Skeleton& operator=(const Skeleton &dup);
 
-    virtual void setParent(BaseObject *parent);
+    virtual void setParent(BaseObject *parent) override;
 
     //! Get the absolute matrix of the skeleton, related to its parent.
     virtual const Matrix4& getAbsoluteMatrix();
@@ -60,8 +60,8 @@ public:
     virtual void update();
 
     // Serialization
-    virtual Bool writeToFile(OutStream &os);
-    virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
     //! post import pass, called after all objects are imported
     virtual void postImportPass();
@@ -76,4 +76,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_SKELETON_H
-

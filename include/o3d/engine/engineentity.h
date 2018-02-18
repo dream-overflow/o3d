@@ -43,7 +43,7 @@ public:
     inline const Engine* getEngine() const { return reinterpret_cast<Engine*>(m_topLevelParent); }
 
     //! The top level parent must be an engine.
-    virtual Bool hasTopLevelParentTypeOf() const;
+    virtual Bool hasTopLevelParentTypeOf() const override;
 };
 
 
@@ -70,7 +70,7 @@ public:
     inline const Engine* getEngine() const { return reinterpret_cast<Engine*>(m_topLevelParent); }
 
     //! The top level parent must be an engine.
-    virtual Bool hasTopLevelParentTypeOf() const;
+    virtual Bool hasTopLevelParentTypeOf() const override;
 };
 
 
@@ -100,7 +100,7 @@ public:
     inline const Engine* getEngine() const { return reinterpret_cast<Engine*>(m_topLevelParent); }
 
     //! The top level parent must be an engine.
-    virtual Bool hasTopLevelParentTypeOf() const;
+    virtual Bool hasTopLevelParentTypeOf() const override;
 };
 
 } // namespace o3d

@@ -37,7 +37,7 @@ public:
 	//! Virtual destructor.
 	virtual ~AnimationManager();
 
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
  	//---------------------------------------------------------------------------------------
 	// Factory
@@ -105,4 +105,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_ANIMATIONMANAGER_H
-

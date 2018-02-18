@@ -48,7 +48,7 @@ public:
 	virtual ~EditBox();
 
 	//! get the recommended widget default size
-	Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! Set read-only text
 	inline void setReadOnly(Bool readOnly = True) { m_getText.setReadOnly(readOnly); }
@@ -111,41 +111,41 @@ public:
     const Validator* getValidator() const { return m_getText.validator(); }
 
 	//! Events Management
-    Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
-	virtual Bool mouseLeftPressed(Int32 x,Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x,Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
+    virtual Bool mouseLeftPressed(Int32 x,Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x,Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
 
 	//! Others Event
-	virtual void focused();
-	virtual void lostFocus();
-	virtual void sizeChanged();
-	virtual void valueChanged();
+    virtual void focused() override;
+    virtual void lostFocus() override;
+    virtual void sizeChanged() override;
+    virtual void valueChanged() override;
 
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-    virtual void themeChanged();
+    virtual void themeChanged() override;
 
 	//! A keyboard key toggle event occurred
-	virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event);
+    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event) override;
 	//! Character event.
-	virtual Bool character(Keyboard *keyboard, CharacterEvent event);
+    virtual Bool character(Keyboard *keyboard, CharacterEvent event) override;
 
 	//! Update for keyboard entry (GetText)
 	void updateCaption();
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 	// Get the current cursor type name for this widget if targeted.
-	virtual String getCursorTypeName() const;
+    virtual String getCursorTypeName() const override;
 
-    virtual Bool cut(Bool primary=False);
-    virtual Bool copy(Bool primary=False);
-    virtual Bool paste(Bool primary=False);
+    virtual Bool cut(Bool primary=False) override;
+    virtual Bool copy(Bool primary=False) override;
+    virtual Bool paste(Bool primary=False) override;
 
 public:
 
@@ -205,4 +205,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_EDITBOX_H
-

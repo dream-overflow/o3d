@@ -47,13 +47,13 @@ public:
 	virtual ~WrapLayout();
 
 	//! delete all widgets (and recursively all its sons)
-	virtual void deleteAllWidgets();
+    virtual void deleteAllWidgets() override;
 
 	//! Get the offset of the scrolling.
-	virtual Vector2i getScrollPos() const;
+    virtual Vector2i getScrollPos() const override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&pWidget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&pWidget) override;
 
 	//-----------------------------------------------------------------------------------
 	// Scrollable
@@ -79,18 +79,18 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! (Re)Compute the minimal size of the layout
-	virtual Vector2i calcMin();
+    virtual Vector2i calcMin() override;
 	//! (Re)Compute the size of the layout
-	virtual void computeSizes();
+    virtual void computeSizes() override;
 
 	//-----------------------------------------------------------------------------------
 	// Widget processing
 	//-----------------------------------------------------------------------------------
 
 	//! Draw the widget and all of its sons
-	virtual void draw();
+    virtual void draw() override;
 
-	virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z);
+    virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z) override;
 
 	//! Slot when the scroll bar is moved.
     void sliderMoved(Int32 setPos);
@@ -115,4 +115,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_WRAPLAYOUT_H
-

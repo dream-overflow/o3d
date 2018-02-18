@@ -98,7 +98,7 @@ public:
 	//! Remove and delete all sons.
 	void deleteAllLayers();
 
-	virtual void update();
+    virtual void update() override;
 
 protected:
 

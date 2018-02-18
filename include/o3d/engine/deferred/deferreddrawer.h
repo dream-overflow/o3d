@@ -66,13 +66,13 @@ public:
     inline Bool isLightGeometry() const { return m_lightGeometry; }
 
     //! Process rendering of shadow caster accordings to a specified light and the scene.
-    virtual void processLight(Light *light);
+    virtual void processLight(Light *light) override;
 
     //! Draw process.
-    virtual void draw(ViewPort *viewPort);
+    virtual void draw(ViewPort *viewPort) override;
 
     //! Process a simpler draw for the picking pass.
-    virtual void drawPicking(ViewPort *viewPort);
+    virtual void drawPicking(ViewPort *viewPort) override;
 
     //! Define the light management policy
     //virtual void setLightPolicy(LightPolicy *policy) = 0;
@@ -82,10 +82,10 @@ public:
 
     //! Set the policy level to use. How are managed lights and object according
     //! the current policy and a specified level.
-    virtual void setPolicyLevel(UInt32 level);
+    virtual void setPolicyLevel(UInt32 level) override;
 
     //! Get the current policy level to use.
-    virtual UInt32 getPolicyLevel() const;
+    virtual UInt32 getPolicyLevel() const override;
 
 protected:
 

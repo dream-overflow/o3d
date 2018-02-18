@@ -35,7 +35,7 @@ public:
 	WorldLabel(const WorldLabel & _dup);
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 	//! destructor
 	virtual ~WorldLabel();
@@ -44,10 +44,10 @@ public:
 	WorldLabel& operator=(const WorldLabel & _dup);
 
 	//! Nothing to update
-	virtual void update() {}
+    virtual void update() override {}
 
 	//! @brief Prepare the drawing of the label
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 	//! @brief Draw the content of the label
 	virtual void drawContent() = 0;
@@ -151,8 +151,8 @@ public:
 	// Serialisation
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

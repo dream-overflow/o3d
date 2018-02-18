@@ -212,7 +212,7 @@ public:
     virtual void updatePhysicRK4(Double t, Double dt, UInt32 numStepRK4) override;
 
 	//! process a manager of force
-	virtual void processForce(ForceManager& ForceManager);
+    virtual void processForce(ForceManager& ForceManager) override;
 
     //! set the collision detection model
     inline void setPhysicModel(PhysicModel* pPhysicModel) { m_physicModel = pPhysicModel; }

@@ -20,11 +20,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class AttenuationTex3D
-//-------------------------------------------------------------------------------------
-//! Attenuation texture which use of a 3d texture
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Attenuation texture which use of a 3d texture
+ */
 class O3D_API AttenuationTex3D : public Texture
 {
 public:
@@ -46,7 +44,7 @@ public:
 	Bool create();
 
 	//! Delete the texture
-	virtual void destroy();
+    virtual void destroy() override;
 
 	//! Get the size
 	inline UInt32 getSize() const { return m_size; }
@@ -56,34 +54,33 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! set the texture parameter, such as enable extra coord for cubemap...
-	virtual void set();
+    virtual void set() override;
 	//! bind an opengl texture
-	virtual Bool bind();
+    virtual Bool bind() override;
 	//! unbind the texture
-	virtual void unbind();
+    virtual void unbind() override;
 	//! unset the texture parameter
-	virtual void unSet();
+    virtual void unSet() override;
 
 	//-----------------------------------------------------------------------------------
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
 	UInt32 m_size;       //!< size of the cubemap texture (square)
 
 	//! Set the filtering mode to OpenGL.
-	virtual void setFilteringMode();
+    virtual void setFilteringMode() override;
 	//! Set the warp mode to OpenGL.
-	virtual void setWrapMode();
+    virtual void setWrapMode() override;
 	//! Set the anisotropy level to OpenGL.
-	virtual void setAnisotropyLevel();
+    virtual void setAnisotropyLevel() override;
 };
 
 } // namespace o3d
 
 #endif // _O3D_ATTENUATIONTEX3D_H
-

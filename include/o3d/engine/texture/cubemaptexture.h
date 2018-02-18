@@ -78,13 +78,13 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! set the texture parameter, such as enable extra coord for cubemap...
-	virtual void set();
+    virtual void set() override;
 	//! bind an opengl texture
-	virtual Bool bind();
+    virtual Bool bind() override;
 	//! unbind the texture
-	virtual void unbind();
+    virtual void unbind() override;
 	//! unset the texture parameter
-	virtual void unSet();
+    virtual void unSet() override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ public:
 	Bool create(Bool mipmaps, Bool unloadImg = True);
 
 	//! clear all (memory and video card)
-	virtual void destroy();
+    virtual void destroy() override;
 
 	//! Unload the pictures only.
 	void unloadImage();
@@ -122,19 +122,19 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
 	Image m_pictures[6];    //!< The 6 pictures sides (or one)
 
 	//! Set the filtering mode to OpenGL.
-	virtual void setFilteringMode();
+    virtual void setFilteringMode() override;
 	//! Set the warp mode to OpenGL.
-	virtual void setWrapMode();
+    virtual void setWrapMode() override;
 	//! Set the anisotropy level to OpenGL.
-	virtual void setAnisotropyLevel();
+    virtual void setAnisotropyLevel() override;
 
 	void checkPictures(Bool six);
     Bool loadPicture();
@@ -193,4 +193,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_TEXTURECUBEMAP_H
-

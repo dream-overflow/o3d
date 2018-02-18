@@ -34,10 +34,10 @@ public:
 	//! constructor
 	RootNode(BaseObject *parent);
 
-	virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
 	//! draw
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 };
 
 
@@ -92,13 +92,13 @@ public:
 	// Serialization
 
 	//! Export from the root
-	virtual Bool writeToFile(OutStream &os);
+    virtual Bool writeToFile(OutStream &os) override;
 
 	//! Export from a specified starting node
 	Bool writeToFile(OutStream &os, Node *startNode);
 
 	//! Import the tree as child of the root
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! get the last imported root objects list
 	inline const T_SceneObjectList& getLastImportedObjects() const { return m_lastImportedObjects; }

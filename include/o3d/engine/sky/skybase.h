@@ -16,11 +16,9 @@ namespace o3d {
 
 class SkyObjectBase;
 
-//---------------------------------------------------------------------------------------
-//! @class SkyBase
-//-------------------------------------------------------------------------------------
-//! Definition of the base class used for all sky renderer
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Definition of the base class used for all sky renderer
+ */
 class O3D_API SkyBase : public SceneObject
 {
 public:
@@ -33,10 +31,10 @@ public:
 	virtual ~SkyBase();
 
 	//! Return Scene::DrawSky
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 	//! Called when the sky must be drawn
-	virtual void draw(const DrawInfo &drawInfo) = 0;
+    virtual void draw(const DrawInfo &drawInfo) override = 0;
 
 	//! Defines the current time of the virtual world
 	virtual void setTime(Double);
@@ -47,4 +45,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_SKY_BASE
-

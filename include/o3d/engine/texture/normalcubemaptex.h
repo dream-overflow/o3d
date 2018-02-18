@@ -20,11 +20,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class NormalCubeMapTex
-//-------------------------------------------------------------------------------------
-//! Normal cube-map texture.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Normal cube-map texture.
+ */
 class O3D_API NormalCubeMapTex : public Texture
 {
 public:
@@ -45,16 +43,16 @@ public:
 	Bool create();
 
 	//! Delete the texture
-	virtual void destroy();
+    virtual void destroy() override;
 
 	//! set the texture parameter, such as enable extra coord for cubemap...
-	virtual void set();
+    virtual void set() override;
 	//! bind the texture.
-	virtual Bool bind();
+    virtual Bool bind() override;
 	//! unbound the texture
-	virtual void unbind();
+    virtual void unbind() override;
 	//! unset the texture parameter
-	virtual void unSet();
+    virtual void unSet() override;
 
 	//! Get the size.
 	inline UInt32 getSize()const { return m_size; }
@@ -63,8 +61,8 @@ public:
 	inline Float getOffset()const { return m_offset; }
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -72,14 +70,13 @@ protected:
 	Float m_offset;    //!< offset computed
 
 	//! Set the filtering mode to OpenGL.
-	virtual void setFilteringMode();
+    virtual void setFilteringMode() override;
 	//! Set the warp mode to OpenGL.
-	virtual void setWrapMode();
+    virtual void setWrapMode() override;
 	//! Set the anisotropy level to OpenGL.
-	virtual void setAnisotropyLevel();
+    virtual void setAnisotropyLevel() override;
 };
 
 } // namespace o3d
 
 #endif // _O3D_NORMCUBEMAPTEX_H
-

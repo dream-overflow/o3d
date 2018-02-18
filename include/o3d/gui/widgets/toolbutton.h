@@ -126,41 +126,41 @@ public:
 	inline Bool isToolButtonPushed() const { return m_pushed; }
 
     //! Define a tool tip. Default does nothing.
-    virtual void setToolTip(Widget *toolTip);
+    virtual void setToolTip(Widget *toolTip) override;
 
     //! Get the widget tool tip or nullptr if none. (default returns nullptr).
-    virtual Widget* getToolTip();
+    virtual Widget* getToolTip() override;
 
     /**
      * @brief setToolTip Helper that create a tooltip with a simple static text in
      * a single line. It use of the virtual setToolTip method.
      * @param label
      */
-    virtual void setToolTip(const String &label);
+    virtual void setToolTip(const String &label) override;
 
 	//-----------------------------------------------------------------------------------
 	// Widget
 	//-----------------------------------------------------------------------------------
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	//! Mouse Events
-	virtual Bool mouseLeftPressed(Int32 x,Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x,Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual Bool mouseLeftPressed(Int32 x,Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x,Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-	virtual void focused();
-	virtual void lostFocus();
+    virtual void focused() override;
+    virtual void lostFocus() override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 public:
 
@@ -204,4 +204,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TOOLBUTTON_H
-

@@ -37,14 +37,14 @@ public:
 	// Drawable
 	//
 
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkBounding(const AABBox &bbox) const;
+    virtual Geometry::Clipping checkBounding(const AABBox &bbox) const override;
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkBounding(const Plane &plane) const;
+    virtual Geometry::Clipping checkBounding(const Plane &plane) const override;
 	//! Always CLIP_INSIDE
-	virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const;
+    virtual Geometry::Clipping checkFrustum(const Frustum &frustum) const override;
 };
 
 } // namespace o3d

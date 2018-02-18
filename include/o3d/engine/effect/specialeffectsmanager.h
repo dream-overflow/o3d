@@ -34,7 +34,7 @@ public:
 	//! Virtual destructor.
 	virtual ~SpecialEffectsManager();
 
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
 	//! Insert an existing special effect in the manager.
 	//! @note Once the special effect is inserted into the manager, it become its parent.
@@ -83,8 +83,8 @@ public:
 	//! Return the number of last imported special effect.
 	inline UInt32 getNumImportedSpecialEffects() const { return m_indexToEffectSize; }
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 private:
 
@@ -105,4 +105,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SPECIALEFFECTSMANAGER_H
-

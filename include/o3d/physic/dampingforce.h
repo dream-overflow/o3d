@@ -45,14 +45,14 @@ public:
 	inline Float getGravity()const { return m_Damping; }
 
 	//! process the force on the object
-	virtual void processObject(class RigidBody& RigidBody);
+    virtual void processObject(class RigidBody& RigidBody) override;
 
 	//! process the force on the particule
-	//virtual void processParticule(class Particule& Particule);
+    //virtual void processParticule(class Particule& Particule) override;
 
 	// serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
@@ -62,4 +62,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_DAMPINGFORCE_H
-

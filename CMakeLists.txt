@@ -38,7 +38,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fvisibility=hidden")
 
     # until we have fixed any missing override keyword waited by c++17
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-inconsistent-missing-override")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override")
 
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -ggdb -D_DEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE        "-O2 -DNDEBUG -ffunction-sections")
@@ -50,13 +50,13 @@ else()
     set(CMAKE_C_FLAGS_DEBUGFULL        "-O0 -ggdb -D_DEBUG -DO3D_RAM_MEMORY_MANAGER -DO3D_FAST_MEMORY_MANAGER -fvisibility=hidden")
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        set(CMAKE_CXX_FLAGS_RELEASE    "-g0 -Os -DNDEBUG -ffunction-sections")
+        set(CMAKE_CXX_FLAGS_RELEASE "-g0 -Os -DNDEBUG -ffunction-sections")
     endif()
 
     # linker options
-    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE  "-Wl,--gc-sections")
-    set(CMAKE_MODULE_LINKER_FLAGS_RELEASE  "-Wl,--gc-sections")
-    set(CMAKE_EXE_LINKER_FLAGS_RELEASE  "-Wl,--gc-sections")
+    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,--gc-sections")
+    set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "-Wl,--gc-sections")
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,--gc-sections")
 #    if(NOT MINGW)
 #        set(CMAKE_SHARED_LINKER_FLAGS_RELEASE  "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-fuse-ld=gold")
 #        set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,-fuse-ld=gold")
@@ -181,7 +181,7 @@ endif()
 
 # Android GCC cflags
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_EXPORT_DLL")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_EXPORT_DLL")
     if (O3D_USE_SSE2)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
     endif (O3D_USE_SSE2)
@@ -189,7 +189,7 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 
 # Linux GCC cflags
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_X11 -DO3D_EXPORT_DLL")
     if (O3D_USE_SSE2)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
     endif (O3D_USE_SSE2)
@@ -197,7 +197,7 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # Darwin GCC cflags
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_X11 -DO3D_EXPORT_DLL")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_X11 -DO3D_EXPORT_DLL")
         if (O3D_USE_SSE2)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
     endif (O3D_USE_SSE2)
@@ -208,7 +208,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # todo SSE2 support On
     option(O3D_USE_SSE2 "Compile SSE2 optimizations" OFF)
     if(MINGW)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-parameter -std=c++14 -fexceptions -Wextra -DO3D_WIN32 -DO3D_EXPORT_DLL")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_WIN32 -DO3D_EXPORT_DLL")
     else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DO3D_EXPORT_DLL")
     endif()

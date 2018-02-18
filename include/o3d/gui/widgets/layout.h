@@ -48,36 +48,36 @@ public:
 	virtual ~Layout();
 
 	//! Events Management
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&pWidget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&pWidget) override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache() {}
+    virtual void draw() override;
+    virtual void updateCache() override {}
 
-	virtual Vector2i getDefaultSize() { return Vector2i(-1,-1); }
+    virtual Vector2i getDefaultSize() override { return Vector2i(-1,-1); }
 
 	//! get the minimal widget size
-    virtual Vector2i getMinSize();
+    virtual Vector2i getMinSize() override;
 
 	//-----------------------------------------------------------------------------------
 	// Layout
 	//-----------------------------------------------------------------------------------
 
 	//! process the layout calculation
-	void layout();
+    virtual void layout() override;
 
 	//! Fit the window to the size of the content of the layout
-	virtual Vector2i fit();
+    virtual Vector2i fit() override;
 
 	//! Similar to Fit, but sizes the interior (virtual) size of a window
-	virtual void fitInside();
+    virtual void fitInside() override;
 
-	void setSizeHints();
+    /*virtual*/ void setSizeHints();
 
-	void setVirtualSizeHints();
+    /*virtual*/ void setVirtualSizeHints();
 
 	//! (Re)Compute the minimal size of the layout
 	virtual Vector2i calcMin() = 0;
@@ -118,7 +118,7 @@ public:
     inline UInt32 getNumChildren() const { return (UInt32)m_sonList.size(); }
 
     //! Get the widget corresponding to next tab index or nullptr if none.
-    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction);
+    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction) override;
 
 protected:
 
@@ -266,4 +266,3 @@ private:
 } // namespace o3d
 
 #endif // _O3DLAYOUT_H
-

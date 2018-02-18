@@ -62,7 +62,7 @@ public:
 	inline Bool isThirdState() const { return (m_checkBoxState == THIRD_STATE); }
 
 	//! Is widget targeted ?
-	Bool isTargeted(Int32 x,Int32 y,Widget *&pWidget);
+    virtual Bool isTargeted(Int32 x,Int32 y,Widget *&pWidget) override;
 
 	//! Set the font.
 	inline void setFont(ABCFont* font) { m_textZone.setFont(font); setDirty(); }
@@ -82,27 +82,27 @@ public:
 	inline const String& getText() const {return m_textZone.text();}
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! Mouse Events
-	virtual Bool mouseLeftPressed(Int32 x,Int32 y);
-	virtual Bool mouseLeftReleased(Int32 x,Int32 y);
-	virtual Bool mouseMove(Int32 x,Int32 y);
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual Bool mouseLeftPressed(Int32 x,Int32 y) override;
+    virtual Bool mouseLeftReleased(Int32 x,Int32 y) override;
+    virtual Bool mouseMove(Int32 x,Int32 y) override;
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
     //! A keyboard key toggle event occurred
-    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event);
+    virtual Bool keyboardToggled(Keyboard *keyboard, KeyEvent event) override;
 
-	virtual void focused();
-	virtual void lostFocus();
+    virtual void focused() override;
+    virtual void lostFocus() override;
 
 	// Events Management
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 public:
 
@@ -136,4 +136,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_CHECKBOX_H
-

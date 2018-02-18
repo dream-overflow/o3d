@@ -75,9 +75,9 @@ public:
 	//! Virtual destructor.
 	virtual ~Gui();
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void release();
+    virtual void release() override;
 
     //
     // Events
@@ -124,17 +124,17 @@ public:
     /**
      * @brief update Update of the widget manager, theme manager, and font manager.
      */
-    virtual void update();
+    virtual void update() override;
 
 	//-------------------------------------------------------------------------------
 	// Viewport settings
 	//-------------------------------------------------------------------------------
 
     //! Return the gui viewport.
-    virtual ViewPort* getViewPort();
+    virtual ViewPort* getViewPort() override;
 
     //! Return the gui viewport.
-    virtual const ViewPort* getViewPort() const;
+    virtual const ViewPort* getViewPort() const override;
 
 	//! Change the winmanager viewport priority (default is O3D_MAX_INT32)
     void changeViewPortPriority(Int32 newPriority = Limits<Int32>::max());
@@ -143,7 +143,7 @@ public:
 	void resetViewPort();
 
 	//! set the screen resolution for the GUI and font
-    virtual void reshape(UInt32 width, UInt32 height);
+    virtual void reshape(UInt32 width, UInt32 height) override;
 
 	//! get the screen width resolution for the GUI and font
 	Int32 getWidth() const;

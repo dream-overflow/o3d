@@ -461,4 +461,3 @@ void Bones::postImportPass()
 }
 
 #undef BONES_WIDTH
-

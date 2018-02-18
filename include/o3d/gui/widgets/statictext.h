@@ -40,7 +40,7 @@ public:
 	//! destructor
 	virtual ~StaticText();
 
-    virtual void enable(Bool active = True);
+    virtual void enable(Bool active = True) override;
 
 	//! Set the font
 	inline void setFont(ABCFont* font)
@@ -114,23 +114,23 @@ public:
     //-----------------------------------------------------------------------------------
 
     //! fit to the size of the content
-    virtual Vector2i fit();
+    virtual Vector2i fit() override;
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! Events Management
-	virtual void positionChanged();
-	virtual void sizeChanged();
+    virtual void positionChanged() override;
+    virtual void sizeChanged() override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
-    virtual void layout();
+    virtual void layout() override;
 
 protected:
 
@@ -146,4 +146,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_STATICTEXT_H
-

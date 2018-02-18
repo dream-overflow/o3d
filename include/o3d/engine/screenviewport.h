@@ -34,7 +34,7 @@ public:
             SceneDrawer *drawer = nullptr);
 
 	//! Display the view-port.
-	virtual void display(UInt32 w, UInt32 h);
+    virtual void display(UInt32 w, UInt32 h) override;
 };
 
 } // namespace o3d

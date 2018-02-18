@@ -19,11 +19,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class FTransform
-//-------------------------------------------------------------------------------------
-//! Additive transformation supporting first person shot type transform.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Additive transformation supporting first person shot type transform.
+ */
 class O3D_API FTransform : public Transform
 {
 	O3D_DECLARE_DYNAMIC_CLASS_NO_COPY(FTransform)
@@ -34,63 +32,61 @@ public:
     FTransform(BaseObject *parent = nullptr) :
 		Transform(parent),
 		m_scale(1.f,1.f,1.f)
-	{}
-
-	//! Get the transform type (useful for casting)
-    virtual UInt32 getType() const;
+    {
+    }
 
 	//! Set to identity the relative matrix
-	virtual void identity();
+    virtual void identity() override;
 
 	//! Is identity
-	virtual Bool isIdentity() const;
+    virtual Bool isIdentity() const override;
 
 
 	//! Set the relative matrix. Used to set the transformation from a matrix.
 	//! scale, translation and quaternion are extracted from the matrix. This is not
 	//! very speed optimal too.
-	virtual void setMatrix(const Matrix4 &M);
+    virtual void setMatrix(const Matrix4 &M) override;
 
 	//! Translate the position
-	virtual void translate(const Vector3 &v);
+    virtual void translate(const Vector3 &v) override;
 
 	//! Set roll angle (rotation on Z axis)
 	inline void setRoll(Float roll)
 	{
 		m_rotation[Z] += roll;
 
-		if (m_rotation[Z] > o3d::TWO_PI)
+        if (m_rotation[Z] > o3d::TWO_PI) {
 			m_rotation[Z] -= o3d::TWO_PI;
-		else if (m_rotation[Z] < -o3d::TWO_PI)
+        } else if (m_rotation[Z] < -o3d::TWO_PI) {
 			m_rotation[Z] += o3d::TWO_PI;
+        }
 
 		setDirty();
 	}
 
 	//! Rotate the quaternion
-	virtual void rotate(UInt32 axis,Float alpha);
+    virtual void rotate(UInt32 axis,Float alpha) override;
 
 	//! Rotate the quaternion
-	virtual void rotate(const Quaternion &q);
+    virtual void rotate(const Quaternion &q) override;
 
 	//! Define the position
-    virtual void setPosition(const Vector3 &v);
+    virtual void setPosition(const Vector3 &v) override;
 
 	//! Define the rotation
-    virtual void setRotation(const Vector3 &v);
+    virtual void setRotation(const Vector3 &v) override;
 
 	//! Define the rotation
-	virtual void setRotation(const Quaternion &q);
+    virtual void setRotation(const Quaternion &q) override;
 
 	//! Define the scale
-    virtual void setScale(const Vector3 &v);
+    virtual void setScale(const Vector3 &v) override;
 
 	//! Scale
-    virtual void scale(const Vector3 &v);
+    virtual void scale(const Vector3 &v) override;
 
 	//! Set direction on Z axis
-	virtual void setDirectionZ(const Vector3 &v);
-
+    virtual void setDirectionZ(const Vector3 &v) override;
 
 	//! Get the position
 	inline const Vector3& getPosition() const { return m_position; }
@@ -104,16 +100,15 @@ public:
 	//! Get the scale
 	inline const Vector3& getScale() const { return m_scale; }
 
-
 	//! @brief Update the matrix value. this method is performed only if the transform is dirty.
 	//! Update perform the matrix computation if dirty, using the SRT (scale/rotate/translate).
 	//! That mean the transforms are always additive and not cumulative.
 	//! @return True mean the matrix was recomputed.
-	virtual Bool update();
+    virtual Bool update() override;
 
 	// serialisation
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 public:  // public for conveniance, but not for external usage
 
@@ -125,4 +120,3 @@ public:  // public for conveniance, but not for external usage
 } // namespace o3d
 
 #endif // _O3D_FTRANSFORM_H
-

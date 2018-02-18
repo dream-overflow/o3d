@@ -145,19 +145,19 @@ public:
 	inline void setSimpleOcclusion(Float simpleTest) { m_simpleOcclusion = simpleTest; }
 	inline Float getSimpleOcclusion() const { return m_simpleOcclusion; }
 
-	void setUpModelView();
+    virtual void setUpModelView() override;
 
 	//! draw the effect
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
  	//! update the effect
-	virtual void update();
+    virtual void update() override;
 
 	//! serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	// post import method
-	virtual void postImportPass();
+    virtual void postImportPass() override;
 
 protected:
 

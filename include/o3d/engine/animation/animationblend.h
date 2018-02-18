@@ -178,7 +178,7 @@ public:
 	// Serialization
     virtual Bool writeToFile(OutStream &os) override;
 	//! Export from a given node of the hierarchy (pSelectedNode) with his relative hierarchy node root
-	virtual Bool writeToFile(OutStream &os, Node *hierarchyRoot, Node *selectedNode);
+    virtual Bool writeToFile(OutStream &os, Node *hierarchyRoot, Node *selectedNode) override;
     virtual Bool readFromFile(InStream &is) override;
 
 protected:

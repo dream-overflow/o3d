@@ -31,7 +31,7 @@ public:
 	virtual ~ScatteringModelDefault();
 
 	//! @brief Entry function of the model
-	virtual TaskResult entry(TaskData &);
+    virtual TaskResult entry(TaskData &) override;
 
 private:
 
@@ -69,4 +69,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SCATTERINGMODELDEFAULT_H
-

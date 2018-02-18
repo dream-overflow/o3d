@@ -552,7 +552,7 @@ public:
 	OmniSource(BaseObject *parent);
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
+    virtual UInt32 getDrawType() const override;
 };
 
 

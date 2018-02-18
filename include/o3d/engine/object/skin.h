@@ -62,7 +62,7 @@ public:
 	Skin& operator=(const Skin& dup);
 
 	//! set the meshdata
-	virtual void setMeshData(MeshData *meshData);
+    virtual void setMeshData(MeshData *meshData) override;
 
 	//! precompute matrix (automatically called when draw if not called before)
 	void initialize();
@@ -71,24 +71,22 @@ public:
 	inline SkinType getTechnique() const { return m_skinType; }
 
 	//! Get the drawing type
-	virtual UInt32 getDrawType() const;
-
+    virtual UInt32 getDrawType() const override;
 
 	//-----------------------------------------------------------------------------------
 	// Processing
     //-----------------------------------------------------------------------------------
 
 	//! Setup the modelview matrix.
-	virtual void setUpModelView();
+    virtual void setUpModelView() override;
 
 	//! Draw the skin, according to the skinning mode.
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
-	virtual void processAllFaces(Shadable::ProcessingPass pass);
+    virtual void processAllFaces(Shadable::ProcessingPass pass) override;
 
 	//! Update the skin bounding box.
-	virtual void update();
-
+    virtual void update() override;
 
 	//-----------------------------------------------------------------------------------
     // skinning and skeleton
@@ -119,8 +117,7 @@ public:
 	//! Set a bones at a specified index
 	inline void setBone(UInt32 i, Bones* bones)
 	{
-		if (i < m_numBones)
-		{
+        if (i < m_numBones) {
 			m_bones[i] = bones;
 			m_isPrecomputed = False;
 		}
@@ -129,19 +126,21 @@ public:
 	//! Get a bones at a specified index (read only)
 	inline const Bones* getBone(UInt32 i)const
 	{
-		if (i < m_numBones)
+        if (i < m_numBones) {
 			return m_bones[i].get();
-        else
+        } else {
             return nullptr;
+        }
 	}
 
 	//! Get a bones at a specified index
 	inline Bones* getBone(UInt32 i)
 	{
-		if (i < m_numBones)
+        if (i < m_numBones) {
 			return m_bones[i].get();
-        else
+        } else {
             return nullptr;
+        }
 	}
 
 	//! Search and return a bone by its name
@@ -155,9 +154,11 @@ public:
 	//! Set a reference matrix by it's bone id.
 	inline void setRefMatrix(UInt32 i, const Matrix4 &refMatrix)
 	{
-		if (i < m_numBones)
+        if (i < m_numBones) {
 			m_refMatrices[i] = refMatrix;
+        }
 	}
+
 	//! Get a reference matrix given it's bone id.
 	inline const Matrix4& getRefMatrix(UInt32 i) const { return m_refMatrices[i]; }
 
@@ -170,9 +171,11 @@ public:
 	//! Toggle the skinning activity.
 	inline Bool toggleSkinning()
 	{
-		if (m_isSkinning)
+        if (m_isSkinning) {
 			return disableSkinning();
-		return enableSkinning();
+        } else {
+            return enableSkinning();
+        }
 	}
 
 	//! Get the skinning activity.
@@ -191,26 +194,24 @@ public:
 	//! Is GPU mode.
 	inline Bool isGPUMode() const { return m_useHardware; }
 
-
     //-----------------------------------------------------------------------------------
 	// Material access methods
 	//-----------------------------------------------------------------------------------
 
 	//! Get the matrix array for hardware skinning/rigging.
-	virtual const Float* getMatrixArray() const;
+    virtual const Float* getMatrixArray() const override;
 
 	//! Access to a currently active vertex element.
 	//! @param type The array type to retrieve.
     //! @return The vertex element or null.
-	virtual VertexElement* getVertexElement(VertexAttributeArray type) const;
-
+    virtual VertexElement* getVertexElement(VertexAttributeArray type) const override;
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 	//! post import pass, called after all objects are imported
-	virtual void postImportPass();
+    virtual void postImportPass() override;
 
 protected:
 
@@ -243,8 +244,9 @@ protected:
 	//! Compute all PrecomputedMatrix
 	inline void preComputeRefMatrices()
 	{
-		for (UInt32 i = 0 ; i < m_numBones ; ++i)
+        for (UInt32 i = 0 ; i < m_numBones ; ++i) {
 			m_precomputedRefMatrices[i] = m_meshRefMatrix * m_refMatrices[i].invert();
+        }
 
 		m_isPrecomputed = True;
 	}
@@ -253,16 +255,13 @@ protected:
 	virtual void prepareDrawing() = 0;
 
 	//! Update the global bounding volume.
-	virtual void updateBounding();
+    virtual void updateBounding() override;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class Skinning
-//-------------------------------------------------------------------------------------
-//! A skinning use of weights on vertices. A bone have a weight (0..1) on a vertex.
-//! This is more efficient than the Rigging but need more time to compute.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A skinning use of weights on vertices. A bone have a weight (0..1) on a vertex.
+ * This is more efficient than the Rigging but need more time to compute.
+ */
 class O3D_API Skinning : public Skin
 {
 public:
@@ -280,21 +279,18 @@ public:
 	Skinning& operator=(const Skinning& dup);
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
-	virtual void prepareDrawing();
+    virtual void prepareDrawing() override;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class Rigging
-//-------------------------------------------------------------------------------------
-//! A rigging is more simple than skinning. There is no weights, but only one bone
-//! attribution for each vertex.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief A rigging is more simple than skinning. There is no weights, but only one bone
+ * attribution for each vertex.
+ */
 class O3D_API Rigging : public Skin
 {
 public:
@@ -312,24 +308,22 @@ public:
 	Rigging& operator=(const Rigging& dup);
 
 	// Serialization
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
-	virtual void prepareDrawing();
+    virtual void prepareDrawing() override;
 };
 
 typedef std::map<String,class ClothModel*> T_ClothModelMap;
 typedef T_ClothModelMap::iterator IT_ClothModelMap;
 typedef T_ClothModelMap::const_iterator CIT_ClothModelMap;
 
-
-//---------------------------------------------------------------------------------------
-//! @class ClothManager
-//-------------------------------------------------------------------------------------
-//! Manager for Cloth objects
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Manager for Cloth objects
+ * @deprecated
+ */
 class O3D_API ClothManager : public SceneTemplateManager<ClothModel>
 {
 public:

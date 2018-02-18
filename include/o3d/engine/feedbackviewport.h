@@ -44,7 +44,7 @@ public:
 	void setTexture(Texture2D *texture);
 
 	//! Display the viewport.
-	virtual void display(UInt32 w, UInt32 h);
+    virtual void display(UInt32 w, UInt32 h) override;
 
 	//! Map a read only buffer data. Must call unmap after usage.
 	//! @param offset Start offset of mapped buffer

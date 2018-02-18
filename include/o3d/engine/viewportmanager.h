@@ -34,7 +34,7 @@ public:
 	ViewPortManager(BaseObject *parent);
 
 	//! Delete child viewport.
-	virtual Bool deleteChild(BaseObject *child);
+    virtual Bool deleteChild(BaseObject *child) override;
 
     //
 	// Factory

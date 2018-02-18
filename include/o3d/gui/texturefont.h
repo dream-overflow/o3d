@@ -46,39 +46,39 @@ public:
         InStream &is,
         const String &path,
 		CharSet charSet = CHARSET_LATIN1,
-		FontStyle style = STYLE_NORMAL);
+        FontStyle style = STYLE_NORMAL) override;
 
 	//! Load a font data file with its texture
 	//! The file is relative to Gui (XML format) path, and texture have path relative to the font data file
 	virtual void load(
 		const String& font_file,
 		CharSet charSet = CHARSET_LATIN1,
-		FontStyle style = STYLE_NORMAL);
+        FontStyle style = STYLE_NORMAL) override;
 
 	//! Normalize all textures coordinates and compute width
 	//! @note Must be called after GenerateHomogenousMap or SetCursor usage
-	virtual void initialize();
+    virtual void initialize() override;
 
 	//! get the height of an interline
-	virtual Int32 getInterline() const;
+    virtual Int32 getInterline() const override;
 
 	//! write a string without line return and return the width of the string
-	virtual Int32 write(const Vector2i &pos, const String &text, Int32 curspos = -1);
+    virtual Int32 write(const Vector2i &pos, const String &text, Int32 curspos = -1) override;
 
 	//! get the width of this string/char
-	virtual Int32 sizeOf(const String& text);
+    virtual Int32 sizeOf(const String& text) override;
 
 	//! Get the width of a single char
-	virtual Int32 sizeOf(UInt32 achar);
+    virtual Int32 sizeOf(UInt32 achar) override;
 
     //! Get the nearest (round) character index for a given string at a given pixel position
-    virtual Int32 nearestChar(const String &text, Int32 x);
+    virtual Int32 nearestChar(const String &text, Int32 x) override;
 
 	//! is this char is supported by the loaded font
-	virtual Bool isSupportedChar(UInt32 c);
+    virtual Bool isSupportedChar(UInt32 c) override;
 
 	//! return the bounding box of a given string
-	virtual Box2i getBoundingBox(const String &text);
+    virtual Box2i getBoundingBox(const String &text) override;
 
     //! According to a given text, a left and right limits in pixel, and a pixel position
     //! to be contained exactly in this limits, set the characters indexes (left and right),
@@ -89,7 +89,7 @@ public:
             Int32 pos,
             Int32 indexes[2],
             Int32 &dstLeft,
-            String &dstText);
+            String &dstText) override;
 
 
 	//-----------------------------------------------------------------------------------
@@ -100,10 +100,10 @@ public:
 	O3D_SHADABLE_NO_MISC1
 	O3D_SHADABLE_NO_EXT_ARRAY
 
-	virtual VertexProgramType getVertexProgramType() const;
+    virtual VertexProgramType getVertexProgramType() const override;
 
-	virtual void processAllFaces(Shadable::ProcessingPass pass);
-	virtual void attribute(VertexAttributeArray mode, UInt32 location);
+    virtual void processAllFaces(Shadable::ProcessingPass pass) override;
+    virtual void attribute(VertexAttributeArray mode, UInt32 location) override;
 
 protected:
 
@@ -153,4 +153,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TEXTUREFONT_H
-

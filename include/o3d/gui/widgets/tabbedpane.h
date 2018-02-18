@@ -155,33 +155,33 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! get the recommended widget default size
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 	//! get the widget client size. the client area is the area which may be drawn on
-	virtual Vector2i getClientSize() const;
+    virtual Vector2i getClientSize() const override;
 
-	virtual Vector2i getOrigin() const;
+    virtual Vector2i getOrigin() const override;
 
 	//! Is widget targeted ?
-	virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget);
+    virtual Bool isTargeted(Int32 x, Int32 y, Widget *&widget) override;
 
 	//! Mouse Events
-    virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z);
-	virtual void mouseMoveIn();
-	virtual void mouseMoveOut();
+    virtual Bool mouseWheel(Int32 x, Int32 y, Int32 z) override;
+    virtual void mouseMoveIn() override;
+    virtual void mouseMoveOut() override;
 
-	virtual void focused();
-	virtual void lostFocus();
+    virtual void focused() override;
+    virtual void lostFocus() override;
 
-	virtual void sizeChanged();
+    virtual void sizeChanged() override;
 
     //! Get the widget corresponding to next tab index or nullptr if none.
-    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction);
+    virtual Widget* findNextTabIndex(Widget *widget, Int32 direction) override;
 
 
 	// Draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 	// When a tab is selected
     void activateTab(Int32 tabIndex);
@@ -212,4 +212,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_TABBEDPANE_H
-

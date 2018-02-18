@@ -41,8 +41,8 @@ public:
 	virtual ~Icon();
 
 	// draw
-	virtual void draw();
-	virtual void updateCache();
+    virtual void draw() override;
+    virtual void updateCache() override;
 
 	//! Get the icon set.
 	inline const IconSet* getIconSet() const { return m_iconSet; }
@@ -53,7 +53,7 @@ public:
 	//! Get the icon size.
 	const Vector2i& getIconSize() const;
 
-	virtual Vector2i getDefaultSize();
+    virtual Vector2i getDefaultSize() override;
 
 protected:
 
@@ -73,4 +73,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3DICON_H
-

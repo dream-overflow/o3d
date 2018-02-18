@@ -76,10 +76,10 @@ public:
 	inline       T_ClothList& getClothList()      { return m_ClothList; }
 
 	// update the humanoid
-	virtual void update();
+    virtual void update() override;
 
 	// draw the humanoid
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 protected:
 
@@ -96,4 +96,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_HUMANOID_H
-

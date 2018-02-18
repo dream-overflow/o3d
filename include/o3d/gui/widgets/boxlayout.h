@@ -58,9 +58,9 @@ public:
 	//-----------------------------------------------------------------------------------
 
 	//! (Re)Compute the minimal size of the layout
-	virtual Vector2i calcMin();
+    virtual Vector2i calcMin() override;
 	//! (Re)Compute the size of the layout
-	virtual void computeSizes();
+    virtual void computeSizes() override;
 
 protected:
 
@@ -80,4 +80,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_BOXLAYOUT_H
-

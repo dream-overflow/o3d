@@ -85,9 +85,11 @@ public:
 	//! Get the number of vertices.
 	inline UInt32 getNumVertices() const
 	{
-		if (isVertices())
+        if (isVertices()) {
 			return getVertices()->getNumElements();
-		return 0;
+        } else {
+            return 0;
+        }
 	}
 
 	//! Create an element array of a given type.
@@ -154,13 +156,12 @@ public:
 	inline FaceArray* getFaceArray(UInt32 idArray)
 	{
 		IT_FaceArrays it = m_faceArrays.find(idArray);
-		if (it == m_faceArrays.end())
-		{
+        if (it == m_faceArrays.end()) {
 			O3D_ERROR(E_InvalidParameter("The face array id is not available"));
             return nullptr;
-		}
-		else
+        } else {
 			return it->second;
+        }
 	}
 
 	//! Get a face array given its unique identifier (read only).
@@ -168,13 +169,12 @@ public:
 	inline const FaceArray* getFaceArray(UInt32 idArray) const
 	{
 		CIT_FaceArrays it = m_faceArrays.find(idArray);
-		if (it == m_faceArrays.end())
-		{
+        if (it == m_faceArrays.end()) {
 			O3D_ERROR(E_InvalidParameter("The face array key is not available"));
             return nullptr;
-		}
-		else
+        } else {
 			return it->second;
+        }
 	}
 
 	//! Delete a specified face array given its unique identifier
@@ -325,8 +325,8 @@ public:
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-	virtual Bool writeToFile(OutStream &os);
-	virtual Bool readFromFile(InStream &is);
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 

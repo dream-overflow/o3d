@@ -92,20 +92,20 @@ protected:
 	//!   the azimuth angle.
 	//! - The second angle is called inclination (http://en.wikipedia.org/wiki/Spherical_coordinate_system).
 	//!   It is the angle between the ground and the object direction.
-	virtual void getPosition(Double _time, Vector3 & _position, CoordinateType & _coord);
+    virtual void getPosition(Double _time, Vector3 & _position, CoordinateType & _coord) override;
 
 	//! @brief Return the apparent angle
 	//! This value is used to set the size of the object in the sky
-	virtual void getApparentAngle(Double _time, Vector2f & _angle);
+    virtual void getApparentAngle(Double _time, Vector2f & _angle) override;
 
 	//! @brief Return the intensity of the sun at a specified time
-	virtual void getIntensity(Double _time, Vector3 & _intensity);
+    virtual void getIntensity(Double _time, Vector3 & _intensity) override;
 
 	//! @brief Returns the three wavelengths of the light source
-	virtual void getWaveLength(Double _time, Vector3 & _wavelength);
+    virtual void getWaveLength(Double _time, Vector3 & _wavelength) override;
 
 	//! Call when the sky object must be drawn
-	virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 private:
 
@@ -127,4 +127,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_SKYOBJECT_H
-
