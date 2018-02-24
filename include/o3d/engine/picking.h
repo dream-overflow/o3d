@@ -134,7 +134,7 @@ public:
 	inline Bool isPickingToProcess() const { return m_isPicking; }
 
 	//! Is the picking is in processing
-	inline Bool isProcessinggetPicking() const { return m_redraw; }
+    inline Bool isProcessingPicking() const { return m_redraw; }
 
 	// Redraw scene for make the picking
 

@@ -714,6 +714,11 @@ void Scene::update()
 
 	// we always process the picking after an update
     if (m_picking->isPickingToProcess()) {
+        // Set the renderer as current if necessary
+        if (!m_renderer->isCurrent()) {
+            m_renderer->setCurrent();
+        }
+
 		// TODO Actually GUI cannot mask the scene from picking
 		// this can be a problem, so an option is needed.
 		// and maybe the GUI picking could be improved using color picking,
