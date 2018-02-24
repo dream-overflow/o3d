@@ -28,6 +28,7 @@ include/o3d/core/wgl.h
 include/o3d/engine/atomiccounter.h
 include/o3d/engine/bufferobject.h
 include/o3d/engine/glextdefines.h
+include/o3d/engine/object/stransform.h
 include/o3d/engine/primitive/cube.h
 include/o3d/engine/primitive/cylinder.h
 include/o3d/engine/primitive/dome.h
@@ -227,6 +228,7 @@ src/engine/object/skeleton.cpp
 src/engine/object/skin.cpp
 src/engine/object/spheregizmo.cpp
 src/engine/object/squaregizmo.cpp
+src/engine/object/stransform.cpp
 src/engine/object/vectorgizmo.cpp
 src/engine/object/vertexelement.cpp
 src/engine/object/worldlabel.cpp

@@ -129,6 +129,7 @@ enum EngineObjectType
     ENGINE_MTRANSFORM,                   //!< accumulative SRT transform
     ENGINE_FTRANSFORM,                   //!< first person view like transform
     ENGINE_DQTRANSFORM,                  //!< dual quaternion based RT transform
+    ENGINE_STRANSFORM,                   //!< spacial view transform
 
     ENGINE_HIERARCHY_TREE = 0x02070000,  //!< hierarchy-tree
 	ENGINE_ROOT_NODE,
