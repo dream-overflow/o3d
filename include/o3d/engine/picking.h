@@ -165,38 +165,44 @@ public:
 
 public:
 
-	//! Called when a hit is found. The first parameter is the pickable object, and
-	//! the second is the hit position.
+    /**
+     * Called when a hit accurs and its objects is found.
+     * @param pickable Related pickable object.
+     * @param pos Position of the hit.
+     */
     Signal<Pickable*, Vector3> onHit{this};
+
+    /**
+     * Called when a hit occurds but its pickable objects is not found.
+     * @param id Pickable id.
+     * @param pos Position of the hit.
+     */
+    Signal<UInt32, Vector3> onUnknownHit{this};
 
 private:
 
-	Mode m_mode;                    //!< current picking state
+    Mode m_mode;                //!< current picking state
 	Bool m_isPicking;           //!< is a picking pass is asked
-
 	Bool m_redraw;              //!< is the picking is in redrawing mode
 
-	T_Hits m_outObjectList;         //!< list of picked objects (depend of the inner list)
+    T_Hits m_outObjectList;     //!< list of picked objects (depend of the inner list)
 
-	Vector2f m_position;            //!< top-left position of the picking window
-	Vector2f m_size;                //!< width & height of the picking window
+    Vector2f m_position;        //!< top-left position of the picking window
+    Vector2f m_size;            //!< width & height of the picking window
 
 	Bool m_bypass;              //!< true mean the we redraw and check all object for picking
-
 	Bool m_pointerMode;         //!< returns only a single object under a pointer (default mode)
 
 	Bool m_hit;	                //!< is there one or more hits found
+    Vector3 m_hitPos;           //!< 3d hit position
 
-	Vector3 m_hitPos;               //!< 3d hit position
-
-	Int32 m_x,m_y;              //!< position of the pointer
+    Int32 m_x, m_y;             //!< position of the pointer
 
 	UInt32 m_stacksize;         //!< buffer hits stack size (default 16)
 
 	Color m_oldBackground;
 
 	SmartObject<Camera> m_camera;   //!< camera used for pixel hit computation
-
 	FrameBuffer m_fbo;              //!< FBO for color picking
 };
 

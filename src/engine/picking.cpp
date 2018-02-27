@@ -31,9 +31,14 @@ Picking::Picking(BaseObject *parent) :
 	m_mode(DISABLE),
 	m_isPicking(False),
 	m_redraw(False),
-	m_size(5.f,5.f),
+    m_size(5.f, 5.f),
 	m_bypass(False),
 	m_pointerMode(True),
+    m_hit(False),
+    m_hitPos(),
+    m_x(0),
+    m_y(0),
+    m_stacksize(0),
 	m_camera(this),
     m_fbo(getScene()->getContext())
 {
@@ -117,27 +122,27 @@ void Picking::postReDraw()
 		Int32 depth;
 		Float floatDepth;
 
-        // TODO read buffer from FrameBuffer::setReadBuffer();
+        // @todo read buffer from FrameBuffer::setReadBuffer();
 		glReadBuffer(FrameBuffer::COLOR_ATTACHMENT0 + GL_COLOR_ATTACHMENT0);
 		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_RGBA, GL_FLOAT, pixel);
 
 		// picking color key
-		UInt32 id =  (UInt32)(pixel[0] * 255.f) +
-						((UInt32)(pixel[1] * 255.f) << 8) +
-						((UInt32)(pixel[2] * 255.f) << 16) +
-						((UInt32)(pixel[3] * 255.f) << 24);
+        UInt32 id =  (UInt32)(pixel[0] * 255.f) +
+                    ((UInt32)(pixel[1] * 255.f) << 8) +
+                    ((UInt32)(pixel[2] * 255.f) << 16) +
+                    ((UInt32)(pixel[3] * 255.f) << 24);
 
 		// get the hit depth in integer for sorting, and float for compute the hit position
 		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_DEPTH_COMPONENT, GL_INT, &depth);
 		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &floatDepth);
 
-		// TODO read buffer from FrameBuffer::ResetReadBuffers();
+        // @todo read buffer from FrameBuffer::ResetReadBuffers();
 		m_fbo.unbindBuffer();
 		glReadBuffer(GL_BACK);
 
-		// Object picked ?
-        if (id > 0) {
-			// Find id
+        // hit
+        if (id > 0 && id < O3D_MAX_UINT32) {
+            // find pickable id
 			Pickable *object = getScene()->getSceneObjectManager()->get(id);
             if (object) {
                 if (m_camera) {
@@ -155,13 +160,15 @@ void Picking::postReDraw()
 
 				onHit(object, m_hitPos);
             } else {
-				// not found
-				m_hit = False;
+                // hit but no pickable found
+                m_hit = True;
+
+                onUnknownHit(id, m_hitPos);
 			}
 		}
     } else if (m_mode == HIGHLIGHTING) {
         // hybrid model
-		// TODO
+        // @todo
 	}
 
 	// picking processed
