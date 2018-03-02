@@ -551,8 +551,8 @@ void DeferredDrawer::draw(ViewPort */*viewPort*/)
     context.setDefaultDepthTest();
     context.setDefaultDepthFunc();
 
-    // landscape @todo drawInfo
-    getScene()->getLandscape()->draw();
+    // landscape
+    getScene()->getLandscape()->draw(drawInfo);
 
     // world objects
     getScene()->getVisibilityManager()->draw(drawInfo);

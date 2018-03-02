@@ -238,7 +238,7 @@ void Light::drawPointLight(const DrawInfo &drawInfo)
     if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_POINT_LIGHT)) {
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
         if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
@@ -263,7 +263,7 @@ void Light::drawSpotLight(const DrawInfo &drawInfo)
     if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_SPOT_LIGHT)) {
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
         if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
@@ -312,7 +312,7 @@ void Light::drawDirectLight(const DrawInfo &drawInfo)
     if ((drawInfo.pass == DrawInfo::AMBIENT_PASS) && getScene()->getDrawObject(Scene::DRAW_DIRECTIONAL_LIGHT)) {
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
         if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();

@@ -52,7 +52,7 @@ public:
 			Float weight);
 
 	//! Draw the trajectory of the object.
-	void drawTrajectory(Node *node);
+    void drawTrajectory(Node *node, const DrawInfo &drawInfo);
 
 	//! Add a son at back of the list.
 	inline void addSon(AnimationNode &node)

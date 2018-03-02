@@ -30,6 +30,7 @@ namespace o3d {
 static const Int32 MAX_SKINNING_BONES = 4;
 
 class Primitive;
+class DrawInfo;
 
 /**
  * @brief A set of elements defining a geometry object.
@@ -222,14 +223,15 @@ public:
 
 	//! Draw the local space using an external face array, and with a specified range.
 	//! Local space is the representation of the TBN for any vertex.
-	void drawLocalSpacePart(
-		FaceArray *faceArray,
-		UInt32 firstIndex,
-		UInt32 lastIndex);
+    void drawLocalSpacePart(
+            const DrawInfo &drawInfo,
+            FaceArray *faceArray,
+            UInt32 firstIndex,
+            UInt32 lastIndex);
 
 	//! Draw the local space using the current bound face array.
 	//! Local space is the representation of the TBN for any vertex.
-	void drawLocalSpace();
+    void drawLocalSpace(const DrawInfo &drawInfo);
 
 	//-----------------------------------------------------------------------------------
 	// Utilities

@@ -175,8 +175,14 @@ Bool SkyScattering::isInit() const
 //! Call when the sky must be drawn
 void SkyScattering::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
+
+    if (drawInfo.pass != DrawInfo::AMBIENT_PASS) {
+        // only in ambient pass
+        return;
+    }
 
 	if (isInit())
 	{
@@ -200,8 +206,7 @@ void SkyScattering::draw(const DrawInfo &drawInfo)
 		Int32 lUniCoefLocation = 0;
 		Int32 lUniModelViewProjectionMatrix = 0;
 
-		if (m_forecastData.isValid())
-		{
+        if (m_forecastData.isValid()) {
 			lAttribVertexLocation = m_shader2.getAttributeLocation("a_vertex");
 			lAttribColorLocation = m_shader2.getAttributeLocation("VertexColor");
 			lAttribNextColorLocation = m_shader2.getAttributeLocation("NextVertexColor");
@@ -221,9 +226,7 @@ void SkyScattering::draw(const DrawInfo &drawInfo)
 			m_vertexBuffer.attribute(lAttribVertexLocation, 3, 0, 0);
 			m_currentData.vertexColorBuffer.attribute(lAttribColorLocation, 3, 0, 0);
 			m_forecastData.vertexColorBuffer.attribute(lAttribNextColorLocation, 3, 0, 0);
-		}
-		else
-		{
+        } else {
 			lAttribVertexLocation = m_shader1.getAttributeLocation("a_vertex");
 			lAttribColorLocation = m_shader1.getAttributeLocation("VertexColor");
 
@@ -240,15 +243,12 @@ void SkyScattering::draw(const DrawInfo &drawInfo)
         getScene()->drawElementsUInt32(P_TRIANGLES, m_indexBuffer.getCount(), nullptr);
 		m_indexBuffer.unbindBuffer();
 
-		if (m_forecastData.isValid())
-		{
+        if (m_forecastData.isValid()) {
 			glContext->disableVertexAttribArray(lAttribVertexLocation);
 			glContext->disableVertexAttribArray(lAttribColorLocation);
 			glContext->disableVertexAttribArray(lAttribNextColorLocation);
 			m_shader2.unbindShader();
-		}
-		else
-		{
+        } else {
 			glContext->disableVertexAttribArray(lAttribVertexLocation);
 			glContext->disableVertexAttribArray(lAttribColorLocation);
 			m_shader1.unbindShader();
@@ -262,29 +262,27 @@ void SkyScattering::draw(const DrawInfo &drawInfo)
 
 		Matrix4 lTranslation;
 
-		for (IT_SkyObjectArray it = m_objectArray.begin() ; it != m_objectArray.end() ; it++)
-		{
+        for (IT_SkyObjectArray it = m_objectArray.begin() ; it != m_objectArray.end() ; it++) {
 			glContext->modelView().push();
 
 			ScatteringModelBase::IT_ObjectArray itCurData = m_currentData.skyObjectArray.begin();
 			ScatteringModelBase::IT_ObjectArray itForData = m_forecastData.skyObjectArray.begin();
 
-			for ( ; itCurData != m_currentData.skyObjectArray.end() ; itCurData++)
-			{
-				if (itCurData->pObject == it->get())
+            for ( ; itCurData != m_currentData.skyObjectArray.end() ; itCurData++) {
+                if (itCurData->pObject == it->get()) {
 					break;
+                }
 			}
 
-			for ( ; itForData != m_forecastData.skyObjectArray.end() ; itForData++)
-			{
-				if (itForData->pObject == it->get())
+            for ( ; itForData != m_forecastData.skyObjectArray.end() ; itForData++) {
+                if (itForData->pObject == it->get()) {
 					break;
+                }
 			}
 
 			// Si l'objet a ete ajoute depuis le dernier calcul, on ne trouvera aucune donnee sur lui.
 			// Donc on l'affiche pas.
-			if ((itForData == m_forecastData.skyObjectArray.end()) && (itCurData == m_currentData.skyObjectArray.end()))
-			{
+            if ((itForData == m_forecastData.skyObjectArray.end()) && (itCurData == m_currentData.skyObjectArray.end())) {
 				glContext->modelView().pop();
 				continue;
 			}

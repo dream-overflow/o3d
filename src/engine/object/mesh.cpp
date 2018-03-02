@@ -322,13 +322,13 @@ void Mesh::updateBounding()
 }
 
 // Draw the symbolics objects.
-void Mesh::drawSymbolics()
+void Mesh::drawSymbolics(const DrawInfo &drawInfo)
 {
 	// Draw primitives
 	if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME) ||
         getScene()->getDrawObject(Scene::DRAW_MESH_LOCAL_AXIS)) {
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
         // camera space @todo with current modelview, push pop...
 		getScene()->getContext()->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
@@ -381,7 +381,7 @@ void Mesh::draw(const DrawInfo &drawInfo)
 
 	// draw symbolics
     if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
-		drawSymbolics();
+        drawSymbolics(drawInfo);
     }
 
 	// distance of the mesh from the camera
@@ -422,7 +422,7 @@ void Mesh::draw(const DrawInfo &drawInfo)
             if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
 				// processing the rendering of local space immediately
                 if (getScene()->getDrawObject(Scene::DRAW_LOCAL_SPACE)) {
-					m_meshData->getGeometry()->drawLocalSpace();
+                    m_meshData->getGeometry()->drawLocalSpace(drawInfo);
                 }
 			}
 		}

@@ -145,7 +145,7 @@ void ShadowVolumeForward::draw(ViewPort */*viewPort*/)
 	context.setDefaultDepthFunc();
 
 	// landscape
-	getScene()->getLandscape()->draw();
+    getScene()->getLandscape()->draw(drawInfo);
 
 	// world objects
 	getScene()->getVisibilityManager()->draw(drawInfo);

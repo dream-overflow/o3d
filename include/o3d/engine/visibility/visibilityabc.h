@@ -74,7 +74,7 @@ public:
 	virtual void checkVisibleObject(const VisibilityInfos &) = 0;
 
 	//! draw the symbolic
-	virtual void draw() = 0;
+    virtual void draw(const DrawInfo &drawInfo) = 0;
 
 	//! Get the centered world position.
 	inline const Vector3& getPosition() const { return m_bbox.getCenter(); }

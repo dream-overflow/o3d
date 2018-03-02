@@ -87,7 +87,7 @@ public:
 	// Processing
 	//---------------------------------------------------------------------------------------
 
-    virtual void draw() override;
+    virtual void draw(const DrawInfo &drawInfo) override;
     virtual void update() override;
 
     virtual void addLight(const LightInfos &) override;

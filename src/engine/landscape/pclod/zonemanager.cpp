@@ -523,17 +523,17 @@ void PCLODZoneManager::init(const Vector3 & _position)
     }
 }
 
-void PCLODZoneManager::draw()
+void PCLODZoneManager::draw(const DrawInfo &drawInfo)
 {
-	if (!isInit())
+    if (!isInit()) {
 		return;
+    }
 	
 	m_pTextureManager->mtUpdate();
-	m_pRenderManager->draw();
+    m_pRenderManager->draw(drawInfo);
 
-	if (m_pTerrain->getScene()->getDrawObject(Scene::DRAW_QUADTREE))
-	{
-		PrimitiveAccess primitive = m_pTerrain->getScene()->getPrimitiveManager()->access();
+    if (m_pTerrain->getScene()->getDrawObject(Scene::DRAW_QUADTREE)) {
+        PrimitiveAccess primitive = m_pTerrain->getScene()->getPrimitiveManager()->access(drawInfo);
 
 		m_pTerrain->getScene()->getContext()->disableDepthTest();
 		m_pTerrain->getScene()->getContext()->setCullingMode(CULLING_NONE);
@@ -555,8 +555,7 @@ void PCLODZoneManager::draw()
 		primitive->setColor(1,0,0);
 		primitive->beginDraw(P_LINES);
 
-		for (UInt32 k = 0 ; k <= m_visibleZoneArray.height() ; ++k)
-		{
+        for (UInt32 k = 0 ; k <= m_visibleZoneArray.height() ; ++k) {
 			// Les diagonales
 			primitive->addVertex(minPosX, 0.0f, posZ);
 			primitive->addVertex(maxPosX, 0.0f, posZ);
@@ -564,8 +563,7 @@ void PCLODZoneManager::draw()
 			posZ += (m_zoneSize[X]-1) * m_zoneUnits[X];
 		}
 
-		for (UInt32 k = 0 ; k <= m_visibleZoneArray.width() ; ++k)
-		{
+        for (UInt32 k = 0 ; k <= m_visibleZoneArray.width() ; ++k) {
 			// Les hauteurs
 			primitive->addVertex(posX, 0.0f, minPosZ);
 			primitive->addVertex(posX, 0.0f, maxPosZ);
@@ -587,15 +585,13 @@ void PCLODZoneManager::draw()
 		posZ = minPosZ;
 
 		// On affiche les quadrillages fixes
-		for (UInt32 k = 0 ; k <= m_zoneTableArray.height() ; ++k)
-		{
+        for (UInt32 k = 0 ; k <= m_zoneTableArray.height() ; ++k) {
 			primitive->addVertex(posX, 0.0f, minPosZ);
 			primitive->addVertex(posX, 0.0f, maxPosZ);
 			posX += Float(m_zoneSize[Y] - 1) * m_zoneUnits[Y];
 		}
 
-		for (UInt32 k = 0 ; k <= m_zoneTableArray.width() ; ++k)
-		{
+        for (UInt32 k = 0 ; k <= m_zoneTableArray.width() ; ++k) {
 			primitive->addVertex(minPosX, 0.0f, posZ);
 			primitive->addVertex(maxPosX, 0.0f, posZ);
 			posZ += Float(m_zoneSize[X] - 1) * m_zoneUnits[X];

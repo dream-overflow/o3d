@@ -552,6 +552,10 @@ public:
 	void setConstInt(const Char* name,const Int32 constant);
 	inline void setConstInt(Int32 location,const Int32 constant);
 
+    //! Define an uniform uint32 constant
+    void setConstUInt(const Char* name,const UInt32 constant);
+    inline void setConstUInt(Int32 location,const UInt32 constant);
+
 	//! Define an uniform boolean constant
 	void setConstBool(const Char* name,const Bool constant);
 	inline void setConstBool(Int32 location,const Bool constant);
@@ -887,7 +891,15 @@ void ShaderInstance::setConstInt(Int32 location, const Int32 constant)
 	if (!isInUse())
 		O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
 
-	glUniform1i(location, constant);
+    glUniform1i(location, constant);
+}
+
+void ShaderInstance::setConstUInt(Int32 location, const UInt32 constant)
+{
+    if (!isInUse())
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+
+    glUniform1ui(location, constant);
 }
 
 void ShaderInstance::setConstBool(Int32 location, const Bool constant)

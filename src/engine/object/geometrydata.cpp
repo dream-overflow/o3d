@@ -15,6 +15,7 @@
 #include "o3d/engine/primitive/primitive.h"
 #include "o3d/engine/object/progressivemesh.h"
 #include "o3d/engine/context.h"
+#include "o3d/engine/drawinfo.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/core/math.h"
 #include "o3d/core/vector2.h"
@@ -504,9 +505,10 @@ void GeometryData::drawPart(
 
 // Draw the local space using an external face array, and with a specified range.
 void GeometryData::drawLocalSpacePart(
-	FaceArray *faceArray,
-	UInt32 firstIndex,
-	UInt32 lastIndex)
+        const DrawInfo &drawInfo,
+        FaceArray *faceArray,
+        UInt32 firstIndex,
+        UInt32 lastIndex)
 {
 	if (getScene()->getDrawObject(Scene::DRAW_LOCAL_SPACE) &&
 		!m_flags.getBit(UPDATE_VERTEX_BUFFER) &&
@@ -547,7 +549,7 @@ void GeometryData::drawLocalSpacePart(
 		UInt32 indice;
 
 		// simple drawing mode
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
 		getScene()->getContext()->setCullingMode(CULLING_NONE);
 
@@ -608,10 +610,10 @@ void GeometryData::drawLocalSpacePart(
 }
 
 // Draw the local space using the current bound face array.
-void GeometryData::drawLocalSpace()
+void GeometryData::drawLocalSpace(const DrawInfo &drawInfo)
 {
     if (m_boundFaceArray) {
-		drawLocalSpacePart(m_boundFaceArray, 0, 0);
+        drawLocalSpacePart(drawInfo, m_boundFaceArray, 0, 0);
     }
 }
 
@@ -620,7 +622,7 @@ void GeometryData::computeBounding(BoundingMode mode)
 {
     if (!isVertices()) {
 		O3D_ERROR(E_InvalidPrecondition("Vertices must must defined"));
-        }
+    }
 
 	const Float *vertices = getVertices()->lockArray(0, 0);
 	UInt32 numVertices = getNumVertices();

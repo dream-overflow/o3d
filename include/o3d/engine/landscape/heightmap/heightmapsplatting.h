@@ -119,7 +119,7 @@ public:
     virtual void removeLight(Light *) override;
     virtual void updateLight(Light * = nullptr) override;
 
-    virtual void draw() override;
+    virtual void draw(const DrawInfo &drawInfo) override;
     virtual void update() override;
 
 protected:

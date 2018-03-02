@@ -69,10 +69,11 @@ Map2dTileSet::Map2dTileSet(BaseObject *parent, const String &tileSetPath) :
 	m_pickingShader.a_vertex = m_pickingShader.inst.getAttributeLocation("a_vertex");
 
 	m_pickingShader.u_modelViewProjectionMatrix = m_pickingShader.inst.getUniformLocation("u_modelViewProjectionMatrix");
-	m_pickingShader.u_pickingColor = m_pickingShader.inst.getUniformLocation("u_pickingColor");
+    m_pickingShader.u_picking = m_pickingShader.inst.getUniformLocation("u_picking");
 
-	if (tileSetPath.isValid())
+    if (tileSetPath.isValid()) {
 		load(tileSetPath);
+    }
 }
 
 Map2dTileSet::~Map2dTileSet()
@@ -752,10 +753,10 @@ void Map2dTileSet::draw(
 }
 
 void Map2dTileSet::drawPicking(
-		const Vector2i &pos,
-		const Map2dTileSet::Tile &tile,
-		UInt32 frame,
-		const Color &pickColor)
+        const Vector2i &pos,
+        const Map2dTileSet::Tile &tile,
+        UInt32 frame,
+        UInt32 pickableId)
 {
     //const Frame &frameElt = tile.frames[frame];
     //const TileDef &tileDef = frameElt.tileDef;
@@ -773,7 +774,7 @@ void Map2dTileSet::drawPicking(
 				False,
 				glContext->modelViewProjection());
 
-	m_pickingShader.inst.setConstColor(m_pickingShader.u_pickingColor, pickColor);
+    m_pickingShader.inst.setConstUInt(m_pickingShader.u_picking, pickableId);
 
 	const Float vertices[12] = {
 		static_cast<Float>(pos.x()),                          static_cast<Float>(pos.y() + m_tileSet.tileSize.y()), 0.f,

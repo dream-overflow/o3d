@@ -19,6 +19,7 @@
 namespace o3d {
 
 class Node;
+class DrawInfo;
 
 //---------------------------------------------------------------------------------------
 //! @class AnimationPlayer
@@ -197,7 +198,7 @@ public:
 	inline Bool isPlaying()const { return m_isActive; }
 
 	//! Draw the animation trajectory
-	void drawTrajectory(Node *curNode);
+    void drawTrajectory(Node *curNode, const DrawInfo &drawInfo);
 
 	// Serialization
     virtual Bool writeToFile(OutStream &os) override;

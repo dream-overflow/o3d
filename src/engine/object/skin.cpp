@@ -694,7 +694,7 @@ void Skin::draw(const DrawInfo &drawInfo)
 
     // draw symbolics
     if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
-        drawSymbolics();
+        drawSymbolics(drawInfo);
 
         // and skeleton
         if (m_skeleton.isValid()) {
@@ -770,7 +770,7 @@ void Skin::draw(const DrawInfo &drawInfo)
             if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
                 // processing the rendering of local space immediately
                 if (getScene()->getDrawObject(Scene::DRAW_LOCAL_SPACE)) {
-                    m_meshData->getGeometry()->drawLocalSpace();
+                    m_meshData->getGeometry()->drawLocalSpace(drawInfo);
                 }
             }
         }

@@ -219,17 +219,18 @@ void Camera::setUpModelView()
 
 void Camera::draw(const DrawInfo &drawInfo)
 {
-	if (!m_ortho)
+    if (!m_ortho) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_CAMERA))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_CAMERA)) {
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(0.8f,0.8f,1.f);
 

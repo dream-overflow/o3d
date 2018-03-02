@@ -14,6 +14,7 @@
 #include "o3d/engine/shader/shadermanager.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
+#include "o3d/engine/drawinfo.h"
 
 #include "o3d/engine/primitive/cube.h"
 #include "o3d/engine/primitive/sphere.h"
@@ -24,11 +25,11 @@ using namespace o3d;
 O3D_IMPLEMENT_DYNAMIC_CLASS1(PrimitiveManager, ENGINE_PRIMITIVE_MANAGER, SceneEntity)
 
 // Default constructor.
-PrimitiveAccess::PrimitiveAccess(PrimitiveManager *manager) :
+PrimitiveAccess::PrimitiveAccess(PrimitiveManager *manager, const DrawInfo &drawInfo) :
 	m_manager(manager)
 {
 	O3D_ASSERT(manager);
-	m_manager->bind();
+    m_manager->bind(drawInfo);
 }
 
 // Destructor.
@@ -40,9 +41,10 @@ PrimitiveAccess::~PrimitiveAccess()
 // Default constructor.
 PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 		SceneEntity(parent),
-	m_numUsage(0),
     m_vertices(1024*3, 1024*3),
     m_colors(1024*4, 1024*4),
+    m_pickableId(0),
+    m_numUsage(0),
     m_verticesVbo(getScene()->getContext()),
     m_colorsVbo(getScene()->getContext()),
     m_quadVertices(getScene()->getContext()),
@@ -63,7 +65,10 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
     createPrimitive(WIRE_CUBE1, new Cube(1.f, 0, Cube::GRID_CUBE/*WIRED_MODE*/));
     createPrimitive(SOLID_CUBE1, new Cube(1.f, 0, Primitive::FILLED_MODE));
 
+    //
 	// create a simple uniform color shader
+    //
+
 	Shader *shader = getScene()->getShaderManager()->addShader("primitiveShader");
 	shader->buildInstance(m_colorShader.instance);
 
@@ -78,6 +83,29 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
     if (!m_colorShader.instance.isOperational()) {
 		O3D_ERROR(E_InvalidResult("Primitive rendering color shader is not operational"));
     }
+
+    //
+    // and a simple shader for the picking mode
+    //
+
+    shader = getScene()->getShaderManager()->addShader("primitiveShader");
+    shader->buildInstance(m_pickingShader.instance);
+
+    m_pickingShader.instance.assign("vertexPicking", "vertexPicking", "", Shader::BUILD_COMPILE_AND_LINK);
+
+    m_pickingShader.u_modelViewProjectionMatrix = m_pickingShader.instance.getUniformLocation("u_modelViewProjectionMatrix");
+    m_pickingShader.u_picking = m_pickingShader.instance.getUniformLocation("u_picking");
+    m_pickingShader.u_scale = m_pickingShader.instance.getUniformLocation("u_scale");
+    m_pickingShader.a_vertex = m_pickingShader.instance.getAttributeLocation("a_vertex");
+    // m_pickingShader.a_picking = m_pickingShader.instance.getAttributeLocation("a_picking");
+
+    if (!m_pickingShader.instance.isOperational()) {
+        O3D_ERROR(E_InvalidResult("Primitive rendering picking shader is not operational"));
+    }
+
+    //
+    // setup the vertex data
+    //
 
 	m_verticesVbo.create(1024*3, VertexBuffer::STREAMED);
 	m_colorsVbo.create(1024*4, VertexBuffer::STREAMED);
@@ -155,20 +183,40 @@ PrimitiveManager::~PrimitiveManager()
 }
 
 // Setup before draw any primitives.
-void PrimitiveManager::bind()
+void PrimitiveManager::bind(const DrawInfo &drawInfo)
 {
+    if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
+        if (m_pickingShader.instance.isInUse()) {
+            O3D_ERROR(E_InvalidOperation("Inconsistency of binding draw mode"));
+        }
+
+        // bind the shader
+        if (!m_colorShader.instance.isInUse()) {
+            getScene()->getContext()->simpleDrawMode();
+
+            m_colorShader.instance.bindShader();
+
+            getScene()->getContext()->bindDefaultVertexArray();
+            getScene()->getContext()->enableVertexAttribArray(m_colorShader.a_vertex);
+            getScene()->getContext()->enableVertexAttribArray(m_colorShader.a_color);
+        }
+    } else if (drawInfo.pass == DrawInfo::PICKING_PASS) {
+        if (m_colorShader.instance.isInUse()) {
+            O3D_ERROR(E_InvalidOperation("Inconsistency of binding draw mode"));
+        }
+
+        // bind the shader
+        if (!m_pickingShader.instance.isInUse()) {
+            getScene()->getContext()->simpleDrawMode();
+
+            m_pickingShader.instance.bindShader();
+
+            getScene()->getContext()->bindDefaultVertexArray();
+            getScene()->getContext()->enableVertexAttribArray(m_pickingShader.a_vertex);
+        }
+    }
+
 	++m_numUsage;
-
-	// bind the shader
-    if (!m_colorShader.instance.isInUse()) {
-		getScene()->getContext()->simpleDrawMode();
-
-		m_colorShader.instance.bindShader();
-
-        getScene()->getContext()->bindDefaultVertexArray();
-		getScene()->getContext()->enableVertexAttribArray(m_colorShader.a_vertex);
-		getScene()->getContext()->enableVertexAttribArray(m_colorShader.a_color);
-	}
 }
 
 // Always restore after draw.
@@ -179,14 +227,23 @@ void PrimitiveManager::unbind()
     }
 
 	// unbound the shader
-    if (m_colorShader.instance.isInUse() && (m_numUsage == 1)) {
-		getScene()->getContext()->normalDrawMode();
+    if (m_numUsage == 1) {
+        if (m_colorShader.instance.isInUse()) {
+            getScene()->getContext()->normalDrawMode();
 
-		getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
-		getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
+            getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
+            getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
 
-		m_colorShader.instance.unbindShader();
-	}
+            m_colorShader.instance.unbindShader();
+        } else if (m_pickingShader.instance.isInUse()) {
+            getScene()->getContext()->normalDrawMode();
+
+            getScene()->getContext()->disableVertexAttribArray(m_pickingShader.a_vertex);
+            // getScene()->getContext()->disableVertexAttribArray(m_pickingShader.a_picking);
+
+            m_pickingShader.instance.unbindShader();
+        }
+    }
 
 	--m_numUsage;
 }
@@ -236,103 +293,148 @@ void PrimitiveManager::setColor(Float r, Float g, Float b, Float a)
 void PrimitiveManager::setColor(const Color &color)
 {
 	m_color = color;
-	m_colorShader.instance.setConstColor(m_colorShader.u_color, m_color);
+    m_colorShader.instance.setConstColor(m_colorShader.u_color, m_color);
+}
+
+void PrimitiveManager::setPickableId(UInt32 id)
+{
+    m_pickableId = id;
+    m_pickingShader.instance.setConstUInt(m_pickingShader.u_picking, m_pickableId);
 }
 
 // Define the modelview*projection matrix using the GLContext current projection*modelview.
 void PrimitiveManager::setModelviewProjection()
 {
-	m_colorShader.instance.setConstMatrix4(
-			m_colorShader.u_modelViewProjectionMatrix,
-			False,
-			getScene()->getContext()->modelViewProjection());
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstMatrix4(
+                    m_colorShader.u_modelViewProjectionMatrix,
+                    False,
+                    getScene()->getContext()->modelViewProjection());
+    } else if (m_pickingShader.instance.isInUse()) {
+        m_pickingShader.instance.setConstMatrix4(
+                    m_pickingShader.u_modelViewProjectionMatrix,
+                    False,
+                    getScene()->getContext()->modelViewProjection());
+    }
 }
 
 // Define the modelview*projection matrix before draw.
 void PrimitiveManager::setModelviewProjection(const Matrix4 &matrix)
 {
-	m_colorShader.instance.setConstMatrix4(
-			m_colorShader.u_modelViewProjectionMatrix,
-			False,
-			matrix);
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstMatrix4(
+                    m_colorShader.u_modelViewProjectionMatrix,
+                    False,
+                    matrix);
+    } else if (m_pickingShader.instance.isInUse()) {
+        m_pickingShader.instance.setConstMatrix4(
+                    m_pickingShader.u_modelViewProjectionMatrix,
+                    False,
+                    matrix);
+    }
 }
 
 // Draw the triplet of local axis
 void PrimitiveManager::drawLocalAxis()
 {
-	setColor(1.0f,1.0f,1.0f);
+    Context *glContext = getScene()->getContext();
+    setModelviewProjection();
 
-	Context *glContext = getScene()->getContext();
+    if (m_colorShader.instance.isInUse()) {
+        setColor(1.0f, 1.0f, 1.0f);
+        drawXYZAxis(Vector3(1,1,1));
 
-	setModelviewProjection();
-    drawXYZAxis(Vector3(1,1,1));
+//        return;
+//        Matrix4 x(glContext->modelView().get()),y,z;
+//        Matrix4 m;
+//        m.Translate(0.8, 0, 0);
+//        x *= m;
+//        m.Identity(); m.RotateZ(o3d::toRadian(-90.f));
+//        x *= m;
 
-	//return;
-/*
-	Matrix4 x(glContext->modelView().get()),y,z;
-	Matrix4 m;
-	m.Translate(0.8, 0, 0);
-	x *= m;
-	m.Identity(); m.RotateZ(o3d::toRadian(-90.f));
-	x *= m;
-*/
-	glContext->modelView().push();
-	//glContext->ModelView().Set(x);
-		glContext->modelView().translate(Vector3(0.8f,0,0));
-		glContext->modelView().rotateZ(o3d::toRadian(-90.f));
-		setColor(1.f,0.f,0.f);
-		draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
-	glContext->modelView().pop();
+        glContext->modelView().push();
+            //glContext->ModelView().set(x);
+            glContext->modelView().translate(Vector3(0.8f,0,0));
+            glContext->modelView().rotateZ(o3d::toRadian(-90.f));
+            setColor(1.f,0.f,0.f);
+            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+        glContext->modelView().pop();
 
-	glContext->modelView().push();
-		glContext->modelView().translate(Vector3(0,0.8f,0));
-		setColor(0.f,1.f,0.f);
-		draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
-	glContext->modelView().pop();
+        glContext->modelView().push();
+            glContext->modelView().translate(Vector3(0,0.8f,0));
+            setColor(0.f,1.f,0.f);
+            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+        glContext->modelView().pop();
 
-	glContext->modelView().push();
-		glContext->modelView().translate(Vector3(0,0,0.8f));
-		glContext->modelView().rotateX(o3d::toRadian(90.f));
-		setColor(0.f,0.f,1.f);
-		draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
-	glContext->modelView().pop();
+        glContext->modelView().push();
+            glContext->modelView().translate(Vector3(0,0,0.8f));
+            glContext->modelView().rotateX(o3d::toRadian(90.f));
+            setColor(0.f,0.f,1.f);
+            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+        glContext->modelView().pop();
+    } else if (m_pickingShader.instance.isInUse()) {
+        drawXYZAxis(Vector3(1,1,1));
+
+        glContext->modelView().push();
+            glContext->modelView().translate(Vector3(0.8f,0,0));
+            glContext->modelView().rotateZ(o3d::toRadian(-90.f));
+            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+        glContext->modelView().pop();
+
+        glContext->modelView().push();
+            glContext->modelView().translate(Vector3(0,0.8f,0));
+            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+        glContext->modelView().pop();
+
+        glContext->modelView().push();
+            glContext->modelView().translate(Vector3(0,0,0.8f));
+            glContext->modelView().rotateX(o3d::toRadian(90.f));
+            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+        glContext->modelView().pop();
+    }
 }
 
 // Draw a wire bounding box
 void PrimitiveManager::boundingBox(const AABBox &bbox, const Color &color)
 {
-	setColor(color);
+    if (m_colorShader.instance.isInUse()) {
+        setColor(color);
+    }
 
-	Context *glContext = getScene()->getContext();
+    Context *glContext = getScene()->getContext();
 
-	glContext->modelView().push();
-		glContext->modelView().translate(bbox.getCenter());
-		draw(WIRE_CUBE1, bbox.getHalfSize() * 2.0f);
-	glContext->modelView().pop();
+    glContext->modelView().push();
+        glContext->modelView().translate(bbox.getCenter());
+        draw(WIRE_CUBE1, bbox.getHalfSize() * 2.0f);
+    glContext->modelView().pop();
 }
 
 // Draw a wire bounding box extended
 void PrimitiveManager::boundingBox(const AABBoxExt &bbox, const Color &color)
 {
-	setColor(color);
+    if (m_colorShader.instance.isInUse()) {
+        setColor(color);
+    }
 
-	Context *glContext = getScene()->getContext();
+    Context *glContext = getScene()->getContext();
 
-	glContext->modelView().push();
-		glContext->modelView().translate(bbox.getCenter());
-		draw(WIRE_CUBE1, bbox.getHalfSize() * 2.0f);
-	glContext->modelView().pop();
+    glContext->modelView().push();
+        glContext->modelView().translate(bbox.getCenter());
+        draw(WIRE_CUBE1, bbox.getHalfSize() * 2.0f);
+    glContext->modelView().pop();
 
-	glContext->modelView().push();
-		glContext->modelView().translate(bbox.getCenter());
-		draw(WIRE_SPHERE2, Vector3(bbox.getRadius(),bbox.getRadius(),bbox.getRadius()));
-	glContext->modelView().pop();
+    glContext->modelView().push();
+        glContext->modelView().translate(bbox.getCenter());
+        draw(WIRE_SPHERE2, Vector3(bbox.getRadius(),bbox.getRadius(),bbox.getRadius()));
+    glContext->modelView().pop();
 }
 
 // Draw a wire bounding sphere
 void PrimitiveManager::boundingSphere(const BSphere &bsphere, const Color &color)
 {
-	setColor(color);
+    if (m_colorShader.instance.isInUse()) {
+        setColor(color);
+    }
 
 	Context *glContext = getScene()->getContext();
 
@@ -373,7 +475,11 @@ void PrimitiveManager::drawObject(UInt32 objectId, const Vector3 &scale)
 
 void PrimitiveManager::setScale(const Vector3 &scale)
 {
-    m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);
+    } else if (m_pickingShader.instance.isInUse()) {
+        m_pickingShader.instance.setConstVector3(m_pickingShader.u_scale, scale);
+    }
 }
 
 // Access to the ModelView matrix.
@@ -403,18 +509,25 @@ const ProjectionMatrix& PrimitiveManager::projection() const
 void PrimitiveManager::draw(PrimitiveManager::Primitives type, const Vector3 &scale)
 {
 	GeometryData *geometry = m_primitives[type];
+    setModelviewProjection();
 
-	m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);
+        geometry->attribute(V_VERTICES_ARRAY, m_colorShader.a_vertex);
+        geometry->attribute(V_COLOR_ARRAY, m_colorShader.a_color);
 
-	setModelviewProjection();
+        geometry->draw();
 
-	geometry->attribute(V_VERTICES_ARRAY, m_colorShader.a_vertex);
-	geometry->attribute(V_COLOR_ARRAY, m_colorShader.a_color);
+        getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
+        getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
+    } else if (m_pickingShader.instance.isInUse()) {
+        m_pickingShader.instance.setConstVector3(m_pickingShader.u_scale, scale);
+        geometry->attribute(V_VERTICES_ARRAY, m_pickingShader.a_vertex);
 
-	geometry->draw();
+        geometry->draw();
 
-	getScene()->getContext()->disableVertexAttribArray(V_VERTICES_ARRAY);
-	getScene()->getContext()->disableVertexAttribArray(V_COLOR_ARRAY);
+        getScene()->getContext()->disableVertexAttribArray(m_pickingShader.a_vertex);
+    }
 }
 
 // Draw a set of VBO (need vertex(XYZ) and color(RGBA).
@@ -424,21 +537,32 @@ void PrimitiveManager::drawArray(
 		const ArrayBufferf &colors,
 		const Vector3 &scale)
 {
-	m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstVector3(m_colorShader.u_scale, scale);
 
-	// vertices
-	vertices.bindBuffer();
-	getScene()->getContext()->vertexAttribArray(m_colorShader.a_vertex, 3, 0, 0);
+        // vertices
+        vertices.bindBuffer();
+        getScene()->getContext()->vertexAttribArray(m_colorShader.a_vertex, 3, 0, 0);
 
-	// colors
-	colors.bindBuffer();
-	getScene()->getContext()->vertexAttribArray(m_colorShader.a_color, 4, 0, 0);
+        // colors
+        colors.bindBuffer();
+        getScene()->getContext()->vertexAttribArray(m_colorShader.a_color, 4, 0, 0);
 
-	// and draw
-	getScene()->drawArrays(format, 0, vertices.getCount() / 3);
+        // and draw
+        getScene()->drawArrays(format, 0, vertices.getCount() / 3);
 
-	getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
-	getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
+        getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
+        getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
+    } else if (m_pickingShader.instance.isInUse()) {
+        // vertices
+        vertices.bindBuffer();
+        getScene()->getContext()->vertexAttribArray(m_pickingShader.a_vertex, 3, 0, 0);
+
+        // and draw
+        getScene()->drawArrays(format, 0, vertices.getCount() / 3);
+
+        getScene()->getContext()->disableVertexAttribArray(m_pickingShader.a_vertex);
+    }
 }
 
 // Start a draw list.
@@ -453,42 +577,64 @@ void PrimitiveManager::beginDraw(PrimitiveFormat format)
 // End a draw list, called after using BeginDraw.
 void PrimitiveManager::endDraw()
 {
-	if ((m_vertices.getNumElt() == 0) || (m_colors.getNumElt() == 0))
+    if ((m_vertices.getNumElt() == 0) || (m_colors.getNumElt() == 0)) {
 		return;
+    }
 
 	setModelviewProjection();
 
-	m_colorShader.instance.setConstVector3(m_colorShader.u_scale, Vector3(1,1,1));
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstVector3(m_colorShader.u_scale, Vector3(1,1,1));
 
-	// vertices
-	if ((UInt32)m_vertices.getSize() <= m_verticesVbo.getCount())
-		m_verticesVbo.update(m_vertices.getData(), 0, m_vertices.getSize());
-	else
-		m_verticesVbo.create(
-				m_vertices.getSize(),
-				VertexBuffer::STREAMED,
-				m_vertices.getData(),
-				True);
+        // vertices
+        if ((UInt32)m_vertices.getSize() <= m_verticesVbo.getCount())
+            m_verticesVbo.update(m_vertices.getData(), 0, m_vertices.getSize());
+        else
+            m_verticesVbo.create(
+                        m_vertices.getSize(),
+                        VertexBuffer::STREAMED,
+                        m_vertices.getData(),
+                        True);
 
-	getScene()->getContext()->vertexAttribArray(m_colorShader.a_vertex, 3, 0, 0);
+        getScene()->getContext()->vertexAttribArray(m_colorShader.a_vertex, 3, 0, 0);
 
-	// colors
-	if ((UInt32)m_colors.getSize() <= m_colorsVbo.getCount())
-		m_colorsVbo.update(m_colors.getData(), 0, m_colors.getSize());
-	else
-		m_colorsVbo.create(
-				m_colors.getSize(),
-				VertexBuffer::STREAMED,
-				m_colors.getData(),
-				True);
+        // colors
+        if ((UInt32)m_colors.getSize() <= m_colorsVbo.getCount())
+            m_colorsVbo.update(m_colors.getData(), 0, m_colors.getSize());
+        else
+            m_colorsVbo.create(
+                        m_colors.getSize(),
+                        VertexBuffer::STREAMED,
+                        m_colors.getData(),
+                        True);
 
-	getScene()->getContext()->vertexAttribArray(m_colorShader.a_color, 4, 0, 0);
+        getScene()->getContext()->vertexAttribArray(m_colorShader.a_color, 4, 0, 0);
 
-	// and draw
-	getScene()->drawArrays(m_format, 0, m_vertices.getNumElt() / 3);
+        // and draw
+        getScene()->drawArrays(m_format, 0, m_vertices.getNumElt() / 3);
 
-	getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
-	getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
+        getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
+        getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
+    } else if (m_pickingShader.instance.isInUse()) {
+        m_pickingShader.instance.setConstVector3(m_pickingShader.u_scale, Vector3(1,1,1));
+
+        // vertices
+        if ((UInt32)m_vertices.getSize() <= m_verticesVbo.getCount())
+            m_verticesVbo.update(m_vertices.getData(), 0, m_vertices.getSize());
+        else
+            m_verticesVbo.create(
+                        m_vertices.getSize(),
+                        VertexBuffer::STREAMED,
+                        m_vertices.getData(),
+                        True);
+
+        getScene()->getContext()->vertexAttribArray(m_pickingShader.a_vertex, 3, 0, 0);
+
+        // and draw
+        getScene()->drawArrays(m_format, 0, m_vertices.getNumElt() / 3);
+
+        getScene()->getContext()->disableVertexAttribArray(m_pickingShader.a_vertex);
+    }
 }
 
 // Add a vertex with a color into the draw list.

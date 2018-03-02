@@ -40,18 +40,18 @@ void RootNode::setUpModelView()
 // Draw the branch
 void RootNode::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
 	setUpModelView();
 
-	getScene()->getPrimitiveManager()->bind();
+    getScene()->getPrimitiveManager()->bind(drawInfo);
 	getScene()->getPrimitiveManager()->drawLocalAxis();
 	getScene()->getPrimitiveManager()->unbind();
 
 	// draw the chidren recursively
-	for (IT_SonList it = m_objectList.begin() ; it != m_objectList.end() ; ++it)
-	{
+    for (IT_SonList it = m_objectList.begin() ; it != m_objectList.end() ; ++it) {
 		(*it)->draw(drawInfo);
 	}
 }

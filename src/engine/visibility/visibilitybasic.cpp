@@ -127,13 +127,12 @@ void VisibilityBasic::checkVisibleObject(const VisibilityInfos & _infos)
 }
 
 // draw the symbolic
-void VisibilityBasic::draw()
+void VisibilityBasic::draw(const DrawInfo &drawInfo)
 {
-	if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME))
-	{
+    if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME)) {
 		Float radius = getScene()->getVisibilityManager()->getMaxDistance();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
 		// setup modelview
 		primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
@@ -142,4 +141,3 @@ void VisibilityBasic::draw()
 		primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(radius, radius, radius));
 	}
 }
-

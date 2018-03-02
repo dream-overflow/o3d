@@ -29,6 +29,7 @@ class BSphere;
 class AABBox;
 class AABBoxExt;
 class Primitive;
+class DrawInfo;
 
 /**
  * @brief Manager manager usage helper.
@@ -42,7 +43,7 @@ class O3D_API PrimitiveAccess
 public:
 
 	//! Default constructor.
-	PrimitiveAccess(PrimitiveManager *manager);
+    PrimitiveAccess(PrimitiveManager *manager, const DrawInfo &drawInfo);
 
 	//! Destructor.
 	~PrimitiveAccess();
@@ -104,13 +105,13 @@ public:
 	virtual ~PrimitiveManager();
 
 	//! Setup before draw any primitives.
-	void bind();
+    void bind(const DrawInfo &drawInfo);
 
 	//! Always restore after draw.
 	void unbind();
 
 	//! Create an instance of PrimitiveAccess and return it.
-	PrimitiveAccess access() { return PrimitiveAccess(this); }
+    PrimitiveAccess access(const DrawInfo &drawInfo) { return PrimitiveAccess(this, drawInfo); }
 
 	//! Register a user object.
 	//! @param format Format of the object draw primitive.
@@ -137,7 +138,6 @@ public:
     //! Get the color quad VBOs for a 4 indices P_TRIANGLE_STRIP (read only).
     inline const ArrayBufferf& getQuadColorsVBO() const { return m_quadColors; }
 
-
 	//-----------------------------------------------------------------------------------
 	// Accessors.
 	//-----------------------------------------------------------------------------------
@@ -153,6 +153,12 @@ public:
 
 	//! Get the global color used to draw.
 	inline const Color& getColor() const { return m_color; }
+
+    //! Set the global picking uint32 identifier.
+    void setPickableId(UInt32 id);
+
+    //! Get the global picking identifier.
+    inline UInt32 getPickableId() const { return m_pickableId; }
 
 	//! access to the ModelView matrix. Same as from Context.
 	ModelViewMatrix& modelView();
@@ -267,6 +273,7 @@ protected:
 	T_GeometryVector m_primitives;
 
 	Color m_color;
+    UInt32 m_pickableId;
 
 	struct ColorShader
 	{
@@ -280,7 +287,20 @@ protected:
 	};
 
 	ColorShader m_colorShader;
-	Int32 m_numUsage;
+
+    struct PickingShader
+    {
+        ShaderInstance instance;
+
+        Int32 a_vertex;
+        Int32 u_modelViewProjectionMatrix;
+        Int32 u_picking;
+        Int32 u_scale;
+    };
+
+    PickingShader m_pickingShader;
+
+    Int32 m_numUsage;
 
 	ArrayFloat m_vertices;
 	ArrayFloat m_colors;

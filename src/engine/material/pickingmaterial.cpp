@@ -51,46 +51,42 @@ void PickingMaterial::initialize(
 	m_arrays.clear();
 	m_valid = False;
 
-	if (initMode != PICKING)
+    if (initMode != PICKING) {
 		O3D_ERROR(E_InvalidParameter("InitMode::PICKING only is accepted"));
+    }
 
 	m_options = "";
 
 	// ambient map or ambient color ?
-	if (materialPass.getOpacityMap())
-	{
+    if (materialPass.getOpacityMap()) {
 		m_options += "OPACITY_MAP;";
 		m_opacityMap = True;
-	}
-	// diffuse color
-	else
-	{
+    } else {
+        // diffuse color
 		m_opacityMap = False;
 	}
 
 	m_arrays.push_back(V_VERTICES_ARRAY);
 
-	if (m_opacityMap)
+    if (m_opacityMap) {
         m_arrays.push_back(V_UV_MAP_ARRAY);
+    }
 
 	// static mesh ?
-	if (shadable.getVertexProgramType() == Shadable::VP_MESH)
+    if (shadable.getVertexProgramType() == Shadable::VP_MESH) {
 		m_options += "MESH;";
-	else if (shadable.getVertexProgramType() == Shadable::VP_RIGGING)
-	{
+    } else if (shadable.getVertexProgramType() == Shadable::VP_RIGGING) {
 		m_arrays.push_back(V_RIGGING_ARRAY);
 		m_options += String("NUM_BONES=") << Int32(O3D_MAX_SKINNING_MATRIX_ARRAY) << ";RIGGING;";
-	}
-	else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING)
-	{
+    } else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING) {
 		m_arrays.push_back(V_WEIGHTING_ARRAY);
 		m_arrays.push_back(V_SKINNING_ARRAY);
 		m_options += String("NUM_BONES=") << Int32(O3D_MAX_SKINNING_MATRIX_ARRAY) << ";SKINNING;";
-	}
-	else if (shadable.getVertexProgramType() == Shadable::VP_BILLBOARD)
+    } else if (shadable.getVertexProgramType() == Shadable::VP_BILLBOARD) {
 		m_options += "BILLBOARD;";
-	else
+    } else {
 		m_options += "MESH;";
+    }
 
 	Shader *shader = getScene()->getShaderManager()->addShader(m_shaderName);
 	ShaderInstance &shaderInstance = m_shaderInstance;
@@ -103,29 +99,25 @@ void PickingMaterial::initialize(
 
 	u_modelViewProjectionMatrix = shaderInstance.getUniformLocation("u_modelViewProjectionMatrix");
 
-	if (m_opacityMap)
-	{
+    if (m_opacityMap) {
 		u_opacityMap = shaderInstance.getUniformLocation("u_opacityMap");
 		a_texCoords1 = shaderInstance.getAttributeLocation("a_texCoords1");
 	}
 
-	u_pickingColor = shaderInstance.getUniformLocation("u_pickingColor");
+    u_picking = shaderInstance.getUniformLocation("u_picking");
 
 	// rigging
-	if (shadable.getVertexProgramType() == Shadable::VP_RIGGING)
-	{
+    if (shadable.getVertexProgramType() == Shadable::VP_RIGGING) {
 		a_rigging = shaderInstance.getAttributeLocation("a_rigging");
 		u_bonesMatrixArray = shaderInstance.getUniformLocation("u_bonesMatrixArray");
-	}
-	// skinning
-	else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING)
-	{
+    } else if (shadable.getVertexProgramType() == Shadable::VP_SKINNING) {
+        // skinning
 		a_skinning = shaderInstance.getAttributeLocation("a_skinning");
 		a_weighting = shaderInstance.getAttributeLocation("a_weighting");
 		u_bonesMatrixArray = shaderInstance.getUniformLocation("u_bonesMatrixArray");
-	}
-	else
-		a_rigging = a_skinning = a_weighting = 0;
+    } else {
+        a_rigging = a_skinning = a_weighting = 0;
+    }
 
 	shaderInstance.unbindShader();
 
@@ -160,21 +152,19 @@ void PickingMaterial::processPicking(
 	ShaderInstance &shader = m_shaderInstance;
 	Context *glContext = getScene()->getContext();
 
-	if (shader.isOperational())
-	{
+    if (shader.isOperational()) {
 		object.processAllFaces(Shadable::PREPARE_GEOMETRY);
 
 		shader.bindShader();
 
-		if (m_opacityMap)
-		{
+        if (m_opacityMap) {
 			materialPass.assignMapSetting(MaterialPass::OPACITY_MAP);
 			shader.setConstTexture(u_opacityMap, materialPass.getOpacityMap(), 0);
 
             object.attribute(V_UV_MAP_ARRAY, a_texCoords1);
 		}
 
-		shader.setConstColor(u_pickingColor, pickable.getPickableColor());
+        shader.setConstUInt(u_picking, pickable.getPickableId());
 
 		shader.setConstMatrix4(
 				u_modelViewProjectionMatrix,
@@ -184,8 +174,7 @@ void PickingMaterial::processPicking(
 		object.attribute(V_VERTICES_ARRAY, V_VERTICES_ARRAY);
 
 		// rigging
-		if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-		{
+        if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING)) {
 			shader.setNConstMatrix4(
 					u_bonesMatrixArray,
 					O3D_MAX_SKINNING_MATRIX_ARRAY,
@@ -193,10 +182,8 @@ void PickingMaterial::processPicking(
 					object.getMatrixArray());
 
 			object.attribute(V_RIGGING_ARRAY, a_rigging);
-		}
-		// skinning
-		else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-		{
+        } else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING)) {
+            // skinning
 			shader.setNConstMatrix4(
 					u_bonesMatrixArray,
 					O3D_MAX_SKINNING_MATRIX_ARRAY,
@@ -209,20 +196,16 @@ void PickingMaterial::processPicking(
 
 		object.processAllFaces(Shadable::PROCESS_GEOMETRY);
 
-		if (m_opacityMap)
-		{
+        if (m_opacityMap) {
 			glContext->setActiveTextureUnit(0);
 			glContext->bindTexture(TEXTURE_2D, 0);
 
 			glContext->disableVertexAttribArray(a_texCoords1);
 		}
 
-		if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING))
-		{
+        if ((a_rigging > 0) && (object.getVertexProgramType() == Shadable::VP_RIGGING)) {
 			glContext->disableVertexAttribArray(a_rigging);
-		}
-		else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING))
-		{
+        } else if ((a_skinning > 0) && (object.getVertexProgramType() == Shadable::VP_SKINNING)) {
 			glContext->disableVertexAttribArray(a_skinning);
 			glContext->disableVertexAttribArray(a_weighting);
 		}
@@ -250,4 +233,3 @@ void PickingMaterial::processDeferred(
 {
 	O3D_ERROR(E_InvalidOperation("Not permit"));
 }
-

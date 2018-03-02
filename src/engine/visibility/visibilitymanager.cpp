@@ -111,7 +111,7 @@ void VisibilityManager::draw(const DrawInfo &drawInfo)
 {
 	// draw the global controller
     if (drawInfo.pass == DrawInfo::AMBIENT_PASS/*SYMBOLIC_PASS*/) {
-		m_globalController->draw();
+        m_globalController->draw(drawInfo);
 	}
 
 	SceneObject * sceneObject;

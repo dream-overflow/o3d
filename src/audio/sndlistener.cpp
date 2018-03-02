@@ -198,18 +198,19 @@ void SndListener::setUpModelView()
 // draw a symbolic representation of a listener
 void SndListener::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SND_LISTENER))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SND_LISTENER)) {
 		// if it is m_IsVisible draw its symbolic
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(1.0f,0.0f,1.0f);
 		primitive->draw(PrimitiveManager::WIRE_CUBE1, Vector3(3.0f,1.0f,1.0f));

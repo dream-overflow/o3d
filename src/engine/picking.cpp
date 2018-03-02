@@ -82,7 +82,8 @@ void Picking::preReDraw()
     if (m_mode == COLOR) {
 		// create it for the first time
         if (!m_fbo.isValid()) {
-            m_fbo.create((UInt32)m_size.x(), (UInt32)m_size.y(), PF_RGBA_8, True);
+            // m_fbo.create((UInt32)m_size.x(), (UInt32)m_size.y(), PF_RGBA_8, True);
+            m_fbo.create((UInt32)m_size.x(), (UInt32)m_size.y(), PF_RED_U32, True);
             m_fbo.attachColorRender(FrameBuffer::COLOR_ATTACHMENT0);
 			m_fbo.attachDepthStencilRender(FrameBuffer::DEPTH_U32);
 			m_fbo.isCompleteness();
@@ -92,7 +93,7 @@ void Picking::preReDraw()
 
 		// define the viewport size as picking region size
 		getScene()->getContext()->setViewPort(0, 0, (Int32)m_size.x(), (Int32)m_size.y());
-		m_oldBackground = getScene()->getContext()->setBackgroundColor(0.f, 0.f, 0.f, 0.f);
+        // m_oldBackground = getScene()->getContext()->setBackgroundColor(0.f, 0.f, 0.f, 0.f);
 
         // no blending
         getScene()->getContext()->blending().setDefaultFunc();
@@ -118,22 +119,24 @@ void Picking::postReDraw()
 
 	// color mode
     if (m_mode == COLOR) {
-		getScene()->getContext()->setBackgroundColor(m_oldBackground);
+        // no longuer necessary using buffer clear color
+        // getScene()->getContext()->setBackgroundColor(m_oldBackground);
 
 		// get the hit 3d point (on current rendered scene)
-		Float pixel[4];
+        UInt32 id; // Float pixel[4];
 		Int32 depth;
 		Float floatDepth;
 
         // @todo read buffer from FrameBuffer::setReadBuffer();
 		glReadBuffer(FrameBuffer::COLOR_ATTACHMENT0 + GL_COLOR_ATTACHMENT0);
-		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_RGBA, GL_FLOAT, pixel);
+        // glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_RGBA, GL_FLOAT, pixel);
+        glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &id);
 
 		// picking color key
-        UInt32 id =  (UInt32)(pixel[0] * 255.f) +
-                    ((UInt32)(pixel[1] * 255.f) << 8) +
-                    ((UInt32)(pixel[2] * 255.f) << 16) +
-                    ((UInt32)(pixel[3] * 255.f) << 24);
+//        UInt32 id =  (UInt32)(pixel[0] * 255.f) +
+//                    ((UInt32)(pixel[1] * 255.f) << 8) +
+//                    ((UInt32)(pixel[2] * 255.f) << 16) +
+//                    ((UInt32)(pixel[3] * 255.f) << 24);
 
 		// get the hit depth in integer for sorting, and float for compute the hit position
 		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_DEPTH_COMPONENT, GL_INT, &depth);
@@ -144,7 +147,7 @@ void Picking::postReDraw()
 		glReadBuffer(GL_BACK);
 
         // hit
-        if (id > 0 && id < O3D_MAX_UINT32) {
+        if (id > 0) {
             // find pickable id
 			Pickable *object = getScene()->getSceneObjectManager()->get(id);
             if (object) {

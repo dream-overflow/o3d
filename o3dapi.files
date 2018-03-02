@@ -413,6 +413,8 @@ src/shaders/glsl330/picking/default_fp.glsl
 src/shaders/glsl330/picking/default_vp.glsl
 src/shaders/glsl330/primitiveShader/vertexColor_fp.glsl
 src/shaders/glsl330/primitiveShader/vertexColor_vp.glsl
+src/shaders/glsl330/primitiveShader/vertexPicking_fp.glsl
+src/shaders/glsl330/primitiveShader/vertexPicking_vp.glsl
 src/shaders/glsl330/shadowMap/hardShadow/default_fp.glsl
 src/shaders/glsl330/shadowMap/hardShadow/default_vp.glsl
 src/shaders/glsl330/shadowMap/softShadow/default_fp.glsl
@@ -498,6 +500,8 @@ src/shaders/glsl450/picking/default_fp.glsl
 src/shaders/glsl450/picking/default_vp.glsl
 src/shaders/glsl450/primitiveShader/vertexColor_fp.glsl
 src/shaders/glsl450/primitiveShader/vertexColor_vp.glsl
+src/shaders/glsl450/primitiveShader/vertexPicking_fp.glsl
+src/shaders/glsl450/primitiveShader/vertexPicking_vp.glsl
 src/shaders/glsl450/shadowMap/hardShadow/default_fp.glsl
 src/shaders/glsl450/shadowMap/hardShadow/default_vp.glsl
 src/shaders/glsl450/shadowMap/softShadow/default_fp.glsl
@@ -586,6 +590,8 @@ src/shaders/glsles320/picking/default_fp.glsl
 src/shaders/glsles320/picking/default_vp.glsl
 src/shaders/glsles320/primitiveShader/vertexColor_fp.glsl
 src/shaders/glsles320/primitiveShader/vertexColor_vp.glsl
+src/shaders/glsles320/primitiveShader/vertexPicking_fp.glsl
+src/shaders/glsles320/primitiveShader/vertexPicking_vp.glsl
 src/shaders/glsles320/shadowMap/hardShadow/default_fp.glsl
 src/shaders/glsles320/shadowMap/hardShadow/default_vp.glsl
 src/shaders/glsles320/shadowMap/softShadow/default_fp.glsl

@@ -995,18 +995,19 @@ void SndSource::setUpModelView()
 // draw a symbolic representation of a source
 void SndSource::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SND_SOURCE_OMNI))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SND_SOURCE_OMNI)) {
 		// if this source is visible draw its symbolic
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(0.0f,0.0f,1.0f);
 		primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(0.3f,0.3f,0.3f));
@@ -1169,23 +1170,23 @@ void DirectSource::update()
 
 void DirectSource::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SND_SOURCE_DIRECT))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SND_SOURCE_DIRECT)) {
 		// if this source is visible draw its symbolic
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(0.0f,0.0f,1.0f);
 
-		if (m_coneInnerAngle < 180.f)
-		{
+        if (m_coneInnerAngle < 180.f) {
 			primitive->beginDraw(P_LINES);
 				primitive->addVertex(0,0,0);
 				primitive->addVertex(0,0,-2);
@@ -1197,9 +1198,9 @@ void DirectSource::draw(const DrawInfo &drawInfo)
 					2.f*tanf(o3d::toRadian(m_coneInnerAngle)),
 					2.f*tanf(o3d::toRadian(m_coneInnerAngle)),
 					2.f));
-		}
-		else
+        } else {
 			primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(0.3f,0.3f,0.3f));
+        }
 	}
 }
 

@@ -36,8 +36,8 @@ public:
 	//! Is the picking processing is enabled
 	virtual Bool isPicking() const = 0;
 
-	//! get pickable color
-	virtual Color getPickableColor() = 0;
+    //! get pickable uint32 unique identifier
+    virtual UInt32 getPickableId() = 0;
 };
 
 } // namespace o3d

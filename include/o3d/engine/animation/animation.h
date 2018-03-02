@@ -18,6 +18,7 @@
 namespace o3d {
 
 class Node;
+class DrawInfo;
 class AnimationNode;
 class AnimationManager;
 
@@ -152,8 +153,7 @@ public:
 	inline UInt32 getNumFrames() const { return m_frame; }
 
 	//! draw the trajectories of all subtree
-	void drawTrajectory(Node *currentNode);
-
+    void drawTrajectory(Node *currentNode, const DrawInfo &drawInfo);
 
 	// serialization
     virtual Bool writeToFile(OutStream &os) override;

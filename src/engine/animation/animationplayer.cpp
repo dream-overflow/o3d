@@ -315,9 +315,9 @@ void AnimationPlayer::update()
 }
 
 // draw the animation trajectory
-void AnimationPlayer::drawTrajectory(Node *curNode)
+void AnimationPlayer::drawTrajectory(Node *curNode, const DrawInfo &drawInfo)
 {
-	m_animation->drawTrajectory(curNode);
+    m_animation->drawTrajectory(curNode, drawInfo);
 }
 
 // Serialization

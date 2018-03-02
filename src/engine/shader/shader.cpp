@@ -1554,6 +1554,20 @@ void ShaderInstance::setConstInt(const Char* name,const Int32 constant)
     }
 }
 
+void ShaderInstance::setConstUInt(const Char* name,const UInt32 constant)
+{
+    if (!isInUse()) {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Can not define a uniform location if the shader is not bound")));
+    }
+
+    Int32 location = glGetUniformLocation(m_pInstance->shaderId,name);
+    if (location >= 0) {
+        glUniform1ui(location,constant);
+    } else {
+        O3D_ERROR(E_InvalidOperation(String("ShaderInstance : Invalid uniform variable <") << name << " >"));
+    }
+}
+
 void ShaderInstance::setConstBool(const Char* name,const Bool constant)
 {
     if (!isInUse()) {

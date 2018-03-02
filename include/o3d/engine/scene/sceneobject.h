@@ -277,8 +277,8 @@ public:
 		}
 	}
 
-	//! Get the pickable color.
-    virtual Color getPickableColor() override;
+    //! Get the pickable id.
+    virtual UInt32 getPickableId() override;
 
 	//-----------------------------------------------------------------------------------
 	// Animatable specific

@@ -211,7 +211,7 @@ public:
 			const Vector2i &pos,
 			const Tile &tile,
 			UInt32 frame,
-			const Color &pickColor);
+            UInt32 pickableId/*const Color &pickColor*/);
 
 private:
 
@@ -274,7 +274,7 @@ private:
 		Int32 a_vertex;
 
 		Int32 u_modelViewProjectionMatrix;
-		Int32 u_pickingColor;
+        Int32 u_picking;
 	};
 
 	PickingShader m_pickingShader;
@@ -316,4 +316,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_MAP2DTILESET_H
-

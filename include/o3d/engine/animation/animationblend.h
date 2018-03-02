@@ -16,6 +16,8 @@
 
 namespace o3d {
 
+class DrawInfo;
+
 //! an animation blend element
 struct AnimationBlendElt
 {
@@ -165,7 +167,7 @@ public:
     virtual void setFatherNode(AnimationNode* father);
 
 	//! Draw the trajectories of all sub-tree
-    virtual void drawTrajectory(Node* curNode);
+    virtual void drawTrajectory(Node* curNode, const DrawInfo &drawInfo);
 
     virtual Animatable* getFirstSon() override { return nullptr; }
     virtual Animatable* getNextSon() override { return nullptr; }

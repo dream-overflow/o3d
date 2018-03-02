@@ -52,17 +52,18 @@ Bool CylinderGizmo::frustrumClip()
 // draw the gizmo
 void CylinderGizmo::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_CYLINDER_GYZMO))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_CYLINDER_GYZMO)) {
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(1.f,1.f,0.f);
 		primitive->draw(PrimitiveManager::WIRE_CYLINDER1, Vector3(m_dim[X],m_dim[Y],2.f*m_dim[Z]));

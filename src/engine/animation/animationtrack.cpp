@@ -27,8 +27,9 @@ using namespace o3d;
 // Destructor
 AnimationTrack::~AnimationTrack()
 {
-	for (IT_KeyFrameList it = m_keyFrameList.begin(); it != m_keyFrameList.end(); ++it)
+    for (IT_KeyFrameList it = m_keyFrameList.begin(); it != m_keyFrameList.end(); ++it) {
 		deletePtr(*it);
+    }
 }
 
 // Find the keyframe animation depend on time. Depend of the TrackMode
@@ -44,8 +45,7 @@ void AnimationTrack::findKeyFrame(
 	Float endTime = (*animStatus.Last)->getTime();
 
 	// empty time
-	if (startTime == endTime)
-	{
+    if (startTime == endTime) {
 		keyBefore = keyAfter = (*animStatus.First);
 		return;
 	}
@@ -53,84 +53,72 @@ void AnimationTrack::findKeyFrame(
 	Int32 c = 0;
 
 	// first get the correct time pos
-    if (time < startTime)
-	{
-		switch (m_TrackMode_Before)
-		{
-		case TRACK_MODE_CONSTANT:
-			// constant then always the first key
-			keyBefore = keyAfter = *animStatus.First;
-			return;
-		case TRACK_MODE_LOOP:
-			// compute the correct time pos
-			while (time < startTime) { time += endTime - startTime; }
-			break;
-		case TRACK_MODE_PING_PONG:
-			// compute the correct time pos
-			while (time < startTime) { time += endTime - startTime; ++c; }
-			// symmetries the time only for non pair offset (pingpong need to be symmetric)
-			if ((c%2) != 0) time = startTime + endTime - time;
-			break;
-		default:
-			O3D_WARNING("TrackMode_Before unknown");
-			keyBefore = keyAfter = *animStatus.First;
-			return;
-		}
-	}
-    else if (time > endTime)
-	{
-		switch (m_TrackMode_Before)
-		{
-		case TRACK_MODE_CONSTANT:
-			// constant then always the last key
-			keyBefore = keyAfter = *animStatus.Last;
-			return;
-		case TRACK_MODE_LOOP:
-			// compute the correct time pos
-            while (time > endTime) { time -= endTime - startTime; }
-			break;
-		case TRACK_MODE_PING_PONG:
-			// compute the correct time pos
-            while (time > endTime) { time -= endTime - startTime; ++c; }
-			// symmetries the time only for non pair offset (pingpong need to be symmetric)
-			if ((c%2) != 0) time = startTime + endTime - time;
-			break;
-		default:
-			O3D_WARNING("m_TrackMode_Before unknown");
-			keyBefore = keyAfter = *animStatus.Last;
-			return;
-		}
+    if (time < startTime) {
+        switch (m_TrackMode_Before) {
+            case TRACK_MODE_CONSTANT:
+                // constant then always the first key
+                keyBefore = keyAfter = *animStatus.First;
+                return;
+            case TRACK_MODE_LOOP:
+                // compute the correct time pos
+                while (time < startTime) { time += endTime - startTime; }
+                break;
+            case TRACK_MODE_PING_PONG:
+                // compute the correct time pos
+                while (time < startTime) { time += endTime - startTime; ++c; }
+                // symmetries the time only for non pair offset (pingpong need to be symmetric)
+                if ((c%2) != 0) time = startTime + endTime - time;
+                break;
+            default:
+                O3D_WARNING("TrackMode_Before unknown");
+                keyBefore = keyAfter = *animStatus.First;
+                return;
+        }
+    } else if (time > endTime) {
+        switch (m_TrackMode_Before) {
+            case TRACK_MODE_CONSTANT:
+                // constant then always the last key
+                keyBefore = keyAfter = *animStatus.Last;
+                return;
+            case TRACK_MODE_LOOP:
+                // compute the correct time pos
+                while (time > endTime) { time -= endTime - startTime; }
+                break;
+            case TRACK_MODE_PING_PONG:
+                // compute the correct time pos
+                while (time > endTime) { time -= endTime - startTime; ++c; }
+                // symmetries the time only for non pair offset (pingpong need to be symmetric)
+                if ((c%2) != 0) time = startTime + endTime - time;
+                break;
+            default:
+                O3D_WARNING("m_TrackMode_Before unknown");
+                keyBefore = keyAfter = *animStatus.Last;
+                return;
+        }
 	}
 
 	// find good keyframes
 	CIT_KeyFrameList nextIt;
 
 	// forward
-	if (animStatus.Time < time)
-	{
-		if ((time - animStatus.Time) > ((endTime - startTime) / 2))
-		{
+    if (animStatus.Time < time) {
+        if ((time - animStatus.Time) > ((endTime - startTime) / 2)) {
 			animStatus.Current = animStatus.First;
 		}
 
 		nextIt = animStatus.Current;
-        while (((*nextIt)->getTime() < time) && (nextIt != animStatus.Last))
-		{
+        while (((*nextIt)->getTime() < time) && (nextIt != animStatus.Last)) {
 			animStatus.Current = nextIt;
 			++nextIt;
 		}
-	}
-	// backward
-	else if (animStatus.Time > time)
-	{
-		if ((animStatus.Time - time) > ((endTime - startTime) / 2))
-		{
+    } else if (animStatus.Time > time) {
+        // backward
+        if ((animStatus.Time - time) > ((endTime - startTime) / 2)) {
 			animStatus.Current = animStatus.First;
 		}
 
 		nextIt = animStatus.Current;
-        while (((*nextIt)->getTime() > time) && (nextIt != animStatus.First))
-		{
+        while (((*nextIt)->getTime() > time) && (nextIt != animStatus.First)) {
 			--nextIt;
 			animStatus.Current = nextIt;
 		}
@@ -146,7 +134,7 @@ void AnimationTrack::findKeyFrame(
 	keyAfter = *nextIt;
 }
 
-void AnimationTrack::drawTrajectory(SceneObject*)
+void AnimationTrack::drawTrajectory(SceneObject*, const DrawInfo &drawInfo)
 {
     /* nothing is default */
 }
@@ -452,10 +440,10 @@ const void* AnimationTrack_LinearVector::compute(
 	return (&m_Data);
 }
 
-void AnimationTrack_LinearVector::drawTrajectory(SceneObject *object)
+void AnimationTrack_LinearVector::drawTrajectory(SceneObject *object, const DrawInfo &drawInfo)
 {
 	Context *glContext = object->getScene()->getContext();
-	PrimitiveAccess primitive = object->getScene()->getPrimitiveManager()->access();
+    PrimitiveAccess primitive = object->getScene()->getPrimitiveManager()->access(drawInfo);
 
 	glContext->modelView().push();
 
@@ -473,8 +461,7 @@ void AnimationTrack_LinearVector::drawTrajectory(SceneObject *object)
 	primitive->endDraw();
 
 	// draw lines and others key point
-	for(IT_KeyFrameList it = m_keyFrameList.begin(); it != m_keyFrameList.end(); ++it)
-	{
+    for(IT_KeyFrameList it = m_keyFrameList.begin(); it != m_keyFrameList.end(); ++it) {
 		KeyFrameLinear<Vector3> *pKey = (KeyFrameLinear<Vector3>*)*it;
 
 		primitive->setColor(1.f,1.f,0.f);
@@ -788,10 +775,10 @@ Bool AnimationTrack_BezierVector::readFromFile(InStream &is)
 
 #define O3D_DRAW_TANGENT_FACTOR 0.3f
 
-void AnimationTrack_BezierVector::drawTrajectory(SceneObject* object)
+void AnimationTrack_BezierVector::drawTrajectory(SceneObject* object, const DrawInfo &drawInfo)
 {
 	Context *glContext = object->getScene()->getContext();
-	PrimitiveAccess primitive = object->getScene()->getPrimitiveManager()->access();
+    PrimitiveAccess primitive = object->getScene()->getPrimitiveManager()->access(drawInfo);
 
 	glContext->modelView().push();
 

@@ -359,23 +359,17 @@ Geometry::Clipping SceneObject::checkBounding(const Plane &plane) const
     }
 }
 
-// Always returns inside.
 Geometry::Clipping SceneObject::checkFrustum(const Frustum &frustum) const
 {
+    // Always returns inside.
 	return Geometry::CLIP_INSIDE;
 }
 
-// get pickable color
-Color SceneObject::getPickableColor()
+UInt32 SceneObject::getPickableId()
 {
-	return Color(
-		((getId() & 0x000000ff)) / 255.f,
-		((getId() & 0x0000ff00) >> 8) / 255.f,
-		((getId() & 0x00ff0000) >> 16) / 255.f,
-		((getId() & 0xff000000) >> 24) / 255.f);
+    return (UInt32)getId();
 }
 
-// get animation keyframe it map ref
 Animatable::AnimatableTrack* SceneObject::getAnimationStatus(const AnimationTrack* track)
 {
 	// register the track into the animatable

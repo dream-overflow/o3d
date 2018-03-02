@@ -676,10 +676,10 @@ void Quadtree::checkVisibleObject(const VisibilityInfos & _infos)
 	}
 }
 
-void Quadtree::draw()
+void Quadtree::draw(const DrawInfo &drawInfo)
 {
     if (getScene()->getDrawObject(Scene::DRAW_QUADTREE)) {
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
 		// setup modelview
 		primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());

@@ -409,7 +409,7 @@ void Renderer::setCurrent()
         }
 
         if (GLX::makeCurrent(
-                reinterpret_cast<Display*>(Application::getDisplay()),
+                display,
                 static_cast<GLXDrawable>(m_HDC),
                 reinterpret_cast<GLXContext>(m_HGLRC)) == False) {
             O3D_ERROR(E_InvalidResult("Unable to set the current OpenGL context"));
@@ -446,7 +446,7 @@ Bool Renderer::setVSyncMode(VSyncMode mode)
       #endif
     } else if (GLX::swapIntervalEXT) {
         GLX::swapIntervalEXT(
-                    reinterpret_cast<Display*>(Application::getDisplay()),
+                    display,
                     static_cast<GLXDrawable>(m_HDC),
                     value);
     } else {

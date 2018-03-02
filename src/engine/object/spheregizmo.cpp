@@ -56,20 +56,20 @@ Bool SphereGizmo::frustrumClip()
 ---------------------------------------------------------------------------------------*/
 void SphereGizmo::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SPHERE_GIZMO))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SPHERE_GIZMO)) {
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(1.f,1.f,0.f);
 		primitive->draw(PrimitiveManager::WIRE_SPHERE2, m_dim);
 	}
 }
-

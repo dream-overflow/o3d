@@ -28,7 +28,7 @@ class PCLODLightmap;
 class PCLODZoneVisibility;
 class PCLODTerrain;
 class Scene;
-
+class DrawInfo;
 class Shader;
 
 class Vector3;
@@ -67,7 +67,7 @@ public:
 	virtual void init();
 
 	/* Call each frames */
-	virtual void draw() = 0;
+    virtual void draw(const DrawInfo &drawInfo) = 0;
 
 	/* Called by the RenderManager when the renderer is removed */
 	virtual void clean() = 0;

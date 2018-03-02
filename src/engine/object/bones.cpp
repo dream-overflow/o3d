@@ -169,18 +169,17 @@ void Bones::removeSon(SceneObject *object)
 // draw the bones symbolic
 void Bones::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
     // Symbolic pass
-    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_BONES))
-    {
-        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_BONES)) {
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
         // the bone
         BaseNode *parentBone = getNode();
-        if (!m_isEndEffector && parentBone)
-        {
+        if (!m_isEndEffector && parentBone) {
             Vector3 dir = (m_worldMatrix.getTranslation() -
                 parentBone->getAbsoluteMatrix().getTranslation());
 
@@ -190,20 +189,21 @@ void Bones::draw(const DrawInfo &drawInfo)
             parentToChild.reComputeBasisGivenZ(dir);
 
             // set current modelview
-            if (m_skeleton)
-            {
-                if (getScene()->getActiveCamera())
+            if (m_skeleton) {
+                if (getScene()->getActiveCamera()) {
                     primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix() * m_skeleton->getAbsoluteMatrix() * parentToChild);
-                else
+                } else {
                     primitive->modelView().set(m_skeleton->getAbsoluteMatrix() * parentToChild);
-            }
-            else if (getScene()->getActiveCamera())
+                }
+            } else if (getScene()->getActiveCamera()) {
                 primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix() * parentToChild);
-            else
+            } else {
                 primitive->modelView().set(parentToChild);
+            }
 
-            if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+            if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
                 primitive->drawLocalAxis();
+            }
 
             primitive->setColor(1,1,0);
             primitive->beginDraw(P_LINES);
@@ -238,52 +238,46 @@ void Bones::draw(const DrawInfo &drawInfo)
 
             primitive->endDraw();
 
-            if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME))
-            {
+            if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME)) {
                 primitive->setColor(0,1,0);
                 primitive->modelView().rotateX(o3d::toRadian(90.f));
                 primitive->draw(PrimitiveManager::WIRE_CYLINDER1, Vector3(m_radius,m_length,m_radius));
             }
-        }
-        else
-        {
+        } else {
             // set current modelview
-            if (m_skeleton)
-            {
-                if (getScene()->getActiveCamera())
+            if (m_skeleton) {
+                if (getScene()->getActiveCamera()) {
                     primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix() * m_skeleton->getAbsoluteMatrix());
-                else
+                } else {
                     primitive->modelView().set(m_skeleton->getAbsoluteMatrix());
-            }
-            else if (getScene()->getActiveCamera())
+                }
+            } else if (getScene()->getActiveCamera()) {
                 primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
-            else
+            } else {
                 primitive->modelView().set(Matrix4::getIdentity());
+            }
 
-            if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+            if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
                 primitive->drawLocalAxis();
+            }
 
             primitive->setColor(1,1,0);
             primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(BONES_WIDTH,BONES_WIDTH,BONES_WIDTH));
 
-            if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME))
-            {
+            if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME)) {
                 primitive->setColor(0,1,0);
                 primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(m_radius,m_radius,m_radius));
             }
         }
-    }
-    // Picking pass
-    else if ((drawInfo.pass == DrawInfo::PICKING_PASS) && getScene()->getDrawObject(Scene::DRAW_BONES))
-    {
-        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+    } else if ((drawInfo.pass == DrawInfo::PICKING_PASS) && getScene()->getDrawObject(Scene::DRAW_BONES)) {
+        // Picking pass
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
         // the bone
-        primitive->setColor(getPickableColor());
+        primitive->setPickableId(getPickableId());
 
         BaseNode *parentBone = getNode();
-        if (!m_isEndEffector && parentBone)
-        {
+        if (!m_isEndEffector && parentBone) {
             Vector3 dir = (m_worldMatrix.getTranslation() -
                 parentBone->getAbsoluteMatrix().getTranslation());
 
@@ -293,43 +287,40 @@ void Bones::draw(const DrawInfo &drawInfo)
             parentToChild.reComputeBasisGivenZ(dir);
 
             // set current modelview
-            if (m_skeleton)
-            {
-                if (getScene()->getActiveCamera())
+            if (m_skeleton) {
+                if (getScene()->getActiveCamera()) {
                     primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix() * m_skeleton->getAbsoluteMatrix() * parentToChild);
-                else
+                } else {
                     primitive->modelView().set(m_skeleton->getAbsoluteMatrix() * parentToChild);
-            }
-            else if (getScene()->getActiveCamera())
+                }
+            } else if (getScene()->getActiveCamera()) {
                 primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix() * parentToChild);
-            else
+            } else {
                 primitive->modelView().set(parentToChild);
+            }
 
             primitive->modelView().rotateX(o3d::toRadian(90.f));
             primitive->draw(PrimitiveManager::SOLID_CYLINDER1, Vector3(BONES_WIDTH, m_length, BONES_WIDTH));
-        }
-        else
-        {
+        } else {
             // set current modelview
-            if (m_skeleton)
-            {
-                if (getScene()->getActiveCamera())
+            if (m_skeleton) {
+                if (getScene()->getActiveCamera()) {
                     primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix() * m_skeleton->getAbsoluteMatrix());
-                else
+                } else {
                     primitive->modelView().set(m_skeleton->getAbsoluteMatrix());
-            }
-            else if (getScene()->getActiveCamera())
+                }
+            } else if (getScene()->getActiveCamera()) {
                 primitive->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());
-            else
+            } else {
                 primitive->modelView().set(Matrix4::getIdentity());
+            }
 
             primitive->draw(PrimitiveManager::SOLID_SPHERE1, Vector3(BONES_WIDTH, BONES_WIDTH, BONES_WIDTH));
         }
     }
 
     // draw recursively
-    for (IT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it)
-    {
+    for (IT_SonList it = m_objectList.begin(); it != m_objectList.end(); ++it) {
         //getScene()->getContext()->modelView().push();
         (*it)->draw(drawInfo);
         //getScene()->getContext()->modelView().pop();

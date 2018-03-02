@@ -252,7 +252,7 @@ public:
 	virtual void checkVisibleObject(const VisibilityInfos &);
 
 	//! Draw the quad-tree.
-	virtual void draw();
+    virtual void draw(const DrawInfo &drawInfo);
 
 protected:
 

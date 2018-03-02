@@ -15,6 +15,7 @@
 #include "o3d/gui/gui.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/context.h"
+#include "o3d/engine/drawinfo.h"
 #include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/core/templatemanager.h"
 
@@ -230,7 +231,7 @@ void TextZone::write(ABCFont *defaultFont, Int32 defaultFontSize)
             Int32 begin = curFont->sizeOf(m_text.sub(0, m_highlight[0]));
             Int32 end = curFont->sizeOf(m_text.sub(0, m_highlight[1]));
 
-            PrimitiveAccess pa = PrimitiveAccess(curFont->getScene()->getPrimitiveManager());
+            PrimitiveAccess pa = PrimitiveAccess(curFont->getScene()->getPrimitiveManager(), DrawInfo());
 
             pa->setModelviewProjection(curFont->getScene()->getContext()->modelViewProjection());
             pa->setColor(m_highlightColor);

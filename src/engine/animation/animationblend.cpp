@@ -12,6 +12,7 @@
 
 #include "o3d/engine/animation/animationmanager.h"
 #include "o3d/engine/scene/scene.h"
+#include "o3d/engine/drawinfo.h"
 
 using namespace o3d;
 
@@ -184,14 +185,13 @@ void AnimationBlend::setFatherNode(AnimationNode* /*father*/)
 /*---------------------------------------------------------------------------------------
   draw the trajectories of all sub-tree
 ---------------------------------------------------------------------------------------*/
-void AnimationBlend::drawTrajectory(Node* curNode)
+void AnimationBlend::drawTrajectory(Node* curNode, const DrawInfo &drawInfo)
 {
 	IT_AnimationBlendEltVector it;
 
-	for (it = m_animations.begin() ; it != m_animations.end() ; ++it)
-	{
+    for (it = m_animations.begin() ; it != m_animations.end() ; ++it) {
 		AnimationBlendElt& elt = (*it);
-		elt.animation->drawTrajectory(curNode);
+        elt.animation->drawTrajectory(curNode, drawInfo);
 	}
 }
 

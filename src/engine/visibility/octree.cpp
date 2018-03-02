@@ -53,7 +53,7 @@ void Octree::checkVisibleObject(const VisibilityInfos &) {
 
 }
 
-void Octree::draw()
+void Octree::draw(const DrawInfo &)
 {
 	// setup modelview
 	getScene()->getContext()->modelView().set(getScene()->getActiveCamera()->getModelviewMatrix());

@@ -56,17 +56,18 @@ Bool SquareGizmo::frustrumClip()
 ---------------------------------------------------------------------------------------*/
 void SquareGizmo::draw(const DrawInfo &drawInfo)
 {
-	if (!getActivity() || !getVisibility())
+    if (!getActivity() || !getVisibility()) {
 		return;
+    }
 
-	if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SQUARE_GIZMO))
-	{
+    if ((drawInfo.pass == DrawInfo::AMBIENT_PASS/*SymbolicPass*/) && getScene()->getDrawObject(Scene::DRAW_SQUARE_GIZMO)) {
 		setUpModelView();
 
-		PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access();
+        PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);
 
-		if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
+        if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
 			primitive->drawLocalAxis();
+        }
 
 		primitive->setColor(1.f,1.f,0.f);
 		primitive->beginDraw(P_LINE_LOOP);
@@ -77,4 +78,3 @@ void SquareGizmo::draw(const DrawInfo &drawInfo)
 		primitive->endDraw();
 	}
 }
-

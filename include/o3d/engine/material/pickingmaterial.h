@@ -14,11 +14,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class PickingMaterial
-//-------------------------------------------------------------------------------------
-//! Material dedicated to the picking pass.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Material dedicated to the picking pass using a single RED_UI32 output.
+ */
 class O3D_API PickingMaterial : public Material
 {
 public:
@@ -91,7 +89,7 @@ protected:
 
 	Bool m_opacityMap;
 	Int32 u_opacityMap;
-	Int32 u_pickingColor;
+    Int32 u_picking;
 
 	Int32 u_modelViewProjectionMatrix;
 	Int32 u_bonesMatrixArray;
@@ -102,4 +100,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_PICKINGMATERIAL_H
-

@@ -16,6 +16,8 @@
 
 namespace o3d {
 
+class DrawInfo;
+
 //---------------------------------------------------------------------------------------
 //! @class PCLODZoneRenderer
 //-------------------------------------------------------------------------------------
@@ -106,7 +108,7 @@ private:
 	void drawWireFrame();
 
 	//! Draw the bounding symbolic
-	void drawBounding();
+    void drawBounding(const DrawInfo &drawInfo);
 
 	//! This function clear the temporary data
 	void destroyData();
@@ -138,7 +140,7 @@ public:
 	// Used for GL initialization
 	virtual void init();
 
-	virtual void draw();
+    virtual void draw(const DrawInfo &drawInfo);
 
 	// Used to release the zone instance and avoid circular SmartPtr reference
 	virtual void clean();

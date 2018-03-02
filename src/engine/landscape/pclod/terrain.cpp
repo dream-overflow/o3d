@@ -105,15 +105,13 @@ PCLODTerrain::~PCLODTerrain()
 	deletePtr(m_pCurrentConfigs);
 }
 
-void PCLODTerrain::draw()
+void PCLODTerrain::draw(const DrawInfo &drawInfo)
 {
     if (m_pZoneManager == nullptr) {
 		PCLOD_WARNING(String("Terrain : Attempt to draw but the terrain is not initialized"));
     } else {
-		m_pZoneManager->draw();
+        m_pZoneManager->draw(drawInfo);
     }
-
-	DrawInfo drawInfo(DrawInfo::AMBIENT_PASS);
 
     if (m_pSky) {
 		m_pSky->draw(drawInfo);

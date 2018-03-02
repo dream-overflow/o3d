@@ -19,6 +19,7 @@ namespace o3d {
 
 class SceneObject;
 class Animatable;
+class DrawInfo;
 
 //---------------------------------------------------------------------------------------
 //! @class AnimationTrack
@@ -243,7 +244,7 @@ public:
 	virtual const void* compute(Animatable* target, Float time, UInt32 &ValSize) = 0;
 
 	//! Draw the trajectory of the animation.
-    virtual void drawTrajectory(SceneObject* object);
+    virtual void drawTrajectory(SceneObject* object, const DrawInfo &drawInfo);
 
 	//! Find the nearest time according given time.
 	void findKeyFrameTime(
@@ -354,7 +355,7 @@ public:
     virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	//! draw the trajectory of the animation
-    virtual void drawTrajectory(SceneObject* pObject) override;
+    virtual void drawTrajectory(SceneObject* pObject, const DrawInfo &drawInfo) override;
 
 	// Serialization
     virtual Bool readFromFile(InStream &is) override;
@@ -519,7 +520,7 @@ public:
     virtual const void* compute(Animatable* pTarget,Float time,UInt32& ValSize) override;
 
 	//! draw the trajectory of the animation
-    virtual void drawTrajectory(SceneObject* pObject) override;
+    virtual void drawTrajectory(SceneObject* pObject, const DrawInfo &drawInfo) override;
 
 	// Serialization
     virtual Bool readFromFile(InStream &is) override;

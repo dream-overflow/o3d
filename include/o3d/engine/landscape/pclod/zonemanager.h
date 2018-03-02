@@ -180,7 +180,7 @@ public:
 	void init(const Vector3 & _position);
     Bool isInit() const { return (m_pRenderManager != nullptr) && (m_pTextureManager != nullptr); }
 
-	void draw();
+    void draw(const DrawInfo &drawInfo);
 
 	//! Update the gui thread.
 	void mtUpdate();

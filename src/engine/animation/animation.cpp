@@ -132,10 +132,11 @@ void Animation::computeAnimRange()
 /*---------------------------------------------------------------------------------------
   draw the trajectories of all subtree
 ---------------------------------------------------------------------------------------*/
-void Animation::drawTrajectory(Node *currentNode)
+void Animation::drawTrajectory(Node *currentNode, const DrawInfo &drawInfo)
 {
-	if (m_fatherNode)
-		m_fatherNode->drawTrajectory(currentNode);
+    if (m_fatherNode) {
+        m_fatherNode->drawTrajectory(currentNode, drawInfo);
+    }
 }
 
 /*---------------------------------------------------------------------------------------

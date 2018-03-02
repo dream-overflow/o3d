@@ -50,7 +50,7 @@ public:
 	virtual void checkVisibleObject(const VisibilityInfos &);
 
 	//! draw the quadtree
-	virtual void draw();
+    virtual void draw(const DrawInfo &drawInfo);
 };
 
 } // namespace o3d

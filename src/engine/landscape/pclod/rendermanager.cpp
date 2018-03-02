@@ -72,38 +72,34 @@ void PCLODRenderManager::destroy()
 }
 
 /* Functions */
-void PCLODRenderManager::draw()
+void PCLODRenderManager::draw(const DrawInfo &drawInfo)
 {
 	Float color = 0.2f;
 	Float pas = 0.8f/Float(m_rendererOrder.size());
 
-	for (IT_RendererArray it = m_rendererOrder.begin() ; it != m_rendererOrder.end() ; it++, color += pas)
-	{
+    for (IT_RendererArray it = m_rendererOrder.begin() ; it != m_rendererOrder.end() ; it++, color += pas) {
 		//getScene()->getContext()->setColor(color, color, color); TODO quelle utilitee ?
 
-		if (!(*it)->pRenderer->isInit())
-		{
-			if ((*it)->pRenderer->isReady())
+        if (!(*it)->pRenderer->isInit()) {
+            if ((*it)->pRenderer->isReady()) {
 				(*it)->pRenderer->init();
-			else
+            } else {
 				continue;
+            }
 		}
 
-		(*it)->pRenderer->draw();
+        (*it)->pRenderer->draw(drawInfo);
 	}
 }
 
 void PCLODRenderManager::update()
 {
 	// Mise à jour du front to back
-	if (getTerrain()->getCurrentConfigs().frontToBack())
-	{
+    if (getTerrain()->getCurrentConfigs().frontToBack()) {
 		Vector3 viewPosition(getTerrain()->getCamera()->getAbsoluteMatrix().getTranslation());
 
-		if ((viewPosition - m_lastViewPosition).normInf() > getTerrain()->getCurrentConfigs().frontToBackMinViewMove())
-		{
-			for (IT_RendererArray it = m_rendererOrder.begin() ; it != m_rendererOrder.end() ; it++)
-			{
+        if ((viewPosition - m_lastViewPosition).normInf() > getTerrain()->getCurrentConfigs().frontToBackMinViewMove()) {
+            for (IT_RendererArray it = m_rendererOrder.begin() ; it != m_rendererOrder.end() ; it++) {
 				#ifdef _DEBUG
 				(*it)->rendererDistance = UInt32(((*it)->pRenderer->getPosition()-viewPosition).length());
 				#else
@@ -114,18 +110,14 @@ void PCLODRenderManager::update()
 			m_lastViewPosition = viewPosition;
 		}
 
-		if (m_refreshTimer == 0)
-		{
-			if (m_rendererOrder.size() > 1)
-			{
+        if (m_refreshTimer == 0) {
+            if (m_rendererOrder.size() > 1) {
 				PCLODRendererInfo ** pInfo1 = &m_rendererOrder[0];
 				PCLODRendererInfo ** pInfo2 = &m_rendererOrder[1];
                 PCLODRendererInfo * pPtr = nullptr;
 
-				while (pInfo1 != m_rendererOrder.rbegin().operator ->())
-				{
-					if ((*pInfo1)->rendererDistance > (*pInfo2)->rendererDistance)
-					{
+                while (pInfo1 != m_rendererOrder.rbegin().operator ->()) {
+                    if ((*pInfo1)->rendererDistance > (*pInfo2)->rendererDistance) {
 						pPtr = *pInfo1;
 						*pInfo1 = *pInfo2;
 						*pInfo2 = pPtr;
@@ -139,9 +131,9 @@ void PCLODRenderManager::update()
 			}
 
 			m_refreshTimer = getTerrain()->getCurrentConfigs().frontToBackRefreshPeriodicity();
-		}
-		else
+        } else {
 			--m_refreshTimer;
+        }
 	}
 }
 

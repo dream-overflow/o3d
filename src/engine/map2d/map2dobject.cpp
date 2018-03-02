@@ -64,16 +64,15 @@ void Map2dObject::draw(const DrawInfo &drawInfo)
         // offset to center the tile according to its base rect
         Vector2i ofs(-m_baseRect.b().x(), -m_baseRect.a().y());
 
-		if (drawInfo.pass == DrawInfo::AMBIENT_PASS)
-		{
-            if (m_useColor)
+        if (drawInfo.pass == DrawInfo::AMBIENT_PASS) {
+            if (m_useColor) {
                 m_tileSet.get()->draw(m_isoPos + ofs, *m_tile, 0, m_colorMask);
-            else
+            } else {
                 m_tileSet.get()->draw(m_isoPos + ofs, *m_tile, 0, 1.0f);
+            }
 
-            if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS))
-            {
-				PrimitiveAccess acces = getScene()->getPrimitiveManager()->access();
+            if (getScene()->getDrawObject(Scene::DRAW_LOCAL_AXIS)) {
+                PrimitiveAccess acces = getScene()->getPrimitiveManager()->access(drawInfo);
 
 				acces->setColor(Color(0,1,0,1));
 				acces->setModelviewProjection();
@@ -105,10 +104,8 @@ void Map2dObject::draw(const DrawInfo &drawInfo)
                 acces->addVertex(v2.x(), v2.y(), 0.f);
                 acces->endDraw();
 			}
-		}
-		else if (drawInfo.pass == DrawInfo::PICKING_PASS)
-		{
-            m_tileSet.get()->drawPicking(m_isoPos + ofs, *m_tile, 0, getPickableColor());
+        } else if (drawInfo.pass == DrawInfo::PICKING_PASS) {
+            m_tileSet.get()->drawPicking(m_isoPos + ofs, *m_tile, 0, getPickableId());
 		}
 	}
 }

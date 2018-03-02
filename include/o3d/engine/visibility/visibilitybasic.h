@@ -52,7 +52,7 @@ public:
 	virtual void checkVisibleObject(const VisibilityInfos &);
 
 	//! draw the symbolic
-	virtual void draw();
+    virtual void draw(const DrawInfo &drawInfo);
 
 private:
 

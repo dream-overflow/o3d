@@ -466,7 +466,7 @@ void HeightmapSplatting::updateLight(Light *)
 {
 }
 
-void HeightmapSplatting::draw()
+void HeightmapSplatting::draw(const DrawInfo &drawInfo)
 {
 	const Box2i viewPort = getScene()->getContext()->getViewPort();
     //const Vector2i lFboSize(viewPort.width()/2, viewPort.height()/2);

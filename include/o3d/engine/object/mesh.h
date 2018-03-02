@@ -175,7 +175,7 @@ protected:
     virtual void updateBounding();
 
 	//! Draw the symbolics objects.
-	void drawSymbolics();
+    void drawSymbolics(const DrawInfo &drawInfo);
 };
 
 } // namespace o3d

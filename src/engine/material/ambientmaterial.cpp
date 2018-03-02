@@ -52,8 +52,9 @@ void AmbientMaterial::initialize(
 	m_arrays.clear();
 	m_valid = False;
 
-    if (initMode != AMBIENT)
-            O3D_ERROR(E_InvalidParameter("InitMode::AMBIENT only is accepted"));
+    if (initMode != AMBIENT) {
+        O3D_ERROR(E_InvalidParameter("InitMode::AMBIENT only is accepted"));
+    }
 
 	m_options = "";
 

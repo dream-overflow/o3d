@@ -74,7 +74,7 @@ public:
 	const PCLODTerrain* getTerrain() const;
 	PCLODTerrain* getTerrain();
 
-	void draw();
+    void draw(const DrawInfo &drawInfo);
 
 	void update();
 
@@ -87,4 +87,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_PCLODRENDERMANAGER_H
-

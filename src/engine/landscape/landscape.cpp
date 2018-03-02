@@ -43,9 +43,9 @@ Landscape::~Landscape()
 // Processing
 //---------------------------------------------------------------------------------------
 
-void Landscape::draw()
+void Landscape::draw(const DrawInfo &drawInfo)
 {
-	m_terrainManager.draw();
+    m_terrainManager.draw(drawInfo);
 }
 
 void Landscape::update()
@@ -192,14 +192,14 @@ Bool TerrainManager::isTerrain(const String &name)
     return (findTerrain(0, keyName) != nullptr);
 }
 
-void TerrainManager::draw()
+void TerrainManager::draw(const DrawInfo &drawInfo)
 {
 	FastMutexLocker locker(m_mutex);
     // @todo should lock copy list and then draw
 
     for (IT_FindMap it = m_findMap.begin(); it != m_findMap.end(); ++it) {
         if (getScene()->getActiveCamera() == it->second->getCamera()) {
-			(*it).second->draw();
+            (*it).second->draw(drawInfo);
         }
 	}
 }

@@ -9,6 +9,7 @@
 
 #include "o3d/engine/precompiled.h"
 #include "o3d/engine/animation/animationnode.h"
+#include "o3d/engine/drawinfo.h"
 
 using namespace o3d;
 
@@ -216,36 +217,34 @@ void AnimationNode::update(
 /*---------------------------------------------------------------------------------------
   draw the trajectory of the object
 ---------------------------------------------------------------------------------------*/
-void AnimationNode::drawTrajectory(Node *node)
+void AnimationNode::drawTrajectory(Node *node, const DrawInfo &drawInfo)
 {
 	// draw the current node trajectory
-	for (IT_AnimationTrackList trackIt = m_trackList.begin() ; trackIt != m_trackList.end() ; ++trackIt)
-	{
-		if ((*trackIt)->getTarget() == AnimationTrack::TARGET_OBJECT_POS && node->hasUpdatable())
-			(*trackIt)->drawTrajectory(node);
+    for (IT_AnimationTrackList trackIt = m_trackList.begin() ; trackIt != m_trackList.end() ; ++trackIt) {
+        if ((*trackIt)->getTarget() == AnimationTrack::TARGET_OBJECT_POS && node->hasUpdatable()) {
+            (*trackIt)->drawTrajectory(node, drawInfo);
+        }
 	}
 
 	// recurse on the son
 	const T_SonList &sonList = node->getSonList();
 	IT_AnimationNodeList animationIt = m_sonList.begin();
 
-	for (CIT_SonList HierarchyIt = sonList.begin() ; HierarchyIt != sonList.end() ; ++HierarchyIt)
-	{
-		if (animationIt == m_sonList.end())
-		{
+    for (CIT_SonList HierarchyIt = sonList.begin() ; HierarchyIt != sonList.end() ; ++HierarchyIt) {
+        if (animationIt == m_sonList.end()) {
 			// the animation node has not enough sons
 			return;
 		}
 
 		// recurse on the child
-		if ((*HierarchyIt)->isNodeObject())
-			(*animationIt)->drawTrajectory((Node*)(*HierarchyIt));
+        if ((*HierarchyIt)->isNodeObject()) {
+            (*animationIt)->drawTrajectory((Node*)(*HierarchyIt), drawInfo);
+        }
 
 		animationIt++;
 	}
 
-	if (animationIt != m_sonList.end())
-	{
+    if (animationIt != m_sonList.end()) {
 		// the animation node has too much sons
         /*O3D_WARNING*/O3D_MESSAGE("Hierarchy tree and animation tree don't fit");
 		return;

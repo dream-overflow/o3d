@@ -60,7 +60,7 @@ public:
 	//---------------------------------------------------------------------------------------
 
 	//! Draw all managed terrains
-	void draw();
+    void draw(const DrawInfo &drawInfo);
 
 	//! Update all managed terrains
 	void update();
@@ -193,7 +193,7 @@ public:
 	//---------------------------------------------------------------------------------------
 
 	//! Draw all managed terrains
-	void draw();
+    void draw(const DrawInfo &drawInfo);
 
 	//! Update all managed terrains
 	void update();
@@ -276,7 +276,7 @@ public:
 	// Processing
 	//---------------------------------------------------------------------------------------
 
-	virtual void draw() = 0;
+    virtual void draw(const DrawInfo &drawInfo) = 0;
 	virtual void update() = 0;
 
 protected:

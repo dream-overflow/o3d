@@ -15,6 +15,7 @@
 #include "o3d/engine/landscape/pclod/zonerenderer.h"
 #include "o3d/engine/landscape/pclod/rendermanager.h"
 #include "o3d/engine/landscape/pclod/terrain.h"
+#include "o3d/engine/drawinfo.h"
 
 #include "o3d/core/vector3.h"
 #include "o3d/geom/frustum.h"
@@ -152,20 +153,21 @@ void PCLODZoneRenderer::init()
 	PCLODRendererBase::init();
 }
 
-void PCLODZoneRenderer::draw()
+void PCLODZoneRenderer::draw(const DrawInfo &drawInfo)
 {
 	update();
 
 	if (getTerrain()->getCurrentConfigs().frustumCulling() &&
-		(getScene()->getFrustum()->boxInFrustum(m_infos.bounding) != Geometry::CLIP_OUTSIDE))
-	{
-		if (!getTerrain()->getCurrentConfigs().wireFrame())
+        (getScene()->getFrustum()->boxInFrustum(m_infos.bounding) != Geometry::CLIP_OUTSIDE)) {
+        if (!getTerrain()->getCurrentConfigs().wireFrame()) {
 			drawWithShaders();
-		else
+        } else {
 			drawWireFrame();
+        }
 
-		if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME))
-			drawBounding();
+        if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME)) {
+            drawBounding(drawInfo);
+        }
 	}
 }
 
@@ -595,8 +597,9 @@ void PCLODZoneRenderer::drawWireFrame()
 {
 	PCLODConfigs & currentConfig = getTerrain()->getCurrentConfigs();
 
-	if (!currentConfig.shadersInit())
+    if (!currentConfig.shadersInit()) {
 		return;
+    }
 
 	Context *glContext = getScene()->getContext();
 
@@ -630,11 +633,11 @@ void PCLODZoneRenderer::drawWireFrame()
 	glContext->setDrawingMode(Context::DRAWING_FILLED);
 }
 
-void PCLODZoneRenderer::drawBounding()
+void PCLODZoneRenderer::drawBounding(const DrawInfo &drawInfo)
 {
     getScene()->getContext()->setLineWidth(2.0f);
 
-	getScene()->getPrimitiveManager()->bind();
+    getScene()->getPrimitiveManager()->bind(drawInfo);
 	getScene()->getPrimitiveManager()->boundingBox(
 			m_infos.bounding,
 			Color(0.0f, 0.0f, 1.0f));
