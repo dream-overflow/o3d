@@ -117,7 +117,7 @@ Bool NormalCubeMapTex::create()
 //	if (m_filtering > 1 && m_filtering < 6)
 //		maxLevel = o3d::log2(o3d::max(width,height));
 
-	Bool create = generateId(PF_RGBA_U8, m_size, m_size, 1, 0, maxLevel);
+	Bool create = generateId(PF_RGBA_8, m_size, m_size, 1, 0, maxLevel);
 
 	if (m_filtering != 1)
 		O3D_ERROR(E_InvalidParameter("Unsupported filtering mode"));

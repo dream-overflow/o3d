@@ -30,7 +30,7 @@ Texture::Texture(BaseObject *parent, const TextureOps &operations) :
 	m_width(0),
 	m_height(0),
 	m_depth(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
 	m_minLevel(0),
 	m_maxLevel(0),
 	m_filtering(LINEAR_FILTERING),

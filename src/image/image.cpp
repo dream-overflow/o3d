@@ -31,7 +31,7 @@ Image::Image() :
 	m_state(False),
 	m_width(0),
 	m_height(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
     m_pic(nullptr),
     m_data(nullptr),
 	m_size(0),
@@ -44,7 +44,7 @@ Image::Image(const String& filename) :
 	m_state(False),
 	m_width(0),
 	m_height(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
     m_pic(nullptr),
     m_data(nullptr),
 	m_size(0),
@@ -58,7 +58,7 @@ Image::Image(const String& filename, PixelFormat pixelFormat) :
 	m_state(False),
 	m_width(0),
 	m_height(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
     m_pic(nullptr),
     m_data(nullptr),
 	m_size(0),
@@ -72,7 +72,7 @@ Image::Image(InStream &is) :
 	m_state(False),
 	m_width(0),
 	m_height(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
     m_pic(nullptr),
     m_data(nullptr),
 	m_size(0),
@@ -86,7 +86,7 @@ Image::Image(InStream &is, PixelFormat pixelFormat) :
 	m_state(False),
 	m_width(0),
 	m_height(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
     m_pic(nullptr),
     m_data(nullptr),
 	m_size(0),
@@ -100,7 +100,7 @@ Image::Image(const Image &pic) :
 	m_state(False),
 	m_width(0),
 	m_height(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
     m_pic(nullptr),
     m_data(nullptr),
 	m_size(0),
@@ -483,8 +483,7 @@ Bool Image::saveRgb(
 
 	Bool result;
 
-	switch (format)
-	{
+    switch (format) {
 		case BMP:
 			result = saveRgbBmp(filename);
 			break;
@@ -505,25 +504,33 @@ Bool Image::saveRgb(
 // Get the size of a pixel in bits.
 UInt32 Image::getBpp() const
 {
-	switch (m_pixelFormat)
-	{
-		case PF_RED_U8:
+    switch (m_pixelFormat) {
+		case PF_RED_8:
+        case PF_RED_U8:
+        case PF_RED_I8:
 		case PF_RGBA_DXT3:
 		case PF_RGBA_DXT5:
 			return 8;
 
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
+        case PF_RGBA_U8:
+        case PF_RGBA_I8:
 		case PF_RED_F32:
 			return 32;
 
-		case PF_RG_U8:
+        case PF_RG_8:
+        case PF_RG_U8:
+        case PF_RG_I8:
 		case PF_DEPTH_U16:
 			return 16;
 
 		case PF_RG_F32:
+        case PF_RGBA_F16:
 			return 64;
 
-		case PF_RGB_U8:
+		case PF_RGB_8:
+        case PF_RGB_U8:
+        case PF_RGB_I8:
 			return 24;
 
 		case PF_RGB_F32:
@@ -554,22 +561,52 @@ UInt32 Image::getBpp() const
 // Get the number of components of the picture.
 UInt32 Image::getNumComponents() const
 {
-	switch (m_pixelFormat)
-	{
-		case PF_RED_U8:
+    switch (m_pixelFormat) {
+		case PF_RED_8:
+        case PF_RED_U8:
+        case PF_RED_I8:
+        case PF_RED_16:
+        case PF_RED_U16:
+        case PF_RED_I16:
+        case PF_RED_U32:
+        case PF_RED_I32:
+        case PF_RED_F16:
 		case PF_RED_F32:
 			return 1;
 
-		case PF_RG_U8:
+        case PF_RG_8:
+        case PF_RG_U8:
+        case PF_RG_I8:
+        case PF_RG_16:
+        case PF_RG_U16:
+        case PF_RG_I16:
+        case PF_RG_U32:
+        case PF_RG_I32:
+        case PF_RG_F16:
 		case PF_RG_F32:
 			return 2;
 
-		case PF_RGB_U8:
+		case PF_RGB_8:
+        case PF_RGB_U8:
+        case PF_RGB_I8:
+        case PF_RGB_U16:
+        case PF_RGB_I16:
+        case PF_RGB_U32:
+        case PF_RGB_I32:
+        case PF_RGB_F16:
 		case PF_RGB_F32:
 		case PF_RGB_DXT1:
 			return 3;
 
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
+        case PF_RGBA_U8:
+        case PF_RGBA_I8:
+        case PF_RGBA_16:
+        case PF_RGBA_U16:
+        case PF_RGBA_I16:
+        case PF_RGBA_U32:
+        case PF_RGBA_I32:
+        case PF_RGBA_F16:
 		case PF_RGBA_F32:
 		case PF_RGBA_DXT1:
 		case PF_RGBA_DXT3:
@@ -583,7 +620,8 @@ UInt32 Image::getNumComponents() const
 		case PF_DEPTH_F32:
 			return 1;
 
-		case PF_DEPTH_U24_STENCIL_U8:
+        case PF_DEPTH_U24_STENCIL_U8:
+        case PF_DEPTH_F32_STENCIL_U8:
 			return 2;
 
 		default:
@@ -595,11 +633,30 @@ UInt32 Image::getNumComponents() const
 // Is alpha channel
 Bool Image::isAlpha() const
 {
-	switch (m_pixelFormat)
-	{
-		case PF_RG_U8:
+    switch (m_pixelFormat) {
+//        case PF_RED_8:
+//        case PF_RED_U8:
+//        case PF_RED_I8:
+//        case PF_RED_16:
+//        case PF_RED_U16:
+//        case PF_RED_I16:
+//        case PF_RED_U32:
+//        case PF_RED_I32:
+//        case PF_RED_F16:
+//        case PF_RED_F32:
+        case PF_RG_8:
+        case PF_RG_U8:
+        case PF_RG_I8:
+        case PF_RG_U16:
+        case PF_RG_I16:
+        case PF_RG_F16:
 		case PF_RG_F32:
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
+        case PF_RGBA_U8:
+        case PF_RGBA_I8:
+        case PF_RGBA_U16:
+        case PF_RGBA_I16:
+        case PF_RGBA_F16:
 		case PF_RGBA_F32:
 		case PF_RGBA_DXT1:
 		case PF_RGBA_DXT3:
@@ -614,11 +671,25 @@ Bool Image::isAlpha() const
 //! Is rgb color components.
 Bool Image::isRgb() const
 {
-	switch (m_pixelFormat)
-	{
-		case PF_RGB_U8:
+    switch (m_pixelFormat) {
+		case PF_RGB_8:
+        case PF_RGB_U8:
+        case PF_RGB_I8:
+        case PF_RGB_I16:
+        case PF_RGB_U16:
+        case PF_RGB_I32:
+        case PF_RGB_U32:
+        case PF_RGB_F16:
 		case PF_RGB_F32:
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
+        case PF_RGBA_U8:
+        case PF_RGBA_I8:
+        case PF_RGBA_16:
+        case PF_RGBA_U16:
+        case PF_RGBA_I16:
+        case PF_RGBA_U32:
+        case PF_RGBA_I32:
+        case PF_RGBA_F16:
 		case PF_RGBA_F32:
 		case PF_RGB_DXT1:
 		case PF_RGBA_DXT1:
@@ -634,12 +705,15 @@ Bool Image::isRgb() const
 // Is color picture with 8 bits unsigned integer components.
 Bool Image::isColorU8() const
 {
-	switch (m_pixelFormat)
-	{
-		case PF_RED_U8:
-		case PF_RG_U8:
-		case PF_RGB_U8:
-		case PF_RGBA_U8:
+    switch (m_pixelFormat) {
+		case PF_RED_8:
+        case PF_RED_U8:
+        case PF_RG_8:
+        case PF_RG_U8:
+        case PF_RGB_8:
+        case PF_RGB_U8:
+		case PF_RGBA_8:
+        case PF_RGBA_U8:
 			return True;
 
 		default:
@@ -650,8 +724,7 @@ Bool Image::isColorU8() const
 // Is color picture with 32 bits float components.
 Bool Image::isColorF32() const
 {
-	switch (m_pixelFormat)
-	{
+    switch (m_pixelFormat) {
 		case PF_RED_F32:
 		case PF_RG_F32:
 		case PF_RGB_F32:
@@ -674,7 +747,7 @@ void Image::destroy()
 		else if (m_data.get())
             m_data = nullptr;
 
-		m_pixelFormat = PF_RGBA_U8;
+		m_pixelFormat = PF_RGBA_8;
 
 		m_width = m_height = 0;
 		m_size = 0;
@@ -695,12 +768,14 @@ Rgb Image::getRgbPixel(UInt32 x, UInt32 y) const
 
 	switch (m_pixelFormat)
 	{
-		case PF_RED_U8:
+		case PF_RED_8:
+        case PF_RED_U8:
 			return o3d::rgb(data[index], 0, 0);
 		case PF_RED_F32:
 			return o3d::rgb(UInt8(reinterpret_cast<const Float*>(data)[index]*255.f), 0, 0);
 
-		case PF_RG_U8:
+        case PF_RG_8:
+        case PF_RG_U8:
 			index *= 2;
 			return o3d::rgb(data[index], data[index+1], 0);
 		case PF_RG_F32:
@@ -710,7 +785,8 @@ Rgb Image::getRgbPixel(UInt32 x, UInt32 y) const
 					UInt8(reinterpret_cast<const Float*>(data)[index+1]*255.f),
 					0);
 
-		case PF_RGB_U8:
+		case PF_RGB_8:
+        case PF_RGB_U8:
 			index *= 3;
 			return o3d::rgb(data[index], data[index+1], data[index+2]);
 		case PF_RGB_F32:
@@ -724,7 +800,8 @@ Rgb Image::getRgbPixel(UInt32 x, UInt32 y) const
 			index = index >> 4;
 			return o3d::rgb(0,0,0);
 
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
+        case PF_RGBA_U8:
 			index *= 4;
 			return o3d::rgba(data[index], data[index+1], data[index+2], data[index+3]);
 		case PF_RGBA_F32:
@@ -788,12 +865,14 @@ Color Image::getPixel(UInt32 x, UInt32 y) const
 
 	switch (m_pixelFormat)
 	{
-		case PF_RED_U8:
+		case PF_RED_8:
+        case PF_RED_U8:
 			return Color(data[index]/255.f, 0.f, 0.f);
 		case PF_RED_F32:
 			return Color(reinterpret_cast<const Float*>(data)[index], 0.f, 0.f);
 
-		case PF_RG_U8:
+        case PF_RG_8:
+        case PF_RG_U8:
 			index *= 2;
 			return Color(data[index]/255.f, data[index+1]/255.f, 0.f);
 		case PF_RG_F32:
@@ -803,7 +882,8 @@ Color Image::getPixel(UInt32 x, UInt32 y) const
 					reinterpret_cast<const Float*>(data)[index+1],
 					0.f);
 
-		case PF_RGB_U8:
+		case PF_RGB_8:
+        case PF_RGB_U8:
 			index *= 3;
 			return Color(data[index]/255.f, data[index+1]/255.f, data[index+2]/255.f);
 		case PF_RGB_F32:
@@ -817,7 +897,8 @@ Color Image::getPixel(UInt32 x, UInt32 y) const
 			index = index >> 4;
 			return Color(0,0,0);
 
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
+        case PF_RGBA_U8:
 			index *= 4;
 			return Color(data[index]/255.f, data[index+1]/255.f, data[index+2]/255.f, data[index+3]/255.f);
 		case PF_RGBA_F32:
@@ -879,7 +960,7 @@ Bool Image::convertRtoRGB8()
 	if (isComplex())
 		O3D_ERROR(E_InvalidFormat("Complex picture are not supported at this time"));
 
-	if ((m_pixelFormat != PF_RED_U8) && (m_pixelFormat != PF_RED_F32) && (m_pixelFormat != PF_DEPTH_F32))
+	if ((m_pixelFormat != PF_RED_8) && (m_pixelFormat != PF_RED_F32) && (m_pixelFormat != PF_DEPTH_F32))
 		O3D_ERROR(E_InvalidFormat("Pixel format must be RED_U8, RED_F32 or DEPTH_F32"));
 
 	if (!m_data.get() || !m_data->data || !m_width || !m_height)
@@ -889,7 +970,7 @@ Bool Image::convertRtoRGB8()
 
 	UInt8 *data = new UInt8[m_size];
 
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 	{
 		UInt8 *src = m_data->data;
 		UInt8 *dst = data;
@@ -920,7 +1001,7 @@ Bool Image::convertRtoRGB8()
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RGB_U8;
+	m_pixelFormat = PF_RGB_8;
 
 	setDirty();
 	return True;
@@ -935,7 +1016,7 @@ Bool Image::convertRtoRGBA8()
 	if (isComplex())
 		O3D_ERROR(E_InvalidFormat("Complex picture are not supported at this time"));
 
-	if ((m_pixelFormat != PF_RED_U8) && (m_pixelFormat != PF_RED_F32) && (m_pixelFormat != PF_DEPTH_F32))
+	if ((m_pixelFormat != PF_RED_8) && (m_pixelFormat != PF_RED_F32) && (m_pixelFormat != PF_DEPTH_F32))
 		O3D_ERROR(E_InvalidFormat("Pixel format must be RED_U8, RED_F32 or DEPTH_F32"));
 
 	if (!m_data.get() || !m_data->data || !m_width || !m_height)
@@ -945,7 +1026,7 @@ Bool Image::convertRtoRGBA8()
 
 	UInt8 *data = new UInt8[m_size];
 
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 	{
 		UInt8 *src = m_data->data;
 		UInt8 *dst = data;
@@ -978,7 +1059,7 @@ Bool Image::convertRtoRGBA8()
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RGBA_U8;
+	m_pixelFormat = PF_RGBA_8;
 
 	setDirty();
 	return True;
@@ -993,7 +1074,7 @@ Bool Image::convertRtoRGBA8(Rgb colorKey)
 	if (isComplex())
 		O3D_ERROR(E_InvalidFormat("Complex picture are not supported at this time"));
 
-	if ((m_pixelFormat != PF_RED_U8) && (m_pixelFormat != PF_RED_F32) && (m_pixelFormat != PF_DEPTH_F32))
+	if ((m_pixelFormat != PF_RED_8) && (m_pixelFormat != PF_RED_F32) && (m_pixelFormat != PF_DEPTH_F32))
 		O3D_ERROR(E_InvalidFormat("Pixel format must be RED_U8, RED_F32 or DEPTH_F32"));
 
 	if (!m_data.get() || !m_data->data || !m_width || !m_height)
@@ -1005,7 +1086,7 @@ Bool Image::convertRtoRGBA8(Rgb colorKey)
 
 	const UInt8 r = o3d::red(colorKey);
 
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 	{
 		UInt8 *src = m_data->data;
 		UInt8 *dst = data;
@@ -1046,7 +1127,7 @@ Bool Image::convertRtoRGBA8(Rgb colorKey)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RGBA_U8;
+	m_pixelFormat = PF_RGBA_8;
 
 	setDirty();
 	return True;
@@ -1061,7 +1142,7 @@ Bool Image::convertRGBtoRGBA8()
 	if (isComplex())
 		O3D_ERROR(E_InvalidFormat("Complex picture are not supported at this time"));
 
-	if ((m_pixelFormat != PF_RGB_U8) && (m_pixelFormat != PF_RGB_F32))
+	if ((m_pixelFormat != PF_RGB_8) && (m_pixelFormat != PF_RGB_F32))
 		O3D_ERROR(E_InvalidFormat("Pixel format must be RGB_U8 or RGB_F32"));
 
 	if (!m_data.get() || !m_data->data || !m_width || !m_height)
@@ -1073,7 +1154,7 @@ Bool Image::convertRGBtoRGBA8()
 	UInt8 *data = new UInt8[m_size];
 	UInt32 i,j = 0;
 
-	if (m_pixelFormat == PF_RGB_U8)
+	if (m_pixelFormat == PF_RGB_8)
 	{
 		UInt8 *src = m_data->data;
 
@@ -1103,7 +1184,7 @@ Bool Image::convertRGBtoRGBA8()
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RGBA_U8;
+	m_pixelFormat = PF_RGBA_8;
 
 	setDirty();
 	return True;
@@ -1118,7 +1199,7 @@ Bool Image::convertRGBtoRGBA8(Rgb colorKey)
 	if (isComplex())
 		O3D_ERROR(E_InvalidFormat("Complex picture are not supported at this time"));
 
-	if ((m_pixelFormat != PF_RGB_U8) && (m_pixelFormat != PF_RGB_F32))
+	if ((m_pixelFormat != PF_RGB_8) && (m_pixelFormat != PF_RGB_F32))
 		O3D_ERROR(E_InvalidFormat("Pixel format must be RGB_U8 or RGB_F32"));
 
 	if (!m_data.get() || !m_data->data || !m_width || !m_height)
@@ -1133,7 +1214,7 @@ Bool Image::convertRGBtoRGBA8(Rgb colorKey)
 	UInt8 g = o3d::green(colorKey);
 	UInt8 b = o3d::blue(colorKey);
 
-	if (m_pixelFormat == PF_RGB_U8)
+	if (m_pixelFormat == PF_RGB_8)
 	{
 		UInt8 *src = m_data->data;
 
@@ -1176,7 +1257,7 @@ Bool Image::convertRGBtoRGBA8(Rgb colorKey)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RGBA_U8;
+	m_pixelFormat = PF_RGBA_8;
 
 	setDirty();
 	return True;
@@ -1194,7 +1275,7 @@ Bool Image::convertRGBAtoRGB8()
 	if (isComplex())
 		O3D_ERROR(E_InvalidFormat("Complex picture are not supported at this time"));
 
-	if ((m_pixelFormat != PF_RGBA_U8) && (m_pixelFormat != PF_RGBA_F32))
+	if ((m_pixelFormat != PF_RGBA_8) && (m_pixelFormat != PF_RGBA_F32))
 		O3D_ERROR(E_InvalidFormat("Pixel format must be RGBA_U8 or RGBA_F32"));
 
 	if (!m_data.get() || !m_data->data || !m_width || !m_height)
@@ -1205,7 +1286,7 @@ Bool Image::convertRGBAtoRGB8()
 	UInt8 *data = new UInt8[m_size];
 	UInt32 i,j = 0;
 
-	if (m_pixelFormat == PF_RGBA_U8)
+	if (m_pixelFormat == PF_RGBA_8)
 	{
 		UInt8 *src = m_data->data;
 
@@ -1233,7 +1314,7 @@ Bool Image::convertRGBAtoRGB8()
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RGB_U8;
+	m_pixelFormat = PF_RGB_8;
 
 	setDirty();
 	return True;
@@ -1275,7 +1356,7 @@ Bool Image::swapRB()
 	if (isCompressed())
 		O3D_ERROR(E_InvalidFormat("Compressed picture are not supported at this time"));
 
-	if ((m_pixelFormat != PF_RGB_U8) && (m_pixelFormat != PF_RGBA_U8) &&
+	if ((m_pixelFormat != PF_RGB_8) && (m_pixelFormat != PF_RGBA_8) &&
 		(m_pixelFormat != PF_RGB_F32) && (m_pixelFormat != PF_RGBA_F32))
 		O3D_ERROR(E_InvalidFormat("Pixel format must be RGB or RGBA"));
 
@@ -1287,7 +1368,7 @@ Bool Image::swapRB()
 
 	UInt32 numComp = getNumComponents();
 
-	if ((m_pixelFormat == PF_RGB_U8) || (m_pixelFormat == PF_RGBA_U8))
+	if ((m_pixelFormat == PF_RGB_8) || (m_pixelFormat == PF_RGBA_8))
 	{
 		UInt8 *data = m_data->data;
 		UInt8 buf;
@@ -1390,16 +1471,16 @@ Bool Image::allocate(
 	switch (numComponents)
 	{
 		case 1:
-			m_pixelFormat = PF_RED_U8;
+			m_pixelFormat = PF_RED_8;
 			break;
 		case 2:
-			m_pixelFormat = PF_RG_U8;
+            m_pixelFormat = PF_RG_8;
 			break;
 		case 3:
-			m_pixelFormat = PF_RGB_U8;
+			m_pixelFormat = PF_RGB_8;
 			break;
 		case 4:
-			m_pixelFormat = PF_RGBA_U8;
+			m_pixelFormat = PF_RGBA_8;
 			break;
 		default:
 			break;
@@ -1431,7 +1512,7 @@ Bool Image::loadBuffer(
 
 	UInt32 estimateSize = cx * cy * (getBpp() >> 3);
 	if (estimateSize != _size) {
-		m_pixelFormat = PF_RGBA_U8;
+		m_pixelFormat = PF_RGBA_8;
 		O3D_ERROR(E_InvalidFormat("Buffer size or pixel format is incorrect"));
 	}
 
@@ -1484,7 +1565,7 @@ void Image::attach(UInt32 w, UInt32 h, UInt32 size, PixelFormat pf, UInt8* data)
 
 	UInt32 estimateSize = w * h * (getBpp() >> 3);
 	if (estimateSize != size) {
-		m_pixelFormat = PF_RGBA_U8;
+		m_pixelFormat = PF_RGBA_8;
 		O3D_ERROR(E_InvalidFormat("Buffer size or pixel format is incorrect"));
 	}
 
@@ -1543,4 +1624,3 @@ Bool Image::bindVolumeLayer(UInt32 layer)
 	}
 	return False;
 }
-

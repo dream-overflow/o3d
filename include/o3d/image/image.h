@@ -362,10 +362,10 @@ public:
 	Bool isRgb() const;
 
 	//! Is color picture with 8 bits unsigned integer components.
-	//! It includes PF_RED_U8, PF_RG_U8, PF_RGB_U8, PF_RGBA_U8.
+    //! It includes PF_RED_8, PF_RG_8, PF_RGB_8, PF_RGBA_8 and U8 variantes.
 	Bool isColorU8() const;
 	//! Is color picture with 32 bits float components.
-	//! It includes PF_RED_F32, PF_RG_F32, PF_RGB_F32, PF_RGBA_F32.
+    //! It includes PF_RED_F32, PF_RG_F32, PF_RGB_F32, PF_RGBA_F32.
 	Bool isColorF32() const;
 
 	//-----------------------------------------------------------------------------------

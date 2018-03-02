@@ -18,7 +18,7 @@ using namespace o3d;
 // Constructor
 Dds::Dds(const String& filename) :
 	m_size(0),
-	m_Format(PF_RGBA_U8),
+	m_Format(PF_RGBA_8),
 	m_PrimHeight(0),
 	m_PrimWidth(0),
 	m_Depth(0),
@@ -38,7 +38,7 @@ Dds::Dds(const String& filename) :
 
 Dds::Dds(InStream &is) :
 	m_size(0),
-	m_Format(PF_RGBA_U8),
+	m_Format(PF_RGBA_8),
 	m_PrimHeight(0),
 	m_PrimWidth(0),
 	m_Depth(0),
@@ -101,7 +101,7 @@ void Dds::destroy()
 		m_Depth =
 		m_Offset = 0;
 
-	m_Format = PF_RGBA_U8;
+	m_Format = PF_RGBA_8;
 
 	m_volume = m_cubemap = m_compressed = False;
 	deleteArray(m_pData);
@@ -146,7 +146,7 @@ void Dds::getInfo(
 
 		switch (m_Format)
 		{
-		case PF_RED_U8:
+		case PF_RED_8:
 			// 8 bits
 			if (m_NumMipMap)
 			{
@@ -160,7 +160,7 @@ void Dds::getInfo(
 			}
 			break;
 
-		case PF_RG_U8:
+		case PF_RG_8:
 		//case GL_RGB5_A1:
 		//case GL_RGB5:
 		//case GL_RGBA4:
@@ -177,7 +177,7 @@ void Dds::getInfo(
 			}
 			break;
 
-		case PF_RGB_U8:
+		case PF_RGB_8:
 			// 24 bits
 			if (m_NumMipMap)
 			{
@@ -191,7 +191,7 @@ void Dds::getInfo(
 			}
 			break;
 
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
 			// 32 bits
 			if (m_NumMipMap)
 			{
@@ -254,7 +254,7 @@ void Dds::getInfo(
 
 		switch (m_Format)
 		{
-		case PF_RED_U8:
+		case PF_RED_8:
 			// 8 bits
 			for (i = 0 ; i < m_CurrentMipMap ; i++)
 				skipSize += o3d::max((UInt32)1,(m_PrimWidth >> i)) *
@@ -262,7 +262,7 @@ void Dds::getInfo(
 					o3d::max((UInt32)1,(m_Depth >> i));
 			break;
 
-		case PF_RG_U8:
+		case PF_RG_8:
 		//case GL_RGB5_A1:
 		//case GL_RGB5:
 		//case GL_RGBA4:
@@ -273,7 +273,7 @@ void Dds::getInfo(
 					o3d::max((UInt32)1,(m_Depth >> i)) * 2;
 			break;
 
-		case PF_RGB_U8:
+		case PF_RGB_8:
 			// 24 bits
 			for (i = 0 ; i < m_CurrentMipMap ; i++)
 				skipSize += o3d::max((UInt32)1,(m_PrimWidth >> i)) *
@@ -281,7 +281,7 @@ void Dds::getInfo(
 					o3d::max((UInt32)1,(m_Depth >> i)) * 3;
 			break;
 
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
 			// 32 bits
 			for (i = 0 ; i < m_CurrentMipMap ; i++)
 				skipSize += o3d::max((UInt32)1,(m_PrimWidth >> i)) *
@@ -674,12 +674,12 @@ Bool Dds::load(InStream &is)
 				(surfaceFormatHeader.pixelformat.alphamask == 0xff) &&
 				surfaceFormatHeader.pixelformat.alpha)
 
-				m_Format = PF_RED_U8;
+				m_Format = PF_RED_8;
 			// luminance 8 only
 			else if ((surfaceFormatHeader.pixelformat.rgbmask[0] == 0xff) &&
 					 (surfaceFormatHeader.pixelformat.rgbmask[1] == 0) &&
 					 (surfaceFormatHeader.pixelformat.rgbmask[2] == 0))
-				m_Format = PF_RED_U8;
+				m_Format = PF_RED_8;
 
 			else
                 O3D_ERROR(E_InvalidFormat("Invalid surface format"));
@@ -693,7 +693,7 @@ Bool Dds::load(InStream &is)
 					(surfaceFormatHeader.pixelformat.rgbmask[1] == 0) &&
 					(surfaceFormatHeader.pixelformat.rgbmask[2] == 0) &&
 					(surfaceFormatHeader.pixelformat.alphamask == 0xff))
-					m_Format = PF_RG_U8;
+					m_Format = PF_RG_8;
 				// RGB5 A1
 				/*else if ((surfaceFormatHeader.pixelformat.rgbmask[0] == 0x7C00) &&
 						 (surfaceFormatHeader.pixelformat.rgbmask[1] == 0x3E0) &&
@@ -727,7 +727,7 @@ Bool Dds::load(InStream &is)
 					(surfaceFormatHeader.pixelformat.rgbmask[0] == 0xFF0000) &&
 					(surfaceFormatHeader.pixelformat.rgbmask[1] == 0xFF00) &&
 					(surfaceFormatHeader.pixelformat.rgbmask[2] == 0xFF))
-					m_Format = PF_RGB_U8;
+					m_Format = PF_RGB_8;
 				else
                     O3D_ERROR(E_InvalidFormat("Invalid surface format"));
 			break;
@@ -739,7 +739,7 @@ Bool Dds::load(InStream &is)
 					(surfaceFormatHeader.pixelformat.rgbmask[1] == 0xFF00) &&
 					(surfaceFormatHeader.pixelformat.rgbmask[2] == 0xFF) &&
 					(surfaceFormatHeader.pixelformat.alphamask  == 0xFF000000))
-					m_Format = PF_RGBA_U8;
+					m_Format = PF_RGBA_8;
 				else
                     O3D_ERROR(E_InvalidFormat("Invalid surface format"));
 			break;
@@ -814,7 +814,7 @@ Bool Dds::load(InStream &is)
 
 		switch (m_Format)
 		{
-			case PF_RG_U8:
+			case PF_RG_8:
 				// AL to LA
 				for (i = 0 ; i < m_size ; i += 2)
 				{
@@ -824,7 +824,7 @@ Bool Dds::load(InStream &is)
 				}
 				break;
 
-			case PF_RGB_U8:
+			case PF_RGB_8:
 				// BGR to RGB
 				for (i = 0 ; i < m_size ; i += 3)
 				{
@@ -834,7 +834,7 @@ Bool Dds::load(InStream &is)
 				}
 				break;
 
-			case PF_RGBA_U8:
+			case PF_RGBA_8:
 				// BGRA to RGBA
 				for (i = 0 ; i < m_size ; i += 4)
 				{

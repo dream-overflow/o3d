@@ -81,16 +81,16 @@ PixelFormat Png::getPixelFormat() const
 	switch (m_bpp)
 	{
 		case 1:
-			return PF_RED_U8;
+			return PF_RED_8;
 		case 2:
-			return PF_RG_U8;
+			return PF_RG_8;
 		case 3:
-			return PF_RGB_U8;
+			return PF_RGB_8;
 		case 4:
-			return PF_RGBA_U8;
+			return PF_RGBA_8;
 		default:
 			O3D_ERROR(E_InvalidFormat("Unsupported pixel format"));
-			return PF_RGBA_U8;
+			return PF_RGBA_8;
 	}
 }
 
@@ -104,9 +104,9 @@ Bool Png::load(InStream &is, PixelFormat pixelFormat)
 {
 	switch (pixelFormat)
 	{
-		case PF_RGB_U8:
+		case PF_RGB_8:
             return loadRgb24(is);
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
             return loadRgba32(is);
 		default:
 			O3D_ERROR(E_InvalidParameter("Unsupported convert format"));
@@ -721,22 +721,22 @@ Bool Image::savePng(const String &filename)
 	switch (tmpPicture.getNumComponents())
 	{
 		case 1:
-			if (tmpPicture.getPixelFormat() != PF_RED_U8)
+			if (tmpPicture.getPixelFormat() != PF_RED_8)
 				tmpPicture.convertToR8();
 			color_type = PNG_COLOR_TYPE_GRAY;
 			break;
 		case 2:
-			if (tmpPicture.getPixelFormat() != PF_RG_U8)
+			if (tmpPicture.getPixelFormat() != PF_RG_8)
 				tmpPicture.convertToRG8();
 			color_type = PNG_COLOR_TYPE_GRAY_ALPHA;
 			break;
 		case 3:
-			if (tmpPicture.getPixelFormat() != PF_RGB_U8)
+			if (tmpPicture.getPixelFormat() != PF_RGB_8)
 				tmpPicture.convertToRGB8();
 			color_type = PNG_COLOR_TYPE_RGB;
 			break;
 		case 4:
-			if (tmpPicture.getPixelFormat() != PF_RGBA_U8)
+			if (tmpPicture.getPixelFormat() != PF_RGBA_8)
 				tmpPicture.convertToRGBA8();
 			color_type = PNG_COLOR_TYPE_RGB_ALPHA;
 			break;
@@ -813,7 +813,7 @@ Bool Image::saveRgbPng(const String &filename)
 
 	Image tmpPicture(*this);
 
-	if ((tmpPicture.getPixelFormat() != PF_RGB_U8) && (tmpPicture.getPixelFormat() != PF_RGBA_U8))
+	if ((tmpPicture.getPixelFormat() != PF_RGB_8) && (tmpPicture.getPixelFormat() != PF_RGBA_8))
 	{
 		if (tmpPicture.isAlpha())
 			tmpPicture.convertToRGBA8();

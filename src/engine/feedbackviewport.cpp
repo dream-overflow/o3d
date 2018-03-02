@@ -35,7 +35,7 @@ FeedbackViewPort::FeedbackViewPort(BaseObject *parent,
 		m_texture(this, texture)
 {
 	// capture the back buffer
-	m_feedback.create(GL_BACK, PF_RGBA_U8);
+    m_feedback.create(GL_BACK, texture->getPixelFormat()); // PF_RGBA_8);
 }
 
 // virtual destructor

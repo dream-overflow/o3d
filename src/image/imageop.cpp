@@ -353,10 +353,10 @@ Bool Image::loadWithColor(
 	switch (numComponents)
 	{
 		case 3:
-			m_pixelFormat = PF_RGB_U8;
+			m_pixelFormat = PF_RGB_8;
 			break;
 		case 4:
-			m_pixelFormat = PF_RGBA_U8;
+			m_pixelFormat = PF_RGBA_8;
 			break;
 		default:
 			break;
@@ -732,7 +732,7 @@ Bool Image::toNormalMap(Float scale, Bool wrap)
 	genNormalMap(data, scale, wrap);
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RGBA_U8;
+	m_pixelFormat = PF_RGBA_8;
 
 	setDirty();
 	return True;
@@ -764,7 +764,7 @@ Image* Image::retNormalMap(Float scale, Bool wrap)
 
 	genNormalMap(nmap->m_data->data, scale, wrap);
 
-	nmap->m_pixelFormat = PF_RGBA_U8;
+	nmap->m_pixelFormat = PF_RGBA_8;
 	nmap->setDirty();
 
 	return nmap;
@@ -773,7 +773,7 @@ Image* Image::retNormalMap(Float scale, Bool wrap)
 // Convert to LuminanceAlpha
 Bool Image::convertToRG8(Bool grayScale)
 {
-	if (m_pixelFormat == PF_RG_U8)
+	if (m_pixelFormat == PF_RG_8)
 		return True;
 
 	if (isColorU8())
@@ -788,7 +788,7 @@ Bool Image::convertToRG8(Bool grayScale)
 // Convert to luminance bitmap
 Bool Image::convertToR8(Bool grayScale)
 {
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 		return True;
 
 	if (isColorU8())
@@ -805,7 +805,7 @@ Bool Image::convertX8toR8(Bool grayScale)
 	if (!m_state)
 		O3D_ERROR(E_InvalidPrecondition("Picture must be valid"));
 
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 		return True;
 
 	if (isCompressed())
@@ -889,7 +889,7 @@ Bool Image::convertX8toR8(Bool grayScale)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RED_U8;
+	m_pixelFormat = PF_RED_8;
 
 	setDirty();
 	return True;
@@ -900,7 +900,7 @@ Bool Image::convertX8toRG8(Bool grayScale)
 	if (!m_state)
 		O3D_ERROR(E_InvalidPrecondition("Picture must be valid"));
 
-	if (m_pixelFormat == PF_RG_U8)
+	if (m_pixelFormat == PF_RG_8)
 		return True;
 
 	UInt32 numComp = getNumComponents();
@@ -980,7 +980,7 @@ Bool Image::convertX8toRG8(Bool grayScale)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RG_U8;
+	m_pixelFormat = PF_RG_8;
 
 	setDirty();
 	return True;
@@ -988,7 +988,7 @@ Bool Image::convertX8toRG8(Bool grayScale)
 
 Bool Image::convertToA8(Bool grayScale)
 {
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 		return True;
 
 	if (isColorU8())
@@ -1006,7 +1006,7 @@ Bool Image::convertX8toA8(Bool grayScale)
 	if (!m_state)
 		O3D_ERROR(E_InvalidPrecondition("Picture must be valid"));
 
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 		return True;
 
 	if (isCompressed())
@@ -1078,7 +1078,7 @@ Bool Image::convertX8toA8(Bool grayScale)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RED_U8;
+	m_pixelFormat = PF_RED_8;
 
 	setDirty();
 	return True;
@@ -1089,7 +1089,7 @@ Bool Image::convertXF32toA8(Bool grayScale)
 	if (!m_state)
 		O3D_ERROR(E_InvalidPrecondition("Picture must be valid"));
 
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 		return True;
 
 	if (isCompressed())
@@ -1161,7 +1161,7 @@ Bool Image::convertXF32toA8(Bool grayScale)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RED_U8;
+	m_pixelFormat = PF_RED_8;
 
 	setDirty();
 	return True;
@@ -1172,7 +1172,7 @@ Bool Image::convertXF32toR8(Bool grayScale)
 	if (!m_state)
 		O3D_ERROR(E_InvalidPrecondition("Picture must be valid"));
 
-	if (m_pixelFormat == PF_RED_U8)
+	if (m_pixelFormat == PF_RED_8)
 		return True;
 
 	if (isCompressed())
@@ -1256,7 +1256,7 @@ Bool Image::convertXF32toR8(Bool grayScale)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RED_U8;
+	m_pixelFormat = PF_RED_8;
 
 	setDirty();
 	return True;
@@ -1267,7 +1267,7 @@ Bool Image::convertXF32toRG8(Bool grayScale)
 	if (!m_state)
 		O3D_ERROR(E_InvalidPrecondition("Picture must be valid"));
 
-	if (m_pixelFormat == PF_RG_U8)
+	if (m_pixelFormat == PF_RG_8)
 		return True;
 
 	UInt32 numComp = getNumComponents();
@@ -1347,7 +1347,7 @@ Bool Image::convertXF32toRG8(Bool grayScale)
 	}
 
 	m_data = new ImageData(data);
-	m_pixelFormat = PF_RG_U8;
+	m_pixelFormat = PF_RG_8;
 
 	setDirty();
 	return True;

@@ -23,7 +23,7 @@ Texture2DFeedback::Texture2DFeedback(Context *context) :
 	m_readBuffer(0),
 	m_size(0),
 	m_next(0),
-	m_pixelFormat(PF_RGBA_U8),
+	m_pixelFormat(PF_RGBA_8),
 	m_format(TF_RGBA),
 	m_type(DATA_UNSIGNED_BYTE),
     m_mapped(nullptr)
@@ -82,7 +82,7 @@ void Texture2DFeedback::release()
 		m_buffersId[1] = 0;
 	}
 
-	m_pixelFormat = PF_RGBA_U8;
+	m_pixelFormat = PF_RGBA_8;
 
 	m_format = TF_RGBA;
 	m_type = DATA_UNSIGNED_BYTE;

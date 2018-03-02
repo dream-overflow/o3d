@@ -82,7 +82,7 @@ void Picking::preReDraw()
     if (m_mode == COLOR) {
 		// create it for the first time
         if (!m_fbo.isValid()) {
-			m_fbo.create((UInt32)m_size.x(), (UInt32)m_size.y(), PF_RGBA_U8, True);
+            m_fbo.create((UInt32)m_size.x(), (UInt32)m_size.y(), PF_RGBA_8, True);
             m_fbo.attachColorRender(FrameBuffer::COLOR_ATTACHMENT0);
 			m_fbo.attachDepthStencilRender(FrameBuffer::DEPTH_U32);
 			m_fbo.isCompleteness();
@@ -93,6 +93,9 @@ void Picking::preReDraw()
 		// define the viewport size as picking region size
 		getScene()->getContext()->setViewPort(0, 0, (Int32)m_size.x(), (Int32)m_size.y());
 		m_oldBackground = getScene()->getContext()->setBackgroundColor(0.f, 0.f, 0.f, 0.f);
+
+        // no blending
+        getScene()->getContext()->blending().setDefaultFunc();
 
         m_fbo.clearColor(FrameBuffer::COLOR_ATTACHMENT0, Color(0.f, 0.f, 0.f, 0.f));
         m_fbo.clearDepth(1.0f);

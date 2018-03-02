@@ -28,8 +28,12 @@ PixelFormat GBuffer::bufferFormatToPixelFormat(BufferType buffer, BufferFormat f
         case AMBIENT_BUFFER:
         case DIFFUSE_BUFFER:
         case SPECULAR_BUFFER:
-            if (format == FORMAT_8UI) {
+            if (format == FORMAT_8) {
+                return PF_RGBA_8;
+            } else if (format == FORMAT_8UI) {
                 return PF_RGBA_U8;
+            } else if (format == FORMAT_8I) {
+                return PF_RGBA_I8;
             } else if (format == FORMAT_16F) {
                 return PF_RGBA_F16;
             } else if (format == FORMAT_32F) {
@@ -38,8 +42,12 @@ PixelFormat GBuffer::bufferFormatToPixelFormat(BufferType buffer, BufferFormat f
             break;
 
         case POSITION_BUFFER:
-            if (format == FORMAT_8UI) {
+            if (format == FORMAT_8) {
+                return PF_RGB_8;
+            } else if (format == FORMAT_8UI) {
                 return PF_RGB_U8;
+            } else if (format == FORMAT_8I) {
+                return PF_RGB_I8;
             } else if (format == FORMAT_16F) {
                 return PF_RGB_F16;
             } else if (format == FORMAT_32F) {
@@ -48,8 +56,12 @@ PixelFormat GBuffer::bufferFormatToPixelFormat(BufferType buffer, BufferFormat f
             break;
 
         case NORMAL_BUFFER:
-            if (format == FORMAT_8UI) {
+            if (format == FORMAT_8) {
+                return PF_RGBA_8;
+            } else if (format == FORMAT_8UI) {
                 return PF_RGBA_U8;
+            } else if (format == FORMAT_8UI) {
+                return PF_RGBA_I8;
             } else if (format == FORMAT_16F) {
                 return PF_RGBA_F16;
             } else if (format == FORMAT_32F) {
@@ -74,7 +86,7 @@ PixelFormat GBuffer::bufferFormatToPixelFormat(BufferType buffer, BufferFormat f
             break;
     }
 
-    return PF_RGBA_U8;
+    return PF_RGBA_8;
 }
 
 GBuffer::GBuffer(BaseObject *parent) :
@@ -172,15 +184,15 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[AMBIENT_BUFFER].type = AMBIENT_BUFFER;
             m_buffers[AMBIENT_BUFFER].actif = True;
-            m_buffers[AMBIENT_BUFFER].format = FORMAT_8UI;
+            m_buffers[AMBIENT_BUFFER].format = FORMAT_8;
 
             m_buffers[DIFFUSE_BUFFER].type = DIFFUSE_BUFFER;
             m_buffers[DIFFUSE_BUFFER].actif = True;
-            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8UI;
+            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8;
 
             m_buffers[SPECULAR_BUFFER].type = SPECULAR_BUFFER;
             m_buffers[SPECULAR_BUFFER].actif = True;
-            m_buffers[SPECULAR_BUFFER].format = FORMAT_8UI;
+            m_buffers[SPECULAR_BUFFER].format = FORMAT_8;
 
             m_buffers[NORMAL_BUFFER].type = NORMAL_BUFFER;
             m_buffers[NORMAL_BUFFER].actif = True;
@@ -222,15 +234,15 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[AMBIENT_BUFFER].type = AMBIENT_BUFFER;
             m_buffers[AMBIENT_BUFFER].actif = True;
-            m_buffers[AMBIENT_BUFFER].format = FORMAT_8UI;
+            m_buffers[AMBIENT_BUFFER].format = FORMAT_8;//UI;
 
             m_buffers[DIFFUSE_BUFFER].type = DIFFUSE_BUFFER;
             m_buffers[DIFFUSE_BUFFER].actif = True;
-            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8UI;
+            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8;//UI;
 
             m_buffers[SPECULAR_BUFFER].type = SPECULAR_BUFFER;
             m_buffers[SPECULAR_BUFFER].actif = True;
-            m_buffers[SPECULAR_BUFFER].format = FORMAT_8UI;
+            m_buffers[SPECULAR_BUFFER].format = FORMAT_8;//UI;
 
             m_buffers[NORMAL_BUFFER].type = NORMAL_BUFFER;
             m_buffers[NORMAL_BUFFER].actif = True;
@@ -274,15 +286,15 @@ void GBuffer::setProfile(GBuffer::Profiles profile)
 
             m_buffers[AMBIENT_BUFFER].type = AMBIENT_BUFFER;
             m_buffers[AMBIENT_BUFFER].actif = True;
-            m_buffers[AMBIENT_BUFFER].format = FORMAT_8UI;
+            m_buffers[AMBIENT_BUFFER].format = FORMAT_8;//UI;
 
             m_buffers[DIFFUSE_BUFFER].type = DIFFUSE_BUFFER;
             m_buffers[DIFFUSE_BUFFER].actif = True;
-            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8UI;
+            m_buffers[DIFFUSE_BUFFER].format = FORMAT_8;//UI;
 
             m_buffers[SPECULAR_BUFFER].type = SPECULAR_BUFFER;
             m_buffers[SPECULAR_BUFFER].actif = True;
-            m_buffers[SPECULAR_BUFFER].format = FORMAT_8UI;
+            m_buffers[SPECULAR_BUFFER].format = FORMAT_8;//UI;
 
             m_buffers[NORMAL_BUFFER].type = NORMAL_BUFFER;
             m_buffers[NORMAL_BUFFER].actif = True;

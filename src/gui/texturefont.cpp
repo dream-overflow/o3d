@@ -230,7 +230,7 @@ Bool TextureFont::loadTexture(const String &filename)
 		return False;
 
 	// take luminance or rgb format
-	if ((pic.getPixelFormat() != PF_RED_U8) || !pic.isRgb())
+	if ((pic.getPixelFormat() != PF_RED_8) || !pic.isRgb())
 		return False;
 
 	m_textureGlyph.texture = new Texture2D(this, pic);

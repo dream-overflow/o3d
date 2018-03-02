@@ -297,7 +297,7 @@ protected:
 	UInt32 m_height;       //!< Height of the primary texture level. 1 for 1d texture.
 	UInt32 m_depth;        //!< Depth for a multi layer (3d) texture. 1 for 1d/2d texture.
 
-	PixelFormat m_pixelFormat; //!< Pixel format (default:PF_RGBA_U8).
+    PixelFormat m_pixelFormat; //!< Pixel format (default:PF_RGBA_8).
 
     UInt32 m_minLevel;     //!< Minimal mipmap level.
 	UInt32 m_maxLevel;     //!< Maximal mipmap level (default log2(max(width,height)).

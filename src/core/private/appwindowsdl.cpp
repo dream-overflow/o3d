@@ -39,8 +39,8 @@ void AppWindow::setTitle(const String &title)
 
 void AppWindow::setIcon(const Image &icon)
 {
-    if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8)) {
-		O3D_ERROR(E_InvalidFormat("Icon must be PF_RGB_U8 or PF_RGBA_U8"));
+    if ((icon.getPixelFormat() != PF_RGB_8) && (icon.getPixelFormat() != PF_RGBA_8)) {
+        O3D_ERROR(E_InvalidFormat("Icon must be PF_RGB_8 or PF_RGBA_8"));
     }
 
     if ((m_HDC != NULL_HDC) && icon.isValid()) {
@@ -67,7 +67,7 @@ void AppWindow::setIcon(const Image &icon)
 		UInt32 sdlColorkey;
 
 		// Get the first pixel color as transparent code
-        if (icon.getPixelFormat() == PF_RGB_U8) {
+        if (icon.getPixelFormat() == PF_RGB_8) {
 			//UInt8 r, g, b;
 
 			//SDL_GetRGB(0, surface->format, &r, &g, &b);

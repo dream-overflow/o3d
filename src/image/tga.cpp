@@ -33,17 +33,16 @@ Bool Tga::checkFormat(InStream &is)
 
 PixelFormat Tga::getPixelFormat() const
 {
-	switch (m_bpp)
-	{
+    switch (m_bpp) {
 		case 1:
-			return PF_RED_U8;
+            return PF_RED_8;
 		case 3:
-			return PF_RGB_U8;
+            return PF_RGB_8;
 		case 4:
-            return PF_RGBA_U8;
+            return PF_RGBA_8;
 		default:
 			O3D_ERROR(E_InvalidFormat("Unsupported pixel format"));
-			return PF_RGBA_U8;
+            return PF_RGBA_8;
 	}
 }
 
@@ -54,15 +53,14 @@ Bool Tga::load(InStream &is)
 
 Bool Tga::load(InStream &is, PixelFormat pixelFormat)
 {
-	switch (pixelFormat)
-	{
-	case PF_RGB_U8:
-        return loadRgb24(is);
-	case PF_RGBA_U8:
-        return loadRgba32(is);
-	default:
-		O3D_ERROR(E_InvalidParameter("Unsupported convert format"));
-		return False;
+    switch (pixelFormat) {
+        case PF_RGB_8:
+            return loadRgb24(is);
+        case PF_RGBA_8:
+            return loadRgba32(is);
+        default:
+            O3D_ERROR(E_InvalidParameter("Unsupported convert format"));
+            return False;
 	}
 }
 
@@ -1140,4 +1138,3 @@ Bool Tga::hFlip()
 	deleteArray(exdata);
 	return True;
 }
-

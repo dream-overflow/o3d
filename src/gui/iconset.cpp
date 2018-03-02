@@ -212,7 +212,7 @@ UInt32 IconSet::browseSizeFolder(const String &path, const Vector2i &size)
 
 	// create the texture with a black background
 	ArrayUInt8 black((UInt8)0, width*height*4, 0);
-	texture->create(False, width, height, PF_RGBA_U8, black.getData(), PF_RGBA_U8, True);
+	texture->create(False, width, height, PF_RGBA_8, black.getData(), PF_RGBA_8, True);
 	black.destroy();
 
 	T_IconDefMap iconDefMap;
@@ -321,7 +321,7 @@ IconSet::IconDef IconSet::generateIcon(IconSubSet &subSet,
 		String &iconName)
 {
     InStream *is = FileManager::instance()->openInStream(filename);
-    Image picture(*is, PF_RGBA_U8);
+    Image picture(*is, PF_RGBA_8);
 
     String path;
     FileManager::getFileNameAndPath(filename, iconName, path);

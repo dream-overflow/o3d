@@ -477,7 +477,7 @@ void HeightmapSplatting::draw()
 
         if ((m_fboColorTex->getWidth() != UInt32(lFboSize[X])) ||
             (m_fboColorTex->getHeight() != UInt32(lFboSize[Y]))) {
-            m_fboColorTex->create(False, lFboSize[X], lFboSize[Y], PF_RGBA_U8);
+            m_fboColorTex->create(False, lFboSize[X], lFboSize[Y], PF_RGBA_8);
         }
 
         if ((m_fboDepthTex->getWidth() != UInt32(lFboSize[X])) ||
@@ -490,11 +490,11 @@ void HeightmapSplatting::draw()
 		if (!isEnabled(OPT_STATIC_LIGHTNING) &&
             ((m_fboNormalTex->getWidth() != UInt32(lFboSize[X])) ||
             (m_fboNormalTex->getHeight() != UInt32(lFboSize[Y])))) {
-            m_fboNormalTex->create(False, lFboSize.x(), lFboSize.y(), PF_RGBA_U8);
+            m_fboNormalTex->create(False, lFboSize.x(), lFboSize.y(), PF_RGBA_8);
 		}
 
         if (m_fbo.getDimension() != lFboSize) {
-            m_fbo.create(lFboSize.x(), lFboSize.y(), PF_RGBA_U8, True);
+            m_fbo.create(lFboSize.x(), lFboSize.y(), PF_RGBA_8, True);
             m_fbo.attachTexture2D(m_fboColorTex.get(), FrameBuffer::COLOR_ATTACHMENT0);
 
             if (!isEnabled(OPT_STATIC_LIGHTNING)) {

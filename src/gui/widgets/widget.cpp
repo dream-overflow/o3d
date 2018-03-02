@@ -866,14 +866,14 @@ void Widget::processCache(Bool clear)
 		m_textureTopRightCoord.y() = (Float)size.y() / textureSize.y();
 
 		// fill the texture cache
-        FrameBuffer *pFBO = getGui()->findFBO(textureSize.x(), textureSize.y(), PF_RGBA_U8);
+        FrameBuffer *pFBO = getGui()->findFBO(textureSize.x(), textureSize.y(), PF_RGBA_8);
         O3D_ASSERT(pFBO != nullptr);
 
 		pFBO->bindBuffer();
 
 		// create/resize the texture
         if ((m_texture.getWidth() != (UInt32)textureSize.x()) || (m_texture.getHeight() != (UInt32)textureSize.y())) {
-            if (!m_texture.create(False, textureSize.x(), textureSize.y(), PF_RGBA_U8, True)) {
+            if (!m_texture.create(False, textureSize.x(), textureSize.y(), PF_RGBA_8, True)) {
 				return;
             }
 		}

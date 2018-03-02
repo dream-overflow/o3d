@@ -26,7 +26,7 @@ using namespace o3d;
 FrameBuffer::FrameBuffer(Context *context) :
     m_context(context),
 	m_bufferId(O3D_UNDEFINED),
-	m_colorFormat(PF_RGBA_U8),
+	m_colorFormat(PF_RGBA_8),
 	m_internalFormat(0)
 {
     O3D_ASSERT(m_context != nullptr);
@@ -89,7 +89,7 @@ void FrameBuffer::create(UInt32 width, UInt32 height, Bool dontUnbind)
 
 	m_dimension.set(width, height);
 	
-	m_colorFormat = PF_RGBA_U8;
+	m_colorFormat = PF_RGBA_8;
 	m_internalFormat = 0;
 
     m_context->bindFrameBuffer(m_bufferId);
@@ -150,7 +150,7 @@ void FrameBuffer::release()
 		}
 	}
 
-	m_colorFormat = PF_RGBA_U8;
+	m_colorFormat = PF_RGBA_8;
 	m_internalFormat = 0;
 	
     m_context->bindFrameBuffer(0);

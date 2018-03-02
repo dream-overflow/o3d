@@ -615,7 +615,7 @@ Bool TrueTypeFont::generateTexture(UInt32 height)
 
 		// create the texture with a black background
 		ArrayUInt8 black((UInt8)0, width*width, 0);
-		textureGlyph.texture->create(False, width, width, PF_RED_U8, black.getData(), PF_RED_U8, True);
+		textureGlyph.texture->create(False, width, width, PF_RED_8, black.getData(), PF_RED_8, True);
 		black.destroy();
 
 //		FT_GlyphSlot slot = ((FT_Face)m_pFace)->glyph; not used
@@ -660,7 +660,7 @@ Bool TrueTypeFont::generateTexture(UInt32 height)
 
 		// create the texture with a black background
         ArrayUInt8 black((UInt8)0, width*width, 0);
-		textureGlyph.texture->create(False, width, width, PF_RED_U8, black.getData(), PF_RED_U8, True);
+		textureGlyph.texture->create(False, width, width, PF_RED_8, black.getData(), PF_RED_8, True);
 		black.destroy();
 #if 0
 		// full of black (for debug)

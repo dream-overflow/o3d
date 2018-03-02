@@ -138,7 +138,7 @@ void PCLODDebugLabel::mtUpdateContent(
 		if ((Int32(m_pTexture->getWidth()) != _pFbo->getDimension()[X]) ||
 			(Int32(m_pTexture->getHeight()) != _pFbo->getDimension()[Y]))
 		{
-			m_pTexture->create(False, _pFbo->getDimension()[X], _pFbo->getDimension()[Y], PF_RGB_U8);
+			m_pTexture->create(False, _pFbo->getDimension()[X], _pFbo->getDimension()[Y], PF_RGB_8);
 			setScreenSize(_pFbo->getDimension()[X], _pFbo->getDimension()[Y]);
 		}
 

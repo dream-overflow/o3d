@@ -715,7 +715,7 @@ void PCLODTextureManager::init()
         m_text = getTerrain()->getCurrentConfigs().getText2D();
 
         m_text->setTextHeight(12);
-        m_pFrameBuffer->create(128, 64, PF_RGB_U8);
+        m_pFrameBuffer->create(128, 64, PF_RGB_8);
     }
 }
 

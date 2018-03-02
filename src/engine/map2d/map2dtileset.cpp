@@ -422,7 +422,7 @@ Map2dTileSet::TileDef Map2dTileSet::generateTile(
     FileManager::getFileNameAndPath(fullfilename, tileName, path);
 
     InStream *is = FileManager::instance()->openInStream(fullfilename);
-    Image picture(*is, PF_RGBA_U8);
+    Image picture(*is, PF_RGBA_8);
 
 	tileName.trimRight(".png");
 	tileName.trimRight(".PNG");
@@ -622,7 +622,7 @@ Map2dTileSet::TextureElt Map2dTileSet::addTexture()
 
 	// create the texture with a black background
 	ArrayUInt8 black((UInt8)0, width*height*4, 0);
-	texture->create(False, width, height, PF_RGBA_U8, black.getData(), PF_RGBA_U8, True);
+	texture->create(False, width, height, PF_RGBA_8, black.getData(), PF_RGBA_8, True);
 	black.destroy();
 
 	m_tileSet.textures.push_back(SmartObject<Texture2D>(this, texture));

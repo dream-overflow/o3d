@@ -255,7 +255,7 @@ protected:
 
 		AttachmentElt() :
 			where(COLOR_ATTACHMENT0),
-			pixelFormat(PF_RGBA_U8),
+			pixelFormat(PF_RGBA_8),
 			renderId(O3D_UNDEFINED),
 			dataSize(0) {}
 	};

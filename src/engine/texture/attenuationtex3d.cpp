@@ -116,7 +116,7 @@ void AttenuationTex3D::setAnisotropyLevel()
 // Create the cube map
 Bool AttenuationTex3D::create()
 {
-	Bool create = generateId(PF_RED_U8, m_size, m_size, m_size, 0, 0);
+	Bool create = generateId(PF_RED_8, m_size, m_size, m_size, 0, 0);
 
 	getScene()->getContext()->bindTexture(TEXTURE_3D, m_textureId, True);
 

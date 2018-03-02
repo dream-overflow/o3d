@@ -35,12 +35,12 @@ PixelFormat Bmp::getPixelFormat() const
 	switch (m_bpp)
 	{
 		case 3:
-			return PF_RGB_U8;
+			return PF_RGB_8;
 		case 4:
-            return PF_RGBA_U8;
+            return PF_RGBA_8;
 		default:
 			O3D_ERROR(E_InvalidFormat("Unsupported pixel format"));
-			return PF_RGBA_U8;
+			return PF_RGBA_8;
 	}
 }
 
@@ -53,11 +53,11 @@ Bool Bmp::load(InStream &is, PixelFormat pixelFormat)
 {
 	switch (pixelFormat)
 	{
-		case PF_RGB_U8:
+		case PF_RGB_8:
             return loadRgb24(is);
 			break;
 	
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
             return loadRgba32(is);
 	
 		default:
@@ -819,7 +819,7 @@ Bool Image::saveRgbBmp(const String &filename)
 	if (tmpPicture.isRgb())
 		tmpPicture.swapRB();
 
-	if (tmpPicture.getPixelFormat() != PF_RGB_U8)
+	if (tmpPicture.getPixelFormat() != PF_RGB_8)
 		tmpPicture.convertToRGB8();
 
     FileOutStream *os = FileManager::instance()->openOutStream(filename, FileOutStream::CREATE);

@@ -91,9 +91,9 @@ PixelFormat Gif::getPixelFormat() const
 	switch (m_bpp)
 	{
 		case 3:
-			return PF_RGB_U8;
+			return PF_RGB_8;
 		case 4:
-            return PF_RGBA_U8;
+            return PF_RGBA_8;
 		default:
 			O3D_ERROR(E_InvalidFormat("Unsupported pixel format"));
 	}
@@ -108,9 +108,9 @@ Bool Gif::load(InStream &is, PixelFormat pixelFormat)
 {
 	switch (pixelFormat)
 	{
-		case PF_RGB_U8:
+		case PF_RGB_8:
             return loadRgb24(is);
-		case PF_RGBA_U8:
+		case PF_RGBA_8:
             return loadRgba32(is);
 		default:
 			O3D_ERROR(E_InvalidParameter("Unsupported convert format"));

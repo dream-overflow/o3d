@@ -392,7 +392,7 @@ void AppWindow::setTitle(const String &title)
 
 void AppWindow::setIcon(const Image &icon)
 {
-    if ((icon.getPixelFormat() != PF_RGB_U8) && (icon.getPixelFormat() != PF_RGBA_U8)) {
+    if ((icon.getPixelFormat() != PF_RGB_8) && (icon.getPixelFormat() != PF_RGBA_8)) {
 		O3D_ERROR(E_InvalidFormat("Icon must be RGB888 or RGBA8888"));
     }
 
