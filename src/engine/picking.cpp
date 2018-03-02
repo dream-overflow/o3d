@@ -142,7 +142,7 @@ void Picking::postReDraw()
 		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_DEPTH_COMPONENT, GL_INT, &depth);
 		glReadPixels((GLint)(m_size.x() * 0.5f), (GLint)(m_size.y() * 0.5), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &floatDepth);
 
-        // @todo read buffer from FrameBuffer::ResetReadBuffers();
+        // @todo read buffer from FrameBuffer::resetReadBuffers();
 		m_fbo.unbindBuffer();
 		glReadBuffer(GL_BACK);
 
@@ -171,7 +171,10 @@ void Picking::postReDraw()
 
                 onUnknownHit(id, m_hitPos);
 			}
-		}
+        } else {
+            // no hit occurs
+            onNoHit();
+        }
     } else if (m_mode == HIGHLIGHTING) {
         // hybrid model
         // @todo

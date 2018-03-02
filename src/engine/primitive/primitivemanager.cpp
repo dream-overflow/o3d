@@ -554,6 +554,8 @@ void PrimitiveManager::drawArray(
         getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_vertex);
         getScene()->getContext()->disableVertexAttribArray(m_colorShader.a_color);
     } else if (m_pickingShader.instance.isInUse()) {
+        m_pickingShader.instance.setConstVector3(m_pickingShader.u_scale, scale);
+
         // vertices
         vertices.bindBuffer();
         getScene()->getContext()->vertexAttribArray(m_pickingShader.a_vertex, 3, 0, 0);

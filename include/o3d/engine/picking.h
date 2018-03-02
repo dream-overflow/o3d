@@ -179,6 +179,11 @@ public:
      */
     Signal<UInt32, Vector3> onUnknownHit{this};
 
+    /**
+     * Called when a not hit has occured.
+     */
+    Signal<> onNoHit{this};
+
 private:
 
     Mode m_mode;                //!< current picking state

@@ -2,7 +2,7 @@
 #version 330
 
 uniform mat4 u_modelViewProjectionMatrix;
-uniform uint u_pickingId;
+// layout(location = 0) uniform uint u_picking;
 uniform vec3 u_scale;
 
 layout(location = 0) in vec4 a_vertex;
