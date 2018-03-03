@@ -209,6 +209,25 @@ void STransform::setDirectionZ(const Vector3 &v)
     setDirty();
 }
 
+Vector3 STransform::getPosition() const
+{
+    return m_position;
+}
+
+Quaternion STransform::getRotation() const
+{
+    Quaternion q;
+    q.fromEuler(m_rotation);
+    q.normalize();
+
+    return q;
+}
+
+Vector3 STransform::getScale() const
+{
+    return m_scale;
+}
+
 // update the matrix value
 Bool STransform::update()
 {

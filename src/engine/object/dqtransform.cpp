@@ -23,8 +23,8 @@ void DQTransform::identity()
 	m_matrix4.identity();
 
 	// and its componements
-	m_PositionRotation.identity();
-	m_Scale.set(1.f,1.f,1.f);
+	m_positionRotation.identity();
+	m_scale.set(1.f,1.f,1.f);
 
 	// Matrix is updated
 	m_isDirty = False;
@@ -33,8 +33,8 @@ void DQTransform::identity()
 // Identity the transform
 Bool DQTransform::isIdentity() const
 {
-	return (m_PositionRotation.isIdentity() &&
-			(m_Scale[X] == 1.f) && (m_Scale[Y] == 1.f) && (m_Scale[Z] == 1.f));
+	return (m_positionRotation.isIdentity() &&
+			(m_scale[X] == 1.f) && (m_scale[Y] == 1.f) && (m_scale[Z] == 1.f));
 }
 
 // set the relative matrix. Used to set the transformation from a matrix.
@@ -43,8 +43,8 @@ void DQTransform::setMatrix(const Matrix4& M)
 	m_matrix4 = M;
 
 	// get the datas
-	m_PositionRotation.fromMatrix4(m_matrix4);
-	m_Scale = m_matrix4.getScale();
+	m_positionRotation.fromMatrix4(m_matrix4);
+	m_scale = m_matrix4.getScale();
 
 	setClean();
 	m_hasUpdated = True;
@@ -63,31 +63,31 @@ void DQTransform::rotate(UInt32 axis, Float alpha)
     switch (axis) {
 		case X:
 			q.fromAxisAngle3(Vector3(1.f,0.f,0.f),alpha);
-			m_PositionRotation *= q;
+			m_positionRotation *= q;
 			break;
 
 		case Y:
 			q.fromAxisAngle3(Vector3(0.f,1.f,0.f),alpha);
-			m_PositionRotation *= q;
+			m_positionRotation *= q;
 			break;
 
 		case Z:
 			q.fromAxisAngle3(Vector3(0.f,0.f,1.f),alpha);
-			m_PositionRotation *= q;
+			m_positionRotation *= q;
 			break;
 
 		default:
 			break;
 	}
 
-	m_PositionRotation.normalize();
+	m_positionRotation.normalize();
 	setDirty();
 }
 
 // rotate about an arbitrary axis
 void DQTransform::rotate(const Quaternion &q)
 {
-    m_PositionRotation *= q; /*m_PositionRotation.normalize();*/
+    m_positionRotation *= q; /*m_PositionRotation.normalize();*/
     setDirty();
 }
 
@@ -100,14 +100,14 @@ void DQTransform::setPosition(const Vector3 &v)
 // define the scale
 void DQTransform::setScale(const Vector3 &v)
 {
-    m_Scale = v;
+    m_scale = v;
     setDirty();
 }
 
 // scale
 void DQTransform::scale(const Vector3 &v)
 {
-    m_Scale += v;
+    m_scale += v;
     setDirty();
 }
 
@@ -129,14 +129,29 @@ void DQTransform::setDirectionZ(const Vector3 &v)
     O3D_ASSERT(0);
 }
 
+Vector3 DQTransform::getPosition() const
+{
+    return m_positionRotation.getTranslation();
+}
+
+Quaternion DQTransform::getRotation() const
+{
+    return m_positionRotation.getRotation();
+}
+
+Vector3 DQTransform::getScale() const
+{
+    return m_scale;
+}
+
 // update the matrix value
 Bool DQTransform::update()
 {
     if (isDirty()) {
-		m_PositionRotation.normalize();
+		m_positionRotation.normalize();
 
-		m_PositionRotation.toMatrix4(m_matrix4);
-		m_matrix4.scale(m_Scale);
+		m_positionRotation.toMatrix4(m_matrix4);
+		m_matrix4.scale(m_scale);
 
 		setClean();
 

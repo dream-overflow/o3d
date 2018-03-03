@@ -126,6 +126,21 @@ void ATransform::setDirectionZ(const Vector3 &v)
     setDirty();
 }
 
+Vector3 ATransform::getPosition() const
+{
+    return m_position;
+}
+
+Quaternion ATransform::getRotation() const
+{
+    return m_rotation;
+}
+
+Vector3 ATransform::getScale() const
+{
+    return m_scale;
+}
+
 // update the matrix value
 Bool ATransform::update()
 {

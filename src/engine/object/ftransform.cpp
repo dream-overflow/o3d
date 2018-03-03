@@ -112,20 +112,23 @@ void FTransform::rotate(const Quaternion &q)
 	quat.toEuler(m_rotation);
 
 	// limits
-	if (m_rotation[X] > o3d::HALF_PI)
+    if (m_rotation[X] > o3d::HALF_PI) {
 		m_rotation[X] = o3d::HALF_PI;
-	else if (m_rotation[X] < -o3d::HALF_PI)
+    } else if (m_rotation[X] < -o3d::HALF_PI) {
 		m_rotation[X] = -o3d::HALF_PI;
+    }
 
-	if (m_rotation[Y] > o3d::TWO_PI)
+    if (m_rotation[Y] > o3d::TWO_PI) {
 		m_rotation[Y] -= o3d::TWO_PI;
-	else if (m_rotation[Y] < -o3d::TWO_PI)
+    } else if (m_rotation[Y] < -o3d::TWO_PI) {
 		m_rotation[Y] += o3d::TWO_PI;
+    }
 
-	if (m_rotation[Z] > o3d::TWO_PI)
+    if (m_rotation[Z] > o3d::TWO_PI) {
 		m_rotation[Z] -= o3d::TWO_PI;
-	else if (m_rotation[Z] < -o3d::TWO_PI)
+    } else if (m_rotation[Z] < -o3d::TWO_PI) {
 		m_rotation[Z] += o3d::TWO_PI;
+    }
 
 	setDirty();
 }
@@ -148,20 +151,23 @@ void FTransform::setRotation(const Quaternion &q)
     q.toEuler(m_rotation);
 
 	// limits
-	if (m_rotation[X] > o3d::HALF_PI)
+    if (m_rotation[X] > o3d::HALF_PI) {
 		m_rotation[X] = o3d::HALF_PI;
-	else if (m_rotation[X] < -o3d::HALF_PI)
+    } else if (m_rotation[X] < -o3d::HALF_PI) {
 		m_rotation[X] = -o3d::HALF_PI;
+    }
 
-	if (m_rotation[Y] > o3d::TWO_PI)
+    if (m_rotation[Y] > o3d::TWO_PI) {
 		m_rotation[Y] -= o3d::TWO_PI;
-	else if (m_rotation[Y] < -o3d::TWO_PI)
+    } else if (m_rotation[Y] < -o3d::TWO_PI) {
 		m_rotation[Y] += o3d::TWO_PI;
+    }
 
-	if (m_rotation[Z] > o3d::TWO_PI)
+    if (m_rotation[Z] > o3d::TWO_PI) {
 		m_rotation[Z] -= o3d::TWO_PI;
-	else if (m_rotation[Z] < -o3d::TWO_PI)
+    } else if (m_rotation[Z] < -o3d::TWO_PI) {
 		m_rotation[Z] += o3d::TWO_PI;
+    }
 
 	setDirty();
 }
@@ -190,22 +196,44 @@ void FTransform::setDirectionZ(const Vector3 &v)
 	quat.toEuler(m_rotation);
 
 	// limits
-	if (m_rotation[X] > o3d::HALF_PI)
+    if (m_rotation[X] > o3d::HALF_PI) {
 		m_rotation[X] = o3d::HALF_PI;
-	else if (m_rotation[X] < -o3d::HALF_PI)
+    } else if (m_rotation[X] < -o3d::HALF_PI) {
 		m_rotation[X] = -o3d::HALF_PI;
+    }
 
-	if (m_rotation[Y] > o3d::TWO_PI)
+    if (m_rotation[Y] > o3d::TWO_PI) {
 		m_rotation[Y] -= o3d::TWO_PI;
-	else if (m_rotation[Y] < -o3d::TWO_PI)
+    } else if (m_rotation[Y] < -o3d::TWO_PI) {
 		m_rotation[Y] += o3d::TWO_PI;
+    }
 
-	if (m_rotation[Z] > o3d::TWO_PI)
+    if (m_rotation[Z] > o3d::TWO_PI) {
 		m_rotation[Z] -= o3d::TWO_PI;
-	else if (m_rotation[Z] < -o3d::TWO_PI)
+    } else if (m_rotation[Z] < -o3d::TWO_PI) {
 		m_rotation[Z] += o3d::TWO_PI;
+    }
 
-	setDirty();
+    setDirty();
+}
+
+Vector3 FTransform::getPosition() const
+{
+    return m_position;
+}
+
+Quaternion FTransform::getRotation() const
+{
+    Quaternion q;
+    q.fromEuler(m_rotation);
+    q.normalize();
+
+    return q;
+}
+
+Vector3 FTransform::getScale() const
+{
+    return m_scale;
 }
 
 // update the matrix value

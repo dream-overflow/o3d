@@ -15,6 +15,20 @@
 using namespace o3d;
 
 O3D_IMPLEMENT_ABSTRACT_CLASS1(Transform, ENGINE_TRANSFORM, BaseObject)
+
+Bool Transform::writeToFile(OutStream &os)
+{
+    os << m_name;
+    return True;
+}
+
+Bool Transform::readFromFile(InStream &is)
+{
+    setDirty();
+    is >> m_name;
+    return True;
+}
+
 O3D_IMPLEMENT_DYNAMIC_CLASS1(MTransform, ENGINE_MTRANSFORM, Transform)
 
 // Set to identity the relative matrix
@@ -103,8 +117,7 @@ void MTransform::rotate(UInt32 axis, Float alpha)
 {
     Quaternion q;
 
-    switch (axis)
-	{
+    switch (axis) {
 		case X:
 			q.fromAxisAngle3(Vector3(1.f,0.f,0.f),alpha);
 			m_rotation *= q;
@@ -134,14 +147,28 @@ void MTransform::setDirectionZ(const Vector3 &v)
 	Matrix4 m;
 	m.reComputeBasisGivenZ(v);
 	m_rotation.fromMatrix4(m);
-	setDirty();
+    setDirty();
+}
+
+Vector3 MTransform::getPosition() const
+{
+    return m_position;
+}
+
+Quaternion MTransform::getRotation() const
+{
+    return m_rotation;
+}
+
+Vector3 MTransform::getScale() const
+{
+    return m_scale;
 }
 
 // update the matrix value
 Bool MTransform::update()
 {
-	if (isDirty())
-	{
+    if (isDirty()) {
 		m_rotation.normalize();
 
 		m_rotation.toMatrix4(m_matrix4);
@@ -152,9 +179,7 @@ Bool MTransform::update()
 
 		m_hasUpdated = True;
 		return True;
-	}
-	else
-	{
+    } else {
 		return False;
 	}
 }

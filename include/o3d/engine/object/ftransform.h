@@ -88,17 +88,17 @@ public:
 	//! Set direction on Z axis
     virtual void setDirectionZ(const Vector3 &v) override;
 
-	//! Get the position
-	inline const Vector3& getPosition() const { return m_position; }
+    //! Get the position
+    virtual Vector3 getPosition() const override;
 
-	//! Get float ptr position
-	inline const Float* getPositionPtr() const { return m_position.getData();}
+    //! Get float ptr position
+    inline const Float* getPositionPtr() const { return m_position.getData();}
 
-	//! Get the rotation
-	inline const Vector3& getRotation() const { return m_rotation; }
+    //! Get the rotation
+    virtual Quaternion getRotation() const override;
 
-	//! Get the scale
-	inline const Vector3& getScale() const { return m_scale; }
+    //! Get the scale
+    virtual Vector3 getScale() const override;
 
 	//! @brief Update the matrix value. this method is performed only if the transform is dirty.
 	//! Update perform the matrix computation if dirty, using the SRT (scale/rotate/translate).

@@ -33,7 +33,7 @@ public:
 	//! Default constructor. No rotation, no translation, and uniform scale of one.
     DQTransform(BaseObject *parent = nullptr) :
 		Transform(parent),
-		m_Scale(1.f,1.f,1.f)
+        m_scale(1.f,1.f,1.f)
     {
 
     }
@@ -61,7 +61,7 @@ public:
 	//! transform by another dual quaternion
     inline void transform(const DualQuaternion &q)
     {
-        m_PositionRotation *= q; /*m_PositionRotation.normalize();*/
+        m_positionRotation *= q; /*m_PositionRotation.normalize();*/
         setDirty();
     }
 
@@ -83,14 +83,14 @@ public:
 	//! Set direction on Z axis
     virtual void setDirectionZ(const Vector3 &v) override;
 
-	//! get the position
-	inline Vector3 getPosition() const { return m_PositionRotation.getTranslation(); }
+    //! Get the position
+    virtual Vector3 getPosition() const override;
 
-	//! get the rotation
-	inline const Quaternion getRotation() const { return m_PositionRotation.getRotation(); }
+    //! Get the rotation
+    virtual Quaternion getRotation() const override;
 
-	//! get the scale
-	inline const Vector3& getScale() const { return m_Scale; }
+    //! Get the scale
+    virtual Vector3 getScale() const override;
 
 	//! @brief Update the matrix value. this method is performed only if the transform is dirty.
 	//! Update perform the matrix computation if dirty, using the SRT (scale/rotate/translate).
@@ -105,8 +105,8 @@ public:
 
 public: // public for conveniance, but not for external usage
 
-	DualQuaternion m_PositionRotation;  //!< Dual Quaternion position/rotation
-	Vector3 m_Scale;                    //!< 3d scaling
+    DualQuaternion m_positionRotation;  //!< Dual Quaternion position/rotation
+    Vector3 m_scale;                    //!< 3d scaling
 };
 
 } // namespace o3d

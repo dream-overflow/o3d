@@ -79,20 +79,20 @@ public:
     //! Set direction on Z axis
     virtual void setDirectionZ(const Vector3 &v) override;
 
+    //! Get the euler rotation part
+    inline const Vector3& getEuler() const { return m_rot; }
+
     //! Get the position
-    inline const Vector3& getPosition() const { return m_position; }
+    virtual Vector3 getPosition() const override;
 
     //! Get float ptr position
     inline const Float* getPositionPtr() const { return m_position.getData();}
 
     //! Get the rotation
-    inline const Quaternion& getRotation() const { return m_rotation; }
-
-    //! Get the euler rotation part
-    inline const Vector3& getEuler() const { return m_rot; }
+    virtual Quaternion getRotation() const override;
 
     //! Get the scale
-    inline const Vector3& getScale() const { return m_scale; }
+    virtual Vector3 getScale() const override;
 
     //! @brief Update the matrix value. this method is performed only if the transform is dirty.
     //! Update perform the matrix computation if dirty, using the SRT (scale/rotate/translate).
@@ -112,7 +112,6 @@ protected:
     Vector3 m_position;     //!< translation
     Vector3 m_scale;        //!< scale
 };
-
 
 } // namespace o3d
 

@@ -32,7 +32,9 @@ public:
     Transform(BaseObject *parent = nullptr) :
 		BaseObject(parent),
 		m_isDirty(True),
-		m_hasUpdated(False) {}
+        m_hasUpdated(False)
+    {
+    }
 
 	//! Virtual destructor
 	virtual ~Transform() {}
@@ -50,12 +52,13 @@ public:
 	//! Set from a 4x4 matrix
 	virtual void setMatrix(const Matrix4 &M) = 0;
 
-	//! Return as O3DMatrix4 (read only).
+    //! Return as Matrix4 (read only).
 	//! @note Update is called if dirty.
 	inline const Matrix4& getMatrix()
 	{
-		if (m_isDirty)
+        if (m_isDirty) {
 			update();
+        }
 
 		return m_matrix4;
 	}
@@ -87,6 +90,14 @@ public:
 	//! Set direction on Z axis
 	virtual void setDirectionZ(const Vector3 &v) = 0;
 
+    //! Get the position vector.
+    virtual Vector3 getPosition() const = 0;
+
+    //! Get the rotation quaternion.
+    virtual Quaternion getRotation() const = 0;
+
+    //! Get the translation part.
+    virtual Vector3 getScale() const = 0;
 
 	//-----------------------------------------------------------------------------------
 	// Processing
@@ -109,23 +120,12 @@ public:
 	//! Force to update the matrix value NOW, even if it is not dirty.
 	inline void forceUpdate() { m_isDirty = True; update(); }
 
-
 	//-----------------------------------------------------------------------------------
 	// Serialization
 	//-----------------------------------------------------------------------------------
 
-    virtual Bool writeToFile(OutStream &os) override
-	{
-        os << m_name;
-		return True;
-	}
-
-    virtual Bool readFromFile(InStream &is) override
-	{
-		setDirty();
-        is >> m_name;
-		return True;
-	}
+    virtual Bool writeToFile(OutStream &os) override;
+    virtual Bool readFromFile(InStream &is) override;
 
 protected:
 
