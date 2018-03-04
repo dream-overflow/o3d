@@ -178,16 +178,16 @@ Quaternion& Quaternion::fromSpherique(Float angle,Float latitude,Float longitude
 Quaternion& Quaternion::fromEuler(Float x,Float y,Float z)
 {
 	// calculate trig identities
-	Float cr = cosf(x/*roll*/*0.5f);
-	Float cp = cosf(y/*pitch*/*0.5f);
-	Float cy = cosf(z/*yaw*/*0.5f);
+    Float cr = cosf(x/*roll*/*0.5f);
+    Float cp = cosf(y/*pitch*/*0.5f);
+    Float cy = cosf(z/*yaw*/*0.5f);
 
-	Float sr = sinf(x/*roll*/*0.5f);
-	Float sp = sinf(y/*pitch*/*0.5f);
-	Float sy = sinf(z/*yaw*/*0.5f);
+    Float sr = sinf(x/*roll*/*0.5f);
+    Float sp = sinf(y/*pitch*/*0.5f);
+    Float sy = sinf(z/*yaw*/*0.5f);
 
-	Float cpcy = cp * cy;
-	Float spsy = sp * sy;
+    Float cpcy = cp * cy;
+    Float spsy = sp * sy;
 
 	V[X] = sr * cpcy - cr * spsy;
 	V[Y] = cr * sp * cy + sr * cp * sy;
@@ -335,9 +335,26 @@ void Quaternion::toEuler(Float &x, Float &y, Float &z) const
 // convert to euler rotation angles
 void Quaternion::toEuler(Vector3 &r) const
 {
-	r[X] = atan2(2*(V[W]*V[X] + V[Y]*V[Z]), 1-2*(V[X]*V[X] + V[Y]*V[Y]));
-	r[Y] = asin(2*(V[W]*V[Y] - V[Z]*V[X]));
-	r[Z] = atan2(2*(V[W]*V[Z]+V[X]*V[Y]), 1-2*(V[Y]*V[Y]+V[Z]*V[Z]));
+    r[X] = atan2(2*(V[W]*V[X] + V[Y]*V[Z]), 1-2*(V[X]*V[X] + V[Y]*V[Y]));
+    r[Y] = asin(2*(V[W]*V[Y] - V[Z]*V[X]));
+    r[Z] = atan2(2*(V[W]*V[Z]+V[X]*V[Y]), 1-2*(V[Y]*V[Y]+V[Z]*V[Z]));
+
+//    // roll (x-axis rotation)
+//    double sinr = 2.0 * (V[W] * V[X] + V[Y] * V[Z]);
+//    double cosr = 1.0 - 2.0 * (V[X] * V[X] + V[Y] * V[Y]);
+//    r[X] = atan2(sinr, cosr);
+
+//    // pitch (y-axis rotation)
+//    double sinp = 2.0 * (V[W] * V[Y] - V[Z] * V[X]);
+//    if (fabs(sinp) >= 1)
+//        r[Y] = copysign(o3d::PI / 2, sinp); // use 90 degrees if out of range
+//    else
+//        r[Y] = asin(sinp);
+
+//    // yaw (z-axis rotation)
+//    double siny = +2.0 * (V[W] * V[Z] + V[X] * V[Y]);
+//    double cosy = +1.0 - 2.0 * (V[Y] * V[Y] + V[Z] * V[Z]);
+//    r[Z] = atan2(siny, cosy);
 }
 
 // spherical linear interpolation of this to 'to' at time t and put the result int output

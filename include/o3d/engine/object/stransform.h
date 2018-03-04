@@ -50,18 +50,7 @@ public:
     virtual void translate(const Vector3 &v) override;
 
     //! Set roll angle (rotation on Z axis)
-    inline void setRoll(Float roll)
-    {
-        m_rotation[Z] += roll;
-
-        if (m_rotation[Z] > o3d::TWO_PI) {
-            m_rotation[Z] -= o3d::TWO_PI;
-        } else if (m_rotation[Z] < -o3d::TWO_PI) {
-            m_rotation[Z] += o3d::TWO_PI;
-        }
-
-        setDirty();
-    }
+    void setRoll(Float roll);
 
     //! Rotate the quaternion
     virtual void rotate(UInt32 axis,Float alpha) override;
@@ -111,9 +100,10 @@ public:
 
 public:  // public for conveniance, but not for external usage
 
-    Vector3 m_rotation;     //!< euler rotation
-    Vector3 m_position;     //!< translation
-    Vector3 m_scale;        //!< scale
+    Vector3 m_angles;
+    Quaternion m_rotation;   //!< quaternion
+    Vector3 m_position;      //!< translation
+    Vector3 m_scale;         //!< scale
 };
 
 } // namespace o3d

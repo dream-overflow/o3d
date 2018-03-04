@@ -24,7 +24,7 @@ void STransform::identity()
 
     // and its components
     m_position.set();
-    m_rotation.set();
+    m_rotation.identity();
     m_scale.set(1.f,1.f,1.f);
 
     // Matrix is updated
@@ -36,8 +36,8 @@ void STransform::identity()
 Bool STransform::isIdentity() const
 {
     return (m_position[X] == 0.f && m_position[Y] == 0.f && m_position[Z] == 0.f &&
-            m_rotation[X] == 0.f && m_rotation[Y] == 0.f && m_rotation[Z] == 0.f &&
-               m_scale[X] == 1.f &&    m_scale[Y] == 1.f &&    m_scale[Z] == 1.f);
+            m_rotation.isIdentity() &&
+            m_scale[X] == 1.f && m_scale[Y] == 1.f && m_scale[Z] == 1.f);
 }
 
 // set the relative matrix. Used to set the transformation from a matrix.
@@ -46,9 +46,7 @@ void STransform::setMatrix(const Matrix4 &m)
     m_matrix4 = m;
 
     // get the data
-    Quaternion q;
-    q.fromMatrix4(m_matrix4);
-    q.toEuler(m_rotation);
+    m_rotation.fromMatrix4(m_matrix4);
 
     m_position = m_matrix4.getTranslation();
     m_scale = m_matrix4.getScale();
@@ -60,44 +58,91 @@ void STransform::setMatrix(const Matrix4 &m)
 // Translate the position according to the current direction
 void STransform::translate(const Vector3 &v)
 {
-    Quaternion q;
-    q.fromEuler(m_rotation);
-
     Vector3 tr(v);
-    q.transform(tr);
+    m_rotation.transform(tr);
 
     m_position += tr;
 
     setDirty();
 }
 
+void STransform::setRoll(Float roll)
+{
+    Quaternion q;
+    q.fromAxisAngle3(Vector3(0,0,1), roll);
+    q.normalize();
+
+    m_rotation = q;
+
+    setDirty();
+}
+
 // rotate the quaternion
 void STransform::rotate(UInt32 axis, Float alpha)
-{
-    m_rotation[axis] += alpha;
+{   
+//    m_rotation.fromAxisAngle3(Vector3(1.f,0.f,0.f), m_angles.x());
+
+//    Quaternion q;
+//    q.fromAxisAngle3(Vector3(0.f,1.f,0.f), m_angles.y());
+//    m_rotation *= q;
+//    m_rotation.normalize();
+
+//    q.fromAxisAngle3(Vector3(0.f,0.f,1.f), m_angles.z());
+//    m_rotation *= q;
+//    m_rotation.normalize();
+
+//    Quaternion q;
+
+//    switch (axis) {
+//        case X:
+//            q.fromAxisAngle3(Vector3(1.f,0.f,0.f), alpha);
+//            m_rotation *= q;
+//            break;
+
+//        case Y:
+//            q.fromAxisAngle3(Vector3(0.f,1.f,0.f), alpha);
+//            m_rotation *= q;
+//            break;
+
+//        case Z:
+//            q.fromAxisAngle3(Vector3(0.f,0.f,1.f), alpha);
+//            m_rotation *= q;
+//            break;
+
+//        default:
+//            break;
+//    }
+
+//    m_rotation.normalize();
+    setDirty();
+
+    m_angles[axis] += alpha;
 
     switch (axis) {
         case X: // Pitch
-            if (m_rotation[X] > o3d::HALF_PI)
-                m_rotation[X] = o3d::HALF_PI;
-            else if (m_rotation[X] < -o3d::HALF_PI)
-                m_rotation[X]  = -o3d::HALF_PI;
+            if (m_angles[X] > o3d::HALF_PI)
+                m_angles[X] = o3d::HALF_PI;
+            else if (m_angles[X] < -o3d::HALF_PI)
+                m_angles[X]  = -o3d::HALF_PI;
             break;
 
         case Y: // Yaw
-            if (m_rotation[Y] > o3d::TWO_PI)
-                m_rotation[Y] -= o3d::TWO_PI;
-            else if (m_rotation[Y] < -o3d::TWO_PI)
-                m_rotation[Y] += o3d::TWO_PI;
+            if (m_angles[Y] > o3d::TWO_PI)
+                m_angles[Y] -= o3d::TWO_PI;
+            else if (m_angles[Y] < -o3d::TWO_PI)
+                m_angles[Y] += o3d::TWO_PI;
             break;
 
         case Z: // Roll
-            if (m_rotation[Z] > o3d::TWO_PI)
-                m_rotation[Z] -= o3d::TWO_PI;
-            else if (m_rotation[Z] < -o3d::TWO_PI)
-                m_rotation[Z] += o3d::TWO_PI;
+            if (m_angles[Z] > o3d::TWO_PI)
+                m_angles[Z] -= o3d::TWO_PI;
+            else if (m_angles[Z] < -o3d::TWO_PI)
+                m_angles[Z] += o3d::TWO_PI;
             break;
     }
+
+    m_rotation.fromEuler(m_angles);
+    m_rotation.normalize();
 
     setDirty();
 }
@@ -105,28 +150,24 @@ void STransform::rotate(UInt32 axis, Float alpha)
 // Rotate the quaternion
 void STransform::rotate(const Quaternion &q)
 {
-    Quaternion quat;
-
-    quat.fromEuler(m_rotation);
-    quat *= q;
-
-    quat.toEuler(m_rotation);
+    m_rotation *= q;
+    m_rotation.normalize();
 
     // limits
-    if (m_rotation[X] > o3d::HALF_PI)
-        m_rotation[X] = o3d::HALF_PI;
-    else if (m_rotation[X] < -o3d::HALF_PI)
-        m_rotation[X] = -o3d::HALF_PI;
+//    if (m_euler[X] > o3d::HALF_PI)
+//        m_euler[X] = o3d::HALF_PI;
+//    else if (m_euler[X] < -o3d::HALF_PI)
+//        m_euler[X] = -o3d::HALF_PI;
 
-    if (m_rotation[Y] > o3d::TWO_PI)
-        m_rotation[Y] -= o3d::TWO_PI;
-    else if (m_rotation[Y] < -o3d::TWO_PI)
-        m_rotation[Y] += o3d::TWO_PI;
+//    if (m_rotation[Y] > o3d::TWO_PI)
+//        m_rotation[Y] -= o3d::TWO_PI;
+//    else if (m_rotation[Y] < -o3d::TWO_PI)
+//        m_rotation[Y] += o3d::TWO_PI;
 
-    if (m_rotation[Z] > o3d::TWO_PI)
-        m_rotation[Z] -= o3d::TWO_PI;
-    else if (m_rotation[Z] < -o3d::TWO_PI)
-        m_rotation[Z] += o3d::TWO_PI;
+//    if (m_rotation[Z] > o3d::TWO_PI)
+//        m_rotation[Z] -= o3d::TWO_PI;
+//    else if (m_rotation[Z] < -o3d::TWO_PI)
+//        m_rotation[Z] += o3d::TWO_PI;
 
     setDirty();
 }
@@ -139,30 +180,31 @@ void STransform::setPosition(const Vector3 &v)
 
 void STransform::setRotation(const Vector3 &v)
 {
-    m_rotation = v;
+    m_rotation.fromEuler(v);
     setDirty();
 }
 
 // define the rotation
 void STransform::setRotation(const Quaternion &q)
 {
-    q.toEuler(m_rotation);
+    m_rotation = q;
+    m_rotation.toEuler(m_angles);
 
-    // limits
-    if (m_rotation[X] > o3d::HALF_PI)
-        m_rotation[X] = o3d::HALF_PI;
-    else if (m_rotation[X] < -o3d::HALF_PI)
-        m_rotation[X] = -o3d::HALF_PI;
+//    // limits
+//    if (m_euler[X] > o3d::HALF_PI)
+//        m_euler[X] = o3d::HALF_PI;
+//    else if (m_euler[X] < -o3d::HALF_PI)
+//        m_euler[X] = -o3d::HALF_PI;
 
-    if (m_rotation[Y] > o3d::TWO_PI)
-        m_rotation[Y] -= o3d::TWO_PI;
-    else if (m_rotation[Y] < -o3d::TWO_PI)
-        m_rotation[Y] += o3d::TWO_PI;
+//    if (m_euler[Y] > o3d::TWO_PI)
+//        m_euler[Y] -= o3d::TWO_PI;
+//    else if (m_euler[Y] < -o3d::TWO_PI)
+//        m_euler[Y] += o3d::TWO_PI;
 
-    if (m_rotation[Z] > o3d::TWO_PI)
-        m_rotation[Z] -= o3d::TWO_PI;
-    else if (m_rotation[Z] < -o3d::TWO_PI)
-        m_rotation[Z] += o3d::TWO_PI;
+//    if (m_euler[Z] > o3d::TWO_PI)
+//        m_euler[Z] -= o3d::TWO_PI;
+//    else if (m_euler[Z] < -o3d::TWO_PI)
+//        m_euler[Z] += o3d::TWO_PI;
 
     setDirty();
 }
@@ -184,27 +226,26 @@ void STransform::setDirectionZ(const Vector3 &v)
 {
     Matrix4 m;
     m.reComputeBasisGivenZ(v);
+    m_rotation.fromMatrix4(m);
+    setDirty();
 
-    Quaternion quat;
-    quat.fromMatrix4(m);
+    m_rotation.toEuler(m_angles);
 
-    quat.toEuler(m_rotation);
+//    // limits
+//    if (m_euler[X] > o3d::HALF_PI)
+//        m_euler[X] = o3d::HALF_PI;
+//    else if (m_euler[X] < -o3d::HALF_PI)
+//        m_euler[X] = -o3d::HALF_PI;
 
-    // limits
-    if (m_rotation[X] > o3d::HALF_PI)
-        m_rotation[X] = o3d::HALF_PI;
-    else if (m_rotation[X] < -o3d::HALF_PI)
-        m_rotation[X] = -o3d::HALF_PI;
+//    if (m_euler[Y] > o3d::TWO_PI)
+//        m_euler[Y] -= o3d::TWO_PI;
+//    else if (m_euler[Y] < -o3d::TWO_PI)
+//        m_euler[Y] += o3d::TWO_PI;
 
-    if (m_rotation[Y] > o3d::TWO_PI)
-        m_rotation[Y] -= o3d::TWO_PI;
-    else if (m_rotation[Y] < -o3d::TWO_PI)
-        m_rotation[Y] += o3d::TWO_PI;
-
-    if (m_rotation[Z] > o3d::TWO_PI)
-        m_rotation[Z] -= o3d::TWO_PI;
-    else if (m_rotation[Z] < -o3d::TWO_PI)
-        m_rotation[Z] += o3d::TWO_PI;
+//    if (m_euler[Z] > o3d::TWO_PI)
+//        m_euler[Z] -= o3d::TWO_PI;
+//    else if (m_euler[Z] < -o3d::TWO_PI)
+//        m_euler[Z] += o3d::TWO_PI;
 
     setDirty();
 }
@@ -216,11 +257,7 @@ Vector3 STransform::getPosition() const
 
 Quaternion STransform::getRotation() const
 {
-    Quaternion q;
-    q.fromEuler(m_rotation);
-    q.normalize();
-
-    return q;
+    return m_rotation;
 }
 
 Vector3 STransform::getScale() const
@@ -232,14 +269,15 @@ Vector3 STransform::getScale() const
 Bool STransform::update()
 {
     if (isDirty()) {
-        Quaternion q;
-        q.fromEuler(m_rotation);
-        q.normalize();
+        // m_rotation.normalize();
+        m_rotation.fromEuler(m_angles);
+        m_rotation.normalize();
 
-        q.toMatrix4(m_matrix4);
-
+        m_rotation.toMatrix4(m_matrix4);
         m_matrix4.setTranslation(m_position);
         m_matrix4.scale(m_scale);
+
+        // m_matrix4.setLookAt(m_position, m_angles, Vector3(0,1,0));
 
         setClean();
 
@@ -255,7 +293,7 @@ Bool STransform::writeToFile(OutStream &os)
 {
     Transform::writeToFile(os);
 
-    os << m_position
+    os   << m_position
          << m_rotation
          << m_scale;
 

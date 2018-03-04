@@ -461,8 +461,8 @@ void Matrix4::setLookAt(const Vector3 &eye, const Vector3 &center, const Vector3
 	f.normalize();
 	lup.normalize();
 
-	Vector3 s = f ^ lup;
-	Vector3 u = s ^ f;
+    Vector3 s = f ^ lup;
+    Vector3 u = s ^ f;
 
 	M11 = s.x(); M12 = s.y(); M13 = s.z(); M14 = -eye.x();
 	M21 = u.x(); M22 = u.y(); M23 = u.z(); M24 = -eye.y();
