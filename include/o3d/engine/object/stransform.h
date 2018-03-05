@@ -49,7 +49,7 @@ public:
     void setRoll(Float roll);
 
     //! Rotate the quaternion
-    virtual void rotate(UInt32 axis,Float alpha) override;
+    virtual void rotate(UInt32 axis, Float alpha) override;
 
     //! Rotate the quaternion
     virtual void rotate(const Quaternion &q) override;

@@ -36,16 +36,13 @@ Quaternion& Quaternion::fromMatrix3(const Matrix3& mat)
 {
 	Float t = mat(0,0) + mat(1,1) + mat(2,2) + 1.0f; //trace de la matrice
 
-	if (t > 0)
-	{
+    if (t > 0) {
         Float s = 0.5f / Math::sqrt(t);
 		V[X] = s * (mat(2,1) - mat(1,2));
 		V[Y] = s * (mat(0,2) - mat(2,0));
 		V[Z] = s * (mat(1,0) - mat(0,1));
 		V[W] = 0.25f / s;
-	}
-	else
-	{
+    } else {
 		int i = 0;	//l'indice de l'element le plus grand dans la diagonale
 
 		//identifie l'element le plus grand dans la diagonale
@@ -53,24 +50,19 @@ Quaternion& Quaternion::fromMatrix3(const Matrix3& mat)
 		if (mat(i,i) < mat(2,2)) i = 2;
 
 		//calcul du quaternion
-		if (i == 0)
-		{
+        if (i == 0) {
             Float s = 1.0f / (Math::sqrt(1.0f + mat(0,0) - mat(1,1) - mat(2,2)) * 2.f);
 			V[X] = 0.25f / s;
 			V[Y] = (mat(0,1) + mat(1,0)) * s;
 			V[Z] = (mat(0,2) + mat(2,0)) * s;
 			V[W] = (mat(1,2) + mat(2,1)) * s;
-		}
-		else if (i == 1)
-		{
+        } else if (i == 1) {
             Float s = 1.0f / (Math::sqrt(1.0f + mat(1,1) - mat(0,0) - mat(2,2)) * 2.f);
 			V[Y] = 0.25f / s;
 			V[X] = (mat(0,1) + mat(1,0)) * s;
 			V[W] = (mat(0,2) + mat(2,0)) * s;
 			V[Z] = (mat(1,2) + mat(2,1)) * s;
-		}
-		else
-		{
+        } else {
             Float s = 1.0f / (Math::sqrt(1.0f + mat(2,2) - mat(1,1) - mat(0,0)) * 2.f);
 			V[Z] = 0.25f / s;
 			V[W] = (mat(0,1) + mat(1,0)) * s;
@@ -87,16 +79,13 @@ Quaternion& Quaternion::fromMatrix4(const Matrix4& mat)
 {
 	Float t = mat(0,0) + mat(1,1) + mat(2,2) + 1.0f; //trace de la matrice
 
-	if (t > 0)
-	{
+    if (t > 0) {
         Float s = 0.5f / Math::sqrt(t);
 		V[X] = s * (mat(2,1) - mat(1,2));
 		V[Y] = s * (mat(0,2) - mat(2,0));
 		V[Z] = s * (mat(1,0) - mat(0,1));
 		V[W] = 0.25f / s;
-	}
-	else
-	{
+    } else {
 		int i = 0;	//l'indice de l'element le plus grand dans la diagonale
 
 		//identifie l'element le plus grand dans la diagonale
@@ -104,24 +93,19 @@ Quaternion& Quaternion::fromMatrix4(const Matrix4& mat)
 		if (mat(i,i) < mat(2,2)) i = 2;
 
 		//calcul du quaternion
-		if (i == 0)
-		{
+        if (i == 0) {
             Float s = 1.0f / (Math::sqrt(1.0f + mat(0,0) - mat(1,1) - mat(2,2)) * 2.f);
 			V[X] = 0.25f / s;
 			V[Y] = (mat(0,1) + mat(1,0)) * s;
 			V[Z] = (mat(0,2) + mat(2,0)) * s;
 			V[W] = (mat(1,2) + mat(2,1)) * s;
-		}
-		else if (i == 1)
-		{
+        } else if (i == 1) {
             Float s = 1.0f / (Math::sqrt(1.0f + mat(1,1) - mat(0,0) - mat(2,2)) * 2.f);
 			V[Y] = 0.25f / s;
 			V[X] = (mat(0,1) + mat(1,0)) * s;
 			V[W] = (mat(0,2) + mat(2,0)) * s;
 			V[Z] = (mat(1,2) + mat(2,1)) * s;
-		}
-		else
-		{
+        } else {
             Float s = 1.0f / (Math::sqrt(1.0f + mat(2,2) - mat(1,1) - mat(0,0)) * 2.f);
 			V[Z] = 0.25f / s;
 			V[W] = (mat(0,1) + mat(1,0)) * s;
@@ -255,7 +239,7 @@ void Quaternion::toMatrix4(Matrix4& M) const
 }
 
 //convertie un quaternion en axe de rotation 3D est un angle
-//(retourne un vecteur 4D dont la derniere composantes est l'angle)
+//(retourne un vecteur 4D dont la derniere composante est l'angle)
 Vector4 Quaternion::toAxisAngle() const
 {
 	Vector4 vec;
@@ -265,10 +249,11 @@ Vector4 Quaternion::toAxisAngle() const
 	q.normalize();
 	vec[W] = acosf(q[W]);
 
-	if (fabsf(s) < 0.0005f/*o3d::Limits<Float>::Epsilon*/)
+    if (fabsf(s) < 0.0005f/*o3d::Limits<Float>::Epsilon*/) {
 		s = 1.0f;
-	else
+    } else {
 		s = 1.0f / s;
+    }
 
 	vec[X] = q[X] * s;
 	vec[Y] = q[Y] * s;
@@ -308,10 +293,19 @@ Vector3 Quaternion::toSpherique() const
 
 	v = toAxisAngle(); // v[W] is the angle
 
-	vec[Y] = (Float)(-asinf(v[Y]));	//latitude
-	if ((v[X] * v[Y] * v[Z]) < 0.0005f) vec[Z] = 0.0f;	//longitude
-	else vec[Z] = (Float)atan2f(v[X],v[Z]);
-	if (vec[Z] < 0.0f) vec[Z] += 2 * o3d::PI;
+    // latitude
+    vec[Y] = (Float)(-asinf(v[Y]));
+
+    // longitude
+    if ((v[X] * v[Y] * v[Z]) < 0.0005f) {
+        vec[Z] = 0.0f;
+    } else {
+        vec[Z] = (Float)atan2f(v[X], v[Z]);
+    }
+
+    if (vec[Z] < 0.0f) {
+        vec[Z] += 2 * o3d::PI;
+    }
 
 	return vec;
 }
@@ -327,6 +321,7 @@ void Quaternion::toSpherique(Float* angle,Float* latitude,Float* longitude) cons
 // convert to euler rotation angles
 void Quaternion::toEuler(Float &x, Float &y, Float &z) const
 {
+    // @todo could check for singularity
 	x = atan2(2*(V[W]*V[X] + V[Y]*V[Z]), 1-2*(V[X]*V[X] + V[Y]*V[Y]));
 	y = asin(2*(V[W]*V[Y] - V[Z]*V[X]));
 	z = atan2(2*(V[W]*V[Z]+V[X]*V[Y]), 1-2*(V[Y]*V[Y]+V[Z]*V[Z]));
@@ -335,47 +330,42 @@ void Quaternion::toEuler(Float &x, Float &y, Float &z) const
 // convert to euler rotation angles
 void Quaternion::toEuler(Vector3 &r) const
 {
+    // @todo could check for singularity
     r[X] = atan2(2*(V[W]*V[X] + V[Y]*V[Z]), 1-2*(V[X]*V[X] + V[Y]*V[Y]));
     r[Y] = asin(2*(V[W]*V[Y] - V[Z]*V[X]));
     r[Z] = atan2(2*(V[W]*V[Z]+V[X]*V[Y]), 1-2*(V[Y]*V[Y]+V[Z]*V[Z]));
 
 //    // roll (x-axis rotation)
-//    double sinr = 2.0 * (V[W] * V[X] + V[Y] * V[Z]);
-//    double cosr = 1.0 - 2.0 * (V[X] * V[X] + V[Y] * V[Y]);
-//    r[X] = atan2(sinr, cosr);
+//    r[X] = atan2(2*(V[W]*V[X] + V[Y]*V[Z]), 1-2*(V[X]*V[X] + V[Y]*V[Y]));  // sinr, cosr
 
 //    // pitch (y-axis rotation)
-//    double sinp = 2.0 * (V[W] * V[Y] - V[Z] * V[X]);
-//    if (fabs(sinp) >= 1)
-//        r[Y] = copysign(o3d::PI / 2, sinp); // use 90 degrees if out of range
-//    else
+//    Double sinp = 2*(V[W]*V[Y] - V[Z]*V[X]);
+//    if (fabs(sinp) >= 1) {
+//        r[Y] = copysign(o3d::HALP_PI, sinp); // use 90 degrees if out of range
+//    } else {
 //        r[Y] = asin(sinp);
+//    }
 
 //    // yaw (z-axis rotation)
-//    double siny = +2.0 * (V[W] * V[Z] + V[X] * V[Y]);
-//    double cosy = +1.0 - 2.0 * (V[Y] * V[Y] + V[Z] * V[Z]);
-//    r[Z] = atan2(siny, cosy);
+//    r[Z] = atan2(2*(V[W]*V[Z] + V[X]*V[Y]), 1-2*(V[Y]*V[Y] + V[Z]*V[Z]);  // siny, cosy
 }
 
 // spherical linear interpolation of this to 'to' at time t and put the result int output
 void Quaternion::slerp(const Quaternion &to, Float t, Quaternion &R) const
 {
-	Float omega,cosom,sinom,sclp,sclq;
+    Float omega, cosom, sinom, sclp, sclq;
 
-	// (TODO SSE2 optimize)
+    // @todo SSE2 optimization
 	cosom = V[X]*to[X] + V[Y]*to[Y] + V[Z]*to[Z] + V[W]*to[W];
 
 	// adjust signs (if necessary)
-	if (cosom < 0.f)
-	{
+    if (cosom < 0.f) {
 		cosom = -cosom;
 		R[X] = -to[X];
 		R[Y] = -to[Y];
 		R[Z] = -to[Z];
 		R[W] = -to[W];
-	}
-	else
-	{
+    } else {
 		R[X] = to[X];
 		R[Y] = to[Y];
 		R[Z] = to[Z];
@@ -383,15 +373,13 @@ void Quaternion::slerp(const Quaternion &to, Float t, Quaternion &R) const
 	}
 
 	// calculate coeficients
-	if ((1.0f-cosom) > o3d::Limits<Float>::epsilon())
-	{
+    if ((1.0f-cosom) > o3d::Limits<Float>::epsilon()) {
 		omega = acosf(cosom);
 		sinom = sinf(omega);
 		sclp = sinf((1.0f-t)*omega) / sinom;
 		sclq = sinf(t*omega) / sinom;
-	}
-	else // quaternions are very close so we can do a linear interpolation
-	{
+    } else {
+        // quaternions are very close so we can do a linear interpolation
 		sclp = 1.0f - t;
 		sclq = t;
 	}
@@ -433,4 +421,3 @@ Bool Quaternion::readFromFile(InStream &is)
 
 	return True;
 }
-

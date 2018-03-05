@@ -44,8 +44,7 @@ Matrix4* Matrix4::ms_null = nullptr;
 
 void Matrix4::init()
 {
-    if (!ms_identity)
-	{
+    if (!ms_identity) {
         ms_identity = new Matrix4();
         ms_null = new Matrix4();
         ms_null->zero();
@@ -217,8 +216,7 @@ void Matrix4::rotateAbsX(Float alpha)
     /*register*/ UInt8 r;
 	Float tmp;
 
-	for (UInt8 i = 0; i <= 2; ++i)
-	{
+    for (UInt8 i = 0; i <= 2; ++i) {
 		r = i << 2;
 
 		tmp = M[r+Y] * cos - M[r+Z] * sin;
@@ -236,8 +234,7 @@ void Matrix4::rotateAbsY(Float alpha)
     /*register*/ UInt8 r;
 	Float tmp;
 
-	for (UInt8 i = 0; i <= 2; ++i)
-	{
+    for (UInt8 i = 0; i <= 2; ++i) {
 		r = i << 2;
 
 		   tmp =  M[r+X] * cos + M[r+Z] * sin;
@@ -294,16 +291,13 @@ void Matrix4::reComputeBasisGivenX(Vector3 v)
 	Vector3 axeZ = v^getY();
 	Float  len = axeZ.length();
 
-	if (len < o3d::Limits<Float>::epsilon())
-	{
+    if (len < o3d::Limits<Float>::epsilon()) {
 		// l'ancien X est colineaire au nouveau Z, utilisons Y pour calculer la nouvelle base
 		Vector3 axeY = getZ()^v;
 		axeY.normalize();
 		setY(axeY);
 		setZ(v^axeY);
-	}
-	else
-	{
+    } else {
 		// nouveau vecteur Y
 		axeZ.normalize();
 		setZ(axeZ);
@@ -322,16 +316,13 @@ void Matrix4::reComputeBasisGivenY(Vector3 v)
 	Vector3 axeX = v^getZ();
 	Float  len = axeX.length();
 
-	if (len < o3d::Limits<Float>::epsilon())
-	{
+    if (len < o3d::Limits<Float>::epsilon()) {
 		// l'ancien X est colin�aire au nouveau Z, utilisons Z pour calculer la nouvelle base
 		Vector3 axeZ = getX()^v;
 		axeZ.normalize();
 		setZ(axeZ);
 		setX(v^axeZ);
-	}
-	else
-	{
+    } else {
 		// nouveau vecteur Y
 		axeX.normalize();
 		setX(axeX);
@@ -393,13 +384,14 @@ void Matrix4::setRotation(const Vector3 &axis, Float angle)
 
 void Matrix4::getRotation(Float &x, Float &y, Float &z)const
 {
-	Quaternion q; q.fromMatrix4(*this);
+    Quaternion q;
+    q.fromMatrix4(*this);
 
-	//x = atan2((2*(q[W]*q[X] + q[Y]*q[Z])) , (1-2*(q[X]*q[X] + q[Y]*q[Y])));
-	////x = atan((2*(q[W]*q[X] + q[Y]*q[Z])) / (1-2*(q[X]*q[X] + q[Y]*q[Y])));
-	//y = asin(2*(q[W]*q[Y] - q[Z]*q[X]));
-	//z = atan2((2*(q[W]*q[Z] + q[X]*q[Y])) , (1-2*(q[Y]*q[Y] + q[Z]*q[Z])));
-	////z = atan((2*(q[W]*q[Z] + q[X]*q[Y])) / (1-2*(q[Y]*q[Y] + q[Z]*q[Z])));
+//	x = atan2((2*(q[W]*q[X] + q[Y]*q[Z])) , (1-2*(q[X]*q[X] + q[Y]*q[Y])));
+//	// x = atan((2*(q[W]*q[X] + q[Y]*q[Z])) / (1-2*(q[X]*q[X] + q[Y]*q[Y])));
+//	y = asin(2*(q[W]*q[Y] - q[Z]*q[X]));
+//	z = atan2((2*(q[W]*q[Z] + q[X]*q[Y])) , (1-2*(q[Y]*q[Y] + q[Z]*q[Z])));
+//	// z = atan((2*(q[W]*q[Z] + q[X]*q[Y])) / (1-2*(q[Y]*q[Y] + q[Z]*q[Z])));
 
 	// the best approach with quaternion and singularity
 	Double sqw = q[W]*q[W];
@@ -410,16 +402,15 @@ void Matrix4::getRotation(Float &x, Float &y, Float &z)const
 	Double test = q[X]*q[Y] + q[Z]*q[W];
 
 	// singularity at north pole
-	if (test > 0.499*unit)
-	{
+    if (test > 0.499*unit) {
 		y/*heading*/ = 2 * atan2(q[X],q[W]);
 		z/*attitude*/ = o3d::HALF_PI;
 		x/*bank*/ = 0;
 		return;
 	}
+
 	// singularity at south pole
-	if (test < -0.499*unit)
-	{
+    if (test < -0.499*unit) {
 		y/*heading*/ = -2 * atan2(q[X],q[W]);
 		z/*attitude*/ = -o3d::HALF_PI;
 		x/*bank*/ = 0;
@@ -430,26 +421,24 @@ void Matrix4::getRotation(Float &x, Float &y, Float &z)const
 	z/*attitude*/ = (Float)asin((Double)2*test/unit);
 	x/*bank*/     = (Float)atan2((Double)2*q[X]*q[W] - 2*q[Y]*q[Z] , -sqx + sqy - sqz + sqw);
 
-	//y/*heading*/  = (Float)atan2((Double)2 * (q[X]*q[Y] + q[Z]*q[W]) , sqx - sqy - sqz + sqw);
-	//z/*attitude*/ = (Float)asin((Double)-2 * (q[X]*q[Z] - q[Y]*q[W]) / (sqx + sqy + sqz + sqw));
-	//x/*bank*/     = (Float)atan2((Double)2 * (q[Y]*q[Z] + q[X]*q[W]) , -sqx - sqy + sqz + sqw);
+//	y/*heading*/  = (Float)atan2((Double)2 * (q[X]*q[Y] + q[Z]*q[W]) , sqx - sqy - sqz + sqw);
+//	z/*attitude*/ = (Float)asin((Double)-2 * (q[X]*q[Z] - q[Y]*q[W]) / (sqx + sqy + sqz + sqw));
+//	x/*bank*/     = (Float)atan2((Double)2 * (q[Y]*q[Z] + q[X]*q[W]) , -sqx - sqy + sqz + sqw);
 
 	// without quaternion... bad idea
-	/*Double angle_y = -asin(M13);
-	Double C = cos(y);
+//	Double angle_y = -asin(M13);
+//	Double C = cos(y);
 
-	if (fabs(C) > 0.005) // Gimbal lock ?
-	{
-		x = (Float)atan2(-M23 / C, M33 / C);
-		z = (Float)atan2(-M12 / C, M11 / C);
-	}
-	else // Gimbal lock
-	{
-		x = 0.f; // Angle X is 0
-		z = (Float)atan2(M21, M22);
-	}
+//    // Gimbal lock ?
+//	if (fabs(C) > 0.005) {
+//		x = (Float)atan2(-M23 / C, M33 / C);
+//		z = (Float)atan2(-M12 / C, M11 / C);
+//	} else {
+//		x = 0.f; // Angle X is 0
+//		z = (Float)atan2(M21, M22);
+//	}
 
-	 y = (Float)angle_y;*/
+//	y = (Float)angle_y;
 }
 
 // look at (like gluLookAt)
@@ -495,19 +484,15 @@ void Matrix4::setSkew(
 	rx = an1*cosf(o3d::toRadian(angle)) - an2*sinf(o3d::toRadian(angle));
 	ry = an1*sinf(o3d::toRadian(angle)) + an2*cosf(o3d::toRadian(angle));
 
-	if (rx <= 0.f)
-	{
+    if (rx <= 0.f) {
 		O3D_ERROR(E_InvalidParameter("Angle too large"));
-		return;
+        // return;
 	}
 
 	// A parallel to B
-	if (an1 == 0.f)
-	{
+    if (an1 == 0.f) {
 		alpha = 0.f;
-	}
-	else
-	{
+    } else {
 		alpha = ry/rx - an2/an1;
 	}
 
