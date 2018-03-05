@@ -16,6 +16,13 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(STransform, ENGINE_STRANSFORM, Transform)
 
+// Default constructor. No rotation, no translation, and uniform scale of one.
+STransform::STransform(BaseObject *parent) :
+    Transform(parent),
+    m_scale(1.f,1.f,1.f)
+{
+}
+
 // Set to identity the relative matrix
 void STransform::identity()
 {
@@ -26,6 +33,7 @@ void STransform::identity()
     m_position.set();
     m_rotation.identity();
     m_scale.set(1.f,1.f,1.f);
+    m_euler.zero();
 
     // Matrix is updated
     m_isDirty = False;
@@ -47,6 +55,7 @@ void STransform::setMatrix(const Matrix4 &m)
 
     // get the data
     m_rotation.fromMatrix4(m_matrix4);
+    m_rotation.toEuler(m_euler);
 
     m_position = m_matrix4.getTranslation();
     m_scale = m_matrix4.getScale();
@@ -68,11 +77,18 @@ void STransform::translate(const Vector3 &v)
 
 void STransform::setRoll(Float roll)
 {
+    m_euler.z() = roll;
+
+    // update rotation
+    Vector3 angles = m_euler;
+    angles.z() = 0;
+
+    m_rotation.fromEuler(angles);
+    m_rotation.normalize();
+
     Quaternion q;
     q.fromAxisAngle3(Vector3(0,0,1), roll);
-    q.normalize();
-
-    m_rotation = q;
+    m_rotation *= q;
 
     setDirty();
 }
@@ -80,69 +96,25 @@ void STransform::setRoll(Float roll)
 // rotate the quaternion
 void STransform::rotate(UInt32 axis, Float alpha)
 {   
-//    m_rotation.fromAxisAngle3(Vector3(1.f,0.f,0.f), m_angles.x());
+    m_euler[axis] += alpha;
 
-//    Quaternion q;
-//    q.fromAxisAngle3(Vector3(0.f,1.f,0.f), m_angles.y());
-//    m_rotation *= q;
-//    m_rotation.normalize();
-
-//    q.fromAxisAngle3(Vector3(0.f,0.f,1.f), m_angles.z());
-//    m_rotation *= q;
-//    m_rotation.normalize();
-
-//    Quaternion q;
-
-//    switch (axis) {
-//        case X:
-//            q.fromAxisAngle3(Vector3(1.f,0.f,0.f), alpha);
-//            m_rotation *= q;
-//            break;
-
-//        case Y:
-//            q.fromAxisAngle3(Vector3(0.f,1.f,0.f), alpha);
-//            m_rotation *= q;
-//            break;
-
-//        case Z:
-//            q.fromAxisAngle3(Vector3(0.f,0.f,1.f), alpha);
-//            m_rotation *= q;
-//            break;
-
-//        default:
-//            break;
-//    }
-
-//    m_rotation.normalize();
-    setDirty();
-
-    m_angles[axis] += alpha;
-
-    switch (axis) {
-        case X: // Pitch
-            if (m_angles[X] > o3d::HALF_PI)
-                m_angles[X] = o3d::HALF_PI;
-            else if (m_angles[X] < -o3d::HALF_PI)
-                m_angles[X]  = -o3d::HALF_PI;
-            break;
-
-        case Y: // Yaw
-            if (m_angles[Y] > o3d::TWO_PI)
-                m_angles[Y] -= o3d::TWO_PI;
-            else if (m_angles[Y] < -o3d::TWO_PI)
-                m_angles[Y] += o3d::TWO_PI;
-            break;
-
-        case Z: // Roll
-            if (m_angles[Z] > o3d::TWO_PI)
-                m_angles[Z] -= o3d::TWO_PI;
-            else if (m_angles[Z] < -o3d::TWO_PI)
-                m_angles[Z] += o3d::TWO_PI;
-            break;
+    if (axis == X) {
+        // @todo not correct if TWO_PI+X
+        if (m_euler.x() > o3d::HALF_PI)
+            m_euler.x() = o3d::HALF_PI;
+        else if (m_euler.x() < -o3d::HALF_PI)
+            m_euler.x()  = -o3d::HALF_PI;
     }
 
-    m_rotation.fromEuler(m_angles);
+    Vector3 angles = m_euler;
+    angles.z() = 0;
+
+    m_rotation.fromEuler(angles);
     m_rotation.normalize();
+
+    Quaternion roll;
+    roll.fromAxisAngle3(Vector3(0,0,1), m_euler.z());
+    m_rotation *= roll;
 
     setDirty();
 }
@@ -153,21 +125,11 @@ void STransform::rotate(const Quaternion &q)
     m_rotation *= q;
     m_rotation.normalize();
 
-    // limits
-//    if (m_euler[X] > o3d::HALF_PI)
-//        m_euler[X] = o3d::HALF_PI;
-//    else if (m_euler[X] < -o3d::HALF_PI)
-//        m_euler[X] = -o3d::HALF_PI;
-
-//    if (m_rotation[Y] > o3d::TWO_PI)
-//        m_rotation[Y] -= o3d::TWO_PI;
-//    else if (m_rotation[Y] < -o3d::TWO_PI)
-//        m_rotation[Y] += o3d::TWO_PI;
-
-//    if (m_rotation[Z] > o3d::TWO_PI)
-//        m_rotation[Z] -= o3d::TWO_PI;
-//    else if (m_rotation[Z] < -o3d::TWO_PI)
-//        m_rotation[Z] += o3d::TWO_PI;
+    // limits how to @todo
+//    if (m_euler.x() > o3d::HALF_PI)
+//        m_euler.x() = o3d::HALF_PI;
+//    else if (m_euler.x() < -o3d::HALF_PI)
+//        m_euler.x() = -o3d::HALF_PI;
 
     setDirty();
 }
@@ -188,23 +150,13 @@ void STransform::setRotation(const Vector3 &v)
 void STransform::setRotation(const Quaternion &q)
 {
     m_rotation = q;
-    m_rotation.toEuler(m_angles);
+    m_rotation.toEuler(m_euler);
 
-//    // limits
-//    if (m_euler[X] > o3d::HALF_PI)
-//        m_euler[X] = o3d::HALF_PI;
-//    else if (m_euler[X] < -o3d::HALF_PI)
-//        m_euler[X] = -o3d::HALF_PI;
-
-//    if (m_euler[Y] > o3d::TWO_PI)
-//        m_euler[Y] -= o3d::TWO_PI;
-//    else if (m_euler[Y] < -o3d::TWO_PI)
-//        m_euler[Y] += o3d::TWO_PI;
-
-//    if (m_euler[Z] > o3d::TWO_PI)
-//        m_euler[Z] -= o3d::TWO_PI;
-//    else if (m_euler[Z] < -o3d::TWO_PI)
-//        m_euler[Z] += o3d::TWO_PI;
+    // limits how to @todo
+//    if (m_euler.x() > o3d::HALF_PI)
+//        m_euler.x() = o3d::HALF_PI;
+//    else if (m_euler.x() < -o3d::HALF_PI)
+//        m_euler.x() = -o3d::HALF_PI;
 
     setDirty();
 }
@@ -229,23 +181,13 @@ void STransform::setDirectionZ(const Vector3 &v)
     m_rotation.fromMatrix4(m);
     setDirty();
 
-    m_rotation.toEuler(m_angles);
+    m_rotation.toEuler(m_euler);
 
-//    // limits
-//    if (m_euler[X] > o3d::HALF_PI)
-//        m_euler[X] = o3d::HALF_PI;
-//    else if (m_euler[X] < -o3d::HALF_PI)
-//        m_euler[X] = -o3d::HALF_PI;
-
-//    if (m_euler[Y] > o3d::TWO_PI)
-//        m_euler[Y] -= o3d::TWO_PI;
-//    else if (m_euler[Y] < -o3d::TWO_PI)
-//        m_euler[Y] += o3d::TWO_PI;
-
-//    if (m_euler[Z] > o3d::TWO_PI)
-//        m_euler[Z] -= o3d::TWO_PI;
-//    else if (m_euler[Z] < -o3d::TWO_PI)
-//        m_euler[Z] += o3d::TWO_PI;
+    // limits how to @todo
+//    if (m_euler.x() > o3d::HALF_PI)
+//        m_euler.x() = o3d::HALF_PI;
+//    else if (m_euler.x() < -o3d::HALF_PI)
+//        m_euler.x() = -o3d::HALF_PI;
 
     setDirty();
 }
@@ -269,15 +211,13 @@ Vector3 STransform::getScale() const
 Bool STransform::update()
 {
     if (isDirty()) {
-        // m_rotation.normalize();
-        m_rotation.fromEuler(m_angles);
         m_rotation.normalize();
+        //m_rotation.fromEuler(m_angles);
+        //m_rotation.normalize();
 
         m_rotation.toMatrix4(m_matrix4);
         m_matrix4.setTranslation(m_position);
         m_matrix4.scale(m_scale);
-
-        // m_matrix4.setLookAt(m_position, m_angles, Vector3(0,1,0));
 
         setClean();
 
@@ -294,6 +234,7 @@ Bool STransform::writeToFile(OutStream &os)
     Transform::writeToFile(os);
 
     os   << m_position
+         << m_euler
          << m_rotation
          << m_scale;
 
@@ -305,6 +246,7 @@ Bool STransform::readFromFile(InStream &is)
     Transform::readFromFile(is);
 
     is   >> m_position
+         >> m_euler
          >> m_rotation
          >> m_scale;
 

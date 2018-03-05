@@ -29,11 +29,7 @@ class O3D_API STransform : public Transform
 public:
 
     //! Default constructor. No rotation, no translation, and uniform scale of one.
-    STransform(BaseObject *parent = nullptr) :
-        Transform(parent),
-        m_scale(1.f,1.f,1.f)
-    {
-    }
+    STransform(BaseObject *parent = nullptr);
 
     //! Set to identity the relative matrix
     virtual void identity() override;
@@ -100,7 +96,7 @@ public:
 
 public:  // public for conveniance, but not for external usage
 
-    Vector3 m_angles;
+    Vector3 m_euler;
     Quaternion m_rotation;   //!< quaternion
     Vector3 m_position;      //!< translation
     Vector3 m_scale;         //!< scale
