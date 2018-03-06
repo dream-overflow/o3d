@@ -176,6 +176,24 @@ namespace o3d
 	//! Convert Degree to Radian (Double version).
     inline Double toRadian(Double degree) { return degree * Double(PI) / 180.0; }
 
+    //! Simplify in the range [-PI..+PI] an angle in radian.
+    template <class T>
+    inline T simplifyRadian(T radian) {
+        if (abs(radian) > TWO_PI) {
+            radian = radian - ((Int32)(radian / TWO_PI) * TWO_PI);
+        }
+
+        if (radian > o3d::PI) {
+            return radian - TWO_PI;
+        } else if (radian < -o3d::PI) {
+            return radian + TWO_PI;
+        } else {
+            return radian;
+        }
+
+        return radian - (((int)(radian/PI + 0.4999999) / 2) * 2) * PI;
+    }
+
 	//! Return Float random value.
     inline Float randomFloat()
 	{

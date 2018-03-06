@@ -19,8 +19,9 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(STransform, ENGINE_STRANSFORM, Transform)
 // Default constructor. No rotation, no translation, and uniform scale of one.
 STransform::STransform(BaseObject *parent) :
     Transform(parent),
-    m_scale(1.f,1.f,1.f)
+    m_scale(1.f, 1.f, 1.f)
 {
+
 }
 
 // Set to identity the relative matrix
@@ -32,7 +33,7 @@ void STransform::identity()
     // and its components
     m_position.set();
     m_rotation.identity();
-    m_scale.set(1.f,1.f,1.f);
+    m_scale.set(1.f, 1.f, 1.f);
     m_euler.zero();
 
     // Matrix is updated
@@ -75,20 +76,17 @@ void STransform::translate(const Vector3 &v)
     setDirty();
 }
 
-void STransform::setRoll(Float roll)
+void STransform::setRoll(Float alpha)
 {
-    m_euler.z() = roll;
+    m_euler.z() = alpha;
 
     // update rotation
-    Vector3 angles = m_euler;
-    angles.z() = 0;
-
-    m_rotation.fromEuler(angles);
+    m_rotation.fromEuler(Vector3(m_euler.x(), m_euler.y(), 0));
     m_rotation.normalize();
 
-    Quaternion q;
-    q.fromAxisAngle3(Vector3(0,0,1), roll);
-    m_rotation *= q;
+    Quaternion roll;
+    roll.fromAxisAngle3(Vector3(0, 0, 1), alpha);
+    m_rotation *= roll;
 
     setDirty();
 }
@@ -98,22 +96,16 @@ void STransform::rotate(UInt32 axis, Float alpha)
 {   
     m_euler[axis] += alpha;
 
-    if (axis == X) {
-        // @todo not correct if TWO_PI+X
-        if (m_euler.x() > o3d::HALF_PI)
-            m_euler.x() = o3d::HALF_PI;
-        else if (m_euler.x() < -o3d::HALF_PI)
-            m_euler.x()  = -o3d::HALF_PI;
-    }
+//    if (axis == X) {
+//        // limit X from [-Pi..Pi]
+//        m_euler.x() = clamp(simplifyRadian(m_euler.x()), -o3d::HALF_PI, o3d::HALF_PI);
+//    }
 
-    Vector3 angles = m_euler;
-    angles.z() = 0;
-
-    m_rotation.fromEuler(angles);
+    m_rotation.fromEuler(Vector3(m_euler.x(), m_euler.y(), 0));
     m_rotation.normalize();
 
     Quaternion roll;
-    roll.fromAxisAngle3(Vector3(0,0,1), m_euler.z());
+    roll.fromAxisAngle3(Vector3(0, 0, 1), m_euler.z());
     m_rotation *= roll;
 
     setDirty();
@@ -125,11 +117,10 @@ void STransform::rotate(const Quaternion &q)
     m_rotation *= q;
     m_rotation.normalize();
 
-    // limits how to @todo
-//    if (m_euler.x() > o3d::HALF_PI)
-//        m_euler.x() = o3d::HALF_PI;
-//    else if (m_euler.x() < -o3d::HALF_PI)
-//        m_euler.x() = -o3d::HALF_PI;
+    // update euler angles
+    m_rotation.toEuler(m_euler);
+
+    // @todo but no limits on Y...
 
     setDirty();
 }
@@ -142,7 +133,13 @@ void STransform::setPosition(const Vector3 &v)
 
 void STransform::setRotation(const Vector3 &v)
 {
+    m_euler = v;
+
+    // limit X from [-Pi..Pi]
+    // m_euler.x() = clamp(simplifyRadian(m_euler.x()), -o3d::HALF_PI, o3d::HALF_PI);
+
     m_rotation.fromEuler(v);
+
     setDirty();
 }
 
@@ -152,11 +149,7 @@ void STransform::setRotation(const Quaternion &q)
     m_rotation = q;
     m_rotation.toEuler(m_euler);
 
-    // limits how to @todo
-//    if (m_euler.x() > o3d::HALF_PI)
-//        m_euler.x() = o3d::HALF_PI;
-//    else if (m_euler.x() < -o3d::HALF_PI)
-//        m_euler.x() = -o3d::HALF_PI;
+    // @todo but no limits on Y...
 
     setDirty();
 }
@@ -183,11 +176,7 @@ void STransform::setDirectionZ(const Vector3 &v)
 
     m_rotation.toEuler(m_euler);
 
-    // limits how to @todo
-//    if (m_euler.x() > o3d::HALF_PI)
-//        m_euler.x() = o3d::HALF_PI;
-//    else if (m_euler.x() < -o3d::HALF_PI)
-//        m_euler.x() = -o3d::HALF_PI;
+    // @todo but no limits on Y...
 
     setDirty();
 }
@@ -212,8 +201,6 @@ Bool STransform::update()
 {
     if (isDirty()) {
         m_rotation.normalize();
-        //m_rotation.fromEuler(m_angles);
-        //m_rotation.normalize();
 
         m_rotation.toMatrix4(m_matrix4);
         m_matrix4.setTranslation(m_position);

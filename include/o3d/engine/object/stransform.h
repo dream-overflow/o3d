@@ -46,7 +46,7 @@ public:
     virtual void translate(const Vector3 &v) override;
 
     //! Set roll angle (rotation on Z axis)
-    void setRoll(Float roll);
+    void setRoll(Float alpha);
 
     //! Rotate the quaternion
     virtual void rotate(UInt32 axis, Float alpha) override;
