@@ -84,6 +84,9 @@ public:
     //! Get the scale
     virtual Vector3 getScale() const override;
 
+    //! Get the rotation as euler.
+    inline const Vector3& getEuler() const { return m_euler; }
+
     //! @brief Update the matrix value. this method is performed only if the transform is dirty.
     //! Update perform the matrix computation if dirty, using the SRT (scale/rotate/translate).
     //! That mean the transforms are always additive and not cumulative.
