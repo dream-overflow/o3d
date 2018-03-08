@@ -1,5 +1,7 @@
 // Vertex picking with scale on vertex.
 #version 330
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_explicit_uniform_location : enable
 
 uniform mat4 u_modelViewProjectionMatrix;
 // layout(location = 0) uniform uint u_picking;
@@ -8,7 +10,7 @@ uniform vec3 u_scale;
 layout(location = 0) in vec4 a_vertex;
 // layout(location = 4) in uint a_picking;
 
-layout(location = 0) out flat uint io_picking;
+// layout(location = 0) out flat uint io_picking;
 
 invariant gl_Position;
 

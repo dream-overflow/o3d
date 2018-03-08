@@ -1,5 +1,7 @@
 // soft shadow map fragment program for 32 bits float texture
 #version 330
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_explicit_uniform_location : enable
 
 varying vec4 io_vertexPos;
 

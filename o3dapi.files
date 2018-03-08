@@ -398,6 +398,7 @@ src/shaders/glsl330/lensEffect/diffuseMap_fp.glsl
 src/shaders/glsl330/lensEffect/diffuseMap_vp.glsl
 src/shaders/glsl330/lensEffect/occlusion_fp.glsl
 src/shaders/glsl330/lensEffect/occlusion_vp.glsl
+src/shaders/glsl330/lensEffect/occlusionac_fp.glsl
 src/shaders/glsl330/manifest
 src/shaders/glsl330/map2d/colorMask/default_fp.glsl
 src/shaders/glsl330/map2d/colorMask/default_vp.glsl

@@ -1,4 +1,6 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_explicit_uniform_location : enable
 
 // Contient les parametres de distance, a savoir:
 //   - 0) La distance max ou les materiaux sont utilises sans colormap

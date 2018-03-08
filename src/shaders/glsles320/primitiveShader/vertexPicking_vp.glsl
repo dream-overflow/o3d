@@ -8,7 +8,7 @@ uniform vec3 u_scale;
 layout(location = 0) in vec4 a_vertex;
 // layout(location = 4) in uint a_picking;
 
-layout(location = 0) out flat uint io_picking;
+// layout(location = 0) out flat uint io_picking;
 
 invariant gl_Position;
 

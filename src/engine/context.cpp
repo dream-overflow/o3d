@@ -121,7 +121,6 @@ Context::Context(Renderer *renderer) :
         _glGetIntegerv(GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[TESS_CONTROL_SHADER]);
         _glGetIntegerv(GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS, (GLint*)&m_maxStageTextureImageUnits[TESS_EVALUATION_SHADER]);
     } else {
-        m_maxStageTextureImageUnits[COMPUTE_SHADER] = 0;
         m_maxStageTextureImageUnits[TESS_CONTROL_SHADER] = 0;
         m_maxStageTextureImageUnits[TESS_EVALUATION_SHADER] = 0;
     }
@@ -170,10 +169,26 @@ Context::Context(Renderer *renderer) :
     _glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, (GLint*)&m_maxUniformBufferBindings);
     _glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, (GLint*)&m_maxUniformBlockSize);
 
-    _glGetIntegerv(GL_MAX_COMPUTE_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[COMPUTE_SHADER]);
+    if ((m_renderer->isGLES() && m_renderer->getVersion() >= 310) ||
+        (!m_renderer->isGLES() && m_renderer->getVersion() >= 430)) {
+
+        _glGetIntegerv(GL_MAX_COMPUTE_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[COMPUTE_SHADER]);
+    } else {
+        m_maxStageUniformBlocks[COMPUTE_SHADER] = 0;
+    }
+
     _glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[VERTEX_SHADER]);
-    _glGetIntegerv(GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[TESS_CONTROL_SHADER]);
-    _glGetIntegerv(GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[TESS_EVALUATION_SHADER]);
+
+    if ((m_renderer->isGLES() && m_renderer->getVersion() >= 310) ||
+        (!m_renderer->isGLES() && m_renderer->getVersion() >= 400)) {
+
+        _glGetIntegerv(GL_MAX_TESS_CONTROL_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[TESS_CONTROL_SHADER]);
+        _glGetIntegerv(GL_MAX_TESS_EVALUATION_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[TESS_EVALUATION_SHADER]);
+    } else {
+        m_maxStageUniformBlocks[TESS_CONTROL_SHADER] = 0;
+        m_maxStageUniformBlocks[TESS_EVALUATION_SHADER] = 0;
+    }
+
     _glGetIntegerv(GL_MAX_GEOMETRY_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[GEOMETRY_SHADER]);
     _glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_BLOCKS, (GLint*)&m_maxStageUniformBlocks[FRAGMENT_SHADER]);
 

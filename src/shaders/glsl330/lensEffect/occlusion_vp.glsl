@@ -1,5 +1,7 @@
 // Minimalistic vertex program, use only of a vertex attribute and a transform matrix 
 #version 330
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_explicit_uniform_location : enable
 
 uniform mat4 u_modelViewProjectionMatrix;
 

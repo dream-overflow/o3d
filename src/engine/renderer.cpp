@@ -440,7 +440,7 @@ void dumpBacktrace(String &ouput, void** buffer, size_t count)
         int status = 0;
         char *demangled = __cxxabiv1::__cxa_demangle(symbol, 0, 0, &status);
 
-        ouput += String("#{0}:0x{1}\n").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') +
+        ouput += String("#{0}:0x{1} ").arg((Int32)idx, 2, 10, ' ').arg((UInt64)addr, 16, 16, '0') +
                  ((nullptr != demangled && 0 == status) ? demangled : symbol);
 
         if (nullptr != demangled) {

@@ -49,7 +49,24 @@ GLXCREATECONTEXTATTRIBSARBPROC GLX::createContextAttribsARB = nullptr;
 
 void GLX::init()
 {
-    ms_glX = DynamicLibrary::load("libGLX.so");
+    // try with default GLX
+    try {
+        ms_glX = DynamicLibrary::load("libGLX.so");
+    } catch (E_DynamicLibraryException &) {}
+
+    // fallback to .0
+    if (!ms_glX) {
+        try {
+            ms_glX = DynamicLibrary::load("libGLX.so.0");
+        } catch (E_DynamicLibraryException &) {}
+    }
+
+    // no GLX try directly with GL
+    if (!ms_glX) {
+        try {
+            ms_glX = DynamicLibrary::load("libGL.so.1");
+        } catch (E_DynamicLibraryException &) {}
+    }
 
     _glXGetProcAddress = (PFNGLXGETPROCADDRESSPROC)ms_glX->getFunctionPtr("glXGetProcAddress");
 
