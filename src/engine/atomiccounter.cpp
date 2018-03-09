@@ -102,10 +102,15 @@ void AtomicCounter::reset()
     glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
 }
 
-void AtomicCounter::update()
+void AtomicCounter::update(Bool barrier)
 {
     if (m_context->getCurrentAtomicCounter() != m_bufferId) {
         bind();
+    }
+
+    if (barrier) {
+        // wait for finished operation before update value
+        glMemoryBarrier(GL_ATOMIC_COUNTER_BARRIER_BIT);
     }
 
     // again we map the buffer to userCounters, but this time for read-only access
@@ -119,6 +124,10 @@ void AtomicCounter::update()
     memcpy(m_counters, userCounters, sizeof(GLuint) * m_count);
 
     glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
+
+    if (barrier) {
+        glMemoryBarrier(0);
+    }
 }
 
 UInt32 AtomicCounter::getCounter(UInt32 index) const

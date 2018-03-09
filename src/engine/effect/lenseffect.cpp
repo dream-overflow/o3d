@@ -143,6 +143,7 @@ void LensEffect::createShader()
 		Shader *shader = getScene()->getShaderManager()->addShader("lensEffect");
 		shader->buildInstance(m_occlusionShader.instance);
 
+        // default uses occlusion query when fully availables
         if (getScene()->getContext()->hasCapacity(Context::OCCLUSION_QUERY)) {
             m_occlusionShader.instance.assign("occlusion", "occlusion", "", Shader::BUILD_COMPILE_AND_LINK);
         } else {
@@ -388,7 +389,7 @@ void LensEffect::calculateVisibilityRatio()
             // check result
             m_visibilityRatio = (m_occlusionCount->getCounter(0) > 0 ? 1.0f : 0.0f);
 
-            // perform again @todo fix bug flickering... maybee one case on two ?
+            // perform again
             countVisiblesFragments();
         } else {
             // Test si il faut effacer le test d'occlusions

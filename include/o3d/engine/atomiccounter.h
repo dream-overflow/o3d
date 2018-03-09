@@ -70,8 +70,10 @@ public:
     /**
      * @brief Read the values before access to the counters getter.
      * @note Must be bound or it is bound automatically.
+     * @param barrier If True (default) setup a memory barrier on atomic counter before
+     * reading results
      */
-    void update();
+    void update(Bool barrier = True);
 
     /**
      * @brief Get a specific counter value.
