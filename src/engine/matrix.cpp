@@ -85,7 +85,7 @@ Vector4 Matrix::unprojectPoint(
 {
 	Float z = zNear + windowPos.z() * (zFar - zNear);
 
-	Matrix4 invProjMdl = (projection * modelview).invertStd();
+    Matrix4 invProjMdl = (projection * modelview).invertStd();
 
 	// normalize to [-1 1]
 	Vector4 objectPos = Vector4(
