@@ -110,7 +110,7 @@ public:
 	//! Get the name of the object (read only).
 	inline const String& getName() const { return m_name; }
 	//! Get the name of the object.
-	inline       String& getName()       { return m_name; }
+    inline String& getName() { return m_name; }
 
 	//! Define the serialize identifier.
     inline void setSerializeId(Int32 id) { m_serializeId = id; }
@@ -130,7 +130,7 @@ public:
 	inline const BaseObject* getParent() const { return m_parent; }
 
 	//! Get the top-level parent object.
-	inline       BaseObject* getTopLevelParent()       { return m_topLevelParent; }
+    inline BaseObject* getTopLevelParent() { return m_topLevelParent; }
 	//! Get the top-level parent object (read only).
 	inline const BaseObject* getTopLevelParent() const { return m_topLevelParent; }
 
@@ -257,9 +257,6 @@ protected:
     BaseObject *m_topLevelParent;  //!< Parent top level (null if none).
 
     T_UserList m_usersList; //!< Each user of this object is registered in this list.
-
-	//! Remove of child of the children list.
-	void removeChild(BaseObject *child);
 };
 
 //! Check if an object is a type of classInfo, and return the object himself if true,

@@ -226,7 +226,7 @@ namespace o3d
 	inline void deletePtr(T *&ptr)
 	{
         if (ptr) {
-			delete ptr;
+            delete ptr;
             ptr = nullptr;
 		}
 	}

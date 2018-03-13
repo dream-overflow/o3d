@@ -45,11 +45,11 @@ BaseObject::BaseObject(const BaseObject &dup) :
 		m_parent(dup.m_parent),
 		m_topLevelParent(dup.m_topLevelParent)
 {
-	if (m_parent)
-	{
+    if (m_parent) {
 		// Check for the top-level parent type
-		if (!hasTopLevelParentTypeOf())
+        if (!hasTopLevelParentTypeOf()) {
 			O3D_ERROR(E_InvalidParameter("Parent has an invalid top-level parent type"));
+        }
 	}
 }
 
@@ -62,10 +62,11 @@ BaseObject& BaseObject::operator= (const BaseObject &dup)
 	//m_parent = dup.m_parent;
 	m_usersList.clear();
 
-	if (m_topLevelParent && (m_topLevelParent != dup.m_topLevelParent))
-		O3D_ERROR(E_InvalidParameter("The top-level parent of the new parent is different of the old"));
-	else
+    if (m_topLevelParent && (m_topLevelParent != dup.m_topLevelParent)) {
+        O3D_ERROR(E_InvalidParameter("The top-level parent of the new parent is different of the old"));
+    } else {
 		m_topLevelParent = dup.m_topLevelParent;
+    }
 
 	return *this;
 }
@@ -87,27 +88,29 @@ Bool BaseObject::getTypeOf(ClassInfo *info) const
 void BaseObject::setParent(BaseObject *parent)
 {
 	// is the same parent
-	if (m_parent == parent)
+    if (m_parent == parent) {
 		return;
+    }
 
 	// un-parent if parent
-	if (m_parent)
+    if (m_parent) {
 		m_parent->unparentIt(this);
+    }
 
 	m_parent = parent;
 
 	// re-parent if parent
-	if (m_parent)
-	{
-		if (m_topLevelParent && (m_topLevelParent != parent->m_topLevelParent))
+    if (m_parent) {
+        if (m_topLevelParent && (m_topLevelParent != parent->m_topLevelParent)) {
 			O3D_ERROR(E_InvalidParameter("The top-level parent of the new parent is different of the old"));
-		else
+        } else {
 			m_topLevelParent = parent->m_topLevelParent;
+        }
 
 		m_parent->parentIt(this);
-	}
-	else
+    } else {
         m_topLevelParent = nullptr;
+    }
 }
 
 // Delete the object from its parent
@@ -115,12 +118,9 @@ Bool BaseObject::deleteIt()
 {
 	O3D_ASSERT(m_usersList.empty());
 
-	if (m_parent)
-	{
+    if (m_parent) {
 		return m_parent->deleteChild(this);
-	}
-	else
-	{
+    } else {
 		// no parent so immediate delete
 		deletePtr(const_cast<BaseObject*>(this));
         return True;
@@ -130,12 +130,10 @@ Bool BaseObject::deleteIt()
 // Delete a child object
 Bool BaseObject::deleteChild(BaseObject *child)
 {
-	if (child)
-	{
-		if (child->getParent() != this)
+    if (child) {
+        if (child->getParent() != this) {
 			O3D_ERROR(E_InvalidParameter("The parent child differ from this"));
-		else
-		{
+        } else {
 			deletePtr(child);
             return True;
 		}
@@ -146,15 +144,14 @@ Bool BaseObject::deleteChild(BaseObject *child)
 // Set this object as persistent. That mean this object is kept even if it has no user
 void BaseObject::setPersistant(Bool persistant)
 {
-	if (persistant)
-	{
-		if (!isPersistant())
+    if (persistant) {
+        if (!isPersistant()) {
             m_usersList.push_front(nullptr);
-	}
-	else
-	{
-		if (isPersistant())
+        }
+    } else {
+        if (isPersistant()) {
 			m_usersList.pop_front();
+        }
 	}
 }
 
@@ -181,13 +178,13 @@ Bool BaseObject::releaseIt(BaseSmartObject &smartObject)
 {
 	IT_UserList it = std::find(m_usersList.begin(), m_usersList.end(), &smartObject);
 
-	if (it == m_usersList.end())
+    if (it == m_usersList.end()) {
 		O3D_ERROR(E_InvalidParameter("Unknown user"));
-	else
+    } else {
 		m_usersList.erase(it);
+    }
 
-	if (m_usersList.empty())
-	{
+    if (m_usersList.empty()) {
 		onDeleteObject(this);
         return True;
 	}
@@ -198,19 +195,20 @@ Bool BaseObject::releaseIt(BaseSmartObject &smartObject)
 // Detach all users.
 void BaseObject::releaseAll()
 {
-	if (m_usersList.empty())
+    if (m_usersList.empty()) {
 		return;
+    }
 
 	IT_UserList it = m_usersList.begin();
 	BaseSmartObject *object;
 
 	// bypass the persistent user
-	if (isPersistant())
+    if (isPersistant()) {
 		++it;
+    }
 
 	// release each user
-	for (; it != m_usersList.end(); ++it)
-	{
+    for (; it != m_usersList.end(); ++it) {
 		O3D_ASSERT(*it);
 
 		object = *it;
@@ -234,8 +232,9 @@ Bool BaseObject::readFromFile(InStream &istream)
     istream >> type;
 
 	// compare the type
-	if (type != this->getType())
+    if (type != this->getType()) {
         O3D_ERROR(E_InvalidFormat("Readed class type and instancied class type differs"));
+    }
 
     istream >> m_name
             >> m_serializeId;
