@@ -248,9 +248,11 @@ void Light::drawPointLight(const DrawInfo &drawInfo)
 
         // wire sphere light volume
         if (getScene()->getDrawObject(Scene::DRAW_LIGHT_VOLUME)) {
+            Float radius = o3d::max<Float>(getRadius(), 0.3f);
+
             primitive->draw(
                         PrimitiveManager::WIRE_SPHERE1,
-                        Vector3(getRadius(), getRadius(), getRadius()));
+                        Vector3(radius, radius, radius));
         } else {
             // or little wire sphere
             primitive->draw(PrimitiveManager::WIRE_SPHERE1, Vector3(0.3f,0.3f,0.3f));

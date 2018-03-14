@@ -669,7 +669,10 @@ void Quadtree::checkVisibleObject(const VisibilityInfos & _infos)
             // depending if it is light or something else
             if (object->isLight()) {
                 getScene()->getVisibilityManager()->addEffectiveLight(static_cast<Light*>(object));
-            } else {
+            }
+
+            // even if it is as light it can be drawable for symbolics
+            if (object->hasDrawable()) {
                 getScene()->getVisibilityManager()->addObjectToDraw(object);
             }
 		}
