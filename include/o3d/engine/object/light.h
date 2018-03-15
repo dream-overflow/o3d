@@ -65,7 +65,7 @@ public:
 	virtual ~Light();
 
 	//! Define the light type (initial set is PointLight).
-	inline void setLightType(LightType lightType) { m_lightType = lightType; }
+    void setLightType(LightType lightType);
 
 	//! Get the type of the light.
 	inline LightType getLightType() const { return m_lightType; }

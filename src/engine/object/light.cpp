@@ -76,6 +76,22 @@ Light::~Light()
 	deletePtr(m_pConeBounding);
 }
 
+void Light::setLightType(LightType lightType)
+{
+    m_lightType = lightType;
+
+    if (m_lightType == SPOT_LIGHT && m_pConeBounding == nullptr) {
+        m_pConeBounding = new BCone(
+                    Vector3(getWorldPosition().getData()),
+                    getWorldDirection(),
+                    getThresholdDistance(),
+                    o3d::toRadian(m_cutOff),
+                    True);
+    } else if (m_lightType != SPOT_LIGHT && m_pConeBounding != nullptr) {
+        deletePtr(m_pConeBounding);
+    }
+}
+
 // Get the drawing type.
 UInt32 Light::getDrawType() const
 {
