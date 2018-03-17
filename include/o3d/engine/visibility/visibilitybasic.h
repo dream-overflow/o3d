@@ -16,11 +16,9 @@
 
 namespace o3d {
 
-//---------------------------------------------------------------------------------------
-//! @class VisibilityBasic
-//-------------------------------------------------------------------------------------
-//! Visibility manager used by default
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Basic visibility manager based on a max distance (radius).
+ */
 class O3D_API VisibilityBasic : public VisibilityABC
 {
 public:
@@ -57,11 +55,8 @@ public:
 private:
 
 	T_ObjectList m_objectList;
-
-	Bool m_useMaxDistance;		//!< if true, the manager will remove the objects which are out of view
 };
 
 } // namespace o3d
 
 #endif // _O3D_VISIBILITYBASIC_H
-

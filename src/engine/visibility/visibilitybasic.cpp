@@ -13,6 +13,7 @@
 #include "o3d/engine/visibility/visibilitymanager.h"
 #include "o3d/engine/scene/scene.h"
 #include "o3d/engine/object/camera.h"
+#include "o3d/engine/object/light.h"
 #include "o3d/engine/primitive/primitivemanager.h"
 #include "o3d/engine/context.h"
 #include "o3d/engine/matrix.h"
@@ -23,16 +24,12 @@ using namespace o3d;
 
 O3D_IMPLEMENT_DYNAMIC_CLASS1(VisibilityBasic, ENGINE_VISIBILITY_BASIC, VisibilityABC)
 
-//---------------------------------------------------------------------------------------
-// class VisibilityBasic
-//---------------------------------------------------------------------------------------
 VisibilityBasic::VisibilityBasic(
 	BaseObject *parent,
 	const Vector3 &position,
 	const Vector3 &size) :
 		VisibilityABC(parent,position,size),
-		m_objectList(),
-		m_useMaxDistance(False)
+        m_objectList()
 {
 }
 
@@ -79,8 +76,7 @@ void VisibilityBasic::updateObject(SceneObject *object)
 // check for visible object and add it to visibility manager
 void VisibilityBasic::checkVisibleObject(const VisibilityInfos & _infos)
 {
-	if (m_objectList.size() > 1)
-	{
+    if (m_objectList.size() > 1) {
 		Vector3 camPosition = _infos.cameraPosition;
 
 		Float nextDistance = (camPosition - m_objectList.front()->getAbsoluteMatrix().getTranslation()).normInf();
@@ -90,46 +86,53 @@ void VisibilityBasic::checkVisibleObject(const VisibilityInfos & _infos)
 		Float curDistance = 0.0f;
 		IT_ObjectList it = m_objectList.begin();
 
-		while (nextObject != m_objectList.end())
-		{
+        while (nextObject != m_objectList.end()) {
 			curDistance = nextDistance;
 			nextDistance = (camPosition - (*nextObject)->getAbsoluteMatrix().getTranslation()).normInf();
 
-			if ((_infos.viewUseMaxDistance) && (curDistance > _infos.viewMaxDistance))
-			{
-				// @TODO why not an event ?
+            if ((_infos.viewUseMaxDistance) && (curDistance > _infos.viewMaxDistance)) {
+                // @todo why not an event ?
 				it = m_objectList.erase(it);
 				nextObject++;
-			}
-			else
-			{
-				if (curDistance > nextDistance)
+            } else {
+                if (curDistance > nextDistance) {
 					std::iter_swap(it, nextObject);
+                }
 
 				it++;
 				nextObject++;
 			}
 		}
-	}
-	else if (m_objectList.size() == 1)
-	{
+    } else if (m_objectList.size() == 1) {
 		Float distance = (_infos.cameraPosition - (m_objectList.front())->getAbsoluteMatrix().getTranslation()).normInf();
 
-		if ((_infos.viewUseMaxDistance) && (distance > _infos.viewMaxDistance))
+        if ((_infos.viewUseMaxDistance) && (distance > _infos.viewMaxDistance)) {
 			removeObject(m_objectList.front().get());
+        }
 	}
 
+    SceneObject * object = nullptr;
+
 	// visible objects will drawn
-	for (IT_ObjectList it = m_objectList.begin() ; it != m_objectList.end() ; it++)
-	{
-		getScene()->getVisibilityManager()->addObjectToDraw(it->get());
+    for (IT_ObjectList it = m_objectList.begin() ; it != m_objectList.end() ; it++) {
+        object = it->get();
+
+        // depending if it is light or something else
+        if (object->isLight()) {
+            getScene()->getVisibilityManager()->addEffectiveLight(static_cast<Light*>(object));
+        }
+
+        // even if it is as light it can be drawable for symbolics
+        if (object->hasDrawable()) {
+            getScene()->getVisibilityManager()->addObjectToDraw(object);
+        }
 	}
 }
 
 // draw the symbolic
 void VisibilityBasic::draw(const DrawInfo &drawInfo)
 {
-    if (getScene()->getDrawObject(Scene::DRAW_BOUNDING_VOLUME)) {
+    if (getScene()->getDrawObject(Scene::DRAW_VISIBILITY)) {
 		Float radius = getScene()->getVisibilityManager()->getMaxDistance();
 
         PrimitiveAccess primitive = getScene()->getPrimitiveManager()->access(drawInfo);

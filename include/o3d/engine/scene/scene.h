@@ -103,16 +103,17 @@ public:
 	// Scene
 	//-----------------------------------------------------------------------------------
 
-	//! enum for the symbolics objects draw state
+    /**
+     * @brief The symbolics objects draw state types.
+     */
 	enum DrawObjectType
 	{
         DRAW_LOCAL_AXIS = 0,
 		DRAW_TRAJECTORY,
 		DRAW_BONES,
-		DRAW_PORTAL,
 		DRAW_MESH_LOCAL_AXIS,
 		DRAW_POINT_LIGHT,
-        DRAW_SPOT_LIGHT,    //!< light volume symbolics
+        DRAW_SPOT_LIGHT,          //!< light volume symbolics
 		DRAW_DIRECTIONAL_LIGHT,
         DRAW_LIGHT_VOLUME,
         DRAW_LIGHT_MAP,
@@ -126,9 +127,11 @@ public:
 		DRAW_SND_LISTENER,
 		DRAW_SND_SOURCE_OMNI,
 		DRAW_SND_SOURCE_DIRECT,
-		DRAW_QUADTREE,
-		DRAW_OCTREE,
-		DRAW_CONNECTION,          //!< landscape connections
+        DRAW_VISIBILITY,          //!< related to visibility controlers
+        DRAW_PORTAL,              //!< specific to portal based visibility controlers
+        DRAW_QUADTREE,            //!< specific to quadtree based visibility controlers
+        DRAW_OCTREE,              //!< specific to octree based visibility controlers
+        DRAW_CONNECTION,          //!< landscape objects connections
 		DRAW_MATERIALS,           //!< landscape materials
 		DRAW_DEBUG,               //!< used to display debugs info
 		DRAW_BOUNDING_VOLUME,     //!< bounding volume
@@ -136,9 +139,9 @@ public:
 		DRAW_LOCAL_SPACE,         //!< local space (TBN of each vertex)
 
 		DRAW_UNDEFINED = 32,
-		DRAW_MESH,
-		DRAW_SKIN,
-		DRAW_BEZIER_SURFACE,
+        DRAW_MESH,                //!< static mesh based objects
+        DRAW_SKIN,                //!< skin based objects
+        DRAW_BEZIER_SURFACE,
 		DRAW_NURBS_SURFACE,
 		DRAW_WORLD_LABEL,
 		DRAW_SKY,
