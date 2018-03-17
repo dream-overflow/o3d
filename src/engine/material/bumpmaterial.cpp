@@ -619,4 +619,3 @@ void BumpMaterial::processDeferred(
         shader.unbindShader();
     }
 }
-

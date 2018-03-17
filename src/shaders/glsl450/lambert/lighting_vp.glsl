@@ -1,4 +1,3 @@
-// static mesh
 #version 450
 
 uniform mat4 u_modelViewProjectionMatrix;

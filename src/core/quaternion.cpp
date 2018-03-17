@@ -13,6 +13,7 @@
 #include "o3d/core/dualquaternion.h"
 #include "o3d/core/math.h"
 #include "o3d/core/instream.h"
+#include "o3d/core/outstream.h"
 
 #include <math.h>
 
@@ -405,9 +406,9 @@ Quaternion Quaternion::slerp(const Quaternion &to, Float t) const
 Bool Quaternion::writeToFile(OutStream &os) const
 {
     os  << V[0]
-		<< V[1]
-		<< V[2]
-		<< V[3];
+        << V[1]
+        << V[2]
+        << V[3];
 
 	return True;
 }
@@ -415,9 +416,9 @@ Bool Quaternion::writeToFile(OutStream &os) const
 Bool Quaternion::readFromFile(InStream &is)
 {
     is  >> V[0]
-		>> V[1]
-		>> V[2]
-		>> V[3];
+        >> V[1]
+        >> V[2]
+        >> V[3];
 
 	return True;
 }

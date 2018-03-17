@@ -214,6 +214,11 @@ void LambertMaterial::initialize(
 
 			shaderInstance.unbindShader();
 		}
+
+        // light map
+        {
+            // @todo
+        }
 	}
 
 	// deferred mode

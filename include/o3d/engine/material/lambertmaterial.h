@@ -130,7 +130,7 @@ protected:
     Int32 u_lightCosCutOff;    //!< only for lighting and spot light
     Int32 u_lightExponent;     //!< only for lighting and spot light
 
-	ShaderInstance m_shaderInstance[3];
+    ShaderInstance m_shaderInstance[4];   //!< for each light type
 
 	virtual void getCommonLoc(ShaderInstance &shaderInstance, Int32 dest);
 	void getRiggingLoc(ShaderInstance &shaderInstance, Int32 dest);
@@ -141,4 +141,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_LAMBERTMATERIAL_H
-

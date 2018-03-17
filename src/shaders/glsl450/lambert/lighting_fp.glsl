@@ -149,7 +149,7 @@ void main()
     	#endif
 
 			vec3 dirToEye = normalize(u_eyePos - io_position);
-	    	vec3 reflectVec = reflect(u_lightDir, normal);
+            vec3 reflectVec = reflect(u_lightDir, normal);
 
             float specularIntensity = pow(max(dot(reflectVec, dirToEye), 0.0), shine);
 

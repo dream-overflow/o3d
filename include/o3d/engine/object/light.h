@@ -47,6 +47,8 @@ public:
         LIGHT_MAP            //!< Light map.
 	};
 
+    static const UInt32 NUM_LIGHT_TYPES = LIGHT_MAP + 1;
+
     /**
      * @brief Light The light is initialized as PointLight.
      * With {0.7,0.7,0.7,1.0} as ambient, diffuse and specular colors,

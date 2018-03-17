@@ -11,6 +11,7 @@
 #include "o3d/core/dualquaternion.h"
 
 #include "o3d/core/instream.h"
+#include "o3d/core/outstream.h"
 
 #include <math.h>
 
@@ -161,23 +162,23 @@ void DualQuaternion::DIB(
 /*---------------------------------------------------------------------------------------
   Serialisation
 ---------------------------------------------------------------------------------------*/
-Bool DualQuaternion::writeToFile(OutStream &os)const
+Bool DualQuaternion::writeToFile(OutStream &os) const
 {
-    os << Q[I]
-	     << Q[J]
-		 << Q[K]
-		 << Q[R]
-		 << Q[EI]
-	     << Q[EJ]
-		 << Q[EK]
-		 << Q[E];
+    os   << Q[I]
+         << Q[J]
+         << Q[K]
+         << Q[R]
+         << Q[EI]
+         << Q[EJ]
+         << Q[EK]
+         << Q[E];
 
 	return True;
 }
 
 Bool DualQuaternion::readFromFile(InStream &is)
 {
-    is >> Q[I]
+    is   >> Q[I]
 	     >> Q[J]
 		 >> Q[K]
 		 >> Q[R]

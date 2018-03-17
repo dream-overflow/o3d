@@ -22,7 +22,7 @@ using namespace o3d;
 MaterialSetting::MaterialSetting(BaseObject *parent) :
 	m_activity(True)
 {
-	m_floatParams[SHINE] = 1.f;
+    m_floatParams[SHINE] = 1.f;
 	m_floatParams[REFLECTIVITY] = 1.f;
 	m_floatParams[TRANSPARENCY] = 1.f;
 
