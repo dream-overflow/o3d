@@ -38,38 +38,27 @@ ShaderManager::ShaderManager(
 
     // set to the supported GLSL version
     if (getScene()->getRenderer()->isGLES()) {
-        switch (getScene()->getContext()->getGLSLVersion())	{
-            case 300:
-                m_activeVersion = VERSION_300_ES;
-                name = "glsles300";
-                break;
-            case 310:
-                m_activeVersion = VERSION_310_ES;
-                name = "glsles310";
-                break;
-            case 320:
-                m_activeVersion = VERSION_320_ES;
-                name = "glsles320";
-                break;
-            default:
-                break;
+        if (getScene()->getContext()->getGLSLVersion() >= 320) {
+            m_activeVersion = VERSION_320_ES;
+            name = "glsles320";
+        } else if (getScene()->getContext()->getGLSLVersion() >= 310) {
+            m_activeVersion = VERSION_310_ES;
+            name = "glsles310";
+        } else if (getScene()->getContext()->getGLSLVersion() >= 300) {
+            m_activeVersion = VERSION_300_ES;
+            name = "glsles300";
         }
     } else {
-        switch (getScene()->getContext()->getGLSLVersion())	{
-            case 330:
-                m_activeVersion = VERSION_330;
-                name = "glsl330";
-                break;
-            case 450:
-                m_activeVersion = VERSION_450;
-                name = "glsl450";
-                break;
-            case 460:
-                m_activeVersion = VERSION_460;
-                name = "glsl460";
-                break;
-            default:
-                break;
+        if (getScene()->getContext()->getGLSLVersion() >= 460) {
+            // @todo for now fallback to 450 until not converted for 460
+            m_activeVersion = VERSION_450;  // VERSION_460;
+            name = "glsl450";  // "glsl460";
+        } else if (getScene()->getContext()->getGLSLVersion() >= 450) {
+            m_activeVersion = VERSION_450;
+            name = "glsl450";
+        } else if (getScene()->getContext()->getGLSLVersion() >= 330) {
+            m_activeVersion = VERSION_330;
+            name = "glsl330";
         }
     }
 

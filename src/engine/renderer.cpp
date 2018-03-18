@@ -122,17 +122,22 @@ void Renderer::clearStencilBuffer()
 Bool Renderer::screenShot(
 	const String& filename,
 	Image::FileFormat format,
-	UInt32 quality)
+    UInt32 quality,
+    Bool alpha)
 {
     if (!m_state) {
 		O3D_ERROR(E_InvalidPrecondition("The OpenGL context must be defined before"));
     }
 
-	Image picture;
+    if (format != Image::PNG && format != Image::TGA && format != Image::DDS) {
+        // no alpha for no supporting format (could have an ImageFormat::Capacity)
+        alpha = False;
+    }
 
+	Image picture;
 	Box2i viewPort = m_glContext->getViewPort();
 
-	picture.allocate(viewPort.width(), viewPort.height(), 3);
+    picture.allocate(viewPort.width(), viewPort.height(), alpha ? 4 : 3);
 
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
@@ -141,11 +146,11 @@ Bool Renderer::screenShot(
 			viewPort.y(),
 			viewPort.width(),
 			viewPort.height(),
-			GL_RGB,
+            alpha ? GL_RGBA : GL_RGB,
 			GL_UNSIGNED_BYTE,
 			picture.getDataWrite());
 
-	picture.vFlip();
+    picture.vFlip();
 
 	Bool ret = picture.saveRgb(filename, format, quality);
 

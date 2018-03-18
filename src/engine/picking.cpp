@@ -42,6 +42,8 @@ Picking::Picking(BaseObject *parent) :
 	m_camera(this),
     m_fbo(getScene()->getContext())
 {
+    O3D_UNUSED(m_pointerMode);
+    O3D_UNUSED(m_stacksize);
 }
 
 // Add an object to check

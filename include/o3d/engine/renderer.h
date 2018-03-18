@@ -193,14 +193,19 @@ public:
 	//! Set as current OpenGL context.
 	virtual void setCurrent();
 
-	//! Take a simple screen shot using the renderer color buffer.
-	//! @param filename Output picture filename.
-	//! @param format Picture file format.
-	//! @param quality Picture compression quality (for JPEG).
-	Bool screenShot(
+    /**
+     * @brief Take a simple screen shot using the renderer color buffer.
+     * @param filename Output picture filename.
+     * @param format Picture file format.
+     * @param quality quality Picture compression quality (for JPEG).
+     * @param alpha If supported by the format add the alpha channel.
+     * @return True if success.
+     */
+    Bool screenShot(
 		const String &filename,
 		Image::FileFormat format,
-		UInt32 quality = 255);
+        UInt32 quality = 255,
+        Bool alpha = False);
 
 	//! Clear the color buffer.
 	void clearColorBuffer();

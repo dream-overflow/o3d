@@ -28,30 +28,29 @@ enum ResizeFilter
 class InStream;
 class OutStream;
 
-//---------------------------------------------------------------------------------------
-//! @class Image
-//-------------------------------------------------------------------------------------
-//! An image can contains a simple or complex image with mipmap, cubemap, or
-//! volume texture (3d).
-//!
-//! Supported formats for reading are TGA, DDS, BMP, GIF, PNG and JPG.
-//! Supported formats for writing are BMP, PNG and JPG.
-//!
-//! It allow loading, saving, pixel format conversion, flipping, mirroring,
-//! mask operation and blending.
-//!
-//! About shadow and deep copy. Image data are passed by shallow copy on duplication.
-//! detach allow to make a deep copy of the image data.
-//! Any change done to the image create a new image data, so that the others copies
-//! are not modified.
-//!
-//! Any conversion works on unsigned 8 bits and float 32 R(A), RG(RA), RBG, RGBA
-//! and float 32 depth pixel formats. Exception for complex images (mipmap, cubemap, 3d).
-//! There is actually no conversions from/to compressed pixel formats.
-//! Some pixels format are not supported for conversion : any unsigned depth(stencil),
-//! and DXT compressed. Also there is actually no unsigned 8 to float 32 pixel formats
-//! conversions.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The Image class
+ * @details An image can contains a simple or complex image with mipmap, cubemap, or
+ * volume texture (3d).
+ *
+ * Supported formats for reading are TGA, DDS, BMP, GIF, PNG and JPG.
+ * Supported formats for writing are BMP, PNG and JPG.
+ *
+ * It allow loading, saving, pixel format conversion, flipping, mirroring,
+ * mask operation and blending.
+ *
+ * About shadow and deep copy. Image data are passed by shallow copy on duplication.
+ * detach allow to make a deep copy of the image data.
+ * Any change done to the image create a new image data, so that the others copies
+ * are not modified.
+ *
+ * Any conversion works on unsigned 8 bits and float 32 R(A), RG(RA), RBG, RGBA
+ * and float 32 depth pixel formats. Exception for complex images (mipmap, cubemap, 3d).
+ * There is actually no conversions from/to compressed pixel formats.
+ * Some pixels format are not supported for conversion : any unsigned depth(stencil),
+ * and DXT compressed. Also there is actually no unsigned 8 to float 32 pixel formats
+ * conversions.
+ */
 class O3D_API Image : public SmartCounter<Image>
 {
 public:
@@ -91,16 +90,26 @@ public:
 	//! Destroy the picture object
 	void destroy();
 
-	//! Create a new picture of cx*cy size.
-	//! @param numComponents number of color components (1,2,3,4)
-	//! Pixel format is set to R_U8 for 1 component, RG_U8, RGB_U8
-	//! and RGBA_U8 respectively.
-	Bool allocate(UInt32 cx, UInt32 cy, UInt32 numComponents);
+    /**
+     * @brief Create a new picture of cx*cy size.
+     * @param cx Width of the image to allocate.
+     * @param cy Height of the image to allocate.
+     * @param numComponents Number of color components.
+     * @return True if success.
+     * @details Pixel format is set to R_8 for 1 component, RG_8, RGB_8 and RGBA_8 respectively.
+     */
+    Bool allocate(UInt32 cx, UInt32 cy, UInt32 numComponents);
 
-	//! Create a new picture of cx*cy size given an existing buffer.
-	//! @param pixelFormat Pixel format of the data.
-	//! @param size Size of the buffer in bytes.
-	Bool loadBuffer(
+    /**
+     * @brief Create a new picture of cx*cy size given an existing buffer.
+     * @param width Width of the image to copy.
+     * @param height Height of the image to copy.
+     * @param size Size of the buffer in bytes.
+     * @param pixelFormat Pixel format of the data.
+     * @param data Data buffer of the image to copy.
+     * @return
+     */
+    Bool loadBuffer(
 		UInt32 width,
 		UInt32 height,
 		UInt32 size,
@@ -143,7 +152,6 @@ public:
 	//! @note pixel format lesser than 8bits are converted into 8bits (1bpp)
 	Bool load(const String &filename, PixelFormat pixelFormat);
 
-
 	//-----------------------------------------------------------------------------------
 	// Writing
 	//-----------------------------------------------------------------------------------
@@ -165,7 +173,6 @@ public:
 		const String &filename,
 		FileFormat format,
 		Int32 quality = 255);
-
 
 	//-----------------------------------------------------------------------------------
 	// Operations
@@ -191,55 +198,23 @@ public:
 	// Complex bitmaps
 	//-----------------------------------------------------------------------------------
 
-	//! is the picture contain many mipmap, or it is a multi-layer (3d texture),
-	//! or it is a cube-map.
-	inline Bool isComplex() const
-	{
-		if (m_pic.get())
-			return m_pic->isComplex();
-		return False;
-	}
+    //! Is the picture contains mipmaps, or it is a multi-layer (3d texture), or it is a cube-map.
+    inline Bool isComplex() const { return m_pic.get() && m_pic->isComplex(); }
 
 	//! Is there mipmaps.
-	inline Bool isMipMap() const
-	{
-		if (m_pic.get())
-			return m_pic->isMipMap();
-		return False;
-	}
+    inline Bool isMipMap() const { return m_pic.get() && m_pic->isMipMap(); }
 
 	//! Is it a cube-map.
-	inline Bool isCubeMap() const
-	{
-		if (m_pic.get())
-			return m_pic->isCubeMap();
-		return False;
-	}
+    inline Bool isCubeMap() const { return m_pic.get() && m_pic->isCubeMap(); }
 
 	//! Is it a volume texture (3d).
-	inline Bool isVolumeTexture() const
-	{
-		if (m_pic.get())
-			return m_pic->isVolumeTexture();
-		return False;
-	}
+    inline Bool isVolumeTexture() const { return m_pic.get() && m_pic->isVolumeTexture(); }
 
-	//! Get the number of mipmap (don't count the primary level).
-	//! so the total number of level is GetNumMipMapLvl() + 1
-	inline UInt32 getNumMipMapLvl() const
-	{
-		if (m_pic.get())
-			return m_pic->getNumMipMapLvl();
-		return 0;
-	}
+    //! Get the number of mipmap (without the primary level).
+    inline UInt32 getNumMipMapLvl() const { return m_pic.get() ? m_pic->getNumMipMapLvl() : 0; }
 
 	//! Get the depth size of a volume texture.
-	inline UInt32 getNumDepthLayer() const
-	{
-		if (m_pic.get())
-			return m_pic->getNumDepthLayer();
-		return 0;
-	}
+    inline UInt32 getNumDepthLayer() const { return m_pic.get() ? m_pic->getNumDepthLayer() : 0; }
 
 	//! Select a mipmap lvl. 0 mean primary level.
 	Bool bindMipMapLvl(UInt32 lvl);
@@ -251,37 +226,16 @@ public:
 	Bool bindVolumeLayer(UInt32 layer);
 
 	//! Get current bound mipmap lvl.
-	inline UInt32 getCurrentMipMapLvl() const
-	{
-		if (m_pic.get())
-			return m_pic->getCurrentMipMapLvl();
-		return 0;
-	}
+    inline UInt32 getCurrentMipMapLvl() const { return m_pic.get() ? m_pic->getCurrentMipMapLvl() : 0; }
 
 	//! Get current bound cubemap side.
-	inline UInt32 getCurrentCubeMapSide() const
-	{
-		if (m_pic.get())
-			return m_pic->getCurrentCubeMapSide();
-		return 0;
-	}
+    inline UInt32 getCurrentCubeMapSide() const { return m_pic.get() ? m_pic->getCurrentCubeMapSide() : 0; }
 
 	//! Get current bound depth volume layer.
-	inline UInt32 getCurrentDepthLayer() const
-	{
-		if (m_pic.get())
-			return m_pic->getCurrentDepthLayer();
-		return 0;
-	}
+    inline UInt32 getCurrentDepthLayer() const { return m_pic.get() ? m_pic->getCurrentDepthLayer() : 0; }
 
 	//! Is a compressed picture (ie. DXT)
-	inline Bool isCompressed() const
-	{
-		if (m_pic.get())
-			return m_pic->isCompressed();
-		return False;
-	}
-
+    inline Bool isCompressed() const { return m_pic.get() && m_pic->isCompressed(); }
 
 	//-----------------------------------------------------------------------------------
 	// Accessors
@@ -300,32 +254,37 @@ public:
 	//! Get the pixel format.
 	inline PixelFormat getPixelFormat() const { return m_pixelFormat; }
 
-	//! Bitmap data accessor (const version).
-	//! @note Depending of the current bound layer/mipmap/cubeside.
+    /**
+     * @brief Bitmap data accessor (const version).
+     * @note Depending of the current bound layer/mipmap/cubeside.
+     */
 	inline const UInt8* getData() const
 	{
-		if (m_pic.get())
+        if (m_pic.get()) {
 			return m_pic->getData();
-		else if (m_data.get())
+        } else if (m_data.get()) {
 			return m_data->data;
-		else
+        } else {
             return nullptr;
+        }
 	}
 
-	//! Bitmap data accessor for write. Set it modified.
-	//! @note Depending of the current bound layer/mipmap/cubeside. This method doesn't
-	//! perform detach. Then take care to call a detach or not depending of what you are
-	//! doing.
-	inline UInt8* getDataWrite()
+    /**
+     * @brief Bitmap data accessor for write. Set it modified.
+     * @note Depending of the current bound layer/mipmap/cubeside. This method doesn't
+     * perform detach. Then take care to call a detach or not depending of what you are doing.
+     */
+    inline UInt8* getDataWrite()
 	{
 		setDirty();
 
-		if (m_pic.get())
+        if (m_pic.get()) {
 			return m_pic->getData();
-		else if (m_data.get())
+        } else if (m_data.get()) {
 			return m_data->data;
-		else
+        } else {
             return nullptr;
+        }
 	}
 
 	//! Get a pixel.
@@ -578,4 +537,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_IMAGE_H
-
