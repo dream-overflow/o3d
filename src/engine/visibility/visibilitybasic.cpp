@@ -33,9 +33,13 @@ VisibilityBasic::VisibilityBasic(
 {
 }
 
-// destructor
 VisibilityBasic::~VisibilityBasic()
 {
+}
+
+UInt32 VisibilityBasic::getNumObjects() const
+{
+    return UInt32(m_objectList.size());
 }
 
 // add an object (we suppose that it doesn't exist)
@@ -43,8 +47,7 @@ void VisibilityBasic::addObject(SceneObject *object)
 {
     O3D_ASSERT(object != nullptr);
 
-	if (std::find(m_objectList.begin(), m_objectList.end(), object) != m_objectList.end())
-	{
+    if (std::find(m_objectList.begin(), m_objectList.end(), object) != m_objectList.end()) {
 		// The object is already in the set
 		O3D_ERROR(E_ValueRedefinition("Attempt to add an object but it is already present"));
 		return;

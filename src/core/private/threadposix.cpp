@@ -408,6 +408,8 @@ void WaitCondition::wakeAll()
 
 ReadWriteLock::ReadWriteLock()
 {
+    O3D_UNUSED(m_readerCounter);
+
 	// init the rwlock
     if (pthread_rwlock_init(&m_readerHandle, nullptr) != 0)	{
 		O3D_ERROR(E_InvalidResult("Not enough resources to create rwlock"));

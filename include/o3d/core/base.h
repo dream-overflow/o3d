@@ -191,7 +191,7 @@ namespace o3d
             return radian;
         }
 
-        return radian - (((int)(radian/PI + 0.4999999) / 2) * 2) * PI;
+        // return radian - (((int)(radian/PI + 0.4999999) / 2) * 2) * PI;
     }
 
 	//! Return Float random value.
