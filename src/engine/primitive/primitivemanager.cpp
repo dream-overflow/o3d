@@ -287,19 +287,28 @@ UInt32 PrimitiveManager::registerObject(
 void PrimitiveManager::setColor(Float r, Float g, Float b, Float a)
 {
 	m_color.set(r,g,b,a);
-	m_colorShader.instance.setConstColor(m_colorShader.u_color, m_color);
+
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstColor(m_colorShader.u_color, m_color);
+    }
 }
 
 void PrimitiveManager::setColor(const Color &color)
 {
 	m_color = color;
-    m_colorShader.instance.setConstColor(m_colorShader.u_color, m_color);
+
+    if (m_colorShader.instance.isInUse()) {
+        m_colorShader.instance.setConstColor(m_colorShader.u_color, m_color);
+    }
 }
 
 void PrimitiveManager::setPickableId(UInt32 id)
 {
     m_pickableId = id;
-    m_pickingShader.instance.setConstUInt(m_pickingShader.u_picking, m_pickableId);
+
+    if (m_pickingShader.instance.isInUse()) {
+        m_pickingShader.instance.setConstUInt(m_pickingShader.u_picking, m_pickableId);
+    }
 }
 
 // Define the modelview*projection matrix using the GLContext current projection*modelview.
