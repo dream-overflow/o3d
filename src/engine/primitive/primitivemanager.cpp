@@ -129,7 +129,7 @@ PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 	// AXIS lines
 	{
 		const Float vertices[] = { 0,0,0, 1,0,0, 0,0,0, 0,1,0, 0,0,0, 0,0,1 };
-		const Float colors[] = { 1,0,0,1, 1,0,0,1, 0,1,0,1, 0,1,0,1, 0,0,1,1, 0,0,1,1 };
+        const Float colors[] = { 1,0,0,1, 1,0,0,1, 0,0.6,0,1, 0,0.6,0,1, 0,0,1,1, 0,0,1,1 };
 
         Object *object = new Object(getScene()->getContext());
 
@@ -363,42 +363,42 @@ void PrimitiveManager::drawLocalAxis()
 
         glContext->modelView().push();
             //glContext->ModelView().set(x);
-            glContext->modelView().translate(Vector3(0.8f,0,0));
+            glContext->modelView().translate(Vector3(0.8f, 0, 0));
             glContext->modelView().rotateZ(o3d::toRadian(-90.f));
-            setColor(1.f,0.f,0.f);
+            setColor(0.8f, 0.f, 0.f);
+            draw(SOLID_CONE1, Vector3(0.1f, 0.2f, 0.1f));
+        glContext->modelView().pop();
+
+        glContext->modelView().push();
+            glContext->modelView().translate(Vector3(0, 0.8f, 0));
+            setColor(0.f, 0.6f, 0.f);
             draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
         glContext->modelView().pop();
 
         glContext->modelView().push();
-            glContext->modelView().translate(Vector3(0,0.8f,0));
-            setColor(0.f,1.f,0.f);
-            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
-        glContext->modelView().pop();
-
-        glContext->modelView().push();
-            glContext->modelView().translate(Vector3(0,0,0.8f));
+            glContext->modelView().translate(Vector3(0, 0, 0.8f));
             glContext->modelView().rotateX(o3d::toRadian(90.f));
-            setColor(0.f,0.f,1.f);
-            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+            setColor(0.f, 0.f, 0.6f);
+            draw(SOLID_CONE1, Vector3(0.1f, 0.2f, 0.1f));
         glContext->modelView().pop();
     } else if (m_pickingShader.instance.isInUse()) {
         drawXYZAxis(Vector3(1,1,1));
 
         glContext->modelView().push();
-            glContext->modelView().translate(Vector3(0.8f,0,0));
+            glContext->modelView().translate(Vector3(0.8f, 0, 0));
             glContext->modelView().rotateZ(o3d::toRadian(-90.f));
-            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+            draw(SOLID_CONE1, Vector3(0.1f, 0.2f, 0.1f));
         glContext->modelView().pop();
 
         glContext->modelView().push();
-            glContext->modelView().translate(Vector3(0,0.8f,0));
-            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+            glContext->modelView().translate(Vector3(0, 0.8f, 0));
+            draw(SOLID_CONE1, Vector3(0.1f, 0.2f, 0.1f));
         glContext->modelView().pop();
 
         glContext->modelView().push();
-            glContext->modelView().translate(Vector3(0,0,0.8f));
+            glContext->modelView().translate(Vector3(0, 0, 0.8f));
             glContext->modelView().rotateX(o3d::toRadian(90.f));
-            draw(SOLID_CONE1, Vector3(0.1f,0.2f,0.1f));
+            draw(SOLID_CONE1, Vector3(0.1f, 0.2f, 0.1f));
         glContext->modelView().pop();
     }
 }
