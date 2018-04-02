@@ -23,11 +23,9 @@ class OBBoxExt;
 class BCone;
 class Matrix4;
 
-//---------------------------------------------------------------------------------------
-//! @class Frustum
-//-------------------------------------------------------------------------------------
-//! Compute a frustum, and check for point,sphere or box if its in or not.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Compute a frustum, and check for point,sphere or box if its in or not.
+ */
 class O3D_API Frustum
 {
 public:
@@ -41,12 +39,12 @@ public:
 		TOP_PLANE,
 		FAR_PLANE,
 		NEAR_PLANE
-	/*	LEFT = 0,
-		RIGHT,
-		BOTTOM,
-		TOP,
-		NEAR,
-		FAR*/
+//		LEFT = 0,
+//		RIGHT,
+//		BOTTOM,
+//		TOP,
+//		NEAR,
+//		FAR
 	};
 
 	//! Call this every time the camera moves to update the frustum.
@@ -86,16 +84,20 @@ public:
 	Geometry::Clipping coneInFrustumLight(const BCone &cone) const;
 
 	//! Return the clip result between the frustum and a oriented bounding box.
+    //! @todo
 	Geometry::Clipping boxInFrustum(const OBBox &box) const;
 
 	//! Return the clip result between the frustum and a oriented bounding box (without near and far).
+    //! @todo
 	Geometry::Clipping boxInFrustumLight(const OBBox &box) const;
 
 	//! Return the clip result between the frustum and a oriented bounding box ext.
-	Geometry::Clipping boxInFrustum(const OBBoxExt &box) const;
+    //! @todo
+    Geometry::Clipping boxInFrustum(const OBBoxExt &box) const;
 
 	//! Return the clip result between the frustum and a oriented bounding box ext (without near and far).
-	Geometry::Clipping boxInFrustumLight(const OBBoxExt &box) const;
+    //! @todo
+    Geometry::Clipping boxInFrustumLight(const OBBoxExt &box) const;
 
 private:
 
@@ -105,4 +107,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_FRUSTUM_H
-

@@ -20,12 +20,10 @@ namespace o3d {
 class BSphere;
 class BCone;
 
-//---------------------------------------------------------------------------------------
-//! @class Plane
-//-------------------------------------------------------------------------------------
-//! A definition of a plane function. Useful for compute intersection.
-//! A vector v is said "front" of a plane p if p*v>0.
-//---------------------------------------------------------------------------------------
+/**
+ * @brief Definition of a plane function. Useful for compute intersection.
+ * A vector v is said "front" of a plane p if p*v>0.
+ */
 class O3D_API Plane
 {
 public:
@@ -100,10 +98,10 @@ public:
 	//! Equivalent to (this.clip(sphere) = CLIP_INSIDE) || (this.clip(sphere) = CLIP_INTERSECT)
 	//! but in general, the function 'Intersect' would be more efficient.
 	//! If you wish to know if the intersection of the sphere and the plane is not null, you
-	//! must use O3DBSphere::intersect(const O3DPlane &) const.
+    //! must use BSphere::intersect(const O3DPlane &) const.
 	//! @return True if the sphere intersects the plane or if the sphere is inside the plane,
-	//!                  that is to say behind the plane (compared to its normal)
-	//! @see O3DBSphere::intersect(const O3DPlane &) const
+    //!         that is to say behind the plane (compared to its normal)
+    //! @see BSphere::intersect(const O3DPlane &) const
 	Bool intersect(const BSphere & sphere) const;
 
 	//! Intersects with a cone
@@ -111,10 +109,10 @@ public:
 	//! but in general, the function 'Intersect' would be more efficient.
 	//! Warning : this function is not equivalent to O3DBCone::intersect(const O3DPlane &).
 	//! If you wish to know if the intersection of the cone and the plane is not null, you
-	//! must use O3DBCone::intersect(const O3DPlane &) const.
+    //! must use BCone::intersect(const O3DPlane &) const.
 	//! @return True if the cone intersects the plane or if the cone is inside the plane,
-	//!                  that is to say behind the plane (compared to its normal)
-	//! @see O3DBCone::intersect(const O3DPlane &) const
+    //!         that is to say behind the plane (compared to its normal)
+    //! @see BCone::intersect(const O3DPlane &) const
 	Bool intersect(const BCone & cone) const;
 
 	//! Project a point onto a plane.
@@ -160,12 +158,15 @@ public:
 	//! Compare two plane using an epsilon.
 	inline Bool operator==(const Plane &P) const
 	{
-		if (P.m_d > m_d + Limits<Float>::epsilon())
+        if (P.m_d > m_d + Limits<Float>::epsilon()) {
 			return False;
-		if (P.m_d < m_d - Limits<Float>::epsilon())
+        }
+        if (P.m_d < m_d - Limits<Float>::epsilon()) {
 			return False;
-		if (P.m_normal != m_normal)
+        }
+        if (P.m_normal != m_normal) {
 			return False;
+        }
 
 		return True;
 	}
@@ -186,4 +187,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_PLANE_H
-

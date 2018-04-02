@@ -375,4 +375,3 @@ Bool Plane::readFromFile(InStream &is)
 
 	return True;
 }
-

@@ -18,15 +18,18 @@
 
 using namespace o3d;
 
-// extract frustum planes
 void Frustum::computeFrustum(
 		const Matrix4 & _projectionMatrix,
 		const Matrix4 & _modelViewMatrix)
 {
-#if (0) // standard version.
+    // extract frustum planes
+
+#if (1)
+    // standard version.
 	Matrix4 clip = _projectionMatrix * _modelViewMatrix;
 	clip.transpose();
-#else // optimized version, doesn't works with rotated projection matrices.
+#else
+    // optimized version, doesn't works with rotated and ortho projection matrices.
 	Matrix4 clip;
 
 	clip.setData(0, 0, _modelViewMatrix.m11() * _projectionMatrix.m11());
@@ -88,9 +91,6 @@ void Frustum::computeFrustum(
 	m_planes[FAR_PLANE].normalize();
 }
 
-/*---------------------------------------------------------------------------------------
-  this takes a 3D point and returns true if it's inside of the frustum
----------------------------------------------------------------------------------------*/
 Geometry::Clipping Frustum::pointInFrustum(const Vector3& point) const
 {
 	Float distance;
@@ -98,18 +98,14 @@ Geometry::Clipping Frustum::pointInFrustum(const Vector3& point) const
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
 	// for the 6 sides
-	for (UInt32 i = 0 ; i < 6 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 6 ; ++i) {
 		// Compute the plane equation and check if the point is behind a side of the frustum
 		distance = m_planes[i] * point;
 
-		if (distance < 0.0f)
-		{
+        if (distance < 0.0f) {
 			// The point was behind a side, so it's not in the frustum
 			return Geometry::CLIP_OUTSIDE;
-		}
-		else if (distance == 0)
-		{
+        } else if (distance == 0) {
 			// intersection point/plane
 			result = Geometry::CLIP_INTERSECT;
 		}
@@ -125,18 +121,14 @@ Geometry::Clipping Frustum::pointInFrustumLight(const Vector3& point) const
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
 	// for the 6 sides
-	for (UInt32 i = 0 ; i < 4 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 4 ; ++i) {
 		// Compute the plane equation and check if the point is behind a side of the frustum
 		distance = m_planes[i] * point;
 
-		if (distance < 0.0f)
-		{
+        if (distance < 0.0f) {
 			// The point was behind a side, so it's not in the frustum
 			return Geometry::CLIP_OUTSIDE;
-		}
-		else if (distance == 0)
-		{
+        } else if (distance == 0) {
 			// intersection point/plane
 			result = Geometry::CLIP_INTERSECT;
 		}
@@ -145,10 +137,6 @@ Geometry::Clipping Frustum::pointInFrustumLight(const Vector3& point) const
 	return result;
 }
 
-/*---------------------------------------------------------------------------------------
-  this takes a 3D point and a radius and returns true if the sphere is inside of the
-  frustum
----------------------------------------------------------------------------------------*/
 Geometry::Clipping Frustum::sphereInFrustum(const Vector3& point, Float radius) const
 {
 	Float distance;
@@ -156,21 +144,18 @@ Geometry::Clipping Frustum::sphereInFrustum(const Vector3& point, Float radius) 
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
 	// for the 6 sides
-	for (UInt32 i = 0 ; i < 6 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 6 ; ++i) {
 		// If the center of the sphere is farther away from the plane than the radius
 		distance = m_planes[i] * point;
 
 		// if this distance is < -sphere_radius
-		if (distance < -radius)
-		{
+        if (distance < -radius) {
 			// The point was behind a side, so it's not in the frustum
 			return Geometry::CLIP_OUTSIDE;
 		}
 		
 		// else if the distance is between +- radius
-		if (fabs(distance) < radius)
-		{
+        if (fabs(distance) < radius) {
 			// intersection sphere/plane
 			result = Geometry::CLIP_INTERSECT;
 		}
@@ -186,21 +171,18 @@ Geometry::Clipping Frustum::sphereInFrustumLight(const Vector3& point, Float rad
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
 	// for the 4 sides
-	for (UInt32 i = 0 ; i < 4 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 4 ; ++i) {
 		// If the center of the sphere is farther away from the plane than the radius
 		distance = m_planes[i] * point;
 
 		// if this distance is < -sphere_radius
-		if (distance < -radius)
-		{
+        if (distance < -radius) {
 			// The point was behind a side, so it's not in the frustum
 			return Geometry::CLIP_OUTSIDE;
 		}
 		
 		// else if the distance is between +- radius
-		if (fabs(distance) < radius)
-		{
+        if (fabs(distance) < radius) {
 			// intersection sphere/plane
 			result = Geometry::CLIP_INTERSECT;
 		}
@@ -258,8 +240,7 @@ Geometry::Clipping Frustum::boxInFrustum(const AABBox &box) const
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
 	// for the 6 sides
-	for (UInt32 i = 0 ; i < 6 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 6 ; ++i) {
 		normal = m_planes[i].getNormal();
 
 		p = min;
@@ -302,17 +283,14 @@ Geometry::Clipping Frustum::boxInFrustumLight(const AABBox &box) const
 	box.getCorners(corners);
 	
 	// for the 6 sides 
-	for (UInt32 i = 0 ; i < 4 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 4 ; ++i) {
 		OutPoint = 0;
 		// Pour chaque angle de la box
-		for (UInt32 j = 0 ; j < 8 ; ++j)
-		{
+        for (UInt32 j = 0 ; j < 8 ; ++j) {
 			// Distance entre le point et le plan
 			distance = m_planes[i] * corners[j];
 
-			if (distance < 0.0f)
-			{
+            if (distance < 0.0f) {
 				// On est derriere le plan
 				OutPoint++;
 				Out = True;
@@ -338,9 +316,8 @@ Geometry::Clipping Frustum::boxInFrustumLight(const AABBox &box) const
 
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
-	// for the 6 sides
-	for (UInt32 i = 0 ; i < 4 ; ++i)
-	{
+    // for the 4 sides
+    for (UInt32 i = 0 ; i < 4 ; ++i) {
 		normal = m_planes[i].getNormal();
 
 		p = min;
@@ -375,8 +352,9 @@ Geometry::Clipping Frustum::boxInFrustumLight(const AABBox &box) const
 Geometry::Clipping Frustum::boxInFrustum(const AABBoxExt &box) const
 {
 	// First check if the bounding sphere is out the frustum
-	if (sphereInFrustum(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE)
+    if (sphereInFrustum(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE) {
 		return Geometry::CLIP_OUTSIDE;
+    }
 	
 	Float distance;
 	/*Int32 OutPoint;
@@ -387,8 +365,7 @@ Geometry::Clipping Frustum::boxInFrustum(const AABBoxExt &box) const
 	box.getCorners(corners);
 	
 	// for the 6 sides 
-	for (UInt32 i = 0 ; i < 6 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 6 ; ++i) {
 		OutPoint = 0;
 		// Pour chaque angle de la box
 		for (UInt32 j = 0 ; j < 8 ; ++j)
@@ -424,8 +401,7 @@ Geometry::Clipping Frustum::boxInFrustum(const AABBoxExt &box) const
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
 	// for the 6 sides
-	for (UInt32 i = 0 ; i < 6 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 6 ; ++i) {
 		normal = m_planes[i].getNormal();
 
 		p = min;
@@ -460,8 +436,9 @@ Geometry::Clipping Frustum::boxInFrustum(const AABBoxExt &box) const
 Geometry::Clipping Frustum::boxInFrustumLight(const AABBoxExt &box) const
 {
 	// First check if the bounding sphere is out the frustum
-	if (sphereInFrustumLight(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE)
+    if (sphereInFrustumLight(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE) {
 		return Geometry::CLIP_OUTSIDE;
+    }
 	
 	Float distance;
 	/*Int32 OutPoint;
@@ -472,17 +449,14 @@ Geometry::Clipping Frustum::boxInFrustumLight(const AABBoxExt &box) const
 	box.getCorners(corners);
 	
 	// for the 4 sides 
-	for (UInt32 i = 0 ; i < 4 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 4 ; ++i) {
 		OutPoint = 0;
 		// Pour chaque angle de la box
-		for (UInt32 j = 0 ; j < 8 ; ++j)
-		{
+        for (UInt32 j = 0 ; j < 8 ; ++j) {
 			// Distance entre le point et le plan
 			distance = m_planes[i] * corners[j];
 
-			if (distance < 0.0f)
-			{
+            if (distance < 0.0f) {
 				// On est derriere le plan
 				OutPoint++;
 				Out = True;
@@ -509,8 +483,7 @@ Geometry::Clipping Frustum::boxInFrustumLight(const AABBoxExt &box) const
 	Geometry::Clipping result = Geometry::CLIP_INSIDE;
 
     // for the 4 sides
-	for (UInt32 i = 0 ; i < 4 ; ++i)
-	{
+    for (UInt32 i = 0 ; i < 4 ; ++i) {
 		normal = m_planes[i].getNormal();
 
 		p = min;
@@ -547,22 +520,22 @@ Geometry::Clipping Frustum::coneInFrustum(const BCone &cone) const
 {
 	Geometry::Clipping lResult;
 
-	if ((lResult = sphereInFrustum(cone.getOutBSphere().getCenter(), cone.getOutBSphere().getRadius())) != Geometry::CLIP_INTERSECT)
+    if ((lResult = sphereInFrustum(cone.getOutBSphere().getCenter(),
+                                   cone.getOutBSphere().getRadius())) != Geometry::CLIP_INTERSECT) {
 		return lResult;
+    }
 
 	lResult = Geometry::CLIP_INSIDE;
 
-    for (Int32 i = 0 ; i < 6 ; ++i)
-    {
-        switch(m_planes[i].clip(cone))
-		{
-        case Geometry::CLIP_OUTSIDE:
-            return Geometry::CLIP_OUTSIDE;
-		case Geometry::CLIP_INTERSECT:
-			lResult = Geometry::CLIP_INTERSECT;
-			break;
-		default:
-			break;
+    for (Int32 i = 0 ; i < 6 ; ++i) {
+        switch(m_planes[i].clip(cone)) {
+            case Geometry::CLIP_OUTSIDE:
+                return Geometry::CLIP_OUTSIDE;
+            case Geometry::CLIP_INTERSECT:
+                lResult = Geometry::CLIP_INTERSECT;
+                break;
+            default:
+                break;
 		}
 	}
 
@@ -574,22 +547,22 @@ Geometry::Clipping Frustum::coneInFrustumLight(const BCone &cone) const
 {
 	Geometry::Clipping lResult;
 
-	if ((lResult = sphereInFrustum(cone.getOutBSphere().getCenter(), cone.getOutBSphere().getRadius())) != Geometry::CLIP_INTERSECT)
+    if ((lResult = sphereInFrustum(cone.getOutBSphere().getCenter(),
+                                   cone.getOutBSphere().getRadius())) != Geometry::CLIP_INTERSECT) {
 		return lResult;
+    }
 
 	lResult = Geometry::CLIP_INSIDE;
 
-	for (Int32 i = 0 ; i < 4 ; ++i)
-	{
-		switch(m_planes[i].clip(cone))
-		{
-		case Geometry::CLIP_OUTSIDE:
-			return Geometry::CLIP_OUTSIDE;
-		case Geometry::CLIP_INTERSECT:
-			lResult = Geometry::CLIP_INTERSECT;
-			break;
-		default:
-			break;
+    for (Int32 i = 0 ; i < 4 ; ++i) {
+        switch(m_planes[i].clip(cone)) {
+            case Geometry::CLIP_OUTSIDE:
+                return Geometry::CLIP_OUTSIDE;
+            case Geometry::CLIP_INTERSECT:
+                lResult = Geometry::CLIP_INTERSECT;
+                break;
+            default:
+                break;
 		}
 	}
 
@@ -599,33 +572,34 @@ Geometry::Clipping Frustum::coneInFrustumLight(const BCone &cone) const
 // Clip with oriented bounding box
 Geometry::Clipping Frustum::boxInFrustum(const OBBox &box) const
 {
-	// TODO
+    // @todo
 	return Geometry::CLIP_INSIDE;
 }
 
 Geometry::Clipping Frustum::boxInFrustumLight(const OBBox &box) const
 {
-	// TODO
+    // @todo
 	return Geometry::CLIP_INSIDE;
 }
 
 Geometry::Clipping Frustum::boxInFrustum(const OBBoxExt &box) const
 {
 	// First check if the bounding sphere is out the frustum
-	if (sphereInFrustum(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE)
+    if (sphereInFrustum(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE) {
 		return Geometry::CLIP_OUTSIDE;
+    }
 
-	// TODO
+    // @todo
 	return Geometry::CLIP_INSIDE;
 }
 
 Geometry::Clipping Frustum::boxInFrustumLight(const OBBoxExt &box) const
 {
 	// First check if the bounding sphere is out the frustum
-	if (sphereInFrustumLight(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE)
+    if (sphereInFrustumLight(box.getCenter(), box.getRadius()) == Geometry::CLIP_OUTSIDE) {
 		return Geometry::CLIP_OUTSIDE;
+    }
 
-	// TODO
+    // @todo
 	return Geometry::CLIP_INSIDE;
 }
-
