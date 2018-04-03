@@ -219,6 +219,10 @@ void Camera::setUpModelView()
 
 void Camera::draw(const DrawInfo &drawInfo)
 {
+    if (!getActivity() || !getVisibility()) {
+        return;
+    }
+
     if (!m_ortho) {
 		return;
     }
