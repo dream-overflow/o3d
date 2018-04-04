@@ -31,12 +31,12 @@ typedef Box<UInt8>	Box2uc;
 class InStream;
 class OutStream;
 
-//---------------------------------------------------------------------------------------
-//! @class Box
-//-------------------------------------------------------------------------------------
-//! Template class of a two dimensional bounding box. Width and height must be greater
-//! or equal to zero. TODO epsilon for float and double specializations
-//---------------------------------------------------------------------------------------
+/**
+ * @class Box Template class of a two dimensional bounding box.
+ * @details Width and height must be greater or equal to zero.
+ * Box is defined by a top-left coordinate and a positive size.
+ * @todo epsilon for float and double specializations
+ */
 template <class TYPE>
 class O3D_API_TEMPLATE Box
 {
@@ -278,24 +278,24 @@ public:
 		S.zero();
 	}
 
+    //! Center of the box
+    inline Vector2<TYPE> center() const
+    {
+        return Vector2<TYPE>(P.x() + S.x() / 2, P.y() + S.y() / 2);
+    }
+
 	//! Check if a box is inside this box
 	inline Bool isInside(const Box &box) const
 	{
-		if ((box.P[X] < P[X]) || (box.P[Y] < P[Y]) ||
-			(box.P[X]+box.S[X] > P[X]+S[X]) || (box.P[Y]+box.S[Y] > P[Y]+S[Y]))
-			return False;
-
-		return True;
+        return !((box.P[X] < P[X]) || (box.P[Y] < P[Y]) ||
+                 (box.P[X]+box.S[X] > P[X]+S[X]) || (box.P[Y]+box.S[Y] > P[Y]+S[Y]));
 	}
 
 	//! Check if the point is inside this box
 	inline Bool isInside(const Vector2<TYPE> &point) const
 	{
-		if ((point[X] < P[X]) || (point[Y] < P[Y]) ||
-            (point[X] > P[X]+S[X]) || (point[Y] > P[Y]+S[Y]))
-			return False;
-
-		return True;
+        return !((point[X] < P[X]) || (point[Y] < P[Y]) ||
+                 (point[X] > P[X]+S[X]) || (point[Y] > P[Y]+S[Y]));
 	}
 
 	//! Check if this point is include onto a border of this box
