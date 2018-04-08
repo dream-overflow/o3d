@@ -126,10 +126,10 @@ void Camera::computeOrtho()
 
 void Camera::computeOrthoByFov()
 {
-	Float _left = -m_fov/2.f;
-	Float _right = m_fov/2.f;
-	Float _top = -m_fov/m_coef/2.f;
-	Float _bottom = m_fov/m_coef/2.f;
+    Float _left = -m_fov/2.f;
+    Float _right = m_fov/2.f;
+    Float _top = -m_fov/m_coef/2.f;
+    Float _bottom = m_fov/m_coef/2.f;
 
 	m_projectionMatrix.identity();
                     // R,C,   DATA
@@ -149,10 +149,11 @@ void Camera::computeOrthoByFov()
 
 void Camera::updateMatrix()
 {
-	if (m_node)
+    if (m_node) {
         m_modelviewMatrix = m_node->getAbsoluteMatrix().invert();//Std();
-	else
+    } else {
 		m_modelviewMatrix.identity();
+    }
 }
 
 // define the projection matrix
@@ -170,15 +171,13 @@ void Camera::multProjectionMatrix()
 // recompute the projection matrix
 void Camera::reCompute()
 {
-	if (m_ortho)
-	{
-		if (m_orthoByFov)
+    if (m_ortho) {
+        if (m_orthoByFov) {
 			computeOrthoByFov();
-		else
+        } else {
 			computeOrtho();
-	}
-	else
-	{
+        }
+    } else {
 		computePerspective();
 	}
 }
@@ -187,8 +186,7 @@ void Camera::update()
 {
 	clearUpdated();
 
-	if (m_capacities.getBit(STATE_PROJ_UPDATED))
-	{
+    if (m_capacities.getBit(STATE_PROJ_UPDATED)) {
         m_capacities.disable(STATE_PROJ_UPDATED);
 		setUpdated();
 
@@ -196,8 +194,7 @@ void Camera::update()
         m_capacities.enable(STATE_CAMERA_CHANGED);
 	}
 
-	if (m_node && m_node->hasUpdated())
-	{
+    if (m_node && m_node->hasUpdated()) {
         m_modelviewMatrix = m_node->getAbsoluteMatrix().invert();//Std();
 		setUpdated();
 
@@ -211,10 +208,11 @@ void Camera::setUpModelView()
 {
     O3D_ASSERT(getScene()->getActiveCamera() != nullptr);
 
-	if (getScene()->getActiveCamera() == this)
+    if (getScene()->getActiveCamera() == this) {
 		getScene()->getContext()->modelView().identity();
-	else
+    } else {
 		SceneObject::setUpModelView();
+    }
 }
 
 void Camera::draw(const DrawInfo &drawInfo)
@@ -282,14 +280,14 @@ void Camera::draw(const DrawInfo &drawInfo)
 // serialization
 Bool Camera::writeToFile(OutStream &os)
 {
-    if (!SceneObject::writeToFile(os))
+    if (!SceneObject::writeToFile(os)) {
 		return False;
+    }
 
     os   << m_ortho
 		 << m_orthoByFov;
 
-	if (m_ortho && !m_orthoByFov)
-	{
+    if (m_ortho && !m_orthoByFov) {
         os   << m_left
 			 << m_right
 			 << m_bottom
@@ -306,14 +304,14 @@ Bool Camera::writeToFile(OutStream &os)
 
 Bool Camera::readFromFile(InStream &is)
 {
-    if (!SceneObject::readFromFile(is))
+    if (!SceneObject::readFromFile(is)) {
 		return False;
+    }
 
     is   >> m_ortho
 		 >> m_orthoByFov;
 
-	if (m_ortho && !m_orthoByFov)
-	{
+    if (m_ortho && !m_orthoByFov) {
         is   >> m_left
 			 >> m_right
 			 >> m_bottom
