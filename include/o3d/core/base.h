@@ -261,7 +261,7 @@ namespace o3d
 
 	//! Returns the floor form of binary logarithm for a 32 bit integer.
 	//! @note -1 is returned if n is 0.
-    Int32 log2(UInt32 n);
+    O3D_API Int32 log2(UInt32 n);
 
 	//! returns the next power of two : NextPow2(3) returns 4
     inline UInt32 nextPow2(UInt32 n)
