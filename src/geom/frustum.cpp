@@ -27,10 +27,10 @@ void Frustum::computeFrustum(
 #if (1)
     // standard version.
 	Matrix4 clip = _projectionMatrix * _modelViewMatrix;
-	clip.transpose();
+    // clip.transpose();
 #else
     // optimized version, doesn't works with rotated and ortho projection matrices.
-	Matrix4 clip;
+    Matrix4 clip;
 
 	clip.setData(0, 0, _modelViewMatrix.m11() * _projectionMatrix.m11());
 	clip.setData(1, 0, _modelViewMatrix.m21() * _projectionMatrix.m22());
