@@ -911,7 +911,7 @@ Bool Scene::screenShot(const String &path, Image::FileFormat format)
 	String fileName = path + '/' + m_sceneInfo.getSceneName();
 
 	Date date(True);
-    fileName += "-" + date.buildString("%D.%M.%y-%h.%i.%s.%l");
+    fileName += "-" + date.buildString("%Y%m%d_%H-%M-%S.%f");
 
     if (format == Image::BMP) {
 		fileName += ".bmp";

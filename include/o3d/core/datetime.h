@@ -46,13 +46,13 @@ public:
             UInt8 _hour,
             UInt8 _minutes,
             UInt8 _seconds,
-            UInt16 _millisecond);
+            UInt32 _microsecond);
 
     //! Copy ctor
     DateTime(const DateTime & _which);
 
     //! Destructor
-    virtual ~DateTime() {}
+    ~DateTime() {}
 
     //! Clear the date object.
     void destroy();
@@ -69,15 +69,25 @@ public:
     //! Compare to another date object for lesser.
     Bool operator < (const DateTime & _which) const;
 
+    //! Compare to another date object for lesser or equal.
+    Bool operator <= (const DateTime & _which) const;
+
+    //! Compare to another date object for greater.
+    Bool operator > (const DateTime & _which) const;
+
+    //! Compare to another date object for greater or equal.
+    Bool operator >= (const DateTime & _which) const;
+
     //! Build a string containing the date with a specified format and return it.
-    String buildString(const String & _arg = String("%d, %m %y  %h:%i")) const;
+    String buildString(const String & _arg = String("%d, %m %Y  %H:%M")) const;
 
     //! Set the date of the object from a string and a specified format.
-    Bool setFromString(const String & _value, const String & _arg = String("%d, %m %y  %h:%i"));
+    //! @deprecated
+    // Bool setFromString(const String & _value, const String & _arg = String("%d, %m %Y  %H:%M"));
 
     //! Build the date of the object from a string and a specified format.
-    //! @note More sophisticated than SetFromString. It can use day and month from letters.
-    void buildFromString(const String & _value, const String &_arg = String("%y-%m-%d %h:%i:%s"));
+    //! @note More advanced format possible than with setFromString. It can use day and month from letters.
+    void buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d %H:%M:%S"));
 
     //! Set with the current date and time.
     void setCurrent();
@@ -85,13 +95,13 @@ public:
     //! Set the time from a time_t struct.
     void setTime(time_t ltime) { operator =(DateTime(ltime)); }
 
-    //! Set the time from a time in milliseconds since epoch.
+    //! Set the time from a timestamp in milliseconds since epoch.
     void setMsTime(Int64 ms);
 
     //! Convert the time to a time_t struct.
     time_t toTime_t() const;
 
-    //! Check if the date is older than XX days.
+    //! Check if the date is older than n days.
     Bool isOlderThan(const DateTime &compare, UInt32 days);
 
     Bool writeToFile(OutStream &os) const;
@@ -99,16 +109,16 @@ public:
 
 public: // public members
 
-    Month month;          //!< month 0..11
-    Day day;              //!< day of the week 0..6
-    UInt8 mday;       //!< day of the month 1..31
+    Month month;         //!< month 0..11
+    Day day;             //!< day of the week 0..6
+    UInt8 mday;          //!< day of the month 1..31
 
-    UInt16 year;      //!< full year (not since 1900 like ctime)
+    UInt16 year;         //!< full year (not since 1900 like ctime)
 
     UInt8 hour;          //!< hours 0..23
     UInt8 minute;        //!< minutes 0..59
     UInt8 second;        //!< second 0..59
-    UInt16 millisecond;  //!< millisecond
+    UInt32 microsecond;  //!< microsecond
 
 private:
 

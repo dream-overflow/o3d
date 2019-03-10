@@ -230,31 +230,61 @@ String Date::buildString(const String & _arg) const
 
     while (k < _arg.length()) {
         if (_arg.getData()[k] == '%') {
-            if ((++k) == _arg.length())
+            if ((++k) == _arg.length()) {
                 break;
+            }
 
             switch (_arg.getData()[k]) {
-                case 'y':
+                case 'Y':
+                    // 4 digits year
                     result << year;
-                break;
-                case 'm':
+                    break;
+
+                case 'y':
+                {
+                    // 2 digits year
+                    String y; y.concat(year);
+                    result << y.slice(y.length()-2, -1);
+                }
+                    break;
+
+                case 'B':
+                    // letter month
                     result << String(monthString[month]);
-                break;
+                    break;
+
                 case 'b':
+                    // letter short month
                     result << String(shortMonthString[month]);
-                break;
-                case 'M':
-                    result << (month+1);
-                break;
-                case 'd':
+                    break;
+
+                case 'm':
+                    // 2 digits month
+                    if (month+1 < 10) {
+                        result << '0' << (month+1);  // leading 0
+                    } else {
+                        result << (month+1);
+                    }
+                    break;
+
+                case 'A':
+                    // letter day
                     result << String(dayString[day]);
-                break;
+                    break;
+
                 case 'a':
+                    // letter short day
                     result << String(shortDayString[day]);
-                break;
-                case 'D':
-                    result << mday;
-                break;
+                    break;
+
+                case 'd':
+                    // 2 digits month day
+                    if (mday < 10) {
+                        result << '0' << mday;  // leading 0
+                    } else {
+                        result << mday;
+                    }
+                    break;
             }
 
             ++k;
@@ -276,153 +306,226 @@ void Date::buildFromString(const String &_value, const String &_arg)
         String argu(arg.nextElement());
         String vals(value.nextElement());
 
+        Bool found = False;
+
         switch(argu.getData()[0]) {
-            case 'y':
+            case 'Y':
+                // 4 digits year
                 year = UInt16(vals.toUInt32());
-            break;
-            case 'm':
-                month = Month(vals.toUInt32()-1);
-            break;
-            case 'M':
-                month = Month(vals.toUInt32()-1);
-            break;
-            case 'd':
-                //mday = ...
-                day = Day(vals.toUInt32());
-            break;
-            case 'D':
-                mday = UInt8(vals.toUInt32());
-                //day = ...
-            break;
-        }
-    }
-}
-
-Bool Date::setFromString(const String & _value, const String & _arg)
-{
-    String date(_value);
-    String substring;
-
-    UInt32 k = 0;
-
-    Bool result = True;
-
-    std::wistringstream iss;
-
-    while (k < _arg.length()) {
-        if (_arg.getData()[k] == '%') {
-            if (k == _arg.length() - 1) {
                 break;
-            }
 
-            k++;
+            case 'y':
+                // 2 digits year
+                year = UInt16(vals.toUInt32()) + 2000;
+                break;
 
-            if (k == _arg.length() - 1) {
-                substring = date;
-            } else {
-                substring = date;
-                substring.truncate(substring.find(_arg.getData()[k+1]));
-                date = date.sub(date.find(_arg.getData()[k+1]));
-
-                if (k+1 != _arg.length() - 1) date = date.sub(1);
-            }
-
-            iss.str(substring.getData());
-
-            switch(_arg.getData()[k]) {
-                case 'y':
-                    iss >> year;
-                    break;
-                case 'm':
-                {
-                    Bool find = False;
-
-                    for (UInt32 i = 0 ; i < 12 ; ++i)
-                        if (wcscmp(iss.str().c_str(), monthString[i]) == 0)
-                        {
-                            month = Month(i);
-                            find = True;
-                            break;
-                        }
-
-                    if (!find) result = False;
+            case 'B':
+                // letter month
+                for (int i = 0; i < 12; ++i) {
+                    if (vals == monthString[i]) {
+                        month = Month(i);
+                        found = True;
+                        break;
+                    }
                 }
-                    break;
-                case 'b':
-                {
-                    Bool find = False;
+                break;
 
-                    for (UInt32 i = 0 ; i < 12 ; ++i)
-                        if (wcscmp(iss.str().c_str(), shortMonthString[i]) == 0)
-                        {
-                            month = Month(i);
-                            find = True;
-                            break;
-                        }
-
-                    if (!find) result = False;
+            case 'b':
+                // letter short month
+                for (int i = 0; i < 12; ++i) {
+                    if (vals == shortMonthString[i]) {
+                        month = Month(i);
+                        found = True;
+                        break;
+                    }
                 }
-                    break;
-                case 'M':
-                    Int32 lmonth;
-                    iss >> lmonth;
-                    month = Month(lmonth-1);
-                    break;
-                case 'd':
-                {
-                    Bool find = False;
+                break;
 
-                    for (UInt32 i = 0 ; i < 7 ; ++i)
-                        if (wcscmp(iss.str().c_str(), dayString[i]) == 0)
-                        {
-                            day = Day(i);
-                            //mday = ...
-                            find = True;
-                            break;
-                        }
-
-                    if (!find) result = False;
+            case 'm':
+                // 2 digits month
+                if (vals[0] == '0') {
+                    // ignore leading 0
+                    month = Month(vals.toUInt32(1)-1);
+                } else {
+                    month = Month(vals.toUInt32()-1);
                 }
-                    break;
-                case 'a':
-                {
-                    Bool find = False;
+                break;
 
-                    for (UInt32 i = 0 ; i < 7 ; ++i)
-                        if (wcscmp(iss.str().c_str(), shortDayString[i]) == 0)
-                        {
-                            day = Day(i);
-                            //mday = ...
-                            find = True;
-                            break;
-                        }
-
-                    if (!find) result = False;
+            case 'A':
+                // letter day
+                for (int i = 0; i < 6; ++i) {
+                    if (vals == dayString[i]) {
+                        day = Day(i);
+                        found = True;
+                        break;
+                    }
                 }
-                    break;
-                case 'D':
-                {
-                    Int32 lmday;
-                    iss >> lmday;
-                    mday = (UInt8)lmday;
+                // mday = ...
+                break;
+
+            case 'a':
+                // letter short day
+                for (int i = 0; i < 6; ++i) {
+                    if (vals == shortDayString[i]) {
+                        day = Day(i);
+                        found = True;
+                        break;
+                    }
+                }
+                // mday = ...
+                break;
+
+            case 'd':
+                // 2 digits month day
+                if (vals[0] == '0') {
+                    // ignore leading 0
+                    mday = UInt8(vals.toUInt32(1));
+                    //day = ...
+                } else {
+                    mday = UInt8(vals.toUInt32());
                     //day = ...
                 }
-                    break;
-
-                    //				k++;
-            }
-
-            k++;
-        }
-        else
-        {
-            date = date.sub(1);
-            k++;
+                break;
         }
     }
-
-    return result;
 }
+
+//Bool Date::setFromString(const String & _value, const String & _arg)
+//{
+//    String date(_value);
+//    String substring;
+
+//    UInt32 k = 0;
+
+//    Bool result = True;
+
+//    std::wistringstream iss;
+
+//    while (k < _arg.length()) {
+//        if (_arg.getData()[k] == '%') {
+//            if (k == _arg.length() - 1) {
+//                break;
+//            }
+
+//            k++;
+
+//            if (k == _arg.length() - 1) {
+//                substring = date;
+//            } else {
+//                substring = date;
+//                substring.truncate(substring.find(_arg.getData()[k+1]));
+//                date = date.sub(date.find(_arg.getData()[k+1]));
+
+//                if (k+1 != _arg.length() - 1) date = date.sub(1);
+//            }
+
+//            iss.str(substring.getData());
+
+//            switch(_arg.getData()[k]) {
+//                case 'y':
+//                    // 4 digits year
+//                    iss >> year;
+//                    break;
+
+//                case 'm':
+//                {
+//                    // letter month
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 12 ; ++i)
+//                        if (wcscmp(iss.str().c_str(), monthString[i]) == 0)
+//                        {
+//                            month = Month(i);
+//                            find = True;
+//                            break;
+//                        }
+
+//                    if (!find) result = False;
+//                }
+//                    break;
+
+//                case 'b':
+//                {
+//                    // letter short month
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 12 ; ++i)
+//                        if (wcscmp(iss.str().c_str(), shortMonthString[i]) == 0)
+//                        {
+//                            month = Month(i);
+//                            find = True;
+//                            break;
+//                        }
+
+//                    if (!find) result = False;
+//                }
+//                    break;
+
+//                case 'M':
+//                    // 2 digits month
+//                    Int32 lmonth;
+//                    iss >> lmonth;
+//                    month = Month(lmonth-1);
+//                    break;
+
+//                case 'd':
+//                {
+//                    // letter day of week
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 7 ; ++i)
+//                        if (wcscmp(iss.str().c_str(), dayString[i]) == 0)
+//                        {
+//                            day = Day(i);
+//                            //mday = ...
+//                            find = True;
+//                            break;
+//                        }
+
+//                    if (!find) result = False;
+//                }
+//                    break;
+
+//                case 'a':
+//                {
+//                    // letter short day of week
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 7 ; ++i)
+//                        if (wcscmp(iss.str().c_str(), shortDayString[i]) == 0)
+//                        {
+//                            day = Day(i);
+//                            //mday = ...
+//                            find = True;
+//                            break;
+//                        }
+
+//                    if (!find) result = False;
+//                }
+//                    break;
+
+//                case 'D':
+//                {
+//                    // 2 digits day of month
+//                    Int32 lmday;
+//                    iss >> lmday;
+//                    mday = (UInt8)lmday;
+//                    //day = ...
+//                }
+//                    break;
+
+//                // k++;
+//            }
+
+//            k++;
+//        } else {
+//            date = date.sub(1);
+//            k++;
+//        }
+//    }
+
+//    return result;
+//}
 
 void Date::setCurrent()
 {

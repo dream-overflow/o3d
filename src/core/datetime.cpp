@@ -109,7 +109,7 @@ DateTime::DateTime(Bool setToday) :
     hour(0),
     minute(0),
     second(0),
-    millisecond(0)
+    microsecond(0)
 {
     if (setToday) {
         setCurrent();
@@ -125,7 +125,7 @@ DateTime::DateTime(
         UInt8 _hour,
         UInt8 _minutes,
         UInt8 _seconds,
-        UInt16 _millisecond) :
+        UInt32 _microsecond) :
     month(_month),
     day(_day),
     mday(_dayofWeek),
@@ -133,7 +133,7 @@ DateTime::DateTime(
     hour(_hour),
     minute(_minutes),
     second(_seconds),
-    millisecond(_millisecond)
+    microsecond(_microsecond)
 {
 
 }
@@ -146,7 +146,7 @@ DateTime::DateTime(const DateTime & _which) :
     hour(_which.hour),
     minute(_which.minute),
     second(_which.second),
-    millisecond(_which.millisecond)
+    microsecond(_which.microsecond)
 {
 }
 
@@ -157,7 +157,7 @@ void DateTime::destroy()
     day = Day(0);
     hour = 0;
     minute = 0;
-    millisecond = 0;
+    microsecond = 0;
     mday = 0;
     second = 0;
 }
@@ -170,7 +170,7 @@ DateTime & DateTime::operator = (const DateTime & _which)
     hour = _which.hour;
     minute = _which.minute;
     second = _which.second;
-    millisecond = _which.millisecond;
+    microsecond = _which.microsecond;
     mday = _which.mday;
 
     return *this;
@@ -189,7 +189,7 @@ DateTime::DateTime(time_t ltime)
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
     mday = UInt8(local.tm_mday);
-    millisecond = 0;
+    microsecond = 0;
 #else
     struct tm *local;
     local = localtime(&ltime);
@@ -201,7 +201,7 @@ DateTime::DateTime(time_t ltime)
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    millisecond = 0;
+    microsecond = 0;
 #endif
 }
 
@@ -213,7 +213,7 @@ Bool DateTime::operator == (const DateTime & _which) const
             (hour == _which.hour) &&
             (minute == _which.minute) &&
             (second == _which.second) &&
-            (millisecond == _which.millisecond) &&
+            (microsecond == _which.microsecond) &&
             (mday == _which.mday));
 }
 
@@ -231,12 +231,120 @@ Bool DateTime::operator <(const DateTime &_which) const
             (hour < _which.hour) ||
             (minute < _which.minute) ||
             (second < _which.second) ||
-            (millisecond < _which.millisecond));
+            (microsecond < _which.microsecond));
+}
+
+Bool DateTime::operator <=(const DateTime &_which) const
+{
+    if (year > _which.year) {
+        return False;
+    } else if (year < _which.year) {
+        return True;
+    }
+
+    if (month > _which.month) {
+        return False;
+    } else if (month < _which.month) {
+        return True;
+    }
+
+    if (day > _which.day) {
+        return False;
+    } else if (day < _which.day) {
+        return True;
+    }
+
+    if (hour > _which.hour) {
+        return False;
+    } else if (hour < _which.hour) {
+        return True;
+    }
+
+    if (minute > _which.minute) {
+        return False;
+    } else if (minute < _which.minute) {
+        return True;
+    }
+
+    if (second > _which.second) {
+        return False;
+    } else if (second < _which.second) {
+        return True;
+    }
+
+    if (microsecond > _which.microsecond) {
+        return False;
+    } else if (microsecond < _which.microsecond) {
+        return True;
+    }
+
+    // or ms equal
+    return True;
+}
+
+Bool DateTime::operator >(const DateTime &_which) const
+{
+    // no mday in comparison
+    return ((year > _which.year) ||
+            (month > _which.month) ||
+            (day > _which.day) ||
+            (hour > _which.hour) ||
+            (minute > _which.minute) ||
+            (second > _which.second) ||
+            (microsecond > _which.microsecond));
+}
+
+Bool DateTime::operator >=(const DateTime &_which) const
+{
+    if (year < _which.year) {
+        return False;
+    } else if (year > _which.year) {
+        return True;
+    }
+
+    if (month < _which.month) {
+        return False;
+    } else if (month > _which.month) {
+        return True;
+    }
+
+    if (day < _which.day) {
+        return False;
+    } else if (day > _which.day) {
+        return True;
+    }
+
+    if (hour < _which.hour) {
+        return False;
+    } else if (hour > _which.hour) {
+        return True;
+    }
+
+    if (minute < _which.minute) {
+        return False;
+    } else if (minute > _which.minute) {
+        return True;
+    }
+
+    if (second < _which.second) {
+        return False;
+    } else if (second > _which.second) {
+        return True;
+    }
+
+    if (microsecond < _which.microsecond) {
+        return False;
+    } else if (microsecond > _which.microsecond) {
+        return True;
+    }
+
+    // or ms equal
+    return True;
 }
 
 Bool DateTime::writeToFile(OutStream &os) const
 {
-    // 10 bytes date
+    // 12 bytes date
     os  << year
         << UInt8(month)
         << UInt8(day)
@@ -244,7 +352,7 @@ Bool DateTime::writeToFile(OutStream &os) const
         << hour
         << minute
         << second
-        << millisecond;
+        << microsecond;
 
     return True;
 }
@@ -253,7 +361,7 @@ Bool DateTime::readFromFile(InStream &is)
 {
     UInt8 tmp;
 
-    // 10 bytes date
+    // 12 bytes date
     is  >> year
         >> tmp;
     month = Month(tmp);
@@ -265,7 +373,7 @@ Bool DateTime::readFromFile(InStream &is)
         >> hour
         >> minute
         >> second
-        >> millisecond;
+        >> microsecond;
 
     return True;
 }
@@ -284,42 +392,89 @@ String DateTime::buildString(const String & _arg) const
             }
 
             switch (_arg.getData()[k]) {
-                case 'y':
+                case 'Y':
+                    // 4 digits year
                     result << year;
-                break;
-                case 'm':
+                    break;
+
+                case 'y':
+                {
+                    // 2 digits year
+                    String y; y.concat(year);
+                    result << y.slice(y.length()-2, -1);
+                 }
+                    break;
+
+                case 'B':
+                    // letter month
                     result << String(monthString[month]);
-                break;
+                    break;
+
                 case 'b':
+                    // letter short month
                     result << String(shortMonthString[month]);
-                break;
-                case 'M':
-                    result << (month+1);
-                break;
-                case 'd':
+                    break;
+
+                case 'm':
+                    // 2 digits month
+                    if (month+1 < 10) {
+                        // leading 0
+                        result << '0' << (month+1);
+                    } else {
+                        result << (month+1);
+                    }
+                    break;
+
+                case 'A':
+                    // letter day of week
                     result << String(dayString[day]);
-                break;
+                    break;
+
                 case 'a':
+                    // letter short day of week
                     result << String(shortDayString[day]);
-                break;
-                case 'D':
-                    result << mday;
-                break;
-                case 'h':
-                    if (hour < 10) result << '0';
-                    result << hour;
-                break;
-                case 'i':
-                    if (minute < 10) result << '0';
-                    result << minute;
-                break;
-                case 's':
-                    if (second < 10) result << '0';
-                    result << second;
-                break;
-                case 'l':
-                    result << millisecond;
-                break;
+                    break;
+
+                case 'd':
+                    // 2 digits month day
+                    if (mday < 10) {
+                        result << '0' << mday;  // leading 0
+                    } else {
+                        result << mday;
+                    }
+                    break;
+
+                case 'H':
+                    // 2 digits hour
+                    if (hour < 10) {
+                        result << '0' << hour;  // leading 0
+                    } else {
+                        result << hour;
+                    }
+                    break;
+
+                case 'M':
+                    // 2 digits minute
+                    if (minute < 10) {
+                        result << '0' << minute;  // leading 0
+                    } else {
+                        result << minute;
+                    }
+                    break;
+
+                case 'S':
+                    // 2 digits second
+                    if (second < 10) {
+                        result << '0' << second;  // leading 0
+                    } else {
+                        result << second;
+                    }
+                    break;
+
+                case 'f':
+                    // 1 to 6 digits microsecond
+                    result << microsecond;
+                    break;
             }
 
             ++k;
@@ -341,201 +496,287 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
         String argu(arg.nextElement());
         String vals(value.nextElement());
 
+        Bool found = False;
+
         switch(argu.getData()[0]) {
-            case 'y':
+            case 'Y':
+                // 4 digits year
                 year = UInt16(vals.toUInt32());
-            break;
-            case 'm':
-                month = Month(vals.toUInt32()-1);
-            break;
-            case 'M':
-                month = Month(vals.toUInt32()-1);
-            break;
-            case 'd':
-                //mday = ...
-                day = Day(vals.toUInt32());
-            break;
-            case 'D':
-                mday = UInt8(vals.toUInt32());
-                //day = ...
-            break;
-            case 'h':
-                hour = UInt8(vals.toUInt32());
-            break;
-            case 'i':
-                minute = UInt8(vals.toUInt32());
-            break;
-            case 's':
-                second = UInt8(vals.toUInt32());
-            break;
-            case 'l':
-                millisecond = UInt8(vals.toUInt32());
-            break;
-        }
-    }
-}
-
-Bool DateTime::setFromString(const String & _value, const String & _arg)
-{
-    String date(_value);
-    String substring;
-
-    UInt32 k = 0;
-
-    Bool result = True;
-
-    std::wistringstream iss;
-
-    while (k < _arg.length()) {
-        if (_arg.getData()[k] == '%') {
-            if (k == _arg.length() - 1) {
                 break;
-            }
 
-            k++;
+            case 'y':
+                // 2 digits year
+                year = UInt16(vals.toUInt32()) + 2000;
+                break;
 
-            if (k == _arg.length() - 1) {
-                substring = date;
-            } else {
-                substring = date;
-                substring.truncate(substring.find(_arg.getData()[k+1]));
-                date = date.sub(date.find(_arg.getData()[k+1]));
-
-                if (k+1 != _arg.length() - 1) {
-                    date = date.sub(1);
-                }
-            }
-
-            iss.str(substring.getData());
-
-            switch(_arg.getData()[k]) {
-                case 'y':
-                    iss >> year;
-                    break;
-                case 'm':
-                {
-                    Bool find = False;
-
-                    for (UInt32 i = 0 ; i < 12 ; ++i) {
-                        if (wcscmp(iss.str().c_str(), monthString[i]) == 0) {
-                            month = Month(i);
-                            find = True;
-                            break;
-                        }
-                    }
-
-                    if (!find) {
-                        result = False;
+            case 'B':
+                // letter month
+                for (int i = 0; i < 12; ++i) {
+                    if (vals == monthString[i]) {
+                        month = Month(i);
+                        found = True;
+                        break;
                     }
                 }
-                    break;
-                case 'b':
-                {
-                    Bool find = False;
+                break;
 
-                    for (UInt32 i = 0 ; i < 12 ; ++i) {
-                        if (wcscmp(iss.str().c_str(), shortMonthString[i]) == 0) {
-                            month = Month(i);
-                            find = True;
-                            break;
-                        }
-                    }
-
-                    if (!find) {
-                        result = False;
+            case 'b':
+                // letter short month
+                for (int i = 0; i < 12; ++i) {
+                    if (vals == shortMonthString[i]) {
+                        month = Month(i);
+                        found = True;
+                        break;
                     }
                 }
-                    break;
-                case 'M':
-                    Int32 lmonth;
-                    iss >> lmonth;
-                    month = Month(lmonth-1);
-                    break;
-                case 'd':
-                {
-                    Bool find = False;
+                break;
 
-                    for (UInt32 i = 0 ; i < 7 ; ++i) {
-                        if (wcscmp(iss.str().c_str(), dayString[i]) == 0) {
-                            day = Day(i);
-                            //mday = ...
-                            find = True;
-                            break;
-                        }
-                    }
+            case 'm':
+                // 2 digits month
+                if (vals[0] == '0') {
+                    // ignore leading 0
+                    month = Month(vals.toUInt32(1)-1);
+                } else {
+                    month = Month(vals.toUInt32()-1);
+                }
+                break;
 
-                    if (!find) {
-                        result = False;
+            case 'A':
+                // letter day
+                for (int i = 0; i < 6; ++i) {
+                    if (vals == dayString[i]) {
+                        day = Day(i);
+                        found = True;
+                        break;
                     }
                 }
-                    break;
-                case 'a':
-                {
-                    Bool find = False;
+                // mday = ...
+                break;
 
-                    for (UInt32 i = 0 ; i < 7 ; ++i) {
-                        if (wcscmp(iss.str().c_str(), shortDayString[i]) == 0) {
-                            day = Day(i);
-                            //mday = ...
-                            find = True;
-                            break;
-                        }
-                    }
-
-                    if (!find) {
-                        result = False;
+            case 'a':
+                // letter short day
+                for (int i = 0; i < 6; ++i) {
+                    if (vals == shortDayString[i]) {
+                        day = Day(i);
+                        found = True;
+                        break;
                     }
                 }
-                    break;
-                case 'D':
-                {
-                    Int32 lmday;
-                    iss >> lmday;
-                    mday = (UInt8)lmday;
-                    //day = ...
-                }
-                    break;
-                case 'h':
-                {
-                    Int32 lhour;
-                    iss >> lhour;
-                    hour = (UInt8)lhour;
-                }
-                    break;
-                case 'i':
-                {
-                    Int32 lminute;
-                    iss >> lminute;
-                    minute = (UInt8)lminute;
-                }
-                    break;
-                case 's':
-                {
-                    Int32 lsecond;
-                    iss >> lsecond;
-                    second = (UInt8)lsecond;
-                }
-                    break;
-                case 'l':
-                {
-                    Int32 lmillisecond;
-                    iss >> lmillisecond;
-                    millisecond = (UInt8)lmillisecond;
-                }
-                    break;
+                // mday = ...
+                break;
 
-                    //				k++;
-            }
+            case 'd':
+                // 2 digits month day
+                if (vals[0] == '0') {
+                    // ignore leading 0
+                    mday = UInt8(vals.toUInt32(1));
+                    // day = ...
+                } else {
+                    mday = UInt8(vals.toUInt32());
+                    // day = ...
+                }
+                break;
 
-            k++;
-        } else {
-            date = date.sub(1);
-            k++;
+            case 'H':
+                if (vals[0] == '0') {
+                    // ignore leading 0
+                    hour = UInt8(vals.toUInt32(1));
+                } else {
+                    hour = UInt8(vals.toUInt32());
+                }
+                break;
+
+            case 'M':
+                if (vals[0] == '0') {
+                    // ignore leading 0
+                    minute = UInt8(vals.toUInt32(1));
+                } else {
+                    minute = UInt8(vals.toUInt32());
+                }
+                break;
+
+            case 'S':
+                if (vals[0] == '0') {
+                    // ignore leading 0
+                    second = UInt8(vals.toUInt32(1));
+                } else {
+                    second = UInt8(vals.toUInt32());
+                }
+                break;
+
+            case 'f':
+                vals.trimLeft('0', True);  // remove eventual leading 0
+                if (vals.isValid()) {
+                    microsecond = UInt8(vals.toUInt32());
+                } else {
+                    microsecond = 0;
+                }
+                break;
         }
     }
-
-    return result;
 }
+
+//Bool DateTime::setFromString(const String & _value, const String & _arg)
+//{
+//    String date(_value);
+//    String substring;
+
+//    UInt32 k = 0;
+
+//    Bool result = True;
+
+//    std::wistringstream iss;
+
+//    while (k < _arg.length()) {
+//        if (_arg.getData()[k] == '%') {
+//            if (k == _arg.length() - 1) {
+//                break;
+//            }
+
+//            k++;
+
+//            if (k == _arg.length() - 1) {
+//                substring = date;
+//            } else {
+//                substring = date;
+//                substring.truncate(substring.find(_arg.getData()[k+1]));
+//                date = date.sub(date.find(_arg.getData()[k+1]));
+
+//                if (k+1 != _arg.length() - 1) {
+//                    date = date.sub(1);
+//                }
+//            }
+
+//            iss.str(substring.getData());
+
+//            switch(_arg.getData()[k]) {
+//                case 'y':
+//                    iss >> year;
+//                    break;
+//                case 'm':
+//                {
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 12 ; ++i) {
+//                        if (wcscmp(iss.str().c_str(), monthString[i]) == 0) {
+//                            month = Month(i);
+//                            find = True;
+//                            break;
+//                        }
+//                    }
+
+//                    if (!find) {
+//                        result = False;
+//                    }
+//                }
+//                    break;
+//                case 'b':
+//                {
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 12 ; ++i) {
+//                        if (wcscmp(iss.str().c_str(), shortMonthString[i]) == 0) {
+//                            month = Month(i);
+//                            find = True;
+//                            break;
+//                        }
+//                    }
+
+//                    if (!find) {
+//                        result = False;
+//                    }
+//                }
+//                    break;
+//                case 'M':
+//                    Int32 lmonth;
+//                    iss >> lmonth;
+//                    month = Month(lmonth-1);
+//                    break;
+//                case 'd':
+//                {
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 7 ; ++i) {
+//                        if (wcscmp(iss.str().c_str(), dayString[i]) == 0) {
+//                            day = Day(i);
+//                            //mday = ...
+//                            find = True;
+//                            break;
+//                        }
+//                    }
+
+//                    if (!find) {
+//                        result = False;
+//                    }
+//                }
+//                    break;
+//                case 'a':
+//                {
+//                    Bool find = False;
+
+//                    for (UInt32 i = 0 ; i < 7 ; ++i) {
+//                        if (wcscmp(iss.str().c_str(), shortDayString[i]) == 0) {
+//                            day = Day(i);
+//                            //mday = ...
+//                            find = True;
+//                            break;
+//                        }
+//                    }
+
+//                    if (!find) {
+//                        result = False;
+//                    }
+//                }
+//                    break;
+//                case 'D':
+//                {
+//                    Int32 lmday;
+//                    iss >> lmday;
+//                    mday = (UInt8)lmday;
+//                    //day = ...
+//                }
+//                    break;
+//                case 'h':
+//                {
+//                    Int32 lhour;
+//                    iss >> lhour;
+//                    hour = (UInt8)lhour;
+//                }
+//                    break;
+//                case 'i':
+//                {
+//                    Int32 lminute;
+//                    iss >> lminute;
+//                    minute = (UInt8)lminute;
+//                }
+//                    break;
+//                case 's':
+//                {
+//                    Int32 lsecond;
+//                    iss >> lsecond;
+//                    second = (UInt8)lsecond;
+//                }
+//                    break;
+//                case 'l':
+//                {
+//                    Int32 lmicrosecond;
+//                    iss >> lmicrosecond;
+//                    microsecond = (UInt8)lmicrosecond;
+//                }
+//                    break;
+
+//                // k++;
+//            }
+
+//            k++;
+//        } else {
+//            date = date.sub(1);
+//            k++;
+//        }
+//    }
+
+//    return result;
+//}
 
 void DateTime::setCurrent()
 {
@@ -555,7 +796,7 @@ void DateTime::setCurrent()
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
     mday = UInt8(local.tm_mday);
-    millisecond = 0;
+    microsecond = 0;
 #else
     struct timeval ltime;
     struct tm *local;
@@ -571,7 +812,7 @@ void DateTime::setCurrent()
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    millisecond = ltime.tv_usec / 1000;
+    microsecond = ltime.tv_usec / 1000;
 #endif
 }
 
@@ -593,7 +834,7 @@ void DateTime::setMsTime(Int64 ms)
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
     mday = UInt8(local.tm_mday);
-    millisecond = 0;
+    microsecond = 0;
 #else
     struct timeval ltime;
     ltime.tv_sec = ms / 1000;
@@ -611,7 +852,7 @@ void DateTime::setMsTime(Int64 ms)
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    millisecond = ltime.tv_usec / 1000;
+    microsecond = ltime.tv_usec;
 #endif
 }
 

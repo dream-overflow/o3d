@@ -409,7 +409,7 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 			Item->AccessTime.day = Day(wTime.wDay);
 			Item->AccessTime.mday = UInt8(wTime.wDayOfWeek);
 			Item->AccessTime.hour = UInt8(wTime.wHour);
-			Item->AccessTime.millisecond = UInt16(wTime.wMilliseconds);
+            Item->AccessTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->AccessTime.minute = UInt8(wTime.wMinute);
 			Item->AccessTime.month = Month(wTime.wMonth - 1);
 			Item->AccessTime.second = UInt8(wTime.wSecond);
@@ -419,7 +419,7 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 			Item->CreateTime.day = Day(wTime.wDay);
 			Item->CreateTime.mday = UInt8(wTime.wDayOfWeek);
 			Item->CreateTime.hour = UInt8(wTime.wHour);
-			Item->CreateTime.millisecond = UInt16(wTime.wMilliseconds);
+            Item->CreateTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->CreateTime.minute = UInt8(wTime.wMinute);
 			Item->CreateTime.month = Month(wTime.wMonth - 1);
 			Item->CreateTime.second = UInt8(wTime.wSecond);
@@ -429,7 +429,7 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 			Item->WriteTime.day = Day(wTime.wDay);
 			Item->WriteTime.mday = UInt8(wTime.wDayOfWeek);
 			Item->WriteTime.hour = UInt8(wTime.wHour);
-			Item->WriteTime.millisecond = UInt16(wTime.wMilliseconds);
+            Item->WriteTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->WriteTime.minute = UInt8(wTime.wMinute);
 			Item->WriteTime.month = Month(wTime.wMonth - 1);
 			Item->WriteTime.second = UInt8(wTime.wSecond);
@@ -490,7 +490,7 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 			Item->AccessTime.day = Day(wTime.wDay);
 			Item->AccessTime.mday = UInt8(wTime.wDayOfWeek);
 			Item->AccessTime.hour = UInt8(wTime.wHour);
-			Item->AccessTime.millisecond = UInt16(wTime.wMilliseconds);
+            Item->AccessTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->AccessTime.minute = UInt8(wTime.wMinute);
 			Item->AccessTime.month = Month(wTime.wMonth - 1);
 			Item->AccessTime.second = UInt8(wTime.wSecond);
@@ -500,7 +500,7 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 			Item->CreateTime.day = Day(wTime.wDay);
 			Item->CreateTime.mday = UInt8(wTime.wDayOfWeek);
 			Item->CreateTime.hour = UInt8(wTime.wHour);
-			Item->CreateTime.millisecond = UInt16(wTime.wMilliseconds);
+            Item->CreateTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->CreateTime.minute = UInt8(wTime.wMinute);
 			Item->CreateTime.month = Month(wTime.wMonth - 1);
 			Item->CreateTime.second = UInt8(wTime.wSecond);
@@ -510,7 +510,7 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 			Item->WriteTime.day = Day(wTime.wDay);
 			Item->WriteTime.mday = UInt8(wTime.wDayOfWeek);
 			Item->WriteTime.hour = UInt8(wTime.wHour);
-			Item->WriteTime.millisecond = UInt16(wTime.wMilliseconds);
+            Item->WriteTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->WriteTime.minute = UInt8(wTime.wMinute);
 			Item->WriteTime.month = Month(wTime.wMonth - 1);
 			Item->WriteTime.second = UInt8(wTime.wSecond);

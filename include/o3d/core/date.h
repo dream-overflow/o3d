@@ -70,7 +70,7 @@ public:
     Date(const Date & _which);
 
     //! Destructor
-    virtual ~Date() {}
+    ~Date() {}
 
     //! Clear the date object.
     void destroy();
@@ -88,14 +88,14 @@ public:
     Bool operator < (const Date & _which) const;
 
     //! Build a string containing the date with a specified format and return it.
-    String buildString(const String & _arg = String("%d, %m %y")) const;
+    String buildString(const String & _arg = String("%d, %m %Y")) const;
 
     //! Set the date of the object from a string and a specified format.
-    Bool setFromString(const String & _value, const String & _arg = String("%d, %m %y"));
+    //! @deprecated
+    // Bool setFromString(const String & _value, const String & _arg = String("%d, %m %Y"));
 
     //! Build the date of the object from a string and a specified format.
-    //! @note More sophisticated than SetFromString. It can use day and month from letters.
-    void buildFromString(const String & _value, const String &_arg = String("%y-%m-%d"));
+    void buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d"));
 
     //! Set with the current date and time.
     void setCurrent();

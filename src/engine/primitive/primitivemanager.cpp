@@ -41,10 +41,10 @@ PrimitiveAccess::~PrimitiveAccess()
 // Default constructor.
 PrimitiveManager::PrimitiveManager(BaseObject *parent) :
 		SceneEntity(parent),
-    m_vertices(1024*3, 1024*3),
-    m_colors(1024*4, 1024*4),
     m_pickableId(0),
     m_numUsage(0),
+    m_vertices(1024*3, 1024*3),
+    m_colors(1024*4, 1024*4),
     m_verticesVbo(getScene()->getContext()),
     m_colorsVbo(getScene()->getContext()),
     m_quadVertices(getScene()->getContext()),

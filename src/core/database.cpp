@@ -25,14 +25,14 @@ Database::~Database()
 DbQuery* Database::registerQuery(const String &name, const CString &query)
 {
 	// Existing query name
-	IT_DbQueryMap it = m_RegistredQuery.find(name);
-	if (it != m_RegistredQuery.end())
+	IT_DbQueryMap it = m_registredQuery.find(name);
+	if (it != m_registredQuery.end())
 	{
 		O3D_ERROR(E_ValueRedefinition(name));
         return nullptr;
 	}
 
-	if (!m_IsConnected)
+	if (!m_isConnected)
 	{
 		O3D_ERROR(E_InvalidPrecondition("Connection asked"));
         return nullptr;
@@ -46,7 +46,7 @@ DbQuery* Database::registerQuery(const String &name, const CString &query)
 	}
 
 	// Register the query
-	m_RegistredQuery[name] = newQuery;
+	m_registredQuery[name] = newQuery;
 	return newQuery;
 }
 
@@ -55,12 +55,12 @@ Bool Database::unregisterQuery(DbQuery *query)
 {
     O3D_ASSERT(query != nullptr);
 
-	for (IT_DbQueryMap it = m_RegistredQuery.begin(); it != m_RegistredQuery.end(); ++it)
+	for (IT_DbQueryMap it = m_registredQuery.begin(); it != m_registredQuery.end(); ++it)
 	{
 		if (it->second && (it->second == query))
 		{
 			deletePtr(it->second);
-			m_RegistredQuery.erase(it);
+			m_registredQuery.erase(it);
 
             return True;
 		}
@@ -74,11 +74,11 @@ Bool Database::unregisterQuery(DbQuery *query)
 Bool Database::unregisterQuery(const String &name)
 {
 	// Existing query name
-	IT_DbQueryMap it = m_RegistredQuery.find(name);
-	if (it != m_RegistredQuery.end())
+	IT_DbQueryMap it = m_registredQuery.find(name);
+	if (it != m_registredQuery.end())
 	{
 		deletePtr(it->second);
-		m_RegistredQuery.erase(it);
+		m_registredQuery.erase(it);
 
         return True;
 	}
@@ -92,20 +92,20 @@ Bool Database::unregisterQuery(const String &name)
 // Unregister all existing O3DDbQuery
 void Database::unregisterAll()
 {
-	for (IT_DbQueryMap it = m_RegistredQuery.begin(); it != m_RegistredQuery.end(); ++it)
+	for (IT_DbQueryMap it = m_registredQuery.begin(); it != m_registredQuery.end(); ++it)
 	{
 		deletePtr(it->second);
 	}
 
-	m_RegistredQuery.clear();
+	m_registredQuery.clear();
 }
 
 // Find a query by its name
 DbQuery* Database::findQuery(const String &name)
 {
 	// Existing query name
-	IT_DbQueryMap it = m_RegistredQuery.find(name);
-	if (it != m_RegistredQuery.end())
+	IT_DbQueryMap it = m_registredQuery.find(name);
+	if (it != m_registredQuery.end())
 	{
 		return (it->second);
 	}

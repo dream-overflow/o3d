@@ -47,16 +47,17 @@ class O3D_API Database
 public:
 
 	//! Default constructor
-	Database() : m_IsConnected(False) {}
+    Database() : m_isConnected(False) {}
 
 	//! Virtual destructor
 	virtual ~Database();
 
 	//! Connect to a database
     virtual Bool connect(
-		const String &server,
+        const String &host,
+        o3d::UInt32 port,
 		const String &database,
-		const String &login = "",
+        const String &user = "",
 		const String &password = "",
         Bool keepPassord = True) = 0;
 
@@ -64,7 +65,7 @@ public:
 	virtual void disconnect() = 0;
 
 	//! Is database connected
-    inline Bool isConnected() { return m_IsConnected; }
+    inline Bool isConnected() { return m_isConnected; }
 
 	//! Try to maintain the connection established
 	virtual void pingConnection() = 0;
@@ -84,34 +85,38 @@ public:
 	//! Unregister all existing DbQuery
 	void unregisterAll();
 
-	//! Get the serveur name
-	inline const String& getServer() const { return m_Server; }
+    //! Get the host name
+    inline const String& getHost() const { return m_host; }
+
+    //! Get the host db port
+    inline UInt32 getPort() const { return m_port; }
 
 	//! Get the database name
-	inline const String& getDatabase() const { return m_Database; }
+    inline const String& getDatabase() const { return m_database; }
 
-	//! Get the login
-	inline const String& getLogin() const { return m_Login; }
+    //! Get the user name
+    inline const String& getUser() const { return m_user; }
 
-	//! Get the password
-	inline const String& getPassword() const { return m_Password; }
+    //! Get the user password
+    inline const String& getPassword() const { return m_password; }
 
 	//! Get the number of registred queries
-    inline UInt32 getNumRegistredQuery() const { return (UInt32)m_RegistredQuery.size(); }
+    inline UInt32 getNumRegistredQuery() const { return static_cast<UInt32>(m_registredQuery.size()); }
 
 protected:
 
 	//! Instanciate a new DbQuery object
     virtual DbQuery* newDbQuery(const String &/*name*/, const CString &/*query*/) { return nullptr; }
 
-    Bool m_IsConnected;
+    Bool m_isConnected;
 
-	String m_Server;
-	String m_Database;
-	String m_Login;
-	String m_Password;
+    String m_host;
+    UInt32 m_port;
+    String m_database;
+    String m_user;
+    String m_password;
 
-	T_DbQueryMap m_RegistredQuery;
+    T_DbQueryMap m_registredQuery;
 };
 
 /**
