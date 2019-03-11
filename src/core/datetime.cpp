@@ -101,7 +101,6 @@ void DateTime::init()
         gmt = mktime(ptm);
 
         sm_localTz = static_cast<Int32>(difftime(rawtime, gmt));
-        printf("%i\n", sm_localTz);
     }
 }
 
