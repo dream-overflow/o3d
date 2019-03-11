@@ -26,7 +26,7 @@
 
 using namespace o3d;
 
-static const WChar * monthString[] = {
+static const WChar* monthString[] = {
     L"January",
     L"February",
     L"March",
@@ -38,9 +38,12 @@ static const WChar * monthString[] = {
     L"September",
     L"October",
     L"November",
-    L"December" };
+    L"December" ,
+    L"Undecember",
+    L"Duodecember"
+};
 
-static const WChar * shortMonthString[] = {
+static const WChar* shortMonthString[] = {
     L"Jan",
     L"Feb",
     L"Mar",
@@ -52,25 +55,30 @@ static const WChar * shortMonthString[] = {
     L"Sep",
     L"Oct",
     L"Nov",
-    L"Dec" };
+    L"Dec",
+    L"Und",
+    L"Dud"
+};
 
-static const WChar * dayString[] = {
+static const WChar* dayString[] = {
     L"Sunday",
     L"Monday",
     L"Tuesday",
     L"Wednesday",
     L"Thursday",
     L"Friday",
-    L"Saturday" };
+    L"Saturday"
+};
 
-static const WChar * shortDayString[] = {
+static const WChar* shortDayString[] = {
     L"Sun",
     L"Mon",
     L"Tue",
     L"Wed",
     L"Thu",
     L"Fri",
-    L"Sat" };
+    L"Sat"
+};
 
 Date* Date::sm_null = nullptr;
 Date* Date::sm_startDate = nullptr;
@@ -318,12 +326,17 @@ String Date::buildString(const String & _arg) const
     return result;
 }
 
-void Date::buildFromString(const String &_value, const String &_arg)
+Bool Date::buildFromString(const String &_value, const String &_arg)
 {
     StringTokenizer arg(_arg, L"%");
     StringTokenizer value(_value, L" -.:,;/^|TZ");
 
+    if (arg.countTokens() != value.countTokens()) {
+        return False;
+    }
+
     while (arg.hasMoreElements() && value.hasMoreElements()) {
+        // @todo check value and return False if error
         String argu(arg.nextElement());
         String vals(value.nextElement());
 
@@ -342,23 +355,29 @@ void Date::buildFromString(const String &_value, const String &_arg)
 
             case 'B':
                 // letter month
-                for (int i = 0; i < 12; ++i) {
+                for (int i = 0; i < 14; ++i) {
                     if (vals == monthString[i]) {
                         month = Month(i);
                         found = True;
                         break;
                     }
                 }
+                if (!found) {
+                    return False;
+                }
                 break;
 
             case 'b':
                 // letter short month
-                for (int i = 0; i < 12; ++i) {
+                for (int i = 0; i < 14; ++i) {
                     if (vals == shortMonthString[i]) {
                         month = Month(i);
                         found = True;
                         break;
                     }
+                }
+                if (!found) {
+                    return False;
                 }
                 break;
 
@@ -369,6 +388,9 @@ void Date::buildFromString(const String &_value, const String &_arg)
                     month = Month(vals.toUInt32(1)-1);
                 } else {
                     month = Month(vals.toUInt32()-1);
+                }
+                if (month > 11) {
+                    return False;
                 }
                 break;
 
@@ -381,6 +403,9 @@ void Date::buildFromString(const String &_value, const String &_arg)
                         break;
                     }
                 }
+                if (!found) {
+                    return False;
+                }
                 // mday = ...
                 break;
 
@@ -392,6 +417,9 @@ void Date::buildFromString(const String &_value, const String &_arg)
                         found = True;
                         break;
                     }
+                }
+                if (!found) {
+                    return False;
                 }
                 // mday = ...
                 break;
@@ -406,9 +434,15 @@ void Date::buildFromString(const String &_value, const String &_arg)
                     mday = UInt8(vals.toUInt32());
                     //day = ...
                 }
+                if (mday > 31) {
+                    // @todo but might check 29 feb, and 30 day month...
+                    return False;
+                }
                 break;
         }
     }
+
+    return True;
 }
 
 //Bool Date::setFromString(const String & _value, const String & _arg)

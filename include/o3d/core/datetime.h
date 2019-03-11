@@ -81,13 +81,10 @@ public:
     //! Build a string containing the date with a specified format and return it.
     String buildString(const String & _arg = String("%d, %m %Y  %H:%M")) const;
 
-    //! Set the date of the object from a string and a specified format.
-    //! @deprecated
-    // Bool setFromString(const String & _value, const String & _arg = String("%d, %m %Y  %H:%M"));
-
     //! Build the date of the object from a string and a specified format.
-    //! @note More advanced format possible than with setFromString. It can use day and month from letters.
-    void buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d %H:%M:%S"));
+    //! Allowed format extra characters list: -.:,;/^|TZ
+    //! @return False if format or value error.
+    Bool buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d %H:%M:%S"));
 
     //! Set with the current date and time.
     void setCurrent();

@@ -508,10 +508,14 @@ String DateTime::buildString(const String & _arg) const
     return result;
 }
 
-void DateTime::buildFromString(const String &_value, const String &_arg)
+Bool DateTime::buildFromString(const String &_value, const String &_arg)
 {
     StringTokenizer arg(_arg, L"%");
     StringTokenizer value(_value, L" -.:,;/^|TZ");
+
+    if (arg.countTokens() != value.countTokens()) {
+        return False;
+    }
 
 //    WChar arg;
 
@@ -548,6 +552,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                         break;
                     }
                 }
+                if (!found) {
+                    return False;
+                }
                 break;
 
             case 'b':
@@ -559,6 +566,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                         break;
                     }
                 }
+                if (!found) {
+                    return False;
+                }
                 break;
 
             case 'm':
@@ -568,6 +578,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                     month = Month(vals.toUInt32(1)-1);
                 } else {
                     month = Month(vals.toUInt32()-1);
+                }
+                if (month > 13) {
+                    return False;
                 }
                 break;
 
@@ -580,6 +593,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                         break;
                     }
                 }
+                if (!found) {
+                    return False;
+                }
                 // mday = ...
                 break;
 
@@ -591,6 +607,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                         found = True;
                         break;
                     }
+                }
+                if (!found) {
+                    return False;
                 }
                 // mday = ...
                 break;
@@ -605,6 +624,10 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                     mday = UInt8(vals.toUInt32());
                     // day = ...
                 }
+                if (mday > 31) {
+                    // @todo but might check 29 feb, and 30 day month...
+                    return False;
+                }
                 break;
 
             case 'H':
@@ -613,6 +636,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                     hour = UInt8(vals.toUInt32(1));
                 } else {
                     hour = UInt8(vals.toUInt32());
+                }
+                if (hour > 23) {
+                    return False;
                 }
                 break;
 
@@ -623,6 +649,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                 } else {
                     minute = UInt8(vals.toUInt32());
                 }
+                if (minute > 59) {
+                    return False;
+                }
                 break;
 
             case 'S':
@@ -631,6 +660,9 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                     second = UInt8(vals.toUInt32(1));
                 } else {
                     second = UInt8(vals.toUInt32());
+                }
+                if (second > 59) {
+                    return False;
                 }
                 break;
 
@@ -641,9 +673,14 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
                 } else {
                     microsecond = 0;
                 }
+                if (microsecond > 999999) {
+                    return False;
+                }
                 break;
         }
     }
+
+    return True;
 }
 
 //Bool DateTime::setFromString(const String & _value, const String & _arg)

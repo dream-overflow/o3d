@@ -27,7 +27,9 @@ enum Month
     MONTH_SEPTEMBER,
     MONTH_OCTOBER,
     MONTH_NOVEMBER,
-    MONTH_DECEMBER
+    MONTH_DECEMBER,
+    MONTH_UNDECEMBER,
+    MONTH_DUODECEMBER
 };
 
 enum Day
@@ -90,12 +92,10 @@ public:
     //! Build a string containing the date with a specified format and return it.
     String buildString(const String & _arg = String("%d, %m %Y")) const;
 
-    //! Set the date of the object from a string and a specified format.
-    //! @deprecated
-    // Bool setFromString(const String & _value, const String & _arg = String("%d, %m %Y"));
-
     //! Build the date of the object from a string and a specified format.
-    void buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d"));
+    //! Allowed format extra characters list: -.:,;/^|TZ
+    //! @return False if format or value error.
+    Bool buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d"));
 
     //! Set with the current date and time.
     void setCurrent();
