@@ -74,12 +74,34 @@ static const WChar * shortDayString[] = {
 
 DateTime* DateTime::sm_null = nullptr;
 DateTime* DateTime::sm_startDate = nullptr;
+Int32 DateTime::sm_localTz = 0;
 
 void DateTime::init()
 {
     if (!sm_null) {
         sm_null = new DateTime(False);
         sm_startDate = new DateTime(True);
+
+#ifdef O3D_WINDOWS
+        _tzset();
+#else
+        tzset();
+#endif
+        time_t gmt, rawtime = time(NULL);
+        struct tm *ptm;
+
+#ifdef O3D_WINDOWS
+        struct tm gbuf;
+        ptm = gmtime_r(&rawtime, &gbuf);
+#else
+        ptm = gmtime(&rawtime);
+#endif
+        // Request that mktime() looksup dst in timezone database
+        ptm->tm_isdst = -1;
+        gmt = mktime(ptm);
+
+        sm_localTz = static_cast<Int32>(difftime(rawtime, gmt));
+        printf("%i\n", sm_localTz);
     }
 }
 
@@ -490,7 +512,16 @@ String DateTime::buildString(const String & _arg) const
 void DateTime::buildFromString(const String &_value, const String &_arg)
 {
     StringTokenizer arg(_arg, L"%");
-    StringTokenizer value(_value, L" -.:,;/^|");
+    StringTokenizer value(_value, L" -.:,;/^|TZ");
+
+//    WChar arg;
+
+//    for (o3d::Int32 i = 0; i < _value.length(); ++i) {
+//        if (_value[i] == '%' && i < _value.length()-1) {
+//            arg = _value[i+1];
+//        } else {
+//            continue;
+//        }
 
     while (arg.hasMoreElements() && value.hasMoreElements()) {
         String argu(arg.nextElement());
@@ -781,8 +812,6 @@ void DateTime::buildFromString(const String &_value, const String &_arg)
 void DateTime::setCurrent()
 {
 #ifdef O3D_WINDOWS
-    _tzset();
-
     __time64_t ltime;
    _time64(&ltime);
 
@@ -801,8 +830,6 @@ void DateTime::setCurrent()
     struct timeval ltime;
     struct tm *local;
 
-    tzset();
-
     gettimeofday(&ltime, nullptr);
     local = localtime(&ltime.tv_sec);
     year = local->tm_year + 1900;
@@ -819,8 +846,6 @@ void DateTime::setCurrent()
 void DateTime::setMsTime(Int64 ms)
 {
 #ifdef O3D_WINDOWS
-    _tzset();
-
     __time64_t ltime;
     ltime = ms / 1000;
 
@@ -842,8 +867,6 @@ void DateTime::setMsTime(Int64 ms)
 
     struct tm *local;
 
-    tzset();
-
     local = localtime(&ltime.tv_sec);
     year = local->tm_year + 1900;
     month = Month(local->tm_mon);
@@ -856,12 +879,12 @@ void DateTime::setMsTime(Int64 ms)
 #endif
 }
 
-time_t DateTime::toTime_t() const
+time_t DateTime::toTime_t(Bool UTC) const
 {
 #ifdef O3D_WINDOWS
     tm lObjectTime;
 
-    lObjectTime.tm_sec = second;
+    lObjectTime.tm_sec = second + (UTC ? sm_localTz : 0);
     lObjectTime.tm_min = minute;
     lObjectTime.tm_hour = hour;
     lObjectTime.tm_mday = mday;
@@ -875,7 +898,7 @@ time_t DateTime::toTime_t() const
 #else
     struct tm lObjectTime;
 
-    lObjectTime.tm_sec = second;
+    lObjectTime.tm_sec = second + (UTC ? sm_localTz : 0);
     lObjectTime.tm_min = minute;
     lObjectTime.tm_hour = hour;
     lObjectTime.tm_mday = mday;
@@ -887,6 +910,24 @@ time_t DateTime::toTime_t() const
 
     return mktime(&lObjectTime);
 #endif
+}
+
+Int32 DateTime::toTimestamp(Bool UTC) const
+{
+    // time_t is in ms, adding the microsecond part but want it in millisecond
+    return static_cast<Int32>(toTime_t(UTC)) + (static_cast<Int32>(microsecond) / 1000);
+}
+
+Float DateTime::toFloatTimestamp(Bool UTC) const
+{
+    // time_t is in second unit, adding the microsecond part but want it in second
+    return static_cast<Float>(toTime_t(UTC)) / 1000.f + (static_cast<Float>(microsecond) / 1000000.f);
+}
+
+Double DateTime::toDoubleTimestamp(Bool UTC) const
+{
+    // time_t is in second unit, adding the microsecond part but want it in second
+    return static_cast<Double>(toTime_t(UTC)) / 1000.0 + (static_cast<Double>(microsecond) / 1000000.0);
 }
 
 Bool DateTime::isOlderThan(const DateTime& today, UInt32 days)

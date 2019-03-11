@@ -99,7 +99,16 @@ public:
     void setMsTime(Int64 ms);
 
     //! Convert the time to a time_t struct.
-    time_t toTime_t() const;
+    time_t toTime_t(Bool UTC=True) const;
+
+    //! Convert to an integer epoch timestamp in ms.
+    Int32 toTimestamp(Bool UTC=True) const;
+
+    //! Convert to a float epoch timestamp in second unit with microsecond precision.
+    Float toFloatTimestamp(Bool UTC=True) const;
+
+    //! Convert to a double epoch timestamp in second unit with microsecond precision.
+    Double toDoubleTimestamp(Bool UTC=True) const;
 
     //! Check if the date is older than n days.
     Bool isOlderThan(const DateTime &compare, UInt32 days);
@@ -124,6 +133,7 @@ private:
 
     static DateTime *sm_null;
     static DateTime *sm_startDate;
+    static Int32 sm_localTz;
 
     static void init();
     static void quit();
