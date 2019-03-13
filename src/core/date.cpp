@@ -23,7 +23,6 @@
 #endif
 
 #include <sstream>
-
 using namespace o3d;
 
 static const WChar* monthString[] = {
@@ -608,11 +607,20 @@ void Date::setCurrent()
 #endif
 }
 
-void Date::setMsTime(Int64 ms)
+void Date::fromTime(Float time, Bool UTC)
+{
+    fromTimeUs(Int64(time * 1000000), UTC);
+}
+
+void Date::fromTime(Double time, Bool UTC)
+{
+    fromTimeUs(Int64(time * 1000000), UTC);
+}
+
+void Date::fromTimeMs(Int64 ms, Bool UTC)
 {
 #ifdef O3D_WINDOWS
-    __time64_t ltime;
-    ltime = ms / 1000;
+    __time64_t ltime = static_cast<time_t>(ms / 1000) - (UTC ? sm_localTz : 0);
 
     tm local;
     _localtime64_s(&local,&ltime);
@@ -622,13 +630,34 @@ void Date::setMsTime(Int64 ms)
     day = Day(local.tm_wday);
     mday = UInt8(local.tm_mday);
 #else
-    struct timeval ltime;
-    ltime.tv_sec = ms / 1000;
-    ltime.tv_usec = (ms % 1000) * 1000;
-
+    time_t ts = static_cast<time_t>(ms / 1000) - (UTC ? sm_localTz : 0);
     struct tm *local;
 
-    local = localtime(&ltime.tv_sec);
+    local = localtime(&ts);
+    year = local->tm_year + 1900;
+    month = Month(local->tm_mon);
+    day = Day(local->tm_wday);
+    mday = local->tm_mday;
+#endif
+}
+
+void Date::fromTimeUs(Int64 us, Bool UTC)
+{
+#ifdef O3D_WINDOWS
+    __time64_t ltime = static_cast<time_t>(us / 1000000) - (UTC ? sm_localTz : 0);
+
+    tm local;
+    _localtime64_s(&local,&ltime);
+
+    year = UInt16(local.tm_year + 1900);
+    month = Month(local.tm_mon);
+    day = Day(local.tm_wday);
+    mday = UInt8(local.tm_mday);
+#else
+    time_t ts = static_cast<time_t>(us / 1000000) - (UTC ? sm_localTz : 0);
+    struct tm *local;
+
+    local = localtime(&ts);
     year = local->tm_year + 1900;
     month = Month(local->tm_mon);
     day = Day(local->tm_wday);
@@ -678,13 +707,13 @@ Int32 Date::toTimestamp(Bool UTC) const
 Float Date::toFloatTimestamp(Bool UTC) const
 {
     // time_t is in second unit
-    return static_cast<Float>(toTime_t(UTC)) / 1000.f;
+    return static_cast<Float>(toTime_t(UTC));
 }
 
 Double Date::toDoubleTimestamp(Bool UTC) const
 {
     // time_t is in second unit
-    return static_cast<Double>(toTime_t(UTC)) / 1000.0;
+    return static_cast<Double>(toTime_t(UTC));
 }
 
 Bool Date::isOlderThan(const Date& today, UInt32 days)

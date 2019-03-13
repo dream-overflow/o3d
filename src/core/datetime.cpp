@@ -852,7 +852,7 @@ void DateTime::setCurrent()
    _time64(&ltime);
 
     tm local;
-    _localtime64_s(&local,&ltime);
+    _localtime64_s(&local, &ltime);
 
     year = UInt16(local.tm_year + 1900);
     month = Month(local.tm_mon);
@@ -861,7 +861,7 @@ void DateTime::setCurrent()
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
     mday = UInt8(local.tm_mday);
-    microsecond = 0;
+    microsecond = 0;  // @todo howto ?
 #else
     struct timeval ltime;
     struct tm *local;
@@ -875,18 +875,27 @@ void DateTime::setCurrent()
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    microsecond = ltime.tv_usec / 1000;
+    microsecond = o3d::UInt32(ltime.tv_usec);
 #endif
 }
 
-void DateTime::setMsTime(Int64 ms)
+void DateTime::fromTime(Float time, Bool UTC)
+{
+    fromTimeUs(Int64(time * 1000000.f), UTC);
+}
+
+void DateTime::fromTime(Double time, Bool UTC)
+{
+    fromTimeUs(Int64(time * 1000000.0), UTC);
+}
+
+void DateTime::fromTimeMs(Int64 ms, Bool UTC)
 {
 #ifdef O3D_WINDOWS
-    __time64_t ltime;
-    ltime = ms / 1000;
+    __time64_t ltime = static_cast<time_t>(ms / 1000) - (UTC ? sm_localTz : 0);
 
     tm local;
-    _localtime64_s(&local,&ltime);
+    _localtime64_s(&local, &ltime);
 
     year = UInt16(local.tm_year + 1900);
     month = Month(local.tm_mon);
@@ -895,15 +904,12 @@ void DateTime::setMsTime(Int64 ms)
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
     mday = UInt8(local.tm_mday);
-    microsecond = 0;
+    microsecond = static_cast<o3d::UInt32>((ms * 1000) - (static_cast<o3d::Int64>(ms / 1000) * 1000000));
 #else
-    struct timeval ltime;
-    ltime.tv_sec = ms / 1000;
-    ltime.tv_usec = (ms % 1000) * 1000;
-
+    time_t ts = static_cast<time_t>(ms / 1000) - (UTC ? sm_localTz : 0);
     struct tm *local;
 
-    local = localtime(&ltime.tv_sec);
+    local = localtime(&ts);
     year = local->tm_year + 1900;
     month = Month(local->tm_mon);
     day = Day(local->tm_wday);
@@ -911,7 +917,39 @@ void DateTime::setMsTime(Int64 ms)
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    microsecond = ltime.tv_usec;
+    microsecond = static_cast<o3d::UInt32>((ms * 1000) - (static_cast<o3d::Int64>(ms / 1000) * 1000000));
+#endif
+}
+
+void DateTime::fromTimeUs(Int64 us, Bool UTC)
+{
+#ifdef O3D_WINDOWS
+    __time64_t ltime = static_cast<time_t>(us / 1000000) - (UTC ? sm_localTz : 0);
+
+    tm local;
+    _localtime64_s(&local, &ltime);
+
+    year = UInt16(local.tm_year + 1900);
+    month = Month(local.tm_mon);
+    day = Day(local.tm_wday);
+    hour = UInt8(local.tm_hour);
+    minute = UInt8(local.tm_min);
+    second = UInt8(local.tm_sec);
+    mday = UInt8(local.tm_mday);
+    microsecond = static_cast<o3d::UInt32>(us - (static_cast<o3d::Int64>(us / 1000000) * 1000000));
+#else
+    time_t ts = static_cast<time_t>(us / 1000000) - (UTC ? sm_localTz : 0);
+    struct tm *local;
+
+    local = localtime(&ts);
+    year = local->tm_year + 1900;
+    month = Month(local->tm_mon);
+    day = Day(local->tm_wday);
+    hour = local->tm_hour;
+    minute = local->tm_min;
+    second = local->tm_sec;
+    mday = local->tm_mday;
+    microsecond = static_cast<o3d::UInt32>(us - (static_cast<o3d::Int64>(us / 1000000) * 1000000));
 #endif
 }
 
@@ -957,13 +995,13 @@ Int32 DateTime::toTimestamp(Bool UTC) const
 Float DateTime::toFloatTimestamp(Bool UTC) const
 {
     // time_t is in second unit, adding the microsecond part but want it in second
-    return static_cast<Float>(toTime_t(UTC)) / 1000.f + (static_cast<Float>(microsecond) / 1000000.f);
+    return static_cast<Float>(toTime_t(UTC)) + (static_cast<Float>(microsecond) / 1000000.f);
 }
 
 Double DateTime::toDoubleTimestamp(Bool UTC) const
 {
     // time_t is in second unit, adding the microsecond part but want it in second
-    return static_cast<Double>(toTime_t(UTC)) / 1000.0 + (static_cast<Double>(microsecond) / 1000000.0);
+    return static_cast<Double>(toTime_t(UTC)) + (static_cast<Double>(microsecond) / 1000000.0);
 }
 
 Bool DateTime::isOlderThan(const DateTime& today, UInt32 days)
@@ -1004,7 +1042,7 @@ Bool DateTime::isOlderThan(const DateTime& today, UInt32 days)
     time_t start, end;
     double elapsed;
 
-    struct tm startTM,endTM;
+    struct tm startTM, endTM;
 
     // info : tm_wday and tm_yday are ignored for mktime
     startTM.tm_year = year - 1900;

@@ -92,8 +92,17 @@ public:
     //! Set the time from a time_t struct.
     void setTime(time_t ltime) { operator =(DateTime(ltime)); }
 
+    //! Set the time from a time in second with a microsecond precision.
+    void fromTime(o3d::Float time, Bool UTC=True);
+
+    //! Set the time from a time in second with a microsecond precision.
+    void fromTime(o3d::Double time, Bool UTC=True);
+
     //! Set the time from a timestamp in milliseconds since epoch.
-    void setMsTime(Int64 ms);
+    void fromTimeMs(Int64 ms, Bool UTC=True);
+
+    //! Set the time from a time in microsecond since epoch.
+    void fromTimeUs(Int64 us, Bool UTC=True);
 
     //! Convert the time to a time_t struct.
     time_t toTime_t(Bool UTC=True) const;
