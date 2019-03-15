@@ -89,6 +89,15 @@ public:
     //! Compare to another date object for lesser.
     Bool operator < (const Date & _which) const;
 
+    //! Compare to another date object for lesser or equal.
+    Bool operator <= (const Date & _which) const;
+
+    //! Compare to another date object for greater.
+    Bool operator > (const Date & _which) const;
+
+    //! Compare to another date object for greater or equal.
+    Bool operator >= (const Date & _which) const;
+
     //! Build a string containing the date with a specified format and return it.
     String buildString(const String & _arg = String("%d, %m %Y")) const;
 

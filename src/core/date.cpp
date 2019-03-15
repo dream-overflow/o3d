@@ -204,7 +204,7 @@ Bool Date::operator == (const Date & _which) const
 {
     return ((year == _which.year) &&
             (month == _which.month) &&
-            (day == _which.day) &&
+            (mday == _which.mday) &&
             (mday == _which.mday));
 }
 
@@ -215,10 +215,98 @@ Bool Date::operator != (const Date & _which) const
 
 Bool Date::operator <(const Date &_which) const
 {
-    // no mday in comparison
-    return ((year < _which.year) ||
-            (month < _which.month) ||
-            (day < _which.day));
+    if (year > _which.year) {
+        return False;
+    } else if (year < _which.year) {
+        return True;
+    }
+
+    if (month > _which.month) {
+        return False;
+    } else if (month < _which.month) {
+        return True;
+    }
+
+    if (mday > _which.mday) {
+        return False;
+    } else if (mday < _which.mday) {
+        return True;
+    }
+
+    // or ms equal
+    return False;
+}
+
+Bool Date::operator <=(const Date &_which) const
+{
+    if (year > _which.year) {
+        return False;
+    } else if (year < _which.year) {
+        return True;
+    }
+
+    if (month > _which.month) {
+        return False;
+    } else if (month < _which.month) {
+        return True;
+    }
+
+    if (mday > _which.mday) {
+        return False;
+    } else if (mday < _which.mday) {
+        return True;
+    }
+
+    // or ms equal
+    return True;
+}
+
+Bool Date::operator >(const Date &_which) const
+{
+    if (year < _which.year) {
+        return False;
+    } else if (year > _which.year) {
+        return True;
+    }
+
+    if (month < _which.month) {
+        return False;
+    } else if (month > _which.month) {
+        return True;
+    }
+
+    if (mday < _which.mday) {
+        return False;
+    } else if (mday > _which.mday) {
+        return True;
+    }
+
+    // or ms equal
+    return False;
+}
+
+Bool Date::operator >=(const Date &_which) const
+{
+    if (year < _which.year) {
+        return False;
+    } else if (year > _which.year) {
+        return True;
+    }
+
+    if (month < _which.month) {
+        return False;
+    } else if (month > _which.month) {
+        return True;
+    }
+
+    if (mday < _which.mday) {
+        return False;
+    } else if (mday > _which.mday) {
+        return True;
+    }
+
+    // or ms equal
+    return True;
 }
 
 Bool Date::writeToFile(OutStream &os) const

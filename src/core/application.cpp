@@ -76,7 +76,7 @@ void Application::init(AppSettings settings, Int32 argc, Char **argv, void *app)
 
     // Log start time
     DateTime current(True);
-    O3D_MESSAGE(String("Starting of application on ") + current.buildString("%y-%M-%D at %h:%i:%s.%l"));
+    O3D_MESSAGE(String("Starting of application on ") + current.buildString("%Y-%m-%d %H:%M:%S.%f"));
 
 	// Initialize fast memory allocator
 	MemoryManager::instance()->initFastAllocator(
@@ -136,7 +136,7 @@ void Application::quit()
 
     // Log quit time
     DateTime current(True);
-    O3D_MESSAGE(String("Terminating of application on ") + current.buildString("%y-%M-%D at %h:%i:%s.%l"));
+    O3D_MESSAGE(String("Terminating of application on ") + current.buildString("%Y-%m-%d at %H:%M:%S.%f"));
 
     ms_init = False;
 

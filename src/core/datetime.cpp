@@ -230,7 +230,7 @@ Bool DateTime::operator == (const DateTime & _which) const
 {
     return ((year == _which.year) &&
             (month == _which.month) &&
-            (day == _which.day) &&
+            (mday == _which.mday) &&
             (hour == _which.hour) &&
             (minute == _which.minute) &&
             (second == _which.second) &&
@@ -245,14 +245,50 @@ Bool DateTime::operator != (const DateTime & _which) const
 
 Bool DateTime::operator <(const DateTime &_which) const
 {
-    // no mday in comparison
-    return ((year < _which.year) ||
-            (month < _which.month) ||
-            (day < _which.day) ||
-            (hour < _which.hour) ||
-            (minute < _which.minute) ||
-            (second < _which.second) ||
-            (microsecond < _which.microsecond));
+    if (year > _which.year) {
+        return False;
+    } else if (year < _which.year) {
+        return True;
+    }
+
+    if (month > _which.month) {
+        return False;
+    } else if (month < _which.month) {
+        return True;
+    }
+
+    if (mday > _which.mday) {
+        return False;
+    } else if (mday < _which.mday) {
+        return True;
+    }
+
+    if (hour > _which.hour) {
+        return False;
+    } else if (hour < _which.hour) {
+        return True;
+    }
+
+    if (minute > _which.minute) {
+        return False;
+    } else if (minute < _which.minute) {
+        return True;
+    }
+
+    if (second > _which.second) {
+        return False;
+    } else if (second < _which.second) {
+        return True;
+    }
+
+    if (microsecond > _which.microsecond) {
+        return False;
+    } else if (microsecond < _which.microsecond) {
+        return True;
+    }
+
+    // or ms equal
+    return False;
 }
 
 Bool DateTime::operator <=(const DateTime &_which) const
@@ -269,9 +305,9 @@ Bool DateTime::operator <=(const DateTime &_which) const
         return True;
     }
 
-    if (day > _which.day) {
+    if (mday > _which.mday) {
         return False;
-    } else if (day < _which.day) {
+    } else if (mday < _which.mday) {
         return True;
     }
 
@@ -305,14 +341,50 @@ Bool DateTime::operator <=(const DateTime &_which) const
 
 Bool DateTime::operator >(const DateTime &_which) const
 {
-    // no mday in comparison
-    return ((year > _which.year) ||
-            (month > _which.month) ||
-            (day > _which.day) ||
-            (hour > _which.hour) ||
-            (minute > _which.minute) ||
-            (second > _which.second) ||
-            (microsecond > _which.microsecond));
+    if (year < _which.year) {
+        return False;
+    } else if (year > _which.year) {
+        return True;
+    }
+
+    if (month < _which.month) {
+        return False;
+    } else if (month > _which.month) {
+        return True;
+    }
+
+    if (mday < _which.mday) {
+        return False;
+    } else if (mday > _which.mday) {
+        return True;
+    }
+
+    if (hour < _which.hour) {
+        return False;
+    } else if (hour > _which.hour) {
+        return True;
+    }
+
+    if (minute < _which.minute) {
+        return False;
+    } else if (minute > _which.minute) {
+        return True;
+    }
+
+    if (second < _which.second) {
+        return False;
+    } else if (second > _which.second) {
+        return True;
+    }
+
+    if (microsecond < _which.microsecond) {
+        return False;
+    } else if (microsecond > _which.microsecond) {
+        return True;
+    }
+
+    // or ms equal
+    return False;
 }
 
 Bool DateTime::operator >=(const DateTime &_which) const
@@ -329,9 +401,9 @@ Bool DateTime::operator >=(const DateTime &_which) const
         return True;
     }
 
-    if (day < _which.day) {
+    if (mday < _which.mday) {
         return False;
-    } else if (day > _which.day) {
+    } else if (mday > _which.mday) {
         return True;
     }
 
