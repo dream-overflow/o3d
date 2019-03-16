@@ -60,7 +60,7 @@ public:
     //! @param str New text content
     //! @param cursorPos -1 mean set cusor to end of the text, else use cursorPos
     //! @note The given string is truncated to max length.
-    void setText(const String& str, UInt32 cursorPos=-1);
+    void setText(const String& str, Int32 cursorPos=-1);
     //! Get the string.
     inline const String& text() const { return m_text; }
 
@@ -82,9 +82,9 @@ public:
     inline Bool isReturn() const { return m_isNewLineEnable; }
 
     //! Set the cursor position given its position in character.
-    void setCursorPos(UInt32 pos);
+    void setCursorPos(Int32 pos);
 	//! Get the cursor position.
-    inline UInt32 cursorPos() const { return m_cursorPos; }
+    inline Int32 cursorPos() const { return m_cursorPos; }
 
     //! Draw the text and cursor.
     //! @deprecated use TextZone to display.
@@ -102,10 +102,10 @@ public:
     inline const TemplateArray<WChar>& filter() const { return m_filter; }
 
 	//! Set the capture text length limit
-    inline void setLengthLimit(UInt32 limit) { m_maxLength = limit; }
+    inline void setLengthLimit(Int32 limit) { m_maxLength = limit; }
 
 	//! Get the capture text length limit
-    inline UInt32 lengthLimit() const { return m_maxLength; }
+    inline Int32 lengthLimit() const { return m_maxLength; }
 
     //! Set a validator (or nullptr to remove a previous).
     //! A validator is used to force the capture to a valid format.
@@ -122,13 +122,13 @@ private:
     Bool m_readOnly;         //!< read only
     String m_text;           //!< the text string
 
-    UInt32 m_cursorPos;      //!< the cursor position in character
-    UInt32 m_maxLength;      //!< max length of the captured string (default: 65535)
+    Int32 m_cursorPos;       //!< the cursor position in character
+    Int32 m_maxLength;       //!< max length of the captured string (default: 65535)
 
     Bool m_isTabEnable;      //!< is tab '\t' authorized
     Bool m_isNewLineEnable;  //!< is return '\n' authorized
 
-    UInt32 m_lastTime;       //!< cursor toggle time
+    Int32 m_lastTime;        //!< cursor toggle time
 
 	TemplateArray<WChar> m_filter;    //!< list of filtered characters (non authorized)
 
@@ -138,4 +138,3 @@ private:
 } // namespace o3d
 
 #endif // _O3D_GETTEXT_H
-

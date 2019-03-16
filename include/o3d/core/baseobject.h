@@ -184,7 +184,7 @@ public:
     inline Bool noLongerUsed() const { return m_usersList.empty(); }
 
 	//! Return the number of users for the object. The parent is not count as a user.
-    inline UInt32 getNumUsers() const { return (UInt32)m_usersList.size(); }
+    inline UInt32 getNumUsers() const { return static_cast<UInt32>(m_usersList.size()); }
 
 	//! Detach all users.
 	void releaseAll();
@@ -253,7 +253,7 @@ protected:
     Int32 m_id;             //!< unique object identifier (default is -1).
     String m_name;          //!< Object name (default is "undefined").
 
-    UInt32 m_serializeId;   //!< Temporary identifier, used for IO indexing.
+    Int32 m_serializeId;    //!< Temporary identifier, used for IO indexing.
 
 	BaseObject *m_parent;          //!< Parent object (null if none).
     BaseObject *m_topLevelParent;  //!< Parent top level (null if none).

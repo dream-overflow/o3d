@@ -210,15 +210,15 @@ void PCLODZoneManager::rtMoveCamera(const Vector2i & _direction)
 
 	// We must only defined some
 	// For the moment, a fast and easy way is implement, but it can be improved
-	for (UInt32 j = 0 ; j < m_visibleZoneArray.height() ; ++j)
-		for (UInt32 i = 0 ; i < m_visibleZoneArray.width() ; ++i)
+    for (Int32 j = 0 ; j < m_visibleZoneArray.height() ; ++j)
+        for (Int32 i = 0 ; i < m_visibleZoneArray.width() ; ++i)
 		{
 			PCLODZoneManage & pZoneManage = m_visibleZoneArray(i,j);
 			Vector2i position(originArray[X] + i, originArray[Y] + j);
 
 			if (!pZoneManage.isValid() &&
-				(position[X] >= 0) && (position[X] < Int32(m_zoneTableArray.width())) &&
-				(position[Y] >= 0) && (position[Y] < Int32(m_zoneTableArray.height())))
+                (position[X] >= 0) && (position[X] < m_zoneTableArray.width()) &&
+                (position[Y] >= 0) && (position[Y] < m_zoneTableArray.height()))
 			{
 				UInt32 zoneId = m_zoneTableArray(position[X], position[Y]);
 
@@ -555,7 +555,7 @@ void PCLODZoneManager::draw(const DrawInfo &drawInfo)
 		primitive->setColor(1,0,0);
 		primitive->beginDraw(P_LINES);
 
-        for (UInt32 k = 0 ; k <= m_visibleZoneArray.height() ; ++k) {
+        for (Int32 k = 0 ; k <= m_visibleZoneArray.height() ; ++k) {
 			// Les diagonales
 			primitive->addVertex(minPosX, 0.0f, posZ);
 			primitive->addVertex(maxPosX, 0.0f, posZ);
@@ -563,7 +563,7 @@ void PCLODZoneManager::draw(const DrawInfo &drawInfo)
 			posZ += (m_zoneSize[X]-1) * m_zoneUnits[X];
 		}
 
-        for (UInt32 k = 0 ; k <= m_visibleZoneArray.width() ; ++k) {
+        for (Int32 k = 0 ; k <= m_visibleZoneArray.width() ; ++k) {
 			// Les hauteurs
 			primitive->addVertex(posX, 0.0f, minPosZ);
 			primitive->addVertex(posX, 0.0f, maxPosZ);
@@ -585,13 +585,13 @@ void PCLODZoneManager::draw(const DrawInfo &drawInfo)
 		posZ = minPosZ;
 
 		// On affiche les quadrillages fixes
-        for (UInt32 k = 0 ; k <= m_zoneTableArray.height() ; ++k) {
+        for (Int32 k = 0 ; k <= m_zoneTableArray.height() ; ++k) {
 			primitive->addVertex(posX, 0.0f, minPosZ);
 			primitive->addVertex(posX, 0.0f, maxPosZ);
 			posX += Float(m_zoneSize[Y] - 1) * m_zoneUnits[Y];
 		}
 
-        for (UInt32 k = 0 ; k <= m_zoneTableArray.width() ; ++k) {
+        for (Int32 k = 0 ; k <= m_zoneTableArray.width() ; ++k) {
 			primitive->addVertex(minPosX, 0.0f, posZ);
 			primitive->addVertex(maxPosX, 0.0f, posZ);
 			posZ += Float(m_zoneSize[X] - 1) * m_zoneUnits[X];
@@ -841,7 +841,7 @@ void PCLODZoneManager::rtRefreshOnce(Bool _firstFrame)
 	// il faut traiter les événements du thread de refresh
 	EvtManager::instance()->processEvent(this);
 
-	for (UInt32 k = 0 ; k < m_visibleZoneArray.elt() ; ++k)
+    for (Int32 k = 0 ; k < m_visibleZoneArray.elt() ; ++k)
 	{
 		if (m_visibleZoneArray[k].isValid())
 			rtBuildgetRenderer(*m_visibleZoneArray[k].getZone().get());
@@ -893,4 +893,3 @@ Int32 PCLODZoneManager::run(void *)
 
 	return 0;
 }
-

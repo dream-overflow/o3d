@@ -35,7 +35,7 @@ public:
 	}
 
 	//! initialization constructor.
-    SmartArray(UInt32 size) :
+    SmartArray(Int32 size) :
         m_counter(nullptr),
 		m_size(size)
 	{
@@ -61,7 +61,7 @@ public:
 	//! @param size Number of element of data.
 	//! @param own If true this smart object will own it, in other case it simply duplicate it.
 	//! @note If own if true, the given data ptr should be previously allocated using a new [].
-    SmartArray(T *data, UInt32 size, Bool own) :
+    SmartArray(T *data, Int32 size, Bool own) :
         m_counter(nullptr),
 		m_size(size)
 	{
@@ -81,7 +81,7 @@ public:
 	//! Initialization constructor from const data.
 	//! @param data Const array to duplicate.
 	//! @param size Number of element of data.
-    SmartArray(const T *data, UInt32 size) :
+    SmartArray(const T *data, Int32 size) :
         m_counter(nullptr),
 		m_size(size)
 	{
@@ -132,13 +132,13 @@ public:
 	}
 
 	//! Access to an element of the array.
-    inline T& operator[](UInt32 pos)
+    inline T& operator[](Int32 pos)
 	{
 		O3D_ASSERT(pos < m_size);
 		return m_data[pos];
 	}
 	//! Access to an element of the array (read only).
-    inline const T& operator[](UInt32 pos) const
+    inline const T& operator[](Int32 pos) const
 	{
 		O3D_ASSERT(pos < m_size);
 		return m_data[pos];
@@ -163,13 +163,13 @@ public:
 	}
 
 	//! Get the length of the array.
-    inline UInt32 getNumElt() const { return m_size; }
+    inline Int32 getNumElt() const { return m_size; }
 
 	//! Get the length of the array.
-    inline UInt32 getSize() const { return m_size; }
+    inline Int32 getSize() const { return m_size; }
 
 	//! Get the length of the array in bytes.
-    inline UInt32 getSizeInBytes() const { return m_size * sizeof(T); }
+    inline Int32 getSizeInBytes() const { return m_size * sizeof(T); }
 
     //! Say whether or not the array data is valid.
     inline Bool isValid() const { return (m_data != nullptr); }
@@ -205,7 +205,7 @@ public:
 	}
 
 	//! Allocate the data array of the given size.
-    inline void allocate(UInt32 size)
+    inline void allocate(Int32 size)
 	{
 		releaseCheckAndDelete();
 
@@ -223,7 +223,7 @@ protected:
 
     Int32 *m_counter;  //!< Reference counter.
 
-    UInt32 m_size;     //!< Size of the array.
+    Int32 m_size;     //!< Size of the array.
     T *m_data;         //!< Array data.
 
 	//! Use object.

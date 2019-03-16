@@ -105,7 +105,7 @@ public:
     virtual Int32 writeAtRow(Int32 row, Int32 x, const String& text, Int32 curspos = -1) override;
 
 	//! how many char in this font
-	inline UInt32 getNumChars() const { return m_nChar; }
+    inline Int32 getNumChars() const { return m_nChar; }
 
 	//! is this char is supported by the loaded font
 	virtual Bool isSupportedChar(UInt32 c) = 0;
@@ -115,7 +115,7 @@ protected:
     FontStyle m_style;     //!< Font style (default is normal = 1)
     CharSet m_CharSet;     //!< CharSet definition
 
-	UInt32 m_nChar;        //!< the number of char that contain this font
+    Int32 m_nChar;         //!< the number of char that contain this font
 	Int32 m_charH;         //!< height of a char in pixel size
 
 	Color m_color;             //!< the current color

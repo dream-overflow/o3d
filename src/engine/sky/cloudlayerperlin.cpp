@@ -300,8 +300,7 @@ Bool CloudLayerPerlin::updateGeometry()
 			// Min and max value of the perlin is retrieved
 			Float lMin = lPerlin[0], lMax = lPerlin[0];
 
-			for (UInt32 i = 0 ; i < lPerlin.elt() ; ++i)
-			{
+            for (Int32 i = 0 ; i < lPerlin.elt() ; ++i) {
 				lMin = o3d::min<Float>(lMin, lPerlin[i]);
 				lMax = o3d::max<Float>(lMax, lPerlin[i]);
 			}
@@ -309,8 +308,7 @@ Bool CloudLayerPerlin::updateGeometry()
 			const Float lThreshold = lMax - m_coveringRate * (lMax - lMin);
 
 			// Perlin is transformed
-			for (UInt32 i = 0 ; i < lPerlin.elt() ; ++i)
-			{
+            for (Int32 i = 0 ; i < lPerlin.elt() ; ++i) {
 				float & lVal = lPerlin[i];
 
 				if (lVal <= lThreshold)
@@ -330,10 +328,8 @@ Bool CloudLayerPerlin::updateGeometry()
 
 			const Float lIAverageSize = 1.0f / ((2*m_averageSize + 1) * (2*m_averageSize + 1));
 
-			for (Int32 y = 0 ; y < Int32(lAveraged.width()) ; ++y)
-			{
-				for (Int32 x = 0 ; x < Int32(lAveraged.height()) ; ++x)
-				{
+            for (Int32 y = 0 ; y < Int32(lAveraged.width()) ; ++y) {
+                for (Int32 x = 0 ; x < Int32(lAveraged.height()) ; ++x) {
 					Float & lVal = lAveraged(x,y);
 
 					if ((x >= m_averageSize) && (y >= m_averageSize) && (x < Int32(lAveraged.width()) - m_averageSize) && (y < Int32(lAveraged.width()) - m_averageSize))
@@ -464,14 +460,13 @@ Bool CloudLayerPerlin::updateGeometry()
 		m_upToDate &= (~UPDATE_PERLIN_NORMAL);
 	}
 
-	if ((m_upToDate & UPDATE_NOISE) != 0)
-	{
+    if ((m_upToDate & UPDATE_NOISE) != 0) {
 		Array2DFloat lPerlin;
-		if (m_noise.toBuffer(lPerlin))
-		{
+        if (m_noise.toBuffer(lPerlin)) {
 			// The generated noise is centered around 0 instead of 0.5.
-			for (UInt32 i = 0 ; i < lPerlin.elt() ; ++i)
+            for (Int32 i = 0 ; i < lPerlin.elt() ; ++i) {
 				lPerlin[i] += 0.5f;
+            }
 
 			m_noiseTexture->create(True, lPerlin.width(), lPerlin.height(), PF_RED_F32, lPerlin.getData(), PF_RED_F32);
 		}

@@ -50,7 +50,7 @@ public:
 	}
 
 	//! Return the number bits
-	inline UInt32 getSize() const { return (UInt32)sizeof(T)<<3; }
+    inline Int32 getSize() const { return static_cast<Int32>(sizeof(T)<<3); }
 
 	//! Reset all bits to zero
 	inline void zero() { m_BitSet = 0; }
@@ -62,64 +62,71 @@ public:
 	inline T getValue() const { return m_BitSet; }
 
 	//! Set a bit
-	inline void setBit(UInt32 bit, Bool value)
+    inline void setBit(Int32 bit, Bool value)
 	{
-		if (bit >= getSize())
+        if (bit >= getSize()) {
 			O3D_ERROR(E_IndexOutOfRange("bit"));
+        }
 
 		// set the bit to 1
-		if (value)
+        if (value) {
 			m_BitSet |= (T(1) << bit);
-		// set the bit to 0
-		else
-			m_BitSet &= ~(T(1) << bit);
+        } else {
+            // set the bit to 0
+            m_BitSet &= ~(T(1) << bit);
+        }
 	}
 
 	//! Get a bit
-	inline Bool getBit(UInt32 bit) const
+    inline Bool getBit(Int32 bit) const
 	{
-		if (bit >= getSize())
+        if (bit >= getSize()) {
 			O3D_ERROR(E_IndexOutOfRange("bit"));
+        }
 
 		return (m_BitSet & (T(1) << bit));
 	}
 
 	//! Enable a bit (set to 1).
-	inline void enable(UInt32 bit)
+    inline void enable(Int32 bit)
 	{
-		if (bit >= getSize())
+        if (bit >= getSize()) {
 			O3D_ERROR(E_IndexOutOfRange("bit"));
+        }
 
 		// set the bit to 1
 		m_BitSet |= (T(1) << bit);
 	}
 
 	//! Disable a bit (set to 0).
-	inline void disable(UInt32 bit)
+    inline void disable(Int32 bit)
 	{
-		if (bit >= getSize())
+        if (bit >= getSize()) {
 			O3D_ERROR(E_IndexOutOfRange("bit"));
+        }
 
 		// set the bit to 0
 		m_BitSet &= ~(T(1) << bit);
 	}
 
 	//! Toggle a bit
-	inline void toggle(UInt32 bit)
+    inline void toggle(Int32 bit)
 	{
-		if (bit >= getSize())
+        if (bit >= getSize()) {
 			O3D_ERROR(E_IndexOutOfRange("bit"));
+        }
 
-		if (m_BitSet & (T(1) << bit))
+        if (m_BitSet & (T(1) << bit)) {
 			// set the bit to 0
 			m_BitSet &= ~(T(1) << bit);
-		else
+        } else {
 			// set the bit to 1
 			m_BitSet |= (T(1) << bit);
+        }
 	}
 
 	//! Get a bit (read only).
-	inline Bool operator[](UInt32 bit) const  { return getBit(bit); }
+    inline Bool operator[](Int32 bit) const  { return getBit(bit); }
 
 	//! Conversion operator to type T reference
     inline operator T&() const { return m_BitSet; }
@@ -145,8 +152,7 @@ public:
 	inline operator String() const
 	{
 		String temp("{ ");
-		for (Int32 i = 0; i < getSize()-1; ++i)
-		{
+        for (Int32 i = 0; i < getSize()-1; ++i) {
 			temp << getBit(i) << String(", ");
 		}
 		temp << getBit(getSize()-1) << String(" }");
@@ -171,4 +177,3 @@ typedef TemplateBitSet<UInt64> BitSet64;
 } // namespace o3d
 
 #endif // _O3D_TEMPLATEBITSET_H
-

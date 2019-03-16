@@ -30,7 +30,7 @@ template<> Bool SmartArray<Char>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -56,7 +56,7 @@ template<> Bool SmartArray<UInt8>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -82,7 +82,7 @@ template<> Bool SmartArray<Int16>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -108,7 +108,7 @@ template<> Bool SmartArray<UInt16>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -134,7 +134,7 @@ template<> Bool SmartArray<Int32>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -160,7 +160,7 @@ template<> Bool SmartArray<UInt32>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -186,7 +186,7 @@ template<> Bool SmartArray<Int64>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -212,7 +212,7 @@ template<> Bool SmartArray<UInt64>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -238,7 +238,7 @@ template<> Bool SmartArray<Float>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {
@@ -264,7 +264,7 @@ template<> Bool SmartArray<Double>::readFromFile(InStream &is)
 {
     releaseCheckAndDelete();
 
-    UInt32 size;
+    Int32 size;
     is >> size;
 
     if (size > 0) {

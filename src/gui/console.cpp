@@ -597,7 +597,7 @@ void Console::putText(const String &text)
 	else
 	{
 		Int32 pos;
-		UInt32 oldpos=0;
+        Int32 oldpos = 0;
 
 		while (oldpos < text.length() && (pos = text.find('\n',oldpos)) != -1)
 		{
@@ -658,4 +658,3 @@ void Console::updateCache()
     //Theme *theme = getUsedTheme();
     // TODO
 }
-

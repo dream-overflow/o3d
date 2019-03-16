@@ -663,18 +663,17 @@ ConfigFile::ConfigFileGroup * ConfigFile::ConfigFileGroup::getGroup(const String
 	String lGroup;
 
 	// s'il ne reste plus qu'un terme
-	if (lFirstBrace == -1)
+    if (lFirstBrace == -1) {
 		lGroup = lFullPath;
-	else
-	{
+    } else {
 		lGroup = lFullPath;
 		lGroup.truncate(lFirstBrace);
 	}
 
-	for (CIT_GroupArray it = m_groups.begin() ; it != m_groups.end() ; it++)
-	{
-		if (lGroup.compare((*it)->getName(), String::CASE_INSENSITIVE) == 0)
-			return (*it)->getGroup(lFullPath.sub(lGroup.length()));
+    for (CIT_GroupArray it = m_groups.begin() ; it != m_groups.end() ; it++) {
+        if (lGroup.compare((*it)->getName(), String::CASE_INSENSITIVE) == 0) {
+            return (*it)->getGroup(lFullPath.sub(lGroup.length()));
+        }
 	}
 
     return nullptr;
@@ -885,13 +884,10 @@ Bool ConfigFile::ConfigFileGroup::parseFile(InStream & _is, ParserLine & _lastLi
 					String lGroupName = lGroupBlock.sub(1);
 					lGroupName.trimLeftChars(String(" \t"));
 
-					if (lGroupName.compare(getName(), String::CASE_INSENSITIVE) != 0)
-					{
+                    if (lGroupName.compare(getName(), String::CASE_INSENSITIVE) != 0) {
 						lError = True;
 						break;
-					}
-					else
-					{
+                    } else {
 						_lastLine.lineType = PARSER_LINE_GROUP_END;
 						_lastLine.linePreData = lLine.sub(0, lFirstCharIndex);
 						_lastLine.lineData = lGroupName;
@@ -915,13 +911,12 @@ Bool ConfigFile::ConfigFileGroup::parseFile(InStream & _is, ParserLine & _lastLi
 
 					m_groups.push_back(new ConfigFileGroup(lGroupName));
 
-                    if (!m_groups.back()->parseFile(_is, lLineData) || (lLineData.lineType == PARSER_LINE_UNDEFINED))
-					{
+                    if (!m_groups.back()->parseFile(_is, lLineData) || (lLineData.lineType == PARSER_LINE_UNDEFINED)) {
 						lError = True;
 						break;
-					}
-					else
+                    } else {
 						m_structure.push_back(lLineData);
+                    }
 				}
 			}
 			else // C'est une erreur critique donc on retourne False

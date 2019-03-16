@@ -171,4 +171,3 @@ public:
 } // namespace o3d
 
 #endif // _O3D_PERLINNOISE2D_H
-

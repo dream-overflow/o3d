@@ -31,7 +31,7 @@ Octree::~Octree()
 {
 }
 
-UInt32 Octree::getNumObjects()const
+Int32 Octree::getNumObjects()const
 {
 	return 0;
 }

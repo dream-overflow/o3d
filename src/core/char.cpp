@@ -26,7 +26,7 @@ WideChar::operator String() const
 Bool WideChar::isStringAlpha(const String &value)
 {
     WChar c;
-    UInt32 i = 0;
+    Int32 i = 0;
 
     if (value.isEmpty()) {
         return True;
@@ -50,7 +50,7 @@ Bool WideChar::isStringAlpha(const String &value)
 Bool WideChar::isStringDigit(const String &value)
 {
     WChar c;
-    UInt32 i = 0;
+    Int32 i = 0;
 
     if (value.isEmpty()) {
         return True;

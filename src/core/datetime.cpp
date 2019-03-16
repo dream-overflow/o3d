@@ -146,14 +146,15 @@ DateTime::DateTime(Bool setToday) :
 }
 
 // Initialize manually.
-DateTime::DateTime(UInt16 _year,
-        UInt8 _month,
-        UInt8 _day,
-        UInt8 _dayofWeek,
-        UInt8 _hour,
-        UInt8 _minutes,
-        UInt8 _seconds,
-        UInt32 _microsecond) :
+DateTime::DateTime(
+        Int16 _year,
+        Int8 _month,
+        Int8 _day,
+        Int8 _dayofWeek,
+        Int8 _hour,
+        Int8 _minutes,
+        Int8 _seconds,
+        Int32 _microsecond) :
     month(_month),
     wday(_day),
     mday(_dayofWeek),
@@ -211,21 +212,21 @@ DateTime::DateTime(time_t ltime)
     struct tm local;
     _localtime64_s(&local,&ltime);
 
-    year = UInt16(local.tm_year + 1900);
-    month = UInt8(local.tm_mon) + 1;
-    wday = UInt8(local.tm_wday) + 1;
-    hour = UInt8(local.tm_hour);
-    minute = UInt8(local.tm_min);
-    second = UInt8(local.tm_sec);
-    mday = UInt8(local.tm_mday);
+    year = Int16(local.tm_year + 1900);
+    month = Int8(local.tm_mon) + 1;
+    wday = Int8(local.tm_wday) + 1;
+    hour = Int8(local.tm_hour);
+    minute = Int8(local.tm_min);
+    second = Int8(local.tm_sec);
+    mday = Int8(local.tm_mday);
     microsecond = 0;
 #else
     struct tm *local;
     local = localtime(&ltime);
 
     year = local->tm_year + 1900;
-    month = UInt8(local->tm_mon) + 1;
-    wday = UInt8(local->tm_wday) + 1;
+    month = Int8(local->tm_mon) + 1;
+    wday = Int8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
@@ -478,7 +479,7 @@ String DateTime::buildString(const String & _arg) const
     // @see strftime http://www.cplusplus.com/reference/ctime/strftime/
     String result;
 
-    UInt32 k = 0;
+    Int32 k = 0;
 
     while (k < _arg.length()) {
         if (_arg.getData()[k] == '%') {
@@ -514,9 +515,9 @@ String DateTime::buildString(const String & _arg) const
                     // 2 digits month
                     if (month < 10) {
                         // leading 0
-                        result << '0' << month;
+                        result << '0' << static_cast<o3d::UInt32>(month);
                     } else {
-                        result << month;
+                        result << static_cast<o3d::UInt32>(month);
                     }
                     break;
 
@@ -533,36 +534,36 @@ String DateTime::buildString(const String & _arg) const
                 case 'd':
                     // 2 digits month day
                     if (mday < 10) {
-                        result << '0' << mday;  // leading 0
+                        result << '0' << static_cast<o3d::UInt32>(mday);  // leading 0
                     } else {
-                        result << mday;
+                        result << static_cast<o3d::UInt32>(mday);
                     }
                     break;
 
                 case 'H':
                     // 2 digits hour
                     if (hour < 10) {
-                        result << '0' << hour;  // leading 0
+                        result << '0' << static_cast<o3d::UInt32>(hour);  // leading 0
                     } else {
-                        result << hour;
+                        result << static_cast<o3d::UInt32>(hour);
                     }
                     break;
 
                 case 'M':
                     // 2 digits minute
                     if (minute < 10) {
-                        result << '0' << minute;  // leading 0
+                        result << '0' << static_cast<o3d::UInt32>(minute);  // leading 0
                     } else {
-                        result << minute;
+                        result << static_cast<o3d::UInt32>(minute);
                     }
                     break;
 
                 case 'S':
                     // 2 digits second
                     if (second < 10) {
-                        result << '0' << second;  // leading 0
+                        result << '0' << static_cast<o3d::UInt32>(second);  // leading 0
                     } else {
-                        result << second;
+                        result << static_cast<o3d::UInt32>(second);
                     }
                     break;
 
@@ -609,17 +610,17 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
         switch(argu.getData()[0]) {
             case 'Y':
                 // 4 digits year
-                year = UInt16(vals.toUInt32());
+                year = Int16(vals.toUInt32());
                 break;
 
             case 'y':
                 // 2 digits year
-                year = UInt16(vals.toUInt32()) + 2000;
+                year = Int16(vals.toUInt32()) + 2000;
                 break;
 
             case 'B':
                 // letter month
-                for (UInt8 i = 0; i < 14; ++i) {
+                for (Int32 i = 0; i < 14; ++i) {
                     if (vals == monthString[i]) {
                         month = i+1;
                         found = True;
@@ -633,7 +634,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
 
             case 'b':
                 // letter short month
-                for (UInt8 i = 0; i < 14; ++i) {
+                for (Int32 i = 0; i < 14; ++i) {
                     if (vals == shortMonthString[i]) {
                         month = i+1;
                         found = True;
@@ -660,7 +661,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
 
             case 'A':
                 // letter day
-                for (UInt8 i = 0; i < 6; ++i) {
+                for (Int32 i = 0; i < 6; ++i) {
                     if (vals == dayString[i]) {
                         wday = i+1;
                         found = True;
@@ -675,7 +676,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
 
             case 'a':
                 // letter short day
-                for (UInt8 i = 0; i < 6; ++i) {
+                for (Int32 i = 0; i < 6; ++i) {
                     if (vals == shortDayString[i]) {
                         wday = i+1;
                         found = True;
@@ -692,10 +693,10 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
                 // 2 digits month day
                 if (vals[0] == '0') {
                     // ignore leading 0
-                    mday = UInt8(vals.toUInt32(1));
+                    mday = Int8(vals.toUInt32(1));
                     wday = getDayOfWeek();
                 } else {
-                    mday = UInt8(vals.toUInt32());
+                    mday = Int8(vals.toUInt32());
                     wday = getDayOfWeek();
                 }
                 if (mday > 31) {
@@ -707,9 +708,9 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
             case 'H':
                 if (vals[0] == '0') {
                     // ignore leading 0
-                    hour = UInt8(vals.toUInt32(1));
+                    hour = Int8(vals.toUInt32(1));
                 } else {
-                    hour = UInt8(vals.toUInt32());
+                    hour = Int8(vals.toUInt32());
                 }
                 if (hour > 23) {
                     return False;
@@ -719,9 +720,9 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
             case 'M':
                 if (vals[0] == '0') {
                     // ignore leading 0
-                    minute = UInt8(vals.toUInt32(1));
+                    minute = Int8(vals.toUInt32(1));
                 } else {
-                    minute = UInt8(vals.toUInt32());
+                    minute = Int8(vals.toUInt32());
                 }
                 if (minute > 59) {
                     return False;
@@ -731,9 +732,9 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
             case 'S':
                 if (vals[0] == '0') {
                     // ignore leading 0
-                    second = UInt8(vals.toUInt32(1));
+                    second = Int8(vals.toUInt32(1));
                 } else {
-                    second = UInt8(vals.toUInt32());
+                    second = Int8(vals.toUInt32());
                 }
                 if (second > 59) {
                     return False;
@@ -743,7 +744,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
             case 'f':
                 vals.trimLeft('0', True);  // remove eventual leading 0
                 if (vals.isValid()) {
-                    microsecond = UInt8(vals.toUInt32());
+                    microsecond = Int32(vals.toUInt32());
                 } else {
                     microsecond = 0;
                 }
@@ -766,13 +767,13 @@ void DateTime::setCurrent()
     tm local;
     _localtime64_s(&local, &ltime);
 
-    year = UInt16(local.tm_year + 1900);
-    month = UInt8(local.tm_mon) + 1;
-    day = UInt8(local.tm_wday) + 1;
-    hour = UInt8(local.tm_hour);
-    minute = UInt8(local.tm_min);
-    second = UInt8(local.tm_sec);
-    mday = UInt8(local.tm_mday);
+    year = Int16(local.tm_year + 1900);
+    month = Int8(local.tm_mon) + 1;
+    day = Int8(local.tm_wday) + 1;
+    hour = Int8(local.tm_hour);
+    minute = Int8(local.tm_min);
+    second = Int8(local.tm_sec);
+    mday = Int8(local.tm_mday);
     microsecond = 0;  // @todo howto ?
 #else
     struct timeval ltime;
@@ -781,13 +782,13 @@ void DateTime::setCurrent()
     gettimeofday(&ltime, nullptr);
     local = localtime(&ltime.tv_sec);
     year = local->tm_year + 1900;
-    month = UInt8(local->tm_mon) + 1;
-    wday = UInt8(local->tm_wday) + 1;
+    month = Int8(local->tm_mon) + 1;
+    wday = Int8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    microsecond = o3d::UInt32(ltime.tv_usec);
+    microsecond = o3d::Int32(ltime.tv_usec);
 #endif
 }
 
@@ -809,27 +810,27 @@ void DateTime::fromTimeMs(Int64 ms, Bool UTC)
     tm local;
     _localtime64_s(&local, &ltime);
 
-    year = UInt16(local.tm_year + 1900);
-    month = UInt8(local.tm_mon) + 1;
-    day = UInt8(local.tm_wday) + 1;
-    hour = UInt8(local.tm_hour);
-    minute = UInt8(local.tm_min);
-    second = UInt8(local.tm_sec);
-    mday = UInt8(local.tm_mday);
-    microsecond = static_cast<o3d::UInt32>((ms * 1000) - (static_cast<o3d::Int64>(ms / 1000) * 1000000));
+    year = Int16(local.tm_year + 1900);
+    month = Int8(local.tm_mon) + 1;
+    day = Int8(local.tm_wday) + 1;
+    hour = Int8(local.tm_hour);
+    minute = Int8(local.tm_min);
+    second = Int8(local.tm_sec);
+    mday = Int8(local.tm_mday);
+    microsecond = static_cast<o3d::Int32>((ms * 1000) - (static_cast<o3d::Int64>(ms / 1000) * 1000000));
 #else
     time_t ts = static_cast<time_t>(ms / 1000) - (UTC ? sm_localTz : 0);
     struct tm *local;
 
     local = localtime(&ts);
     year = local->tm_year + 1900;
-    month = UInt8(local->tm_mon) + 1;
-    wday = UInt8(local->tm_wday) + 1;
+    month = Int8(local->tm_mon) + 1;
+    wday = Int8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    microsecond = static_cast<o3d::UInt32>((ms * 1000) - (static_cast<o3d::Int64>(ms / 1000) * 1000000));
+    microsecond = static_cast<o3d::Int32>((ms * 1000) - (static_cast<o3d::Int64>(ms / 1000) * 1000000));
 #endif
 }
 
@@ -841,27 +842,27 @@ void DateTime::fromTimeUs(Int64 us, Bool UTC)
     tm local;
     _localtime64_s(&local, &ltime);
 
-    year = UInt16(local.tm_year + 1900);
-    month = UInt8(local.tm_mon) + 1;
-    day = UInt8(local.tm_wday) + 1;
-    hour = UInt8(local.tm_hour);
-    minute = UInt8(local.tm_min);
-    second = UInt8(local.tm_sec);
-    mday = UInt8(local.tm_mday);
-    microsecond = static_cast<o3d::UInt32>(us - (static_cast<o3d::Int64>(us / 1000000) * 1000000));
+    year = Int16(local.tm_year + 1900);
+    month = Int8(local.tm_mon) + 1;
+    day = Int8(local.tm_wday) + 1;
+    hour = Int8(local.tm_hour);
+    minute = Int8(local.tm_min);
+    second = Int8(local.tm_sec);
+    mday = Int8(local.tm_mday);
+    microsecond = static_cast<o3d::Int32>(us - (static_cast<o3d::Int64>(us / 1000000) * 1000000));
 #else
     time_t ts = static_cast<time_t>(us / 1000000) - (UTC ? sm_localTz : 0);
     struct tm *local;
 
     local = localtime(&ts);
     year = local->tm_year + 1900;
-    month = UInt8(local->tm_mon) + 1;
-    wday = UInt8(local->tm_wday) + 1;
+    month = Int8(local->tm_mon) + 1;
+    wday = Int8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
     mday = local->tm_mday;
-    microsecond = static_cast<o3d::UInt32>(us - (static_cast<o3d::Int64>(us / 1000000) * 1000000));
+    microsecond = static_cast<o3d::Int32>(us - (static_cast<o3d::Int64>(us / 1000000) * 1000000));
 #endif
 }
 
@@ -916,7 +917,7 @@ Double DateTime::toDoubleTimestamp(Bool UTC) const
     return static_cast<Double>(toTime_t(UTC)) + (static_cast<Double>(microsecond) / 1000000.0);
 }
 
-UInt8 DateTime::getDayOfWeek() const
+Int8 DateTime::getDayOfWeek() const
 {
     static Int32 t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
     Int32 y = year - (month < 3 ? 1 : 0);
@@ -924,7 +925,7 @@ UInt8 DateTime::getDayOfWeek() const
     return ((y + y/4 - y/100 + y/400 + t[month-1] + (mday-1)) % 7) + 1;
 }
 
-Bool DateTime::isOlderThan(const DateTime& today, UInt32 days)
+Bool DateTime::isOlderThan(const DateTime& today, Int32 days)
 {
 #ifdef O3D_WINDOWS
     __time64_t start,end;

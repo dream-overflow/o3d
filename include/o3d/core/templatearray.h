@@ -45,8 +45,7 @@ public:
 		m_threshold = (ithres > 0 ? ithres : 256);
 
 		// allocate array
-		if (m_maxsize > 0)
-		{
+        if (m_maxsize > 0) {
 			alloc();
 			memset(m_data, 0, m_maxsize * sizeof(T));
 		}
@@ -63,13 +62,11 @@ public:
 		m_threshold = (ithres > 0 ? ithres : 256);
 
 		// allocate array
-		if (m_maxsize > 0)
-		{
+        if (m_maxsize > 0) {
 			alloc();
 
 			// set default value
-			for (Int32 i = 0 ; i < m_maxsize ; ++i)
-			{
+            for (Int32 i = 0 ; i < m_maxsize ; ++i) {
 				m_data[i] = m_default;
 			}
 		}
@@ -86,8 +83,7 @@ public:
 		m_threshold = (ithres > 0 ? ithres : 256);
 
 		// allocate array
-		if (m_maxsize > 0)
-		{
+        if (m_maxsize > 0) {
 			alloc();
 
 			// fill with the initials values
@@ -111,8 +107,7 @@ public:
 		m_threshold = 256;
 
 		// allocate array
-		if (m_maxsize > 0)
-		{
+        if (m_maxsize > 0) {
 			alloc();
 
 			// fill with the initials values
@@ -130,8 +125,7 @@ public:
 		m_threshold(dup.m_threshold),
 		m_selected(-1)
 	{
-		if (dup.m_size != 0)
-		{
+        if (dup.m_size != 0) {
 			setSize(dup.m_size);
 			memcpy(m_data,dup.m_data,m_size*sizeof(T));
 			m_selected = dup.m_selected;
@@ -168,10 +162,13 @@ public:
 	//! duplication operator
 	TemplateArray& operator=(const TemplateArray& pTemplateArray)
 	{
-		if (m_size) destroy();
+        if (m_size) {
+            destroy();
+        }
 
-		if (pTemplateArray.m_size == 0)
-			return (*this);
+        if (pTemplateArray.m_size == 0) {
+            return *this;
+        }
 
 		setSize(pTemplateArray.m_size);
 
@@ -179,7 +176,7 @@ public:
 
 		m_selected = pTemplateArray.m_selected;
 
-		return (*this);
+        return *this;
 	}
 
 	//! Get the number of elements.
@@ -202,8 +199,7 @@ public:
 	//! Get the element at a given index.
 	inline T& operator[] (Int32 n)
 	{
-		if (n >= m_size)
-		{
+        if (n >= m_size) {
 			setSize(n+1);
 			m_selected = n;
 		}
@@ -213,7 +209,9 @@ public:
 	//! Get the element at a given index (read only).
 	inline const T& operator[] (Int32 n) const
 	{
-		if (n >= m_size) O3D_ERROR(E_IndexOutOfRange(""));
+        if (n >= m_size) {
+            O3D_ERROR(E_IndexOutOfRange(""));
+        }
 		return m_data[n];
 	}
 
@@ -225,8 +223,7 @@ public:
 	//! Get the element at a given index.
 	inline T& get(Int32 n)
 	{
-		if (n >= m_size)
-		{
+        if (n >= m_size) {
 			setSize(n+1);
 			m_selected = n;
 		}
@@ -243,16 +240,18 @@ public:
 	//! Get the last element.
 	inline T& getLast()
 	{
-		if (m_size == 0)
+        if (m_size == 0) {
 			O3D_ERROR(E_InvalidPrecondition("Array is empty"));
+        }
 
 		return m_data[m_size-1];
 	}
 	//! Get the last element (read only).
 	inline const T& getLast() const
 	{
-		if (m_size == 0)
+        if (m_size == 0) {
 			O3D_ERROR(E_InvalidPrecondition("Array is empty"));
+        }
 
 		return m_data[m_size-1];
 	}
@@ -260,8 +259,9 @@ public:
 	//! Select an element by its index.
 	inline void select(Int32 n)
 	{
-		if (n < 0 || n >= m_size)
+        if (n < 0 || n >= m_size) {
 			O3D_ERROR(E_IndexOutOfRange(""));
+        }
 
 		m_selected = n;
 	}
@@ -269,16 +269,18 @@ public:
 	//! Get the selected element.
 	inline T& getSelected()
 	{
-		if (m_selected < 0)
+        if (m_selected < 0) {
 			O3D_ERROR(E_IndexOutOfRange(""));
+        }
 
 		return m_data[m_selected];
 	}
 	//! Get the selected element (read only).
 	inline const T& getSelected() const
 	{
-		if (m_selected < 0)
+        if (m_selected < 0) {
 			O3D_ERROR(E_IndexOutOfRange(""));
+        }
 
 		return m_data[m_selected];
 	}
@@ -288,8 +290,9 @@ public:
 	inline Bool select(const T& t)
 	{
 		Int32 i = find(t);
-		if (i == -1)
+        if (i == -1) {
 			return False;
+        }
 
 		m_selected = i;
 		return True;
@@ -299,8 +302,7 @@ public:
 	inline Bool selectPrevious()
 	{
 		--m_selected;
-		if (m_selected < 0)
-		{
+        if (m_selected < 0) {
 			m_selected = -1;
 			return False;
 		}
@@ -311,8 +313,7 @@ public:
 	inline Bool selectNext()
 	{
 		++m_selected;
-		if (m_selected >= m_size)
-		{
+        if (m_selected >= m_size) {
 			m_selected = -1;
 			return False;
 		}
@@ -322,8 +323,7 @@ public:
 	//! Select the last element.
 	inline Bool selectLast()
 	{
-		if (m_size == 0)
-		{
+        if (m_size == 0) {
 			m_selected = -1;
 			return False;
 		}
@@ -337,16 +337,16 @@ public:
 	//! Delete an element given its index
 	Bool remove(Int32 n)
 	{
-		if (n < m_size)
-		{
-			if ((m_size-1-n) > 0)
-			{
+        if (n < m_size) {
+            if ((m_size-1-n) > 0) {
 				memmove(&m_data[n],&m_data[n+1],(m_size-1-n) * sizeof(T));
 				m_data[m_size-1] = m_default;
 			}
 			setSize(m_size-1);
 
-			if (n == m_selected) m_selected = -1;
+            if (n == m_selected) {
+                m_selected = -1;
+            }
 
 			return True;
 		}
@@ -358,8 +358,9 @@ public:
 	{
 		Int32 found = find(t);
 
-		if (found != -1)
+        if (found != -1) {
 			return remove();
+        }
 
 		return False;
 	}
@@ -367,7 +368,9 @@ public:
 	//! Delete selected element.
 	inline Bool remove()
 	{
-		if (m_selected < 0) return False;
+        if (m_selected < 0) {
+            return False;
+        }
 		return remove(m_selected);
 	}
 
@@ -383,8 +386,7 @@ public:
 	//!        threshold and current maxsize)
 	void growMaxSize(Int32 n)
 	{
-		if (n > m_maxsize)
-		{
+        if (n > m_maxsize) {
 			n += m_maxsize;
 			n = ((n + m_threshold - 1) / m_threshold) * m_threshold;
 			reAlloc(n);
@@ -397,23 +399,17 @@ public:
 	{
 		Int32 oldsize = m_maxsize;
 
-		if (n > m_maxsize || (m_maxsize > m_threshold && n < m_maxsize - m_threshold))
-		{
+        if (n > m_maxsize || (m_maxsize > m_threshold && n < m_maxsize - m_threshold)) {
 			Int32 newMaxSize = ((n + m_threshold - 1) / m_threshold) * m_threshold;
-			if (!newMaxSize)
-			{
+            if (!newMaxSize) {
 				freeAlloc();
 				return;
-			}
-			else
-			{
+            } else {
 				reAlloc(newMaxSize);
 
-				if (newMaxSize > oldsize)
-				{
+                if (newMaxSize > oldsize) {
 					// set default value
-					for (Int32 i = oldsize ; i < newMaxSize ; ++i)
-					{
+                    for (Int32 i = oldsize ; i < newMaxSize ; ++i) {
 						m_data[i] = m_default;
 					}
 				}
@@ -436,11 +432,11 @@ public:
 	//! Force the use maxsize of the array. Reduce size if maxsize < size.
 	inline void forceMaxSize(Int32 n)
 	{
-		if (n != m_maxsize)
-		{
+        if (n != m_maxsize) {
 			reAlloc(n);
-			if (m_size > n)
+            if (m_size > n) {
 				m_size = n;
+            }
 			m_maxsize = n;
 		}
 	}
@@ -459,21 +455,21 @@ public:
 	//! Pop an element from the top of the stack.
 	inline void pop()
 	{
-		if (m_selected == m_size - 1)
+        if (m_selected == m_size - 1) {
 		    m_selected = -1;
+        }
 
 		setSize(m_size-1);
 	}
 
 	//! Push an array of element at back.
-	inline void pushArray(const T* _array, UInt32 size)
+    inline void pushArray(const T* _array, Int32 size)
 	{
         O3D_ASSERT(_array != nullptr);
 
-		if (_array)
-		{
+        if (_array) {
 			setSize(m_size+size);
-			memcpy(&m_data[m_size-size],_array,size * sizeof(T));
+            memcpy(&m_data[m_size-size], _array, size * sizeof(T));
 		}
 	}
 
@@ -481,16 +477,16 @@ public:
 	//! @param _array The array to insert
 	//! @param size the size (in elements, not bytes) of the array to insert
 	//! @param pos The position where to insert these data
-	inline void insertArray(const T* _array, UInt32 size, UInt32 pos)
+    inline void insertArray(const T* _array, Int32 size, Int32 pos)
 	{
         O3D_ASSERT(_array != nullptr);
 
-		if (_array)
-		{
-			if (pos+size > (UInt32)m_size)
+        if (_array) {
+            if (pos+size > m_size) {
 				setSize(pos+size);
+            }
 
-			memcpy(&m_data[pos],_array,size * sizeof(T));
+            memcpy(&m_data[pos], _array, size * sizeof(T));
 		}
 	}
 
@@ -499,8 +495,9 @@ public:
 	{
 		Int32 found = find(t);
 
-		if (found == -1)
+        if (found == -1) {
 			return push(t);
+        }
 
 		return -1;
 	}
@@ -508,13 +505,15 @@ public:
 	//! insert an element at n.
 	Bool insert(Int32 n, const T& t)
 	{
-		if (n > m_size)
+        if (n > m_size) {
 			return False;
+        }
 
 		setSize(m_size+1);
 
-		if ((m_size-n-1) > 0)
+        if ((m_size-n-1) > 0) {
 			memmove(&m_data[n+1],&m_data[n],(m_size-n-1) * sizeof(T));
+        }
 
 		m_data[n] = t;
 		m_selected = n;
@@ -534,17 +533,20 @@ public:
 	//! @return Index of the element or -1 if not found.
 	Int32 find(const T& t) const
 	{
-		for (Int32 i = 0 ; i < m_size ; ++i)
-			if (m_data[i] == t)
+        for (Int32 i = 0 ; i < m_size ; ++i) {
+            if (m_data[i] == t) {
 				return i;
+            }
+        }
 		return -1;
 	}
 
 	//! Is selected element is empty.
 	inline Bool isSelectedEmpty() const
 	{
-		if ((m_selected >= 0) && (m_selected < m_size))
+        if ((m_selected >= 0) && (m_selected < m_size)) {
 			return True;
+        }
 		return False;
 	}
 
@@ -558,8 +560,7 @@ public:
 	//! Replace an item data at n by t.
 	inline Bool replace(Int32 n, const T& t)
 	{
-		if (n < m_size)
-		{
+        if (n < m_size) {
 			m_data[n] = t;
 			return True;
 		}
@@ -574,8 +575,7 @@ public:
 		Int32 i = p - 1;
 		Int32 j = r + 1;
 
-		while (1)
-		{
+        while (1) {
 			do --j; while(m_data[j] > t);
 			do ++i; while(m_data[i] < t);
 
@@ -585,28 +585,29 @@ public:
 #else
 		// Fix the pivot
 		Int32 m = p + (r - p) / 2;
-		if (m_data[p] > m_data[r])
+        if (m_data[p] > m_data[r]) {
 			exchange(p, r);
-		if (m_data[p] > m_data[m])
+        }
+        if (m_data[p] > m_data[m]) {
 			exchange(p, m);
-		else if (m_data[m] > m_data[r])
+        } else if (m_data[m] > m_data[r]) {
 			exchange(m, r);
+        }
 
 		Int32 i = p;
 		Int32 j = r;
 
-		while (i < j)
-		{
+        while (i < j) {
 			while (i < m && m_data[i] <= m_data[m]) ++i;
 			while (j > m && m_data[j] >= m_data[m]) --j;
 
-			if (i < j)
-			{
+            if (i < j) {
 				exchange(i, j);
-				if (i == m)
+                if (i == m) {
 					m = j;
-				else if (j == m)
+                } else if (j == m) {
 					m = i;
+                }
 			}
 		}
 		
@@ -618,21 +619,21 @@ public:
 	void quickSort(Int32 p, Int32 r)
 	{
 	#if 0
-		if (p < r)
-		{
+        if (p < r){
 			Int32 q = partition(p, r);
 			quickSort(p, q);
 			quickSort(q+1, r);
 		}
 	#else
 		// direct sorting
-		if (r - p < 2)
-		{
+        if (r - p < 2) {
 			// already sorted
-			if (r - p < 1)
+            if (r - p < 1) {
 				return;
-			if (m_data[p] > m_data[r])
+            }
+            if (m_data[p] > m_data[r]) {
 				exchange(p, r);
+            }
 			return;
 		}
 
@@ -651,16 +652,16 @@ public:
 		Int32 l = 0;
 		Int32 r = m_size - 1;
 
-		while (l <= r)
-		{
+        while (l <= r) {
 			Int32 m = (l + r) / 2;
 
-			if (m_data[m] == t)
+            if (m_data[m] == t) {
 				return m;
-			else if (m_data[m] < t)
+            } else if (m_data[m] < t) {
 				l = m + 1;
-			else
+            } else {
 				r = m - 1;
+            }
 		}
 		return -1;
 	}
@@ -668,8 +669,7 @@ public:
 	//! insert an element (t1,t2) if data array is sorted (in O(log2(n)) )
 	Int32 insertSorted(const T& t)
 	{
-		if (m_size==0)
-		{
+        if (m_size==0) {
 			insert(0,t);
 			return 0;
 		}
@@ -677,19 +677,17 @@ public:
 		Int32 l = 0,m = 0;
 		Int32 r = m_size - 1;
 
-		while (l <= r)
-		{
+        while (l <= r) {
 			m = (l + r) / 2;
 
-			if (m_data[m] == t)
-			{
+            if (m_data[m] == t) {
 				insert(++m,t);
 				return m;
-			}
-			else if (m_data[m] < t)
+            } else if (m_data[m] < t) {
 				l = m + 1;
-			else
-				r = m - 1;
+            } else {
+                r = m - 1;
+            }
 		}
 		if (r == m) ++m;
 		insert(m,t);
@@ -700,59 +698,59 @@ private:
 
 	inline void alloc()
 	{
-		if (!m_maxsize)
+        if (!m_maxsize) {
 			return;
+        }
 
-		if (Align == -1)
-		{
+        if (Align == -1) {
 			m_data = (T*)O3D_MALLOC((size_t)m_maxsize * sizeof(T));
-			if (!m_data)
-				O3D_ERROR(E_InvalidAllocation(""));
-		}
-		else
-		{
+            if (!m_data) {
+                O3D_ERROR(E_InvalidAllocation(""));
+            }
+        } else {
 			m_data = (T*)O3D_ALIGNED_MALLOC((size_t)m_maxsize * sizeof(T), (size_t)Align);
-			if (!m_data)
+            if (!m_data) {
 				O3D_ERROR(E_InvalidAllocation(""));
+            }
 
-			if ((size_t)(m_data) & (Align-1))
+            if ((size_t)(m_data) & (Align-1)) {
 				O3D_ERROR(E_InvalidAllocation("Data is not aligned"));
+            }
 		}
 	}
 
 	inline void reAlloc(size_t n)
 	{
-		if (!n)
-		{
+        if (!n) {
 			freeAlloc();
 			return;
 		}
 
-		if (Align == -1)
-		{
+        if (Align == -1) {
 			m_data = (T*)O3D_REALLOC(m_data, n * sizeof(T));
-			if (!m_data)
+            if (!m_data) {
 				O3D_ERROR(E_InvalidAllocation(""));
-		}
-		else
-		{
+            }
+        } else {
 			m_data = (T*)O3D_ALIGNED_REALLOC(m_data, n * sizeof(T), (size_t)Align);
-			if (!m_data)
+            if (!m_data) {
 				O3D_ERROR(E_InvalidAllocation(""));
+            }
 
-			if ((size_t)(m_data) & (Align-1))
+            if ((size_t)(m_data) & (Align-1)) {
 				O3D_ERROR(E_InvalidAllocation("Data is not aligned"));
+            }
 		}
 	}
 
 	inline void freeAlloc()
 	{
-		if (m_data)
-		{
-			if (Align == -1)
+        if (m_data) {
+            if (Align == -1) {
 				O3D_FREE(m_data);
-			else
+            } else {
 				O3D_ALIGNED_FREE(m_data);
+            }
 
             m_data = nullptr;
 		}

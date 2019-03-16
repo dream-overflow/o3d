@@ -37,9 +37,9 @@ VisibilityBasic::~VisibilityBasic()
 {
 }
 
-UInt32 VisibilityBasic::getNumObjects() const
+Int32 VisibilityBasic::getNumObjects() const
 {
-    return UInt32(m_objectList.size());
+    return Int32(m_objectList.size());
 }
 
 // add an object (we suppose that it doesn't exist)

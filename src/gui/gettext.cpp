@@ -32,30 +32,28 @@ GetText::GetText(BaseObject *parent, ABCFont* font) :
 Bool GetText::keyboardToggled(Keyboard *keyboard, KeyEvent event)
 {
 	// only key pressed and repeat
-	if (event.isReleased())
+    if (event.isReleased()) {
 		return False;
+    }
 
     Bool ctrl = (keyboard->isKeyDown(KEY_LCONTROL)) || (keyboard->isKeyDown(KEY_RCONTROL));
 
 	// move the cursor to the left to 1 pos
-    if (event.key() == KEY_LEFT)
-    {
-        if (m_cursorPos > 0)
-        {
+    if (event.key() == KEY_LEFT) {
+        if (m_cursorPos > 0) {
             // to previous word
-            if (ctrl)
-            {
+            if (ctrl) {
                 Int32 ns = m_text.length() - 1;
-                if (m_cursorPos < m_text.length() || WideChar::ponctuationsPlusWs().find(m_text[m_text.length()-1]) != -1)
+                if (m_cursorPos < m_text.length() || WideChar::ponctuationsPlusWs().find(m_text[m_text.length()-1]) != -1) {
                     ns = m_text.find(WideChar::ponctuationsPlusWs(), m_cursorPos-1, True, True);
+                }
 
-                if (ns > 0)
-                {
+                if (ns > 0) {
                     ns = m_text.find(WideChar::ponctuationsPlusWs(), ns-1, True, False);
                     m_cursorPos = ns + 1;
-                }
-                else
+                } else {
                     m_cursorPos = 0;
+                }
 
                 return True;
             }
@@ -120,36 +118,30 @@ Bool GetText::keyboardToggled(Keyboard *keyboard, KeyEvent event)
 Bool GetText::character(Keyboard *keyboard, CharacterEvent event)
 {
 	// first check if the character is not filtered
-	UInt32 filterLen = m_filter.getSize();
-	for (size_t i = 0 ; i < filterLen ; ++i)
-	{
-		if (event.unicode() == m_filter[i])
+    Int32 filterLen = m_filter.getSize();
+    for (Int32 i = 0 ; i < filterLen ; ++i) {
+        if (event.unicode() == m_filter[i]) {
 			return False;
+        }
 	}
 
     Bool ctrl = (keyboard->isKeyDown(KEY_LCONTROL)) || (keyboard->isKeyDown(KEY_RCONTROL));
 
 	// escape
-	if (event.unicode() == 27)
-	{
+    if (event.unicode() == 27) {
 		return False;
 	}
 	// delete
-	else if (event.unicode() == 127)
-	{
-        if (m_text.isValid() && (m_cursorPos < m_text.length()) && !m_readOnly)
-		{
-			if (ctrl)
-            {
+    else if (event.unicode() == 127) {
+        if (m_text.isValid() && (m_cursorPos < m_text.length()) && !m_readOnly) {
+            if (ctrl) {
                 // delete the next word after the cursor
                 Int32 ns = m_text.find(WideChar::ponctuationsPlusWs(), m_cursorPos, False, True);
                 if (ns >= (Int32)m_cursorPos)
                     m_text.remove(m_cursorPos, ns - m_cursorPos + 1);
                 else
                     m_text.remove(m_cursorPos, m_text.length() - m_cursorPos);
-			}
-			else
-			{
+            } else {
 				// delete the char after the cursor
                 m_text.remove(m_cursorPos, 1);
 			}
@@ -224,17 +216,18 @@ Bool GetText::character(Keyboard *keyboard, CharacterEvent event)
 	else if (event.unicode() != 0)
 	{
 		// non writable char for this font
-        if (m_font && !m_font->isSupportedChar(event.unicode()))
+        if (m_font && !m_font->isSupportedChar(static_cast<UInt32>(event.unicode()))) {
 			return False;
+        }
 
 		// max length
-        if (m_text.length() >= m_maxLength)
+        if (m_text.length() >= m_maxLength) {
 			return False;
+        }
 
         // validator
-        if (m_validator.isValid())
-        {
-            UInt32 prevCursorPos = m_cursorPos;
+        if (m_validator.isValid()) {
+            Int32 prevCursorPos = m_cursorPos;
             String prevStr = m_text;
 
             // insert character at cursor pos
@@ -296,7 +289,7 @@ Bool GetText::character(Keyboard *keyboard, CharacterEvent event)
 }
 
 // Set the string.
-void GetText::setText(const String& str, UInt32 cursorPos)
+void GetText::setText(const String& str, Int32 cursorPos)
 {
     m_text = str;
 
@@ -310,31 +303,30 @@ void GetText::setText(const String& str, UInt32 cursorPos)
 }
 
 // set the cursor position
-void GetText::setCursorPos(UInt32 pos)
+void GetText::setCursorPos(Int32 pos)
 {
-    if (pos != m_cursorPos)
-        m_cursorPos =  o3d::clamp(pos, (UInt32)0, m_text.length());
+    if (pos != m_cursorPos) {
+        m_cursorPos =  o3d::clamp(pos, 0, m_text.length());
+    }
 }
 
 // draw the text with the specified font
 void GetText::draw(const Vector2i &pos)
 {
-	UInt32 curtime = System::getMsTime();
-    UInt32 elapsed = curtime - m_lastTime;
+    Int32 curtime = System::getMsTime();
+    Int32 elapsed = curtime - m_lastTime;
 
-    if (!m_font)
+    if (!m_font) {
 		return;
+    }
 
-	if (elapsed < 500)
-	{
+    if (elapsed < 500) {
         m_font->write(pos, m_text, m_cursorPos);
-	}
-	else if (elapsed >= 500)
-	{
-		if (elapsed >= 1000)
+    } else if (elapsed >= 500) {
+        if (elapsed >= 1000) {
             m_lastTime = curtime;
+        }
 
         m_font->write(pos, m_text, -1);
     }
 }
-

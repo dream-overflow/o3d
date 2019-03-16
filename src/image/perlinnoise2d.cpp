@@ -179,35 +179,32 @@ Bool PerlinNoise2d::toImage(Image & _picture, Bool _rescale) const
 {
 	Array2DFloat lArray;
 
-	if (toBuffer(lArray))
-	{
+    if (toBuffer(lArray)) {
 		_picture.allocate(m_size, m_size, 1);
 		UInt8 * lpData = _picture.getDataWrite();
 
-		if (_rescale)
-		{
+        if (_rescale) {
 			// First pass to get the maximum value used to scale the data
 			Float lMaxValue = lArray[0], lMinValue = lArray[0];
 
-			for (UInt32 k = 1; k < lArray.elt() ; ++k)
-			{
+            for (Int32 k = 1; k < lArray.elt() ; ++k) {
 				lMaxValue = o3d::max<Float>(lMaxValue, lArray[k]);
 				lMinValue = o3d::min<Float>(lMinValue, lArray[k]);
 			}
 
 			const Float lInvValue = (lMaxValue > lMinValue ? 1.0f/(lMaxValue - lMinValue) : 1.0f);
 
-			for (UInt32 k = 0; k < lArray.elt() ; ++k, lpData++)
+            for (Int32 k = 0; k < lArray.elt() ; ++k, lpData++) {
 				*lpData = UInt8(floor(255.0f * lInvValue * (lArray[k] - lMinValue)));
-		}
-		else
-		{
-			for (UInt32 k = 0; k < lArray.elt() ; ++k, lpData++)
+            }
+        } else {
+            for (Int32 k = 0; k < lArray.elt() ; ++k, lpData++) {
 				*lpData = UInt8(o3d::max<Float>(0.0f, 255.0f * lArray[k]));
+            }
 		}
-	}
-	else
+    } else {
 		return False;
+    }
 
 	return True;
 }
@@ -380,4 +377,3 @@ std::vector<UInt32> PerlinNoise2d::arithmeticSequence(UInt32 _size, UInt32 _star
 
 	return lSeq;
 }
-

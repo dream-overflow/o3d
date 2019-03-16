@@ -26,39 +26,40 @@ Integer32::operator String() const
 Bool Integer32::isInteger(const String &value)
 {
     WChar c;
-    UInt32 i = 0;
+    Int32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
     // only one digit between 0..9
-    if (value.length() == 1)
-    {
+    if (value.length() == 1) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
     // must start with any digit but 0, and can start with minus
-    if (i < value.length())
-    {
+    if (i < value.length()) {
         c = value.getData()[i];
 
-        if (c < '1' || c > '9' || c != '-')
+        if (c < '1' || c > '9' || c != '-') {
             return False;
+        }
 
         ++i;
     }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
     }
 
     return True;
@@ -66,10 +67,11 @@ Bool Integer32::isInteger(const String &value)
 
 Int32 Integer32::parseInteger(const String &value)
 {
-    if (isInteger(value))
+    if (isInteger(value)) {
         return value.toInt32();
-    else
+    } else {
         O3D_ERROR(E_InvalidFormat("Int32 parsing"));
+    }
 }
 
 String Integer32::toString(Int32 i)
@@ -94,39 +96,40 @@ UInteger32::operator String() const
 Bool UInteger32::isInteger(const String &value)
 {
     WChar c;
-    UInt32 i = 0;
+    Int32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
     // only one digit between 0..9
-    if (value.length() == 1)
-    {
+    if (value.length() == 1) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
     // must start with any digit but 0
-    if (i < value.length())
-    {
+    if (i < value.length()) {
         c = value.getData()[i];
 
-        if (c < '1' || c > '9')
+        if (c < '1' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
     }
 
     return True;
@@ -134,10 +137,11 @@ Bool UInteger32::isInteger(const String &value)
 
 UInt32 UInteger32::parseInteger(const String &value)
 {
-    if (isInteger(value))
+    if (isInteger(value)) {
         return value.toUInt32();
-    else
+    } else {
         O3D_ERROR(E_InvalidFormat("UInt32 parsing"));
+    }
 }
 
 String UInteger32::toString(UInt32 i)
@@ -162,39 +166,40 @@ Integer16::operator String() const
 Bool Integer16::isInteger(const String &value)
 {
     WChar c;
-    UInt32 i = 0;
+    Int32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
     // only one digit between 0..9
-    if (value.length() == 1)
-    {
+    if (value.length() == 1){
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
     // must start with any digit but 0, and can start with minus
-    if (i < value.length())
-    {
+    if (i < value.length()) {
         c = value.getData()[i];
 
-        if (c < '1' || c > '9' || c != '-')
+        if (c < '1' || c > '9' || c != '-') {
             return False;
+        }
 
         ++i;
     }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
     }
 
     return True;
@@ -202,16 +207,16 @@ Bool Integer16::isInteger(const String &value)
 
 Int16 Integer16::parseInteger(const String &value)
 {
-    if (isInteger(value))
-    {
+    if (isInteger(value)) {
         Int32 v = value.toInt32();
-        if ((v > Limits<Int16>::max()) || (v < Limits<Int16>::min()))
+        if ((v > Limits<Int16>::max()) || (v < Limits<Int16>::min())) {
             O3D_ERROR(E_InvalidFormat("Int16 parsing out of min..max"));
+        }
 
         return (Int16)v;
-    }
-    else
+    } else {
         O3D_ERROR(E_InvalidFormat("Int16 parsing"));
+    }
 }
 
 String Integer16::toString(Int16 i)
@@ -236,39 +241,40 @@ UInteger16::operator String() const
 Bool UInteger16::isInteger(const String &value)
 {
     WChar c;
-    UInt32 i = 0;
+    Int32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
     // only one digit between 0..9
-    if (value.length() == 1)
-    {
+    if (value.length() == 1) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
     // must start with any digit but 0
-    if (i < value.length())
-    {
+    if (i < value.length()) {
         c = value.getData()[i];
 
-        if (c < '1' || c > '9')
+        if (c < '1' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
     }
 
     return True;
@@ -276,16 +282,16 @@ Bool UInteger16::isInteger(const String &value)
 
 UInt16 UInteger16::parseInteger(const String &value)
 {
-    if (isInteger(value))
-    {
+    if (isInteger(value)) {
         UInt32 v = value.toUInt32();
-        if ((v > Limits<UInt16>::max()) || (v < Limits<UInt16>::min()))
+        if ((v > Limits<UInt16>::max()) || (v < Limits<UInt16>::min())) {
             O3D_ERROR(E_InvalidFormat("UInt16 parsing out of min..max"));
+        }
 
         return (UInt16)v;
-    }
-    else
+    } else {
         O3D_ERROR(E_InvalidFormat("UInt16 parsing"));
+    }
 }
 
 String UInteger16::toString(UInt16 i)
@@ -310,39 +316,40 @@ Integer8::operator String() const
 Bool Integer8::isInteger(const String &value)
 {
     WChar c;
-    UInt32 i = 0;
+    Int32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
     // only one digit between 0..9
-    if (value.length() == 1)
-    {
+    if (value.length() == 1) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
     // must start with any digit but 0, and can start with minus
-    if (i < value.length())
-    {
+    if (i < value.length()) {
         c = value.getData()[i];
 
-        if (c < '1' || c > '9' || c != '-')
+        if (c < '1' || c > '9' || c != '-') {
             return False;
+        }
 
         ++i;
     }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
     }
 
     return True;
@@ -350,16 +357,16 @@ Bool Integer8::isInteger(const String &value)
 
 Int8 Integer8::parseInteger(const String &value)
 {
-    if (isInteger(value))
-    {
+    if (isInteger(value)) {
         Int32 v = value.toInt32();
-        if ((v > Limits<Int8>::max()) || (v < Limits<Int8>::min()))
+        if ((v > Limits<Int8>::max()) || (v < Limits<Int8>::min())) {
             O3D_ERROR(E_InvalidFormat("Int8 parsing out of min..max"));
+        }
 
         return (Int8)v;
-    }
-    else
+    } else {
         O3D_ERROR(E_InvalidFormat("Int8 parsing"));
+    }
 }
 
 String Integer8::toString(Int8 i)
@@ -384,39 +391,40 @@ UInteger8::operator String() const
 Bool UInteger8::isInteger(const String &value)
 {
     WChar c;
-    UInt8 i = 0;
+    Int32 i = 0;
 
-    if (value.isEmpty())
+    if (value.isEmpty()) {
         return True;
+    }
 
     // only one digit between 0..9
-    if (value.length() == 1)
-    {
+    if (value.length() == 1) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
     // must start with any digit but 0
-    if (i < value.length())
-    {
+    if (i < value.length()) {
         c = value.getData()[i];
 
-        if (c < '1' || c > '9')
+        if (c < '1' || c > '9') {
             return False;
+        }
 
         ++i;
     }
 
-    for (; i < value.length(); ++i)
-    {
+    for (; i < value.length(); ++i) {
         c = value.getData()[i];
 
-        if (c < '0' || c > '9')
+        if (c < '0' || c > '9') {
             return False;
+        }
     }
 
     return True;
@@ -424,16 +432,16 @@ Bool UInteger8::isInteger(const String &value)
 
 UInt8 UInteger8::parseInteger(const String &value)
 {
-    if (isInteger(value))
-    {
+    if (isInteger(value)) {
         UInt32 v = value.toUInt32();
-        if ((v > Limits<UInt8>::max()) || (v < Limits<UInt8>::min()))
+        if ((v > Limits<UInt8>::max()) || (v < Limits<UInt8>::min())) {
             O3D_ERROR(E_InvalidFormat("UInt8 parsing out of min..max"));
+        }
 
         return (UInt8)v;
-    }
-    else
+    } else {
         O3D_ERROR(E_InvalidFormat("UInt8 parsing"));
+    }
 }
 
 String UInteger8::toString(UInt8 i)
@@ -443,4 +451,3 @@ String UInteger8::toString(UInt8 i)
 
     return r;
 }
-

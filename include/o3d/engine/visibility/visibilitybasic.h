@@ -32,10 +32,10 @@ public:
 		const Vector3 &size = Vector3());
 
 	//! destructor
-	virtual ~VisibilityBasic();
+    virtual ~VisibilityBasic() override;
 
 	//! get the number of object in entry
-    virtual UInt32 getNumObjects() const override;
+    virtual Int32 getNumObjects() const override;
 
 	//! add an object (we suppose that it doesn't exist)
     virtual void addObject(SceneObject *object) override;

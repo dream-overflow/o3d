@@ -57,7 +57,7 @@ public:
 	inline const SceneObject * getSceneObject() const { return m_pObject; }
 
 	//! Return the number of zone which contains the object m_pObject.
-	inline UInt32 getZoneNumber() const { return UInt32(m_zoneList.size()); }
+    inline Int32 getZoneNumber() const { return Int32(m_zoneList.size()); }
 
 	//! Return the list of zone.
 	inline T_QuadZoneList & getZoneList() { return m_zoneList; }
@@ -206,18 +206,17 @@ public:
 	//! Default constructor (centered to 0,0,0 by default).
 	//! @param halfSize Half size of the quad-tree in number of zones.
 	//! @param zoneSize Size of a zone of the quad-tree.
-	Quadtree(
-		BaseObject *parent,
-		UInt32 halfSize = 0,
-		Float zoneSize = 0.0f);
+    Quadtree(BaseObject *parent,
+        Int32 halfSize = 0,
+        Float zoneSize = 0.0f);
 
 	//! Virtual destructor.
-	virtual ~Quadtree();
+    virtual ~Quadtree() override;
 
 	//! Clear all objects contained in the quadTree.
 	void clear();
 
-	virtual UInt32 getNumObjects() const;
+    virtual Int32 getNumObjects() const override;
 
 	//! Return the center of the quad-tree.
 	const Vector3& getQuadCenter() const { return m_center; }
@@ -238,21 +237,21 @@ public:
 
 	//! Add an object (we suppose that it doesn't exist).
 	//! @note This method is called by the user or the engine, but not by the quadTree.
-	virtual void addObject(SceneObject *object);
+    virtual void addObject(SceneObject *object) override;
 
 	//! Remove an object from the quad-tree (throw an event).
 	//! @note This function is called by the user or the engine, but not by the quadTree.
-	virtual Bool removeObject(SceneObject *object);
+    virtual Bool removeObject(SceneObject *object) override;
 
 	//! Update an object (not used yet).
 	//! @note This method is called by the user or the engine, but not by the quadTree.
-	virtual void updateObject(SceneObject *object);
+    virtual void updateObject(SceneObject *object) override;
 
 	//! Check for visible object and add it to visibility manager.
-	virtual void checkVisibleObject(const VisibilityInfos &);
+    virtual void checkVisibleObject(const VisibilityInfos &) override;
 
 	//! Draw the quad-tree.
-    virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 
 protected:
 

@@ -39,14 +39,14 @@ public:
 
     //! Initialize manually.
     DateTime(
-            UInt16 _year,
-            UInt8 _month,
-            UInt8 _day,
-            UInt8 _dayofWeek,
-            UInt8 _hour,
-            UInt8 _minutes,
-            UInt8 _seconds,
-            UInt32 _microsecond);
+            Int16 _year,
+            Int8 _month,
+            Int8 _day,
+            Int8 _dayofWeek,
+            Int8 _hour,
+            Int8 _minutes,
+            Int8 _seconds,
+            Int32 _microsecond);
 
     //! Copy ctor
     DateTime(const DateTime & _which);
@@ -117,26 +117,26 @@ public:
     Double toDoubleTimestamp(Bool UTC=True) const;
 
     //! Get the day of week for the current datetime. It is 0 based on sunday.
-    UInt8 getDayOfWeek() const;
+    Int8 getDayOfWeek() const;
 
     //! Check if the date is older than n days.
-    Bool isOlderThan(const DateTime &compare, UInt32 days);
+    Bool isOlderThan(const DateTime &compare, Int32 days);
 
     Bool writeToFile(OutStream &os) const;
     Bool readFromFile(InStream &is);
 
 public: // public members
 
-    UInt8 month;         //!< month 1..12
-    UInt8 wday;          //!< day of the week 1..7
-    UInt8 mday;          //!< day of the month 1..31
+    Int8 month;         //!< month 1..12
+    Int8 wday;          //!< day of the week 1..7
+    Int8 mday;          //!< day of the month 1..31
 
-    UInt16 year;         //!< full year (not since 1900 like ctime)
+    Int16 year;         //!< full year (not since 1900 like ctime)
 
-    UInt8 hour;          //!< hours 0..23
-    UInt8 minute;        //!< minutes 0..59
-    UInt8 second;        //!< second 0..59
-    UInt32 microsecond;  //!< microsecond
+    Int8 hour;          //!< hours 0..23
+    Int8 minute;        //!< minutes 0..59
+    Int8 second;        //!< second 0..59
+    Int32 microsecond;  //!< microsecond
 
 private:
 

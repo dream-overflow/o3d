@@ -58,7 +58,7 @@ public:
 	virtual ~VisibilityABC();
 
 	//! get the number of object in entry
-	virtual UInt32 getNumObjects() const = 0;
+    virtual Int32 getNumObjects() const = 0;
 
 	//! add an object (we suppose that it doesn't exist)
 	virtual void addObject(SceneObject *object) = 0;

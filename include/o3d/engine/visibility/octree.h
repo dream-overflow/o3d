@@ -32,25 +32,25 @@ public:
 		const Vector3 &size = Vector3());
 
 	//! destructor
-	virtual ~Octree();
+    virtual ~Octree() override;
 
 	//! get the number of object in entry
-	virtual UInt32 getNumObjects() const;
+    virtual Int32 getNumObjects() const override;
 
 	//! add an object (we suppose that it doesn't exist)
-	virtual void addObject(SceneObject *object);
+    virtual void addObject(SceneObject *object) override;
 
 	//! remove an object
-	virtual Bool removeObject(SceneObject *object);
+    virtual Bool removeObject(SceneObject *object) override;
 
 	//! update an object
-	virtual void updateObject(SceneObject *object);
+    virtual void updateObject(SceneObject *object) override;
 
 	//! check for visible object and add it to visibility manager
-	virtual void checkVisibleObject(const VisibilityInfos &);
+    virtual void checkVisibleObject(const VisibilityInfos &) override;
 
 	//! draw the quadtree
-    virtual void draw(const DrawInfo &drawInfo);
+    virtual void draw(const DrawInfo &drawInfo) override;
 };
 
 } // namespace o3d

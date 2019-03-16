@@ -38,8 +38,7 @@ public:
 	virtual ~TemplateManager()
 	{
 		// delete each element in the list
-		for (IT_TemplateManager it = HashMapID<T>::m_MyMap.begin(); it != HashMapID<T>::m_MyMap.end(); ++it)
-		{
+        for (IT_TemplateManager it = HashMapID<T>::m_MyMap.begin(); it != HashMapID<T>::m_MyMap.end(); ++it) {
 			T* pObj = (*it).second;
             O3D_ASSERT(pObj != nullptr);
 
@@ -58,15 +57,16 @@ public:
 
 	    Int32 newID = -1;
 
-		if (forceKey != -1)
-		{
+        if (forceKey != -1) {
             Bool rep = HashMapID<T>::m_IDManager.forceID(forceKey);
-            if(rep)
+            if(rep) {
 				newID = forceKey;
+            }
         }
 
-		if (newID == -1)
+        if (newID == -1) {
 			newID = HashMapID<T>::m_IDManager.getID();
+        }
 
 		HashMapID<T>::m_MyMap[newID] = newElement;
 	
@@ -84,8 +84,7 @@ public:
 	{
 		IT_TemplateManager it = HashMapID<T>::m_MyMap.find(ID);
 
-		if (it != HashMapID<T>::m_MyMap.end())
-		{
+        if (it != HashMapID<T>::m_MyMap.end()) {
 			T* pObj = HashMapID<T>::m_MyMap[ID];
             O3D_ASSERT(pObj != nullptr);
 
@@ -105,13 +104,10 @@ public:
 	//! Delete a child object
 	virtual Bool deleteChild(BaseObject *pChild)
 	{
-		if (pChild && (pChild->getParent() == this))
-		{
+        if (pChild && (pChild->getParent() == this)) {
 			m_deferredDeletetList.push_back((T*)pChild);
 			return True;
-		}
-		else
-		{
+        } else {
 			deletePtr(pChild);
 			return True;
 		}
@@ -126,12 +122,10 @@ public:
 		Int32 ID = pObj->getId();
 
 		// we have the ID specified in the object, so no need to find him!
-		if (ID != -1)
-		{
+        if (ID != -1) {
 			IT_TemplateManager it = HashMapID<T>::m_MyMap.find(ID);
 
-			if ((it != HashMapID<T>::m_MyMap.end()) && (pObj == it->second))
-			{
+            if ((it != HashMapID<T>::m_MyMap.end()) && (pObj == it->second)) {
 				// and delete it
 				deletePtr(pObj);
 
@@ -144,12 +138,9 @@ public:
 			}
 		}
 		// we don't have the ID. Mistake... Maybe we can try to find him:
-		else
-		{
-			for (IT_TemplateManager it = HashMapID<T>::m_MyMap.begin(); it != HashMapID<T>::m_MyMap.end(); ++it)
-			{
-				if ((*it).second == pObj)
-				{
+        else {
+            for (IT_TemplateManager it = HashMapID<T>::m_MyMap.begin(); it != HashMapID<T>::m_MyMap.end(); ++it) {
+                if ((*it).second == pObj) {
 					// and delete it
 					deletePtr(pObj);
 
@@ -170,8 +161,7 @@ public:
 	//! Shared objects are automatically detached from their users.
 	void destroy()
 	{
-		for (IT_TemplateManager it = HashMapID<T>::m_MyMap.begin(); it != HashMapID<T>::m_MyMap.end(); ++it)
-		{
+        for (IT_TemplateManager it = HashMapID<T>::m_MyMap.begin(); it != HashMapID<T>::m_MyMap.end(); ++it) {
 			T* pObj = (*it).second;
             O3D_ASSERT(pObj != nullptr);
 
@@ -189,14 +179,12 @@ public:
 	{
 		IT_TemplateManager it = HashMapID<T>::m_MyMap.begin();
 
-		while (it != HashMapID<T>::m_MyMap.end())
-		{
+        while (it != HashMapID<T>::m_MyMap.end()) {
 			T* pObj = (*it).second;
             O3D_ASSERT(pObj != nullptr);
 
 			// delete if this is only the manager whose use it
-			if (pObj && pObj->noLongerUsed())
-			{
+            if (pObj && pObj->noLongerUsed()) {
 				// and delete it
 				deletePtr(pObj);
 
@@ -204,9 +192,7 @@ public:
 
 				IT_TemplateManager it2 = it++;
 				HashMapID<T>::m_MyMap.erase(it2);
-			}
-			else
-			{
+            } else {
 				++it;
 			}
 		}
@@ -215,13 +201,13 @@ public:
     //! return object pointer by its name. return null if not found
 	T* searchName(const String &name)
 	{
-		for (IT_TemplateManager it=HashMapID<T>::m_MyMap.begin(); it!=HashMapID<T>::m_MyMap.end(); ++it)
-		{
+        for (IT_TemplateManager it=HashMapID<T>::m_MyMap.begin(); it!=HashMapID<T>::m_MyMap.end(); ++it) {
 			T* pObj = (*it).second;
             O3D_ASSERT(pObj != nullptr);
 
-			if (pObj->getName() == name)
+            if (pObj->getName() == name) {
 				return pObj;
+            }
 		}
         return nullptr;
 	}
@@ -230,22 +216,22 @@ public:
 	void makeSingleName()
 	{
 		// change similar name
-		for (IT_TemplateManager it=HashMapID<T>::m_MyMap.begin() ; it!=HashMapID<T>::m_MyMap.end() ; ++it)
-		{
+        for (IT_TemplateManager it=HashMapID<T>::m_MyMap.begin() ; it!=HashMapID<T>::m_MyMap.end() ; ++it) {
 			T* pElt = it->second;
             O3D_ASSERT(pElt != nullptr);
 
-			// rename shader that have similar name with an _X extension
-			UInt32 count = 0;
-			for (IT_TemplateManager itbis=HashMapID<T>::m_MyMap.begin() ; itbis!=HashMapID<T>::m_MyMap.end() ; ++itbis)
-			{
+            // rename element that have similar name with an _X extension
+            Int32 count = 0;
+            for (IT_TemplateManager itbis=HashMapID<T>::m_MyMap.begin() ; itbis!=HashMapID<T>::m_MyMap.end() ; ++itbis) {
 				T* pEltBis = itbis->second;
                 O3D_ASSERT(pEltBis != nullptr);
 
 				if ((pEltBis != pElt) && (pEltBis->getName() == pElt->getName()))
 				{
 					String newname(pElt->getName() + "_");
-					newname.concat(count); count++;
+                    newname.concat(count);
+                    count++;
+
 					pEltBis->setName(newname);
 				}
 			}
@@ -256,8 +242,7 @@ public:
 	void processDeferred()
 	{
 		// delete each element of the list
-		for (IT_DeleteList it = m_deferredDeletetList.begin(); it != m_deferredDeletetList.end(); ++it)
-		{
+        for (IT_DeleteList it = m_deferredDeletetList.begin(); it != m_deferredDeletetList.end(); ++it) {
 			T *pObj = (*it);
 
 			// check for the object validity

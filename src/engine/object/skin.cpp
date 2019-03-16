@@ -260,15 +260,15 @@ void Skin::setNumBones(UInt32 numBones)
     deleteArray(m_boneImportName);
     deleteArray(m_boneImportId);
 
-    if (numBones)
-    {
+    if (numBones) {
         m_refMatrices.resize(m_numBones);
         m_precomputedRefMatrices.resize(m_numBones);
 
         m_bones = new SmartObject<Bones>[m_numBones];
 
-        for (UInt32 i = 0; i < m_numBones; ++i)
+        for (UInt32 i = 0; i < m_numBones; ++i) {
             m_bones[i].setUser(this);
+        }
 
         m_isSkinning = True;
     }
@@ -283,8 +283,7 @@ const Float* Skin::getMatrixArray() const
 //Access to a currently bound vertex element.
 VertexElement* Skin::getVertexElement(VertexAttributeArray type) const
 {
-    if (m_isSkinning && m_vertexBlend)
-    {
+    if (m_isSkinning && m_vertexBlend) {
         if (type == V_VERTICES_ARRAY)
             return &m_vertexBlend->getVertices();
         else if (type == V_NORMALS_ARRAY)

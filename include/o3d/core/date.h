@@ -72,7 +72,7 @@ public:
     Date(time_t ltime);
 
     //! Initialize manually.
-    Date(UInt16 _year, UInt8 _month, UInt8 _day, UInt8 _dayofWeek);
+    Date(Int16 _year, Int8 _month, Int8 _day, Int8 _dayofWeek);
 
     //! Copy ctor
     Date(const Date & _which);
@@ -143,21 +143,21 @@ public:
     Double toDoubleTimestamp(Bool UTC=True) const;
 
     //! Check if the date is older than XX days.
-    Bool isOlderThan(const Date &compare, UInt32 days);
+    Bool isOlderThan(const Date &compare, Int32 days);
 
     //! Get the day of week for the current datetime. It is 0 based on sunday.
-    UInt8 getDayOfWeek() const;
+    Int8 getDayOfWeek() const;
 
     Bool writeToFile(OutStream &os) const;
     Bool readFromFile(InStream &is);
 
 public: // public members
 
-    UInt8 month;      //!< month 1..12
-    UInt8 wday;       //!< day of the week 1..7
-    UInt8 mday;       //!< day of the month 1..31
+    Int8 month;      //!< month 1..12
+    Int8 wday;       //!< day of the week 1..7
+    Int8 mday;       //!< day of the month 1..31
 
-    UInt16 year;      //!< full year (not since 1900 like ctime)
+    Int16 year;      //!< full year (not since 1900 like ctime)
 
 private:
 

@@ -251,8 +251,7 @@ void BitStream::pushString(const String &val)
 	CString utf8String = val.toUtf8();
 	pushUInt16(UInt16(utf8String.length()));
 
-	for(UInt32 i=0;i<utf8String.length();i++)
-	{
+    for (Int32 i=0;i<utf8String.length();i++) {
 		pushChar(utf8String.getData()[i]);
 	}
 }

@@ -559,20 +559,24 @@ static void fillEdge(Int32 _dir, PCLODLightInfo & lInfos, Float _value)
 	switch (_dir)
 	{
 	case NORTH:
-		for (UInt32 k = 0 ; k < lInfos.shadowMap.width() ; ++k)
+        for (Int32 k = 0 ; k < lInfos.shadowMap.width() ; ++k) {
 			lInfos.shadowMap(k, lInfos.shadowMap.height()-1) = _value;
+        }
 		break;
 	case EAST:
-		for (UInt32 k = 0 ; k < lInfos.shadowMap.height() ; ++k)
+        for (Int32 k = 0 ; k < lInfos.shadowMap.height() ; ++k) {
 			lInfos.shadowMap(lInfos.shadowMap.width()-1, k) = _value;
+        }
 		break;
 	case SOUTH:
-		for (UInt32 k = 0 ; k < lInfos.shadowMap.width() ; ++k)
+        for (Int32 k = 0 ; k < lInfos.shadowMap.width() ; ++k) {
 			lInfos.shadowMap(k, 0) = _value;
+        }
 		break;
 	case WEST:
-		for (UInt32 k = 0 ; k < lInfos.shadowMap.height() ; ++k)
+        for (Int32 k = 0 ; k < lInfos.shadowMap.height() ; ++k) {
 			lInfos.shadowMap(0, k) = _value;
+        }
 		break;
 	default:
 		O3D_ASSERT(0);

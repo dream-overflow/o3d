@@ -28,7 +28,7 @@ namespace o3d {
  * properly. Take care of the data alignment. This method must be public.
  * inline void _InitAtomicObject(void *ptr) { members = ptr; ...init like I need }
  */
-template <class T, class U, UInt32 ContentSize>
+template <class T, class U, Int32 ContentSize>
 class O3D_API_TEMPLATE AtomicArray
 {
 public:
@@ -41,9 +41,9 @@ public:
 
 	//! Initialization constructor
 	//! @param NbElt Number of matrix to allocate
-	AtomicArray(UInt32 nbElt) :
-		m_objects(nbElt,0xffffffff),
-		m_content(nbElt<<ContentSize,0xffffffff)
+    AtomicArray(Int32 nbElt) :
+        m_objects(nbElt, 0xffffffff),
+        m_content(nbElt<<ContentSize, 0xffffffff)
 	{
 		O3D_ASSERT(nbElt != 0);
 
@@ -51,37 +51,45 @@ public:
 		m_content.forceSize(nbElt<<ContentSize);
 
 		//! Initialize each object data ptr. Like a new.
-		for (UInt32 i = 0; i < nbElt; ++i)
+        for (Int32 i = 0; i < nbElt; ++i) {
 			m_objects[i]._initAtomicObject(&m_content[i<<ContentSize]);
+        }
 	}
 
-	//! Return the number of element of type T
+    //! Return the number of element of type T.
 	inline Int32 getSize() const { return m_objects.getSize(); }
 
-	//! Access to an object
-	inline       T& operator[](UInt32 i)        { return m_objects[i]; }
-	//! access to an object (const version)
-	inline const T& operator[](UInt32 i) const  { return m_objects[i]; }
+    //! Return the max number of element of type T (resize using resize method).
+    inline Int32 getMaxSize() const { return m_objects.getMaxSize(); }
+
+    //! Change the size but does not perform reallocation. Must be <= to current max size.
+    void forceSize(Int32 numElt) { m_objects.forceSize(numElt); }
 
 	//! Access to an object
-	inline       T* get(UInt32 i)        { return &m_objects[i]; }
+    inline T& operator[](Int32 i) { return m_objects[i]; }
 	//! access to an object (const version)
-	inline const T* get(UInt32 i) const  { return &m_objects[i]; }
+    inline const T& operator[](Int32 i) const { return m_objects[i]; }
+
+	//! Access to an object
+    inline T* get(Int32 i) { return &m_objects[i]; }
+	//! access to an object (const version)
+    inline const T* get(Int32 i) const { return &m_objects[i]; }
 
 	//! Direct access to the array of data
-	inline       U* getData()       { return (U*)&m_content[0]; }
+    inline U* getData() { return reinterpret_cast<U*>(&m_content[0]); }
 	//! direct access to the array of data (const version)
-	inline const U* getData() const { return (U*)&m_content[0]; }
+    inline const U* getData() const { return reinterpret_cast<const U*>(&m_content[0]); }
 
 	//! Direct access to the a content data
-	inline       U* getContent(UInt32 i)       { return (U*)&m_content[i<<ContentSize]; }
+    inline U* getContent(Int32 i) { return reinterpret_cast<U*>(&m_content[i<<ContentSize]); }
 	//! direct access to the a content data (const version)
-	inline const U* getContent(UInt32 i) const { return (U*)&m_content[i<<ContentSize]; }
+    inline const U* getContent(Int32 i) const { return reinterpret_cast<const U*>(&m_content[i<<ContentSize]); }
 
-	//! Resize the array
-	void resize(UInt32 newNbElt)
+    //! Resize the array. Change the element and max size and reallocate as necessary.
+    //! @note The previous content is undetermined.
+    void resize(Int32 newNbElt)
 	{
-		O3D_ASSERT(newNbElt != 0);
+        O3D_ASSERT(newNbElt > 0);
 
 		m_objects.forceMaxSize(newNbElt);
 		m_content.forceMaxSize(newNbElt<<ContentSize);
@@ -90,17 +98,17 @@ public:
 		m_content.forceSize(newNbElt<<ContentSize);
 
 		//! Initialize each object data ptr. Like a new.
-		for (UInt32 i = 0; i < newNbElt; ++i)
+        for (Int32 i = 0; i < newNbElt; ++i) {
 			m_objects[i]._initAtomicObject(&m_content[i<<ContentSize]);
+        }
 	}
 
 private:
 
-	TemplateArray<T, 16>     m_objects;  //!< Contain the object.
+    TemplateArray<T, 16> m_objects;      //!< Contain the objects.
 	TemplateArray<UInt8, 16> m_content;  //!< Contain the data.
 };
 
 }
 
 #endif // _O3D_ATOMICARRAY_H
-

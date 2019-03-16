@@ -78,7 +78,7 @@ QuadZone::QuadZone(Quadtree * _quad, Vector2i _position, Float _size):
 
 QuadZone::~QuadZone()
 {
-    for (UInt32 k = 0; k < 4; ++k) {
+    for (Int32 k = 0; k < 4; ++k) {
 		deletePtr(m_pChildren[k]);
     }
 
@@ -88,7 +88,7 @@ QuadZone::~QuadZone()
     m_pQuadTree = nullptr;
 
     if (m_pParent != nullptr) {
-        for (UInt32 k = 0; k < 4 ; ++k) {
+        for (Int32 k = 0; k < 4 ; ++k) {
             if (m_pParent->m_pChildren[k] == this) {
                 m_pParent->m_pChildren[k] = nullptr;
 				break;
@@ -163,7 +163,7 @@ void QuadZone::draw(Scene *scene)
 	primitive->setColor(1.0f, 0.0f, 0.0f);
 	primitive->modelView().pop();
 
-    for (UInt32 k = 0; k < 4 ; ++k) {
+    for (Int32 k = 0; k < 4 ; ++k) {
         if (m_pChildren[k] != nullptr) {
 			m_pChildren[k]->draw(scene);
         }
@@ -193,7 +193,7 @@ Bool QuadZone::hasChildren(QuadZone * _zone) const
 Bool QuadZone::findZone(QuadZone * _zone) const
 {
     if ((m_pChildren[0] != _zone) && (m_pChildren[1] != _zone) && (m_pChildren[2] != _zone) && (m_pChildren[3] != _zone)) {
-        for (UInt32 k = 0; k < 4; ++k) {
+        for (Int32 k = 0; k < 4; ++k) {
             if ((m_pChildren[k] != nullptr) && m_pChildren[k]->findZone(_zone)) {
 				return True;
             }
@@ -251,7 +251,7 @@ QuadObject * QuadZone::findObject(SceneObject * _object)
 
 	QuadObject * pObject;
 
-    for (UInt32 k = 0; k < 4 ; ++k) {
+    for (Int32 k = 0; k < 4 ; ++k) {
         if ((m_pChildren[k] != nullptr) && ((pObject = m_pChildren[k]->findObject(_object)) != nullptr)) {
 			return pObject;
         }
@@ -270,7 +270,7 @@ const QuadObject * QuadZone::findObject(SceneObject * _object) const
 
 	QuadObject * pObject;
 
-    for (UInt32 k = 0; k < 4 ; ++k) {
+    for (Int32 k = 0; k < 4 ; ++k) {
         if ((m_pChildren[k] != nullptr) && ((pObject = m_pChildren[k]->findObject(_object)) != nullptr)) {
 			return pObject;
         }
@@ -304,7 +304,7 @@ O3D_IMPLEMENT_DYNAMIC_CLASS1(Quadtree, ENGINE_VISIBILITY_QUADTREE, VisibilityABC
 
 Quadtree::Quadtree(
 	BaseObject *parent,
-	UInt32 halfSize,
+    Int32 halfSize,
 	Float zoneSize) :
 		VisibilityABC(parent, Vector3(), Vector3(zoneSize*halfSize, 0.f, zoneSize*halfSize)),
 		m_topZone(2*halfSize+1, 2*halfSize+1),
@@ -314,8 +314,8 @@ Quadtree::Quadtree(
 		m_hysteresis(0.2f * zoneSize),
 		m_currentPosition(0.0f, 0.0f, 0.0f)
 {
-    for (UInt32 j = 0 ; j < m_topZone.height() ; ++j) {
-        for (UInt32 i = 0 ; i < m_topZone.width() ; ++i) {
+    for (Int32 j = 0 ; j < m_topZone.height() ; ++j) {
+        for (Int32 i = 0 ; i < m_topZone.width() ; ++i) {
 			m_topZone(i,j) = new QuadZone(this, Vector2i(i - halfSize, j - halfSize), m_zoneSize);
 		}
 	}
@@ -334,12 +334,12 @@ void Quadtree::translate(const Vector2i & _move)
 	m_center += Vector3(_move[QUAD_X] * m_zoneSize, 0.0f, _move[QUAD_Z] * m_zoneSize);
 	m_bbox.setCenter(m_center);
 
-    if (UInt32(_move.normInf()) >= m_topZone.width()) {
+    if (Int32(_move.normInf()) >= m_topZone.width()) {
 		Int32 halfSize = m_topZone.width() / 2;
 		Int32 i,j;
 
 		// We must destroy all the array
-        for (UInt32 k = 0; k < m_topZone.elt() ; ++k) {
+        for (Int32 k = 0; k < m_topZone.elt() ; ++k) {
 			m_topZone[k]->removeAllObjects();
 			m_topZone[k]->setSize(m_zoneSize);
 
@@ -352,45 +352,45 @@ void Quadtree::translate(const Vector2i & _move)
 		return;
 	}
 
-    if ((_move[QUAD_Z] > 0) && (_move[QUAD_Z] < Int32(m_topZone.width()))) {
+    if ((_move[QUAD_Z] > 0) && (_move[QUAD_Z] < m_topZone.width())) {
 		Int32 halfSize = m_topZone.width() / 2;
 
-        for (UInt32 j = 0; j < m_topZone.height(); ++j) {
-            for (UInt32 i = 0 ; i < UInt32(_move[QUAD_Z]) ; ++i) {
+        for (Int32 j = 0; j < m_topZone.height(); ++j) {
+            for (Int32 i = 0 ; i < _move[QUAD_Z]; ++i) {
 				deletePtr(m_topZone(i,j));
             }
         }
 
-        for (UInt32 j = 0; j < m_topZone.height(); ++j) {
-            for (UInt32 i = 0 ; i < UInt32(m_topZone.width() - _move[QUAD_Z]) ; ++i) {
+        for (Int32 j = 0; j < m_topZone.height(); ++j) {
+            for (Int32 i = 0 ; i < m_topZone.width() - _move[QUAD_Z]; ++i) {
 				m_topZone(i,j) = m_topZone(i + _move[QUAD_Z], j);
 				m_topZone(i,j)->setPosition(Vector2i(i - halfSize, j - halfSize));
 			}
         }
 
-        for (UInt32 j = 0; j < m_topZone.height(); ++j) {
-            for (UInt32 i = m_topZone.width() - _move[QUAD_Z]; i < m_topZone.width() ; ++i) {
+        for (Int32 j = 0; j < m_topZone.height(); ++j) {
+            for (Int32 i = m_topZone.width() - _move[QUAD_Z]; i < m_topZone.width() ; ++i) {
 				m_topZone(i,j) = new QuadZone(this, Vector2i(i - halfSize, j - halfSize), m_zoneSize);
             }
         }
-    } else if ((_move[QUAD_Z] < 0) && (_move[QUAD_Z] > -Int32(m_topZone.width()))) {
+    } else if ((_move[QUAD_Z] < 0) && (_move[QUAD_Z] > -m_topZone.width())) {
 		Int32 halfSize = m_topZone.width() / 2;
 
-        for (UInt32 j = 0; j < m_topZone.height(); ++j) {
-            for (UInt32 i = m_topZone.width() + _move[QUAD_Z] ; i < m_topZone.width() ; ++i) {
+        for (Int32 j = 0; j < m_topZone.height(); ++j) {
+            for (Int32 i = m_topZone.width() + _move[QUAD_Z] ; i < m_topZone.width() ; ++i) {
 				deletePtr(m_topZone(i,j));
             }
         }
 
-        for (UInt32 j = 0; j < m_topZone.height(); ++j) {
-            for (UInt32 i = m_topZone.width() - 1 ; i >= UInt32(-_move[QUAD_Z]) ; --i) {
+        for (Int32 j = 0; j < m_topZone.height(); ++j) {
+            for (Int32 i = m_topZone.width() - 1 ; i >= -_move[QUAD_Z]; --i) {
 				m_topZone(i,j) = m_topZone(i + _move[QUAD_Z], j);
 				m_topZone(i,j)->setPosition(Vector2i(i - halfSize, j - halfSize));
 			}
         }
 
-        for (UInt32 j = 0; j < m_topZone.height(); ++j) {
-            for (UInt32 i = 0; i < UInt32(-_move[QUAD_Z]) ; ++i) {
+        for (Int32 j = 0; j < m_topZone.height(); ++j) {
+            for (Int32 i = 0; i < -_move[QUAD_Z]; ++i) {
 				m_topZone(i,j) = new QuadZone(this, Vector2i(i - halfSize, j - halfSize), m_zoneSize);
             }
         }
@@ -399,42 +399,42 @@ void Quadtree::translate(const Vector2i & _move)
     if ((_move[QUAD_X] > 0) && (_move[QUAD_X] < Int32(m_topZone.height()))) {
 		Int32 halfSize = m_topZone.height() / 2;
 
-        for (UInt32 i = 0; i < m_topZone.width(); ++i) {
-            for (UInt32 j = 0 ; j < UInt32(_move[QUAD_X]) ; ++j) {
+        for (Int32 i = 0; i < m_topZone.width(); ++i) {
+            for (Int32 j = 0 ; j < _move[QUAD_X]; ++j) {
 				deletePtr(m_topZone(i,j));
             }
         }
 
-        for (UInt32 i = 0; i < m_topZone.width(); ++i) {
-            for (UInt32 j = 0 ; j < UInt32(m_topZone.height() - _move[QUAD_X]) ; ++j) {
+        for (Int32 i = 0; i < m_topZone.width(); ++i) {
+            for (Int32 j = 0 ; j < m_topZone.height() - _move[QUAD_X]; ++j) {
 				m_topZone(i,j) = m_topZone(i, j + _move[QUAD_X]);
 				m_topZone(i,j)->setPosition(Vector2i(i - halfSize, j - halfSize));
 			}
         }
 
-        for (UInt32 i = 0; i < m_topZone.width(); ++i) {
-            for (UInt32 j = m_topZone.height() - _move[QUAD_X]; j < m_topZone.height() ; ++j) {
+        for (Int32 i = 0; i < m_topZone.width(); ++i) {
+            for (Int32 j = m_topZone.height() - _move[QUAD_X]; j < m_topZone.height() ; ++j) {
 				m_topZone(i,j) = new QuadZone(this, Vector2i(i - halfSize, j - halfSize), m_zoneSize);
             }
         }
-    } else if ((_move[QUAD_X] < 0) && (_move[QUAD_X] > -Int32(m_topZone.height()))) {
+    } else if ((_move[QUAD_X] < 0) && (_move[QUAD_X] > -m_topZone.height())) {
 		Int32 halfSize = m_topZone.height() / 2;
 
-        for (UInt32 i = 0; i < m_topZone.width(); ++i) {
-            for (UInt32 j = m_topZone.height() + _move[QUAD_X] ; j < m_topZone.height() ; ++j) {
+        for (Int32 i = 0; i < m_topZone.width(); ++i) {
+            for (Int32 j = m_topZone.height() + _move[QUAD_X] ; j < m_topZone.height() ; ++j) {
 				deletePtr(m_topZone(i,j));
             }
         }
 
-        for (UInt32 i = 0; i < m_topZone.width(); ++i) {
-            for (UInt32 j = m_topZone.height() - 1 ; j >= UInt32(-_move[QUAD_X]) ; --j) {
+        for (Int32 i = 0; i < m_topZone.width(); ++i) {
+            for (Int32 j = m_topZone.height() - 1 ; j >= -_move[QUAD_X]; --j) {
 				m_topZone(i,j) = m_topZone(i, j + _move[QUAD_X]);
 				m_topZone(i,j)->setPosition(Vector2i(i - halfSize, j - halfSize));
 			}
         }
 
-        for (UInt32 i = 0; i < m_topZone.width(); ++i) {
-            for (UInt32 j = 0; j < UInt32(-_move[QUAD_X]) ; ++j) {
+        for (Int32 i = 0; i < m_topZone.width(); ++i) {
+            for (Int32 j = 0; j < -_move[QUAD_X]; ++j) {
 				m_topZone(i,j) = new QuadZone(this, Vector2i(i - halfSize, j - halfSize), m_zoneSize);
             }
         }
@@ -458,7 +458,7 @@ void Quadtree::onObjectUnused()
 // Clear all objects contained in the quadTree
 void Quadtree::clear()
 {
-    for (UInt32 k = 0 ; k < m_topZone.elt() ; ++k) {
+    for (Int32 k = 0 ; k < m_topZone.elt() ; ++k) {
 		deletePtr(m_topZone[k]);
     }
 
@@ -467,9 +467,9 @@ void Quadtree::clear()
 	EvtManager::instance()->processEvent(this);
 }
 
-inline UInt32 Quadtree::getNumObjects()const
+inline Int32 Quadtree::getNumObjects()const
 {
-	return UInt32(m_objectMap.size());
+    return Int32(m_objectMap.size());
 }
 
 // Return the neighbor of a zone
@@ -652,7 +652,7 @@ void Quadtree::checkVisibleObject(const VisibilityInfos & _infos)
 
     SceneObject * object = nullptr;
 
-    for (UInt32 k = 0; k < m_topZone.elt() ; ++k) {
+    for (Int32 k = 0; k < m_topZone.elt() ; ++k) {
 		// Visibility checks ...
 
         for (CIT_ZoneObjectList it = m_topZone[k]->getObjectList().begin() ; it != m_topZone[k]->getObjectList().end() ; it++) {
@@ -690,8 +690,8 @@ void Quadtree::draw(const DrawInfo &drawInfo)
         primitive->setColor(1.f, 1.f, 1.f);
         getScene()->getContext()->setLineWidth(2.0f);
 
-        for (UInt32 j = 0 ; j < m_topZone.height() ; ++j) {
-            for (UInt32 i = 0 ; i < m_topZone.width() ; ++i) {
+        for (Int32 j = 0 ; j < m_topZone.height() ; ++j) {
+            for (Int32 i = 0 ; i < m_topZone.width() ; ++i) {
 				m_topZone(i,j)->draw(getScene());
 			}
 		}

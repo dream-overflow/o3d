@@ -102,7 +102,7 @@ public:
 
 	//! Construct an empty cstring full of '0' according to a given size.
 	//! @param strlen Length of the string to create (don't count terminal zero).
-    explicit CString(UInt32 strlen);
+    explicit CString(Int32 strlen);
 
 	//! Construct a cstring from a source char* (must be 0 terminated).
 	//! @param source The string to copy.
@@ -116,13 +116,13 @@ public:
 	//! @param source The string to copy.
 	//! @param strlen Length of the string to copy/own (don't count terminal zero).
 	//! @param ref If TRUE the source is not copied, only refer it, and delete it.
-    CString(const Char *copy, UInt32 strlen);
+    CString(const Char *copy, Int32 strlen);
 
 	//! Construct using a valid string and len.
 	//! @param source The string to copy or to own.
 	//! @param strlen Length of the string to copy/own (don't count terminal zero).
 	//! @param own If TRUE the source is not copied, only refer it, and delete it.
-    CString(Char *source, UInt32 strlen, Bool own);
+    CString(Char *source, Int32 strlen, Bool own);
 
 	//! Destructor.
 	~CString();
@@ -144,13 +144,13 @@ public:
     SmartArrayUInt8 getBytes() const;
 
 	//! Get data at specified index (read only).
-    inline const Char& operator[] (UInt32 index) const { return m_data[index]; }
+    inline const Char& operator[] (Int32 index) const { return m_data[index]; }
 
 	//! Get data at specified index.
-    inline Char& operator[] (UInt32 index) { return m_data[index]; }
+    inline Char& operator[] (Int32 index) { return m_data[index]; }
 
 	//! Length of the string.
-    inline UInt32 length() const { return (m_data.getNumElt() == 0 ? 0 : m_data.getNumElt()-1); }
+    inline Int32 length() const { return (m_data.getNumElt() == 0 ? 0 : m_data.getNumElt()-1); }
 
 	//! Check if the string content is not empty.
     inline Bool isValid() const { return (m_data.getSize() > 1); }
@@ -226,7 +226,7 @@ public:
     }
 
 	//! Define a base maxsize and threshold.
-    String(UInt32 isize, UInt32 ithreshold) :
+    String(Int32 isize, Int32 ithreshold) :
         m_data(nullptr),
 		m_size(0),
 		m_maxsize(0),
@@ -246,10 +246,10 @@ public:
     }
 
     //! Copy constructor from a ArrayChar, default assume ArrayChar is UTF8
-    String(const TemplateArray<Char, -1> &copy, UInt32 ithreshold = 256);
+    String(const TemplateArray<Char, -1> &copy, Int32 ithreshold = 256);
 
     //! Copy constructor from a CString, default assume CString is UTF8
-    String(const CString &copy, UInt32 ithreshold = 256) :
+    String(const CString &copy, Int32 ithreshold = 256) :
         m_data(nullptr),
         m_size(0),
         m_maxsize(0),
@@ -259,7 +259,7 @@ public:
     }
 
 	//! Build the string from char* (must be 0 terminated).
-    String(const Char* copy, UInt32 ithreshold = 256) :
+    String(const Char* copy, Int32 ithreshold = 256) :
         m_data(nullptr),
 		m_size(0),
 		m_maxsize(0),
@@ -269,7 +269,7 @@ public:
 	}
 
 	//! Build the string from wide char* (must be 0 terminated).
-    String(const WChar* copy, UInt32 ithreshold = 256) :
+    String(const WChar* copy, Int32 ithreshold = 256) :
         m_data(nullptr),
 		m_size(0),
 		m_maxsize(0),
@@ -299,13 +299,13 @@ public:
     //
 
     //! Resize the string, +1 is added to count the zero terminal.
-    void setCapacity(UInt32 newSize);
+    void setCapacity(Int32 newSize);
 
     //! Destroy the string content and reset its size.
 	void destroy();
 
 	//! Get the length of the string (don't count the terminal zero).
-    inline UInt32 length() const { return (m_size == 0) ? 0 : m_size-1; }
+    inline Int32 length() const { return (m_size == 0) ? 0 : m_size-1; }
 
 	//! Check if the string content is not empty.
     inline Bool isValid() const { return (m_size > 1); }
@@ -329,7 +329,7 @@ public:
     inline WChar* getData() { return m_data; }
 
 	//! Initialize from an UTF8 char*.
-    void fromUtf8(const Char* utf8, UInt32 maxSize = 0);
+    void fromUtf8(const Char* utf8, Int32 maxSize = 0);
 
 	//! Set the string with a character
     void set(WChar c);
@@ -339,32 +339,32 @@ public:
 	//! @param pos Start position into the source string
 	//! @note It is easier to make a truncate at the start of the string using this methods.
 	//! e.g. String x = "1234567"; x.set(x,3); -> x == "4567" && x.length() == 4.
-    void set(const String &src, UInt32 pos);
+    void set(const String &src, Int32 pos);
 
 	//! Set the string given another string, copying it starting from a given position.
 	//! @param src source string (C string)
 	//! @param pos Start position into the source string
 	//! @note It is easier to make a truncate at the start of the string using this methods.
 	//! e.g. String x = "1234567"; x.set(x,3); -> x == "4567" && x.length() == 4.
-    void set(const Char *src, UInt32 pos);
+    void set(const Char *src, Int32 pos);
 
 	//! Set the string given another string, copying it starting from a given position.
 	//! @param src source string (WChar string)
 	//! @param pos Start position into the source string
 	//! @note It is easier to make a truncate at the start of the string using this methods.
 	//! e.g. String x = "1234567"; x.set(x,3); -> x == "4567" && x.length() == 4.
-    void set(const WChar *src, UInt32 pos);
+    void set(const WChar *src, Int32 pos);
 
 	//! Set the string size and fill with a given character
 	//! @param n The size to set
 	//! @param c The char to fill with
-    void setFill(WChar c, UInt32 n);
+    void setFill(WChar c, Int32 n);
 
 	//! Fill the string with a given character
     void fill(WChar c);
 
 	//! change brutally the content size of the string (be-careful when using it)
-    inline void setSize(UInt32 newsize) { m_size = newsize; }
+    inline void setSize(Int32 newsize) { m_size = newsize; }
 
     //
     // Construction operators.
@@ -492,20 +492,20 @@ public:
 	//! @param str The substring to find
 	//! @param pos The starting position for search
 	//! @return The position of the first occurrence of the substring, or -1 if not found
-    Int32 sub(const String& str, UInt32 pos) const;
+    Int32 sub(const String& str, Int32 pos) const;
 
 	//! Find a char into the string.
 	//! @param c The char to find
 	//! @param reverse Start by the beginning of the string if false, and by the end if true
 	//! @return The position of the first occurrence of the char found, or -1 if not found
-    Int32 find(WChar c, UInt32 pos = 0, Bool reverse = False) const;
+    Int32 find(WChar c, Int32 pos = 0, Bool reverse = False) const;
 
     //! Find a char into the string according to a string containing a list of characters.
     //! @param s The string containing the list of possible characters to look for.
     //! @param reverse Start by the beginning of the string if false, and by the end if true
     //! @param last If True continue for searching until there is contigues found characeters.
     //! @return The position of the first occurrence of the char found, or -1 if not found
-    Int32 find(const String &s, UInt32 pos = 0, Bool reverse=False, Bool last=False) const;
+    Int32 find(const String &s, Int32 pos = 0, Bool reverse=False, Bool last=False) const;
 
 	//! Find a char starting by the end of the string.
 	//! @param c The char to find
@@ -518,7 +518,7 @@ public:
 	//! Count the number of occurrence of a given char.
 	//! @param c The char to find
 	//! @return The number of occurrence found
-    UInt32 count(WChar c) const;
+    Int32 count(WChar c) const;
 
 	//! Check if the string starts by a given string.
 	//! @param start String to search at the start
@@ -531,13 +531,13 @@ public:
     Bool endsWith(const String &end) const;
 
     //! Check the validity of a position into the string
-    inline Bool isIndex(UInt32 index) const { return (index < m_size); }
+    inline Bool isIndex(Int32 index) const { return (index < m_size); }
 
     //! Get the char given an index position
-    WChar& operator[] (UInt32 index);
+    WChar& operator[] (Int32 index);
 
     //! get the char given an index position (const version)
-    const WChar& operator[] (UInt32 Index) const;
+    const WChar& operator[] (Int32 Index) const;
 
 	//! Convert the string to its lower case
     String& lower();
@@ -563,10 +563,10 @@ public:
     String title() const;
 
 	//! Insert a character at the given position @em pos
-    String& insert(WChar c, UInt32 pos);
+    String& insert(WChar c, Int32 pos);
 
 	//! Insert a string at the given position @em pos
-    String& insert(const String &str, UInt32 pos);
+    String& insert(const String &str, Int32 pos);
 
 	//! Insert a character at the first position
     inline String& prepend(WChar c) { return insert(c, 0); }
@@ -575,10 +575,10 @@ public:
     inline String& append(WChar c) { return *this += c; }
 
 	//! Remove @em n character starting at position @em pos
-    String& remove(UInt32 pos, UInt32 n);
+    String& remove(Int32 pos, Int32 n);
 
     //! Copy and remove n character starting at position pos and returns the new string.
-    String extract(UInt32 pos, UInt32 n);
+    String extract(Int32 pos, Int32 n);
 
     /**
      * @brief Get a part of the string
@@ -594,7 +594,7 @@ public:
      * @param end The ending position
      * @return The substring. Can be empty.
      */
-    String sub(UInt32 start, UInt32 end = -1) const;
+    String sub(Int32 start, Int32 end = -1) const;
 
 	//! Replace all occurrence of the character @em c by the character @em n
     String& replace(WChar c, WChar n);
@@ -603,10 +603,10 @@ public:
 	String& replace(const String& find, const String& by);
 
     //! Replace the substring located at n by str, for length of str and keeping the actual length
-    String& replace(const String& str, const UInt32 n);
+    String& replace(const String& str, const Int32 n);
 
 	//! Replace the character at the position n by the character given by c
-    String& replaceChar(WChar c, UInt32 n);
+    String& replaceChar(WChar c, Int32 n);
 
 	//! Remove a substring
 	String& remove(const String &find);
@@ -615,7 +615,7 @@ public:
 	String& reverse();
 
 	//! Truncate the string at a given position
-    String& truncate(UInt32 pos);
+    String& truncate(Int32 pos);
 
     //
     // Concatenate to this.
@@ -772,28 +772,28 @@ public:
     //
 
 	//! Convert the value at pos to a char
-    Char toChar(UInt32 pos = 0) const;
+    Char toChar(Int32 pos = 0) const;
 
 	//! Convert the value at pos to a widechar
-    WChar toWChar(UInt32 pos = 0) const;
+    WChar toWChar(Int32 pos = 0) const;
 
 	//! Convert the value at pos to an int
-    Int32 toInt32(UInt32 pos = 0) const;
+    Int32 toInt32(Int32 pos = 0) const;
 
 	//! Convert the value at pos to an unsigned int
-    UInt32 toUInt32(UInt32 pos = 0) const;
+    UInt32 toUInt32(Int32 pos = 0) const;
 
     //! Convert the value at pos to an long int (int64)
-    Int64 toInt64(UInt32 pos = 0) const;
+    Int64 toInt64(Int32 pos = 0) const;
 
     //! Convert the value at pos to an unsigned long int (uint64)
-    UInt64 toUInt64(UInt32 pos = 0) const;
+    UInt64 toUInt64(Int32 pos = 0) const;
 
 	//! Convert the value at pos to a float
-    Float toFloat(UInt32 pos = 0) const;
+    Float toFloat(Int32 pos = 0) const;
 
 	//! Convert the value at pos to a double
-    Double toDouble(UInt32 pos = 0) const;
+    Double toDouble(Int32 pos = 0) const;
 
     //
     // Serialization
@@ -806,16 +806,16 @@ public:
 protected :
 
     WChar *m_data;        //!< String data
-    UInt32 m_size;        //!< String content size
-    UInt32 m_maxsize;     //!< String memory allocation size
-    UInt32 m_threshold;   //!< Reallocation size threshold
+    Int32 m_size;        //!< String content size
+    Int32 m_maxsize;     //!< String memory allocation size
+    Int32 m_threshold;   //!< Reallocation size threshold
 
     //
     // arg management helpers
     //
 
     void allocateArg();
-    void replaceArg(const WChar *arg, UInt32 argSize, const String &by);
+    void replaceArg(const WChar *arg, Int32 argSize, const String &by);
 };
 
 } // namespace o3d

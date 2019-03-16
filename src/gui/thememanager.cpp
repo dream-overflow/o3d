@@ -56,4 +56,3 @@ Theme* ThemeManager::addTheme(const String &filename)
 	addElement(theme);
 	return theme;
 }
-

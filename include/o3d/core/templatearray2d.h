@@ -19,18 +19,17 @@ namespace o3d {
 #define O3DARRAY2D_INDEX_DEBUBBING
 #endif
 
-//---------------------------------------------------------------------------------------
-//! @class TemplateArray2D
-//-------------------------------------------------------------------------------------
-//! Definition of a template 2D array.
-//---------------------------------------------------------------------------------------
+/**
+ * @class TemplateArray2D
+ * @brief Definition of a template 2D array.
+ */
 template <class T>
 class O3D_API_TEMPLATE TemplateArray2D
 {
 public:
 
-	explicit TemplateArray2D(UInt32 _width = 0, UInt32 _height = 0, const T & _value = T());
-	explicit TemplateArray2D(const T * _buffer, UInt32 _width, UInt32 _height);
+    explicit TemplateArray2D(Int32 _width = 0, Int32 _height = 0, const T & _value = T());
+    explicit TemplateArray2D(const T * _buffer, Int32 _width, Int32 _height);
 	TemplateArray2D(const TemplateArray2D<T> & _which);
 
 	virtual ~TemplateArray2D();
@@ -42,11 +41,11 @@ public:
 
 	TemplateArray2D<T> & operator = (const TemplateArray2D<T> & _which);
 
-	inline T & operator () (UInt32 _i, UInt32 _j);
-	inline const T & operator () (UInt32 _i, UInt32 _j) const;
+    inline T & operator () (Int32 _i, Int32 _j);
+    inline const T & operator () (Int32 _i, Int32 _j) const;
 
-	inline T & operator[] (UInt32 _index);
-	inline T & operator[] (UInt32 _index) const;
+    inline T & operator[] (Int32 _index);
+    inline T & operator[] (Int32 _index) const;
 
 	//! Opérateurs
 	TemplateArray2D<T> & operator += (const TemplateArray2D<T> & _which);
@@ -54,10 +53,10 @@ public:
 	T & operator /= (const T & _which);
 	T & operator *= (const T & _which);
 
-	inline void setSize(UInt32 _w, UInt32 _h);
-	inline UInt32 width() const { return m_width; }
-	inline UInt32 height() const { return m_height; }
-	inline UInt32 elt() const { return m_width * m_height; }
+    inline void setSize(Int32 _w, Int32 _h);
+    inline Int32 width() const { return m_width; }
+    inline Int32 height() const { return m_height; }
+    inline Int32 elt() const { return m_width * m_height; }
 	inline Bool isEmpty() const { return ((m_width == 0) || (m_height == 0)); }
 
 	inline T * getData() { return m_pData; }
@@ -67,24 +66,24 @@ public:
 
 	//! This function fill a subpart of the array with a value.
 	//! The set   [_x1 ; _x2[ X [_y1 ; _y2[   will be modified.
-	void fill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _x2, UInt32 _y2);
+    void fill(const T & _which, Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2);
 
 	void fastFill(const T & _which);
 
 	//! This function fill a subpart of the array with a value.
 	//! The set   [_x1 ; _x2[ X [_y1 ; _y2[   will be modified.
-	void fastFill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _x2, UInt32 _y2);
+    void fastFill(const T & _which, Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2);
 
 	//! This function return a part of an array. The initial array is subdivided into _xdiv * y_div tiles, and
 	//! the tile of coordinate (_i,_j) will be store in _target
-	Bool getSubArray(UInt32 _xdiv, UInt32 _ydiv, TemplateArray2D<T> & _target, UInt32 _i, UInt32 _j) const;
+    Bool getSubArray(Int32 _xdiv, Int32 _ydiv, TemplateArray2D<T> & _target, Int32 _i, Int32 _j) const;
 
 	//! This function return a part of an array
 	Bool getSubArray(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, TemplateArray2D<T> & _target) const;
 
 	//! Function which insert an array at the specified coordinates.
 	//! The target array won't be resized
-	Bool insert(const TemplateArray2D<T> & _source, UInt32 _i, UInt32 _j);
+    Bool insert(const TemplateArray2D<T> & _source, Int32 _i, Int32 _j);
 
 	//! this function translates the array in the direction (x,y)
 	//! Empty cell are then filled with the specified value
@@ -98,8 +97,8 @@ protected:
 
 	T* m_pData;
 
-	UInt32 m_width;
-	UInt32 m_height;
+    Int32 m_width;
+    Int32 m_height;
 };
 
 typedef TemplateArray2D<Int8>	Array2DInt8;
@@ -115,43 +114,41 @@ typedef TemplateArray2D<Double>	Array2DDouble;
   IMPLEMENTATION : class TemplateArray2d
 ---------------------------------------------------------------------------------------*/
 template <class T>
-TemplateArray2D<T>::TemplateArray2D(UInt32 _width, UInt32 _height, const T & _value) :
+TemplateArray2D<T>::TemplateArray2D(Int32 _width, Int32 _height, const T & _value) :
     m_pData(nullptr),
 	m_width(_width),
 	m_height(_height)
 {
-	UInt32 size = m_width * m_height;
+    Int32 size = m_width * m_height;
 
-	if (size > 0)
+    if (size > 0) {
 		m_pData = new T[size];
+    }
 
 	fill(_value);
 }
 
 template <class T>
-TemplateArray2D<T>::TemplateArray2D(const T * _buffer, UInt32 _width, UInt32 _height) :
+TemplateArray2D<T>::TemplateArray2D(const T * _buffer, Int32 _width, Int32 _height) :
     m_pData(nullptr),
 	m_width(_width),
 	m_height(_height)
 {
 #ifdef _DEBUG
-    if (_buffer == nullptr)
-	{
+    if (_buffer == nullptr) {
 		O3D_ASSERT((_width == 0) && (_height == 0));
-	}
-	else
-	{
+    } else {
 		O3D_ASSERT((_width > 0) && (_height > 0));
 	}
 #endif
 
-    if (_buffer != nullptr)
-	{
-		UInt32 size = _width * _height;
+    if (_buffer != nullptr) {
+        Int32 size = _width * _height;
 		m_pData = new T[size];
 
-		for (UInt32 k = 0 ; k < size; ++k)
+        for (Int32 k = 0 ; k < size; ++k) {
 			m_pData[k] = _buffer[k];
+        }
 	}
 }
 
@@ -160,24 +157,22 @@ TemplateArray2D<T>::TemplateArray2D(const TemplateArray2D<T> & _which) :
 	m_width(_which.m_width),
 	m_height(_which.m_height)
 {
-	UInt32 size = m_width * m_height;
+    Int32 size = m_width * m_height;
 
-	if (size > 0)
-	{
+    if (size > 0) {
 		m_pData = new T[size];
 		T * pTarget = m_pData;
 		const T * pSource = _which.m_pData;
 
-		UInt32 k = size;
-		while (k-- > 0)
-		{
+        Int32 k = size;
+        while (k-- > 0) {
 			*pTarget = *pSource;
 			++pTarget;
 			++pSource;
 		}
-	}
-	else
+    } else {
         m_pData = nullptr;
+    }
 }
 
 template <class T>
@@ -189,38 +184,35 @@ TemplateArray2D<T>::~TemplateArray2D()
 template <class T>
 TemplateArray2D<T> & TemplateArray2D<T>::operator = (const TemplateArray2D<T> & _which)
 {
-	if (this != &_which)
-	{
+    if (this != &_which) {
 		deleteArray(m_pData);
 
 		m_width = _which.m_width;
 		m_height = _which.m_height;
 
-		UInt32 size = m_width * m_height;
+        Int32 size = m_width * m_height;
 
-		if (size > 0)
-		{
+        if (size > 0) {
 			m_pData = new T[m_width*m_height];
 			T * pTarget = m_pData;
 			const T * pSource = _which.m_pData;
 
-			UInt32 k = size;
-			while (k-- > 0)
-			{
+            Int32 k = size;
+            while (k-- > 0) {
 				*pTarget = *pSource;
 				++pTarget;
 				++pSource;
 			}
-		}
-		else
+        } else {
             m_pData = nullptr;
+        }
 	}
 
 	return *this;
 }
 
 template <class T>
-T & TemplateArray2D<T>::operator () (UInt32 _i, UInt32 _j)
+T & TemplateArray2D<T>::operator () (Int32 _i, Int32 _j)
 {
 	#ifdef O3DARRAY2D_INDEX_DEBUBBING
 		O3D_ASSERT(_i < m_width);
@@ -231,7 +223,7 @@ T & TemplateArray2D<T>::operator () (UInt32 _i, UInt32 _j)
 }
 
 template <class T>
-const T & TemplateArray2D<T>::operator () (UInt32 _i, UInt32 _j) const
+const T & TemplateArray2D<T>::operator () (Int32 _i, Int32 _j) const
 {
 	#ifdef O3DARRAY2D_INDEX_DEBUBBING
 		O3D_ASSERT(_i < m_width);
@@ -242,7 +234,7 @@ const T & TemplateArray2D<T>::operator () (UInt32 _i, UInt32 _j) const
 }
 
 template <class T>
-T & TemplateArray2D<T>::operator[] (UInt32 _index)
+T & TemplateArray2D<T>::operator[] (Int32 _index)
 {
 	#ifdef ARRAY2D_INDEX_DEBUBBING
 		O3D_ASSERT(_index < m_width * m_height);
@@ -253,7 +245,7 @@ T & TemplateArray2D<T>::operator[] (UInt32 _index)
 }
 
 template <class T>
-T & TemplateArray2D<T>::operator[] (UInt32 _index) const
+T & TemplateArray2D<T>::operator[] (Int32 _index) const
 {
 	#ifdef ARRAY2D_INDEX_DEBUBBING
 		O3D_ASSERT(_index < m_width * m_height);
@@ -264,17 +256,20 @@ T & TemplateArray2D<T>::operator[] (UInt32 _index) const
 }
 
 template <class T>
-void TemplateArray2D<T>::setSize(UInt32 _w, UInt32 _h)
+void TemplateArray2D<T>::setSize(Int32 _w, Int32 _h)
 {
-	if ((m_width == _w) && (m_height == _h)) return;
+    if ((m_width == _w) && (m_height == _h)) {
+        return;
+    }
 
 	m_width = _w;
 	m_height = _h;
 
 	deleteArray(m_pData);
 
-	if (_w * _h > 0)
+    if (_w * _h > 0) {
 		m_pData = new T[_w * _h];
+    }
 }
 
 template <class T>
@@ -295,13 +290,11 @@ void TemplateArray2D<T>::destroy()
 template <class T>
 void TemplateArray2D<T>::fill(const T & _which)
 {
-    if (m_pData != nullptr)
-	{
+    if (m_pData != nullptr) {
 		T * pTarget = m_pData;
 
-		UInt32 k = elt();
-		while (k-- > 0)
-		{
+        Int32 k = elt();
+        while (k-- > 0) {
 			*pTarget = _which;
 			++pTarget;
 		}
@@ -309,7 +302,7 @@ void TemplateArray2D<T>::fill(const T & _which)
 }
 
 template <class T>
-void TemplateArray2D<T>::fill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _x2, UInt32 _y2)
+void TemplateArray2D<T>::fill(const T & _which, Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2)
 {
     if (m_pData != nullptr)
 	{
@@ -321,15 +314,15 @@ void TemplateArray2D<T>::fill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _
 		if ((_x2 <= _x1) || (_y2 <= _y1))
 			return;
 
-		const UInt32 lLineSize = _x2 - _x1;
+        const Int32 lLineSize = _x2 - _x1;
         T * pTarget = nullptr;
 
-		for (UInt32 j = _y1 ; j < _y2 ; ++j)
-		{
+        for (Int32 j = _y1 ; j < _y2 ; ++j) {
 			pTarget = &((*this)(_x1, j));
 
-			for (UInt32 k = lLineSize ; k > 0 ; --k, ++pTarget)
+            for (Int32 k = lLineSize ; k > 0 ; --k, ++pTarget) {
 				*pTarget = _which;
+            }
 		}
 	}
 }
@@ -337,20 +330,17 @@ void TemplateArray2D<T>::fill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _
 template <class T>
 void TemplateArray2D<T>::fastFill(const T & _which)
 {
-    if (m_pData != nullptr)
-	{
+    if (m_pData != nullptr){
 		T* pTarget = m_pData;
 
-		UInt32 k = m_width;
-		while (k-- > 0)
-		{
+        Int32 k = m_width;
+        while (k-- > 0) {
 			*pTarget = _which;
 			++pTarget;
 		}
 
 		k = m_height - 1;
-		while (k-- > 0)
-		{
+        while (k-- > 0) {
 			memcpy((void*)pTarget, (const void*)m_pData, m_width * sizeof(T));
 			pTarget += m_width;
 		}
@@ -358,10 +348,9 @@ void TemplateArray2D<T>::fastFill(const T & _which)
 }
 
 template <class T>
-void TemplateArray2D<T>::fastFill(const T & _which, UInt32 _x1, UInt32 _y1, UInt32 _x2, UInt32 _y2)
+void TemplateArray2D<T>::fastFill(const T & _which, Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2)
 {
-    if (m_pData != nullptr)
-	{
+    if (m_pData != nullptr) {
 		_x1 = o3d::min<Int32>(_x1, m_width);
 		_y1 = o3d::min<Int32>(_y1, m_height);
 		_x2 = o3d::min<Int32>(_x2, m_width);
@@ -373,9 +362,8 @@ void TemplateArray2D<T>::fastFill(const T & _which, UInt32 _x1, UInt32 _y1, UInt
 		T* const pSource = m_pData + _x1;
 		T* pPtr = pSource;
 
-		UInt32 k = _x2 - _x1;
-		while (k-- > 0)
-		{
+        Int32 k = _x2 - _x1;
+        while (k-- > 0) {
 			*pPtr = _which;
 			++pPtr;
 		}
@@ -384,8 +372,7 @@ void TemplateArray2D<T>::fastFill(const T & _which, UInt32 _x1, UInt32 _y1, UInt
 
 		pPtr = pSource + (_y1+1) * m_width;
 		k = _y2 - _y1 - 1;
-		while (k-- > 0)
-		{
+        while (k-- > 0)	{
 			memcpy((void*)pPtr, (const void*)pSource, lLineSize);
 			pPtr += m_width;
 		}
@@ -395,10 +382,9 @@ void TemplateArray2D<T>::fastFill(const T & _which, UInt32 _x1, UInt32 _y1, UInt
 //! This function return a part of an array. The initial array is subdivided into _xdiv * y_div tiles, and
 //! the tile of coordinate (_i,_j) will be store in _target
 template <class T>
-Bool TemplateArray2D<T>::getSubArray(UInt32 _xdiv, UInt32 _ydiv, TemplateArray2D<T> & _target, UInt32 _i, UInt32 _j) const
+Bool TemplateArray2D<T>::getSubArray(Int32 _xdiv, Int32 _ydiv, TemplateArray2D<T> & _target, Int32 _i, Int32 _j) const
 {
-	if (elt() == 0)
-	{
+    if (elt() == 0) {
 		_target.free();
 		return False;
 	}
@@ -407,14 +393,16 @@ Bool TemplateArray2D<T>::getSubArray(UInt32 _xdiv, UInt32 _ydiv, TemplateArray2D
 	if ((m_width - 1) % _xdiv != 0) return False;
 	if ((m_height - 1) % _ydiv != 0) return False;
 
-	UInt32 sizex = (width() + _xdiv - 1)/_xdiv;
-	UInt32 sizey = (height() + _ydiv - 1)/_ydiv;
+    Int32 sizex = (width() + _xdiv - 1)/_xdiv;
+    Int32 sizey = (height() + _ydiv - 1)/_ydiv;
 
 	_target.setSize(sizex, sizey);
 
-	for (UInt32 y = 0 ; y < sizey ; ++y)
-		for (UInt32 x = 0 ; x < sizex ; ++x)
+    for (Int32 y = 0 ; y < sizey ; ++y) {
+        for (Int32 x = 0 ; x < sizex ; ++x) {
 			_target(x,y) = this->operator ()(_i * (sizex-1) + x, _j * (sizey-1) + y);
+        }
+    }
 
 	return True;
 }
@@ -433,13 +421,13 @@ Bool TemplateArray2D<T>::getSubArray(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2,
     T * lTargetPtr = nullptr;
     const T * lSourcePtr = nullptr;
 
-	for (UInt32 y = 0 ; y < _target.height() ; ++y)
-	{
+    for (Int32 y = 0 ; y < _target.height() ; ++y) {
 		lTargetPtr = &_target(0, y);
 		lSourcePtr = &(*this)(_x1, _y1 + y);
 
-		for (UInt32 k = _target.width() ; k > 0 ; --k, ++lTargetPtr, ++lSourcePtr)
+        for (Int32 k = _target.width() ; k > 0 ; --k, ++lTargetPtr, ++lSourcePtr) {
 			*lTargetPtr = *lSourcePtr;
+        }
 	}
 
 	return True;
@@ -448,7 +436,7 @@ Bool TemplateArray2D<T>::getSubArray(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2,
 //! Function which insert an array at the specified coordinates.
 //! The target array won't be resized
 template <class T>
-Bool TemplateArray2D<T>::insert(const TemplateArray2D<T> & _source, UInt32 _i, UInt32 _j)
+Bool TemplateArray2D<T>::insert(const TemplateArray2D<T> & _source, Int32 _i, Int32 _j)
 {
 	if (_i + _source.width() - 1 >= m_width) return False;
 	if (_j + _source.height() - 1 >= m_height) return False;
@@ -456,13 +444,13 @@ Bool TemplateArray2D<T>::insert(const TemplateArray2D<T> & _source, UInt32 _i, U
     T * lTargetPtr = nullptr;
     const T * lSourcePtr = nullptr;
 
-	for (UInt32 y = 0 ; y < _source.height() ; ++y)
-	{
+    for (Int32 y = 0 ; y < _source.height() ; ++y) {
 		lTargetPtr = &(*this)(_i, _j + y);
 		lSourcePtr = &_source(0, y);
 
-		for (UInt32 k = _source.width(); k > 0 ; --k, ++lTargetPtr, ++lSourcePtr)
+        for (Int32 k = _source.width(); k > 0 ; --k, ++lTargetPtr, ++lSourcePtr) {
 			*lTargetPtr = *lSourcePtr;
+        }
 	}
 
 	return True;
@@ -473,8 +461,7 @@ Bool TemplateArray2D<T>::insert(const TemplateArray2D<T> & _source, UInt32 _i, U
 template <class T>
 void TemplateArray2D<T>::translate(Int32 _x, Int32 _y, const T & _value)
 {
-	if ((UInt32(o3d::abs(_x)) >= m_width) || (UInt32(o3d::abs(_y)) >= m_height))
-	{
+    if ((Int32(o3d::abs(_x)) >= m_width) || (Int32(o3d::abs(_y)) >= m_height)) {
 		fill(_value);
 		return ;
 	}
@@ -482,88 +469,79 @@ void TemplateArray2D<T>::translate(Int32 _x, Int32 _y, const T & _value)
 	Int32 xStart, xEnd, yStart, yEnd;
 	Int32 xFillStart, xFillEnd, yFillStart, yFillEnd;
 
-	if (_x >= 0)
-	{
+    if (_x >= 0) {
 		xStart = _x;
 		xEnd = m_width;
 		xFillStart = 0;
 		xFillEnd = xStart;
-	}
-	else // <=> _x < 0
-	{
-		xStart = 0;
+    } else {
+        // <=> _x < 0
+        xStart = 0;
 		xEnd = m_width + _x;
 		xFillStart = xEnd;
 		xFillEnd = m_width;
 	}
 
-	if (_y >= 0)
-	{
+    if (_y >= 0) {
 		yStart = _y;
 		yEnd = m_height;
 		yFillStart = 0;
 		yFillEnd = yStart;
-	}
-	else // <=> _y < 0
-	{
+    } else {
+        // <=> _y < 0
 		yStart = 0;
 		yEnd = m_height + _y;
 		yFillStart = yEnd;
 		yFillEnd = m_height;
 	}
 
-	if (_y < 0)
-	{
-		if (_x < 0)
-		{
-			for (Int32 j = yStart ; j < yEnd ; ++j)
-				for (Int32 i = xStart ; i < xEnd ; ++i)
-				{
+    if (_y < 0) {
+        if (_x < 0) {
+            for (Int32 j = yStart ; j < yEnd ; ++j) {
+                for (Int32 i = xStart ; i < xEnd ; ++i) {
 					O3D_ASSERT((i - _x < Int32(m_width)) && (j - _y < Int32(m_height)));
 					(*this)(i,j) = (*this)(i - _x, j - _y);
 				}
+            }
+        } else {
+            for (Int32 j = yStart ; j < yEnd ; ++j) {
+                for (Int32 i = xEnd-1 ; i >= xStart ; --i) {
+					O3D_ASSERT((i - _x < Int32(m_width)) && (j - _y < Int32(m_height)));
+					(*this)(i,j) = (*this)(i - _x, j - _y);
+				}
+            }
 		}
-		else
-		{
-			for (Int32 j = yStart ; j < yEnd ; ++j)
-				for (Int32 i = xEnd-1 ; i >= xStart ; --i)
-				{
+    } else {
+        if (_x < 0) {
+            for (Int32 j = yEnd-1 ; j >= yStart ; --j) {
+                for (Int32 i = xStart ; i < xEnd ; ++i) {
+					O3D_ASSERT((i - _x < Int32(m_width)) && (j - _y < Int32(m_height)));
+					(*this)(i,j) = (*this)(i - _x, j - _y);
+                }
+            }
+        } else {
+            for (Int32 j = yEnd-1 ; j >= yStart ; --j) {
+                for (Int32 i = xEnd-1 ; i >= xStart ; --i) {
 					O3D_ASSERT((i - _x < Int32(m_width)) && (j - _y < Int32(m_height)));
 					(*this)(i,j) = (*this)(i - _x, j - _y);
 				}
-		}
-	}
-	else
-	{
-		if (_x < 0)
-		{
-			for (Int32 j = yEnd-1 ; j >= yStart ; --j)
-				for (Int32 i = xStart ; i < xEnd ; ++i)
-				{
-					O3D_ASSERT((i - _x < Int32(m_width)) && (j - _y < Int32(m_height)));
-					(*this)(i,j) = (*this)(i - _x, j - _y);
-				}
-		}
-		else
-		{
-			for (Int32 j = yEnd-1 ; j >= yStart ; --j)
-				for (Int32 i = xEnd-1 ; i >= xStart ; --i)
-				{
-					O3D_ASSERT((i - _x < Int32(m_width)) && (j - _y < Int32(m_height)));
-					(*this)(i,j) = (*this)(i - _x, j - _y);
-				}
+            }
 		}
 	}
 
 
 	// Now we must replace some cells
-	for (Int32 j = 0; j < Int32(m_height) ; ++j)
-		for (Int32 i = xFillStart ; i < xFillEnd ; ++i)
+    for (Int32 j = 0; j < Int32(m_height) ; ++j) {
+        for (Int32 i = xFillStart ; i < xFillEnd ; ++i) {
 			(*this)(i,j) = _value;
+        }
+    }
 
-	for (Int32 j = yFillStart; j < yFillEnd ; ++j)
-		for (Int32 i = 0 ; i < Int32(m_width) ; ++i)
+    for (Int32 j = yFillStart; j < yFillEnd ; ++j) {
+        for (Int32 i = 0 ; i < Int32(m_width) ; ++i) {
 			(*this)(i,j) = _value;
+        }
+    }
 }
 
 //! For scalar type, this function is equivalent to the previous one.
@@ -571,8 +549,7 @@ void TemplateArray2D<T>::translate(Int32 _x, Int32 _y, const T & _value)
 template <class T>
 void TemplateArray2D<T>::fastTranslate(Int32 _x, Int32 _y, const T & _value)
 {
-	if ((UInt32(o3d::abs(_x)) >= m_width) || (UInt32(o3d::abs(_y)) >= m_height))
-	{
+    if ((Int32(o3d::abs(_x)) >= m_width) || (Int32(o3d::abs(_y)) >= m_height)) {
 		fill(_value);
 		return ;
 	}
@@ -580,76 +557,64 @@ void TemplateArray2D<T>::fastTranslate(Int32 _x, Int32 _y, const T & _value)
 	Int32 xStart, xEnd, yStart, yEnd;
 	Int32 xFillStart, xFillEnd, yFillStart, yFillEnd;
 
-	if (_x >= 0)
-	{
+    if (_x >= 0) {
 		xStart = _x;
 		xEnd = m_width - 1;
 		xFillStart = 0;
 		xFillEnd = xStart;
-	}
-	else // <=> _x < 0
-	{
+    } else {
+        // <=> _x < 0
 		xStart = 0;
 		xEnd = m_width - 1 + _x;
 		xFillStart = m_width + _x;
 		xFillEnd = m_width;
 	}
 
-	if (_y >= 0)
-	{
+    if (_y >= 0) {
 		yStart = _y;
 		yEnd = m_height - 1;
 		yFillStart = 0;
 		yFillEnd = yStart;
-	}
-	else // <=> _y < 0
-	{
-		yStart = 0;
+    } else {
+        // <=> _y < 0
+        yStart = 0;
 		yEnd = m_height - 1 + _y;
 		yFillStart = m_height + _y;
 		yFillEnd = m_height;
 	}
 
-	if (_y < 0)
-	{
+    if (_y < 0) {
 		T * pTarget = &m_pData[xStart + yStart * m_width];
 		T * pSource = &m_pData[xStart - _x + (yStart - _y) * m_width];
 
-		UInt32 size = (xEnd - xStart + 1) * sizeof(T);
-		UInt32 k = yEnd - yStart + 1;
+        Int32 size = (xEnd - xStart + 1) * sizeof(T);
+        Int32 k = yEnd - yStart + 1;
 
-		while (k-- > 0)
-		{
+        while (k-- > 0) {
 			memcpy((void*)pTarget, (const void*)pSource, size);
 			pTarget += m_width;
 			pSource += m_width;
 		}
-	}
-	else if (_y > 0)
-	{
+    } else if (_y > 0) {
 		T * pTarget = &m_pData[xStart + yEnd * m_width];
 		T * pSource = &m_pData[xStart - _x + (yEnd - _y) * m_width];
 
-		UInt32 size = (xEnd - xStart + 1) * sizeof(T);
-		UInt32 k = yEnd - yStart + 1;
+        Int32 size = (xEnd - xStart + 1) * sizeof(T);
+        Int32 k = yEnd - yStart + 1;
 
-		while (k-- > 0)
-		{
+        while (k-- > 0) {
 			memcpy((void*)pTarget, (const void*)pSource, size);
 			pTarget -= m_width;
 			pSource -= m_width;
 		}
-	}
-	else if (_y == 0)
-	{
+    } else if (_y == 0) {
 		T * pTarget = &m_pData[xStart];
 		T * pSource = &m_pData[xStart - _x];
 
-		UInt32 size = (xEnd - xStart + 1) * sizeof(T);
-		UInt32 k = m_height;
+        Int32 size = (xEnd - xStart + 1) * sizeof(T);
+        Int32 k = m_height;
 
-		while (k-- > 0)
-		{
+        while (k-- > 0) {
 			memmove((void*)pTarget, (const void*)pSource, size);
 			pTarget += m_width;
 			pSource += m_width;
@@ -658,28 +623,32 @@ void TemplateArray2D<T>::fastTranslate(Int32 _x, Int32 _y, const T & _value)
 	}
 
 	// Now we must replace some cells
-	for (Int32 j = 0; j < Int32(m_height) ; ++j)
-		for (Int32 i = xFillStart ; i < xFillEnd ; ++i)
+    for (Int32 j = 0; j < Int32(m_height) ; ++j) {
+        for (Int32 i = xFillStart ; i < xFillEnd ; ++i) {
 			(*this)(i,j) = _value;
+        }
+    }
 
-	for (Int32 j = yFillStart; j < yFillEnd ; ++j)
-		for (Int32 i = 0 ; i < Int32(m_width) ; ++i)
+    for (Int32 j = yFillStart; j < yFillEnd ; ++j) {
+        for (Int32 i = 0 ; i < Int32(m_width) ; ++i) {
 			(*this)(i,j) = _value;
+        }
+    }
 }
 
 template <class T>
 TemplateArray2D<T> & TemplateArray2D<T>::operator += (const TemplateArray2D<T> & _which)
 {
-	const UInt32 lWidth = o3d::min<UInt32>(width(), _which.width());
-	const UInt32 lHeight = o3d::min<UInt32>(height(), _which.height());
+    const Int32 lWidth = o3d::min<Int32>(width(), _which.width());
+    const Int32 lHeight = o3d::min<Int32>(height(), _which.height());
 
-	for (UInt32 y = 0 ; y < lHeight ; ++y)
-	{
+    for (Int32 y = 0 ; y < lHeight ; ++y) {
 		const T * lSourcePtr = &_which(0, y);
 		T * lTargetPtr = &(*this)(0, y);
 
-		for (UInt32 x = lWidth ; x != 0 ; --x, ++lSourcePtr, ++lTargetPtr)
+        for (Int32 x = lWidth ; x != 0 ; --x, ++lSourcePtr, ++lTargetPtr) {
 			*lTargetPtr += *lSourcePtr;
+        }
 	}
 
 	return *this;
@@ -688,16 +657,16 @@ TemplateArray2D<T> & TemplateArray2D<T>::operator += (const TemplateArray2D<T> &
 template <class T>
 TemplateArray2D<T> & TemplateArray2D<T>::operator -= (const TemplateArray2D<T> & _which)
 {
-	const UInt32 lWidth = o3d::min<UInt32>(width(), _which.width());
-	const UInt32 lHeight = o3d::min<UInt32>(height(), _which.height());
+    const Int32 lWidth = o3d::min<Int32>(width(), _which.width());
+    const Int32 lHeight = o3d::min<Int32>(height(), _which.height());
 
-	for (UInt32 y = 0 ; y < lHeight ; ++y)
-	{
+    for (Int32 y = 0 ; y < lHeight ; ++y) {
 		const T * lSourcePtr = _which(0, y);
 		T * lTargetPtr = (*this)(0, y);
 
-		for (UInt32 x = lWidth ; x != 0 ; --x, ++lSourcePtr, ++lTargetPtr	)
+        for (Int32 x = lWidth ; x != 0 ; --x, ++lSourcePtr, ++lTargetPtr) {
 			*lTargetPtr -= *lSourcePtr;
+        }
 	}
 
 	return *this;
@@ -708,8 +677,9 @@ T & TemplateArray2D<T>::operator /= (const T & _which)
 {
 	T * lPtr = m_pData;
 
-	for (UInt32 k = width() * height() ; k != 0; --k, ++lPtr)
+    for (Int32 k = width() * height() ; k != 0; --k, ++lPtr) {
 		*lPtr /= _which;
+    }
 }
 
 template <class T>
@@ -717,11 +687,11 @@ T & TemplateArray2D<T>::operator *= (const T & _which)
 {
 	T * lPtr = m_pData;
 
-	for (UInt32 k = width() * height() ; k != 0; --k, ++lPtr)
+    for (Int32 k = width() * height() ; k != 0; --k, ++lPtr) {
 		*lPtr *= _which;
+    }
 }
 
 } // namespace o3d
 
 #endif // _O3D_TEMPLATEARRAY2D_H
-
