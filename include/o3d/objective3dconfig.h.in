@@ -21,6 +21,9 @@
 //! SSE2 optimizations
 #cmakedefine O3D_USE_SSE2
 
+//! Dummy suport
+#cmakedefine O3D_USE_DUMMY
+
 //! SDL2 suport
 #cmakedefine O3D_USE_SDL2
 
@@ -68,7 +71,7 @@
         #error "X11 is not supported on Android"
     #endif
 
-    #if !defined(O3D_USE_EGL) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND)
+    #if !defined(O3D_USE_EGL) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND) && !defined(O3D_USE_DUMMY)
         #define O3D_USE_EGL
     #endif
 
@@ -146,7 +149,7 @@
 	#endif
 
     //! Default to Windows API
-    #if !defined(O3D_WINAPI) && !defined(O3D_USE_SDL2)
+    #if !defined(O3D_WINAPI) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_DUMMY)
         #define O3D_WINAPI
 	#endif
 
@@ -194,7 +197,7 @@
 		#define O3D_LINUX
 	#endif
 
-    #if !defined(O3D_X11) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND)
+    #if !defined(O3D_X11) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND)  && !defined(O3D_USE_DUMMY)
 		#define O3D_X11
 	#endif
 
@@ -259,7 +262,7 @@
 
 	#define O3D_MACOSX
 
-    #if !defined(O3D_X11) || !defined (O3D_COCOA) || !defined(O3D_USE_SDL2)
+    #if !defined(O3D_X11) && !defined (O3D_COCOA) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_DUMMY)
         #define O3D_USE_SDL2
 	#endif
 
@@ -282,9 +285,12 @@
 
 #endif
 
-// no SDL backward compatibility
+#ifdef O3D_USE_DUMMY
+    #define O3D_DUMMY
+#endif
+
 #ifdef O3D_USE_SDL2
-	#define SDL_NO_COMPAT
+    #define SDL_NO_COMPAT  // no SDL backward compatibility
     #define O3D_SDL2
 #endif
 

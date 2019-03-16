@@ -14,7 +14,7 @@
 
 using namespace o3d;
 
-Display* Display::m_instance = 0;
+Display* Display::m_instance = nullptr;
 
 // constructor
 Display::Display() :

@@ -95,12 +95,12 @@ void Keyboard::getKeyboardState()
 
 void Keyboard::setGrab(Bool grab)
 {
-	if (!m_appWindow->getHWND())
+    if (!m_appWindow->getHWND()) {
 		O3D_ERROR(E_InvalidOperation("Related application window must be active"));
+    }
 
 	// enable
-	if (!m_grab && grab)
-	{
+    if (!m_grab && grab) {
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 		Window window = static_cast<Window>(m_appWindow->getHWND());
 
@@ -116,8 +116,7 @@ void Keyboard::setGrab(Bool grab)
 	}
 
 	// disable
-	if (m_grab && !grab)
-	{
+    if (m_grab && !grab) {
 		Display *display = reinterpret_cast<Display*>(Application::getDisplay());
 
 		XUngrabKeyboard(display, CurrentTime);
@@ -142,12 +141,12 @@ Bool Keyboard::setKeyState(VKey vkey, Bool state)
 	Bool pressed = !found && state ? True : False;
 
 	// toggle insert mode
-    if (state && (vkey == KEY_INSERT))
+    if (state && (vkey == KEY_INSERT)) {
         m_modifiers.toggle((UInt32)MOD_INSERT);
+    }
 
     // caps lock
-    if (vkey == KEY_CAPSLOCK)
-    {
+    if (vkey == KEY_CAPSLOCK) {
         Display *display = reinterpret_cast<Display*>(Application::getDisplay());
         XkbStateRec state;
 
@@ -158,8 +157,7 @@ Bool Keyboard::setKeyState(VKey vkey, Bool state)
         m_modifiers.setBit((UInt32)MOD_CAPSLOCK, s);
     }
     // num lock
-    else if (vkey == KEY_NUMLOCK)
-    {
+    else if (vkey == KEY_NUMLOCK) {
         Display *display = reinterpret_cast<Display*>(Application::getDisplay());
         XkbStateRec state;
 
@@ -170,10 +168,11 @@ Bool Keyboard::setKeyState(VKey vkey, Bool state)
     }
 
 	// key state change
-	if (!found && state)
+    if (!found && state) {
         m_keys.insert(vkey);
-	else if (found && !state)
+    } else if (found && !state) {
 		m_keys.erase(it);
+    }
 
 	return pressed;
 }
@@ -181,18 +180,19 @@ Bool Keyboard::setKeyState(VKey vkey, Bool state)
 // update input data (only if acquired)
 void Keyboard::update()
 {
-	if (!m_isActive)
+    if (!m_isActive) {
 		return;
+    }
 
-	if (!m_aquired)
+    if (!m_aquired) {
 		acquire();
+    }
 }
 
 // acquire keyboard hardware
 void Keyboard::acquire()
 {
-	if (!m_aquired)
-	{
+    if (!m_aquired) {
 		m_keys.clear();
 
 		getKeyboardState();
@@ -203,8 +203,7 @@ void Keyboard::acquire()
 // release keyboard hardware
 void Keyboard::release()
 {
-	if (m_aquired)
-	{
+    if (m_aquired) {
 		m_keys.clear();
 		m_aquired = False;
 	}

@@ -82,6 +82,9 @@ endif()
 # SSE2 ON by default
 option(O3D_USE_SSE2 "Compile using x86_64 SSE2 optimizations" ON)
 
+# Dummy OFF by default
+option(O3D_USE_DUMMY "Compile using Dummy support" OFF)
+
 # SDL2 OFF by default
 option(O3D_USE_SDL2 "Compile using SDL2 support" OFF)
 
@@ -100,6 +103,13 @@ option(O3D_TARGET_ANDROID "Compile for ANDROID target" OFF)
 if(${O3D_TARGET_ANDROID})
     set(O3D_USE_EGL ON)  # necessary
     include(dreamoverflow_android)
+endif()
+
+# Complete build by default
+option(O3D_CORE_ONLY "Compile core only" OFF)
+
+if(${O3D_CORE_ONLY})
+    set(O3D_USE_DUMMY ON)  # necessary
 endif()
 
 #----------------------------------------------------------

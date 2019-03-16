@@ -50,6 +50,7 @@ src/core/glx.cpp
 src/core/localdir.cpp
 src/core/localfile.cpp
 src/core/private/applicationandroid.cpp
+src/core/private/applicationdummy.cpp
 src/core/private/applicationposix.cpp
 src/core/private/applicationsdl.cpp
 src/core/private/applicationwin32.cpp
@@ -57,6 +58,7 @@ src/core/private/applicationwin32.cpp
 src/core/private/applicationx11.cpp
 src/core/private/applicationx11.cpp
 src/core/private/appwindowandroid.cpp
+src/core/private/appwindowdummy.cpp
 src/core/private/appwindowsdl.cpp
 src/core/private/appwindowsdl.cpp
 src/core/private/appwindowwin32.cpp
@@ -68,6 +70,7 @@ src/core/private/baseposix.cpp
 src/core/private/basewin32.cpp
 src/core/private/displayandroid.cpp
 src/core/private/displayandroid.cpp
+src/core/private/displaydummy.cpp
 src/core/private/displaysdl.cpp
 src/core/private/displaysdl.cpp
 src/core/private/displaywin32.cpp
