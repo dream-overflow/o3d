@@ -35,6 +35,8 @@ public:
 
     O3D_DECLARE_INTERFACE(Sharable)
 
+    virtual ~Sharable() = 0;
+
     /**
      * @brief useIt Register a user for this object.
      * @param smartObject The smart object containing the link to register.

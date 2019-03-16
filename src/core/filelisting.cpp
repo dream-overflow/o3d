@@ -406,32 +406,32 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 
 			// Time info
 			FileTimeToSystemTime(&wData.ftLastAccessTime,&wTime);
-			Item->AccessTime.day = Day(wTime.wDay);
-			Item->AccessTime.mday = UInt8(wTime.wDayOfWeek);
+            Item->AccessTime.mday = wTime.wDay;
+            Item->AccessTime.wday = UInt8wTime.wDayOfWeek)+1;
 			Item->AccessTime.hour = UInt8(wTime.wHour);
             Item->AccessTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->AccessTime.minute = UInt8(wTime.wMinute);
-			Item->AccessTime.month = Month(wTime.wMonth - 1);
+            Item->AccessTime.month = UInt8(wTime.wMonth)+1;
 			Item->AccessTime.second = UInt8(wTime.wSecond);
 			Item->AccessTime.year = UInt16(wTime.wYear);
 
 			FileTimeToSystemTime(&wData.ftCreationTime,&wTime);
-			Item->CreateTime.day = Day(wTime.wDay);
-			Item->CreateTime.mday = UInt8(wTime.wDayOfWeek);
+            Item->CreateTime.mday = wTime.wDay;
+            Item->CreateTime.wday = UInt8(wTime.wDayOfWeek)+1;
 			Item->CreateTime.hour = UInt8(wTime.wHour);
             Item->CreateTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->CreateTime.minute = UInt8(wTime.wMinute);
-			Item->CreateTime.month = Month(wTime.wMonth - 1);
+            Item->CreateTime.month = UInt8(wTime.wMonth)+1;
 			Item->CreateTime.second = UInt8(wTime.wSecond);
 			Item->CreateTime.year = UInt16(wTime.wYear);
 
 			FileTimeToSystemTime(&wData.ftLastWriteTime,&wTime);
-			Item->WriteTime.day = Day(wTime.wDay);
-			Item->WriteTime.mday = UInt8(wTime.wDayOfWeek);
+            Item->WriteTime.mday = wTime.wDay+1;
+            Item->WriteTime.wday = UInt8(wTime.wDayOfWeek);
 			Item->WriteTime.hour = UInt8(wTime.wHour);
             Item->WriteTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->WriteTime.minute = UInt8(wTime.wMinute);
-			Item->WriteTime.month = Month(wTime.wMonth - 1);
+            Item->WriteTime.month = UInt8(wTime.wMonth)+1;
 			Item->WriteTime.second = UInt8(wTime.wSecond);
 			Item->WriteTime.year = UInt16(wTime.wYear);
 
@@ -487,32 +487,32 @@ void FileListing::searchFirstFile()   // Version windows du file listing
 
 			// Time info
 			FileTimeToSystemTime(&wData.ftLastAccessTime,&wTime);
-			Item->AccessTime.day = Day(wTime.wDay);
-			Item->AccessTime.mday = UInt8(wTime.wDayOfWeek);
+            Item->AccessTime.mday = UInt8(wTime.wDay);
+            Item->AccessTime.wday = UInt8(wTime.wDayOfWeek)+1;
 			Item->AccessTime.hour = UInt8(wTime.wHour);
             Item->AccessTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->AccessTime.minute = UInt8(wTime.wMinute);
-			Item->AccessTime.month = Month(wTime.wMonth - 1);
+            Item->AccessTime.month = UInt8(wTime.wMonth)+1;
 			Item->AccessTime.second = UInt8(wTime.wSecond);
 			Item->AccessTime.year = UInt16(wTime.wYear);
 
 			FileTimeToSystemTime(&wData.ftCreationTime,&wTime);
-			Item->CreateTime.day = Day(wTime.wDay);
-			Item->CreateTime.mday = UInt8(wTime.wDayOfWeek);
+            Item->CreateTime.mday = UInt8(wTime.wDay);
+            Item->CreateTime.wday = UInt8(wTime.wDayOfWeek)+1;
 			Item->CreateTime.hour = UInt8(wTime.wHour);
             Item->CreateTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->CreateTime.minute = UInt8(wTime.wMinute);
-			Item->CreateTime.month = Month(wTime.wMonth - 1);
+            Item->CreateTime.month = UInt8(wTime.wMonth)+1;
 			Item->CreateTime.second = UInt8(wTime.wSecond);
 			Item->CreateTime.year = UInt16(wTime.wYear);
 
 			FileTimeToSystemTime(&wData.ftLastWriteTime,&wTime);
-			Item->WriteTime.day = Day(wTime.wDay);
-			Item->WriteTime.mday = UInt8(wTime.wDayOfWeek);
+            Item->WriteTime.mday = UInt8(wTime.wDay);
+            Item->WriteTime.wday = UInt8(wTime.wDayOfWeek)+1;
 			Item->WriteTime.hour = UInt8(wTime.wHour);
             Item->WriteTime.microsecond = UInt16(wTime.wMilliseconds) * 1000;
 			Item->WriteTime.minute = UInt8(wTime.wMinute);
-			Item->WriteTime.month = Month(wTime.wMonth - 1);
+            Item->WriteTime.month = UInt8(wTime.wMonth)+1;
 			Item->WriteTime.second = UInt8(wTime.wSecond);
 			Item->WriteTime.year = UInt16(wTime.wYear);
 

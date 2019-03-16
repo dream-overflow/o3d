@@ -40,8 +40,8 @@ public:
     //! Initialize manually.
     DateTime(
             UInt16 _year,
-            Month _month,
-            Day _day,
+            UInt8 _month,
+            UInt8 _day,
             UInt8 _dayofWeek,
             UInt8 _hour,
             UInt8 _minutes,
@@ -116,6 +116,9 @@ public:
     //! Convert to a double epoch timestamp in second unit with microsecond precision.
     Double toDoubleTimestamp(Bool UTC=True) const;
 
+    //! Get the day of week for the current datetime. It is 0 based on sunday.
+    UInt8 getDayOfWeek() const;
+
     //! Check if the date is older than n days.
     Bool isOlderThan(const DateTime &compare, UInt32 days);
 
@@ -124,8 +127,8 @@ public:
 
 public: // public members
 
-    Month month;         //!< month 0..11
-    Day day;             //!< day of the week 0..6
+    UInt8 month;         //!< month 1..12
+    UInt8 wday;          //!< day of the week 1..7
     UInt8 mday;          //!< day of the month 1..31
 
     UInt16 year;         //!< full year (not since 1900 like ctime)

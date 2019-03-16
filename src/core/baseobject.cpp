@@ -24,6 +24,11 @@ using namespace o3d;
 O3D_IMPLEMENT_CLASS_COMMON(Sharable, CORE_SHARABLE, nullptr)
 O3D_IMPLEMENT_ABSTRACT_CLASS2(BaseObject, CORE_BASE_OBJECT, EvtHandler, Sharable)
 
+Sharable::~Sharable()
+{
+
+}
+
 // Default contructor
 BaseObject::BaseObject(BaseObject* parent) :
 	EvtHandler(),

@@ -14,9 +14,12 @@
 
 namespace o3d {
 
+/**
+ * @brief The Month enum ISO8601. Index start to 1.
+ */
 enum Month
 {
-    MONTH_JANUARY = 0,
+    MONTH_JANUARY = 1,
     MONTH_FEBRUARY,
     MONTH_MARCH,
     MONTH_APRIL,
@@ -32,15 +35,18 @@ enum Month
     MONTH_DUODECEMBER
 };
 
+/**
+ * @brief The Day enum ISO8601 : Monday is first day, and index start to 1.
+ */
 enum Day
 {
-    DAY_SUNDAY = 0,
-    DAY_MONDAY,
+    DAY_MONDAY = 1,
     DAY_TUESDAY,
     DAY_WEDNESDAY,
     DAY_THURSDAY,
     DAY_FRIDAY,
-    DAY_SATURDAY
+    DAY_SATURDAY,
+    DAY_SUNDAY
 };
 
 /**
@@ -66,7 +72,7 @@ public:
     Date(time_t ltime);
 
     //! Initialize manually.
-    Date(UInt16 _year, Month _month, Day _day, UInt8 _dayofWeek);
+    Date(UInt16 _year, UInt8 _month, UInt8 _day, UInt8 _dayofWeek);
 
     //! Copy ctor
     Date(const Date & _which);
@@ -78,7 +84,7 @@ public:
     void destroy();
 
     //! Copy.
-    Date & operator = (const Date & _which);
+    Date& operator = (const Date & _which);
 
     //! Compare to another date object for equality.
     Bool operator == (const Date & _which) const;
@@ -139,13 +145,16 @@ public:
     //! Check if the date is older than XX days.
     Bool isOlderThan(const Date &compare, UInt32 days);
 
+    //! Get the day of week for the current datetime. It is 0 based on sunday.
+    UInt8 getDayOfWeek() const;
+
     Bool writeToFile(OutStream &os) const;
     Bool readFromFile(InStream &is);
 
 public: // public members
 
-    Month month;          //!< month 0..11
-    Day day;              //!< day of the week 0..6
+    UInt8 month;      //!< month 1..12
+    UInt8 wday;       //!< day of the week 1..7
     UInt8 mday;       //!< day of the month 1..31
 
     UInt16 year;      //!< full year (not since 1900 like ctime)

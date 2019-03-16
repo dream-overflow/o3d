@@ -38,7 +38,10 @@ static const WChar * monthString[] = {
     L"September",
     L"October",
     L"November",
-    L"December" };
+    L"December",
+    L"Undecember",
+    L"Duodecember"
+};
 
 static const WChar * shortMonthString[] = {
     L"Jan",
@@ -52,25 +55,30 @@ static const WChar * shortMonthString[] = {
     L"Sep",
     L"Oct",
     L"Nov",
-    L"Dec" };
+    L"Dec",
+    L"Und",
+    L"Dud"
+};
 
 static const WChar * dayString[] = {
-    L"Sunday",
     L"Monday",
     L"Tuesday",
     L"Wednesday",
     L"Thursday",
     L"Friday",
-    L"Saturday" };
+    L"Saturday",
+    L"Sunday"
+};
 
 static const WChar * shortDayString[] = {
-    L"Sun",
     L"Mon",
     L"Tue",
     L"Wed",
     L"Thu",
     L"Fri",
-    L"Sat" };
+    L"Sat",
+    L"Sun"
+};
 
 DateTime* DateTime::sm_null = nullptr;
 DateTime* DateTime::sm_startDate = nullptr;
@@ -123,9 +131,9 @@ const DateTime& DateTime::startDate()
 }
 
 DateTime::DateTime(Bool setToday) :
-    month(Month(0)),
-    day(Day(0)),
-    mday(0),
+    month(1),
+    wday(1),
+    mday(1),
     year(0),
     hour(0),
     minute(0),
@@ -138,17 +146,16 @@ DateTime::DateTime(Bool setToday) :
 }
 
 // Initialize manually.
-DateTime::DateTime(
-        UInt16 _year,
-        Month _month,
-        Day _day,
+DateTime::DateTime(UInt16 _year,
+        UInt8 _month,
+        UInt8 _day,
         UInt8 _dayofWeek,
         UInt8 _hour,
         UInt8 _minutes,
         UInt8 _seconds,
         UInt32 _microsecond) :
     month(_month),
-    day(_day),
+    wday(_day),
     mday(_dayofWeek),
     year(_year),
     hour(_hour),
@@ -161,7 +168,7 @@ DateTime::DateTime(
 
 DateTime::DateTime(const DateTime & _which) :
     month(_which.month),
-    day(_which.day),
+    wday(_which.wday),
     mday(_which.mday),
     year(_which.year),
     hour(_which.hour),
@@ -174,8 +181,9 @@ DateTime::DateTime(const DateTime & _which) :
 void DateTime::destroy()
 {
     year = 0;
-    month = Month(0);
-    day = Day(0);
+    month = 1;
+    wday = 1;
+    mday = 1;
     hour = 0;
     minute = 0;
     microsecond = 0;
@@ -187,7 +195,7 @@ DateTime & DateTime::operator = (const DateTime & _which)
 {
     year = _which.year;
     month = _which.month;
-    day = _which.day;
+    wday = _which.wday;
     hour = _which.hour;
     minute = _which.minute;
     second = _which.second;
@@ -204,8 +212,8 @@ DateTime::DateTime(time_t ltime)
     _localtime64_s(&local,&ltime);
 
     year = UInt16(local.tm_year + 1900);
-    month = Month(local.tm_mon);
-    day = Day(local.tm_wday);
+    month = UInt8(local.tm_mon) + 1;
+    wday = UInt8(local.tm_wday) + 1;
     hour = UInt8(local.tm_hour);
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
@@ -216,8 +224,8 @@ DateTime::DateTime(time_t ltime)
     local = localtime(&ltime);
 
     year = local->tm_year + 1900;
-    month = Month(local->tm_mon);
-    day = Day(local->tm_wday);
+    month = UInt8(local->tm_mon) + 1;
+    wday = UInt8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
@@ -439,8 +447,8 @@ Bool DateTime::writeToFile(OutStream &os) const
 {
     // 12 bytes date
     os  << year
-        << UInt8(month)
-        << UInt8(day)
+        << month
+        << wday
         << mday
         << hour
         << minute
@@ -452,17 +460,11 @@ Bool DateTime::writeToFile(OutStream &os) const
 
 Bool DateTime::readFromFile(InStream &is)
 {
-    UInt8 tmp;
-
     // 12 bytes date
     is  >> year
-        >> tmp;
-    month = Month(tmp);
-
-    is >> tmp;
-    day = Day(tmp);
-
-    is  >> mday
+        >> month
+        >> wday
+        >> mday
         >> hour
         >> minute
         >> second
@@ -500,32 +502,32 @@ String DateTime::buildString(const String & _arg) const
 
                 case 'B':
                     // letter month
-                    result << String(monthString[month]);
+                    result << String(monthString[month-1]);
                     break;
 
                 case 'b':
                     // letter short month
-                    result << String(shortMonthString[month]);
+                    result << String(shortMonthString[month-1]);
                     break;
 
                 case 'm':
                     // 2 digits month
-                    if (month+1 < 10) {
+                    if (month < 10) {
                         // leading 0
-                        result << '0' << (month+1);
+                        result << '0' << month;
                     } else {
-                        result << (month+1);
+                        result << month;
                     }
                     break;
 
                 case 'A':
                     // letter day of week
-                    result << String(dayString[day]);
+                    result << String(dayString[wday-1]);
                     break;
 
                 case 'a':
                     // letter short day of week
-                    result << String(shortDayString[day]);
+                    result << String(shortDayString[wday-1]);
                     break;
 
                 case 'd':
@@ -617,9 +619,9 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
 
             case 'B':
                 // letter month
-                for (int i = 0; i < 12; ++i) {
+                for (UInt8 i = 0; i < 14; ++i) {
                     if (vals == monthString[i]) {
-                        month = Month(i);
+                        month = i+1;
                         found = True;
                         break;
                     }
@@ -631,9 +633,9 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
 
             case 'b':
                 // letter short month
-                for (int i = 0; i < 12; ++i) {
+                for (UInt8 i = 0; i < 14; ++i) {
                     if (vals == shortMonthString[i]) {
-                        month = Month(i);
+                        month = i+1;
                         found = True;
                         break;
                     }
@@ -647,20 +649,20 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
                 // 2 digits month
                 if (vals[0] == '0') {
                     // ignore leading 0
-                    month = Month(vals.toUInt32(1)-1);
+                    month = vals.toUInt32(1);
                 } else {
-                    month = Month(vals.toUInt32()-1);
+                    month = vals.toUInt32();
                 }
-                if (month > 13) {
+                if (month > 14) {
                     return False;
                 }
                 break;
 
             case 'A':
                 // letter day
-                for (int i = 0; i < 6; ++i) {
+                for (UInt8 i = 0; i < 6; ++i) {
                     if (vals == dayString[i]) {
-                        day = Day(i);
+                        wday = i+1;
                         found = True;
                         break;
                     }
@@ -668,14 +670,14 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
                 if (!found) {
                     return False;
                 }
-                // mday = ...
+                // mday = ... need week of year/month
                 break;
 
             case 'a':
                 // letter short day
-                for (int i = 0; i < 6; ++i) {
+                for (UInt8 i = 0; i < 6; ++i) {
                     if (vals == shortDayString[i]) {
-                        day = Day(i);
+                        wday = i+1;
                         found = True;
                         break;
                     }
@@ -683,7 +685,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
                 if (!found) {
                     return False;
                 }
-                // mday = ...
+                // mday = ... need week of year/month
                 break;
 
             case 'd':
@@ -691,10 +693,10 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
                 if (vals[0] == '0') {
                     // ignore leading 0
                     mday = UInt8(vals.toUInt32(1));
-                    // day = ...
+                    wday = getDayOfWeek();
                 } else {
                     mday = UInt8(vals.toUInt32());
-                    // day = ...
+                    wday = getDayOfWeek();
                 }
                 if (mday > 31) {
                     // @todo but might check 29 feb, and 30 day month...
@@ -755,168 +757,6 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
     return True;
 }
 
-//Bool DateTime::setFromString(const String & _value, const String & _arg)
-//{
-//    String date(_value);
-//    String substring;
-
-//    UInt32 k = 0;
-
-//    Bool result = True;
-
-//    std::wistringstream iss;
-
-//    while (k < _arg.length()) {
-//        if (_arg.getData()[k] == '%') {
-//            if (k == _arg.length() - 1) {
-//                break;
-//            }
-
-//            k++;
-
-//            if (k == _arg.length() - 1) {
-//                substring = date;
-//            } else {
-//                substring = date;
-//                substring.truncate(substring.find(_arg.getData()[k+1]));
-//                date = date.sub(date.find(_arg.getData()[k+1]));
-
-//                if (k+1 != _arg.length() - 1) {
-//                    date = date.sub(1);
-//                }
-//            }
-
-//            iss.str(substring.getData());
-
-//            switch(_arg.getData()[k]) {
-//                case 'y':
-//                    iss >> year;
-//                    break;
-//                case 'm':
-//                {
-//                    Bool find = False;
-
-//                    for (UInt32 i = 0 ; i < 12 ; ++i) {
-//                        if (wcscmp(iss.str().c_str(), monthString[i]) == 0) {
-//                            month = Month(i);
-//                            find = True;
-//                            break;
-//                        }
-//                    }
-
-//                    if (!find) {
-//                        result = False;
-//                    }
-//                }
-//                    break;
-//                case 'b':
-//                {
-//                    Bool find = False;
-
-//                    for (UInt32 i = 0 ; i < 12 ; ++i) {
-//                        if (wcscmp(iss.str().c_str(), shortMonthString[i]) == 0) {
-//                            month = Month(i);
-//                            find = True;
-//                            break;
-//                        }
-//                    }
-
-//                    if (!find) {
-//                        result = False;
-//                    }
-//                }
-//                    break;
-//                case 'M':
-//                    Int32 lmonth;
-//                    iss >> lmonth;
-//                    month = Month(lmonth-1);
-//                    break;
-//                case 'd':
-//                {
-//                    Bool find = False;
-
-//                    for (UInt32 i = 0 ; i < 7 ; ++i) {
-//                        if (wcscmp(iss.str().c_str(), dayString[i]) == 0) {
-//                            day = Day(i);
-//                            //mday = ...
-//                            find = True;
-//                            break;
-//                        }
-//                    }
-
-//                    if (!find) {
-//                        result = False;
-//                    }
-//                }
-//                    break;
-//                case 'a':
-//                {
-//                    Bool find = False;
-
-//                    for (UInt32 i = 0 ; i < 7 ; ++i) {
-//                        if (wcscmp(iss.str().c_str(), shortDayString[i]) == 0) {
-//                            day = Day(i);
-//                            //mday = ...
-//                            find = True;
-//                            break;
-//                        }
-//                    }
-
-//                    if (!find) {
-//                        result = False;
-//                    }
-//                }
-//                    break;
-//                case 'D':
-//                {
-//                    Int32 lmday;
-//                    iss >> lmday;
-//                    mday = (UInt8)lmday;
-//                    //day = ...
-//                }
-//                    break;
-//                case 'h':
-//                {
-//                    Int32 lhour;
-//                    iss >> lhour;
-//                    hour = (UInt8)lhour;
-//                }
-//                    break;
-//                case 'i':
-//                {
-//                    Int32 lminute;
-//                    iss >> lminute;
-//                    minute = (UInt8)lminute;
-//                }
-//                    break;
-//                case 's':
-//                {
-//                    Int32 lsecond;
-//                    iss >> lsecond;
-//                    second = (UInt8)lsecond;
-//                }
-//                    break;
-//                case 'l':
-//                {
-//                    Int32 lmicrosecond;
-//                    iss >> lmicrosecond;
-//                    microsecond = (UInt8)lmicrosecond;
-//                }
-//                    break;
-
-//                // k++;
-//            }
-
-//            k++;
-//        } else {
-//            date = date.sub(1);
-//            k++;
-//        }
-//    }
-
-//    return result;
-//}
-
 void DateTime::setCurrent()
 {
 #ifdef O3D_WINDOWS
@@ -927,8 +767,8 @@ void DateTime::setCurrent()
     _localtime64_s(&local, &ltime);
 
     year = UInt16(local.tm_year + 1900);
-    month = Month(local.tm_mon);
-    day = Day(local.tm_wday);
+    month = UInt8(local.tm_mon) + 1;
+    day = UInt8(local.tm_wday) + 1;
     hour = UInt8(local.tm_hour);
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
@@ -941,8 +781,8 @@ void DateTime::setCurrent()
     gettimeofday(&ltime, nullptr);
     local = localtime(&ltime.tv_sec);
     year = local->tm_year + 1900;
-    month = Month(local->tm_mon);
-    day = Day(local->tm_wday);
+    month = UInt8(local->tm_mon) + 1;
+    wday = UInt8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
@@ -970,8 +810,8 @@ void DateTime::fromTimeMs(Int64 ms, Bool UTC)
     _localtime64_s(&local, &ltime);
 
     year = UInt16(local.tm_year + 1900);
-    month = Month(local.tm_mon);
-    day = Day(local.tm_wday);
+    month = UInt8(local.tm_mon) + 1;
+    day = UInt8(local.tm_wday) + 1;
     hour = UInt8(local.tm_hour);
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
@@ -983,8 +823,8 @@ void DateTime::fromTimeMs(Int64 ms, Bool UTC)
 
     local = localtime(&ts);
     year = local->tm_year + 1900;
-    month = Month(local->tm_mon);
-    day = Day(local->tm_wday);
+    month = UInt8(local->tm_mon) + 1;
+    wday = UInt8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
@@ -1002,8 +842,8 @@ void DateTime::fromTimeUs(Int64 us, Bool UTC)
     _localtime64_s(&local, &ltime);
 
     year = UInt16(local.tm_year + 1900);
-    month = Month(local.tm_mon);
-    day = Day(local.tm_wday);
+    month = UInt8(local.tm_mon) + 1;
+    day = UInt8(local.tm_wday) + 1;
     hour = UInt8(local.tm_hour);
     minute = UInt8(local.tm_min);
     second = UInt8(local.tm_sec);
@@ -1015,8 +855,8 @@ void DateTime::fromTimeUs(Int64 us, Bool UTC)
 
     local = localtime(&ts);
     year = local->tm_year + 1900;
-    month = Month(local->tm_mon);
-    day = Day(local->tm_wday);
+    month = UInt8(local->tm_mon) + 1;
+    wday = UInt8(local->tm_wday) + 1;
     hour = local->tm_hour;
     minute = local->tm_min;
     second = local->tm_sec;
@@ -1034,9 +874,9 @@ time_t DateTime::toTime_t(Bool UTC) const
     lObjectTime.tm_min = minute;
     lObjectTime.tm_hour = hour;
     lObjectTime.tm_mday = mday;
-    lObjectTime.tm_mon = Int32(month);
-    lObjectTime.tm_year = year - 1900;
-    lObjectTime.tm_wday = 0;
+    lObjectTime.tm_mon = month-1;
+    lObjectTime.tm_year = year-1900;
+    lObjectTime.tm_wday = 0;  // wday-1;
     lObjectTime.tm_yday = 0;
     lObjectTime.tm_isdst = 0;
 
@@ -1048,9 +888,9 @@ time_t DateTime::toTime_t(Bool UTC) const
     lObjectTime.tm_min = minute;
     lObjectTime.tm_hour = hour;
     lObjectTime.tm_mday = mday;
-    lObjectTime.tm_mon = Int32(month);
-    lObjectTime.tm_year = year - 1900;
-    lObjectTime.tm_wday = 0;
+    lObjectTime.tm_mon = month-1;
+    lObjectTime.tm_year = year-1900;
+    lObjectTime.tm_wday = 0;  // wday-1;
     lObjectTime.tm_yday = 0;
     lObjectTime.tm_isdst = 0;
 
@@ -1076,6 +916,14 @@ Double DateTime::toDoubleTimestamp(Bool UTC) const
     return static_cast<Double>(toTime_t(UTC)) + (static_cast<Double>(microsecond) / 1000000.0);
 }
 
+UInt8 DateTime::getDayOfWeek() const
+{
+    static Int32 t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+    Int32 y = year - (month < 3 ? 1 : 0);
+
+    return ((y + y/4 - y/100 + y/400 + t[month-1] + (mday-1)) % 7) + 1;
+}
+
 Bool DateTime::isOlderThan(const DateTime& today, UInt32 days)
 {
 #ifdef O3D_WINDOWS
@@ -1083,21 +931,21 @@ Bool DateTime::isOlderThan(const DateTime& today, UInt32 days)
     double elapsed;
 
     // set start/end times structures
-    tm startTM,endTM;
+    tm startTM, endTM;
 
     // info : tm_wday and tm_yday are ignored for mktime
-    startTM.tm_year = year - 1900;
-    startTM.tm_mon = month;
-    startTM.tm_wday = day;
+    startTM.tm_year = year-1900;
+    startTM.tm_mon = month-1;
+    startTM.tm_wday = wday-1;
     startTM.tm_hour = hour;
     startTM.tm_min = minute;
     startTM.tm_sec = second;
     startTM.tm_mday = mday;
     startTM.tm_isdst = 0;
 
-    endTM.tm_year = today.year - 1900;
-    endTM.tm_mon = today.month;
-    endTM.tm_wday = today.day;
+    endTM.tm_year = today.year-1900;
+    endTM.tm_mon = today.month-1;
+    endTM.tm_wday = today.wday-1;
     endTM.tm_hour = today.hour;
     endTM.tm_min = today.minute;
     endTM.tm_sec = today.second;
@@ -1117,18 +965,18 @@ Bool DateTime::isOlderThan(const DateTime& today, UInt32 days)
     struct tm startTM, endTM;
 
     // info : tm_wday and tm_yday are ignored for mktime
-    startTM.tm_year = year - 1900;
-    startTM.tm_mon = month;
-    startTM.tm_wday = day;
+    startTM.tm_year = year-1900;
+    startTM.tm_mon = month-1;
+    startTM.tm_wday = wday-1;
     startTM.tm_hour = hour;
     startTM.tm_min = minute;
     startTM.tm_sec = second;
     startTM.tm_mday = mday;
     startTM.tm_isdst = 0;
 
-    endTM.tm_year = today.year - 1900;
-    endTM.tm_mon = today.month;
-    endTM.tm_wday = today.day;
+    endTM.tm_year = today.year-1900;
+    endTM.tm_mon = today.month-1;
+    endTM.tm_wday = today.wday-1;
     endTM.tm_hour = today.hour;
     endTM.tm_min = today.minute;
     endTM.tm_sec = today.second;

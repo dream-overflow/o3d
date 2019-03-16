@@ -212,8 +212,8 @@ void BitStream::getDate(Date &val)
 	#endif
 
 	val.year = getUInt16(12);
-	val.month = (Month)getUInt8(4);
-	val.day = (Day)getUInt8(3);
+    val.month = getUInt8(4);
+    val.wday = getUInt8(3);
     val.mday = getUInt8(5);
 }
 
@@ -229,8 +229,8 @@ void BitStream::getDateTime(DateTime &val)
     #endif
 
     val.year = getUInt16(12);
-    val.month = (Month)getUInt8(4);
-    val.day = (Day)getUInt8(3);
+    val.month = getUInt8(4);
+    val.wday = getUInt8(3);
     val.mday = getUInt8(5);
     val.hour = getUInt8(5);
     val.minute = getUInt8(6);
@@ -269,7 +269,7 @@ void BitStream::pushDate(const Date &val)
 
 	pushUInt16(val.year,12);
 	pushUInt8((UInt8)val.month,4);
-	pushUInt8((UInt8)val.day,3);
+	pushUInt8((UInt8)val.wday,3);
     pushUInt8((UInt8)val.mday,5);
 }
 
@@ -285,7 +285,7 @@ void BitStream::pushDateTime(const DateTime &val)
 
     pushUInt16(val.year,12);
     pushUInt8((UInt8)val.month,4);
-    pushUInt8((UInt8)val.day,3);
+    pushUInt8((UInt8)val.wday,3);
     pushUInt8((UInt8)val.mday,5);
     pushUInt8((UInt8)val.hour,5);
     pushUInt8((UInt8)val.minute,6);
