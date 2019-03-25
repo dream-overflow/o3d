@@ -17,6 +17,8 @@
 #include "o3d/core/application.h"
 #include "o3d/core/display.h"
 
+using namespace o3d;
+
 // Window settings
 void AppWindow::setTitle(const String &title)
 {

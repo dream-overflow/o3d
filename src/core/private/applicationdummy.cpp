@@ -25,7 +25,7 @@ void Application::apiQuitPrivate()
 }
 
 // Run the application main loop.
-void Application::runPrivate(oBool runOnce)
+void Application::runPrivate(Bool runOnce)
 {
 
 }
