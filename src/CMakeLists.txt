@@ -2,7 +2,7 @@
 # build
 #----------------------------------------------------------
 
-if(O3D_CORE_ONLY)
+if(${O3D_CORE_ONLY})
 
     #
     # Only core functionnalities without display, GL...

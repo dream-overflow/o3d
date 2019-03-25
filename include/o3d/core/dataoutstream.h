@@ -31,7 +31,7 @@ public:
      */
     DataOutStream(ArrayUInt8 &array, Bool own = False);
 
-    virtual ~DataOutStream();
+    virtual ~DataOutStream() override;
 
     //! True
     virtual Bool isMemory() const override;
