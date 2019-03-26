@@ -15,6 +15,7 @@ include/o3d/core/private/glx.h
 include/o3d/core/private/glxdefines.h
 include/o3d/core/private/instreamandroid.h
 include/o3d/core/private/keymapandroid.h
+include/o3d/core/private/keymapdummy.h
 include/o3d/core/private/keymapsdl.h
 include/o3d/core/private/keymapwin32.h
 include/o3d/core/private/keymapx11.h

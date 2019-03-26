@@ -124,7 +124,7 @@ namespace o3d {
     const _HGLRC NULL_HGLRC = nullptr;
     const _HINSTANCE NULL_HINSTANCE = nullptr;
 
-#elif defined(O3D_X11) || defined (O3D_ANDROID)
+#elif defined(O3D_X11) || defined (O3D_ANDROID) || defined(O3D_DUMMY)
 
     // UInt32 on 32 bits, UInt64 on 64 bits
     typedef unsigned long _DISP;     //!< Display handle.

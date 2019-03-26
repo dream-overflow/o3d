@@ -31,3 +31,58 @@ void Keyboard::clear()
 {
 	m_keys.clear();
 }
+
+#if defined(O3D_DUMMY)
+Keyboard::Keyboard(AppWindow *appWindow) :
+        Input(),
+        m_grab(False),
+        m_appWindow(appWindow)
+{
+    m_name = "Keyboard";
+
+    m_isActive = False;
+
+    m_keys.clear();
+
+    if (!m_appWindow) {
+        O3D_ERROR(E_InvalidParameter("Invalid application window"));
+    }
+
+    m_aquired = False;
+
+    m_isActive = True;
+
+    // Insert/replace mode
+    m_modifiers.enable(MOD_INSERT);
+
+    m_aquired = False;
+    acquire();
+}
+
+// destructor
+Keyboard::~Keyboard()
+{
+    setGrab(False);
+    release();
+}
+
+void Keyboard::setGrab(Bool)
+{
+
+}
+
+void Keyboard::acquire()
+{
+
+}
+
+void Keyboard::release()
+{
+
+}
+
+void Keyboard::update()
+{
+
+}
+#endif // #if O3D_DUMMY

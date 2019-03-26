@@ -21,13 +21,17 @@
 #include "vector2.h"
 #include "stringlist.h"
 
+#if !defined(O3D_DUMMY)
 #include "../image/image.h"
+#endif // O3D_DUMMY
 
 #include <vector>
 
 namespace o3d {
 
+#if !defined(O3D_DUMMY)
 class Image;
+#endif // O3D_DUMMY
 
 /**
  * @brief A native window.
@@ -170,12 +174,14 @@ public:
 	//! Define the window icon filename or empty string to remove the icon.
 	void setIcon(const String &icon);
 
+#if !defined(O3D_DUMMY)
 	//! Define the window icon.
 	//! @param icon A image to use as icon. If the picture is not valid the icon is removed.
 	//! If the image is 24 bits color, it will use the color mask for transparency color.
 	void setIcon(const Image &icon);
 	//! Get the window icon image.
 	inline const Image& getIcon() const { return m_icon; }
+#endif
 
 	//! Get input manager instance
 	inline InputManager& getInput() { return m_inputManager; }
@@ -506,7 +512,9 @@ protected:
 	Bool isUpdateNeeded();
 
 	String m_title;        //!< Title of the window.
+#if !defined(O3D_DUMMY)
 	Image m_icon;          //!< Icon image.
+#endif // O3D_DUMMY
 
 	Vector2i m_minSize;    //!< Window hint min size
 	Vector2i m_maxSize;    //!< Window hint max size

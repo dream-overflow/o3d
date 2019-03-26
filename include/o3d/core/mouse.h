@@ -66,7 +66,7 @@ public:
           Bool lock = False);
 
 	//! Virtual destructor.
-	virtual ~Mouse();
+    virtual ~Mouse() override;
 
 	//-----------------------------------------------------------------------------------
 	// Exclusive mode

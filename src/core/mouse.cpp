@@ -24,6 +24,48 @@ Mouse::Mouse(BaseObject *parent) :
 {
 }
 
+#if defined(O3D_DUMMY)
+Mouse::Mouse(AppWindow *appWindow, Int32 xlimit, Int32 ylimit, Bool lock)
+{
+
+}
+
+Mouse::~Mouse()
+{
+
+}
+
+void Mouse::enableCursor()
+{
+
+}
+
+void Mouse::disableCursor()
+{
+
+}
+
+void Mouse::acquire()
+{
+
+}
+
+void Mouse::release()
+{
+
+}
+
+void Mouse::update()
+{
+
+}
+
+void Mouse::setGrab(Bool)
+{
+
+}
+#endif // O3D_DUMMY
+
 void Mouse::commonInit(Int32 xlimit, Int32 ylimit)
 {
 	m_name = "Mouse";

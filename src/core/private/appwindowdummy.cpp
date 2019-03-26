@@ -26,14 +26,14 @@ void AppWindow::setTitle(const String &title)
     m_title = title;
 }
 
-void AppWindow::setIcon(const Image &icon)
-{
-    if ((icon.getPixelFormat() != PF_RGB_8) && (icon.getPixelFormat() != PF_RGBA_8)) {
-        O3D_ERROR(E_InvalidFormat("Icon must be RGB888 or RGBA8888"));
-    }
+//void AppWindow::setIcon(const Image &icon)
+//{
+//    if ((icon.getPixelFormat() != PF_RGB_8) && (icon.getPixelFormat() != PF_RGBA_8)) {
+//        O3D_ERROR(E_InvalidFormat("Icon must be RGB888 or RGBA8888"));
+//    }
 
-    m_icon = icon;
-}
+//    m_icon = icon;
+//}
 
 void AppWindow::setSize(Int32 width, Int32 height)
 {
@@ -64,7 +64,7 @@ void AppWindow::applySettings(Bool fullScreen)
 
     // set title and icon
     setTitle(m_title);
-    setIcon(m_icon);
+    // setIcon(m_icon);
 
     Application::addAppWindow(this);
 
@@ -74,7 +74,7 @@ void AppWindow::applySettings(Bool fullScreen)
 // destroy the window.
 void AppWindow::destroy()
 {
-    m_icon.destroy();
+    // m_icon.destroy();
     m_running = False;
 }
 

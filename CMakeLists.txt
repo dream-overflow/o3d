@@ -208,31 +208,37 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
 endif()
 
 # Android GCC cflags
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_EXPORT_DLL")
     if (O3D_USE_SSE2)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
     endif (O3D_USE_SSE2)
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 
 # Linux GCC cflags
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_X11 -DO3D_EXPORT_DLL")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_EXPORT_DLL")
+    if(NOT ${O3D_CORE_ONLY})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DO3D_X11")
+    endif()
     if (O3D_USE_SSE2)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
     endif (O3D_USE_SSE2)
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # Darwin GCC cflags
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_X11 -DO3D_EXPORT_DLL")
-        if (O3D_USE_SSE2)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter -std=c++14 -fexceptions -DO3D_EXPORT_DLL")
+    if(NOT ${O3D_CORE_ONLY})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DO3D_X11")
+    endif()
+    if (O3D_USE_SSE2)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
     endif (O3D_USE_SSE2)
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Windows VC++ or GCC cflags
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # todo SSE2 support On
     option(O3D_USE_SSE2 "Compile SSE2 optimizations" OFF)
     if(MINGW)
@@ -247,7 +253,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
         endif()
     endif (O3D_USE_SSE2)
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 #----------------------------------------------------------
 # configuration target

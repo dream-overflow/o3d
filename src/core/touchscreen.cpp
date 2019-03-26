@@ -210,7 +210,7 @@ Int32 TouchScreen::getDoubleTapDelay() const
 }
 
 // For now, not supported on Windows and Linux desktop
-#if defined(O3D_WINAPI) || defined(O3D_X11)
+#if defined(O3D_WINAPI) || defined(O3D_X11) || defined(O3D_DUMMY)
 
 TouchScreen::TouchScreen(AppWindow *appWindow, Int32 xlimit, Int32 ylimit) :
     Input(),
@@ -360,4 +360,4 @@ void TouchScreen::setPointerState(UInt32 index, Bool state, Float x, Float y, Fl
     pointer.time = time;
 }
 
-#endif // O3D_WINAPI || O3D_X11
+#endif // O3D_WINAPI || O3D_X11 || O3D_DUMMY

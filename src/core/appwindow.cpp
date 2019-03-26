@@ -24,7 +24,9 @@ using namespace o3d;
 // Constructor
 AppWindow::AppWindow() :
 	m_title("Objective-3D"),
+#if !defined(O3D_DUMMY)
 	m_icon(),
+#endif // O3D_DUMMY
 	m_minSize(0, 0),
 	m_maxSize(-1, -1),
 	m_width(-1),
@@ -239,6 +241,7 @@ Bool AppWindow::isFullScreen() const
     return Display::instance()->getAppWindow() == this;
 }
 
+#if !defined(O3D_DUMMY)
 // Set the window icon.
 void AppWindow::setIcon(const String &icon)
 {
@@ -251,6 +254,7 @@ void AppWindow::setIcon(const String &icon)
 		setIcon(Image());
 	}
 }
+#endif
 
 // Callback method
 void AppWindow::callBackCreate()

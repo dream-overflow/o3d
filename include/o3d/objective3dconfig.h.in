@@ -24,6 +24,9 @@
 //! Dummy suport
 #cmakedefine O3D_USE_DUMMY
 
+//! X11 suport
+#cmakedefine O3D_USE_X11
+
 //! SDL2 suport
 #cmakedefine O3D_USE_SDL2
 
@@ -197,7 +200,7 @@
 		#define O3D_LINUX
 	#endif
 
-    #if !defined(O3D_X11) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND)  && !defined(O3D_USE_DUMMY)
+    #if !defined(O3D_X11) && !defined(O3D_USE_SDL2) && !defined(O3D_USE_WAYLAND) && !defined(O3D_USE_DUMMY)
 		#define O3D_X11
 	#endif
 

@@ -27,6 +27,10 @@
 #include "private/keymapx11.h"
 #endif
 
+#ifdef O3D_DUMMY
+#include "private/keymapdummy.h"
+#endif
+
 #ifdef O3D_ANDROID
 #include "private/keymapandroid.h"
 #endif
@@ -201,7 +205,7 @@ public:
 	Keyboard(AppWindow *appWindow);
 
 	//! Destructor
-	virtual ~Keyboard();
+    virtual ~Keyboard() override;
 
     //! Get keys states. In key code, not virtual key sym.
 	inline const T_KeySet& getKeysState() const { return m_keys; }

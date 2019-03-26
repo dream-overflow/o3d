@@ -47,7 +47,7 @@ public:
     TouchScreen(AppWindow *appWindow, Int32 xlimit = 800, Int32 ylimit = 600);
 
     //! Virtual destructor.
-    virtual ~TouchScreen();
+    virtual ~TouchScreen() override;
 
     //! Is multi-touch capacity.
     inline Bool isMultiTouch() const { return m_multiTouch; }
