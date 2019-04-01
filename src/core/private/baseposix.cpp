@@ -88,6 +88,26 @@ Int64 System::getTime()
 #endif
 }
 
+// get time with precision defined by getTimeFrequency()
+Int64 System::getEpochTime()
+{
+#if HAVE_CLOCK_GETTIME
+    // get time in nanoseconds
+    struct timespec curTime;
+    clock_gettime(CLOCK_REALTIME, &curTime);
+
+    return ((Int64)curTime.tv_sec) * 10000000LL +
+           (Int64)(curTime.tv_nsec) / 100;
+#else
+    // get time in microsecond
+    struct timeval curTime;
+    gettimeofday(&curTime, nullptr);
+
+    return (curTime.tv_sec) * 10000000LL +
+           (curTime.tv_usec) * 10;
+#endif
+}
+
 Int64 System::getTime(TimeUnit unit)
 {
 #if HAVE_CLOCK_GETTIME
@@ -146,6 +166,24 @@ Int32 System::getMsTime()
 
     return (curTime.tv_sec - timerStartTime.tv_sec) * 1000 +
            (curTime.tv_usec - timerStartTime.tv_usec) / 1000;
+#endif
+}
+
+// get time width a precision of 1ms
+Int32 System::getEpochMsTime()
+{
+#if HAVE_CLOCK_GETTIME
+    struct timespec curTime;
+    clock_gettime(CLOCK_REALTIME, &curTime);
+
+    return ((Int64)curTime.tv_sec) * 1000 +
+           ((Int64)curTime.tv_nsec) / 100000;
+#else
+    struct timeval curTime;
+    gettimeofday(&curTime, nullptr);
+
+    return (curTime.tv_sec) * 1000 +
+           (curTime.tv_usec) / 1000;
 #endif
 }
 

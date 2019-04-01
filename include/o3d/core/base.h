@@ -417,16 +417,22 @@ public:
 	// Global Time methods
 	//-----------------------------------------------------------------------------------
 
-    //! get time with precision defined by getTimeFrequency().
+    //! get time with precision of 0.1us since epoch.
+    static Int64 getEpochTime();
+
+    //! get time with precision defined by getTimeFrequency() since start of application.
     static Int64 getTime();
 
     //! get time precision in ms for getTime().
     static Int64 getTimeFrequency();
 
-    //! get time with a specified precision.
+    //! get time with a specified precision since start of application.
     static Int64 getTime(TimeUnit unit);
 
-	//! get time width a precision of 1ms.
+    //! get time width a precision of 1ms since epoch.
+    static Int32 getEpochMsTime();
+
+    //! get time width a precision of 1ms since start of application.
     static Int32 getMsTime();
 
     //! wait a delay (in ms)

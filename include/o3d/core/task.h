@@ -85,7 +85,7 @@ protected:
 	void start(Bool asynchronous);
 
 	//! Main.
-	Int32 run(void *param);
+    virtual Int32 run(void *param);
 
 	//! Finalize the task.
 	void synchronize();
@@ -100,4 +100,3 @@ protected:
 } // namespace o3d
 
 #endif // _O3D_TASK_H
-

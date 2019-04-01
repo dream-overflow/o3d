@@ -23,7 +23,7 @@ public:
 
     virtual ~Runnable() = 0;
 
-	virtual Int32 run(void *) = 0;
+    virtual Int32 run(void *) = 0;
 };
 
 }

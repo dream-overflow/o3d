@@ -26,7 +26,6 @@ System::ByteOrder System::getNativeByteOrder()
 	return ORDER_LITTLE_ENDIAN;
 }
 
-// Initialize time.
 void System::initTime()
 {
 	// Get the query performance timer frequency
@@ -40,12 +39,33 @@ void System::initTime()
 	timerStartTime = time.QuadPart;
 }
 
-// get time with precision defined by getTimeFrequency()
 Int64 System::getTime()
 {
 	LARGE_INTEGER time;
 	QueryPerformanceCounter(&time);
 	return time.QuadPart - timerStartTime;
+}
+
+Int64 System::getTime()
+{
+    LARGE_INTEGER time;
+    QueryPerformanceCounter(&time);
+    return time.QuadPart;
+}
+
+Int64 System::getEpochTime()
+{
+    const UInt64 OA_ZERO_TICKS = 94353120000000000;  // 12/30/1899 12:00am in ticks
+    const UInt64 TICKS_PER_DAY = 864000000000;       // ticks per day at 0.1 us
+
+    LPFILETIME ft;
+    GetSystemTimePreciseAsFileTime(&ft);
+
+    ULARGE_INTEGER dt; // needed to avoid alignment faults
+    dt.LowPart = ft.dwLowDateTime;
+    dt.HighPart = ft.dwHighDateTime;
+
+    return static_cast<Int64>((dt.QuadPart - OA_ZERO_TICKS) / TICKS_PER_DAY);
 }
 
 Int64 System::getTime(TimeUnit unit)
@@ -68,7 +88,6 @@ Int64 System::getTime(TimeUnit unit)
     }
 }
 
-// get time width a precision of 1ms
 Int32 System::getMsTime()
 {
 	LARGE_INTEGER time;
@@ -83,19 +102,31 @@ Int32 System::getMsTime()
 //	return (DWORD)time.QuadPart;
 }
 
-//  get time frequency for gettime
+Int64 System::getEpochTimeMs()
+{
+    const UInt64 OA_ZERO_TICKS = 94353120000000000;  // 12/30/1899 12:00am in ticks
+    const UInt64 TICKS_PER_DAY = 86400000;           // ticks per day at 1 ms
+
+    LPFILETIME ft;
+    GetSystemTimePreciseAsFileTime(&ft);
+
+    ULARGE_INTEGER dt; // needed to avoid alignment faults
+    dt.LowPart = ft.dwLowDateTime;
+    dt.HighPart = ft.dwHighDateTime;
+
+    return static_cast<Int64>((dt.QuadPart - OA_ZERO_TICKS) / TICKS_PER_DAY);
+}
+
 Int64 System::getTimeFrequency()
 {
 	return timerFrequency;
 }
 
-// wait a delay (in ms)
 void System::waitMs(Int32 ms)
 {
 	Sleep(ms);
 }
 
-// Print a message on the standard output.
 void System::print(
 		const String &content,
 		const String &title,

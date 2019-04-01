@@ -93,4 +93,3 @@ void Task::synchronize()
 		onTaskFinalized(this);
 	}
 }
-
