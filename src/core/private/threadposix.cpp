@@ -173,7 +173,14 @@ Int32 Thread::waitFinish()
     m_pData = nullptr;
 	m_running = False;
 
-	return result;
+    return result;
+}
+
+void o3d::Thread::setName(const o3d::String &name)
+{
+    if (m_pThread) {
+        pthread_setname_np(m_pThread, name.toUtf8().getData());
+    }
 }
 
 // kill the thread

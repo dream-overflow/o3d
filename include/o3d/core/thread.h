@@ -37,12 +37,9 @@ namespace o3d {
 	#error "<< Unknown architecture ! >>"
 #endif // O3D_WINAPI_SYS
 
-
-//---------------------------------------------------------------------------------------
-//! @class ThreadManager
-//-------------------------------------------------------------------------------------
-//! Manager of threads
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The global thread manager static singleton.
+ */
 class O3D_API ThreadManager
 {
 public:
@@ -67,12 +64,10 @@ private:
 	static UInt32 m_mainThreadId;
 };
 
-
-//---------------------------------------------------------------------------------------
-//! @class Thread
-//-------------------------------------------------------------------------------------
-//! A thread object
-//---------------------------------------------------------------------------------------
+/**
+ * @brief The Thread class
+ *  A thread object
+ */
 class O3D_API Thread : NonCopyable<>
 {
 public:
@@ -131,6 +126,9 @@ public:
 
     //! Get runnable object.
     Runnable* getRunnable() { return m_runnable; }
+
+    //! Define the name of the thread.
+    void setName(const o3d::String &name);
 
 private:
 

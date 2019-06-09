@@ -123,7 +123,7 @@ Int32 Thread::waitFinish()
 	if (!m_pThread)
 		return -1;
 
-	WaitForSingleObject(m_pThread,O3D_INFINITE);
+    WaitForSingleObject(m_pThread, O3D_INFINITE);
 	CloseHandle(m_pThread);
 
 	m_id = 0;
@@ -132,6 +132,42 @@ Int32 Thread::waitFinish()
 	m_running = False;
 
 	return m_result;
+}
+
+void o3d::Thread::setName(const o3d::String &name)
+{
+    // @see https://stackoverflow.com/questions/905876/how-to-set-name-to-a-win32-thread/10364541#10364541
+
+    //#pragma once
+    //#include <Windows.h>
+
+    //    const DWORD MS_VC_EXCEPTION = 0x406D1388;
+
+    //#pragma pack(push, 8)
+    //    typedef struct tagTHREADNAME_INFO
+    //    {
+    //        DWORD dwType;  // Must be 0x1000
+    //        LPCSTR szName;  // Pointer to name (in user addr space)
+    //        DWORD dwThreadId; // Thread ID (-1=caller thread)
+    //        DWORD dwFlags; // Reserved for future use.  Must be zero
+    //    } THREADNAME_INFO;
+    //#pragma pack(pop)
+
+    //    void SetThreadName(DWORD dwThreadId, const char *threadName)
+    //    {
+    //        THREADNAME_INFO info;
+    //        info.dwType = 0x1000;
+    //        info.szName = threadName;
+    //        info.dwThreadId = dwThreadId;
+    //        info.dwFlags = 0;
+
+    //        __try {
+    //            RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*) &info);
+    //        }
+    //        __except(EXCEPTION_EXECUTE_HANDLER)
+    //        {
+    //        }
+    //    }
 }
 
 // kill the thread
