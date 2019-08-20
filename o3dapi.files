@@ -23,6 +23,7 @@ include/o3d/core/private/wgl.h
 include/o3d/core/private/wgldefines.h
 include/o3d/core/sha1.h
 include/o3d/core/touchscreen.h
+include/o3d/core/variadic.h
 include/o3d/core/virtualdir.h
 include/o3d/core/virtualfile.h
 include/o3d/core/wgl.h
@@ -122,6 +123,7 @@ src/core/private/wgl.cpp
 src/core/private/wgl.cpp
 src/core/sha1.cpp
 src/core/touchscreen.cpp
+src/core/variadic.cpp
 src/core/virtualdir.cpp
 src/core/virtualfile.cpp
 src/core/wgl.cpp
