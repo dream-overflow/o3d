@@ -19,6 +19,10 @@
 
 #include <list>
 
+#if defined(O3D_POSIX_SYS)
+	#include <pthread.h>
+#endif // O3D_WINAPI_SYS
+
 namespace o3d {
 
 #ifdef O3D_WINAPI_SYS
@@ -28,7 +32,6 @@ namespace o3d {
 	typedef CRITICAL_SECTION _ReaderHandle;
 	typedef CRITICAL_SECTION _WriterHandle;
 #elif defined(O3D_POSIX_SYS)
-	#include <pthread.h>
 	typedef pthread_t _Thread;
 	typedef void* _Semaphore;
 	typedef pthread_cond_t _WaitCondition;

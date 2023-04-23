@@ -13,6 +13,10 @@
 #include "base.h"
 #include "memorydbg.h"
 
+#if defined(O3D_POSIX_SYS)
+	#include <pthread.h>
+#endif
+
 namespace o3d {
 
 #ifdef O3D_WINAPI_SYS
@@ -20,7 +24,6 @@ namespace o3d {
 	typedef void* _Mutex;
 	typedef CRITICAL_SECTION _FastMutex;
 #elif defined(O3D_POSIX_SYS)
-	#include <pthread.h>
 	typedef void* _Mutex;
 	typedef pthread_mutex_t _FastMutex;
 #else

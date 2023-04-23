@@ -26,6 +26,8 @@ using namespace o3d;
 	#define HAVE_CLOCK_GETTIME 0
 	#define pthread_yield pthread_yield_np
 #else
+    #include <sched.h>
+    #include <time.h>
     #define HAVE_CLOCK_GETTIME 1
 #endif
 
@@ -205,7 +207,7 @@ void System::waitMs(Int32 ms)
     #ifdef O3D_ANDROID
         usleep(0);
     #else
-        pthread_yield();
+        sched_yield();
     #endif
     } else {
 #ifdef O3D_USE_USLEEP

@@ -116,6 +116,8 @@ endif()
 # externals libraries
 #----------------------------------------------------------
 
+find_package(ZLIB REQUIRED)
+
 set (CMAKE_FIND_ROOT_PATH ${CMAKE_FIND_ROOT_PATH} $ENV{PREFIX})
 # set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules)
 # message(${CMAKE_MODULE_PATH})
