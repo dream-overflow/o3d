@@ -382,7 +382,7 @@ public:
 	Bool convertToRG8(Bool grayScale = False);
 
 	//! Convert picture from 1/2/3/4 components to a 1 component RED8 (Luminance) bitmap.
-	//! For 2 components, it only take the first channnel as luminance.
+    //! For 2 components, it only take the first channel as luminance.
 	//! For 3/4 components, it convert each pixel into luminance depending
 	//! of the parameter grayScale.
 	//! @param grayScale If false, take red as luminance, else convert color to grayscale.
@@ -393,7 +393,7 @@ public:
 
 	//! Convert picture from 1/2/3/4 components to a 1 component Alpha 8 bitmap.
 	//! Pixel format is set to RED_U8.
-	//! For 2/4 components, it only take the alpha channnel as alpha.
+    //! For 2/4 components, it only take the alpha channel as alpha.
 	//! For 3 components, it convert each pixel into grayscale and set it as alpha.
 	//! @param grayScale If false, take red as luminance, else convert color to grayscale.
 	//! This parameter is useful only for picture without alpha channel.

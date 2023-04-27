@@ -52,6 +52,7 @@ enum Day
 /**
  * @brief The Date class
  * Process date.
+ * @todo complete tz support.
  */
 class O3D_API Date
 {
@@ -72,7 +73,7 @@ public:
     Date(time_t ltime);
 
     //! Initialize manually.
-    Date(Int16 _year, Int8 _month, Int8 _day, Int8 _dayofWeek);
+    Date(Int16 _year, Int8 _month, Int8 _day, Int8 _dayofWeek, Int8 _tz=0);
 
     //! Copy ctor
     Date(const Date & _which);
@@ -113,7 +114,7 @@ public:
     Bool buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d"));
 
     //! Set with the current date and time.
-    void setCurrent();
+    void setCurrent(Bool UTC=False);
 
     //! Set the time from a time_t struct.
     void setTime(time_t ltime) { operator =(Date(ltime)); }
@@ -159,11 +160,14 @@ public: // public members
 
     Int16 year;      //!< full year (not since 1900 like ctime)
 
+    Int8 tz;         //!< 0 mean UTC
+
 private:
 
     static Date *sm_null;
     static Date *sm_startDate;
     static Int32 sm_localTz;
+    static Int32 sm_localDst;
 
     static void init();
     static void quit();

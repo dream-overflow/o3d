@@ -18,6 +18,7 @@ namespace o3d {
 /**
  * @brief The DateTime class.
  * Date accessor and helper.
+ * @todo complete tz support.
  */
 class O3D_API DateTime
 {
@@ -46,7 +47,8 @@ public:
             Int8 _hour,
             Int8 _minutes,
             Int8 _seconds,
-            Int32 _microsecond);
+            Int32 _microsecond,
+            Int8 _tz = 0);
 
     //! Copy ctor
     DateTime(const DateTime & _which);
@@ -87,7 +89,7 @@ public:
     Bool buildFromString(const String & _value, const String &_arg = String("%Y-%m-%d %H:%M:%S"));
 
     //! Set with the current date and time.
-    void setCurrent();
+    void setCurrent(Bool UTC=False);
 
     //! Set the time from a time_t struct.
     void setTime(time_t ltime) { operator =(DateTime(ltime)); }
@@ -138,11 +140,14 @@ public: // public members
     Int8 second;        //!< second 0..59
     Int32 microsecond;  //!< microsecond
 
+    Int8 tz;            //!< 0 mean UTC
+
 private:
 
     static DateTime *sm_null;
     static DateTime *sm_startDate;
     static Int32 sm_localTz;
+    static Int32 sm_localDst;
 
     static void init();
     static void quit();

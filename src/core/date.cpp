@@ -82,6 +82,7 @@ static const WChar* shortDayString[] = {
 Date* Date::sm_null = nullptr;
 Date* Date::sm_startDate = nullptr;
 Int32 Date::sm_localTz = 0;
+Int32 Date::sm_localDst = 0;
 
 void Date::init()
 {
@@ -103,6 +104,9 @@ void Date::init()
 #else
         ptm = gmtime(&rawtime);
 #endif
+        // Keep local DST
+        sm_localDst = static_cast<Int32>(ptm->tm_isdst);
+
         // Request that mktime() looksup dst in timezone database
         ptm->tm_isdst = -1;
         gmt = mktime(ptm);
@@ -133,7 +137,8 @@ Date::Date(Bool setToday) :
     month(1),
     wday(1),
     mday(1),
-    year(0)
+    year(0),
+    tz(0)
 {
     if (setToday) {
         setCurrent();
@@ -141,11 +146,12 @@ Date::Date(Bool setToday) :
 }
 
 // Initialize manually.
-Date::Date(Int16 _year, Int8 _month, Int8 _day, Int8 _dayofWeek) :
+Date::Date(Int16 _year, Int8 _month, Int8 _day, Int8 _dayofWeek, Int8 _tz):
     month(_month),
     wday(_day),
     mday(_dayofWeek),
-    year(_year)
+    year(_year),
+    tz(_tz)
 {
 
 }
@@ -154,7 +160,8 @@ Date::Date(const Date &_which) :
     month(_which.month),
     wday(_which.wday),
     mday(_which.mday),
-    year(_which.year)
+    year(_which.year),
+    tz(_which.tz)
 {
 }
 
@@ -164,6 +171,7 @@ void Date::destroy()
     month = 1;
     wday = 1;
     mday = 1;
+    tz = 0;
 }
 
 Date & Date::operator = (const Date &_which)
@@ -172,6 +180,7 @@ Date & Date::operator = (const Date &_which)
     month = _which.month;
     wday = _which.wday;
     mday = _which.mday;
+    tz = _which.tz;
 
     return *this;
 }
@@ -186,6 +195,7 @@ Date::Date(time_t ltime)
     month = Int8(local.tm_mon) + 1;
     wday = Int8(local.tm_wday) + 1;
     mday = Int8(local.tm_mday);
+    tz = (Int8)(sm_localTz / 3600) - (sm_localDst ? 1 : 0);
 #else
     struct tm *local;
     local = localtime(&ltime);
@@ -194,6 +204,7 @@ Date::Date(time_t ltime)
     month = Int8(local->tm_mon) + 1;
     wday = Int8(local->tm_wday) + 1;
     mday = local->tm_mday;
+    tz = (Int8)(sm_localTz / 3600) - (sm_localDst ? 1 : 0);
 #endif
 }
 
@@ -392,6 +403,15 @@ String Date::buildString(const String & _arg) const
                         result << static_cast<o3d::UInt32>(mday);
                     }
                     break;
+
+                case 'Z':
+                    // timezone
+                    if (tz == 0) {
+                        result << 'Z';
+                    } else {
+                        // @todo
+                    }
+                    break;
             }
 
             ++k;
@@ -517,35 +537,51 @@ Bool Date::buildFromString(const String &_value, const String &_arg)
                     return False;
                 }
                 break;
+
+            case 'Z':
+                tz = 0; // @todo others
+                break;
         }
     }
 
     return True;
 }
 
-void Date::setCurrent()
+void Date::setCurrent(Bool UTC)
 {
 #ifdef O3D_WINDOWS
     __time64_t ltime;
    _time64(&ltime);
 
     tm local;
-    _localtime64_s(&local,&ltime);
+    if (UTC) {
+        _gmtime64_s(&local, &ltime);
+    } else {
+        _localtime64_s(&local, &ltime);
+    }
 
     year = Int16(local.tm_year + 1900);
     month = Int8(local.tm_mon) + 1;
     day = Int8(local.tm_wday) + 1;
     mday = Int8(local.tm_mday);
+    tz = (Int8)(sm_localTz / 3600) - (sm_localDst ? 1 : 0);
 #else
     struct timeval ltime;
     struct tm *local;
 
     gettimeofday(&ltime, nullptr);
-    local = localtime(&ltime.tv_sec);
+
+    if (UTC) {
+        local = gmtime(&ltime.tv_sec);
+    } else {
+        local = localtime(&ltime.tv_sec);
+    }
+
     year = local->tm_year + 1900;
     month = Int8(local->tm_mon) + 1;
     wday = Int8(local->tm_wday) + 1;
     mday = local->tm_mday;
+    tz = (Int8)(sm_localTz / 3600) - (sm_localDst ? 1 : 0);
 #endif
 }
 
@@ -562,20 +598,33 @@ void Date::fromTime(Double time, Bool UTC)
 void Date::fromTimeMs(Int64 ms, Bool UTC)
 {
 #ifdef O3D_WINDOWS
-    __time64_t ltime = static_cast<time_t>(ms / 1000) - (UTC ? sm_localTz : 0);
+    __time64_t ltime = static_cast<time_t>(ms / 1000);  // - (UTC ? sm_localTz : 0);
 
     tm local;
-    _localtime64_s(&local,&ltime);
+
+    if (UTC) {
+        _gmtime64_s(&local, &ltime);
+        tz = 0;
+    } else {
+        _localtime64_s(&local, &ltime);
+        tz = (Int8)(sm_localTz / 3600) - (sm_localDst ? 1 : 0);
+    }
 
     year = Int16(local.tm_year + 1900);
     month = Int8(local.tm_mon) + 1;
     day = Int8(local.tm_wday) + 1;
     mday = Int8(local.tm_mday);
 #else
-    time_t ts = static_cast<time_t>(ms / 1000) - (UTC ? sm_localTz : 0);
+    time_t ts = static_cast<time_t>(ms / 1000);  // - (UTC ? sm_localTz : 0);
     struct tm *local;
 
-    local = localtime(&ts);
+    if (UTC) {
+        local = gmtime(&ts);
+        tz = 0;
+    } else {
+        local = localtime(&ts);
+        tz = (Int8)(sm_localTz / 3600) - (sm_localDst ? 1 : 0);
+    }
     year = local->tm_year + 1900;
     month = Int8(local->tm_mon) + 1;
     wday = Int8(local->tm_wday) + 1;
@@ -586,18 +635,32 @@ void Date::fromTimeMs(Int64 ms, Bool UTC)
 void Date::fromTimeUs(Int64 us, Bool UTC)
 {
 #ifdef O3D_WINDOWS
-    __time64_t ltime = static_cast<time_t>(us / 1000000) - (UTC ? sm_localTz : 0);
+    __time64_t ltime = static_cast<time_t>(us / 1000000);  // - (UTC ? sm_localTz : 0);
 
     tm local;
-    _localtime64_s(&local,&ltime);
 
+    if (UTC) {
+        _gmtime64_s(&local, &ltime);
+        tz = 0;
+    } else {
+        _localtime64_s(&local, &ltime);
+        tz = (Int8)(sm_localTz / 3600) - (sm_localDst ? 1 : 0);
+    }
     year = Int16(local.tm_year + 1900);
     month = Int8(local.tm_mon) + 1;
     day = Int8(local.tm_wday) + 1;
     mday = Int8(local.tm_mday);
 #else
-    time_t ts = static_cast<time_t>(us / 1000000) - (UTC ? sm_localTz : 0);
+    time_t ts = static_cast<time_t>(us / 1000000);  // - (UTC ? sm_localTz : 0);
     struct tm *local;
+
+    if (UTC) {
+        local = gmtime(&ts);
+        tz = 0;
+    } else {
+        local = localtime(&ts);
+        tz = (Int8)(sm_localTz / 3600);  // @todo dst
+    }
 
     local = localtime(&ts);
     year = local->tm_year + 1900;
@@ -612,7 +675,7 @@ time_t Date::toTime_t(Bool UTC) const
 #ifdef O3D_WINDOWS
     tm lObjectTime;
 
-    lObjectTime.tm_sec = (UTC ? sm_localTz : 0);
+    lObjectTime.tm_sec = 0;  // (UTC ? sm_localTz : 0);
     lObjectTime.tm_min = 0;
     lObjectTime.tm_hour = 0;
     lObjectTime.tm_mday = mday;
@@ -620,13 +683,18 @@ time_t Date::toTime_t(Bool UTC) const
     lObjectTime.tm_year = year-1900;
     lObjectTime.tm_wday = 0;  // wday-1;
     lObjectTime.tm_yday = 0;
-    lObjectTime.tm_isdst = 0;
+    // lObjectTime.tm_isdst = 1; //(UTC ? sm_localDst : 0);
 
-    return _mktime64(&lObjectTime);
+    if (UTC) {
+        return _timegm(&lObjectTime);
+    } else {
+        lObjectTime.tm_isdst = -1;  // -1 to check database
+        return _mktime64(&lObjectTime);
+    }
 #else
     struct tm lObjectTime;
 
-    lObjectTime.tm_sec = (UTC ? sm_localTz : 0);
+    lObjectTime.tm_sec = 0;  // (UTC ? sm_localTz : 0);
     lObjectTime.tm_min = 0;
     lObjectTime.tm_hour = 0;
     lObjectTime.tm_mday = mday;
@@ -634,9 +702,14 @@ time_t Date::toTime_t(Bool UTC) const
     lObjectTime.tm_year = year-1900;
     lObjectTime.tm_wday = 0;  // wday-1;
     lObjectTime.tm_yday = 0;
-    lObjectTime.tm_isdst = 0;
+    // lObjectTime.tm_isdst = 1; //(UTC ? sm_localDst : 0);
 
-    return mktime(&lObjectTime);
+    if (UTC) {
+        return timegm(&lObjectTime);
+    } else {
+        lObjectTime.tm_isdst = -1;  // -1 to check database
+        return mktime(&lObjectTime);
+    }
 #endif
 }
 
@@ -660,6 +733,7 @@ Double Date::toDoubleTimestamp(Bool UTC) const
 
 Bool Date::isOlderThan(const Date& today, Int32 days)
 {
+    // @todo UTC and DST
 #ifdef O3D_WINDOWS
     __time64_t start, end;
     double elapsed;

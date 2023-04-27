@@ -1586,7 +1586,7 @@ float NvStripifier::AvgStripSize(const NvStripInfoVec &strips){
 //
 // Does the stripification, puts output strips into vector allStrips
 //
-// Works by setting runnning a number of experiments in different areas of the mesh, and
+// Works by setting running a number of experiments in different areas of the mesh, and
 //  accepting the one which results in the longest strips.  It then accepts this, and moves
 //  on to a different area of the mesh.  We try to jump around the mesh some, to ensure that
 //  large open spans of strips get generated.
