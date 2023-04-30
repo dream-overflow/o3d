@@ -211,6 +211,96 @@ Bool CString::operator<(const Char *s) const
     return strcmp(m_data.getData(), s) < 0;
 }
 
+Bool CString::operator<=(const CString &s) const
+{
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
+
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
+
+    return strcmp(m_data.getData(), s.m_data.getData()) <= 0;
+}
+
+Bool CString::operator<=(const Char *s) const
+{
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
+
+    if (!s) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
+
+    return strcmp(m_data.getData(), s) <= 0;
+}
+
+Bool CString::operator>(const CString &s) const
+{
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
+
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
+
+    return strcmp(m_data.getData(), s.m_data.getData()) > 0;
+}
+
+Bool CString::operator>(const Char *s) const
+{
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
+
+    if (!s) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
+
+    return strcmp(m_data.getData(), s) > 0;
+}
+
+Bool CString::operator>=(const CString &s) const
+{
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
+
+    if (s.isNull()) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
+
+    return strcmp(m_data.getData(), s.m_data.getData()) >= 0;
+}
+
+Bool CString::operator>=(const Char *s) const
+{
+    if (isNull()) {
+        // O3D_ERROR(E_NullPointer("left string is null"));
+        return True;
+    }
+
+    if (!s) {
+        // O3D_ERROR(E_NullPointer("right string is null"));
+        return False;
+    }
+
+    return strcmp(m_data.getData(), s) >= 0;
+}
+
 Bool CString::operator==(const CString &s) const
 {
     if (isNull() && s.isNull()) {

@@ -24,6 +24,15 @@ public:
 	typedef typename std::unordered_map<String, V, std::hash<String> >::const_iterator CIT;
 };
 
+template <class V>
+class CStringMap : public std::unordered_map<CString, V, std::hash<CString> >
+{
+public:
+
+    typedef typename std::unordered_map<CString, V, std::hash<CString> >::iterator IT;
+    typedef typename std::unordered_map<CString, V, std::hash<CString> >::const_iterator CIT;
+};
+
 } // namespace o3d
 
 #endif // _O3D_STRINGMAP_H

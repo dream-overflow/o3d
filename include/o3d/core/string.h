@@ -170,6 +170,30 @@ public:
     Bool operator< (const Char* s) const;
 
     //! Case sensitive comparison.
+    //! @return True if s < *this otherwise false.
+    Bool operator<= (const CString& s) const;
+
+    //! Case sensitive comparison.
+    //! @return True if s <= *this otherwise false.
+    Bool operator<= (const Char* s) const;
+
+    //! Case sensitive comparison.
+    //! @return True if s > *this otherwise false.
+    Bool operator> (const CString& s) const;
+
+    //! Case sensitive comparison.
+    //! @return True if s > *this otherwise false.
+    Bool operator> (const Char* s) const;
+
+    //! Case sensitive comparison.
+    //! @return True if s > *this otherwise false.
+    Bool operator>= (const CString& s) const;
+
+    //! Case sensitive comparison.
+    //! @return True if s > *this otherwise false.
+    Bool operator>= (const Char* s) const;
+
+    //! Case sensitive comparison.
     //! @return True if s == *this otherwise false.
     Bool operator== (const CString& s) const;
 
