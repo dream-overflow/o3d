@@ -1561,7 +1561,15 @@ void String::concat(UInt64 i, Int32 radix)
 void String::concat(Float f, Int32 decimals)
 {
     WChar str[16] = { 0 };
-    if (decimals >= 0) {
+    if (decimals >= 10) {
+        decimals = o3d::min(16, decimals);
+
+        WChar format[] = L"%.xxf";
+        format[2] = decimals / 10 + '0';
+        format[3] = (decimals - ((decimals / 10) * 10)) + '0';
+
+        swprintf(str, 16, format, f);
+    } else if (decimals >= 0) {
         WChar format[] = L"%.xf";
         format[2] = o3d::min(9, decimals) + '0';
 
@@ -1578,7 +1586,7 @@ void String::concat(Double d, Int32 decimals)
 {
     WChar str[32] = { 0 };
     if (decimals >= 10) {
-        decimals = o3d::min(16, decimals);
+        decimals = o3d::min(32, decimals);
 
         WChar format[] = L"%.xxf";
         format[2] = decimals / 10 + '0';
@@ -1586,8 +1594,8 @@ void String::concat(Double d, Int32 decimals)
 
         swprintf(str, 32, format, d);
     } else if (decimals >= 0) {
-        WChar format[] = L"%.xxf";
-        format[2] =decimals + '0';
+        WChar format[] = L"%.xf";
+        format[2] = o3d::min(9, decimals) + '0';
 
         swprintf(str, 32, format, d);
     } else {
