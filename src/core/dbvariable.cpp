@@ -353,10 +353,10 @@ Double DbVariable::toDouble() const
         return static_cast<Double>(asFloat());
     } else if (m_intType == IT_ARRAY_CHAR) {
         Char *end;
-        return static_cast<Int32>(strtod(((ArrayChar*)m_object)->getData(), &end));
+        return strtod(((ArrayChar*)m_object)->getData(), &end);
     } else if (m_intType == IT_CSTRING) {
         Char *end;
-        return static_cast<Int32>(strtod(((CString*)m_object)->getData(), &end));
+        return strtod(((CString*)m_object)->getData(), &end);
     } else {
         O3D_ERROR(E_InvalidOperation(""));
     }
