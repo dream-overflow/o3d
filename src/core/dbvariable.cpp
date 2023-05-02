@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file dbvariable.cpp
  * @brief 
  * @author Frederic SCHERMA (frederic.scherma@dreamoverflow.org)
@@ -32,7 +32,7 @@ DbVariable::DbVariable(
     if (!data)
     {
         m_object = m_objectPtr = nullptr;
-         return;
+        return;
     }
 
     switch (intType)
@@ -294,17 +294,72 @@ const DateTime &DbVariable::asDateTime() const
 
 CString DbVariable::toCString() const
 {
-    if (m_intType == IT_ARRAY_CHAR)
-    {
+    if (m_intType == IT_ARRAY_CHAR) {
         ArrayChar &array = *((ArrayChar*)m_object);
         return CString(array.getData(), array.getSize()-1);
-    }
-    else if (m_intType == IT_CSTRING)
-    {
+    } else if (m_intType == IT_CSTRING) {
         return CString(*((CString*)m_object));
-    }
-    else
+    } else {
         O3D_ERROR(E_InvalidOperation(""));
+    }
+}
+
+Int32 DbVariable::toInt32() const
+{
+    if (m_intType == IT_INT32) {
+        return asInt32();
+    } else if (m_intType == IT_INT8) {
+        return static_cast<Int32>(asInt8());
+    } else if (m_intType == IT_INT16) {
+        return static_cast<Int32>(asInt16());
+    } else if (m_intType == IT_UINT8) {
+        return static_cast<Int32>(asUInt8());
+    } else if (m_intType == IT_UINT16) {
+        return static_cast<Int32>(asUInt16());
+    } else if (m_intType == IT_UINT32) {
+        return static_cast<Int32>(asUInt32());
+    } else if (m_intType == IT_DOUBLE) {
+        return static_cast<Int32>(asDouble());
+    } else if (m_intType == IT_FLOAT) {
+        return static_cast<Int32>(asFloat());
+    } else if (m_intType == IT_ARRAY_CHAR) {
+        Char *end;
+        return static_cast<Int32>(strtol(((ArrayChar*)m_object)->getData(), &end, 10));
+    } else if (m_intType == IT_CSTRING) {
+        Char *end;
+        return static_cast<Int32>(strtol(((CString*)m_object)->getData(), &end, 10));
+    } else {
+        O3D_ERROR(E_InvalidOperation(""));
+    }
+}
+
+Double DbVariable::toDouble() const
+{
+    if (m_intType == IT_DOUBLE) {
+        return asDouble();
+    } else if (m_intType == IT_FLOAT) {
+        return static_cast<Double>(asFloat());
+    } else if (m_intType == IT_INT16) {
+        return static_cast<Double>(asInt16());
+    } else if (m_intType == IT_UINT8) {
+        return static_cast<Double>(asUInt8());
+    } else if (m_intType == IT_UINT16) {
+        return static_cast<Double>(asUInt16());
+    } else if (m_intType == IT_UINT32) {
+        return static_cast<Double>(asUInt32());
+    } else if (m_intType == IT_DOUBLE) {
+        return static_cast<Double>(asDouble());
+    } else if (m_intType == IT_FLOAT) {
+        return static_cast<Double>(asFloat());
+    } else if (m_intType == IT_ARRAY_CHAR) {
+        Char *end;
+        return static_cast<Int32>(strtod(((ArrayChar*)m_object)->getData(), &end));
+    } else if (m_intType == IT_CSTRING) {
+        Char *end;
+        return static_cast<Int32>(strtod(((CString*)m_object)->getData(), &end));
+    } else {
+        O3D_ERROR(E_InvalidOperation(""));
+    }
 }
 
 SmartArrayUInt8 DbVariable::toSmartArrayUInt8() const

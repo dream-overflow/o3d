@@ -27,9 +27,8 @@ class O3D_API DbVariable
 {
 public:
 
-    //! Database type of a variable
-    enum IntType
-    {
+    //! Internal type of a variable
+    enum IntType {
         IT_BOOL,
         IT_CHAR,
         IT_INT8,
@@ -51,8 +50,7 @@ public:
     };
 
     //! Database type of a variable
-    enum VarType
-    {
+    enum VarType {
         BOOLEAN,
         CHAR,
         INT8,
@@ -264,6 +262,12 @@ public:
 
     //! Return the variable as a CString with a convertion as necessary
     CString toCString() const;
+
+    //! Return the variable as an int32 with a convertion as necessary
+    Int32 toInt32() const;
+
+    //! Return the variable as a double with a convertion as necessary
+    Double toDouble() const;
 
     //! Return the variable as a SmartArrayUInt8 with a convertion as necessary
     SmartArrayUInt8 toSmartArrayUInt8() const;
