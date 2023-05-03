@@ -37,6 +37,8 @@ public:
         IT_UINT16,
         IT_INT32,
         IT_UINT32,
+        IT_INT64,
+        IT_UINT64,
         IT_FLOAT,
         IT_DOUBLE,
         IT_ARRAY_CHAR,
@@ -61,6 +63,8 @@ public:
         UINT24,
         INT32,
         UINT32,
+        INT64,
+        UINT64,
         FLOAT32,
         FLOAT64,
         VARCHAR,
@@ -146,6 +150,18 @@ public:
         return (*(Int32*)m_object);
     }
 
+    //! Set the variable as a Int64
+    void setInt64(Int64 v) {
+        O3D_ASSERT(m_intType == IT_INT64);
+        (*(Int64*)m_object) = v;
+    }
+
+    //! Return the variable as a int64
+    inline Int64 asInt64() const {
+        O3D_ASSERT(m_intType == IT_INT64);
+        return (*(Int64*)m_object);
+    }
+
     //! Set the variable as a Float
     void setFloat(Float v) {
         O3D_ASSERT(m_intType == IT_FLOAT);
@@ -204,6 +220,18 @@ public:
     inline UInt32 asUInt32() const {
         O3D_ASSERT(m_intType == IT_UINT32);
         return (*(UInt32*)m_object);
+    }
+
+    //! Set the variable as a UInt64
+    void setUInt64(UInt64 v) {
+        O3D_ASSERT(m_intType == IT_UINT64);
+        (*(UInt64*)m_object) = v;
+    }
+
+    //! Return the variable as a UInt64
+    inline UInt64 asUInt64() const {
+        O3D_ASSERT(m_intType == IT_UINT64);
+        return (*(UInt64*)m_object);
     }
 
     //! Set the variable as a CString
@@ -265,6 +293,9 @@ public:
 
     //! Return the variable as an int32 with a convertion as necessary
     Int32 toInt32() const;
+
+    //! Return the variable as an int64 with a convertion as necessary
+    Int32 toInt64() const;
 
     //! Return the variable as a double with a convertion as necessary
     Double toDouble() const;

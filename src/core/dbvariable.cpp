@@ -53,6 +53,10 @@ DbVariable::DbVariable(
         m_object = m_objectPtr = (UInt8*)new Int32(*(Int32*)data);
         m_objectSize = 4;
         break;
+    case IT_INT64:
+        m_object = m_objectPtr = (UInt8*)new Int64(*(Int64*)data);
+        m_objectSize = 8;
+        break;
     case IT_UINT8:
         m_object = m_objectPtr = (UInt8*)new UInt8(*(UInt8*)data);
         m_objectSize = 1;
@@ -64,6 +68,10 @@ DbVariable::DbVariable(
     case IT_UINT32:
         m_object = m_objectPtr = (UInt8*)new UInt32(*(UInt32*)data);
         m_objectSize = 4;
+        break;
+    case IT_UINT64:
+        m_object = m_objectPtr = (UInt8*)new UInt64(*(UInt64*)data);
+        m_objectSize = 8;
         break;
     case IT_FLOAT:
         m_object = m_objectPtr = (UInt8*)new Float(*(Float*)data);
@@ -143,6 +151,10 @@ DbVariable::DbVariable(IntType intType,
         m_object = m_objectPtr = (UInt8*)new Int32;
         m_objectSize = 4;
         break;
+    case IT_INT64:
+        m_object = m_objectPtr = (UInt8*)new Int64;
+        m_objectSize = 8;
+        break;
     case IT_UINT8:
         m_object = m_objectPtr = (UInt8*)new UInt8;
         m_objectSize = 1;
@@ -154,6 +166,10 @@ DbVariable::DbVariable(IntType intType,
     case IT_UINT32:
         m_object = m_objectPtr = (UInt8*)new UInt32;
         m_objectSize = 4;
+        break;
+    case IT_UINT64:
+        m_object = m_objectPtr = (UInt8*)new UInt64;
+        m_objectSize = 8;
         break;
     case IT_FLOAT:
         m_object = m_objectPtr = (UInt8*)new Float;
@@ -224,6 +240,9 @@ DbVariable::~DbVariable()
     case IT_INT32:
         deletePtr((Int32*)m_object);
         break;
+    case IT_INT64:
+        deletePtr((Int64*)m_object);
+        break;
     case IT_UINT8:
         deletePtr((UInt8*)m_object);
         break;
@@ -232,6 +251,9 @@ DbVariable::~DbVariable()
         break;
     case IT_UINT32:
         deletePtr((UInt32*)m_object);
+        break;
+    case IT_UINT64:
+        deletePtr((UInt64*)m_object);
         break;
     case IT_FLOAT:
         deletePtr((Float*)m_object);
@@ -312,16 +334,20 @@ Int32 DbVariable::toInt32() const
         return static_cast<Int32>(asInt8());
     } else if (m_intType == IT_INT16) {
         return static_cast<Int32>(asInt16());
+    } else if (m_intType == IT_INT64) {
+        return static_cast<Int32>(asUInt64());
     } else if (m_intType == IT_UINT8) {
         return static_cast<Int32>(asUInt8());
     } else if (m_intType == IT_UINT16) {
         return static_cast<Int32>(asUInt16());
     } else if (m_intType == IT_UINT32) {
         return static_cast<Int32>(asUInt32());
-    } else if (m_intType == IT_DOUBLE) {
-        return static_cast<Int32>(asDouble());
+    } else if (m_intType == IT_UINT64) {
+        return static_cast<Int32>(asUInt64());
     } else if (m_intType == IT_FLOAT) {
         return static_cast<Int32>(asFloat());
+    } else if (m_intType == IT_DOUBLE) {
+        return static_cast<Int32>(asDouble());
     } else if (m_intType == IT_ARRAY_CHAR) {
         Char *end;
         return static_cast<Int32>(strtol(((ArrayChar*)m_object)->getData(), &end, 10));
@@ -333,24 +359,61 @@ Int32 DbVariable::toInt32() const
     }
 }
 
+Int32 DbVariable::toInt64() const
+{
+    if (m_intType == IT_INT64) {
+        return asInt64();
+    } else if (m_intType == IT_INT8) {
+        return static_cast<Int64>(asInt8());
+    } else if (m_intType == IT_INT16) {
+        return static_cast<Int64>(asInt16());
+    } else if (m_intType == IT_INT32) {
+        return static_cast<Int64>(asInt32());
+    } else if (m_intType == IT_UINT8) {
+        return static_cast<Int64>(asUInt8());
+    } else if (m_intType == IT_UINT16) {
+        return static_cast<Int64>(asUInt16());
+    } else if (m_intType == IT_UINT32) {
+        return static_cast<Int64>(asUInt32());
+    } else if (m_intType == IT_UINT64) {
+        return static_cast<Int64>(asUInt64());
+    } else if (m_intType == IT_FLOAT) {
+        return static_cast<Int64>(asFloat());
+    } else if (m_intType == IT_DOUBLE) {
+        return static_cast<Int64>(asDouble());
+    } else if (m_intType == IT_ARRAY_CHAR) {
+        Char *end;
+        return static_cast<Int64>(strtoq(((ArrayChar*)m_object)->getData(), &end, 10));
+    } else if (m_intType == IT_CSTRING) {
+        Char *end;
+        return static_cast<Int64>(strtoq(((CString*)m_object)->getData(), &end, 10));
+    } else {
+        O3D_ERROR(E_InvalidOperation(""));
+    }
+}
+
 Double DbVariable::toDouble() const
 {
     if (m_intType == IT_DOUBLE) {
         return asDouble();
     } else if (m_intType == IT_FLOAT) {
         return static_cast<Double>(asFloat());
+    } else if (m_intType == IT_INT8) {
+        return static_cast<Double>(asInt8());
     } else if (m_intType == IT_INT16) {
         return static_cast<Double>(asInt16());
+    } else if (m_intType == IT_INT32) {
+        return static_cast<Double>(asInt32());
+    } else if (m_intType == IT_INT64) {
+        return static_cast<Double>(asInt64());
     } else if (m_intType == IT_UINT8) {
         return static_cast<Double>(asUInt8());
     } else if (m_intType == IT_UINT16) {
         return static_cast<Double>(asUInt16());
     } else if (m_intType == IT_UINT32) {
         return static_cast<Double>(asUInt32());
-    } else if (m_intType == IT_DOUBLE) {
-        return static_cast<Double>(asDouble());
-    } else if (m_intType == IT_FLOAT) {
-        return static_cast<Double>(asFloat());
+    } else if (m_intType == IT_UINT64) {
+        return static_cast<Double>(asUInt64());
     } else if (m_intType == IT_ARRAY_CHAR) {
         Char *end;
         return strtod(((ArrayChar*)m_object)->getData(), &end);
