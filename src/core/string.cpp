@@ -1665,7 +1665,7 @@ void String::concat(Float f, Int32 decimals)
 
         swprintf(str, 16, format, f);
     } else {
-        swprintf(str, 16, L"%f", f);
+        swprintf(str, 16, L"%g", f);
     }
 
 	(*this) += str;
@@ -1689,7 +1689,7 @@ void String::concat(Double d, Int32 decimals)
 
         swprintf(str, 32, format, d);
     } else {
-        swprintf(str, 32, L"%f", d);
+        swprintf(str, 32, L"%g", d);
     }
 
     (*this) += str;
