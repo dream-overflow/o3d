@@ -150,6 +150,12 @@ public:
     //! Set an input variable as UInt32.
     virtual void setUInt32(UInt32 attr, UInt32 v) = 0;
 
+    //! Set an input variable as Int64.
+    virtual void setInt64(UInt32 attr, Int64 v) = 0;
+
+    //! Set an input variable as UInt64.
+    virtual void setUInt64(UInt32 attr, UInt64 v) = 0;
+
     //! Set an input variable as Float.
     virtual void setFloat(UInt32 attr, Float v) = 0;
 
