@@ -116,9 +116,17 @@ MemoryManager::~MemoryManager()
     }
 
 	// Memory total allocated size
-    m_logger->log(Logger::INFO, String("A total of ") << m_memory[MEM_RAM].m_memorytotalbytes << " bytes has been allocated in central memory");
-    m_logger->log(Logger::INFO, String("A total of ") << m_memory[MEM_GFX].m_memorytotalbytes << " bytes has been allocated in graphical memory");
-    m_logger->log(Logger::INFO, String("A total of ") << m_memory[MEM_SFX].m_memorytotalbytes << " bytes has been allocated in audio memory");
+    if (m_memory[MEM_RAM].m_memorytotalbytes > 0) {
+        m_logger->log(Logger::INFO, String("A total of ") << m_memory[MEM_RAM].m_memorytotalbytes << " bytes has been allocated in central memory");
+    }
+
+    if (m_memory[MEM_GFX].m_memorytotalbytes > 0) {
+        m_logger->log(Logger::INFO, String("A total of ") << m_memory[MEM_GFX].m_memorytotalbytes << " bytes has been allocated in graphical memory");
+    }
+
+    if (m_memory[MEM_SFX].m_memorytotalbytes > 0) {
+        m_logger->log(Logger::INFO, String("A total of ") << m_memory[MEM_SFX].m_memorytotalbytes << " bytes has been allocated in audio memory");
+    }
 
     if (!m_CBlocks.empty() || !m_GBlocks.empty()) {
 		// Leaks !!
