@@ -22,15 +22,58 @@ Variadic::Variadic(Type type) :
     m_data(nullptr)
 {
     switch (type) {
+        case BOOL:
+            m_data = reinterpret_cast<UInt8*>(new Bool(false));
+            break;
+
+        case CHAR:
+            m_data = reinterpret_cast<UInt8*>(new Char(0));
+            break;
+        case WCHAR:
+            m_data = reinterpret_cast<UInt8*>(new WChar(0));
+            break;
+
         case INT8:
             m_data = reinterpret_cast<UInt8*>(new Int8(0));
             break;
-
         case UINT8:
             m_data = reinterpret_cast<UInt8*>(new UInt8(0));
             break;
 
-        // @todo any
+        case INT16:
+            m_data = reinterpret_cast<UInt8*>(new Int16(0));
+            break;
+        case UINT16:
+            m_data = reinterpret_cast<UInt8*>(new UInt16(0));
+            break;
+
+        case INT32:
+            m_data = reinterpret_cast<UInt8*>(new Int32(0));
+            break;
+        case UINT32:
+            m_data = reinterpret_cast<UInt8*>(new UInt32(0));
+            break;
+
+        case INT64:
+            m_data = reinterpret_cast<UInt8*>(new Int64(0));
+            break;
+        case UINT64:
+            m_data = reinterpret_cast<UInt8*>(new UInt64(0));
+            break;
+
+        case FLOAT32:
+            m_data = reinterpret_cast<UInt8*>(new Float(0));
+            break;
+        case FLOAT64:
+            m_data = reinterpret_cast<UInt8*>(new Double(0));
+            break;
+
+        case STRING:
+            m_data = reinterpret_cast<UInt8*>(new String());
+            break;
+        case CSTRING:
+            m_data = reinterpret_cast<UInt8*>(new CString());
+            break;
 
         case ARRAY:
             m_data = reinterpret_cast<UInt8*>(new T_VariadicVector());
@@ -51,27 +94,83 @@ Variadic::Variadic(const Variadic &dup) :
     m_data(nullptr)
 {
     switch (dup.m_type) {
+        case BOOL:
+            m_data = reinterpret_cast<UInt8*>(new Bool(*reinterpret_cast<Bool*>(dup.m_data)));
+            break;
+
+        case CHAR:
+            m_data = reinterpret_cast<UInt8*>(new Char(*reinterpret_cast<Char*>(dup.m_data)));
+            break;
+        case WCHAR:
+            m_data = reinterpret_cast<UInt8*>(new WChar(*reinterpret_cast<WChar*>(dup.m_data)));
+            break;
+
         case INT8:
             m_data = reinterpret_cast<UInt8*>(new Int8(*reinterpret_cast<Int8*>(dup.m_data)));
             break;
-
         case UINT8:
             m_data = reinterpret_cast<UInt8*>(new UInt8(*reinterpret_cast<UInt8*>(dup.m_data)));
-            // @todo copy
             break;
 
-        // @todo any
+        case INT16:
+            m_data = reinterpret_cast<UInt8*>(new Int16(*reinterpret_cast<Int16*>(dup.m_data)));
+            break;
+        case UINT16:
+            m_data = reinterpret_cast<UInt8*>(new UInt16(*reinterpret_cast<UInt16*>(dup.m_data)));
+            break;
+
+        case INT32:
+            m_data = reinterpret_cast<UInt8*>(new Int32(*reinterpret_cast<Int32*>(dup.m_data)));
+            break;
+        case UINT32:
+            m_data = reinterpret_cast<UInt8*>(new UInt32(*reinterpret_cast<UInt32*>(dup.m_data)));
+            break;
+
+        case INT64:
+            m_data = reinterpret_cast<UInt8*>(new Int64(*reinterpret_cast<Int64*>(dup.m_data)));
+            break;
+        case UINT64:
+            m_data = reinterpret_cast<UInt8*>(new UInt64(*reinterpret_cast<UInt64*>(dup.m_data)));
+            break;
+
+        case FLOAT32:
+            m_data = reinterpret_cast<UInt8*>(new Float(*reinterpret_cast<Float*>(dup.m_data)));
+            break;
+        case FLOAT64:
+            m_data = reinterpret_cast<UInt8*>(new Double(*reinterpret_cast<Double*>(dup.m_data)));
+            break;
+
+        case STRING:
+            m_data = reinterpret_cast<UInt8*>(new String(*reinterpret_cast<String*>(dup.m_data)));
+            break;
+        case CSTRING:
+            m_data = reinterpret_cast<UInt8*>(new CString(*reinterpret_cast<CString*>(dup.m_data)));
+            break;
 
         case ARRAY:
             m_data = reinterpret_cast<UInt8*>(new T_VariadicVector());
-            // *reinterpret_cast<T_VariadicList*>(dup.m_data)));
-            // @todo copy
+            {
+                // duplicate elements
+                const T_VariadicVector &src = *reinterpret_cast<T_VariadicVector*>(dup.m_data);
+                T_VariadicVector &dst = *reinterpret_cast<T_VariadicVector*>(m_data);
+
+                for (CIT_VariadicVector cit = src.cbegin(); cit != src.cend(); ++cit) {
+                    dst.push_back(*cit);
+                }
+            }
             break;
 
         case OBJECT:
             m_data = reinterpret_cast<UInt8*>(new StringMap<Variadic>());
-            // *reinterpret_cast<StringMap<Variadic>*>(dup.m_data))));
-            // @todo copy
+            {
+                // duplicate elements
+                const StringMap<Variadic> &src = *reinterpret_cast<StringMap<Variadic>*>(dup.m_data);
+                StringMap<Variadic> &dst = *reinterpret_cast<StringMap<Variadic>*>(m_data);
+
+                for (StringMap<Variadic>::CIT cit = src.cbegin(); cit != src.cend(); ++cit) {
+                    dst.insert(std::make_pair(cit->first, cit->second));
+                }
+            }
             break;
 
         default:
@@ -83,23 +182,64 @@ Variadic::Variadic(const Variadic &dup) :
 Variadic::~Variadic()
 {
      switch (m_type) {
+        case BOOL:
+            deletePtr(reinterpret_cast<Bool*>(m_data));
+            break;
+
+        case CHAR:
+            deletePtr(reinterpret_cast<Char*>(m_data));
+            break;
+        case WCHAR:
+            deletePtr(reinterpret_cast<WChar*>(m_data));
+            break;
+
         case INT8:
              deletePtr(reinterpret_cast<Int8*>(m_data));
              break;
-
         case UINT8:
              deletePtr(reinterpret_cast<UInt8*>(m_data));
              break;
 
-        // @todo any
+        case INT16:
+            deletePtr(reinterpret_cast<Int16*>(m_data));
+            break;
+        case UINT16:
+            deletePtr(reinterpret_cast<UInt16*>(m_data));
+            break;
+
+        case INT32:
+            deletePtr(reinterpret_cast<Int32*>(m_data));
+            break;
+        case UINT32:
+            deletePtr(reinterpret_cast<UInt32*>(m_data));
+            break;
+
+        case INT64:
+            deletePtr(reinterpret_cast<Int64*>(m_data));
+            break;
+        case UINT64:
+            deletePtr(reinterpret_cast<UInt64*>(m_data));
+            break;
+
+        case FLOAT32:
+            deletePtr(reinterpret_cast<Float*>(m_data));
+            break;
+        case FLOAT64:
+            deletePtr(reinterpret_cast<Double*>(m_data));
+            break;
+
+        case STRING:
+            deletePtr(reinterpret_cast<String*>(m_data));
+            break;
+        case CSTRING:
+            deletePtr(reinterpret_cast<CString*>(m_data));
+            break;
 
         case ARRAY:
-             // @todo delete entries
              deletePtr(reinterpret_cast<std::list<Variadic>*>(m_data));
              break;
 
         case OBJECT:
-             // @todo delete entries
              deletePtr(reinterpret_cast<StringMap<Variadic>*>(m_data));
              break;
 
