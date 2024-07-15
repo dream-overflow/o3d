@@ -641,7 +641,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
 
             case 'B':
                 // letter month
-                for (Int32 i = 0; i < 14; ++i) {
+                for (Int32 i = 0; i < 12; ++i) {
                     if (vals == monthString[i]) {
                         month = i+1;
                         found = True;
@@ -655,7 +655,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
 
             case 'b':
                 // letter short month
-                for (Int32 i = 0; i < 14; ++i) {
+                for (Int32 i = 0; i < 12; ++i) {
                     if (vals == shortMonthString[i]) {
                         month = i+1;
                         found = True;
@@ -675,7 +675,7 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
                 } else {
                     month = vals.toUInt32();
                 }
-                if (month > 14) {
+                if (month > 12) {
                     return False;
                 }
                 break;
