@@ -118,7 +118,10 @@ public:
     //! Convert to a double epoch timestamp in second unit with microsecond precision.
     Double toDoubleTimestamp(Bool UTC=True) const;
 
-    //! Get the day of week for the current datetime. It is 0 based on sunday.
+    //! Get the day of week for the current datetime. It is 1..7 based on monday.
+    Int8 getIsoDayOfWeek() const;
+
+    //! Get the day of week for the current datetime. It is 0..6 based on monday.
     Int8 getDayOfWeek() const;
 
     //! Check if the date is older than n days.

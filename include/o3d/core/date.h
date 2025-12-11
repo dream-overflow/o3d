@@ -146,7 +146,10 @@ public:
     //! Check if the date is older than XX days.
     Bool isOlderThan(const Date &compare, Int32 days);
 
-    //! Get the day of week for the current datetime. It is 0 based on sunday.
+    //! Get the day of week for the current datetime. It is 1..7 based on monday.
+    Int8 getIsoDayOfWeek() const;
+
+    //! Get the day of week for the current datetime. It is 0..6 based on monday.
     Int8 getDayOfWeek() const;
 
     Bool writeToFile(OutStream &os) const;

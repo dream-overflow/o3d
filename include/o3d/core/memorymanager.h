@@ -278,7 +278,7 @@ private:
 
 		inline Bool operator== (const TKey& cmp)const
 		{
-			return ((Target == cmp.target) && (Id == cmp.Id));
+			return ((Target == cmp.Target) && (Id == cmp.Id));
 		}
 
 		inline Bool operator< (const TKey& cmp)const

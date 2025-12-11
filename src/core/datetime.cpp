@@ -715,10 +715,10 @@ Bool DateTime::buildFromString(const String &_value, const String &_arg)
                 if (vals[0] == '0') {
                     // ignore leading 0
                     mday = Int8(vals.toUInt32(1));
-                    wday = getDayOfWeek();
+                    wday = getIsoDayOfWeek();
                 } else {
                     mday = Int8(vals.toUInt32());
-                    wday = getDayOfWeek();
+                    wday = getIsoDayOfWeek();
                 }
                 if (mday > 31) {
                     // @todo but might check 29 feb, and 30 day month...
@@ -992,12 +992,22 @@ Double DateTime::toDoubleTimestamp(Bool UTC) const
     return static_cast<Double>(toTime_t(UTC)) + (static_cast<Double>(microsecond) / 1000000.0);
 }
 
+Int8 DateTime::getIsoDayOfWeek() const
+{
+    static Int32 t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+    Int32 y = year - (month < 3 ? 1 : 0);
+
+    // correction for 1..7 starting on monday
+    return ((y + y/4 - y/100 + y/400 + t[month-1] + (mday-1)) % 7) + 1;
+}
+
 Int8 DateTime::getDayOfWeek() const
 {
     static Int32 t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
     Int32 y = year - (month < 3 ? 1 : 0);
 
-    return ((y + y/4 - y/100 + y/400 + t[month-1] + (mday-1)) % 7) + 1;
+    // no correction for 0..6 starting on monday
+    return ((y + y/4 - y/100 + y/400 + t[month-1] + (mday-1)) % 7);
 }
 
 Bool DateTime::isOlderThan(const DateTime& today, Int32 days)
